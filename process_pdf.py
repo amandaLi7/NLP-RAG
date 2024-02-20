@@ -1,41 +1,55 @@
 import os
 import pypdf as pdf
 import pdfplumber as plumb
-from pypdf import PdfWriter
-
-# Main document cleaning function
-def parse_pdf(file):
-    # TODO
-    pass
+from pypdf import PdfReader
+from pathlib import Path
 
 
-def process_pdfs(directory_path, merger):
+# def parse_pdfs(directory_path, merger):
 
-    for file in os.listdir(directory_path):
-        file_path = os.path.join(directory_path, file)
-        doc = open(file_path, "rb")
+#     for file in os.listdir(directory_path):
+#         file_path = os.path.join(directory_path, file)
+#         # Read file with pdfplumber
+#         with plumb.open(file_path) as pdf:
+#             for page in pdf.pages:
+#                 text = page.extract_text()
+#                 merger.append(text)
 
-        # Document parsing
-        # TODO
-
-        merger.append(doc)
-
-    return merger
+#     return merger
 
 
-def merger_write(merger, file_path):
-    merger.write(file_path)
-    merger.close()
+# def merger_write(merger, file_path):
+#     merger.write(file_path)
+#     merger.close()
+
+
+def extract_text(pdf_path):
+    with open(pdf_path, 'rb') as file:
+        pdf_reader = PdfReader(file)
+        text = ''
+        for page_num in range(len(pdf_reader.pages)):
+            page = pdf_reader.pages[page_num]
+            text += page.extract_text()
+        return text
+
+# Function to process multiple PDFs and combine text into one file
+def parse_pdfs(input_folder, output_file_path):
+    output_text = ''
+    input_folder_path = Path(input_folder)
+    
+    for pdf_path in input_folder_path.glob('*.pdf'):
+        output_text += extract_text(pdf_path)
+    
+    with open(output_file_path, 'w', encoding='utf-8') as output:
+        output.write(output_text)
 
 
 if __name__ == "__main__":
 
-    merger = PdfWriter()
-
     input_dir = "./data/pdfs"
-
-    process_pdfs(input_dir, merger)
-
     output_file = "./data/pdfs/parsed.pdf"
 
-    merger_write(merger, output_file)
+    parse_pdfs(input_dir, output_file)
+
+    
+
