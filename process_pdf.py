@@ -47,7 +47,7 @@ def parse_pdfs(input_folder, output_file_path):
 if __name__ == "__main__":
 
     input_dir = "./data/pdfs"
-    output_file = "./data/pdfs/parsed.pdf"
+    output_file = "./data/pdfs/parsed.txt"
 
     parse_pdfs(input_dir, output_file)
 
