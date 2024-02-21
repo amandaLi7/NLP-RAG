@@ -10,7 +10,7 @@ def extract_plaintext(soup):
         script.extract()    # rip it out
 
     # get text
-    text = soup.get_text()
+    text = soup.get_text(separator=' ')
 
     # break into lines and remove leading and trailing space on each
     lines = (line.strip() for line in text.splitlines())
@@ -33,7 +33,7 @@ def extract_file(url, index):
         soup = BeautifulSoup(html_str, 'html.parser')
         html_str = extract_plaintext(soup)
 
-        new_file_name = "webpages/url" + str(index) + '.txt'
+        new_file_name = "data/webpages/url" + str(index) + '.txt'
         f = open(new_file_name, "w+")
         f.write(html_str)
         f.close()
@@ -41,7 +41,7 @@ def extract_file(url, index):
         print("---- " + url + " DONE -------")
 
 # go through all the url's we are investigating in urls_list.txt
-urls_file = open('urls_list.txt', 'r')
+urls_file = open('data/webpages/urls_list.txt', 'r')
 urls = urls_file.readlines()
 for index, url in enumerate(urls):
     extract_file(url.strip(), index)
