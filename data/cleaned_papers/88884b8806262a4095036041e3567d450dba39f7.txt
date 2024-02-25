@@ -1,7 +1,8 @@
 Active Retrieval Augmented Generation
-Zhengbao Jiang1 Frank F. Xu1 1 1 2
-Jane Dwivedi-Yu Yiming Yang Jamie Callan Graham Neubig1 1Language Technologies Institute, Carnegie Mellon University
-2Sea AI Lab FAIR, Meta
+Zhengbao Jiang1 Frank F. Xu1 Luyu Gao1 Zhiqing Sun1 Qian Liu2
+Jane Dwivedi-Yu3Yiming Yang1Jamie Callan1Graham Neubig1
+1Language Technologies Institute, Carnegie Mellon University
+2Sea AI Lab3FAIR, Meta
 {zhengbaj,fangzhex,luyug,zhiqings,gneubig}@cs.cmu.edu
 Abstract
 Despite the remarkable ability of large language
@@ -32,7 +33,8 @@ with baselines comprehensively over 4 longform
  knowledge-intensive generation tasks/datasets.
  FLARE achieves superior or competitive
  performance on all tasks, demonstrating
-the effectiveness of our method.1 1 Introduction
+the effectiveness of our method.1
+1 Introduction
 Generative language models (LMs) (Brown et al.,
 2020  Ouyang et al., 2022  OpenAI, 2023  Chowdhery
  et al., 2022  Zhang et al., 2022  Touvron et al.,
@@ -84,11 +86,12 @@ essays, or books, long-form generation with LMs
 would require gathering multiple pieces of knowledge
  throughout the generation process . For example,
  to generate a summary about a particular
-topic, the initial retrieval based on the topic namearXiv 2305.06983 2  [cs.CL]  22 2023Generate a summary about Joe Biden.Search results      [1]   [2]   
-Joe Biden (born November 20, 1942) is the 46th president of the United States.Joe Biden (born November 20, 1942) is the 46th president of the United States.He graduated from the University of Delaware in 1965 with a Bachelor of Arts in history and political science.Joe Biden attended the University of Pennsylvania, where he earned a law degree.RetrieverInputStep 1Search results     " [1]   [2]   "####"#$#$$Step 2 2020 25, 2019.Joe Biden announced his candidacy for the 2020 18, 2019."#%#%Step 3Search results     ""[1]   [2]   RetrieveddocumentsLMGeneration$%$%%
+topic, the initial retrieval based on the topic namearXiv 2305.06983v2  [cs.CL]  22 Oct 2023Generate a summary about Joe Biden.Search results      [1]   [2]   
+Joe Biden (born November 20, 1942) is the 46th president of the United States.Joe Biden (born November 20, 1942) is the 46th president of the United States.He graduated from the University of Delaware in 1965 with a Bachelor of Arts in history and political science.Joe Biden attended the University of Pennsylvania, where he earned a law degree.RetrieverInputStep 1Search results     " [1]   [2]   "####"#$#$$Step 2
+Joe Biden announced his candidacy for the 2020 presidential election on April 25, 2019.Joe Biden announced his candidacy for the 2020 presidential election on August 18, 2019."#%#%Step 3Search results     ""[1]   [2]   RetrieveddocumentsLMGeneration$%$%%
 Figure 1  An illustration of forward-looking active retrieval augmented generation (FLARE). Starting with the user
 input xand initial retrieval results Dx, FLARE iteratively generates a temporary next sentence (shown in gray
-italic ) and check whether it contains low-probability tokens (indicated with underline ). If so (step 2 3), the
+italic ) and check whether it contains low-probability tokens (indicated with underline ). If so (step 2 and 3), the
 system retrieves relevant documents and regenerates the sentence.
 (e.g., Joe Biden) may not cover all aspects and details.
  It is crucial to retrieve extra information as
@@ -247,17 +250,19 @@ Specifically, for a downstream task, we place
 the search-related instruction and exemplars at the
 beginning as skill 1, followed by the instruction and
 exemplars of the downstream task as skill 2. Given
-a test case, we ask LMs to combine skills 1 2 to
+a test case, we ask LMs to combine skills 1 and 2 to
 generate search queries while performing the task.
 The structure of the prompt is shown in Prompt 3.1,
 and full details can be found in Prompt D.3.
-Prompt 3.1 1. An instruction to guide LMs to generate search
+Prompt 3.1  retrieval instructions
+Skill 1. An instruction to guide LMs to generate search
 queries.
 Several search-related exemplars.
 Skill 2. An instruction to guide LMs to perform a
 specific downstream task (e.g., multihop QA).
 Several task-related exemplars.
-An instruction to guide LMs to combine skills 1 2 for the test case.
+An instruction to guide LMs to combine skills 1
+and 2 for the test case.
 The input of the test case.
 As shown in Figure 2, when the LM generates
  [Search(query)]  (shown in gray italic ), we stop
@@ -424,7 +429,8 @@ because it might occur at inappropriate points. (3)
 Question decomposition approaches require taskspecific
  prompt engineering, which restricts their
 generalizability in new tasks.
-5 4 diverse
+5 Experimental Setup
+We evaluate the effectiveness of FLARE on 4 diverse
  knowledge-intensive tasks using few-shot incontext
  learning (Radford et al., 2019  Brown et al.,
 2020  Liu et al., 2023). We follow previous works
@@ -491,14 +497,16 @@ Open-domain summarization The goal of opendomain
 WikiAsp (Hayashi et al., 2021) which aims to generate
  aspect-based summaries about entities from
 20 domains in Wikipedia, e.g.,  Generate a summary
- about Echo School (Oregon) including the0.020.040.060.080.0 2WikiMultihopQA StrategyQA ASQA ASQA-hint WikiAspNo ret. Single-time ret. Previous-window ret. Forward-Looking Active REtrieval augmented generation (FLARE)Figure 4  Comparision between FLARE and baselines across all tasks/datasets. We report the primary metric for
+ about Echo School (Oregon) including the0.020.040.060.080.0
+2WikiMultihopQA StrategyQA ASQA ASQA-hint WikiAspNo ret. Single-time ret. Previous-window ret. Forward-Looking Active REtrieval augmented generation (FLARE)Figure 4  Comparision between FLARE and baselines across all tasks/datasets. We report the primary metric for
 each dataset  EM for 2WikiMultihopQA, StrategyQA, and ASQA, and UniEval for WikiAsp.
 following aspects  academics, history.  Experimental
  setting details are included in Appendix B.
 Metrics include ROUGE, named entity-based F 1,
 and UniEval (Zhong et al., 2022) which measures
 factual consistency.
-6 4 tasks/datasets
+6 Experimental Results
+We first report overall results across 4 tasks/datasets
 and compare the performance of FLARE with all
 the baselines introduced in section 4. We then
 run ablation experiments to study the efficacy of
@@ -523,7 +531,8 @@ ASQA because identifying ambiguous aspects is
 challenging even for humans in many cases, and
 providing a generic hint helps LMs to stay on topic.
 Thorough comparisons with baselines. The performance
- of all baselines on 2 1. FLARE outperforms all
+ of all baselines on 2WikiMultihopQA
+are reported in Table 1. FLARE outperforms all
 baselines by a large margin, which confirms that
 forward-looking active retrieval is highly effective.
 Most multi-time retrieval augmented approaches
@@ -532,9 +541,11 @@ No retrieval 28.2 36.8 36.5 38.6
 Single-time retrieval 39.4 48.8 48.6 51.5
 Multi-time retrieval
 Previous-window 43.2 52.3 51.7 54.5
-Previous-sentence 39.0 49.2 48.9 51.8 47.8 56.4 56.1 58.6
+Previous-sentence 39.0 49.2 48.9 51.8
+Question decomposition 47.8 56.4 56.1 58.6
 FLARE instruct (ours) 42.4 49.8 49.1 52.5
-FLARE direct(ours) 51.0 59.7 59.1 62.6 1 2WikiMultihopQA.
+FLARE direct(ours) 51.0 59.7 59.1 62.6
+Table 1  FLARE and baselines on 2WikiMultihopQA.
 Previous-window (Borgeaud et al., 2022  Ram et al.,
 2023), previous-sentence (Trivedi et al., 2022), and question
  decomposition (Press et al., 2022  Yao et al., 2022)
@@ -569,14 +580,21 @@ Single-time retrieval 68.6 40.0 27.1 34.0 30.4 43.2 34.8 37.4 36.0 52.4 17.4 26.
 Multi-time retrieval
 Previous-window 71.2 39.9 27.0 34.3 30.4 43.7 35.7 37.5 36.6 51.8 18.1 27.3
 Previous-sentence 71.0 39.9 27.9 34.3 30.9 44.7 35.9 37.5 36.7 52.6 17.8 27.2
-FLARE (ours) 77.3 41.3 28.2 34.3 31.1 46.2 36.7 37.7 37.2 53.4 18.9 27.6 2  Comparison between FLARE and baselines on StrategyQA, ASQA, ASQA-hint, and WikiAsp. D-F 1is
+FLARE (ours) 77.3 41.3 28.2 34.3 31.1 46.2 36.7 37.7 37.2 53.4 18.9 27.6
+Table 2  Comparison between FLARE and baselines on StrategyQA, ASQA, ASQA-hint, and WikiAsp. D-F 1is
 Disambig-F 1, R-L is ROUGE-L, and E-F 1is named entity-based F 1.
 2WikiMultihopQA ASQA-hint
 EM F 1Prec. Rec. EM D-F 1R-L DR
-Previous 39.0 49.2 48.9 51.8 42.5 34.1 36.9 35.5 48.8 57.6 57.1 60.5 45.9 35.7 37.5 36.6 3  A head-to-head comparison between using the
+Previous 39.0 49.2 48.9 51.8 42.5 34.1 36.9 35.5
+Next 48.8 57.6 57.1 60.5 45.9 35.7 37.5 36.6
+Table 3  A head-to-head comparison between using the
 previous sentence and the next sentence for retrieval.
 #Tokens EM F 1 Prec. Rec.
-16 43.2 52.3 51.7 54.5 32 43.6 52.4 52.0 55.0 48 40.0 49.3 49.0 52.0 39.0 48.5 48.2 51.1 4  Previous-window approaches using different
+16 43.2 52.3 51.7 54.5
+32 43.6 52.4 52.0 55.0
+48 40.0 49.3 49.0 52.0
+All 39.0 48.5 48.2 51.1
+Table 4  Previous-window approaches using different
 numbers of tokens as queries.
 ous window underperforms single-time retrieval
 on ASQA, which we hypothesize is because the
@@ -600,7 +618,8 @@ confirming our hypothesis.
 We also run previous-window approaches using
 different numbers of past tokens as queries. As
 shown in Table 4, using too many tokens (  32) in
-%steps/sentences with retrieval0.020.040.060.080.0 0.0 25.0 50.0 75.0 100.02 5  Performance (EM) of FLARE with respect
+%steps/sentences with retrieval0.020.040.060.080.0
+0.0 25.0 50.0 75.0 100.02WikiMultihopQA StrategyQAFigure 5  Performance (EM) of FLARE with respect
 to the percentage of steps/sentences with retrieval on
 2WikiMultihopQA and StrategyQA.
 the past hurts the performance, further confirming
@@ -611,7 +630,7 @@ Importance of active retrieval. Next, we investigate
  To alter our method from not retrieving
 to retrieving every sentence, we adjust the confidence
  threshold θthat determines when to trigger
-retrieval from 0 1. We then calculate the proportion
+retrieval from 0 to 1. We then calculate the proportion
  of steps/sentences where retrieval is activated,
  and present the performance based on it. As
 shown in Figure 5, on 2WikiMultihopQA, the performance
@@ -629,11 +648,17 @@ methods We study implicit query formation by
 masking and explicit query formulation through
 question generation. In Table 5, we compare the
 performance of FLARE with different maskingβ EM F 1 Prec. Rec.
-0.0 0.488 0.576 0.571 0.605 0.2 0.498 0.588 0.582 0.616 0.4 0.510 0.597 0.591 0.627 0.6 0.506 0.593 0.586 0.622 5  Performance of FLARE with respect to the
+0.0 0.488 0.576 0.571 0.605
+0.2 0.498 0.588 0.582 0.616
+0.4 0.510 0.597 0.591 0.627
+0.6 0.506 0.593 0.586 0.622
+Table 5  Performance of FLARE with respect to the
 masking threshold βon 2WikiMultihopQA.
 ASQA-hint WikiAsp
 EM D-F 1R-L DR UniEval E-F 1R-L
-Implicit 45.7 36.9 37.7 37.3 53.4 18.8 27.7 46.2 36.7 37.7 37.2 53.4 18.9 27.6 6  A comparison between implicit and explicit
+Implicit 45.7 36.9 37.7 37.3 53.4 18.8 27.7
+Explicit 46.2 36.7 37.7 37.2 53.4 18.9 27.6
+Table 6  A comparison between implicit and explicit
 query formulation methods in FLARE.
 thresholds β. Retrieving directly with the complete
 sentence ( β  0) is worse than masking tokens
@@ -643,7 +668,8 @@ retrievers. We compare implicit and explicit query
 formulation methods in Table 6. Performances of
 both methods are similar, indicating that both methods
  can effectively reflect information needs.
-7 2.2 4 for extensively
+7 Related Work
+We refer to subsection 2.2 and section 4 for extensively
  discussion on single-time and multi-time
 retrieval augmented LMs, which is the most relevant
  area to this paper.
@@ -724,7 +750,7 @@ Irving, Oriol Vinyals, Simon Osindero, Karen Simonyan,
  Jack W. Rae, Erich Elsen, and Laurent Sifre.
 2022. Improving language models by retrieving from
 trillions of tokens. In International Conference on
-Machine Learning, ICML 2022, 17-23 2022, Baltimore,
+Machine Learning, ICML 2022, 17-23 July 2022, Baltimore,
  Maryland, USA , volume 162 of Proceedings
 of Machine Learning Research , pages 2206 2240.
 PMLR.
@@ -739,13 +765,16 @@ Sigler, Mateusz Litwin, Scott Gray, Benjamin Chess,
 Jack Clark, Christopher Berner, Sam McCandlish,
 Alec Radford, Ilya Sutskever, and Dario Amodei.
 2020. Language models are few-shot learners. In Advances
- in Neural Information Processing Systems 33 2020, NeurIPS 2020, December 6-12,
+ in Neural Information Processing Systems 33 
+Annual Conference on Neural Information Processing
+ Systems 2020, NeurIPS 2020, December 6-12,
 2020, virtual .
 Danqi Chen, Adam Fisch, Jason Weston, and Antoine
 Bordes. 2017. Reading wikipedia to answer opendomain
  questions. In Proceedings of the 55th Annual
 Meeting of the Association for Computational Linguistics,
- ACL 2017, Vancouver, Canada, July 30 4, Volume 1  Long Papers , pages 1870 1879.
+ ACL 2017, Vancouver, Canada, July 30 August
+ 4, Volume 1  Long Papers , pages 1870 1879.
 Association for Computational Linguistics.
 Aakanksha Chowdhery, Sharan Narang, Jacob Devlin,
 Maarten Bosma, Gaurav Mishra, Adam Roberts,
@@ -772,10 +801,12 @@ and Noah Fiedel. 2022. Palm  Scaling language modeling
  with pathways. CoRR , abs/2204.02311.Nachshon Cohen, Oren Kalinsky, Yftah Ziser, and
 Alessandro Moschitti. 2021. Wikisum  Coherent
 summarization dataset for efficient human-evaluation.
-InProceedings of the 59 11th
+InProceedings of the 59th Annual Meeting of the Association
+ for Computational Linguistics and the 11th
 International Joint Conference on Natural Language
 Processing, ACL/IJCNLP 2021, (Volume 2  Short
-Papers), Virtual Event, August 1-6, 2021 , pages 212 219. Association for Computational Linguistics.
+Papers), Virtual Event, August 1-6, 2021 , pages 212 
+219. Association for Computational Linguistics.
 Emily Dinan, Stephen Roller, Kurt Shuster, Angela
 Fan, Michael Auli, and Jason Weston. 2019. Wizard
 of wikipedia  Knowledge-powered conversational
@@ -797,7 +828,8 @@ Mor Geva, Daniel Khashabi, Elad Segal, Tushar Khot,
 Dan Roth, and Jonathan Berant. 2021. Did aristotle
 use a laptop  a question answering benchmark with
 implicit reasoning strategies. Transactions of the
-Association for Computational Linguistics , 9 346 361.
+Association for Computational Linguistics , 9 346 
+361.
 John M. Giorgi, Luca Soldaini, Bo Wang, Gary D.
 Bader, Kyle Lo, Lucy Lu Wang, and Arman Cohan.
  2022. Exploring the challenges of open
@@ -828,7 +860,8 @@ passage retrieval with generative models for open domain
  question answering. In Proceedings of the 16th
 Conference of the European Chapter of the Association
  for Computational Linguistics  Main Volume,
-EACL 2021, Online, April 19 - 23, 2021 , pages 874 880. Association for Computational Linguistics.
+EACL 2021, Online, April 19 - 23, 2021 , pages 874 
+880. Association for Computational Linguistics.
 Gautier Izacard, Patrick S. H. Lewis, Maria Lomeli,
 Lucas Hosseini, Fabio Petroni, Timo Schick, Jane
 Dwivedi-Yu, Armand Joulin, Sebastian Riedel, and
@@ -903,7 +936,8 @@ Danielle Epstein, Illia Polosukhin, Jacob Devlin, Kenton
 Kelcey, Ming-Wei Chang, Andrew M. Dai, Jakob
 Uszkoreit, Quoc Le, and Slav Petrov. 2019. Natural
  questions  a benchmark for question answering
-research. Trans. Assoc. Comput. Linguistics , 7 452 466.
+research. Trans. Assoc. Comput. Linguistics , 7 452 
+466.
 Angeliki Lazaridou, Elena Gribovskaya, Wojciech
 Stokowiec, and Nikolai Grigorev. 2022. Internetaugmented
  language models through few-shot
@@ -919,7 +953,9 @@ Goyal, Heinrich Küttler, Mike Lewis, Wen-tau Yih,
 Tim Rocktäschel, Sebastian Riedel, and Douwe
 Kiela. 2020. Retrieval-augmented generation for
 knowledge-intensive NLP tasks. In Advances in Neural
- Information Processing Systems 33 2020, NeurIPS 2020, December 6-12, 2020, virtual .
+ Information Processing Systems 33  Annual Conference
+ on Neural Information Processing Systems
+2020, NeurIPS 2020, December 6-12, 2020, virtual .
 Junyi Li, Tianyi Tang, Wayne Xin Zhao, Jingyuan Wang,
 Jian-Yun Nie, and Ji-Rong Wen. 2023. The web can
 be your oyster for improving large language models.
@@ -941,7 +977,8 @@ Yuning Mao, Pengcheng He, Xiaodong Liu, Yelong
 Shen, Jianfeng Gao, Jiawei Han, and Weizhu Chen.
 2021. Generation-augmented retrieval for opendomain
  question answering. In Proceedings of the
-59 11th International Joint
+59th Annual Meeting of the Association for Computational
+ Linguistics and the 11th International Joint
 Conference on Natural Language Processing, ACL/IJCNLP
  2021, (Volume 1  Long Papers), Virtual Event,
 August 1-6, 2021 , pages 4089 4100. Association for
@@ -980,7 +1017,8 @@ Fabio Petroni, Tim Rocktäschel, Sebastian Riedel,
 Patrick S. H. Lewis, Anton Bakhtin, Yuxiang Wu,
 and Alexander H. Miller. 2019. Language models
  as knowledge bases  In Proceedings of the
-2019 9th International
+2019 Conference on Empirical Methods in Natural
+ Language Processing and the 9th International
 Joint Conference on Natural Language Processing,EMNLP-IJCNLP 2019, Hong Kong, China, November
  3-7, 2019 , pages 2463 2473. Association for
 Computational Linguistics.
@@ -1022,7 +1060,9 @@ Devendra Singh Sachan, Siva Reddy, William L. Hamilton,
  Chris Dyer, and Dani Yogatama. 2021. End-toend
  training of multi-document reader and retriever
 for open-domain question answering. In Advances
-in Neural Information Processing Systems 34 2021, NeurIPS 2021, December 6-14, 2021,
+in Neural Information Processing Systems 34  Annual
+ Conference on Neural Information Processing
+Systems 2021, NeurIPS 2021, December 6-14, 2021,
 virtual , pages 25968 25981.
 Timo Schick, Jane Dwivedi-Yu, Roberto Dessì, Roberta
 Raileanu, Maria Lomeli, Luke Zettlemoyer, Nicola
@@ -1148,14 +1188,14 @@ with the user input xas the initial query to retrieve
 retrieved documents.
 Sentence tokenization. For each step t, we generate
  64 tokens which are longer than most sentences,
- and use NLTK sentence tokenizer to extract
+ and use NLTK sentence tokenizer5to extract
  the first sentence and discard the rest.
 Efficiency As shown in subsection 6.2, on average
  retrieval is triggered for 30% 60% of sentences
  depending on downstream tasks. In comparision,
  KNN-LM (Khandelwal et al., 2020) retrieves
 every token, RETRO or IC-RALM (Borgeaud et al.,
-2022  Ram et al., 2023) retrievers every 4 32 tokens,
+2022  Ram et al., 2023) retrievers every 4  32 tokens,
  and IRCoT (Trivedi et al., 2022) retrieves
 every sentence. Compared to single-time retrieval,
 however, interleaving retrieval and generation with
@@ -1183,7 +1223,7 @@ the format in Prompt D.1. We found increasing the
 number of retrieval documents often increases performance.
  Therefore, we use the maximum number
 of documents that can fit within the input length
-limit of text-davinci-003 , which is 2 2WikiMultihopQA.
+limit of text-davinci-003 , which is 2 for 2WikiMultihopQA.
 
 Commonsense Reasoning For  Would a pear
 sink in water  , the output we aim to generate is
@@ -1219,7 +1259,7 @@ For  Generate a summary about Echo School (Ore-gon) including the following aspe
 history. , the output we aim to generate is  # Academics.
  In 2008, 91% of the school s seniors received
  their high school diploma... # History. The
-class of 2008 100th class in the school s
+class of 2008 was the 100th class in the school s
 history.  where # is used to indicate aspects. We
 manually annotate 4 exemplars (Prompt D.10), and
 use the Bing search engine to retrieve 5 documents
@@ -1262,7 +1302,7 @@ Evaluation settings
 Metrics EM, F 1, Prec., Rec. EM EM, Disambig-F 1, ROUGE, DR UniEval, entity-F 1, ROUGE
 Retrieval settings
 Corpus Wikipedia Wikipedia Wikipedia open web
-Retriever BM25 25 25 Bing
+Retriever BM25 BM25 BM25 Bing
 Top-k 2 3 3 5
 Prompt format
 #Exemplars 8 6 8 4
@@ -1271,8 +1311,12 @@ Table 7  Dataset statistics and experimental settings of different tasks.
 wikipedia.org, wikiwand.com, wiki2.org, wikimedia.org
 Table 8  Wikipedia-related domains excluded from Bing s search results.
 Dataset θ β Query formulation Combine single- & multi-time retrieval
-2 0.8 0.4 0.4 0.4 implicit  
-ASQA & ASQA-hint 0.8 0.4 0.8 0.4 9  Hyperparameters of FLARE on different datasets.Prompt D.3 2 1. Use the Search API to look up relevant information by writing  [Search(term)]  where  term  is the search term you
+2WikiMultihopQA 0.8 0.4 implicit  
+StrategyQA 0.4 0.4 implicit  
+ASQA & ASQA-hint 0.8 0.4 explicit  
+WikiAsp 0.8 0.4 explicit  
+Table 9  Hyperparameters of FLARE on different datasets.Prompt D.3  retrieval instructions for 2WikiMultihopQA
+Skill 1. Use the Search API to look up relevant information by writing  [Search(term)]  where  term  is the search term you
 want to look up. For example 
 Question  But what are the risks during production of nanomaterials 
 Answer (with Search)  [Search(nanomaterial production risks)] Some nanomaterials may give rise to various kinds of lung
@@ -1285,8 +1329,8 @@ Answer (with Search)  [Search(Metformin first-line drug)] patients with type 2 d
 Skill 2. Answer questions by thinking step-by-step. First, write out the reasoning steps, then draw the conclusion.
  For example 
 Question  When did the director of film Hypocrite (Film) die 
-Answer (with step-by-step)  The film Hypocrite was directed by Miguel Morayta. Miguel Morayta died on 19 2013. So
-the answer is 19 2013.
+Answer (with step-by-step)  The film Hypocrite was directed by Miguel Morayta. Miguel Morayta died on 19 June 2013. So
+the answer is 19 June 2013.
 Question  Are both Kurram Garhi and Trojkrsti located in the same country 
 Answer (with step-by-step)  Kurram Garhi is located in the country of Pakistan. Trojkrsti is located in the country of
 Republic of Macedonia. Thus, they are not in the same country. So the answer is no.
@@ -1299,7 +1343,7 @@ Question  Who is Boraqchin (Wife Of Ögedei) s father-in-law
 Answer (with step-by-step)  Boraqchin is married to Ögedei Khan. Ögedei Khan s father is Genghis Khan. Thus, Boraqchin s
 father-in-law is Genghis Khan. So the answer is Genghis Khan.
 Question  Who was born first out of Martin Hodge and Ivania Martinich 
-Answer (with step-by-step)  Martin Hodge was born on 4 1959. Ivania Martinich was born on 25 1995. Thus,
+Answer (with step-by-step)  Martin Hodge was born on 4 February 1959. Ivania Martinich was born on 25 July 1995. Thus,
 Martin Hodge was born first. So the answer is Martin Hodge.
 Question  When did the director of film Laughter In Hell die 
 Answer (with step-by-step)  The film Laughter In Hell was directed by Edward L. Cahn. Edward L. Cahn died on August 25,
@@ -1314,9 +1358,10 @@ Thus, Krishna Shah has a grandchild named Prithvipati Shah. So the answer is Pri
 Now, combine the aforementioned two skills. First, write out the reasoning steps, then draw the conclusion,
 where the reasoning steps should also utilize the Search API  [Search(term)]  whenever possible.
 Question  Where did Minbyauk Thihapate s wife die 
-Answer (with step-by-step & Search) Prompt D.4 2WikiMultihopQA
+Answer (with step-by-step & Search) Prompt D.4  exemplars of 2WikiMultihopQA
 Question  When did the director of film Hypocrite (Film) die 
-Answer  The film Hypocrite was directed by Miguel Morayta. Miguel Morayta died on 19 2013. So the answer is 19 2013.
+Answer  The film Hypocrite was directed by Miguel Morayta. Miguel Morayta died on 19 June 2013. So the answer is 19
+June 2013.
 Question  Are both Kurram Garhi and Trojkrsti located in the same country 
 Answer  Kurram Garhi is located in the country of Pakistan. Trojkrsti is located in the country of Republic of Macedonia.
 Thus, they are not in the same country. So the answer is no.
@@ -1329,7 +1374,7 @@ Question  Who is Boraqchin (Wife Of Ögedei) s father-in-law
 Answer  Boraqchin is married to Ögedei Khan. Ögedei Khan s father is Genghis Khan. Thus, Boraqchin s father-in-law is
 Genghis Khan. So the answer is Genghis Khan.
 Question  Who was born first out of Martin Hodge and Ivania Martinich 
-Answer  Martin Hodge was born on 4 1959. Ivania Martinich was born on 25 1995. Thus, Martin Hodge was
+Answer  Martin Hodge was born on 4 February 1959. Ivania Martinich was born on 25 July 1995. Thus, Martin Hodge was
 born first. So the answer is Martin Hodge.
 Question  When did the director of film Laughter In Hell die 
 Answer  The film Laughter In Hell was directed by Edward L. Cahn. Edward L. Cahn died on August 25, 1963. So the
@@ -1353,7 +1398,7 @@ Answer  Brooke Shields went to Princeton University. Princeton University is abo
  of Pennsylvania. Thus, Brooke Shields could also succeed at the University of Pennsylvania. So the final answer is yes.
 Generate a yes or no answer to the following question.
 Question  Hydrogen s atomic number squared exceeds number of Spice Girls 
-Answer  Hydrogen has an atomic number of 1. 1 1. There are 5 Spice Girls. Thus, Hydrogen s atomic number
+Answer  Hydrogen has an atomic number of 1. 1 squared is 1. There are 5 Spice Girls. Thus, Hydrogen s atomic number
 squared is less than 5. So the final answer is no.
 Generate a yes or no answer to the following question.
 Question  Is it common to see frost during some college commencements 
@@ -1374,7 +1419,7 @@ Given an ambiguous question, figure out its interpretations and answer them one 
 Question  Who played bonnie in gone with the wind 
 Answer  This question is ambiguous in terms of which version or adaptation of Gone with the Wind is being referred to. In
 order to figure out its interpretations, we need to consider different versions or adaptations of Gone with the Wind. Gone with
-the Wind has two versions or adaptations  the 1939 2008 musical Gone with the Wind.
+the Wind has two versions or adaptations  the 1939 film Gone with the Wind or the 2008 musical Gone with the Wind.
 Therefore, this question has 2 interpretations  (1) Who played Bonnie in the 1939 film Gone with the Wind  (2) Who played
 Bonnie in the 2008 musical Gone with the Wind  The answers to all interpretations are  (1) The 1939 film Gone with the
 Wind s character Bonnie was played by Eleanore Cammack "Cammie" King. (2) The 2008 musical Gone with the Wind s
@@ -1394,7 +1439,7 @@ out its interpretations, we need to consider different countries where Bohemian 
 was released in the United Kingdom and in the United States on different dates. Therefore, this question has 2 interpretations 
 (1) When was Bohemian Rhapsody released as a single in the United Kingdom  (2) When was Bohemian Rhapsody released
 as a single in the United States  The answers to all interpretations are  (1) Bohemian Rhapsody was released as a single in the
-United Kingdom on 31 1975. (2) Bohemian Rhapsody was released as a single in the United States on December 1975.
+United Kingdom on 31 October 1975. (2) Bohemian Rhapsody was released as a single in the United States on December 1975.
 Given an ambiguous question, figure out its interpretations and answer them one by one.
 Question  Where do the philadelphia eagles play their home games 
 Answer  This question is ambiguous in terms of which specific location or venue is being referred to. In order to figure out its
@@ -1418,7 +1463,8 @@ Answer  This question is ambiguous in terms of which release of the movie is bei
 interpretations, we need to consider different releases of the movie Summer of  84. The movie Summer of  84 is first released
 at the Sundance Festival before it s released throughout the US. Therefore, this question has 2 interpretations  (1) When
 did the movie Summer of  84 first release at the Sundance Festival  (2) When did the movie Summer of  84 first release
-throughout the US  The answers to all interpretations are  (1) Summer of  84 22, 2018. (2) Summer of  84 10, 2018.Prompt D.7  exemplars of ASQA (cont.)
+throughout the US  The answers to all interpretations are  (1) Summer of  84 was released at the Sundance Festival on
+January 22, 2018. (2) Summer of  84 was released throughout the US on August 10, 2018.Prompt D.7  exemplars of ASQA (cont.)
 Given an ambiguous question, figure out its interpretations and answer them one by one.
 Question  What was roy orbison s first number one hit 
 Answer  This question is ambiguous in terms of which specific chart or region is being referred to. In order to figure out its
@@ -1444,7 +1490,7 @@ answer them one by one.
 Question  Who played bonnie in gone with the wind 
 Hint  This question is ambiguous in terms of which version or adaptation of Gone with the Wind is being referred to.
 Answer  In order to figure out its interpretations, we need to consider different versions or adaptations of Gone with the Wind.
-Gone with the Wind has two versions or adaptations  the 1939 2008 musical Gone with the
+Gone with the Wind has two versions or adaptations  the 1939 film Gone with the Wind or the 2008 musical Gone with the
 Wind. Therefore, this question has 2 interpretations  (1) Who played Bonnie in the 1939 film Gone with the Wind  (2) Who
 played Bonnie in the 2008 musical Gone with the Wind  The answers to all interpretations are  (1) The 1939 film Gone with
 the Wind s character Bonnie was played by Eleanore Cammack "Cammie" King. (2) The 2008 musical Gone with the Wind s
@@ -1466,7 +1512,7 @@ Answer  In order to figure out its interpretations, we need to consider differen
 released. Bohemian Rhapsody was released in the United Kingdom and in the United States on different dates. Therefore,
 this question has 2 interpretations  (1) When was Bohemian Rhapsody released as a single in the United Kingdom  (2) When
 was Bohemian Rhapsody released as a single in the United States  The answers to all interpretations are  (1) Bohemian
-Rhapsody was released as a single in the United Kingdom on 31 1975. (2) Bohemian Rhapsody was released as a
+Rhapsody was released as a single in the United Kingdom on 31 October 1975. (2) Bohemian Rhapsody was released as a
 single in the United States on December 1975.
 Given an ambiguous question and a hint on which aspect of the question is ambiguous, figure out its interpretations
  and answer them one by one.
@@ -1495,7 +1541,8 @@ Hint  This question is ambiguous in terms of which release of the movie is being
 Answer  In order to figure out its interpretations, we need to consider different releases of the movie Summer of  84. The
 movie Summer of  84 is first released at the Sundance Festival before it s released throughout the US. Therefore, this question
 has 2 interpretations  (1) When did the movie Summer of  84 first release at the Sundance Festival  (2) When did the movie
-Summer of  84 first release throughout the US  The answers to all interpretations are  (1) Summer of  84 22, 2018. (2) Summer of  84 10, 2018.Prompt D.9  exemplars of ASQA-hint (cont.)
+Summer of  84 first release throughout the US  The answers to all interpretations are  (1) Summer of  84 was released at the
+Sundance Festival on January 22, 2018. (2) Summer of  84 was released throughout the US on August 10, 2018.Prompt D.9  exemplars of ASQA-hint (cont.)
 Given an ambiguous question and a hint on which aspect of the question is ambiguous, figure out its interpretations and
 answer them one by one.
 Question  What was roy orbison s first number one hit 
@@ -1548,12 +1595,14 @@ destroyed fort was replaced with the present day Castillo de San Marcos.
 War had already been unofficially declared by Philip II of Spain after the Treaty of Nonsuch in which Elizabeth I had
 offered her support to the rebellious Protestant Dutch rebels. The Queen through Francis Walsingham ordered Sir Francis
 Drake to lead an expedition to attack the Spanish New World in a kind of preemptive strike. Sailing from Plymouth,
-England, he struck first at Santiago in November 1585 1 1586 19 February. Drake wanted to strike at another Spanish city on the Main before finally visiting and
+England, he struck first at Santiago in November 1585 then across the Atlantic at the Spanish new world city of Santo
+Domingo of which was captured and ransomed on 1 January 1586 and following that successfully attacked the important
+city of Cartagena on 19 February. Drake wanted to strike at another Spanish city on the Main before finally visiting and
 replenishing Sir Walter Raleigh s new colony of Roanoke Colony on the American East Coast. Then after this he hoped
 to make the Transatlantic crossing back to England. The fleet headed north, and in late April Drake put into the Spanish
 Cuban mainland and his men dug wells in search of fresh water and gathered supplies to help counter an outbreak of
 dysentery after which he moved on. The fleet traveled north within sight of land on the Florida peninsula sailing past
-the West coast. On 27 1586 as they approached further north a small fort was spotted on the shore, with a small
+the West coast. On 27 May 1586 as they approached further north a small fort was spotted on the shore, with a small
 inlet close by. This was the location of St Augustine, the most northerly town in Spain s New World Empire, and the
 oldest permanent colonial settlement in North America. Drake knew of the place and was also aware of the fact that
 the spanish under Pedro Menéndez de Avilés had ordered all of the French Huguenot colonists that had tried to settle
@@ -1570,7 +1619,7 @@ staircases ascend from ground level to the front center of the upper portico, le
 # History
 Lakewood was built for Joseph lake, a native of North Carolina, by Hiram W. Bardwell, a master builder. Construction
 was completed in 1840. Located adjacent to the University of West Alabama, Julia Strudwick Tutwiler, a Lake relative,
-periodically resided in the house from 1881 1910 while she served as president of the university. It was then known as
+periodically resided in the house from 1881 to 1910 while she served as president of the university. It was then known as
 Livingston Normal College. The house was extensively photographed by Alex Bush for the Historic American Buildings
 Survey in November and December 1936. Lakewood has continued to be owned by descendants of the Lake family to the
 current day. The house and its surviving 10 acres (4.0 ha) of grounds were listed on the Places in Peril in 2012 due to the

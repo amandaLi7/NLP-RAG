@@ -1,7 +1,8 @@
-arXiv 2305.01194 2  [cs.CL]  11 2023THE PIPELINE SYSTEM OF ASR AND NLU WITH MLM-BASED DATA AUGMEN TATION
+arXiv 2305.01194v2  [cs.CL]  11 May 2023THE PIPELINE SYSTEM OF ASR AND NLU WITH MLM-BASED DATA AUGMEN TATION
 TOWARD STOP LOW-RESOURCE CHALLENGE
 Hayato Futami1, Jessica Huynh2, Siddhant Arora2, Shih-Lun Wu2, Yosuke Kashiwagi1,
-Yifan Peng2, Brian Yan2, Emiru Tsunoo1, Shinji Watanabe2 1Sony Group Corporation, Japan Carnegie Mellon University, USA
+Yifan Peng2, Brian Yan2, Emiru Tsunoo1, Shinji Watanabe2
+1Sony Group Corporation, Japan2Carnegie Mellon University, USA
 ABSTRACT
 This paper describes our system for the low-resource domain
  adaptation track (Track 3) in Spoken Language Understanding
@@ -42,7 +43,7 @@ Track 3. We built two individual models for each target domain
 the other was ﬁne-tuned on held-in and weather data. As
 low-resource data was much smaller than held-in data, they
 were upsampled by 20times. For NLU, we applied twostep
- ﬁne-tuning. First, we ﬁne-tuned BART on all the Track Table 1   Example of data augmentation.
+ ﬁne-tuning. First, we ﬁne-tuned BART on all the Track3Table 1   Example of data augmentation.
 x  how   s the weather in sydney
 y  [in get weather [sl location sydney ] ]
 xmask  how   s the weather in [MASK]
@@ -75,18 +76,21 @@ original data. Similar data augmentation is done at [5], but
 ours does not require any ﬁne-tuning for a generator MLM.
 2.2. Retrieval augmentation
 We follow [4], which shows the effectiveness of retrieval
-augmentation in low-resource domain adaptation on TOPv Table 2   ASR performance of STOP dataset.
+augmentation in low-resource domain adaptation on TOPv2Table 2   ASR performance of STOP dataset.
 Valid/Test WER[%]
 reminder weather
-Whisper 2.5/3.7 4.1/2.9 1.7/2.8 3.4/2.3
-dataset. We add k  4 1 1 ... x4 4 3 training data,
+Whisper 2.5/3.7 4.1/2.9
+  FT 1.7/2.8 3.4/2.3
+dataset. We add k  4input output pairs as examplars to x 
+x  x x1 y1 ... x4 y4
+These examplars are selected from Track3 training data,
 based on TF-IDF similarity score. We only consider input
 similarity between xandxi, for simplicity. During training,
 examplars are sampled over geometric distribution, where rranked
  samples are selected with a probability of p(1 p)r 1
 (p  0.1).
 3. EXPERIMENTAL EV ALUATIONS
-For ASR, we ﬁne-tuned Whisper model using ESPnet2
+For ASR, we ﬁne-tuned Whisper model1using ESPnet2
 framework. We ﬁne-tuned it for each domain, on the mixture
  of held-in data and 20x upsampled low-resource domain
 data. We applied speed perturbation, SpecAugment, and label
@@ -94,7 +98,7 @@ data. We applied speed perturbation, SpecAugment, and label
 based on validation set. Table 2 shows the ASR results. With
 ﬁne-tuning (FT), the WERs were observed to be improved.
 All the words were lowercased in both ASR and NLU.
-For NLU, we ﬁne-tuned BART model using Transformers framework.
+For NLU, we ﬁne-tuned BART model3using Transformers4framework.
  To solve NLU, intent and slot tags (e.g.
 [in get_weather ) were added to the original BART vocabulary.
  Table 3 shows the NLU results, where all the evaluation
@@ -103,7 +107,7 @@ For NLU, we ﬁne-tuned BART model using Transformers framework.
  it on low-resource data, which we call low-resource
 ﬁne-tuning (LR-FT). By adding LR-FT, the EM (exact match)
 accuracy was improved. As described in Section 2.1, we applied
- data augmentation with BERT during LR-FT. We prepared3241/881synthetic
+ data augmentation with BERT5during LR-FT. We prepared3241/881synthetic
  samples, and 1841/530samples remained
  after ﬁltering. We found data augmentation improved
 the EM accuracy. We further applied retrieval augmentation
@@ -127,23 +131,25 @@ BART 41.3/45.1 39.1/65.1
   LR-FT 68.2/67.5 76.7/79.7
   LR-FT (dataaug) 68.2/69.9 78.9/80.3
 RA-BART  LR-FT 66.7/70.3 81.2/80.3
-  LR-FT (dataaug) 69.7/73.8 80.5/79.7 4   SLU evaluation from audio , which is the target of
+  LR-FT (dataaug) 69.7/73.8 80.5/79.7
+Table 4   SLU evaluation from audio , which is the target of
 the challenge.
 Test EM Acc.[%]
 reminder weather Avg.
 Our pipeline 63.3 75 .0 69.15
-E E SLU [1] 15.38 46 .77 31.08
+E2E SLU [1] 15.38 46 .77 31.08
 and NLU. We achieved the EM accuracy 63.3/75.0(average 69.15).
  Our pipeline was conﬁrmed to be much better
-than the E E SLU baseline [1].
+than the E2E SLU baseline [1].
 4. ACKNOWLEDGEMENT
-This work used Bridges2 210014 from the Advanced
+This work used Bridges2 system at PSC and Delta system
+at NCSA through allocation CIS210014 from the Advanced
 Cyberinfrastructure Coordination Ecosystem  Services &
 Support (ACCESS) program, which is supported by National
 Science Foundation grants #2138259, #2138286, #2138307,
 #2137603, and #2138296. Jessica Huynh was supported by
 the NSF Graduate Research Fellowship under Grant Nos.
-DGE1745016 2140739. The opinions expressed
+DGE1745016 and DGE2140739. The opinions expressed
 in this paper do not necessarily reﬂect those of that funding
 agency.
 5. REFERENCES

@@ -1,5 +1,8 @@
-PROMPT 2 1 , Chenyang Zhao1,2 ,
-Amanda Bertsch1, Tongshuang Wu1, Graham Neubig1 1Carnegie Mellon University,2Tsinghua University
+PROMPT 2MODEL  
+Generating Deployable Models from Natural Language Instructions
+Vijay Viswanathan1 , Chenyang Zhao1,2 ,
+Amanda Bertsch1, Tongshuang Wu1, Graham Neubig1
+1Carnegie Mellon University,2Tsinghua University
 Abstract
 Large language models (LLMs) enable system
 builders today to create competent NLP systems
@@ -10,7 +13,7 @@ ways, LLMs are a step backward from traditional
  special-purpose NLP models  they require
  extensive computational resources for
 deployment and can be gated behind APIs.
-In this paper, we propose Prompt Model , a
+In this paper, we propose Prompt2Model , a
 general-purpose method that takes a natural
 language task description like the prompts provided
  to LLMs, and uses it to train a specialpurpose
@@ -21,16 +24,17 @@ language task description like the prompts provided
 and supervised fine-tuning on these retrieved
 and generated datasets. Over three tasks,
 we demonstrate that given the same few-shot
-prompt as input, Prompt Model trains models
+prompt as input, Prompt2Model trains models
  that outperform the results of a strong LLM,
 gpt-3.5-turbo , by an average of 20% while
 being up to 700 times smaller. We also show
 that this data can be used to obtain reliable
 performance estimates of model performance,
 enabling model developers to assess model reliability
- before deployment. Prompt Model
+ before deployment. Prompt2Model
 is available open-source at https //github.
-com/neulab/prompt model .1 1 Introduction
+com/neulab/prompt2model .1
+1 Introduction
 Traditionally, building an NLP model from scratch
 has been a substantial undertaking. An NLP practitioner
  seeking to solve a new problem would need
@@ -41,8 +45,8 @@ its performance through evaluation, and then deploy
  it for real-world usage (Paleyes et al., 2022).
  equal contribution.
 1Our demo video is posted at youtu.be/LYYQ_EhGd-Q .
-BERT Score  94.0, ChrF    58.9, EM  61.5Retrieve Pretrained modelRetrieve DataGenerate DataPrompt ModelInput  Prompt (task description   optional examples)
-Output  Deployment-ready modelQuestion  What does LPC stand for  Context  The psychoacoustic masking codec was...Answer  linear predictive codingAnswer questions given context from a relevant Wikipedia article.Figure 1  Prompt Model is a framework for generating
+BERT Score  94.0, ChrF    58.9, EM  61.5Retrieve Pretrained modelRetrieve DataGenerate DataPrompt2ModelInput  Prompt (task description   optional examples)
+Output  Deployment-ready modelQuestion  What does LPC stand for  Context  The psychoacoustic masking codec was...Answer  linear predictive codingAnswer questions given context from a relevant Wikipedia article.Figure 1  Prompt2Model is a framework for generating
  a small yet accurate model from a prompt.
 LLMs like GPT-3 (Brown et al., 2020  Liu
 et al., 2023b) offer a lighter-weight paradigm
@@ -67,7 +71,7 @@ Bubeck et al., 2023). Because practitioners usually
 do not have enough annotated validation data to
 measure their system performance, it is also more
 challenging for them to debug their systems before
- deployment (Jiang et al., 2022). Additionally,arXiv 2308.12261 1  [cs.CL]  23 2023LLM-prompted systems pose usability challenges.
+ deployment (Jiang et al., 2022). Additionally,arXiv 2308.12261v1  [cs.CL]  23 Aug 2023LLM-prompted systems pose usability challenges.
 Practitioners have expressed concerns about the
 high serving cost and slow prediction time associated
  with using LLMs (Park et al., 2022), and
@@ -76,12 +80,12 @@ on commercial LLM APIs due to privacy concerns.
 For instance, sharing user data with LLM service
 providers is illegal for many applications in the
 US (Sezgin et al., 2022).
-In this work, we present Prompt Model , a
+In this work, we present Prompt2Model , a
 system that retains the ability to specify system
 behavior in a light-weight way through prompting,
  while still resulting in a deployable specialpurpose
  model , maintaining all the advantages
-thereof. Prompt Model is designed as an automated
+thereof. Prompt2Model is designed as an automated
  pipeline that extracts essential task information
  from users  prompts and then automatically
 collects and synthesizes task-specific knowledge
@@ -103,7 +107,7 @@ the behavior of the teacher model (Wang et al.,
 This chosen model serves as the student model
 and is further fine-tuned and evaluated using the
 generated and retrieved data.
-Prompt Model is designed to support different
+Prompt2Model is designed to support different
  instantiations of each of these components.
 We provide a reference implementation where
 we demonstrate its utility with a gpt-3.5-turbo based
@@ -112,19 +116,19 @@ on DataFinder (Viswanathan et al., 2023), and
 a model retriever using BM25. We evaluate on
 three tasks covering both traditional NLP benchmarks
  and novel applications and find that, empirically,
- Prompt Model sometimes produces small
+ Prompt2Model sometimes produces small
 models that outperform gpt-3.5-turbo when using
- the same prompt as input. On 2 3
+ the same prompt as input. On 2 of these 3
 tasks, we observe  20 point improvements over the
 gpt-3.5-turbo baseline, despite the final model
-produced by Prompt Model being up to 700 timessmaller. We also find that we can generate effective
+produced by Prompt2Model being up to 700 timessmaller. We also find that we can generate effective
 evaluation datasets  performance improvements
 on these synthetic clones of real benchmarks also
 hold on their real counterparts. We believe that
-Prompt Model can serve the following purposes
+Prompt2Model can serve the following purposes
 for the community 
 1.A tool for quickly building small and competent
- NLP systems  Prompt Model can be
+ NLP systems  Prompt2Model can be
 directly used to produce task-specific models
 that outperform LLMs in a few hours without
 any manual data annotation or architecture design.
@@ -132,7 +136,7 @@ any manual data annotation or architecture design.
 proof-of-concept LLM prototyping and the practical
  deployment of the model.
 2.A testbed for end-to-end, prompt-based
-model training   Given Prompt Model  s extensible
+model training   Given Prompt2Model  s extensible
  design, it can offer a platform for exploring
  new techniques in model distillation,
 dataset generation, synthetic evaluation, dataset
@@ -140,8 +144,8 @@ retrieval, and model retrieval. Our platform
 allows studying these components using extrinsic
  downstream metrics, enabling empirical
 progress on these research areas.
-2 Prompt Model Framework
-Our system, Prompt Model , provides a platform
+2 Prompt2Model Framework
+Our system, Prompt2Model , provides a platform
 to automate the components of a machine learning
 pipeline  data collection, model training, evaluation,
  and deployment. We illustrate our automated
@@ -227,7 +231,13 @@ Demonstrations
  QA
 pairs 
 ChrF   
-58.9 61.5 94.0 2  The Prompt Model architecture seeks to automate the core machine learning development pipeline,
+58.9
+EM 
+61.5
+BERTScore 
+94.0
+Trained
+ModelFigure 2  The Prompt2Model architecture seeks to automate the core machine learning development pipeline,
 allowing us to train a small yet accurate model from just a prompt.
 instruction and individual demonstrations or translating
  instructions into English.
@@ -283,7 +293,7 @@ to create a graphical interface to interact with the
 model. We briefly describe our implementation of
 this component in  3.7.
 3 Reference Implementation
-Prompt Model is designed modularly to support
+Prompt2Model is designed modularly to support
 customization of each component in our framework
 (described in  2), but we have provided a reference
 implementation to enable immediate adoption.
@@ -296,7 +306,8 @@ in-context learning to segment user prompts, employing
  the OpenAI gpt-3.5-turbo-0613 in our
 experiments. If the instruction provided is identified
  to be in a language other than English, we
-translate it to English using the DeepL API.2 3.2 Dataset Retriever
+translate it to English using the DeepL API.2
+3.2 Dataset Retriever
 To retrieve datasets for a prompt, we adapt the
 DataFinder system introduced by Viswanathan
 et al. (2023). By extracting user-generated
@@ -326,7 +337,7 @@ dataset. We augment the user-provided demonstration
  examples with a random sample of previously
 generated examples to promote diversity and avoid
 generating duplicate examples. Without this strategy,
- 120 200 generated QA examples were
+ 120 out of 200 generated QA examples were
 duplicates  with it, only 25 were duplicates.
 Temperature Annealing We adjust the sampling
 temperature from low (favoring deterministic outputs)
@@ -417,7 +428,8 @@ user s instructions to the input to guide the model.
 Finetuning We concatenate the retrieved and
 generated datasets and shuffle them before training
  the student model. We use the same default
-hyperparameters for all tasks.3 5e-5 3 epochs,
+hyperparameters for all tasks.3We train with the
+AdamW optimizer with lr   5e-5 for 3 epochs,
 which takes roughly one hour for all tasks.
 3.6 Evaluation
 OurModel Evaluator automatically evaluates models
@@ -437,7 +449,7 @@ the encoder for BERTScore to support multilingual
 evaluation.
 3.7 Web App Creation
 We finally provide an optional step in
-Prompt Model to automatically create a
+Prompt2Model to automatically create a
 graphical user interface that allows downstream
 users to interact with the trained model. This web
 application, built using Gradio (Abid et al., 2019),
@@ -460,7 +472,7 @@ consider a task where there are no pretrained
 models or training datasets of any kind available.
 Here we use the Temporal dataset of Wu et al.
 (2023) as ground truth for evaluation.
-Though Prompt Model offers automated model
+Though Prompt2Model offers automated model
 evaluation (on generated and retrieved datasests),
 we use real benchmark datasets here to measure
 our pipeline s ability to train accurate models.
@@ -468,44 +480,46 @@ LLM Baseline A primary goal of our work is
 to train small models that can match or outperform
  LLMs. To measure success towards this goal,
 we report the performance of gpt-3.5-turbo on
-each benchmark. We provide gpt-3.5-turbo the
+each benchmark. We provide gpt-3.5-turbo4the
 same instruction and demonstrations provided to
-Prompt Model , for fair comparison.
-5 5.1 Downstream performance
-How effective is Prompt Model at producing a
+Prompt2Model , for fair comparison.
+5 Experiment Results
+5.1 Downstream performance
+How effective is Prompt2Model at producing a
 high-quality model  In Table 1, we evaluated models
- produced by Prompt Model , as well as our
+ produced by Prompt2Model , as well as our
 4We used gpt-3.5-turbo-0613 , accessed between July
-26 6, 2023.Method SQuAD MCoNaLa Temporal
+26 and August 6, 2023.Method SQuAD MCoNaLa Temporal
 (EM) (ChrF  ) (ChrF  )
-Prompt Model 61.5 13.1 55.2
+Prompt2Model 61.5 13.1 55.2
 w/o Model Ret. 61.5 15.8 55.2
 w/o Data Ret. 50.2 16.6 N/A
-gpt-3.5-turbo 42.1 37.3 30.7 1  We evaluate the model produced by
-Prompt Model on real benchmarks for each test set,
+gpt-3.5-turbo 42.1 37.3 30.7
+Table 1  We evaluate the model produced by
+Prompt2Model on real benchmarks for each test set,
 compared to gpt-3.5-turbo , which we used to power
 our dataset generator. We also examine the effect of removing
  specific parts of our pipeline   model retrieval
 and dataset retrieval. There are no relevant datasets
 available for the Temporal task, so we did not use retrieved
- data for Prompt Model there.
+ data for Prompt2Model there.
 baseline LLM gpt-3.5-turbo , on real benchmark
 datasets for each task   SQuAD, MCoNaLa, and
 Temporal. We further examine the effect of removing
- 2 specific elements of the Prompt Model
+ 2 specific elements of the Prompt2Model
 pipeline   model retrieval and dataset retrieval.
-On 2 3 datasets, we find that Prompt Model
+On 2 of 3 datasets, we find that Prompt2Model
 produces models that are considerably more accurate
  than gpt-3.5-turbo . This is remarkable
 because the retrieved model for SQuAD and Temporal
  is Flan-T5, which, at 250M parameters, is up
 to 700 times smaller than gpt-3.5-turbo (which
 is believed to contain 175B parameters).
-We observe that Prompt Model  s performance
+We observe that Prompt2Model  s performance
 on MCoNaLa s Japanese-to-Python task is significantly
  worse than gpt-3.5-turbo . One explanation
  for this is the relatively low diversity in the
-generated dataset of Japanese queries  45 5000
+generated dataset of Japanese queries  45 of 5000
 examples are different ways of saying  find the
 maximum value in a list of numbers . We do not observe
  this level of redundancy in our other datasets,
@@ -525,9 +539,13 @@ close to the target domain as possible. In our experimental
 prompts that mimic existing datasets, we can evaluate
  how well the model performs relative to a
 model trained on the same amount of data from theMethod #Train Performance Anno. Cost
-Retrieval only 3,000 56.79  $ 0 3,000 44.20  $ 5 6,000 61.46  $ 5 3,000 61.64  $ 540 2  We compare model performance on SQuAD
+Retrieval only 3,000 56.79  $ 0
+Generation only 3,000 44.20  $ 5
+Retrieval generation 6,000 61.46  $ 5
+Custom annotation 3,000 61.64  $ 540
+Table 2  We compare model performance on SQuAD
 on an annotation-cost basis, using datasets produced by
-different modules of Prompt Model , along with fullymanual
+different modules of Prompt2Model , along with fullymanual
  annotation. Performance reported for all models
 is the exact match on the test set,7which reflects the
 true task performance . Cost of custom annotation is
@@ -539,8 +557,10 @@ true dataset. We use SQuAD as a running example.5As
 passage-level question answering task (Figure 1),
 we exclude SQuAD from our retrieved datasets list.
 Instead, we evaluate models finetuned on 
-1.3 6 2. 3 3.The union of the above, which is what the full
-Prompt Model pipeline uses
+1.3k examples from the closest retrieved dataset6
+2. 3k examples generated by Prompt2Model
+3.The union of the above, which is what the full
+Prompt2Model pipeline uses
 4.3k examples from SQuAD (analogous to the
 user custom-annotating data for a task).
 Table 2 shows the results across these four settings.
@@ -550,7 +570,7 @@ shift, the combination of the two methods achieves
 similar performance to using the true dataset. For
 this machine reading comprehension task where
 the user would need to custom-annotate data for
-their task, Prompt Model allows for similar performance
+their task, Prompt2Model allows for similar performance
  at less than 1% of the cost .
 5.3 Our generated evaluation data can
 identify real modeling improvements
@@ -560,7 +580,7 @@ todiscriminate between multiple candidate models
  We finetune various models on a generated
 dataset and rank their performance according to the
 generated test data and the test data from the target
-(real) dataset. We evaluate the Kendall s rank cor We
+(real) dataset. We evaluate the Kendall s rank cor5We
  focus on only SQuAD here because our other two
 tasks have less real training examples than the datasets we
 generate, making comparison impractical.
@@ -570,10 +590,10 @@ Dataset (Hill et al., 2016).Dataset Metric τ p -value
 SQuAD EM 64.3 0.03*
 Temporal ChrF   24.2 0.31
 MCoNaLa (JP) ChrF   70.9 0.00**
-Table 3 10 different models on real test sets
+Table 3  We evaluate 10 different models on real test sets
 and their corresponding generated clones. We compute
 Kendall s Tau on the ranked lists of models and find
-statistically significant correlations for 2 3 datasets.
+statistically significant correlations for 2 of 3 datasets.
 relation (Kendall, 1938) between the two rankings
 to determine if our generated data can effectively
 determine which models are likely to perform well
@@ -587,20 +607,20 @@ Table 3 shows the Kendall s τfor each task, computed
  data shows strong correlation to the true
 performance on two of the three datasets.
 6 Discussion and Conclusion
-We propose Prompt Model , a framework that
+We propose Prompt2Model , a framework that
 automatically constructs task-specific models using
  only natural language prompts. Our proofof-concept
  experiments show that, despite using
  a similar easy-to-use interface as LLMs,
-Prompt Model delivers small yet accurate models
+Prompt2Model delivers small yet accurate models
  and its generated datasets can be used to estimate
  real-world performance. Besides our reference
  implementation providing a ready-to-use tool,
-Prompt Model  s extensible design and modular
+Prompt2Model  s extensible design and modular
 implementation makes it a platform for advancing
  model distillation, dataset generation, synthetic
 evaluation, dataset retrieval, and model retrieval.
-We believe our Prompt Model framework can
+We believe our Prompt2Model framework can
 inspire various novel research questions. We hope
 that our platform enables future work that looks
 more deeply into quality assurance on the generated
@@ -611,8 +631,8 @@ do we effectively mix the retrieved and generated
 dataset such to achieve complementary strengths
 (e.g. using dataset generation to focus on the expected
  inputs to the model that the retrieved dataset
-fails to cover)  Since users often struggle to articu This
- set of models consisted of 5 5-family models, 2
+fails to cover)  Since users often struggle to articu8This
+ set of models consisted of 5 T5-family models, 2
 BART-family models, and 1-5 additional retrieved models
 from the Model Retriever , depending on task.late their needs up front, future extensions should
 also address the challenge of human-in-the-loop
@@ -635,11 +655,11 @@ et al., 2023). Furthermore, the service provider of
 this LLM, OpenAI, prohibits the use of their API
 to create models that may compete with OpenAI,
 creating potential legal concerns with the use of
-Prompt Model in commercial applications. We
+Prompt2Model in commercial applications. We
 are exploring the integration of open-source LLMs
 to avoid our reliance on proprietary APIs.
 Another limitation of our work is the limited ability
- of Prompt Model to support tasks that require
+ of Prompt2Model to support tasks that require
 processing languages other than English. While we
 have shown the limitations of our system at supporting
  code generation from Japanese natural language
@@ -669,37 +689,37 @@ libraries for deepfaking, including the possibility
 of enabling malicious actors to use technology that
 they would otherwise not have the technical skills
 to leverage. This is also a risk for an AutoML system
- such as Prompt Model   however, we believe
+ such as Prompt2Model   however, we believe
 this risk is outweighed by the benefits of greater
 accessibility, especially given that a low barrier to
 entry for generating harmful data already exists in
 the form of prompted, web-interface models.
-While Prompt Model could, if given harmful
+While Prompt2Model could, if given harmful
  inputs, generate toxic, offensive, or inaccurate
  synthetic data, this is no more of a risk with
-Prompt Model than it is with the underlying
+Prompt2Model than it is with the underlying
 prompted model (Bender et al., 2021)  indeed, the
 use of models and supplementary datasets retrieved
 from Hugging Face may lessen the likelihood of
 a downstream model replicating harms from the
 prompted model s outputs, though more investigation
  is needed. Like all ML models, the models
-thatPrompt Model returns can make mistakes,
+thatPrompt2Model returns can make mistakes,
 and we aim to be transparent in our documentation
 about potential limitations of the system.
-We hope that Prompt Model will be broadly
+We hope that Prompt2Model will be broadly
 useful. Our work is motivated by a desire to increase
  the accessibility of NLP models to people
 who are not in the NLP community but would benefit
  from the community s innovations  particularly,
 to people who would use NLP models downstream
 but may not have the domain-specific knowledge
-to design their own system. Prompt Model may
+to design their own system. Prompt2Model may
 also prove useful for early NLP researchers by providing
  a starting point for intuitions about baselines
  for various tasks and enabling the discovery
 of similarities between a described task and existing
- work. We open-source Prompt Model and
+ work. We open-source Prompt2Model and
 welcome community contributions.
 Acknowledgements
 This work was supported in part by a fellowship
@@ -746,7 +766,8 @@ and Amir Kantor. 2023. A systematic study of knowledge
  distillation for natural language generation with
 pseudo-target training. In Proceedings of the 61st
 Annual Meeting of the Association for Computational
-Linguistics (Volume 1  Long Papers) , pages 14632 14659, Toronto, Canada. Association for Computational
+Linguistics (Volume 1  Long Papers) , pages 14632 
+14659, Toronto, Canada. Association for Computational
  Linguistics.
 Alexis Conneau, Kartikay Khandelwal, Naman Goyal,
 Vishrav Chaudhary, Guillaume Wenzek, Francisco
@@ -754,7 +775,8 @@ Guzmán, Edouard Grave, Myle Ott, Luke Zettlemoyer,
  and Veselin Stoyanov. 2020. Unsupervised
 cross-lingual representation learning at scale. In Proceedings
  of the 58th Annual Meeting of the Association
- for Computational Linguistics , pages 8440 8451, Online. Association for Computational Linguistics.
+ for Computational Linguistics , pages 8440 
+8451, Online. Association for Computational Linguistics.
 
 Michael Färber and Ann-Kathrin Leisinger. 2021. Recommending
  datasets for scientific problem descriptions.

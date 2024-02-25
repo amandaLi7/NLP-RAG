@@ -2,7 +2,8 @@ Learning to Give Useful Hints  Assistance
 Action Evaluation and Policy
 Improvements
 Robin Schmucker1(B), Nimish Pachapurkar2, Shanmuga Bala2, Miral Shah2,
-and Tom Mitchell1 1Carnegie Mellon University, Pittsburgh, PA, USA
+and Tom Mitchell1
+1Carnegie Mellon University, Pittsburgh, PA, USA
 {rschmuck,tom.mitchell}@cs.cmu.edu
 2CK-12 Foundation, Palo Alto, CA, USA
 miral.shah@ck12.org
@@ -57,7 +58,8 @@ outcome measures. Studying assistance actions selected by these policies, we
  Live A/B evaluation. We evaluate the assistance policy trained using our algorithm
  in comparison to a randomized assistance policy in live use with over20,000 students. The system s ability to learn to teach better using data from
 prior students improves learning outcomes of future students signiﬁcantly.
-2 2.1 Evaluating Treatment Eﬀects Inside ITSs
+2 Related Work
+2.1 Evaluating Treatment Eﬀects Inside ITSs
 Initially the eﬀects of ITSs on student learning were evaluated at the system
 levelby comparing a group of students that uses the ITS to a control group
 in a post-test [ 13]. Later research focuses on studying the eﬀects of individual
@@ -78,7 +80,8 @@ testing framework designed for easy integration into various learning systems.
 This work describes a ﬁelded online tutoring system at CK12.org that learns
 to provide eﬀective assistance actions (e.g., choose one of multiple available hints)
 to support students after they answer practice questions incorrectly. We use
-oﬄine evaluation techniques [ 15] to leverage log data capturing over 4,800,000 190,000 students in a Biology course. The unprecedented
+oﬄine evaluation techniques [ 15] to leverage log data capturing over 4,800,000
+assistance requests from over 190,000 students in a Biology course. The unprecedented
  scale of this data enables us to compute statistically signiﬁcant estimates
 on the eﬀects of individual assistance actions and assistance policies on diﬀerent
  measures of learning outcomes. We further evaluate the eﬀectiveness of the
@@ -92,7 +95,8 @@ hundreds of student solution paths and used RL to generate new hints inside a
 logic ITS. Chi et al. [ 4] modeled a physics tutor via an MDP with 16 states and
 learned a RL policy to improve student learning outcomes by deciding whetherto ask the student to reﬂect on a problem or to tell them additional information.
 Georgila et al. [ 9] used Least-Squares Policy Iteration to learn a feedback policy
-for an interpersonal skill training system using data describing over 500 72 participants. Ju et al. [ 10] identiﬁed critical pedagogical decisions based
+for an interpersonal skill training system using data describing over 500 features
+from 72 participants. Ju et al. [ 10] identiﬁed critical pedagogical decisions based
 on Q-value and reward function estimates derived from logs of 1,148 studentsinside a probability ITS. Relatedly, Ausin et al. [ 1,2] explored Gaussian Processand
  inverse RL-based approaches to address the credit assignment problem inside
 a logic ITS. A recent series of works [ 7,25,26] used a random policy to collect data
@@ -113,8 +117,10 @@ assist the student before they reattempt the question after an initial incorrect
 Further, in contrast to Prihar et al. [ 21], we quantify treatment eﬀects by automatically
  providing assistance in response to incorrect student responses which
 avoids self-selection eﬀects when assistance is only shown upon student request.
-3 CK-12 2.0 System
-The CK-12 Foundation is a non-proﬁt organization that provides millions ofstudents worldwide with access to free educational resources. CK-12 2.0 1is a web-based ITS that oﬀers a large variety of courses for diﬀerent
+3 CK-12 FlexBook 2.0 System
+The CK-12 Foundation is a non-proﬁt organization that provides millions ofstudents worldwide with access to free educational resources. CK-12 s Flexbook
+2.0 system
+1is a web-based ITS that oﬀers a large variety of courses for diﬀerent
 subjects and grade levels. Each course consists of a sequence of concepts .E a c h
 concept has a Lesson section with learning materials and an Adaptive Practice
 (AP) section where students can develop and test their understanding (Fig. 1).
@@ -131,7 +137,8 @@ This paper centers on the question of how we can employ data-driven techniques
 action as feedback for each individual question. We focus on CK-12 s Biology for
 High School course which is used by hundreds of thousands of students each year
 and whose content has been developed and reﬁned for over ten years. The course
-covers hundreds of concepts and features over 12,000 1https //www.ck12.org .Learning to Give Useful Hints 387
+covers hundreds of concepts and features over 12,000 questions corresponding
+1https //www.ck12.org .Learning to Give Useful Hints 387
 to ﬁve categories  multiple-choice ,select-all-that-apply ,ﬁll-in-the-blank ,shortanswer
  andtrue-false . The AP system associates each question with a set of
 potential assistance actions. An exception are true-false questions which students
@@ -140,7 +147,8 @@ only attempt once. The average non-true-false question is associated with 4.8 di
 text from lesson), vocabulary (keyword deﬁnitions), remove distractor (removes
 multiple-choice/select-all-that-apply response option), ﬁrst letter (shows initial
 of ﬁll-in-the-blank/short-answer solution) and no assistance (as baseline).
-4 4.1 Formal Problem Statement
+4 Methodology
+4.1 Formal Problem Statement
 We denote the set of practice questions inside the system as Q {q1,...,q k}.
 Each question q Qis associated with a set of nqassistance actions Aq 
 {aq,1,...,a q,n q}that the system can use to support students after their ﬁrst
@@ -189,7 +197,8 @@ Overall Oﬄine Eval. Online Eval.
 # of students 191,554 164,516 27,268
 # of practice sessions 1,274,072 1,007,850 62,464
 # of student responses 20,425,691 17,081,054 953,185
-# of shown actions 4,842,856 3,266,171 234,178 63.3% 60.0% 61.1%
+# of shown actions 4,842,856 3,266,171 234,178
+average correctness 63.3% 60.0% 61.1%
 average completion 75.1% 77.1% 69.4%
 collection period (days) 142 142 9
 The designers of the practice system want to promote growth in student
@@ -226,7 +235,9 @@ Preprocessing. Before policy optimization and evaluation we perform the followin
 To avoid memorization eﬀects, we only consider each student s ﬁrst practice
 attempt for each concept. (iii) To avoid confounding, we estimate the eﬀects ofindividual assistance actions using only practice sessions in which the student
 did not request a hint before their ﬁrst attempt. (iv) To achieve high conﬁdence
-in our eﬀect estimates we focus on practice questions with at least 100 samplesper assistance action. As a result, we consider a set of 1,336 166 7,707 3,200,000 1,000,000 diﬀerent practice sessions(Table 1).
+in our eﬀect estimates we focus on practice questions with at least 100 samplesper assistance action. As a result, we consider a set of 1,336 unique questions
+from 166 concepts associated with 7,707 assistance actions and draw from over
+3,200,000 assistance queries occurring in over 1,000,000 diﬀerent practice sessions(Table 1).
 Optimization. To train and evaluate the eﬀects of diﬀerent assistance policies
 without conducting repeated live experiments we rely on oﬄine policy optimization
  [15] and leverage log data collected by the randomized exploration policy.
@@ -251,14 +262,15 @@ to decide whether the former has a signiﬁcantly larger eﬀect on the measure 
 interest than the reattempt correctness action and if not select the low variance
 reattempt correctness measure as the question-speciﬁc training objective.
 Evaluation. In the oﬄine evaluation experiments we report mean performance
-estimates derived from a 20 5-fold cross validation. In each fold
+estimates derived from a 20 times repeated 5-fold cross validation. In each fold
 80% of practice sessions are used for policy training and the remaining 20% areused for testing. This process yields a statistically unbiased estimate of the bandit
 policy s performance as it simulates a series of interactions with diﬀerent students
 inside the system and avoids overﬁtting eﬀects of sampling with replacement-based approaches [ 15]. For the signiﬁcance test we determine a suitable p-value
 for each individual outcome measure by evaluating p { 0.01,0.02,..., 0.1}via
 cross-validation. The ﬁnal policy used in live A/B evaluation is trained using
 data from all practice sessions and optimizes our reward function (Eq. 1).
-5 5.1 Assistance Action Evaluation
+5 Results
+5.1 Assistance Action Evaluation
 We estimate the eﬀects of individual assistance actions on diﬀerent measures of
 learning outcomes by leveraging the student log data collected by the randomized
 assistance policy (Sect. 4.2). One example of the results of this evaluation process
@@ -304,7 +316,9 @@ focuses on the simpler question
 of whether there are statisti-cally signiﬁcant diﬀerences in
 mean eﬀects between individual
  actions. For a p-value of
-0.05 83.2%(n 1,111),
+0.05ANOVA rejects the null
+hypothesis for reattempt correctness
+ for 83.2%(n 1,111),
 forstudent ability for 13.3%
 (n  178 )a n df o r session success
  rate for 9.6%(n  128 )
@@ -331,7 +345,12 @@ ANOVA indicated signiﬁcant diﬀerences ( p  0.05)i nm e a na c t i o ne ﬀ e
 ability. The ﬁrst two rows show no assistance and randomized policies as baselines. Thefollowing four rows are bandit policies optimized directly for diﬀerent outcome measures
  and the reward function. We report mean values and 95%conﬁdence intervals.
 policy/measure Reward Reatt. Cor. Stud. Abil. Sess. Succ.
-no assistance 0.241  .064 0.433  .023 0.113  .106 0.801  .039 0.288  .067 0.501  .021 0.146  .109 0.806  .039 0.419  .071 0.672  .0200.250  .115 0.816  .038 0.442  .068 0.606  .025 0.332  .1090.819  .038 0.371  .068 0.573  .025 0.237  .109 0.817  .037 0.454  .0680.637  .023 0.332  .108 0.820  .038 393
+no assistance 0.241  .064 0.433  .023 0.113  .106 0.801  .039
+random 0.288  .067 0.501  .021 0.146  .109 0.806  .039
+reattempt correct 0.419  .071 0.672  .0200.250  .115 0.816  .038
+student ability 0.442  .068 0.606  .025 0.332  .1090.819  .038
+session success 0.371  .068 0.573  .025 0.237  .109 0.817  .037
+reward 0.454  .0680.637  .023 0.332  .108 0.820  .038Learning to Give Useful Hints 393
 assistance actions for the latter two measures even when having access to hundreds
  of samples per action. Indeed, in preliminary experiments we found thataction eﬀect rankings based on training data often deviate from rankings based
 on separate test data. For the average question we found training assistance
@@ -346,14 +365,20 @@ study the relationship between reattempt correctness andstudent ability for thes
 the reward function (Eq. 1), we assign each policy a weight w
 1 { 0,0.1,..., 1.0}
 and compute its reward values by linearly weighting reattempt correctness with
-w andstudent ability with 1 1. We visualize the Pareto front deﬁned by the
+w1andstudent ability with 1 w1. We visualize the Pareto front deﬁned by the
 resulting policies (Fig. 3right) and observe performance estimates that range
 inreattempt correctness rates from 60.6%to67.2%and in student ability from
 Table 3. Oﬄine evaluation of various policies across 1,336questions. The ﬁrst two rows
 show no assistance and randomized policies as baselines. The following four rows are
 bandit policies optimized with our algorithm for diﬀerent learning outcome measuresand the reward function. We report mean values and 95%conﬁdence intervals.
 policy/measure Reward Reatt. Cor Stud. Abil. Sess. Succ.
-no assistance 0.218  .026 0.498  .008 0.032  .042 0.815  .014 0.255  .026 0.551  .007 0.058  .042 0.820  .013 0.327  .026 0.666  .0070.101  .043 0.827  .013 0.327  .026 0.660  .007 0.105  .043 0.827  .013 0.326  .026 0.663  .007 0.101  .043 0.827  .013 0.328  .0260.664  .007 0.104  .043 0.827  .013 4. Types of assistance actions selected by the multi-armed bandit policy learned
+no assistance 0.218  .026 0.498  .008 0.032  .042 0.815  .014
+random 0.255  .026 0.551  .007 0.058  .042 0.820  .013
+reattempt correct 0.327  .026 0.666  .0070.101  .043 0.827  .013
+student ability 0.327  .026 0.660  .007 0.105  .043 0.827  .013
+session success 0.326  .026 0.663  .007 0.101  .043 0.827  .013
+reward 0.328  .0260.664  .007 0.104  .043 0.827  .013
+Table 4. Types of assistance actions selected by the multi-armed bandit policy learned
 using our reward function for all 1,336 questions. The individual columns show how the
 policy focuses on diﬀerent types of assistance actions for diﬀerent types of questions.
 action/question Mult.-Choice All-That-Apply Fill-Blank Short-Answ.
@@ -363,7 +388,7 @@ paragraph 51.2% 43.1% 57.9% 55.1%
 vocabulary 5.7% 16.5% 1.8% 3.4%
 hide distractor 26.8% 17.4% - ﬁrst
  letter - - 31.7% 32.6%394 R. Schmucker et al.
-0.250 0.332. All learned policies outperform the random policy signiﬁcantly.
+0.250to0.332. All learned policies outperform the random policy signiﬁcantly.
 In collaboration with domain experts we select w1 0.4as reward function to
 train the assistance policy for live evaluation as it improves both measures substantially.
  Table 2provides detailed performance statistics for policies trained to
@@ -371,7 +396,8 @@ optimize diﬀerent outcome measures across the 178 questions.
 To train an assistance policy for all 1,366 questions we designed an algorithm
 that for each question decides whether we have suﬃcient data to optimize the
 measure of interest (e.g., reward ) directly or whether we should use the low
-variance reattempt correctness measure (Sect. 4.4). Table 3 1,336 questions for a policy that always selects the no
+variance reattempt correctness measure (Sect. 4.4). Table 3shows average performance
+ metrics across 1,336 questions for a policy that always selects the no
 assistance action, the random policy, and four policies trained using our algorithm
  to optimize reattempt correctness rates, student ability ,successful session
 completion rates, and reward function. The algorithm resolves the variance issue
@@ -390,13 +416,18 @@ Table 5. Live policy evaluation. We randomly assign student practice sessions to
 randomized policy ( n 3 1 ,527) and the learned bandit policy ( n 3 0 ,937) condition,
 track various outcome measures and report mean values and 95%conﬁdence intervals.
 policy/measure Reward Reatt. Cor. Stud. Abil. Sess. Succ.
-random 0.753  .016 0.585  .004 0.866  .026 0.676  .005 0.881  .015 0.683  .004 1.013  .024 0.712  .005 5.3 Online Policy Evaluation
+random 0.753  .016 0.585  .004 0.866  .026 0.676  .005
+bandit 0.881  .015 0.683  .004 1.013  .024 0.712  .005
+5.3 Online Policy Evaluation
 To evaluate the policy optimized using our training algorithm we compare its
 ability to provide students with eﬀective assistance actions to the randomized
-assistance policy. For this a nine-day long A/B evaluation (Apr 5 13th,
+assistance policy. For this a nine-day long A/B evaluation (Apr 5th to Apr 13th,
 2023) was conducted in which practice sessions for the 166 studied conceptswere randomly assigned to the bandit and the randomized policy condition.
-During this period we collected log data describing over 62,000 20,000 diﬀerent students (Table 1). Even though the learned assistance policyLearning to Give Useful Hints 395 1,336 question-speciﬁc bandit policies, it was able to provide
-learned actions for 87,721 ( 74.9%) of the 117,180 29,459 ( 25.1%) cases. This is because the
+During this period we collected log data describing over 62,000 sessions from over
+20,000 diﬀerent students (Table 1). Even though the learned assistance policyLearning to Give Useful Hints 395
+implemented only 1,336 question-speciﬁc bandit policies, it was able to provide
+learned actions for 87,721 ( 74.9%) of the 117,180 queries and only needed to
+default to random action selection in 29,459 ( 25.1%) cases. This is because the
 majority of incorrect responses occur on a smaller number of questions.
 Table 5reports average performance for the two diﬀerent policies. The trained
 assistance policy outperforms the randomized policy signiﬁcantly in all outcome
@@ -459,18 +490,22 @@ Montréal, Canada (2019)
  problem in reinforcement learning-induced pedagogical policies with neural
 networks. In  Roll, I., McNamara, D., Sosnovsky, S., Luckin, R., Dimitrova, V.
 (eds.) AIED 2021. LNCS (LNAI), vol. 12748, pp. 356 368. Springer, Cham (2021).
-https //doi.org/10.1007/978-3-030-78292-4_29 3. Barnes, T., Stamper, J.  Toward automatic hint generation for logic proof tutoring
+https //doi.org/10.1007/978-3-030-78292-4_29
+3. Barnes, T., Stamper, J.  Toward automatic hint generation for logic proof tutoring
 using historical student data. In  Woolf, B.P., Aïmeur, E., Nkambou, R., Lajoie,
-S. (eds.) ITS 2008. LNCS, vol. 5091, pp. 373 382. Springer, Heidelberg (2008).https //doi.org/10.1007/978-3-540-69132-7_41 397 4. Chi, M., VanLehn, K., Litman, D.  Do micro-level tutorial decisions matter  applying
+S. (eds.) ITS 2008. LNCS, vol. 5091, pp. 373 382. Springer, Heidelberg (2008).https //doi.org/10.1007/978-3-540-69132-7_41Learning to Give Useful Hints 397
+4. Chi, M., VanLehn, K., Litman, D.  Do micro-level tutorial decisions matter  applying
  reinforcement learning to induce pedagogical tutorial tactics. In  Aleven, V.,
-Kay, J., Mostow, J. (eds.) ITS 2010. LNCS, vol. 6094, pp. 224 234. Springer,Heidelberg (2010). https //doi.org/10.1007/978-3-642-13388-6_27 5. De Ayala, R.J.  The Theory and Practice of Item Response Theory. Guilford, New
+Kay, J., Mostow, J. (eds.) ITS 2010. LNCS, vol. 6094, pp. 224 234. Springer,Heidelberg (2010). https //doi.org/10.1007/978-3-642-13388-6_27
+5. De Ayala, R.J.  The Theory and Practice of Item Response Theory. Guilford, New
 York, NY, USA (2013)
 6. Doroudi, S., Aleven, V., Brunskill, E.  Where s the reward  Int. J. AIED 29(4),
 568 620 (2019)
 7. Fahid, F.M., Rowe, J.P., Spain, R.D., Goldberg, B.S., Pokorny, R., Lester, J.  Adaptively
  scaﬀolding cognitive engagement with batch constrained Deep Q-networks.
 In  Roll, I., McNamara, D., Sosnovsky, S., Luckin, R., Dimitrova, V. (eds.) AIED2021. LNCS (LNAI), vol. 12748, pp. 113 124. Springer, Cham (2021). https //doi.
-org/10.1007/978-3-030-78292-4_10 8. Fancsali, S., Murphy, A., Ritter, S.  Closing the loop in educational data science
+org/10.1007/978-3-030-78292-4_10
+8. Fancsali, S., Murphy, A., Ritter, S.  Closing the loop in educational data science
 with an open source architecture for large-scale ﬁeld trials. In  Proceedings of the
 15th International Conference on EDM, pp. 834 838. EDM, Durham, UK (July
 2022)

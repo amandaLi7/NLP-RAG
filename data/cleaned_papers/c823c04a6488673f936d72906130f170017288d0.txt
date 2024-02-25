@@ -2,9 +2,10 @@ THE MULTIMODAL INFORMATION BASED SPEECH PROCESSING (MISP) 2023
 CHALLENGE  AUDIO-VISUAL TARGET SPEAKER EXTRACTION
 Shilong Wu1, Chenxi Wang1, Hang Chen1, Yusheng Dai1, Chenyue Zhang1,
 Ruoyu Wang1, Hongbo Lan1, Jun Du1, Chin-Hui Lee2, Jingdong Chen3, Shinji Watanabe4,
-Sabato Marco Siniscalchi2,5, Odette Scharenborg6, Zhong-Qiu Wang4, Jia Pan7, Jianqing Gao7 1University of Science and Technology of China, China Georgia Institute of Technology, USA
-3Northwestern Polytechnical University, China Carnegie Mellon University, USA
-5Kore University of Enna, Italy Delft University of Technology, The Netherlands iFlytek, China
+Sabato Marco Siniscalchi2,5, Odette Scharenborg6, Zhong-Qiu Wang4, Jia Pan7, Jianqing Gao7
+1University of Science and Technology of China, China2Georgia Institute of Technology, USA
+3Northwestern Polytechnical University, China4Carnegie Mellon University, USA
+5Kore University of Enna, Italy6Delft University of Technology, The Netherlands7iFlytek, China
 ABSTRACT
 Previous Multimodal Information based Speech Processing (MISP)
 challenges mainly focused on audio-visual speech recognition
@@ -12,7 +13,7 @@ challenges mainly focused on audio-visual speech recognition
 back-end recognition systems often hit performance limits due to the
 complex acoustic environments. This has prompted a shift in focus
 towards the Audio-Visual Target Speaker Extraction (A VTSE) task
-for the MISP 2023 2024 Signal Processing
+for the MISP 2023 challenge in ICASSP 2024 Signal Processing
 Grand Challenges. Unlike existing audio-visual speech enhancement
  challenges primarily focused on simulation data, the MISP
 2023 challenge uniquely explores how front-end speech processing,
@@ -88,9 +89,10 @@ back-end ASR systems [18]. Therefore, evaluating its impact on the
 performance of back-end systems is also extremely important.
 In the previous MISP challenges [19, 20], we released a large
 distant multi-microphone conversational Chinese audio-visual corpus
- that focuses on real home-TV scenarios, where 2-6 20XX IEEE. Personal use of this material is permitted. Permission from IEEE must be obtained for all other uses, in any current or future
+ that focuses on real home-TV scenarios, where 2-6 speakers
+  20XX IEEE. Personal use of this material is permitted. Permission from IEEE must be obtained for all other uses, in any current or future
 media, including reprinting/republishing this material for advertising or promotional purposes, creating new collective works, for resale or
-redistribution to servers or lists, or reuse of any copyrighted component of this work in other works.arXiv 2309.08348 1  [eess.AS]  15 2023 1 2
+redistribution to servers or lists, or reuse of any copyrighted component of this work in other works.arXiv 2309.08348v1  [eess.AS]  15 Sep 2023Target Speaker 1 Target Speaker 2
 Audio -Visual Target Speaker Extraction (A VTSE)
 Target Speaker N
  
@@ -104,7 +106,7 @@ Visual Clues
 Middle -field Video 
    
  Oracle Speaker Diarization
-Speaker 2 1
+Speaker 2Speaker 1
 Speaker NSpeech Timestamps
  Fig. 1 . Overview of the A VTSE task in MISP 2023 challenge.
 freely converse without specific topics. Building upon the above
@@ -132,7 +134,7 @@ television programs such as dramas, news, music, and interviews
 may be playing, further exacerbating the complexity, especially for
 front-end systems.
 We use the training set of A VSR corpus of MISP 2021 challenge
-[21], with a duration of 106.09 hours, including 21 200
+[21], with a duration of 106.09 hours, including 21 rooms and 200
 speakers. In the training set, the data includes near/middle/far-field
 audio and middle/far-field videos, allowing participants to choose
 freely. Additionally, we use the development set released in the
@@ -146,7 +148,7 @@ level for participants. For development and evaluation sets, participants
 2.2. Task Overview and Evaluation
 The MISP 2023 challenge focuses on the A VTSE task, as shown
 in Figure 1. Participants must utilize multi-channel far-field audio
-1https //mispchallenge.github.io/mispchallenge along with the target speaker s middle-field video to extract the target
+1https //mispchallenge.github.io/mispchallenge2023along with the target speaker s middle-field video to extract the target
  speaker s speech from audio recordings containing overlapping
 voices of multiple speakers and background noise. In one session,
 each speaker is sequentially treated as the target speaker. In addition,
@@ -206,7 +208,8 @@ speech segments with high overall quality (OVRL) scores. This rigorous
  selection process results in the inclusion of a total of 22.13
 hours of high-quality near-field speech segments. For model training,
  we randomly combine near-field speech and add noise with different
- signal-to-noise ratios (SNR) from -10 20 6-channels far-field
+ signal-to-noise ratios (SNR) from -10dB to  20dB and reverberation
+ related to room parameters to simulate 6-channels far-field
 audio. To minimize the mismatch with real data as comprehensively
 as possible, the noise we utilize is extracted from the raw training set,
 containing a large amount of interference from the speaker s voice,
@@ -241,14 +244,15 @@ Back -end
 VideoAudio
 Video
 Extracted
-SpeechParameter sStage 1 2Fig. 3 . The two-stage training process of the baseline system.
+SpeechParameter sStage 1
+Stage 2Fig. 3 . The two-stage training process of the baseline system.
 poral convolution followed by an 18-layer ResNet, but the structure
 is slightly different and can be represented as follows 
 EA
 AV  ResNet18 1D(BN(ReLU(Conv 1D(AFBANK ))))
 EV
 AV  ResNet18 2D(MP 3D(BN(ReLU(Conv 3D(V)))))(2)
-where ReLu(  ),BN( )andMP D( )represents the ReLU activation,
+where ReLu(  ),BN( )andMP3D( )represents the ReLU activation,
  the batch normalization, and the spatiotemporal max-pooling
 layer, respectively. Then, we fused the audio and visual embeddings
 using 2-layers of BiGUR. For encoders and decoder, we use the different
@@ -291,7 +295,11 @@ scenes. Incorporating the AEASE model on top of GSS, we observed
  auditory quality. However, in terms of ASR metrics, it performedTable 1 . Detailed CER (%) and DNSMOS results of different front-end systems on the development set.
 SystemRecognition Back-end DNSMOS
 S D I CER SIG BAK OVR
-Beamforming 31.0 7.2 4.8 43.0 1.45 1.35 1.20 20.0 4.2 2.2 26.4 1.78 1.80 1.35 21.5 4.9 2.2 28.6 1.97 2.08 1.43 20.4 4.4 2.2 27.0 2.01 2.14 1.46 19.8 4.7 1.8 26.3 2.03 2.27 1.50
+Beamforming 31.0 7.2 4.8 43.0 1.45 1.35 1.20
+GSS 20.0 4.2 2.2 26.4 1.78 1.80 1.35
+GSS AEASE 21.5 4.9 2.2 28.6 1.97 2.08 1.43
+GSS MEASE 20.4 4.4 2.2 27.0 2.01 2.14 1.46
+GSS MEASE Finetune 19.8 4.7 1.8 26.3 2.03 2.27 1.50
 worse than GSS. This observation underscores that while AEASE
 can filter out more noise, it also introduces speech distortion simultaneously.
  Replacing the AEASE model with the MEASE model,
@@ -317,7 +325,8 @@ the A VTSE system to enhance the accuracy of the backend recognition
 4.2. Difficulty Analysis
 Figure 4 is an example of a mixture with multi-speaker interference
 and strong TV background noise. According to the speech timestamps,
- it can be seen that this is a complex acoustic scene with 2 3 speakers speaking simultaneously. We compared the spectrograms
+ it can be seen that this is a complex acoustic scene with 2 to
+3 speakers speaking simultaneously. We compared the spectrograms
 and the recognition results obtained from different systems. Firstly,
 we directly perform ASR decoding on near-field audio and obtain the
 result that is likely to be at the theoretical limit. Then, we compared
@@ -348,7 +357,7 @@ Beamforming
 GSS
 Ours Baseline A VTSE System
 Speech Timestamps
-Interference Speaker 1 2Fig. 4 . Spectrograms and recognition results of an example.
+Interference Speaker 1 Target Speaker Interference Speaker 2Fig. 4 . Spectrograms and recognition results of an example.
 potential for improvement within the A VTSE system. Extracting the
 target speaker s speech while suppressing noise is challenging.
 5. CONCLUSIONS
@@ -374,7 +383,8 @@ IEEE Automatic Speech Recognition and Understanding Workshop
  (ASRU) , 2021, pp. 304 311.
 [3] Adelbert W Bronkhorst,  The cocktail-party problem revisited 
  early processing and selection of multi-talker speech,  Attention,
- Perception, & Psychophysics , vol. 77, no. 5, pp. 1465 1487, 2015.
+ Perception, & Psychophysics , vol. 77, no. 5, pp. 1465 
+1487, 2015.
 [4] Katerina Zmolikova, Marc Delcroix, Tsubasa Ochiai, et al.,
  Neural target speech extraction  An overview,  IEEE Signal
 Processing Magazine , vol. 40, no. 3, pp. 8 29, 2023.
@@ -412,7 +422,8 @@ enhancement,  Neural Networks , vol. 143, pp. 171 182, 2021.
  Icassp 2023 deep noise suppression challenge,  2023.
 [13] SN Graetzer, Jon Barker, Trevor J Cox, et al.,  Clarity-2021
 challenges  Machine learning challenges for advancing hearing
- aid processing,  in Proc. INTERSPEECH , 2021, pp. 686 690.[14] Andrea Lorena Aldana Blanco, Cassia Valentini-Botinhao, Ondrej
+ aid processing,  in Proc. INTERSPEECH , 2021, pp. 686 
+690.[14] Andrea Lorena Aldana Blanco, Cassia Valentini-Botinhao, Ondrej
  Klejch, et al.,  Avse challenge  Audio-visual speech enhancement
  challenge,  in 2022 IEEE Spoken Language Technology
  Workshop (SLT) . IEEE, 2023, pp. 465 471.
@@ -431,7 +442,7 @@ pp. 4214 4217.
 for speech quality assessment of telephone networks and
 codecs,  in 2001 IEEE international conference on acoustics,
  speech, and signal processing. Proceedings (Cat. No.
-01 37221) . IEEE, 2001, vol. 2, pp. 749 752.
+01CH37221) . IEEE, 2001, vol. 2, pp. 749 752.
 [18] Kazuma Iwamoto, Tsubasa Ochiai, Marc Delcroix, et al.,
  How bad are artifacts   Analyzing the impact of speech enhancement
  errors on ASR,  in Proc. INTERSPEECH , 2022,

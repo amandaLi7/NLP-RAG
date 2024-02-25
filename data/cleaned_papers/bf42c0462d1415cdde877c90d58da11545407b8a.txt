@@ -1,4 +1,5 @@
-Proceedings of the 20th SIGMORPHON workshop on Computational Research in Phonetics, Phonology, and Morphology , pages 58 67 14, 2023 2023 Association for Computational Linguistics
+Proceedings of the 20th SIGMORPHON workshop on Computational Research in Phonetics, Phonology, and Morphology , pages 58 67
+July 14, 2023  2023 Association for Computational Linguistics
 Generalized Glossing Guidelines  An Explicit, Human- and
 Machine-Readable, Item-and-Process Convention for Morphological
 Annotation
@@ -33,7 +34,7 @@ morphologicalprocessesinthe srandlxlines.
 pareittotwootherIGTannotationschemes.
 
 1 Introduction
-As part of the ongoing wav gloss project, we are
+As part of the ongoing wav2gloss project, we are
 generating Interlinear Glossed Text (IGT) from
 speech using an end-to-end system. In producing
  IGT for various languages of the Americas,
@@ -78,7 +79,7 @@ logical
  alternations such as infixation, reduplication,
  transfixation, apophony, tonal overwriting,
 andtruncation.
-Figure givesanexampleofGGGfromYoloxóchitl
+Figure1givesanexampleofGGGfromYoloxóchitl
  Mixtec. It shows metadata as well as the
 four fields, sr(Surface Representation), lx(Lexical
  Representation), gl(gloss), and tr(translation).
@@ -133,7 +134,8 @@ different. ComparetheseexamplesfromMotu
 (3)a.ma~mahuta
 PLsleep
  tosleep 
-1https //github.com/sigmorphon/2023 2Weshowonly lxhere,structuringfieldsasinaconventionalglossedexample,andomit
+1https //github.com/sigmorphon/2023GlossingST
+2Weshowonly lxhere,structuringfieldsasinaconventionalglossedexample,andomit
  srforthesakeofcomparisontoLGR.b.{ ma}mahuta
 
 sleep{PL}
@@ -228,7 +230,7 @@ lowingmoraintheunderlyingrepresentation(with
 
 somelossofgenerality). Thisisdonetoexplicitly
 statetheformalrelationshipbetweenamorphemic
-form and underlying form while making a mini Note
+form and underlying form while making a mini3Note
  that this approach assumes a non-trivial and controversialassumptionaboutthephonology-morphologyinter-
 face.
  It excludes interleaving between morphological and
@@ -267,13 +269,15 @@ alliesitwiththeSILShoeboxformatanddifferentiatesitfromXigt(
 highlyexplicitIGTformats. Thisalsomakesitrelatively
  easy to edit GGG text using off-the-shelf
 tools(e.g.,texteditorsandtranscriptiontools).
-3.1 1. The top level object is a map,
+3.1 General Data Structure
+An illustration of a YAML file for GGG is presented
+ in Figure 1. The top level object is a map,
 consisting of metadata fields ( obj_langfor  objectlanguage and
  meta_lang for metalanguage 
 arerequired), and segs, whichisanarrayof discourse
  segments  (roughly, sentences). The field
 obj_langconsistsofasingleISO639-3code(asa
-string). Thefield meta_lang isanarrayofISO codes.
+string). Thefield meta_lang isanarrayofISO6393codes.
  Eachdiscoursesegmentisamapwiththe
 followingfields 
 srcTheaudioorvideodocumentfromwhichthe
@@ -281,14 +285,16 @@ segmentderives.
 startThe start time of the interval in the source
 file from which the segment derives (in secondssincethebeginningoftherecording).
 
-4https //yaml.org obj_lang  xty
+4https //yaml.org60obj_lang  xty
 meta_lang  eng
 segs  
 src xty0002.wav
 
-start  256 265 3
-lx  ja'{3 4}nda2  nã1 1 4 nda{3 4}sa3 ba'1 3 2 yu'3 4 4 
-sr  ja'{4}nda2  nã1 1 kã4 nda{4}sa3 ba'1 3  nã2 yu'3 4 4 
+start  256
+end 265
+speaker  3
+lx  ja'{3 4}nda2  nã1  e1 ka4 nda{3 4}sa3 ba'1a3  na2 yu'3u4  run4 
+sr  ja'{4}nda2  nã1  e1 kã4 nda{4}sa3 ba'1a3  nã2 yu'3u4  run4 
 gl  cut{HAB}  3.PL  3.INAM there convert{HAB} good  3.PL mouth  wood 
 tr  ...they cut itand convert itinto abifurcated stick. 
 Figure1  SampleofGGGfromYoloxoćhitMixtecshowingtheuseofbracket-and-arrownotationtoindicatetonal
@@ -332,7 +338,9 @@ these categories of items. Except for processes,
 these must occur in the same order in forms and
 glosses. Theroots,affixes,andcliticsthatmakeup
 the words are  morpheme-like units  (or tokens)
-andaredelimitedbyspaces. Eachprocessisassociatedwithasinglemorpheme-likeunit.5 3.2 Space-Delimited Form Tokens
+andaredelimitedbyspaces. Eachprocessisassociatedwithasinglemorpheme-likeunit.5
+
+3.2 Space-Delimited Form Tokens
 Formtokensaresequenceswithcomponentsofthe
 typesshowninTable 1.
 TYPE CONN. PREC.
@@ -378,7 +386,8 @@ one process  feeds  another. This is indicated by
 providing additional steps using the bracket-andarrow
  notation, e.g., {3 1 4}as in the following
 examples from Yoloxóchitl Mixtec. In ( 6a) and
-(6b)theirrealistransitive ta 3 1bi arechangedtothehabitual,withtone/4/on
+(6b)theirrealistransitive ta 3bi4andinstransitive
+ta 1bi4arechangedtothehabitual,withtone/4/on
 thefirstmora. Weanalyzetheshiftof/3/ /1/asa
 detransitivising process and thus in example ( 6b)
 both DTR and HAB are represented by {3 1 4}.
@@ -388,7 +397,7 @@ mora (shown in GGG as the  insertion  of /1/ on
  tone (/1/ or /3/) onto the second mora occurs,
 forming a contour tones (e.g., /14/ and underlying/34/(surface/24/byphonologicalruleafterthe
 
-mora-initialtone ofthehabitual).
+mora-initialtone4ofthehabitual).
 (6)a.ta {3 4}bi4
 break{HAB}
  habituallybreak(transitive) 
@@ -416,7 +425,7 @@ Reduplication { su}sulat write{PROSP}
 Transfixation k{i u}t{a u}b book{PL 1,2}
 Apophony t{u i}θ tooth{PL}
 Segmental
-overwriting{xi ku}3 3 eat{IRR}
+overwriting{xi ku}3xi3 eat{IRR}
 Tonal
 overwritingku{3 14}ni2 want{NEG}
 Table2  Exampleformsandglossesforarangeofmorphologicalprocesses.
@@ -495,7 +504,8 @@ This means that context-free parsing for GGG is
 not possible. This adds some overhead to writing
 6See,also https //unimorph.github.io/schema/toolsforGGG.However,wehavewrittenparsing,
 generation, and validation tools for GGG without
-excessiveinvestments.7 4 Linguistic Adequacy
+excessiveinvestments.7
+4 Linguistic Adequacy
 The adequacy of GGG for annotating concatenativemorphologyisidenticaltothatofLGR,since
 
 the mechanism is borrowed from LGR directly.
@@ -567,7 +577,8 @@ segmentaloverwriting {ki ka}3{xa sa}3
 do{IRR 1,2}   
 transfixation k{i u}t{aː u}b
 book{PL 1,2}   
-score 11 6.5 7 3  Comparisonoftherepresentationofdifferentmorphologicalprocessesbyglossingconvention.
+score 11 6.5 7
+Table3  Comparisonoftherepresentationofdifferentmorphologicalprocessesbyglossingconvention.
 lx  ta{ n}g{ o} 
 
 sr  ta{n}g{o} 
@@ -594,12 +605,14 @@ realizedasahightoneand/oralengthenedvowel
 (whicharenotnecessarilycontiguous) 
 lx  ti-
  ne {    }ch- { te}te mowa -0 
-sr  ti- ne {   }x- {te}te mowa -0 2SG- OBJ  1SG-  
+sr  ti- ne {   }x- {te}te mowa -0 
+gl  SUBJ  2SG- OBJ  1SG-  
 {RED_H 1,2}look _for -PRS.IND.SG 
 tr  You look for me. 
 lx  ni-
  mi{     }ts- te mowa -0 
-sr  ni- mi{    }s- te mowa -0 1SG- OBJ  2SG-  
+sr  ni- mi{    }s- te mowa -0 
+gl  SUBJ  1SG- OBJ  2SG-  
 8The acute accent indicates a high tone. Unlike other varietiesofNahuatl,BalsasNahuatlistonal(
  GuionandAmith ,
 2005 Guionetal. ,2010).64{RED_H 1}look _for -PRS.IND.SG 
@@ -709,9 +722,9 @@ ments
  Thefollowingexample
 fromYoloxóchitlMixtecemployssegmentaloverwritingtoinflectaclassofverbsasirrealis 
 
-lx  {xi ku}3 3 
+lx  {xi ku}3xi3 
 
-sr  {ku}3 3 
+sr  {ku}3xi3 
 gl  eat{IRR} 
 tr  eat 
 4.7 Transfixation
@@ -753,7 +766,8 @@ gl  study{PST 1,3}{CAUS 2}{3.SG.M 4}
 tr  he taught 
 A scorecard comparing the adequacy of GGG,
 LGR,andXigtisshowninTable 3.
-5 1, most of the attestedtypesofmorphologicalprocessescanberep-
+5 Conclusions
+As should be clear from Table 1, most of the attestedtypesofmorphologicalprocessescanberep-
 resentedinallthreeannotationformats.
  However,
 GGG has clear advantages in some areas. For example,ifalinguistwantstoknowhownounswith
@@ -814,10 +828,12 @@ James Fife and Gareth King. 2017. Celtic (IndoEuropean)
 Michael Wayne Goodman, Joshua Crowgey, Fei Xia,
 and Emily M. Bender. 2015. Xigt  extensible interlinear
  glossed text for natural language processing .
-Language Resources and Evaluation , 49(2) 455 485.
+Language Resources and Evaluation , 49(2) 455 
+485.
 SusanGGuionandJonathanDAmith.2005. Theeffect
 of[h]ontonaldevelopmentinnahuatl. The Journal
-of the Acoustical Society of America , 117(4) 2490 2490.
+of the Acoustical Society of America , 117(4) 2490 
+2490.
 SusanGGuion,JonathanDAmith,ChristopherSDoty,
 andIrinaAShport.2010. Word-levelprosodyinbalsas
  nahuatl  The origin, development, and acoustic

@@ -1,7 +1,8 @@
 The Framework Tax 
 Disparities Between Inference Efficiency in NLP Research and Deployment
-Jared Fernandez Jacob Kahn Clara Na Yonatan Bisk Emma Strubell1,2 1Language Technologies Institute, Carnegie Mellon University
-2Allen Institute for Artificial Intelligence FAIR
+Jared Fernandez1Jacob Kahn3Clara Na1Yonatan Bisk1Emma Strubell1,2
+1Language Technologies Institute, Carnegie Mellon University
+2Allen Institute for Artificial Intelligence3FAIR
 {jaredfern, strubell}@cmu.edu, {csna, ybisk}@cs.cmu.edu, jacobkahn@fb.com
 Abstract
 Increased focus on the computational efficiency
@@ -52,7 +53,7 @@ Latency Figure 1  Latency as a function of a model s multiply accumulate
 Expected relationships do not hold  model complexity
 and hardware capabilities fail to predict latency due to
 framework-boundedness.
-to make up 80 90% of ML cloud computing
+to make up 80 to 90% of ML cloud computing
 demand (Barr, 2019  Leopold, 2019). In these settings,
  metrics of model speed such as latency and
 throughput are essential for inference workloads
@@ -71,8 +72,9 @@ spurred innovations in the design of efficient neural
  network architectures for language aiming to
 reduce the number of trainable model parameters,
 floating point or multiply-accumulate operations
-(MACs) (Iandola et al., 2020  Dai et al., 2020 1Based on publications at ML (ICLR, ICML, NeurIPS)
-and NLP conferences (ACL, EMNLP) between 2017 2022 2302.06117 2  [cs.LG]  22 2023et al., 2020). Over the same period, GPU hardware
+(MACs) (Iandola et al., 2020  Dai et al., 2020  Sun
+1Based on publications at ML (ICLR, ICML, NeurIPS)
+and NLP conferences (ACL, EMNLP) between 2017 and 2022arXiv 2302.06117v2  [cs.LG]  22 Dec 2023et al., 2020). Over the same period, GPU hardware
 accelerators have seen similar performance gains
 with the number of floating point operations per
 second (FLOPS) growing by over 175%.2
@@ -121,7 +123,7 @@ of scope, so we instead identify the most popular
 model components, inference environments, and
 hardware accelerators for testing (i.e. isolating the
 cases most likely to mislead a practitioner). We
-analyze the performance of transformer and convo Per
+analyze the performance of transformer and convo2Per
  theoretical FLOPS of Nvidia GPUs (2017-2022).lutional neural newtork models in eager execution
 PyTorch, just-in-time compiled TorchScript, and
 ahead-of-time compiled ONNX runtime using a
@@ -148,7 +150,8 @@ freedom often overlooked when designing around
 parameters or FLOPs. We hope that our analysis
  and recommendations will help bridge the gap
 between efficient NLP research and practice.
-2 2.1 Efficiency Metrics & Cost Indicators
+2 Related Work
+2.1 Efficiency Metrics & Cost Indicators
 Previous efforts to report efficiency often utilize
 proxy metrics for amount of computation, such as
 the number of floating point (FLOPs) or multiplyaccumulate
@@ -241,7 +244,8 @@ dominate execution time. Additionally, these prior
 efforts are restricted to small sets of reference models
  and have not directly examined the relationship
 between model architectures and platforms.
-3 3.1 Neural Network Frameworks
+3 Preliminaries
+3.1 Neural Network Frameworks
 To take advantage of massively parallel hardware
 accelerators, inference with variable length text and
 speech sequences are padded to fixed length tensors
@@ -266,7 +270,24 @@ Static  The computational graph is pre-defined,
 compiled, and executed inside a specialized runtime 
  allowing for aggressive, global ahead-of-time
 (AoT) compiler optimizations. Examples include Launch
-Layer 1 2 1 2 1 2 4 1 2 3 4 3 3 4 4 3 2  Profiles where execution is framework bound
+Layer 1 Launch Layer 2
+Compute
+Kernel 1 Compute
+Kernel 2
+Launch Layer 1 Launch Layer 2 Launch Layer 4
+Compute
+Kernel 1 Compute
+Kernel 2 CPU
+GPU
+Compute
+Kernel 3 Compute
+Kernel 4 Launch Layer 3
+Compute
+Kernel 3 Launch Layer 4
+Compute
+Kernel 4
+Launch Layer 3 CPU
+GPU Time Figure 2  Profiles where execution is framework bound
 by CPU kernel dispatch operations (above) and computebound
  by GPU kernel operations (below). Small compute
  kernels occur in inference at lower batch sizes.
@@ -306,7 +327,10 @@ smaller input sizes lead to suboptimal GPU utilization
 the fixed cost framework overhead incurred from
 CPU operations such as kernel launch, graph construction,
  control flow, and device synchronization 
-0 10 20 30 40 50 60 0.0050.0100.0150.0200.0250.030 3  Framework overhead of BERT-Base in PyTorch
+0 10 20 30 40 50 60
+Batch Size0.0050.0100.0150.0200.0250.030LatencyT otal Model Latency
+CUDA Kernel Execution Time
+Framework OverheadFigure 3  Framework overhead of BERT-Base in PyTorch
  for various batch sizes on an RTX-8000. Although
  small batch sizes require fewer FLOPs, these reductions
  do not translate to speedups in latency. Framework
@@ -336,22 +360,33 @@ We evaluate models frameworks from each of the
 major paradigms  eager execution PyTorch, deferred
  execution TorchScript, and statically compiled
  ONNX Runtime with a CUDA backend.
-We use PyTorch 1.12.1 11.6 3.8.13. We use ONNX Runtime 1.7.0 11.1.1 8.0.4.3. Baseline experiments
+We use PyTorch 1.12.1 with CUDA 11.6 and
+Python 3.8.13. We use ONNX Runtime 1.7.0 with
+CUDA 11.1.1 and cuDNN v8.0.4.3. Baseline experiments
  are run on a compute node with an Nvidia
-RTX-8000 5-2630 32 GB of DDRAM memory.
-We measure latency, GPU utilization over a100101102 102 101
+RTX-8000 GPU and an Intel Xeon E5-2630 CPU
+with 32 GB of DDRAM memory.
+We measure latency, GPU utilization over a100101102
+Batch Size102
+101
 Latency (s)ResNet-50 (fp32)
-100101102 102 101
+100101102
+Batch Size102
+101
 ResNet-50 (fp16)
-100101102 102 101
+100101102
+Batch Size102
+101
 BERT (fp32)
-100101102 102
+100101102
+Batch Size102
 BERT (fp16)
-100101102 102
+100101102
+Sequence Length102
 BERT (fp16)
 PyT orch
 T orchScript
-ONNX RuntimeFigure 4  Latency vs. (batch size and sequence lengths) for baseline models in FP16 32 on RTX-8000.
+ONNX RuntimeFigure 4  Latency vs. (batch size and sequence lengths) for baseline models in FP16 and FP32 on RTX-8000.
 Framework boundedness exists for all models at small input sizes where framework overhead dominates runtime
 and results in constant latency regardless of input size. Framework overhead is most prominent in smaller models
 executed in half precision on slower frameworks.
@@ -365,7 +400,7 @@ We simulate text data by randomly generating
 token sequences of length 128, as commonly used
 in sentence classification tasks (Liu et al., 2019 
 Izsak et al., 2021). We report averaged metrics
-from 100 10 warm-up passes
+from 100 forward passes after 10 warm-up passes
 to initialize model weights and data. GPU core and
 memory utilization are measured with the Nvidia
 Nsight Compute and Nvidia Management Library.
@@ -404,10 +439,11 @@ they transition to compute boundedness at different
 batch sizes. The difference in model behavior can
 be attributed to differences in the rate at which
 compute kernels overtake CPU dispatch operations.
-For the well-optimized operations (Conv Ds and
+For the well-optimized operations (Conv2Ds and
 GEMMs) that make up ResNet-50 and BERT, the
 time per FLOP is reasonably consistent.
-4.1 4, we observe that frameworks from all
+4.1 Framework Design Decisions
+In Figure 4, we observe that frameworks from all
 execution paradigms exhibit framework bound behaviors.
  However, deferred execution TorchScript
 and static ONNX Runtime, which support computational
@@ -416,7 +452,8 @@ and static ONNX Runtime, which support computational
 speedups over eager PyTorch. These increases are
 especially pronounced at low batch sizes where
 inference is framework-bound. For batch size 1,
-TorchScript and ONNX provide an average FP16 34.16% and 71.38% over PyTorch,
+TorchScript and ONNX provide an average FP16
+speed up of 34.16% and 71.38% over PyTorch,
 respectively. As batch sizes increase and models
 become compute bound, there is minimal difference
  in latency across frameworks as the majority
@@ -426,7 +463,9 @@ Additionally, we consider both static, serialized
 framework optimizations in Figure 5. BetterTransformer
  provides speedups through additional kernel
 fusion and sparse tensor operations that take advantage
- of sparse sequence lengths and padding tokens100101102 102 101
+ of sparse sequence lengths and padding tokens100101102
+Batch Size102
+101
 Latency (s)PyT orch
 Nested T ensors
 CUDA GraphsFigure 5  Different framework optimizations lead to latency
@@ -441,7 +480,7 @@ padding to the maximum sequence length of 128.
 Sentences are randomly generated according to the
 sequence length distribution of the Penn Treebank
 (Taylor et al., 2003), with an average length of
-20.92 10.18 tokens.
+20.92 and a standard deviation of 10.18 tokens.
 Analysis Utilization of CUDA Graphs substantially
  reduce latency at low batch sizes when inference
  is bounded by framework overhead from kernel
@@ -492,7 +531,8 @@ kernel execution time causes these wider models
 to become compute-bound at lower batch sizes. In
 the compute-bound regime, latency scales more
 rapidly with batch size for wide models.
-4.2.2 7  Comparison of BERT and Funnel Transformer
+4.2.2 Downsampling and Hierarchical Pooling
+Figure 7  Comparison of BERT and Funnel Transformer
 latency. Despite using fewer total MAC operations,
 Funnel is slower than BERT for inference due to the
 introduction of additional intermediate pooling layers.Assumption Self-attention layers in Transformer
@@ -529,7 +569,8 @@ at larger batch sizes. While some architectural innovations
 some approaches increase the size of tensor operator
  graphs (e.g. vis-a-vis additional layers) which
 can ultimately increase inference latency.
-4.2.3 8  Latency of Transformer models using efficient
+4.2.3 Efficient Mobile Architectures
+Figure 8  Latency of Transformer models using efficient
 variations of convolution and self-attention operations.
 All of the variants observe lower latency at large batch
 sizes, but have worse FLOP utilization. Efficient Transformer
@@ -565,12 +606,25 @@ to conventional dense linear and convolution operations.
  These operations can lead to slowdowns
 in deployment settings where depthwise and pointwise
  convolutions may have limited hardware and
-framework backend support.3 4.3 100101102 102 101 100Latency (s)
-100101102 102 101 1080 2080 3090 100 100 9  Framework overhead occurs across generations
+framework backend support.3
+4.3 Hardware Considerations
+100101102
+Batch Size102
+101
+100Latency (s)
+100101102
+Batch Size102
+101
+Nvidia 1080Ti
+Nvidia 2080Ti
+Nvidia 3090
+Nvidia V100
+Nvidia A100
+Figure 9  Framework overhead occurs across generations
  of GPU hardware, with increasing prominence as
 hardware speeds increase with newer generations.
 In Figure 9, we observe that framework-bounded
-behaviors during inference across multiple gener Pointwise
+behaviors during inference across multiple gener3Pointwise
  convolutions are often memory-bound  https 
 //pytorch.org/tutorials/recipes/recipes/tuning_guide.htmlations of consumer, workstation, and datacenter
 Nvidia GPUs. As the speed of the accelerator increases,
@@ -581,13 +635,15 @@ remains constant. We observe that GPUs that lack
 Tensor Core support for half precision operations,
 such as the 1080Ti, are notably slower and less
 framework-bound than newer GPUs. Conversely,
-this leads faster GPUs, such as the RTX 3090 100, to remain framework bound at larger
+this leads faster GPUs, such as the RTX 3090 and
+the A100, to remain framework bound at larger
 batch sizes for both ResNet-50 and BERT. These
 observations indicate that framework bounds on
 model execution will continue to worsen as hardware
  improves unless deep learning frameworks are
 commensurately improved. For example, BERTBase
- is not framework bound for older 1080 3090 GPUs.
+ is not framework bound for older 1080Ti
+GPUs but is on newer 3090 GPUs.
 Framework boundedness is mainly caused by
 bottlenecks due to CPU dispatch operations. As a
 result, the fixed latency for framework-bound models
@@ -667,7 +723,11 @@ at minimal cost for framework-bound models.
 For a given model, latency is constant regardless
 of batch size until compute kernels saturate and
 exceed CPU launch costs. If computation is bot-SA Dim FC Dim Batch Seq Latency TP
-768 3072 1 128 0.0136 0.0136 768 3072 4 128 0.0134 0.0034 768 3072 1 512 0.0134 0.0134 1536 6144 1 128 0.0134 0.0134 1  Latency and throughput (TP) of BERT PyTorch
+768 3072 1 128 0.0136 0.0136
+768 3072 4 128 0.0134 0.0034
+768 3072 1 512 0.0134 0.0134
+1536 6144 1 128 0.0134 0.0134
+Table 1  Latency and throughput (TP) of BERT PyTorch
 models on RTX-8000. Scaling along batch sizes and
 model width shows no increase in latency.
 tlenecked by framework overhead, the batch size
@@ -697,7 +757,8 @@ hardware as it limits utilization. This trend will continue
  as ML-specific hardware advances without efforts
  to address software bottlenecks. For example,
 single-example inference with both BERT is slower
-using an A100 100 2.75x increase in peak computational throughput.
+using an A100 than using a V100 GPU despite a
+2.75x increase in peak computational throughput.
 6 Conclusion
 We conduct an extensive study of neural networks
 from the convolutional and transformer architecture
@@ -832,7 +893,8 @@ bert inference via progressive word-vector elimination.
 Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian
 Sun. 2016. Deep residual learning for image recognition.
  In Proceedings of the IEEE conference on
-computer vision and pattern recognition , pages 770 778.
+computer vision and pattern recognition , pages 770 
+778.
 Sara Hooker. 2021. The hardware lottery. Communications
  of the ACM , 64(12) 58 65.
 Lu Hou, Zhiqi Huang, Lifeng Shang, Xin Jiang, Xiao
@@ -841,7 +903,8 @@ with adaptive width and depth. Advances in Neural
 Information Processing Systems , 33 9782 9793.
 Forrest N Iandola, Song Han, Matthew W Moskewicz,
 Khalid Ashraf, William J Dally, and Kurt Keutzer.
-2016. Squeezenet  Alexnet-level accuracy with 50 0.5 mb model size. arXiv
+2016. Squeezenet  Alexnet-level accuracy with 50x
+fewer parameters and  0.5 mb model size. arXiv
 preprint arXiv 1602.07360 .
 Forrest N Iandola, Albert E Shaw, Ravi Krishna, and
 Kurt W Keutzer. 2020. Squeezebert  What can
@@ -850,7 +913,8 @@ computer vision teach nlp about efficient neural networks
 Peter Izsak, Moshe Berchansky, and Omer Levy. 2021.
 How to train bert with an academic budget. In Proceedings
  of the 2021 Conference on Empirical Methods
- in Natural Language Processing , pages 10644 10652.
+ in Natural Language Processing , pages 10644 
+10652.
 Vijay Janapa Reddi, David Kanter, Peter Mattson, Jared
 Duke, Thai Nguyen, Ramesh Chukka, Ken Shiring,
  Koan-Sin Tan, Mark Charlebois, William Chou,
@@ -931,7 +995,8 @@ David Patterson, Joseph Gonzalez, Urs Hölzle, Quoc
 Le, Chen Liang, Lluis-Miquel Munguia, Daniel
 Rothchild, David R. So, Maud Texier, and Jeff Dean.
 2022. The carbon footprint of machine learning training
- will plateau, then shrink. Computer , 55(7) 18 28.
+ will plateau, then shrink. Computer , 55(7) 18 
+28.
 Vijay Janapa Reddi, Christine Cheng, David Kanter,
 Peter Mattson, Guenther Schmuelling, Carole-Jean
 Wu, Brian Anderson, Maximilien Breughe, Mark
@@ -1055,7 +1120,8 @@ Hongyu Zhu, Amar Phanishayee, and Gennady Pekhimenko.
 (USENIX ATC 20) , pages 337 352.
 A Hardware Platforms
 Full details for the various hardware platforms and
-GPUs used for evaluation in Section 4.3 2 .
+GPUs used for evaluation in Section 4.3 are described
+ in Table 2 .
 B Hardware and Utilization
 In Table 3, we examine GPU hardware utilization
 of various frameworks in terms of the percentage of
@@ -1072,27 +1138,36 @@ transformer model architecture and observe that as
 with encoder-only architectures generative models
 encounter framework boundedness for small input
 sizes. Evaluations are performed across batch sizes
-from 1 128 16
+from 1 to 128 and a fixed generation length of 16
 tokens.CPU GPU GPU Arch Core Count Tensor
 CoresClock Rate
 (GHz)Memory
 (GB)Mem BW
-(GB/s)FP16 4110 1080 3584 - 1.38 11 484.4 22.78 6242 100 5120 640 1.23 32 897 28.26 5-2630 2080 3584 544 1.35 11 616 26.90 5-2630 RTX-8000 4608 576 1.40 48 672 32.62 7282 3090 10496 328 1.35 24 936 35.89 4110 6000 10752 336 1.41 48 768 38.71 8339 100 6912 432 1.215 40 1935 77.97 2  Details on hardware platforms used in our experiments, ordered by Nvidia microarchitecture generation.
+(GB/s)FP16
+TFLOPS
+Intel Xeon Silver 4110 1080Ti Pascal 3584 - 1.38 11 484.4 22.78
+Intel Xeon Gold 6242 V100 V olta 5120 640 1.23 32 897 28.26
+Intel Xeon E5-2630 2080Ti Turing 3584 544 1.35 11 616 26.90
+Intel Xeon E5-2630 RTX-8000 Turing 4608 576 1.40 48 672 32.62
+AMD EPYC 7282 3090 Ampere 10496 328 1.35 24 936 35.89
+Intel Xeon Silver 4110 A6000 Ampere 10752 336 1.41 48 768 38.71
+Intel Xeon 8339HC A100 Ampere 6912 432 1.215 40 1935 77.97
+Table 2  Details on hardware platforms used in our experiments, ordered by Nvidia microarchitecture generation.
 Framework Graph Compilation Kernel Serialization Latency SMs Active Warp Occupancy
-PyTorch None None 10.54 2.6% 0.9%
-PyTorch with TorchScript Just-in-Time None 6.14 18.5% 3.0%
-PyTorch with CUDA Graphs None Yes 2.82 57% 9.2%
-ONNX RT Ahead-of-Time None 2.56 22.3% 9.5%
-ONNX RT with CUDA Graphs Ahead-of-Time Yes 2.11 59% 20.3%
+PyTorch None None 10.54 ms 2.6% 0.9%
+PyTorch with TorchScript Just-in-Time None 6.14 ms 18.5% 3.0%
+PyTorch with CUDA Graphs None Yes 2.82 ms 57% 9.2%
+ONNX RT Ahead-of-Time None 2.56 ms 22.3% 9.5%
+ONNX RT with CUDA Graphs Ahead-of-Time Yes 2.11 ms 59% 20.3%
 Table 3  Comparison of SM Activity Across Frameworks for BERT-Base at batch size 1.
 Figure 10  Latency of generative language models for
 varying batch sizes.
 D Additional Experiments  Vision
-In Figures 11 12, we examine vision models
+In Figures 11 and 12, we examine vision models
 utilizing  efficient" model design choices through
 scaling and efficient operation variants. Image inputs
  are simulated by randomly generating threechannel
- 224 224 RGB images. As with language
+ 224 x 224 RGB images. As with language
 models, deeper models introduce additional framework
  overhead and low-FLOP alternatives are more
 framework bound.
@@ -1104,14 +1179,19 @@ E Additional Experiments  Speech
 In Figure 13, we examine the behavior of the
 WavLM (Chen et al., 2022) model which consists
 of a CNN encoder followed by transformer encoder
-layers. Audio inputs are simulated as 2 16 32,000dimensional
+layers. Audio inputs are simulated as 2 second
+sequences sampled at 16 kHz to create 32,000dimensional
  floating point inputs. In Figure 13,
 we observe that WavLM exhibits framework bound
 behavior but quickly transitions to being computebound
  due to the large audio sequence lengths.
-100101102 102 101
+100101102
+Batch Size102
+101
 Latency (s)WavLM (fp16)
-100101102 102 101
+100101102
+Batch Size102
+101
 WavLM (fp32)
 PyT orch
 T orchScript

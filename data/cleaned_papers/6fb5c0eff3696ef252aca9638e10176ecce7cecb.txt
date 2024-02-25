@@ -46,7 +46,7 @@ interleaved image-text data [ 4,2]. Our approach is computationally efficient an
 running the image generation model at training time. To achieve strong image generation performance,
 we propose efficient architectural changes to learn the LLM-to-generation mapping effectively with
 the GILLMapper module. GILLMapper is a lightweight Transformer [ 57] conditioned on special
-37th Conference on Neural Information Processing Systems (NeurIPS 2023).arXiv 2305.17216 3  [cs.CL]  13 2023FROMAGe
+37th Conference on Neural Information Processing Systems (NeurIPS 2023).arXiv 2305.17216v3  [cs.CL]  13 Oct 2023FROMAGe
 Retrieval only multimodal language
 model. Image outputs limited to the
 candidate retrieval set. Ours
@@ -84,7 +84,7 @@ Yes, what about a pencil drawing of one
 What about a comic illustration of one 
 Figure 1  Our model is capable of generating text, retrieving images, generating novel images, and
 interleaving results into coherent multimodal dialogue.
-learnt text tokens. We train it by minimizing the l distance between its outputs and the outputs of
+learnt text tokens. We train it by minimizing the l2distance between its outputs and the outputs of
 the text encoder of a text-to-image generation model. This distillation training allows us to use the
 image decoder of the text-to-image model at inference time. Despite its simplicity, we show that this
 allows us to outperform the baseline text-to-image generation model on several tasks that measure
@@ -97,7 +97,8 @@ longer-form text, including dialogue and discourse. We show on dialogue-conditio
 context  generating images that match text better than the backbone generation models that we
 distill from. In addition, GILL can process arbitrarily interleaved image-text inputs, unlike typical
 text-to-image models which only process text. GILL is the first model capable of outputting retrieved
-images, novel images, and text   interleaving these for coherent multimodal dialogue generation.1 2 Related Work
+images, novel images, and text   interleaving these for coherent multimodal dialogue generation.1
+2 Related Work
 Multimodal Language Models Several prior works have developed multimodal language models
 which process image and text inputs to generate text outputs. Frozen [ 56] showed that it is possible
 to finetune a visual encoder to map images into the hidden space of a text-only LLM, and that
@@ -106,9 +107,9 @@ improve upon this approach by introducing adapters [ 19], scaling up model and d
 improving the visual encoder [ 4,33], finetuning on instructions [ 35], and training unified models
 on multi-task objectives [ 36,63,42]. CM3 [ 2,62] trained multimodal LMs on HTML webpages
 consisting of interleaved images and text. Many state-of-the-art models also require significant
-computational resources to train. For example, Flamingo [ 4] is trained on 1535 15 days,
-while RA-CM3 [ 62] use 256 5 days. In contrast, our efficient adaptation method is trained
-on 2 2 days. The most similar work to our approach is FROMAGe [ 31], which trains a
+computational resources to train. For example, Flamingo [ 4] is trained on 1535 TPUs for 15 days,
+while RA-CM3 [ 62] use 256 GPUs for 5 days. In contrast, our efficient adaptation method is trained
+on 2 GPUs for 2 days. The most similar work to our approach is FROMAGe [ 31], which trains a
 multimodal language model capable of processing arbitrarily interleaved image and text inputs to
 1Our code and pretrained models are publicly released at https //github.com/kohjingyu/gill .
 2InfoNCE Loss
@@ -173,7 +174,7 @@ decide whether image retrieval (from a candidate set) or generation is more appr
 3.1 Learning to Process Images
 Given an image xand its text caption y(tokenized as (s1, . . . , s T)), our goal is to adapt a frozen LLM
 to enable it to complete any sequence of arbitrarily interleaved image and text inputs. For example,
-inputs for the Visual Storytelling dataset [ 28] consist of 5 5 text descriptions, interleaved
+inputs for the Visual Storytelling dataset [ 28] consist of 5 images and 5 text descriptions, interleaved
 in a manner such as (x1, y1, . . . , x 5, y5). We follow prior work [ 56,19,35,31] in learning translation
 parameters that map from image features to text embedding space.
 We first extract visual embeddings vϕ(x) Rdwith a pretrained visual backbone (its weights ϕand
@@ -240,7 +241,8 @@ against the embeddings produced by the text encoder ( Tψ) of a frozen text-to-i
 model 
 lg(y)   fω 
 h{θ Eimg}(y,[IMG{1}] ), . . . , h {θ Eimg}(y,[IMG{r}] ), q1, . . . , q L 
- Tψ(y) 2 2(3)
+ Tψ(y) 2
+2(3)
 This is essentially distilling from Tψto learn a valid mapping from the output representations of our
 frozen LLM to the input space of Gψ. Note that this does not require Gψduring training, so we can
 precompute Tψ(y)ahead of time, making training highly efficient. During inference, when [IMG]
@@ -249,13 +251,13 @@ Generated Image  Gψ(fω(h{θ Eimg}(y,[IMG{1}] ), . . . , h {θ Eimg}(y,[IMG{r}]
 where h{θ Eimg}(y,[IMG{i}] )represents the hidden states from the last hidden layer of the modified
 LLM corresponding to the ith[IMG] token. The learnt query embeddings (q1, . . . , q L)are part of
 the GILLMapper model weights, and are hence kept fixed during inference.
-Image Retrieval Similar to [ 31], we learn a linear mapping Wt i Re pthat maps the first token
-([IMG1] to ap-dimensional vector. We also learn a linear mapping Wi t Rd pthat map the pooled
+Image Retrieval Similar to [ 31], we learn a linear mapping Wt2i Re pthat maps the first token
+([IMG1] to ap-dimensional vector. We also learn a linear mapping Wi2t Rd pthat map the pooled
 visual output of the image encoder vϕ(x)to ap-dimensional space. These represent image and text
 embeddings, and we train the model by minimizing the InfoNCE loss [39] 
-lr(xi,yi)   logexp( sim(xi,yi,Wt i)/τ)PN
-j 1exp( sim(xj,yi,Wt i)/τ) logexp( sim(xi,yi,Wi t))/τ)PN
-j 1exp( sim(xi,yj,Wi t))/τ)(4)
+lr(xi,yi)   logexp( sim(xi,yi,Wt2i)/τ)PN
+j 1exp( sim(xj,yi,Wt2i)/τ) logexp( sim(xi,yi,Wi2t))/τ)PN
+j 1exp( sim(xi,yj,Wi2t))/τ)(4)
 where the similarity is computed as
 sim(x, y,W)   
 WTvϕ(x) T 
@@ -273,9 +275,9 @@ prompt, we would like to retrieve when there is a strong match from our set of c
 generate otherwise. In order to evaluate this, we collect human annotations on PartiPrompts (P2) [ 65],
 a collection of prompts used to benchmark image generation models. P2 contains some prompts that
 are well-represented by naturally occurring images, but others that are unlikely to occur in natural
-image sets, making it a test of generative models. For each of the 1,632 2, we generate
+image sets, making it a test of generative models. For each of the 1,632 examples in P2, we generate
 an image with the text-to-image generation model Gψ, and use the CLIP ViT-L [ 43] model to retrieve
-the top ranked image from CC M [52] according to the cosine similarity of image embeddings vϕ.
+the top ranked image from CC3M [52] according to the cosine similarity of image embeddings vϕ.
 We have 5 independent human annotators (details in the appendix) select which of the two images for
 each prompt, retrieved or generated, is better matched to the prompt. We labeled the examples where
 the generated image was selected as  gen  (indicating prompts which we should generate an image
@@ -290,27 +292,29 @@ model development. We will release our annotations to encourage future work in t
 The final training objective for a batch of image-text pairs (x,y)is the sum of the captioning loss lc
 (Eq. 1), image token prediction loss lp(Eq. 2), generation loss lg(Eq. 3) and retrieval loss lr(Eq. 4) 
 min
-Wi t,Wt i,Wcap,Eimg,ω,q 1 1 1 
+Wi2t,Wt2i,Wcap,Eimg,ω,q 1 L1
+NNX
+i 1 
 lc(xi,yi)  lp(yi)  lg(yi)  lr(xi,yi) 
 (5)
 The decision model is trained separately after convergence of the other components. The multitask
 loss (Eq. 5) trains GILL to process images ( lc), produce [IMG] tokens ( lp), generate images ( lg), and
 retrieve images ( lr). This enables it to generalize to a wide range of vision-and-language tasks.
-We train on Conceptual Captions (CC M) [ 52], which consists of 3.3M image-text pairs. Following
+We train on Conceptual Captions (CC3M) [ 52], which consists of 3.3M image-text pairs. Following
 [31], we pack two random examples together during training with probability 0.5 (i.e., 50% of the
 time, the input is a single image and caption example, while the other 50% of the time the input
 consists of a sequence consisting of two interleaved images and captions). We use the OPT-6.7B [ 69]
 model as the LLM backbone (which produce hidden states hθwith embedding dim e  4096 ). For
 the visual model used to extract features vϕfor captioning and retrieval, we use the CLIP [ 43] ViT-L
 model. For our text-to-image generation backbone Gψ, we use the Stable Diffusion [ 49] v1.5 model
-(with L  77 input vectors).2 4 visual tokens, and r  8 learnt [IMG] tokens. We
+(with L  77 input vectors).2We use k  4 visual tokens, and r  8 learnt [IMG] tokens. We
 set the GILLMapper query embedding dimension m  512 . For retrieval, we use an embedding
 dimension p  256 . All pretrained model weights are kept frozen, and we only train the linear layers
-Wi t,Wt i,Wcap, the[IMG] embedding matrix Eimg, and the GILLMapper parameters ωand query
+Wi2t,Wt2i,Wcap, the[IMG] embedding matrix Eimg, and the GILLMapper parameters ωand query
 vectors q1 L. In total, there are 50M trainable parameters, significantly fewer than in the frozen LLM
 and visual models (which total approximately 8B parameters). We use bfloat16 precision [ 1], and
-optimize using Adam [ 30] (β1 0.9,β2 0.95) with a learning rate of 0.001. We train with a batch
-size of 200 20K iterations, which takes 2 2 6000 GPUs. We follow [ 31] and concatenate
+optimize using Adam [ 30] (β1  0.9,β2  0.95) with a learning rate of 0.001. We train with a batch
+size of 200 for 20K iterations, which takes 2 days on 2 A6000 GPUs. We follow [ 31] and concatenate
 captions to encourage the model to attend to relevant images within an image-text sequence.
 4 Experiments
 GILL is the first multimodal language model capable of conditioning on image-and-text inputs
@@ -410,7 +414,10 @@ got tired
 and had
 to take a
 rest.
-1 2 3 4
+1
+ 2
+ 3
+ 4
 Ours Image and Text Inputs [male]
 takes a
 picture
@@ -443,7 +450,10 @@ taking a
 swim in the
 water
 Stable Diﬀusion
-1 2 3 4
+1
+ 2
+ 3
+ 4
 Retrieved Generated User prompts I'm looking for some ideas for a
 new tattoo. What do you think
 looks good on a petite person 
@@ -467,19 +477,20 @@ for the party
 I can show you some ideas
 Figure 5  Qualitative results over various input and output modalities. GILL is able to process
 contextual multimodal cues to retrieve and generate appropriate image and text outputs.
-7 1  Results on contextual image generation on VIST [ 28] (averaged over 5 random seeds). Our
+7Table 1  Results on contextual image generation on VIST [ 28] (averaged over 5 random seeds). Our
 model can process longer (possibly multimodel) inputs to outperform baseline models.
 CLIP Similarity ( ) LPIPS ( )
-Model 1 5 5 caps, 4 1 5 5 caps, 4 images
+Model 1 caption 5 captions 5 caps, 4 images 1 caption 5 captions 5 caps, 4 images
 GLIDE [38] 0.582 0.591 - 0.753 0.745 Stable
- Diffusion [49] 0.592 0.0007 0 .598 0.0006 - 0.703 0.0003 0 .704 0.0004 GILL
- (ours) 0.581 0.0005 0.612 0.0011 0.641 0.0011 0.702 0.0004 0.696 0.0008 0.693 0.0008 2  Results on contextual image generation on VisDial [ 16] (averaged over 5 random seeds).
+ Diffusion [49] 0.592 0.0007 0 .598 0.0006 - 0.703  0.0003 0 .704 0.0004 GILL
+ (ours) 0.581  0.0005 0.612 0.0011 0.641 0.0011 0.702 0.0004 0.696 0.0008 0.693 0.0008
+Table 2  Results on contextual image generation on VisDial [ 16] (averaged over 5 random seeds).
 Our model can process longer sequences of dialogue-like text to generate more relevant images.
 CLIP Similarity ( ) LPIPS ( )
-Model 1 5 10 1 5 10 rounds
+Model 1 round 5 rounds 10 rounds 1 round 5 rounds 10 rounds
 GLIDE [38] 0.562 0.595 0.587 0.800 0.794 0.799
-Stable Diffusion [49] 0.552 0.0015 0.629 0.0015 0.622 0.0012 0.742 0.0010 0.722 0.0012 0.723 0.0008
-GILL (ours) 0.528 0.0014 0.621 0.0009 0.645 0.0010 0.742 0.0022 0.718 0.0028 0.714 0.0006
+Stable Diffusion [49] 0.552  0.0015 0.629 0.0015 0.622 0.0012 0.742 0.0010 0.722 0.0012 0.723 0.0008
+GILL (ours) 0.528  0.0014 0.621 0.0009 0.645 0.0010 0.742 0.0022 0.718 0.0028 0.714 0.0006
 Generating from Visual Stories VIST [ 28] is a dataset for sequential vision-and-language tasks,
 with examples of sequences of 5 images and text that constitute a story, as shown in Fig. 5. Similar to
 [31], we test the models on generating the last image in the sequence, conditioned on different inputs 
@@ -488,7 +499,7 @@ with examples of sequences of 5 images and text that constitute a story, as show
 2.5 captions   Input consists of all text from the entire story sequence . This tests the ability
 of models to process longer and temporally dependent text descriptions.
 3.5 captions, 4 images   Lastly, we test models with inputs of all images and texts preceding
-the last image (i.e., sequenced as    text1 1 ... text4 4 5   ). This
+the last image (i.e., sequenced as    text1  img1 ... text4  img4  text5   ). This
 tests the ability of models to effectively process multimodal context in image generation.
 A novel feature of GILL is its ability to process interleaved image-text inputs, which most
 existing text-to-image generation models are unable to handle.
@@ -496,9 +507,10 @@ We report results on VIST in Tab. 1, comparing GILL against text-to-image genera
 (including Stable Diffusion (SD) [ 49], which we use as our generation backbone Gψ). With a single
 story caption input to both models, the performance is comparable, with SD achieving a slightly
 better CLIP Similarity score, and both models achieving similar LPIPS. However, when all 5 story
-captions are provided as input, our model outperforms SD, improving CLIP Similarity from 0.598 0.612, and LPIPS from 0.704 0.696. Interestingly, when further provided with the full multimodal
-context (the preceding 5 4 images), our model improves substantially, attaining a CLIP
-Similarity of 0.641 0.693. In contrast, SD is unable to handle interleaved image-text
+captions are provided as input, our model outperforms SD, improving CLIP Similarity from 0.598 to
+0.612, and LPIPS from 0.704 to 0.696. Interestingly, when further provided with the full multimodal
+context (the preceding 5 captions and 4 images), our model improves substantially, attaining a CLIP
+Similarity of 0.641 and LPIPS of 0.693. In contrast, SD is unable to handle interleaved image-text
 inputs without significant modifications. We also show several qualitative examples in Fig. 5. We
 find that GILL is generally more sensitive to input context compared to SD. GILL can also condition
 on image inputs, enabling it to use visual context to produce more relevant images.
@@ -516,16 +528,28 @@ Our results are presented in Tab. 2. Similar to the VIST evaluations, we find th
 inputs, SD outperforms our model. However, when the input context is increased, our model gradually
 improves, and can synthesize images that are more similar to the groundtruth image. When the full
 10 rounds of dialogue are provided, GILL significantly outperforms SD, improving over both CLIP
-8 3  Image generation performance on CC M [ 52] and
+8Table 3  Image generation performance on CC3M [ 52] and
 VIST [28] with different text mapping networks.
-CC M VIST
+CC3M VIST
 Model FID ( ) CLIP Sim ( )
-Stable Diffusion [49] 13.94 0.598 15.50 0.500 3-layer MLP 15.33 0.502 16.30 0.605 15.31 0.641 4  GILL image generation results
- on CC M [ 52] with different
+Stable Diffusion [49] 13.94 0.598
+Ours   Linear 15.50 0.500
+Ours   3-layer MLP 15.33 0.502
+Ours   Transformer Encoder 16.30 0.605
+Ours   GILLMapper 15.31 0.641Table 4  GILL image generation results
+ on CC3M [ 52] with different
 number of image tokens ( r).
-CC M VIST
+CC3M VIST
 r FID ( ) CLIP Sim ( )
-1 15.93 0.631 2 15.32 0.629 4 15.32 0.642 8 15.31 0.641 1 2 3 4 5 2 cap, 1 3 cap, 2 4 cap, 3 5 cap, 4 0.560.580.600.620.64 6  Performance of GILL on VIST generation.Table 5  Contextual image retrieval on
+1 15.93 0.631
+2 15.32 0.629
+4 15.32 0.642
+8 15.31 0.641
+1 cap 2 cap 3 cap 4 cap 5 cap
+2 cap, 1 img 3 cap, 2 img 4 cap, 3 img 5 cap, 4 img0.560.580.600.620.64CLIP SimilarityPerformance With Increasing Context on VIST
+Captions only
+Captions   Images
+Figure 6  Performance of GILL on VIST generation.Table 5  Contextual image retrieval on
 VIST (5 captions, 4 images as input).
  indicates results from [31].
 VIST Recall@ k( )
@@ -533,7 +557,7 @@ Model R@1 R@5 R@10
 CLIP ViT-L [43] 8.8 22.3 29.8
 FROMAGe [31] 18.2 42.7 51.8
 GILL (Ours) 20.3 45.0 53.7
-Similarity (0.622 0.645) and LPIPS (0.723 0.714). These results further highlight the efficacy of
+Similarity (0.622 to 0.645) and LPIPS (0.723 to 0.714). These results further highlight the efficacy of
 our model on handling long dialogue-like text inputs.
 4.2 Qualitative Results
 Finally, one of the more compelling applications of GILL is perhaps its ability to generalize to many
@@ -549,11 +573,13 @@ GILL performs comparably or better compared to prior approaches (Tab. 5). This s
 image generation objective does not cause image retrieval performance to deteriorate.
 The Effect of Context GILL leverages an LLM backbone, which allows it to inherit some of the
 LLM s capabilities, such as improved sensitivity to long inputs. Fig. 6 shows that the performance of
-GILL generally improves with increasing input contexts on VIST [ 28]. In particular, when 2 1 image are provided as context, the model significantly outperforms the model with 5 text-only
+GILL generally improves with increasing input contexts on VIST [ 28]. In particular, when 2 captions
+and 1 image are provided as context, the model significantly outperforms the model with 5 text-only
 captions, highlighting the value of multimodal context over unimodal context.
 Generation-Only Objective We investigate the effect of removing the retrieval loss (Eq. 4) from
 the training objective. On VIST (5 captions, 4 images), this ablated model achieves CLIP similarity
-of 0.636 0.694, which are comparable to scores of the original model (0.641 0.693 respectively). This suggests that the retrieval loss is not necessary for strong performance,
+of 0.636 and LPIPS of 0.694, which are comparable to scores of the original model (0.641 and
+0.693 respectively). This suggests that the retrieval loss is not necessary for strong performance,
 although such a model would only be able to generate images and text and not retrieve images. These
 results also suggest that GILL is not bottlenecked by including the retrieval objective, and that it has
 sufficient capacity to perform both generation and retrieval.
@@ -565,9 +591,9 @@ model against (1) a linear layer, (2) a multilayer perceptron (MLP) with LeakyRe
 (3) a 4-layer bidirectional transformer encoder. All models are conditioned on the r[IMG] token
 embeddings from the LLM. Our results are presented in Tab. 3. GILLMapper is substantially better
 than these baseline models at learning the mapping from the frozen LLM to the Stable Diffusion
-generation model, as measured by Fréchet Inception Distance (FID) [ 25] on the CC M validation set
+generation model, as measured by Fréchet Inception Distance (FID) [ 25] on the CC3M validation set
 (which is a measure of image realism), and CLIP Similarity on VIST. On the VIST evaluation (which
-is out of distribution from CC M), the other baselines perform significantly worse than GILLMapper,
+is out of distribution from CC3M), the other baselines perform significantly worse than GILLMapper,
 suggesting that they cannot generalize to longer sequences containing multiple images and texts.
 Number of [IMG] Tokens We experiment with varying the number of [IMG] tokens, r(Tab. 4). As
 rincreases, generation generally improves, plateauing around r  4. We observe that lower values
@@ -627,7 +653,7 @@ generative image transformer. In CVPR , 2022.
  text-to-image generator. ICLR , 2023.
 [15] Wei-Lin Chiang, Zhuohan Li, Zi Lin, Ying Sheng, Zhanghao Wu, Hao Zhang, Lianmin Zheng,
 Siyuan Zhuang, Yonghao Zhuang, Joseph E. Gonzalez, Ion Stoica, and Eric P. Xing. Vicuna 
-An open-source chatbot impressing gpt-4 90%* chatgpt quality, March 2023.
+An open-source chatbot impressing gpt-4 with 90%* chatgpt quality, March 2023.
 [16] Abhishek Das, Satwik Kottur, Khushi Gupta, Avi Singh, Deshraj Yadav, José MF Moura, Devi
 Parikh, and Dhruv Batra. Visual dialog. In CVPR , 2017.
 [17] Ming Ding, Zhuoyi Yang, Wenyi Hong, Wendi Zheng, Chang Zhou, Da Yin, Junyang Lin,
@@ -793,7 +819,7 @@ with varied pre-training objectives that encode more visual information while st
 the hidden space of the LLM, or using more sophisticated visual mappings [ 4,33] that can capture a
 richer set of visual features. Similarly, we observed during inference that our model sometimes does
 not generate relevant images for certain types of prompts. We attribute this to our finetuning dataset
-being CC M, which is relatively small compared to modern large scale image-text datasets [ 51]. It is
+being CC3M, which is relatively small compared to modern large scale image-text datasets [ 51]. It is
 likely that training GILLMapper on an even larger corpus of text data will improve its alignment to
 the image generation backbone.
 One of the advantages of our model is that it is modular, and can benefit from stronger visual and
@@ -823,7 +849,7 @@ models introduce, such as generating false images of real people. These harms ma
 mitigated by introducing watermarking into generated images [ 37,70], or by deploying systems to
 detect generated images [12].
 15Bias and Safety GILL makes use of pretrained LLMs and multimodal models (such as CLIP [ 43]
-and Stable Diffusion [ 49]), which are trained on large, noisy, Internet-scraped data (such as LAION M
+and Stable Diffusion [ 49]), which are trained on large, noisy, Internet-scraped data (such as LAION400M
  [ 51]). Due to their curation process, these datasets often contain undesired biases, malignant
 stereotypes (see [ 8] for a comprehensive discussion on large scaled multimodal datasets). One
 advantage of GILL is that it is efficient to train and completely modular , allowing its components
@@ -841,7 +867,7 @@ prompt is annotated with one of two labels   ret  or  gen , indicating whether i
 image generation produces a more appropriate image for the corresponding prompt. For example,
 the prompt  a portrait of a statue of the Egyptian god Anubis wearing aviator goggles, white t-shirt
 and leather jacket, flying over the city of Mars.   is labeled as  gen , as there are (understandably) no
-appropriate images in the CC M retrieval set, and generation produces a more relevant output. In
+appropriate images in the CC3M retrieval set, and generation produces a more relevant output. In
 contrast,  the geyser Old Faithful  is labeled as  ret,  as there are very relevant candidate images
 available for this prompt. We evaluate several models for making this decision on the validation set
 (Tab. 6), evaluating using F1 score given the class imbalance of the dataset (201  gen , 110  ret  in
@@ -849,17 +875,18 @@ the validation set labels)
 1.Baselines  We measure the F1 score of several baseline methods, which provide a lower
 bound for how well data-driven approaches can do. We find that always retrieving an image,
 always generating an image, or simply deciding randomly (with a prior proportional to class
-frequencies) achieve F1 0.267, 0.389, and 0.451 respectively.
+frequencies) achieve F1 scores of 0.267, 0.389, and 0.451 respectively.
 2.Heuristic  We also consider a simple heuristic which considers the maximum cosine
 similarity of the retrieval embedding against the entire image candidate set (i.e., the training
-set of CC M). We run a grid search from 0 1 for possible threshold values. Whenever the
+set of CC3M). We run a grid search from 0 to 1 for possible threshold values. Whenever the
 maximum cosine similarity is above a threshold, we return  ret  and  gen  otherwise. This
-achieves an F1 0.261 0.559, depending on the threshold used (a threshold of 0.5 1 0.261).
+achieves an F1 of 0.261   0.559, depending on the threshold used (a threshold of 0.5 gives
+F1 of 0.261).
 3.Linear classifier  Lastly, we train a linear classifier that takes as input the outputs of the
 LLM for the [IMG] tokens and the maximum cosine similarity. This classifier is trained
 with the binary cross-entropy loss over the training set of PartiPrompts annotations. This
-linear classifier achieves an F1 0.393 0.552, depending on the probability
-threshold used (a threshold of 0.5 1 0.547).
+linear classifier achieves an F1 score of between 0.393   0.552, depending on the probability
+threshold used (a threshold of 0.5 gives an F1 score of 0.547).
 We use the linear classifier in our final model, as it requires less hyperparameter tuning compared
 to the heuristic baseline, and performs comparably on quantitative metrics. During generation of
 qualitative samples (Fig. 7 and Fig. 5 in the main paper), we observed that the linear classifier
@@ -870,24 +897,33 @@ text prompts more effectively than Stable Diffusion for many examples in PartiPr
 VisDial [ 16] dialogue inputs, GILL is able to generate more relevant outputs (as measured against
 groundtruth images). We attribute these improved results to the stronger text representations of the
 LLM, and the effectiveness of our GILLMapper network.
-16 6  Results on PartiPrompts for classifying retrieval or generation.
-Method F1 0.267 0.389 0.451 0.261 0.559 0.393 0.552 0.851 7  Results on image captioning on MS-COCO (2017) [ 34] and VQA [ 24]. For captioning,
+16Table 6  Results on PartiPrompts for classifying retrieval or generation.
+Method F1
+Always retrieve 0.267
+Always generate 0.389
+Random 0.451
+Heuristic 0.261   0.559
+Linear classifier 0.393   0.552
+Human performance 0.851
+Table 7  Results on image captioning on MS-COCO (2017) [ 34] and VQA [ 24]. For captioning,
 we report BLEU [ 41] and METEOR [ 5] scores. For VQA, we report the accuracy after applying
 the normalization described in the VQA repo ( https //github.com/GT-Vision-Lab/VQA ). 
 indicates our reimplementation.
 Captioning VQA
-Model BLEU-4 0-shot
+Model BLEU-4 METEOR 0-shot
 Frozen [56] - - 0.2553
 MAGMA [19] - - 0.2835
-FROMAGe [31] 0.1023 0.2873 0.2851 0.1059 0.2529 0.3178
+FROMAGe [31] 0.1023 0.2873 0.2851
+Ours 0.1059 0.2529 0.3178
 E Other Evaluations
-E.1 2 [ 24] and image captioning on MS-COCO [ 34]. The results are
+E.1 Comparison to Prior Multimodal LMs
+We ran evaluations on VQAv2 [ 24] and image captioning on MS-COCO [ 34]. The results are
 presented in Tab. 7. We found that GILL is comparable to models trained with similar compute and
 data. On VQAv2, we achieve a zero-shot val accuracy of 0.3178, which is slightly better than prior
 approaches of similar model sizes and compute  FROMAGe [ 31] achieves a zero-shot accuracy of
 0.2851, Frozen [ 56] achieves 0.2553, and MAGMA [ 19] achieves 0.2835. For image captioning on
-the MS-COCO (2017) validation set, GILL achieves a BLEU@4 0.1059 0.2529,
-which is comparable to FROMAGe (BLEU@4 0.1023 0.2873). GILL is also
+the MS-COCO (2017) validation set, GILL achieves a BLEU@4 of 0.1059 and METEOR of 0.2529,
+which is comparable to FROMAGe (BLEU@4 of 0.1023 and METEOR of 0.2873). GILL is also
 capable of a wider set of tasks (e.g., generating interleaved image and text outputs) compared to these
 models.
 We note that these scores are lower than SOTA models, as they are usually much larger and trained
@@ -977,7 +1013,12 @@ is the
 snowboard 
 A  the
 snowboard is
-grey in color 3 4...Q  what color
+grey in color 3Q  is the man
+wearing a
+cap 
+A  the man is
+wearing a
+black cap 4...Q  what color
 are the
 glasses 
 A  the glasses
@@ -997,7 +1038,10 @@ Groundtruth
  Stable Diﬀusion
 VisDial Inputs Q  what color
 are the dogs 
-A  1 1...Q  are they
+A  1 of the dog
+is white and the
+other dog is
+light brown 1...Q  are they
 standing in
 grass 
 A  no, they
@@ -1022,7 +1066,9 @@ shepherd 2
 Ours Stable Diﬀusion Q  are they
 both wearing
 a hat 
-A  only 1 3
+A  only 1 is
+wearing a hat
+3
 VisDial Inputs Q  is this a
 single
 person
@@ -1032,7 +1078,23 @@ is1...Q  is there
 a mirror 
 A  yes,
 there is
-8 9 10 2
+8Q  is it big
+or small 
+A  it is a
+long full
+length mirror
+9Q  what
+color are
+the walls 
+A  they are
+beige
+10
+Groundtruth Q  is there
+toilet
+paper 
+A  not that
+i can see
+2
 Ours Stable Diﬀusion Q  what
 color is
 the
@@ -1065,7 +1127,8 @@ used to evaluate all models.
 Model FID ( )
 GLIDE [38] 12.24
 Make-A-Scene [21] 11.84
-DALL-E 2 [44] 10.39 2 [72] 8.42
+DALL-E 2 [44] 10.39
+LAFITE2 [72] 8.42
 Imagen [50] 7.27
 Parti [65] 7.23
 Re-Imagen [14] 6.88
@@ -1078,8 +1141,8 @@ using 30,000 randomly sampled captions from the MS-COCO (2014) validation set, w
 standard evaluation of text-to-image generation models. We report zero-shot FID scores [ 25] of our
 model, Stable Diffusion [ 49] v1.5 (which we use as our backbone image generator), and several other
 approaches in Tab. 8. For our generation results and SD results, we use a classifier-free guidance
-scaling factor of 3.0 250 DDIM inference steps. On MS-COCO, our approach achieves a worse
-FID score than SD (9.22 12.2). This is likely because this task does not benefit as much from the
+scaling factor of 3.0 and 250 DDIM inference steps. On MS-COCO, our approach achieves a worse
+FID score than SD (9.22 to 12.2). This is likely because this task does not benefit as much from the
 LLM backbone, which has not been trained on as many image captions as SD (which exclusively
 trains on caption-like data). These numbers will likely improve further by finetuning GILL on even
 more text data (including image captions), which will allow our model to align more closely to the
@@ -1104,7 +1167,7 @@ In Sec. 3.3 of the main paper, we described the process of annotating PartiPromp
 Annotators are tasked to determine which of two anonymized images are (1) more relevant to the
 provided prompt, and (2) more realistic. We randomize the order of the two images as well (i.e., the
 output of the retrieval model shows up 50% of the time as Image A).
-19 9  User interface shown to human annotators for annotating PartiPrompts [65] examples.
+19Figure 9  User interface shown to human annotators for annotating PartiPrompts [65] examples.
 We show each example to 5 independent human annotators. For determining whether to label a
 particular example as  ret  or  gen , we take the majority vote of the 5 annotators on the image
 relevance question ( Is image A or image B more relevant to the above caption  ), and only keep

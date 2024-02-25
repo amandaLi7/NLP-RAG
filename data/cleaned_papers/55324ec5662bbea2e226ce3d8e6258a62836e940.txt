@@ -14,7 +14,8 @@ outputs as conditions to separate arbitrary sound sources. We investigate variou
 strategies and propose a hierarchical USS strategy to automatically detect and separate sound classes from the AudioSet ontology. By
 solely leveraging the weakly labelled AudioSet, our USS system is successful in separating a wide variety of sound classes, including
 sound event separation, music source separation, and speech enhancement. The USS system achieves an average
-signal-to-distortion ratio improvement (SDRi) of 5.57 527 10.57 2018 2 8.12 18 7.28 2100 9.00 dB on the
+signal-to-distortion ratio improvement (SDRi) of 5.57 dB over 527 sound classes of AudioSet  10.57 dB on the DCASE 2018 Task 2
+dataset  8.12 dB on the MUSDB18 dataset  an SDRi of 7.28 dB on the Slakh2100 dataset  and an SSNR of 9.00 dB on the
 voicebank-demand dataset. We release the source code at https //github.com/bytedance/uss
 Index Terms  Universal source separation, hierarchical source separation, weakly labelled data.
  
@@ -83,7 +84,7 @@ without other sources. The clean source data can be mixed to
 form audio mixtures to train potential separators. However,
 collecting clean data is time-consuming. For sound classes
 such as  Speech , clean data can be recorded in the laboratory.
- But for many other environmental sounds such asarXiv 2305.07447 1  [cs.SD]  11 2023JOURNAL OF LATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2015 2
+ But for many other environmental sounds such asarXiv 2305.07447v1  [cs.SD]  11 May 2023JOURNAL OF LATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2015 2
 audio samples latent feature audio separationEncoder Decoder
 mask
 audio separationEncoder
@@ -177,12 +178,15 @@ of time frames and Fis the number of frequency bins. We
 denote the magnitude and the phase of Xas X and X,
 respectively. The right part of Fig. 1 shows a frequencydomain
  separation system fpredicting a magnitude ideal
-ratio mask (IRM) [40] M RT For a complex IRM (cIRM)JOURNAL OF LATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2015 3 1
+ratio mask (IRM) [40] M RT For a complex IRM (cIRM)JOURNAL OF LATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2015 3
+TABLE 1
 Source separation datasets. The types can be clean data or weakly
 labelled data.
 Dataset Dur. (h) Classes Types
-Voicebank-Demand [51] 19 1 18 [52] 6 4 Clean
-UrbanSound K [53] 10 10 2018 [54] 20 41 Clean
+Voicebank-Demand [51] 19 1 Clean
+MUSDB18 [52] 6 4 Clean
+UrbanSound8K [53] 10 10 Clean
+FSDKaggle 2018 [54] 20 41 Clean
 FUSS [55] 23 357 Clean
 AudioSet [23] 5,800 527 Weak
 [41]M CT Fthat can be multiplied by the STFT of the
@@ -213,7 +217,7 @@ previous clean source datasets have durations of around
 tens of hours. On the other hand, weakly labelled datasets
 are usually larger than clean source datasets and clean
 datasets. AudioSet [23] is a representative weakly labelled
-dataset containing over 5,800 10-second audio clips
+dataset containing over 5,800 hours of 10-second audio clips
 and is larger in both size and number of sound classes
 than clean source datasets. AudioSet has an ontology of
 527 sound classes in its released version. The ontology of
@@ -222,7 +226,8 @@ contain multiple tags.
 In this work, we use the weakly labelled AudioSet
 dataset containing 5,800 hours to train a USS system that
 can separate hundreds of sound classes.
-3 3.1 Weakly Labelled Data
+3 USS WITH WEAKLY LABELLED DATA
+3.1 Weakly Labelled Data
 In contrast to clean source data, weakly labelled data only
 contain the labels of what sound classes are present in an
 audio recording. Weakly labelled data may also contain
@@ -245,7 +250,8 @@ the number of training samples in the dataset. The left part
 of Fig. 2 shows a clean source audio clip containing the
 clean waveform of  Flute . The right part of Fig. 2 shows a
 weakly labelled audio clip containing a target sound class
- Air horn, truck horn  which only occurs between 2.5 4.0 s. The weakly labelled audio recording also contains
+ Air horn, truck horn  which only occurs between 2.5 s
+and 4.0 s. The weakly labelled audio recording also contains
 unknown interference sounds, i.e., yn(k)   0 may contain
 missing tags for some sound class k.
 The goal of a weakly labelled USS system is to separate
@@ -351,13 +357,13 @@ the binary cross entropy loss between the audio tagging
 predictionpATand the labels y [0,1]Kand 
 l  K 
 k 1y(k) lnpAT(k)   (1 y(k)) ln(1 pAT(k)).(2)JOURNAL OF LATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2015 5
-log-mel spetrogramConv D (3,3,64)Conv D (3,3,128)Conv D (3,3,256)Conv D (3,3,2048)...
+log-mel spetrogramConv2D (3,3,64)Conv2D (3,3,128)Conv2D (3,3,256)Conv2D (3,3,2048)...
 CNN-14Avg-Pooling
 Event Presence MapEvent Classification
 averageLatent Feature
 project
 time framefrequency......
-...... ... ... ...time frequency windowPatch-Embed Conv D
+...... ... ... ...time frequency windowPatch-Embed Conv2D
 Swin Transformer
 Patch-Mer ge
 ST.
@@ -367,7 +373,7 @@ PM.
 ST.
 PM.Hierarchical Transformer Blocks
 Latent Output
-Token-Semantic Conv D
+Token-Semantic Conv2D
 Event Presence Mapaverage
 Event ClassificationAvg-Pooling
 Latent Feature
@@ -389,7 +395,7 @@ described in (3) and (4) process a mini-batch of the audio
 clips{x1,...,xB}into a mini-batch of anchor segments
 {s1,...,sB}.
 Algorithm 1 shows the procedure for creating training
-data. Step 1 2
+data. Step 1 describes audio clip sampling and Step 2
 describes anchor segment mining. To further avoid two
 anchor segments containing the same classes being mixed,
 we propose an optional Step 3 to mine anchor segments
@@ -415,16 +421,16 @@ classes, mini batch size B.
 2 Outputs  a mini-batch of mixture and anchor segment
 pairs{(xi,si)}B
 i 1.
-3 1  Balanced Sampling   Uniformly sample Bsound
+3 Step 1  Balanced Sampling   Uniformly sample Bsound
 classes from sound classes {1,...,K}without replacement.
  Sample one audio clip ab,b  1,...,B for each
 selected sound class. We denote the mini-batch of audio
 clips as{a1,...,aB}.
-4 2  Anchor Segment Detection   Apply a pretrained
+4 Step 2  Anchor Segment Detection   Apply a pretrained
 SED model on each aito detect the optimal anchor time
 stamptiby (3)(4). Extract the anchor segment si RL 
 whose center is ti.
-5 3 (optional)   Use an audio tagging model to predict
+5 Step 3 (optional)   Use an audio tagging model to predict
 the event presence probability of siand apply threshold
 θ [0,1]Kto get binary results ri {0,1}Kwhereri(k)
 is set to 1 if the presence probability is larger than θ(k).
@@ -556,32 +562,40 @@ The magnitude M controls how much the magnitude of
 the angle of Xshould be rotated.
 Based on the ResUNet separator, we adopt a feature-wise
 linear modulation (FiLM) [63] method to construct convolutional
- blocks within the separator. We apply a pre-activationJOURNAL OF LATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2015 7 2 Training of a USS system.
+ blocks within the separator. We apply a pre-activationJOURNAL OF LATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2015 7
+Algorithm 2 Training of a USS system.
 1 Inputs  DatasetD, e.g., AudioSet.
 2 Outputs  A trained USS model.
-3 4  prepare a mini-batch of mixture source training pairs
+3 while loss function ldoes not converge do
+4  prepare a mini-batch of mixture source training pairs
 {(xi,si)}B
-i 1 1 5  Calculate source query embeddings {ci}B
-i 1 3.4.
-6 7  Obtain the separation ˆsi f(xi,ci)
+i 1by Algorithm 1
+5  Calculate source query embeddings {ci}B
+i 1by any
+of query nets as described in Section 3.4.
+6  foreachsido
+7  Obtain the separation ˆsi f(xi,ci)
 8  Calculate loss by l( ˆsi,si)
-9 10 end while
+9  end for
+10 end while
 architecture [64] for all of the encoder and decoder layers,
 we incorporate the conditional embedding as 
 hl W (σ(BN(hl 1)  Vc)) (6)
-wherehl 1 1-th layer, and Vis
+wherehl 1is the feature map of the l 1-th layer, and Vis
 a fully connected layer to map the conditional vector cinto
 an embedding space. Vcmodulates the value BN(hl 1).
 The value is convolved with the weight Wto outputhl. The
 training of our weakly labeled USS system is illustrated in
 Algorithm 2.
-3.6 1, the amplitude
+3.6 Data augmentation
+When constituting the mixture with siandsi 1, the amplitude
  ofsiandsi 1can be different. We propose an energy
 augmentation to augment data. That is, we ﬁrst calculate the
-energy of a signal sibyE   si  2 2. We denote the energy
-ofsiandsi 1 1. We apply a scaling factor
+energy of a signal sibyE   si  2
+2. We denote the energy
+ofsiandsi 1asEiandEi 1. We apply a scaling factor
 αi  
-Ei/Ei 1 1when creating the mixture xi 
+Ei/Ei 1tosi 1when creating the mixture xi 
 x si αsi 1. (7)
 By this means, both anchor segments siandsi 1have the
 same energy which is beneﬁcial to the optimization of the
@@ -591,7 +605,8 @@ let the neural network learn to separate the sound classes.
 On the other hand, the amplitude diversity of sound classes
 is increased. We will show this energy augmentation is
 beneﬁcial in our experiments.
-3.7 1 loss between the predicted and
+3.7 Loss functions
+We propose to use the L1 loss between the predicted and
 ground truth waveforms following [33] to train the end-toend
  universal source separation system 
 l   s ˆs  1, (8)
@@ -612,23 +627,34 @@ whereIis the number of segments.
 4 ApplyfATon all segments to obtain P(i,k)with a size
 ofI K, whereKis the number of sound classes.
 5 # Calculate ontology predictions.
-6 7 Q(i,j)   HierarchicalOntologyGrouping (P(i,k),l)
+6 ifhierarchical separation then
+7 Q(i,j)   HierarchicalOntologyGrouping (P(i,k),l)
 following Algorithm 4. Q(i,j)has a shape of I Jwhere
 Jis the number of sound classes in the l-th level.
-8 9 # Detect active sound event.
+8 end if
+9 # Detect active sound event.
 10 C {}#Active sound class indexes.
-11 1,...,J do
+11 forj  1,...,J do
 12  ifmaxiQ(j,j) δthen  
 13 C C {j}
-14 15 16 # Do separation.
+14  end if
+15 end for
+16 # Do separation.
 17 O {}# Separated sources of active sound classes.
-18 19 1,...,I do
+18 forj Cdo
+19  fori  1,...,I do
 20  ifQ(i,j) δthen  
 21  Get condition cjby (10).
 22  ˆsij fss(xi,cj)
-23 24  ˆsij 0 25 26 27  ˆsj {ˆsij}I
-i 1 28 O O {ˆsj}
-29 3.8 Inference
+23  else
+24  ˆsij 0
+25  end if
+26  end for
+27  ˆsj {ˆsij}I
+i 1
+28 O O {ˆsj}
+29 end for
+3.8 Inference
 In training, the oracle embedding of an anchor segment can
 be calculated by femb(si). In inference, for the hard onehot
  condition and soft probability condition, we can simply
@@ -640,20 +666,24 @@ whereJis the number of sound classes to separate.
 However, for the latent embedding condition and learnable
  condition, we need to calculate the embedding cfrom
 the training dataset by 
-c 1 1femb(sn) (9)
+c 1
+NN 
+n 1femb(sn) (9)
 where{sn}N
 n 1are query samples of one sound class and
 Nis the number of query samples. That is, we average all
 conditional embeddings of query samples from the same
-sound class to constitute c.JOURNAL OF LATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2015 8 4 Hierarchical Ontology Grouping.
+sound class to constitute c.JOURNAL OF LATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2015 8
+Algorithm 4 Hierarchical Ontology Grouping.
 1 Inputs  segment-wise prediction P(i,k)with a size of
 I K, hierarchy level l.
 2 Outputs Q(i,j)with a size of I JwhereJis the
 number of children sound classes of the l-th ontology
 level.
-3 1,...,J do
+3 forj 1,...,J do
 4 Q(i,j)  maxk{P(i,k)}k children (j)
-5 3.9 Inference with Hierarchical AudioSet Ontology
+5 end for
+3.9 Inference with Hierarchical AudioSet Ontology
 We propose a hierarchical separation strategy to address the
 USS problem. It is usually unknown how many and what
 sound classes are present and which need to be separated
@@ -674,7 +704,7 @@ sounds ,  Animal ,  Music ,  Source-ambiguous sounds ,
  Sounds of things ,  Nature sounds , and  Channel, environment
  and background . Each root category contains
 several sub-level sound classes. The second level and the
-third levels contain 41 251 sound classes, respectively, as
+third levels contain 41 and 251 sound classes, respectively, as
 described in the AudioSet ontology [23]. The tree structure
 has a maximum depth of six levels.
 In inference, the USS system supports hierarchical source
@@ -705,7 +735,7 @@ can address a wide range of source separation tasks without
 being ﬁnetuned.
 4.1 Training Dataset
 AudioSet is a large-scale weakly labelled audio dataset
-containing 2 10-second audio clips sourced from
+containing 2 million 10-second audio clips sourced from
 the YouTube website. Audio clips are only labelled with
 the presence or absence of sound classes, without knowing
 when the sound events occur. There are 527 sound classes in
@@ -721,26 +751,28 @@ into 10 seconds. Due to the fact that a large amount of audio
 recordings from YouTube have sampling rates lower than
 32 kHz, we resample all audio recordings into mono and 32
 kHz.
-4.2 3.3 and
+4.2 Training Details
+We select anchor segments as described in Section 3.3 and
 mix two anchor segments to constitute a mixture x. The
 duration of each anchor segment is 2 seconds. We investigate
  different anchor segment durations in Section 4.6.4. We
 apply matching energy data augmentation as described in
 Section 3.6 to scale two anchor segments to have the same
 energy, and extract the short-time Fourier transform (STFT)
-featureXfromxwith a Hann window size of 1024 320. This hop size leads to 100 frames in a second
+featureXfromxwith a Hann window size of 1024 and a
+hop size 320. This hop size leads to 100 frames in a second
 consistent to the audio tagging systems in PANNs [25] and
 HTS-AT [27].
 The query net is a CNN14 of PANNs or HTS-AT. The
 query net is pretrained on the AudioSet tagging task [23],
 [27] and the parameters are frozen during the training of
 the USS system. The prediction and the embedding layers
-of the query net have dimensions of 527 2048, respectively.
+of the query net have dimensions of 527 and 2048, respectively.
  Either the prediction layer or the embedding layer is
 connected to fully connected layers and input to all layers of
 the source separation branch as FiLMs. We adopt ResUNet
 [33] as the source separation branch. The 30-layer ResUNet
-consists of 6 6 decoder blocks. Each encoder
+consists of 6 encoder and 6 decoder blocks. Each encoder
 block consists of two convolutional layers with kernel sizes
 of3 3. Following the pre-activation strategy [64], we apply
 batch normalization [62] and leaky ReLU [68] before each
@@ -751,7 +783,8 @@ maps of the encoder blocks are 32, 64, 128, 256, 512, and
 encoder blocks. We apply an Adam optimizer [69] with a
 learning rate of 10 3to train the system. A batch size of 16
 is used to train the USS system. The total training steps is
-600 3 100 GPU card.JOURNAL OF LATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2015 9 4.3 Conditional Embedding Calculation
+600 k trained for 3 days on a single Tesla V100 GPU card.JOURNAL OF LATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2015 9
+4.3 Conditional Embedding Calculation
 For AudioSet source separation, the oracle embedding or
 each anchor segment is calculated by 
 c femb(s) (11)
@@ -759,12 +792,14 @@ wheresis the clean source. Using oracle embedding
 as condition indicates the upper bound of the universal
 source separation system. For real applications, we calculate
  the conditional embeddings by (9) from the training
-set of the AudioSet, FSD Kaggle2018, FSD k, MUSDB18,
+set of the AudioSet, FSD50Kaggle2018, FSD50k, MUSDB18,
 Slakkh2100, and VoicebankDemand datasets to evaluate on
 those datasets, respectively.
-4.4 4.4.1 AudioSet
-The evaluation set of AudioSet [23] contains 20,317 527 sound classes. We successfully downloaded
-18,887 20,317 (93%) audio clips from the evaluation
+4.4 Evaluation Datasets
+4.4.1 AudioSet
+The evaluation set of AudioSet [23] contains 20,317 audio
+clips with 527 sound classes. We successfully downloaded
+18,887 out of 20,317 (93%) audio clips from the evaluation
 set. AudioSet source separation is a challenging problem
 due to USS need to separate 527 sound classes using a
 single model. We are the ﬁrst to propose using AudioSet [31]
@@ -775,10 +810,12 @@ we select two anchor segments from different sound classes
 and sum them as a mixture for evaluation. We create 100
 mixtures for each sound class, leading to 52,700 mixtures
 for all sound classes in total.
-4.4.2 2018 2018 [54] is a general-purpose audio tagging
+4.4.2 FSDKaggle2018
+The FSDKaggle2018 [54] is a general-purpose audio tagging
 dataset containing 41 sound classes ranging from musical
 instruments, human sounds, domestic sounds, and animals,
-etc. The duration of the audio clips ranges from 300 30 s. Each audio clip contains a unique audio tag. The
+etc. The duration of the audio clips ranges from 300 ms
+to 30 s. Each audio clip contains a unique audio tag. The
 test set is composed of 1,600 audio clips with manuallyveriﬁed
  annotations. We pad or truncate each audio clip
 into 2-second segment from the start, considering sound
@@ -786,26 +823,30 @@ events usually occur in the start of audio clips. We mix two
 segments from different sound classes to consist a pair. We
 constitute 100 mixtures for each sound class. This leads to a
 total of 4,100 evaluation pairs.
-4.4.3 50k (FSD K) dataset [65] contains
-51,197 200 sound classes from
+4.4.3 FSD50K dataset
+The Freesound Dataset 50k (FSD50K) dataset [65] contains
+51,197 training clips distributed in 200 sound classes from
 the AudioSet ontology. In contrast to the FSDKaggle2018
 dataset, each audio clip may contain multiple tags with
 a hierarchical architecture. There are an average of 2.79
 tags in each audio clip. All audio clips are sourced from
-Freesound1. There are 10,231 195
+Freesound1. There are 10,231 audio clips distributed in 195
 sound classes in the test set. Audio clips have variable
-durations between 0.3 30s, with an average duration
+durations between 0.3s to 30s, with an average duration
 of 7.1 seconds. We mix two segments from different sound
 classes to consist a pair. We create 100 mixtures for each
 sound class. This leads to in total 19,500 evaluation pairs.
-1. https //freesound.org/4.4.4 18 18 dataset [52] is designed for the music source
-separation task. The test set of the MUSDB18 50 songs with four types of stems, including vocals,
+1. https //freesound.org/4.4.4 MUSDB18
+The MUSDB18 dataset [52] is designed for the music source
+separation task. The test set of the MUSDB18 dataset contains
+ 50 songs with four types of stems, including vocals,
 bass, drums, and other. We linearly sum all stems to constitute
  mixtures as input to the USS system. We use the
-museval toolkit to evaluate the SDR metrics.
-4.4.5 2100 2100 dataset [66] is a multiple-instrument dataset
+museval toolkit2to evaluate the SDR metrics.
+4.4.5 Slakh2100
+The Slakh2100 dataset [66] is a multiple-instrument dataset
 for music source separation and transcription. The test of the
-Slakh2100 225 songs. The sound of different
+Slakh2100 dataset contains 225 songs. The sound of different
 instruments are rendered by 167 different types of plugins.
  We ﬁltered 151 non-silent plugin types for evaluation.
 Different from the MUSDB18 dataset, there can be over 10
@@ -824,7 +865,7 @@ Voicebank-Demand dataset contains 824 utterances in total.
 We use the signal-to-distortion ratio (SDR) [71] and SDR
 improvement (SDRi) [71] to evaluate the source separation
 performance. The SDR is deﬁned as 
-SDR(s,ˆs)   10 10(  s  2
+SDR(s,ˆs)   10 log10(  s  2
   s ˆs  2)
 (12)
 wheresandˆsare the target source and estimated source,
@@ -836,73 +877,104 @@ wherexis the mixture signal. For the speech enhancement
 task, we apply the Perceptual evaluation of speech quality
 (PESQ) [72] and segmental signal-to-ratio noise (SSNR) [73]
 for evaluation.
-4.6 4.6.1 Conditional Embedding Types
+4.6 Results Analysis
+4.6.1 Conditional Embedding Types
 The default conﬁguration of our USS system is a 30-layer
 ResUNet30 trained on the balanced set of AudioSet. Table
 2 shows the USS system results trained with different conditional
- embedding types including wav vec [74], speaker
+ embedding types including wav2vec [74], speaker
 embeddings3, CNN6, CNN10, CNN14 from PANNs [25],
-and HTS-AT [27]. The wav vec embedding is trained using
+and HTS-AT [27]. The wav2vec embedding is trained using
 unsupervised contrastive learning on 960 hours of speech
-data. The wav vec embedding is averaged along the time
+data. The wav2vec embedding is averaged along the time
 2. https //github.com/sigsep/sigsep-mus-eval
-3. https //github.com/RF5/simple-speaker-embeddingJOURNAL OF LATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2015 10 2
+3. https //github.com/RF5/simple-speaker-embeddingJOURNAL OF LATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2015 10
+TABLE 2
 USS results with different conditional embedding types.
-AudioSet (SDRi) FSDK2018 18 2100 VoicebankDemand
+AudioSet (SDRi) FSDK2018 FSD50k MUSDB18 Slakh2100 VoicebankDemand
 ora. emb avg. emb SDR SDRi SDR SDRi SDR SDRi wSDR wSDRi SDR SDRi PESQ SSNR
-wav vec (46c) 8.87 4.30 8.95 8.91 4.52 4.70 1.90 7.03 2.96 8.37 -1.08 6.66 2.11 6.02
-speaker (46d) 8.87 2.82 6.69 6.65 3.00 3.03 1.52 6.85 2.48 7.94 0.18 7.92 2.13 4.72 6 (45 2) 8.68 5.30 10.36 10.31 5.25 5.50 3.05 8.43 3.94 9.42 -0.37 7.37 2.27 9.39 10 (45 3) 8.35 5.36 9.95 9.90 5.19 5.43 2.87 8.10 4.11 9.34 -0.27 7.47 2.27 8.68 14 (44a) 8.26 5.57 10.61 10.57 5.54 5.79 3.08 8.12 4.02 9.22 -0.46 7.28 2.18 9.00
-HTSAT (45c) 9.38 3.78 7.95 7.91 3.38 3.51 2.83 8.48 3.77 9.36 0.81 8.55 2.23 8.78 3
+wav2vec (46c) 8.87 4.30 8.95 8.91 4.52 4.70 1.90 7.03 2.96 8.37 -1.08 6.66 2.11 6.02
+speaker (46d) 8.87 2.82 6.69 6.65 3.00 3.03 1.52 6.85 2.48 7.94 0.18 7.92 2.13 4.72
+CNN6 (45a2) 8.68 5.30 10.36 10.31 5.25 5.50 3.05 8.43 3.94 9.42 -0.37 7.37 2.27 9.39
+CNN10 (45a3) 8.35 5.36 9.95 9.90 5.19 5.43 2.87 8.10 4.11 9.34 -0.27 7.47 2.27 8.68
+ CNN14 (44a) 8.26 5.57 10.61 10.57 5.54 5.79 3.08 8.12 4.02 9.22 -0.46 7.28 2.18 9.00
+HTSAT (45c) 9.38 3.78 7.95 7.91 3.38 3.51 2.83 8.48 3.77 9.36 0.81 8.55 2.23 8.78
+TABLE 3
 USS results with soft audio tagging and latent embedding as condition.
-AudioSet (SDRi) FSDK2018 18 2100 VoicebankDemand
+AudioSet (SDRi) FSDK2018 FSD50k MUSDB18 Slakh2100 VoicebankDemand
 ora. emb avg. emb SDR SDRi SDR SDRi SDR SDRi wSDR wSDRi SDR SDRi PESQ SSNR
 Segment prediction (dim 527) (46b) 7.80 6.42 11.22 11.18 6.60 6.92 2.48 7.26 3.58 8.80 -1.69 6.05 2.20 8.30
- Embedding (dim 2048) 8.26 5.57 10.61 10.57 5.54 5.79 3.08 8.12 4.02 9.22 -0.46 7.28 2.18 9.00 4
+ Embedding (dim 2048) 8.26 5.57 10.61 10.57 5.54 5.79 3.08 8.12 4.02 9.22 -0.46 7.28 2.18 9.00
+TABLE 4
 USS results with freeze, ﬁnetune, and adapt conditional embeddings.
-AudioSet (SDRi) FSDK2018 18 2100 VoicebankDemand
+AudioSet (SDRi) FSDK2018 FSD50k MUSDB18 Slakh2100 VoicebankDemand
 ora. emb avg. emb SDR SDRi SDR SDRi SDR SDRi wSDR wSDRi SDR SDRi PESQ SSNR
-CNN14 (random weights) 8.51 2.82 5.96 5.91 2.82 2.82 -0.48 4.59 1.97 7.08 -1.34 6.40 2.28 6.96 14 (scratch) 2.38 2.38 2.46 2.41 2.22 2.15 0.71 5.78 1.16 6.30 -1.20 6.54 1.62 -0.28 14 (ﬁnetune) 9.83 1.96 3.42 3.38 1.50 1.40 2.10 7.77 3.10 8.52 1.39 9.12 1.77 3.52 14 (freeze) 8.26 5.57 10.61 10.57 5.54 5.79 3.08 8.12 4.02 9.22 -0.46 7.28 2.18 9.00 14 6.95 4.57 9.29 9.25 4.74 4.94 1.84 7.05 3.40 8.78 -1.44 6.30 2.06 8.91 14 8.01 5.81 11.00 10.96 5.79 6.07 2.95 7.96 3.90 9.24 -0.87 6.87 2.30 9.60 5
+CNN14 (random weights) 8.51 2.82 5.96 5.91 2.82 2.82 -0.48 4.59 1.97 7.08 -1.34 6.40 2.28 6.96
+CNN14 (scratch) 2.38 2.38 2.46 2.41 2.22 2.15 0.71 5.78 1.16 6.30 -1.20 6.54 1.62 -0.28
+CNN14 (ﬁnetune) 9.83 1.96 3.42 3.38 1.50 1.40 2.10 7.77 3.10 8.52 1.39 9.12 1.77 3.52
+ CNN14 (freeze) 8.26 5.57 10.61 10.57 5.54 5.79 3.08 8.12 4.02 9.22 -0.46 7.28 2.18 9.00
+CNN14   shortcut 6.95 4.57 9.29 9.25 4.74 4.94 1.84 7.05 3.40 8.78 -1.44 6.30 2.06 8.91
+CNN14   adaptor 8.01 5.81 11.00 10.96 5.79 6.07 2.95 7.96 3.90 9.24 -0.87 6.87 2.30 9.60
+TABLE 5
 USS results with different backbone models.
-AudioSet (SDRi) FSDK2018 18 2100 VoicebankDemand
+AudioSet (SDRi) FSDK2018 FSD50k MUSDB18 Slakh2100 VoicebankDemand
 ora. emb avg. emb SDR SDRi SDR SDRi SDR SDRi wSDR wSDRi SDR SDRi PESQ SSNR
-open-unmix 3.96 3.39 3.90 3.86 2.96 2.92 0.40 5.50 2.13 7.42 -1.09 6.65 2.40 2.26 6.96 5.00 9.49 9.45 5.31 5.54 0.61 5.61 2.64 8.10 -2.96 4.77 1.87 6.46 8.14 5.50 10.83 10.79 5.49 5.75 2.49 7.78 3.70 9.17 -0.45 7.29 2.12 8.47 30 8.26 5.57 10.61 10.57 5.54 5.79 3.08 8.12 4.02 9.22 -0.46 7.28 2.18 9.00 60 7.97 5.70 11.34 11.30 6.04 6.32 1.71 6.81 3.64 9.01 -2.77 4.97 2.40 9.35 512. The
+open-unmix 3.96 3.39 3.90 3.86 2.96 2.92 0.40 5.50 2.13 7.42 -1.09 6.65 2.40 2.26
+ConvTasNet 6.96 5.00 9.49 9.45 5.31 5.54 0.61 5.61 2.64 8.10 -2.96 4.77 1.87 6.46
+UNet 8.14 5.50 10.83 10.79 5.49 5.75 2.49 7.78 3.70 9.17 -0.45 7.29 2.12 8.47
+ResUNet30 8.26 5.57 10.61 10.57 5.54 5.79 3.08 8.12 4.02 9.22 -0.46 7.28 2.18 9.00
+ResUNet60 7.97 5.70 11.34 11.30 6.04 6.32 1.71 6.81 3.64 9.01 -2.77 4.97 2.40 9.35
+axis to a single embedding with a dimension of 512. The
 speaker embedding is a gated recurrent unit (GRU) with
 three recurrent layers operates on log mel-spectrogram and
-has output has a shape of 256. The CNN6 10 512. The CNN14 and the HTS-AT have
+has output has a shape of 256. The CNN6 and the CNN10
+have dimensions of 512. The CNN14 and the HTS-AT have
 dimensions of 2048. The oracle embedding (ora emb) shows
 the results using (11) as condition. The average embedding
 (avg emb) shows the results using (9) as condition.
-Table 2 6, CNN10, CNN14 5.30 5.57 dB
-using the average embedding, outperforming the wav vec
-of 4.30 2.82 dB. One
-possible explanation is that both wav vec and the speaker
+Table 2 shows that the CNN6, CNN10, CNN14 embeddings
+ achieve AudioSet SDR between 5.30 dB and 5.57 dB
+using the average embedding, outperforming the wav2vec
+of 4.30 dB and the speaker embedding of 2.82 dB. One
+possible explanation is that both wav2vec and the speaker
 embeddings are trained on speech data only, so that they
 are not comparable to PANNs and HTS-AT trained for
-general audio tagging. The wav vec embedding slightly
+general audio tagging. The wav2vec embedding slightly
 outperforms the speaker embedding on FSDKaggle2018,
-FSD k, and MUSDB18 separation, indicating that the unsupervised
+FSD50k, and MUSDB18 separation, indicating that the unsupervised
  learned ASR embeddings are more suitablefor universal source separation. The HTS-AT achieves the
 highest oracle embedding SDR among all systems. All
 of CNN6, CNN10, CNN14, and HTS-AT outperform the
-wav vec embedding and the speaker embedding in AudioSet,
- FSDKaggle2018, FSD k, MUSDB18, Slakh2100, and
-Voicebank-Demand datasets by a large margin. The CNN14 6 10. In the following
+wav2vec embedding and the speaker embedding in AudioSet,
+ FSDKaggle2018, FSD50k, MUSDB18, Slakh2100, and
+Voicebank-Demand datasets by a large margin. The CNN14
+slightly outperforms CNN6 and CNN10. In the following
 experiments, we use CNN14 as the default conditional
 embedding.
-Table 3 14 527 14 2048 to build
+Table 3 shows the comparison between using the CNN14
+segment prediction with a dimension of 527 and the CNN14
+embedding condition with a dimension of 2048 to build
 the USS system. On one hand, the segment prediction
 embedding achieves an SDR of 7.80 dB on AudioSet, outperforming
  the embedding condition of 5.57 dB. The segment
 prediction also achieves higher SDRis than the embedding
-condition on the FSDKaggle2018, and the FSD k dataset
+condition on the FSDKaggle2018, and the FSD50k dataset
 datasets. An explaination is that the sound classes of all
-of the AudioSet, FSDKaggle2018, and the FSD k datasetsJOURNAL OF LATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2015 11 6
+of the AudioSet, FSDKaggle2018, and the FSD50k datasetsJOURNAL OF LATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2015 11
+TABLE 6
 USS results trained with different anchor segment durations.
-AudioSet (SDRi) FSDK2018 18 2100 VoicebankDemand
+AudioSet (SDRi) FSDK2018 FSD50k MUSDB18 Slakh2100 VoicebankDemand
 ora. emb avg. emb SDR SDRi SDR SDRi SDR SDRi wSDR wSDRi SDR SDRi PESQ SSNR
-0.5 4.07 2.86 4.51 4.47 2.55 2.51 0.97 0.78 2.61 2.43 -0.79 6.95 1.57 5.96 1 7.50 4.99 9.45 9.41 4.81 5.00 0.18 -0.02 2.54 2.50 -1.66 6.08 2.17 8.55 2 8.26 5.57 10.61 10.57 5.54 5.79 3.08 8.12 4.02 9.22 -0.46 7.28 2.18 9.00 4 7.39 5.21 10.22 10.17 5.38 5.60 1.83 6.79 3.38 8.68 -2.62 5.12 -2.62 5.12 6 6.39 4.68 9.20 9.16 5.05 5.24 0.00 4.98 2.70 7.97 -4.26 3.48 2.21 2.56 8 6.26 4.48 8.85 8.80 4.77 4.94 -3.67 -4.00 1.60 1.50 -5.68 2.06 2.24 2.35 10 6.29 4.47 9.11 9.07 4.80 4.98 -2.68 -2.79 1.56 1.53 -5.07 2.67 2.13 2.14 7
+0.5 s 4.07 2.86 4.51 4.47 2.55 2.51 0.97 0.78 2.61 2.43 -0.79 6.95 1.57 5.96
+1s 7.50 4.99 9.45 9.41 4.81 5.00 0.18 -0.02 2.54 2.50 -1.66 6.08 2.17 8.55
+ 2s 8.26 5.57 10.61 10.57 5.54 5.79 3.08 8.12 4.02 9.22 -0.46 7.28 2.18 9.00
+4s 7.39 5.21 10.22 10.17 5.38 5.60 1.83 6.79 3.38 8.68 -2.62 5.12 -2.62 5.12
+6s 6.39 4.68 9.20 9.16 5.05 5.24 0.00 4.98 2.70 7.97 -4.26 3.48 2.21 2.56
+8s 6.26 4.48 8.85 8.80 4.77 4.94 -3.67 -4.00 1.60 1.50 -5.68 2.06 2.24 2.35
+10s 6.29 4.47 9.11 9.07 4.80 4.98 -2.68 -2.79 1.56 1.53 -5.07 2.67 2.13 2.14
+TABLE 7
 USS results with different anchor mining strategies.
-AudioSet (SDRi) FSDK2018 18 2100 VoicebankDemand
+AudioSet (SDRi) FSDK2018 FSD50k MUSDB18 Slakh2100 VoicebankDemand
 ora. emb avg. emb SDR SDRi SDR SDRi SDR SDRi wSDR wSDRi SDR SDRi PESQ SSNR
 mining 8.26 5.57 10.61 10.57 5.54 5.79 3.08 8.12 4.02 9.22 -0.46 7.28 2.18 9.00
 in-clip random 4.89 3.94 5.53 5.49 3.63 3.66 1.10 6.05 2.36 7.79 -1.72 6.01 2.21 5.69
@@ -911,11 +983,12 @@ are sub-classes of the AudioSet. The segment prediction
 performs better than embedding condition in in-vocabulary
 sound classes separation. On the other hand, the embedding
 condition achieves higher SDRs than the segment prediction
-on the MUSDB18 2100 dataset. This result
+on the MUSDB18 and the Slakh2100 dataset. This result
 indicates that the embedding condition perform better than
 segment prediction in new-vocabulary sound classes separation.
 
-Fig. 7 527 sound
+Fig. 7 in the end of this paper shows the classwise
+SDRi results of AudioSet separation including 527 sound
 classes. The dashed lines show the SDRi with oracle segment
 prediction or embedding as conditions. The solid lines show
 the SDRi with averaged segment prediction or embedding
@@ -937,59 +1010,75 @@ the USS system. All the variations of the conditional embeddings
  extractors are based on the CNN14 architecture. Using
 random weights to extract conditional embeddings achieves
 an SDRi of 2.82 dB on AudioSet, compared to use pretrained
-CNN14 5.57 dB. We show that using random weights to extract
+CNN14 to extract conditional embeddings achieves an SDR
+5.57 dB. We show that using random weights to extract
 conditional embeddings work for all USS tasks, such as
-achieves an SDRi of 5.91 2018 14 10.57 dB.Next, we experiment with learning the parameters of the
+achieves an SDRi of 5.91 dB on the FSDKaggle2018 dataset
+compared to the pretrained CNN14 embedding extractor of
+10.57 dB.Next, we experiment with learning the parameters of the
 conditional embedding extractor from scratch or ﬁnetune
 the weights from pretrained models. Table 4 shows that neither
  the learning from scratch nor the ﬁnetuning approach
 improves the USS system performance. The learning from
 scratch approach and the ﬁnetuning approaches achieve
-SDRi of 2.41 3.38 2018 dataset,
+SDRi of 2.41 dB and 3.38 dB on the FSDKaggle2018 dataset,
 even underperform the random weights of 5.91 dB. One
 possible explanation is that the parameters of the conditional
  embedding branch and the source separation branch
 are difﬁcult to be jointly optimized when both of them
 are deep. The training falls to a collapse mode. Using the
 pretrained frozen CNN14 system as conditional embedding
-extractor signiﬁcantly improves the SDRi to 10.57 2018 dataset.
+extractor signiﬁcantly improves the SDRi to 10.57 dB on the
+FSDKaggle2018 dataset.
 Based on the pretrained frozen CNN14 conditional embedding
  extractor, we propose to add a learnable shortcut
 or add an learnable adaptor on top of the CNN14 system.
 The learnable short cut has a CNN14 architecture with
-learnable parameters. Table 4 9.29 2018, less than using the pretrained
-frozen CNN14 10.57
+learnable parameters. Table 4 shows that the learnable shortcut
+ conditional embedding extractor achieves an SDR of
+9.29 dB on FSDKaggle2018, less than using the pretrained
+frozen CNN14 conditional embedding extractor of 10.57
 dB. One possible explanation is that the learnable shortcut
 destories the embedding information for source separation.
 The adaptor is a 2-layer fully connected neural network on
 top of the pretrained frozen CNN14 conditional embedding
-extractor. With the adaptor, we achieve an SDR of 11.10 14 system. This result indicates
+extractor. With the adaptor, we achieve an SDR of 11.10 dB
+and outperforms the CNN14 system. This result indicates
 that the adaptor is beneﬁcial for the USS task.
-4.6.3 5 shows the results of building USS systems with
+4.6.3 Separation Architectures
+Table 5 shows the results of building USS systems with
 different source separation backbones. The open-unmix system
  [67] is a 3-layer bidirectional long short term memory
 (BLSTM) system. The BLSTM is applied on the mixture
 spectrogram to output the estimated clean spectrogram.
-The open-unmix system achieves an SDR of 3.39 2.40 on theJOURNAL OF LATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2015 12 8
+The open-unmix system achieves an SDR of 3.39 dB on
+AudioSet separation and achieves a PESQ of 2.40 on theJOURNAL OF LATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2015 12
+TABLE 8
 USS results with different sources number.
-AudioSet (SDRi) FSDK2018 18 2100 VoicebankDemand
+AudioSet (SDRi) FSDK2018 FSD50k MUSDB18 Slakh2100 VoicebankDemand
 ora. emb avg. emb SDR SDRi SDR SDRi SDR SDRi wSDR wSDRi SDR SDRi PESQ SSNR
-2 1 8.26 5.57 10.61 10.57 5.54 5.79 3.08 8.12 4.02 9.22 -0.46 7.28 2.18 9.00 3 1-2 7.37 4.71 8.30 8.26 4.36 4.52 2.43 8.08 3.56 8.69 -0.48 7.26 2.37 8.34 4 1-3 7.03 4.38 7.49 7.45 3.99 4.10 2.43 7.99 3.51 8.98 0.70 8.44 2.38 7.78 9
+2 srcs to 1 src 8.26 5.57 10.61 10.57 5.54 5.79 3.08 8.12 4.02 9.22 -0.46 7.28 2.18 9.00
+3 srcs to 1-2 srcs 7.37 4.71 8.30 8.26 4.36 4.52 2.43 8.08 3.56 8.69 -0.48 7.26 2.37 8.34
+4 srcs to 1-3 srcs 7.03 4.38 7.49 7.45 3.99 4.10 2.43 7.99 3.51 8.98 0.70 8.44 2.38 7.78
+TABLE 9
 USS results with different data augmentation.
-AudioSet (SDRi) FSDK2018 18 2100 VoicebankDemand
+AudioSet (SDRi) FSDK2018 FSD50k MUSDB18 Slakh2100 VoicebankDemand
 ora. emb avg. emb SDR SDRi SDR SDRi SDR SDRi wSDR wSDRi SDR SDRi PESQ SSNR
 no aug 7.11 3.81 7.19 7.14 3.27 3.35 1.78 7.22 3.09 8.74 0.69 8.43 2.39 6.36
- - 20 5.51 3.62 5.77 5.73 2.93 2.94 1.69 7.02 2.51 8.03 -0.34 7.40 2.22 5.34 8.26 5.57 10.61 10.57 5.54 5.79 3.08 8.12 4.02 9.22 -0.46 7.28 2.18 9.00 10
+ - 20 dB 5.51 3.62 5.77 5.73 2.93 2.94 1.69 7.02 2.51 8.03 -0.34 7.40 2.22 5.34
+ match energy 8.26 5.57 10.61 10.57 5.54 5.79 3.08 8.12 4.02 9.22 -0.46 7.28 2.18 9.00
+TABLE 10
 USS results of models trained with balanced and full subsets of AudioSet.
-AudioSet (SDRi) FSDK2018 18 2100 VoicebankDemand
+AudioSet (SDRi) FSDK2018 FSD50k MUSDB18 Slakh2100 VoicebankDemand
 ora. emb avg. emb SDR SDRi SDR SDRi SDR SDRi wSDR wSDRi SDR SDRi PESQ SSNR
- Balanced set 8.26 5.57 10.61 10.57 5.54 5.79 3.08 8.12 4.02 9.22 -0.46 7.28 2.18 9.00 8.21 6.14 10.34 10.30 5.45 5.71 2.31 7.20 3.60 8.92 -1.29 6.45 2.40 9.45
+ Balanced set 8.26 5.57 10.61 10.57 5.54 5.79 3.08 8.12 4.02 9.22 -0.46 7.28 2.18 9.00
+Full set 8.21 6.14 10.34 10.30 5.45 5.71 2.31 7.20 3.60 8.92 -1.29 6.45 2.40 9.45
 Full set (long train) 9.60 6.76 13.07 13.03 6.52 6.85 1.77 7.00 3.51 9.00 -2.62 5.12 2.45 10.00
 Voicebank-Demand speech enhancement task, indicating
 that the BLSTM backbone performs well for speech enhancement.
  The open-unmix system underperforms other
 backbone source separation systems in FSDKaggle2018,
-FSD k, MUSDB18, and Slakh2100 separation, indicating
+FSD50k, MUSDB18, and Slakh2100 separation, indicating
 that the capacity of the open-unmix system is not large
 enough to separate a wide range of sound classes. The
 ConvTasNet [38] is a time-domain source separation system
@@ -1000,21 +1089,31 @@ system.
 Our proposed UNet30 [47] is an encoder-decoder convolutional
  architecture consists of 30 convolutional layers. The
 ResUNet30 [33] adds residual shortcuts in the encoder and
-decoder blocks in UNet30. The UNet30 30 5.50 5.57 dB on AudioSet,
+decoder blocks in UNet30. The UNet30 and the ResUNet30
+systesm achieve SDRis of 5.50 dB and 5.57 dB on AudioSet,
 outperforming the ConvTasNet by around 1 dB in all source
-separation tasks. We extend ResUNet30 60 60 convolutiona layers. Table 5 60 30 0.5 dB in all
+separation tasks. We extend ResUNet30 to a deeper system
+ResUNet60 with 60 convolutiona layers. Table 5 shows that
+ResUNet60 outperforms ResUNet30 by around 0.5 dB in all
 USS tasks. This result indicates that deeper architectures are
 beneﬁcial for USS.
-4.6.4 6 0.5 10 s. The
+4.6.4 Different Anchor Segment Durations
+Table 6 shows the results of USS systems trained with different
+ anchor segment durations ranging from 0.5 s to 10 s. The
 anchor segments are mined by a pretrained SED system as
-described in Section 3.3. On one hand, Table 6 0.5 2 5.57 2 s on AudioSet separation.
+described in Section 3.3. On one hand, Table 6 shows that the
+separation scores increase with anchor segment durations
+increase from 0.5 s to 2 s and achieves the best SDRi of
+5.57 dB at anchor segment of 2 s on AudioSet separation.
 This result shows that the anchor segment should be long
 enough to contain sufﬁcient context information to buildthe USS system. On the other hand, the separation scores
-decrease with anchor segment durations decrease from 2 10 s on all tasks. One possible explanation is that long
+decrease with anchor segment durations decrease from 2 s
+to 10 s on all tasks. One possible explanation is that long
 anchor segment contain undesired interfering sounds that
 will impair the training of the USS system. Therefore, we
 use 2-second anchor segment in all other experiments.
-4.6.5 7 shows the results of different anchor mining strategies.
+4.6.5 Different Anchor Segment Mining Strategies
+Table 7 shows the results of different anchor mining strategies.
  The in-clip random strategy randomly select two anchor
  segments from a same 10-second audio clip which
 signiﬁcantly underperform the SED mining strategy in all
@@ -1024,23 +1123,29 @@ randomly select two anchor segments from two different 10second
 an SDRi of 5.90 dB on AudioSet, outperforms the SED
 mining of 5.57 dB. On one hand, the out-clip random
 strategy also outperforms the SED mining strategy in FSDKaggle2018
- and the FSD k dataset. On the other hand,
+ and the FSD50k dataset. On the other hand,
 the SED mining strategy outperforms the out-clip random
-strategy in MUSDB18 2100 source separation. Both
+strategy in MUSDB18 and Slakh2100 source separation. Both
 the out-clip and the SED mining strategies outperform the
 in-clip random strategy.
-4.6.6 8 shows the USS results trained with different number
-of sources Jto constitute a mixture. Table 8 2 5.57 2018,
-FSD k, and on MUSDB18 datasets. This result shows that
+4.6.6 Sources number to mix during training
+Table 8 shows the USS results trained with different number
+of sources Jto constitute a mixture. Table 8 shows that
+J  2 performs the best on AudioSet with an SDRi of
+5.57 dB and also performs the best on the FSDKaggle2018,
+FSD50k, and on MUSDB18 datasets. This result shows that
 mixing two sources is sufﬁcient for those source separation
-tasks. By using J  4 2100 dataset. An explanation is that the Slakh JOURNAL OF LATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2015 13 1 2 3
+tasks. By using J  4 the USS system perform the beston
+the Slakh2100 dataset. An explanation is that the Slakh2100JOURNAL OF LATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2015 13
+HierarchyLevel 1HierarchyLevel 2HierarchyLevel 3
 Input audio
 Fig. 6. Computational auditory scene analysis and hierarchical USS of the trailer of  Harry Potter and the Sorcerer s Stone   https //www.youtube.
-com/watch v VyHV BRtdxo
+com/watch v VyHV0BRtdxo
 contains audio clips contain multiple instruments being
 played simultaneously. Using more sources to constitute a
 mixture perform better than using fewer sources.
-4.6.7 9 shows the USS results with different augmentation
+4.6.7 Data augmentation
+Table 9 shows the USS results with different augmentation
 strategies applied to sources to create a mixture. First, we
 do not apply any data augmentation to create a mixture.
 Second, we randomly scale the volume of each source by
@@ -1049,16 +1154,21 @@ Second, we randomly scale the volume of each source by
 ensure the sources have the same energy. Table 9 shows that
 the matching energy data augmentation signiﬁcantly outperform
  the systems trained without data augmentation and
-random volume scale augmentation, with an SDRi of 5.57 3.81 3.63 dB on AudioSet separation.
+random volume scale augmentation, with an SDRi of 5.57
+dB compared to 3.81 dB and 3.63 dB on AudioSet separation.
 The matching energy data augmentation also outperform no
 data augmentation and random volume augmentation on
 all the other tasks.
-4.6.8 10 shows the results of training the USS systems with
+4.6.8 USS results Trained with balanced and full AudioSet
+Table 10 shows the results of training the USS systems with
 the balanced and the full AudioSet, respectively. The full
 training data is 100 times larger than the balanced data. We
-also experiment with training the USS system with 4 64. The USS system trained on the
+also experiment with training the USS system with 4 GPUs
+and a larger batch size of 64. The USS system trained on the
 full AudioSet outperforms the USS system trained on the
-balanced set after trained 1 million steps. Table 10 64 6.76 dB, outperforming training on the
+balanced set after trained 1 million steps. Table 10 shows
+that training on the full AudioSet with a batch size of 64
+achieves an SDRi of 6.76 dB, outperforming training on the
 balanced set of 5.57 dB.
 4.6.9 Visualization of Hierarchical Separation
 One application of the hierarchical separation is to separate
@@ -1067,7 +1177,11 @@ arbitrary audio recordings into individual sources with AudioSet
 the hierarchical separation is the number of present sources
 are unknown. We use the methods in Section 3.9 to detect
 and separate the present sound events.
-Fig. 6 1 3 3. Level 1 3 indicates ﬁne sound classes. In level 1, the USS system
+Fig. 6 shows the automatically detected and separated
+waveforms of a movie clip from Harry Potter and the Sorcerer s
+ Stone from ontology levels 1 to 3 by using Algorithm
+ 3. Level 1 indicates coarse sound classes and level
+3 indicates ﬁne sound classes. In level 1, the USS system
 successfully separate human sounds, music and sounds of
 things. In level 2, the USS system further separate human
 group actions, vehicle, and animals. In level 3, the USS
@@ -1091,8 +1205,8 @@ condition as input to output the desired anchor segment
 waveform. In inference, we propose both a hierarchical
 separation with an AudioSet ontology. We evaluated our
 proposed USS systems on a wide range of separation tasks,
-including AudioSet separation, FSDKaggle2018 and FSD k
-general sound separation, MUSDB18 2100 musicJOURNAL OF LATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2015 14
+including AudioSet separation, FSDKaggle2018 and FSD50k
+general sound separation, MUSDB18 and Slakh2100 musicJOURNAL OF LATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2015 14
 instruments separation, and Voicebank-Demand speech enhancement
  without training on those datasets. We show
 the USS system is an approach that can address the USS
@@ -1328,7 +1442,7 @@ no. 1, 2018.
 [64] K. He, X. Zhang, S. Ren, and J. Sun,  Identity mappings in deep
 residual networks,  in European Conference on Computer Vision .
 Springer, 2016, pp. 630 645.
-[65] E. Fonseca, X. Favory, J. Pons, F. Font, and X. Serra,  FSD k 
+[65] E. Fonseca, X. Favory, J. Pons, F. Font, and X. Serra,  FSD50k 
 an open dataset of human-labeled sound events,  IEEE/ACM
 Transactions on Audio, Speech, and Language Processing , 2020.
 [66] E. Manilow, G. Wichern, P . Seetharaman, and J. Le Roux,  Cutting
@@ -1357,7 +1471,7 @@ Speech, and Language Processing , vol. 14, no. 4, pp. 1462 1469, 2006.
 2001.
 [73] S. R. Quackenbush, T. P . Barnwell, and M. A. Clements, Objective
 Measures of Speech Quality . Prentice Hall, 1988.
-[74] S. Schneider, A. Baevski, R. Collobert, and M. Auli,  wav vec 
+[74] S. Schneider, A. Baevski, R. Collobert, and M. Auli,  wav2vec 
 Unsupervised pre-training for speech recognition,  in INTERSPEECH
  , 2019.JOURNAL OF LATEX CLASS FILES, VOL. 14, NO. 8, AUGUST 2015 16
 APPENDIX
@@ -1492,7 +1606,8 @@ Electric toothbrush
 Shuffling cards
 Siren
 Pulse
-Screaming10 01020SDRi (dB)
+Screaming10
+01020SDRi (dB)
 Telephone
 Traffic noise, roadway
 Electric guitar
@@ -1624,7 +1739,8 @@ Pump (liquid)
 Bow-wow
 Pulleys
 Zing
-Synthetic singing10 01020SDRi (dB)
+Synthetic singing10
+01020SDRi (dB)
 Cat
 Tearing
 Wail, moan
@@ -1756,7 +1872,8 @@ Jingle, tinkle
 Aircraft
 Propeller, airscrew
 Squawk
-Ska10 01020SDRi (dB)
+Ska10
+01020SDRi (dB)
 Idling
 Throat clearing
 Medium engine (mid freque
@@ -1887,7 +2004,14 @@ Tap
 Steel guitar, slide guita
 Reversing beeps
 Oink
-Telephone bell ringing10 01020SDRi (dB)103105 103105 103105 103105
+Telephone bell ringing10
+01020SDRi (dB)103105
+Number of audio clips
+103105
+Number of audio clips
+103105
+Number of audio clips
+103105
 Number of audio clipsorale embedding
 avg. embedding
 oracle prediction

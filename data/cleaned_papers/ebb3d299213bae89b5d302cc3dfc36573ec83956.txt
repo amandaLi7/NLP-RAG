@@ -10,7 +10,7 @@ Medical dialogue summarization is challenging
 conversations, the use of medical terminology
 in gold summaries, and the need to identify key
 information across multiple symptom sets. We
-present a novel system for the Dialogue Note
+present a novel system for the Dialogue2Note
 Medical Summarization tasks in the MEDIQA
 2023 Shared Task. Our approach for sectionwise
  summarization (Task A) is a two-stage
@@ -43,7 +43,9 @@ doctor-patient conversations in a predefined template
  diagnosis, and the conclusion or treatment.
 Medical summarization is challenging for several
  reasons. It requires dialogue understanding,
-where data is often limited (Dai et al., 2020 1https //github.com/Raghav1606/SummQAet al., 2020)  this is compounded by the sensitive
+where data is often limited (Dai et al., 2020  Lin
+ Equal contribution
+1https //github.com/Raghav1606/SummQAet al., 2020)  this is compounded by the sensitive
 nature of medical information, which restricts the
 release of training data for this task (Johnson et al.,
 2023). Doctors and patients may discuss several
@@ -82,7 +84,8 @@ relative efficacy.
 Applying LLMs for medical summarization is a
 compelling solution to the data scarcity problems
 in this domain, and we find promising performance,
-with our team placing second in the MEDIQA 2023 2306.17384 1  [cs.CL]  30 2023 1  Distribution of difference in length between dialogue and reference summary. A larger difference in length
+with our team placing second in the MEDIQA 2023
+Shared Task for Subtask A and Division SummaryarXiv 2306.17384v1  [cs.CL]  30 Jun 2023Figure 1  Distribution of difference in length between dialogue and reference summary. A larger difference in length
 indicates a higher degree of compression.
 Figure 2  Section header distribution for Task A.
 for Subtask B. However, we also identify key areas
@@ -95,7 +98,7 @@ fine-tuned biomedical summarization models. We
 also note the impracticality of this approach for
 real data, due to privacy concerns.
 2 Background
-Dialogue Note Summarization was one of two
+Dialogue2Note Summarization was one of two
 tracks in the MEDIQA-Chat 2023 shared task (Ben
 Abacha et al., 2023). The track was further comprised
  of two tasks.Task A involves generating a section-specific
@@ -143,7 +146,7 @@ Final Pr edicted
 Header CategoryBioBER T PredictionIs prediction
 ROS/GENHX/CC 
 NoYes
-GPT-4 3  System Architecture for Section Header Classification (Task A)
+GPT-4 PredictionFigure 3  System Architecture for Section Header Classification (Task A)
 network models (Joshi et al., 2020b) have been finetuned
  with medical domain knowledge to produce
 summaries that achieve state-of-the-art results.
@@ -255,7 +258,7 @@ walk due to the bDoctor   Do you remember
 the initial date for the low
 back pain 
 Patient   Um, it was on
-December 3 1995 Generated Summary
+December 3rd 1995 Generated Summary
 Prompt Selection
 Input Dialogue
 Input DialogueSelected PromptsAll Prompts/dialogues in
@@ -331,7 +334,7 @@ help with some generalization .4.3 Task B - Full Note Summary
 For the summarization of entire dialogues, our goal
 is to generate a full note containing all the appropriate
  sections. We use a similar approach as described
- in section 4.1.2 1
+ in section 4.1.2 but we restrict it to k 1
 similar examples from the training set and include
 section-level headers in the prompts to help the
 model understand the sections in the sumary. We
@@ -348,15 +351,16 @@ including, supervised fine-tuning of T5, zeroshot/few-shot
 prompting, our similarity-based in-context learning
  applied to GPT-3, and mixing of extractive/abstractive
  methods.
-4.4.1 5
+4.4.1 T5
 We fine-tuned the T5-small model for the end-end
 full-length summarization task (Task B). We finetuned
- for 20 0.001.
+ for 20 epochs with a learning rate of 0.001.
 Our objective was to obtain a basic model that can
 serve as a benchmark to assess the complexity and
 difficulties associated with this specific task. We
 find that this finetuned model significantly underperforms
- our other methods, with a ROUGE-1 20.187  this may be due to the small dataset for
+ our other methods, with a ROUGE-1 of
+20.187  this may be due to the small dataset for
 finetuning or a non-optimized set of hyperparameters,
  as we do not do extensive hyperparameter
 search.
@@ -371,11 +375,12 @@ sections usually reported in the SOAP notes - "HISTORY
  OF PRESENT ILLNESS", "PHYSICAL
 EXAM", "RESULTS" and "ASSESSMENT AND
 PLAN". The zero-shot prompt gave us a reasonably
-high ROUGE-1 45.911.4.4.3 Few-shot prompting for section-wise
+high ROUGE-1 score of 45.911.4.4.3 Few-shot prompting for section-wise
 summary
 For Task A, we employed text-davinci-003 fewshot
  prompting strategy. Initially, we grouped and
-categorized the existing 20 4 main sections, namely "HISTORY
+categorized the existing 20 section headers for the
+dataset into 4 main sections, namely "HISTORY
 OF PRESENT ILLNESS", "PHYSICAL EXAM",
 "ASSESSMENT AND PLAN", and "RESULTS".
 The categorization scheme is detailed in Table 6.
@@ -411,26 +416,38 @@ then evaluated. We opted for these specific phrasings
 of model hallucination, which we observed was
 prevalent when tasked with generating a medical
 summary directly.
-5 5.1 80/20 train/validation split on the training
+5 Results and Analysis
+5.1 Experimental Setup
+We used an 80/20 train/validation split on the training
  set and used the entire validation split as our
 test set. The main hyperparameter that we varied
 across our experiments for prompt selection was
 k, the number of in-context examples we selected
-for the prompt. We report the ablation study onTask Models R1 2 1 BL
-Few-shot Text-davinci-003 17.3 6.8 13.5 0.562 0.539 0.546 0.398 5-Small 30.0 11.3 23.6 0.631 0.675 0.646 0.445 28.4 11.6 21.6 0.694 0.633 0.656 0.547
+for the prompt. We report the ablation study onTask Models R1 R2 RL BR BP BF1 BL
+Few-shot Text-davinci-003 17.3 6.8 13.5 0.562 0.539 0.546 0.398
+T5-Small 30.0 11.3 23.6 0.631 0.675 0.646 0.445
+A Two Stage Prompting 28.4 11.6 21.6 0.694 0.633 0.656 0.547
 Prompt Selection text-davinci-003 (Semantic) 38.6 18.4 31.2 0.716 0.725 0.715 0.56
-Prompt Selection text-davinci-003 (MMR) 39.2 18.8 31.9 0.717 0.725 0.716 0.559 4 (Semantic) 42.8 17.2 32.3 0.719 0.729 0.720 0.564 5-Small 22.7 9.1 12.9 0.568 0.471 0.514 0.319 38.7 15.6 23.8 0.618 0.679 0.647 0.392
-Zero Shot Text-davinci-003 45.4 23.3 30.6 0.644 0.712 0.676 0.410 4 (k   1) 50.7 24.9 33.6 0.666 0.703 0.684 0.406 1  Validation Results for Task A and Task B Summarization. Metrics include ROUGE-1 (R1), ROUGE-2
+Prompt Selection text-davinci-003 (MMR) 39.2 18.8 31.9 0.717 0.725 0.716 0.559
+Prompt Selection GPT4 (Semantic) 42.8 17.2 32.3 0.719 0.729 0.720 0.564
+T5-Small 22.7 9.1 12.9 0.568 0.471 0.514 0.319
+B Perspective Shift 38.7 15.6 23.8 0.618 0.679 0.647 0.392
+Zero Shot Text-davinci-003 45.4 23.3 30.6 0.644 0.712 0.676 0.410
+Prompt Selection GPT4 (k   1) 50.7 24.9 33.6 0.666 0.703 0.684 0.406
+Table 1  Validation Results for Task A and Task B Summarization. Metrics include ROUGE-1 (R1), ROUGE-2
 (R2), ROUGE-L (RL), BERTScore Precision (BP), Recall (BR), and F1 (BF1), and BLEURT (BL).
 Model Accuracy
 GPT-3.5-turbo 68.943
-GPT-4 69.474 71.278
-Ensemble (GPT-4   BioBERT) 75.312 2 5. For
+GPT-4 69.474
+BioBERT 71.278
+Ensemble (GPT-4   BioBERT) 75.312
+Table 2  Validation Results for Header Classification
+varying k over the validation split in Table 5. For
 generations we used a single decoding (n   1), temperature
-   1.0, topp  1.0 800.
+   1.0, topp  1.0 and max tokens   800.
 The metrics for BERTScore and BLEURT in Table
 1 have been calculated using RoBERTa Large (Liu
-et al., 2019) and BLEURT-Tiny respectively.
+et al., 2019) and BLEURT-Tiny2respectively.
 5.2 Experimental Results
 Our experiment involving prompt selection via semantic
  similarity with GPT-4 yielded the most
@@ -450,7 +467,11 @@ that share similar semantic structures with the input
  dialogue, thereby increasing the likelihood of
 generating coherent and accurate summaries.
 2https //github.com/google-research/bleurtTask Summary EFC EFD CR
-AReference 0.689 1.648 3.387 0.561 1.036 5.701 0.671 2.044 2.856 0.781 3.086 5.281 3  Summary extractiveness comparison - Extractive
+AReference 0.689 1.648 3.387
+Generated 0.561 1.036 5.701
+BReference 0.671 2.044 2.856
+Generated 0.781 3.086 5.281
+Table 3  Summary extractiveness comparison - Extractive
  Fragment Coverage(EFC), Extractive Fragment
 Density(EFD), Compression Ratio (CR)
 5.3 Length of Generated Summary vs.
@@ -533,13 +554,26 @@ like prompt selection using MiniLM. Next, we also
 dive deep into where prompting-based methods
 underperform the standard models like BART and
 T5.
-Overall, our model concluded 3 2nd as a team for task A, which
+Overall, our model concluded 3rd amongst all
+runs submitted and 2nd as a team for task A, which
 aimed at producing section-level summaries. Our
-system also stood 4 2nd as a team in division-wise summaries for
+system also stood 4th amongst all runs submitted
+and 2nd as a team in division-wise summaries for
 task B. In the future, we plan to use an ensemble
-of extractive and abstractive methods of generatingTask Runs R1 2 1 1 42.8 17.2 32.3 0.719 0.729 0.720 0.564 2 42.8 17.1 32.4 0.718 0.727 0.717 0.558 3 42.6 17.1 32.1 0.716 0.724 0.714 0.551 1 50.7 24.9 33.6 0.666 0.703 0.684 0.406 2 51.3 24.9 33.7 0.668 0.704 0.686 0.411 3 50.9 24.8 33.6 0.666 0.704 0.684 0.407 4  Stability of Validation Results. Metrics include ROUGE-1 (R1), ROUGE-2 (R2), ROUGE-L (RL),
+of extractive and abstractive methods of generatingTask Runs R1 R2 RL BR BP BF1 BL
+Run 1 42.8 17.2 32.3 0.719 0.729 0.720 0.564
+A Run 2 42.8 17.1 32.4 0.718 0.727 0.717 0.558
+Run 3 42.6 17.1 32.1 0.716 0.724 0.714 0.551
+Run 1 50.7 24.9 33.6 0.666 0.703 0.684 0.406
+B Run 2 51.3 24.9 33.7 0.668 0.704 0.686 0.411
+Run 3 50.9 24.8 33.6 0.666 0.704 0.684 0.407
+Table 4  Stability of Validation Results. Metrics include ROUGE-1 (R1), ROUGE-2 (R2), ROUGE-L (RL),
 BERTScore Precision (BP), Recall (BR), and F1 (BF1), and BLUERT (BL).
-k R1 1 3 40.3 0.710 0.693 0.708 0.486 5 41.9 0.718 0.706 0.714 0.521 7 42.8 0.729 0.719 0.720 0.564 5  Impact of number of in-context examples ( k)
+k R1 BP BR BF1 BL
+3 40.3 0.710 0.693 0.708 0.486
+5 41.9 0.718 0.706 0.714 0.521
+7 42.8 0.729 0.719 0.720 0.564
+Table 5  Impact of number of in-context examples ( k)
 for Task A (GPT-4)
 summaries as well as using diversity algorithms
 that will aid in producing SOAP notes that are more
@@ -686,7 +720,8 @@ Anirudh Joshi, Namit Katariya, Xavier Amatriain, and
 Anitha Kannan. 2020b. Dr. summarize  Global summarization
  of medical dialogue by exploiting local
 structures. In Findings of the Association for Computational
- Linguistics  EMNLP 2020 , pages 3755 3763, Online. Association for Computational Linguistics.
+ Linguistics  EMNLP 2020 , pages 3755 
+3763, Online. Association for Computational Linguistics.
 
 Jinhyuk Lee, Wonjin Yoon, Sungdong Kim, Donghyeon
 Kim, Sunkyu Kim, Chan Ho So, and Jaewoo Kang.
@@ -743,7 +778,8 @@ Singh, and Thomas Lin. 2022. MedicalSum  A
 guided clinical abstractive summarization model for
 generating medical reports from patient-doctor conversations.
  In Findings of the Association for Computational
- Linguistics  EMNLP 2022 , pages 4741 4749, Abu Dhabi, United Arab Emirates. Association
+ Linguistics  EMNLP 2022 , pages 4741 
+4749, Abu Dhabi, United Arab Emirates. Association
 for Computational Linguistics.
 Pranita Mishra, Jacqueline C. Kiang, and Richard W.
 Grant. 2018. Association of medical scribes in primary
@@ -883,7 +919,8 @@ Dialogue
 {dialogue}
 Summary  
 """
-Perspective Shifttext-davinci-003 3.5-turbo2 staged prompting (perspective shift with turbo and summarization with davinci)
+Perspective Shifttext-davinci-003
+gpt3.5-turbo2 staged prompting (perspective shift with turbo and summarization with davinci)
 PERSPECTIVE SHIFT   """
 Convert the following into third person.
 {dialogue}    
@@ -907,7 +944,7 @@ PROMPT #2
 Create a paragraph from the above facts only
 """Prompting Approach Model Prompt(Example)
 Prompt Selection MMR(
- k 3)text-davinci-003 3
+ k 3)text-davinci-003PROMPT SELECTION with k 3
 Dialogue 
 Doctor  Your last visit was on April seventh two thousand five, correct 
 Patient  Ah no, it was on April eighth two thousand five, doctor.
@@ -930,7 +967,7 @@ Dialogue
 {dialogue}
 Summary 
 Prompt Selection Semantic
- Similarity( k 7) - Task AGPT-4 7
+ Similarity( k 7) - Task AGPT-4PROMPT SELECTION with k 7
 Dialogue 
 Doctor  Do you know about any medical issues running in your family 
 Patient  Yeah, almost everyone had diabetes.
@@ -956,7 +993,7 @@ Dialogue
 {dialogue}
 Summary 
 Prompt Selection Semantic
- Similarity( k 1) Task BGPT-4 1
+ Similarity( k 1) Task BGPT-4PROMPT SELECTION with k 1
 Dialogue 
 [doctor] and why is she here   annual exam. okay. all right. hi, Sarah. how are you  
 [patient] good . how are you  

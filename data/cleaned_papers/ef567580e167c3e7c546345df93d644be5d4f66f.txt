@@ -3,8 +3,9 @@ FOR AUDIO-VISUAL REPRESENTATION MODELS
 Yuan Tseng1, Layne Berry2 , Yi-Ting Chen3 , I-Hsiang Chiu1 , Hsuan-Hao Lin1 , Max Liu1 ,
 Puyuan Peng2 , Yi-Jen Shih1 , Hung-Yu Wang1 , Haibin Wu1 , Po-Yao Huang4, Chun-Mao Lai1,
 Shang-Wen Li4, David Harwath2, Yu Tsao3, Shinji Watanabe5, Abdelrahman Mohamed6,
-Chi-Luen Feng1, Hung-yi Lee1 1National Taiwan University, Taiwan University of Texas at Austin, USA
-3Academia Sinica, Taiwan Meta AI Carnegie Mellon University, USA Rembrand
+Chi-Luen Feng1, Hung-yi Lee1
+1National Taiwan University, Taiwan2University of Texas at Austin, USA
+3Academia Sinica, Taiwan4Meta AI5Carnegie Mellon University, USA6Rembrand
 r11942082@ntu.edu.tw
 ABSTRACT
 Audio-visual representation learning aims to develop systems with
@@ -13,14 +14,15 @@ and visual information. However, current models often focus on
 a limited set of tasks, and generalization abilities of learned representations
  are unclear. To this end, we propose the A V-SUPERB
 benchmark that enables general-purpose evaluation of unimodal audio/visual
- and bimodal fusion representations on 7 5 audio-visual tasks in speech and audio processing. We evaluate 5
+ and bimodal fusion representations on 7 datasets covering
+5 audio-visual tasks in speech and audio processing. We evaluate 5
 recent self-supervised models and show that none of these models
 generalize to all tasks, emphasizing the need for future study on
 improving universal model performance. In addition, we show that
 representations may be improved with intermediate-task fine-tuning
 and audio event classification with AudioSet serves as a strong intermediate
  task. We release our benchmark with evaluation code1
-and a model submission platform to encourage further research in
+and a model submission platform2to encourage further research in
 audio-visual learning.
 Index Terms  Audio-Visual Learning, Representation Learning,
  Evaluation, Self-Supervised Learning
@@ -85,7 +87,7 @@ experiment settings, which increases comparison difficulty and obfuscates
 A V-SUPERB benchmark, we select a diverse set of datasets from
 multiple tasks to comprehensively compare works in audio-visual
 representation learning.
-Previous multitask benchmarks in speech [7, 8], audio [9], andarXiv 2309.10787 1  [eess.AS]  19 2023Fig. 1 . We consider three evaluation scenarios  extracting features
+Previous multitask benchmarks in speech [7, 8], audio [9], andarXiv 2309.10787v1  [eess.AS]  19 Sep 2023Fig. 1 . We consider three evaluation scenarios  extracting features
  using inputs from one or both modalities. Following [7], the
 weighted-sum of features from Transformer layers (if applicable) are
 used as input for fine-tuning a small downstream model for each individual
@@ -132,7 +134,7 @@ designed to be simple and lightweight in order to purely evalu-ate representatio
 evaluation, we also limit hyperparameter tuning for downstream
 tasks. Although, we recognize that different representations may
 have vastly different loss landscapes, hence we search for the best
-performing learning rate from 10 1 10 5in log-scale.
+performing learning rate from 10 1to10 5in log-scale.
 3.1. Downstream Task Selection
 To keep computational costs reasonable, we mainly focus on
 utterance-level classification tasks in speech and audio processing,
@@ -188,17 +190,27 @@ differ from those of unimodal layers, we take the weighted-sum for
 fusion Transformer layers only.Representation Type Params.Overall
 ScoreAudio-Visual Speech-Visual
 AEC AR ASR ASV ER
-AS-20 101 3-TED V oxCeleb2 IEMOCAP
+AS-20K VGGSoundKineticsSoundsUCF101
+ LRS3-TED V oxCeleb2 IEMOCAP
 (mAP  ) (Acc.  ) (Acc.  ) (Acc.  ) (CER  ) (EER  ) (Acc.  )
 Audio-only
-FBANK 0 36.69 2.8 5.12 24.73 19.91 20.07 27.16 51.52 95 53.66 14.3 30.21 51.46 36.06 2.96 15.58 62.14
-A V-HuBERT* 90 53.20 12.6 31.14 49.02 38.58 3.01 14.45 58.54 5 39.70 12.3 27.01 45.90 33.85 66.09 32.58 57.53 10 44.81 20.5 37.67 55.28 43.26 80.23 23.74 60.94 86 54.11 21.6 39.91 57.28 45.68 24.43 20.71 59.46
+FBANK 0 36.69 2.8 5.12 24.73 19.91 20.07 27.16 51.52
+HuBERT 95M 53.66 14.3 30.21 51.46 36.06 2.96 15.58 62.14
+A V-HuBERT* 90M 53.20 12.6 31.14 49.02 38.58 3.01 14.45 58.54
+RepLAI 5M 39.70 12.3 27.01 45.90 33.85 66.09 32.58 57.53
+A VBERT 10M 44.81 20.5 37.67 55.28 43.26 80.23 23.74 60.94
+MA ViL 86M 54.11 21.6 39.91 57.28 45.68 24.43 20.71 59.46
 Video-only
 HoG 0 25.39 1.5 3.81 18.70 25.67 71.46 36.32 35.83
-A V-HuBERT* 103 33.48 2.4 5.90 24.73 37.55 50.91 11.90 26.59 15 36.40 5.5 13.5 46.68 56.69 71.33 36.95 40.72 37 47.69 11.5 28.73 62.67 77.42 72.29 20.00 45.8 87 49.70 18.0 32.08 74.01 79.37 74.03 24.58 43.03
+A V-HuBERT* 103M 33.48 2.4 5.90 24.73 37.55 50.91 11.90 26.59
+RepLAI 15M 36.40 5.5 13.5 46.68 56.69 71.33 36.95 40.72
+A VBERT 37M 47.69 11.5 28.73 62.67 77.42 72.29 20.00 45.8
+MA ViL 87M 49.70 18.0 32.08 74.01 79.37 74.03 24.58 43.03
 Audio-visual fusion
-A V-HuBERT 103 53.42 13.3 32.69 52.23 41.46 2.75 9.46 46.45 43 54.85 22.9 44.54 71.31 71.76 70.12 18.31 61.87 187 62.36 26.7 47.22 79.51 77.98 30.18 19.67 54.94
-*In order to fairly compare HuBERT & A V-HuBERT, we set features of the opposing modality to 0 12-layer fusion
+A V-HuBERT 103M 53.42 13.3 32.69 52.23 41.46 2.75 9.46 46.45
+A VBERT 43M 54.85 22.9 44.54 71.31 71.76 70.12 18.31 61.87
+MA ViL 187M 62.36 26.7 47.22 79.51 77.98 30.18 19.67 54.94
+*In order to fairly compare HuBERT & A V-HuBERT, we set features of the opposing modality to 0 and extract features from the 12-layer fusion
 Transformer for audio-only and video-only tracks.
 Table 1 . Main results. Best results for each track are highlighted in bold. Second-best results are underlined. We observe that MA ViL excels
 at audio processing tasks, while HuBERT and A V-HuBERT are better for speech processing tasks.
@@ -259,7 +271,7 @@ HuBERT and A V-HuBERT, and find that visual grounding from
 multimodal cluster prediction can obtain small gains for V oxCeleb2,Intermediate Task
 Fine-tuning DataAudio-Visual Speech-Visual
 AEC AR ASR ASV ER
-AS-20K VGGSound Kinetics-Sounds UCF101 3 -TED V oxCeleb2 IEMOCAP
+AS-20K VGGSound Kinetics-Sounds UCF101 LRS3 -TED V oxCeleb2 IEMOCAP
 (mAP  ) (Acc.  ) (Acc.  ) (Acc.  ) (CER  ) (EER  ) (Acc.  )
 AV-HuBERT
 Audio 12.6(-0.6) 22.83(-8.31) 38.19(-10.83) 28.70(-9.88) 13.89(-10.88) 22.38(-7.93) 53.92(-4.62)
@@ -269,7 +281,8 @@ FusionLRS3 -TED
 MAViL
 Audio 28.3( 6.7) 44.79( 4.89) 62.93( 5.65) 50.10( 4.42) 23.99( 0.44) 21.77(-1.06) 58.17(-1.29)
 Video 20.9( 2.9) 36.68( 4.58) 77.39( 3.38) 86.93( 7.56) 78.59(-4.56) 23.93( 0.65) 39.15(-3.88)
-FusionAudioSet -2 39.1( 12.4) 55.94( 8.72) 84.93( 5.42) 88.07( 10.09) 30.65(-0.47) 18.61( 1.06) 46.35(-8.59)
+FusionAudioSet -2M
+39.1( 12.4) 55.94( 8.72) 84.93( 5.42) 88.07( 10.09) 30.65(-0.47) 18.61( 1.06) 46.35(-8.59)
 Table 2 . Intermediate-task fine-tuning does not generally improve performance across all tasks. Results after intermediate-task fine-tuning
 (left) and absolute improvements compared to the original self-supervised model (right) are shown. Fine-tuning data for each model is
 color-coded to the corresponding downstream dataset.
@@ -337,7 +350,8 @@ information.
 6. CONCLUSIONS
 We introduce A V-SUPERB, the first benchmark for assessing
 general-purpose capabilities of audio-visual representations. A VSUPERB
- includes a suite of 7 5 audio-visual tasks. The benchmark is split into three
+ includes a suite of 7 speech and audio processing datasets
+covering 5 audio-visual tasks. The benchmark is split into three
 tracks  two unimodal audio-only or video-only representations
 tracks, as well as a bimodal audio-visual fusion track, which enables
 easy comparison between unimodal and bimodal learning. Despite
@@ -351,7 +365,7 @@ set of tasks and datasets are included in its current form. For future
 facets of audio-visual processing, such as cross-modal retrieval
 and sound/video generation, as well as improving the diversity and
 comprehensiveness of data sources.7. REFERENCES
-[1] Alexei Baevski et al.,  wav vec 2.0  A framework for selfsupervised
+[1] Alexei Baevski et al.,  wav2vec 2.0  A framework for selfsupervised
  learning of speech representations,  in NeurIPS ,
 2020.
 [2] Wei-Ning Hsu et al.,  Hubert  Self-supervised speech representation
@@ -361,7 +375,7 @@ TASLP , 2021.
  for general-purpose audio representation,  in IJCNN , 2021.
 [4] Po-Yao Huang et al.,  Masked autoencoders that listen,  in
 NeurIPS , 2022.
-[5] Alexey Dosovitskiy et al.,  An image is worth 16 16 words 
+[5] Alexey Dosovitskiy et al.,  An image is worth 16x16 words 
 Transformers for image recognition at scale,  in ICLR , 2020.
 [6] Kaiming He et al.,  Masked autoencoders are scalable vision
 learners,  in CVPR , 2022.
@@ -394,7 +408,7 @@ models from self-supervised synchronization,  in NeurIPS ,
 cross-modal video representation learning,  in ICCV , 2021.
 [19] Will Kay et al.,  The kinetics human action video dataset, 
 arXiv preprint arXiv 1705.06950 , 2017.
-[20] Khurram Soomro et al.,  Ucf101 101 human
+[20] Khurram Soomro et al.,  Ucf101  A dataset of 101 human
  actions classes from videos in the wild,  arXiv preprint
 arXiv 1212.0402 , 2012.
 [21] Dima Damen et al.,  Rescaling egocentric vision  Collection,
@@ -413,7 +427,7 @@ visual speech recognition,  arXiv preprint arXiv 1809.00496 ,
 [27] Christoph Feichtenhofer et al.,  A large-scale study on unsupervised
  spatiotemporal representation learning,  in CVPR ,
 2021.
-[28] Kristen Grauman et al.,  Ego d  Around the world in 3,000
+[28] Kristen Grauman et al.,  Ego4d  Around the world in 3,000
 hours of egocentric video,  in CVPR , 2022.
 [29] Wangchunshu Zhou et al.,  VLUE  A multi-task multidimension
  benchmark for evaluating vision-language pretraining, 

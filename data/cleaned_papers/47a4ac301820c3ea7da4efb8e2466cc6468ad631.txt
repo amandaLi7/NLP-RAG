@@ -87,7 +87,7 @@ of unlabeled text passages from a target domain.
 github.com/torylin/sentecon/ .
 2We use the term  sentence  for clarity, but our approach
 is also applicable to longer passages of text like paragraphs
-and documents, as our experiments show.arXiv 2305.14728 2  [cs.CL]  1 2023 1  A comparison of lexicon-based language representations and SENTE CON. While lexicons encode wordlevel
+and documents, as our experiments show.arXiv 2305.14728v2  [cs.CL]  1 Jun 2023Figure 1  A comparison of lexicon-based language representations and SENTE CON. While lexicons encode wordlevel
  category counts, S ENTE CONparses whole sentences and encodes sentence-level category intensities.
 We evaluate SENTE CONand SENTE CON 
 (jointly denoted hereafter as SENTE CON( )) with
@@ -153,7 +153,7 @@ possible to obtain either S ENTE CON(top row) or using a reference corpus S ENTE
 CON( )but differ in their aims. To address gaps in
 the LIWC lexicon vocabulary, Gong et al. (2018)
 implement a soft matching scheme based on noncontextual
- WordNet (Miller, 1995) and word vec
+ WordNet (Miller, 1995) and word2vec
 (Mikolov et al., 2013) embeddings. Given a new
 word, their method increases a category s weight
 if the embedding similarity between the new word
@@ -181,7 +181,7 @@ two parts  (1) building a sentence embedding dictionary
  and (2) using that dictionary to generate an
 interpretable representation for a new sentence. We
 describe the details of the procedure in Sections
-3.1 3.2. The full SENTE CON( )method is
+3.1 and 3.2. The full SENTE CON( )method is
 formally outlined in Algorithm 1.
 3.1 Building a sentence embedding lexicon
 We present two variants of our approach, SENTE CONandSENTE
@@ -205,14 +205,26 @@ can thus be treated as representative of all sentences
 that use that word. Therefore, the embeddings forAlgorithm 1 SENTE CON( )
 1 Initialize deep language model Mθ
 2 Obtain all categories C {ci}d
-i 1 3 4  Obtain all words Sci {sj,ci}m
-j 1 5 6  Obtain all sentences Sci {sj,ci}m
-j 1 7 8 rsnew Mθ(snew)  Get embedding for new sentence snew
+i 1in chosen lexicon L
+3 ifSENTE CONthen
+4  Obtain all words Sci {sj,ci}m
+j 1thatLmaps to category ci
+5 else if SENTE CON then
+6  Obtain all sentences Sci {sj,ci}m
+j 1containing words that Lmaps to category ci
+7 end if
+8 rsnew Mθ(snew)  Get embedding for new sentence snew
 9 fori [d]do
 10  Rci {Mθ(sj,ci)}m
-j 1, where Rci  (rjk)1 j m,1 11  fork [n]do
-12  centroid (ci)k 1 1 13 14  h(snew)i g(rsnew,centroid (ci))  Compute similarity gof new sentence and centroid
-15 16 return h(snew)  Return representation of snew
+j 1, where Rci  (rjk)1 j m,1 k n  Get deep embeddings
+11  fork [n]do
+12  centroid (ci)k 1
+mPm
+j 1rjk  Get centroid of embeddings
+13  end for
+14  h(snew)i g(rsnew,centroid (ci))  Compute similarity gof new sentence and centroid
+15 end for
+16 return h(snew)  Return representation of snew
 all words in a category form a compact representation
  of all sentences in the training corpus containing
  any words associated with that category.
@@ -253,7 +265,9 @@ by taking the column-wise mean of Rci, resulting
 in a1 nvector. That is, letting rjkdenote the
 element of Rciin row j, column k, we find the
 k-th element of the centroid as
-centroid (ci)k 1 1rjk
+centroid (ci)k 1
+mmX
+j 1rjk
 Given a new sentence snew, generating a SENTE CON( )representation
  requires us to compute the
 similarity between the new sentence and each of the
@@ -287,12 +301,15 @@ when using them in downstream predictive tasks.
 Linguistic Inquiry and Word Count ( LIWC ) is a human
  expert-constructed lexicon generally viewed
 as a gold standard for lexicons (Pennebaker et al.,
-2015). Its 2015 6,548 85 categories,
+2015). Its 2015 version has a vocabulary of 6,548
+words that belong to one or more of its 85 categories,
  most of which are related to psychology
 and social interaction. We choose to exclude the
-33 52 topical categories (list in appendix Section B.1).
+33 grammatical categories and retain the remaining
+52 topical categories (list in appendix Section B.1).
 Empath is a semi-automatically generated lexicon
- with a default vocabulary of 16,159 194 categories (Fast
+ with a default vocabulary of 16,159 words that
+belong to one or more of its 194 categories (Fast
 et al., 2016). Empath defines a category using a
 small number of human-selected seed words, which
 are used to automatically discover related words
@@ -328,7 +345,7 @@ reference corpus. This allows us to adapt our SENTECON
 Our first evaluation is to compare interpretable
 representations of sentences with human judgements
  of those sentences (see Section 4.4). We
-have two primary baselines  Lexicon andLexicon word vec
+have two primary baselines  Lexicon andLexicon word2vec
  . The Lexicon representation uses a
 bag-of-categories approach to encode the text using
 a traditional lexicon  in our experiments, we use
@@ -338,18 +355,18 @@ baselines Lexicon (L) andLexicon (E) , respectively.
 each word in a text with one or more categories.
 From these categorized words, a vector of category
 counts can be constructed for a sentence.
-The Lexicon word vec language representation
+The Lexicon word2vec language representation
  implements the previously mentioned soft
 matching approach proposed by Gong et al. (2018).
 Although the authors describe the method for
 LIWC only, we generalize the method to Empath
  also, from which we obtain the baselines
-LIWC word vec andEmpath word vec . We include
+LIWC word2vec andEmpath word2vec . We include
  this baseline to separate the effects of adding
 sentence context from the effects of soft matching.
  In our human evaluation, we focus on LIWC
 given its broad use in many research areas and use
-Lexicon (L) and LIWC word vec as baselines.
+Lexicon (L) and LIWC word2vec as baselines.
 In our downstream prediction experiments, we
 include an additional baseline model based on recent
  transformer self-attention architectures, MPNet(Song
@@ -363,7 +380,7 @@ also used as Mθ, the deep language model used to
 generate sentence embeddings for SENTE CON( ).
 Taking both LIWC and Empath as our traditional
  lexicons, we evaluate SENTE CONandSENTECON against
- Lexicon, Lexicon word vec, and
+ Lexicon, Lexicon word2vec, and
 MPNet. For all language representations, we add
 a linear layer over the representation and train the
 linear layer on the downstream task to obtain our
@@ -378,20 +395,23 @@ As a fair and reliable way to compare SENTE CON( )to
  other lexicon-based language representations,
  we collected an extensive set of human
  sentence-level annotations for all 52 nongrammatical
- categories of LIWC. In total, 100 52 6 human raters,
+ categories of LIWC. In total, 100 sentences
+ randomly sampled from MELD were each
+annotated across 52 categories by 6 human raters,
 for a total of 31,200 annotations. These annotations
 are available as a public dataset on our GitHub
 repository.
 The human annotation study was conducted on
 the online research platform Prolific.4To avoid
-annotator fatigue, the 52 5 sets of roughly equal size, and each
+annotator fatigue, the 52 categories were randomly
+split into 5 sets of roughly equal size, and each
 set was given its own annotation task. Sentences
 were annotated in batches of 20, and each annotation
  task had 6 independent annotators. During the
 study, each annotator was shown one sentence at a
-time, alongside one set of 8 10 LIWC categories.
+time, alongside one set of 8 to 10 LIWC categories.
 Annotators were then asked to rate on a scale from
-0 2 the extent to which each of the categories
+0 to 2 the extent to which each of the categories
 is expressed. This yielded a human score (averaged
  over the 6 annotators) of the relevance of each
 category for each annotated sentence.
@@ -400,11 +420,15 @@ using intraclass correlation coefficients (ICC). Generally
  speaking, ICC values above 0.50, 0.75, and
 0.90 indicate moderate, good, and excellent interrater
  reliability, respectively (Koo and Li, 2016).
-We obtained an average ICC estimate of 0.686 95% confidence interval of [0.606, 0.746], demonstrating
+We obtained an average ICC estimate of 0.686 with
+a 95% confidence interval of [0.606, 0.746], demonstrating
  moderate to good reliability.
 Further details about this study and its results are
 provided in the appendix (Section B.3).
-5 5.1 4.4, we examine how well the different interpretable
+5 Results and Discussion
+5.1 Human evaluation
+Using the human annotations described in Section
+ 4.4, we examine how well the different interpretable
  language representations reflect human
 perceptions of the text. Across all annotated sentences,
  we computed Pearson correlations between
@@ -415,16 +439,17 @@ Figure 3  Average Pearson correlations ( r) between
 human category annotations and interpretable language
 representations.  denotes a difference with p  0.005,
 and   denotes a difference with p  0.0005 .
-(Lexicon (L), LIWC word vec, SENTE CONwith
+(Lexicon (L), LIWC word2vec, SENTE CONwith
 pre-trained Mθ,SENTE CON with pre-trained
 Mθ,SENTE CONwithMθfine-tuned on MELD,
 andSENTE CON withMθfine-tuned on MELD).
 These results are shown in Figure 3. For illustrative
-purposes, we include correlations for 10 10 in the appendix.
+purposes, we include correlations for 10 randomly
+selected sentences in Table 10 in the appendix.
 We observe that when Mθis pre-trained, SENTECON( )correlates
  much more strongly with
 human category ratings than do either of the existing
- lexicon methods, Lexicon (L) and LIWCword vec.
+ lexicon methods, Lexicon (L) and LIWCword2vec.
  Using a paired two-sided t-test, we
 find that this difference is statistically significant.
 Importantly, these results suggest that when used
@@ -446,35 +471,37 @@ SENTE CON (pre-trained) have no statistically significant
  difference, nor do SENTE CON(fine-tuned)
 andSENTE CON (fine-tuned). We also find no
 statistically significant difference between Lexicon
-(L) and LIWC-word vec.Representation Interpretable  Mθ MELD (e) MELD (s) SST IMDb MOSI
+(L) and LIWC-word2vec.Representation Interpretable  Mθ MELD (e) MELD (s) SST IMDb MOSI
 Majority / mean - - 48.1 48.1 49.9 50.0 -0.001
 Lexicon (L) Yes - 46.5 49.5 67.8 76.7 0.202
-LIWC word vec Yes - 47.5 49.4 78.7 81.4 0.270
+LIWC word2vec Yes - 47.5 49.4 78.7 81.4 0.270
 SENTE CON(L) Yes Pre-trained 47.7 57.6 86.5 84.2 0.505
 SENTE CON  (L) Yes Pre-trained 54.6 61.6 88.0 86.3 0.487
-Lexicon (E) Yes - 39.7 44.4 63.4 74.9 0
-Empath word vec Yes - 46.0 50.8 81.4 85.1 0.222
+Lexicon (E) Yes - 39.7 44.4 63.4 74.9  0
+Empath word2vec Yes - 46.0 50.8 81.4 85.1 0.222
 SENTE CON(E) Yes Pre-trained 51.5 59.2 88.7 87.0 0.450
 SENTE CON  (E) Yes Pre-trained 52.4 60.4 88.9 88.3 0.468
-Pre-trained MPNet No - 58.9 65.0 89.5 89.2 0.482 1  Performance comparisons of SENTE CON( )and traditional lexicon-based methods when used in downstream
+Pre-trained MPNet No - 58.9 65.0 89.5 89.2 0.482
+Table 1  Performance comparisons of SENTE CON( )and traditional lexicon-based methods when used in downstream
  prediction tasks. (L) indicates that LIWC was used as the base lexicon, while (E) indicates that Empath was
 used. The best result for each base lexicon choice is bolded. We report test accuracy for MELD (on both emotion
-and sentiment tasks), SST, and IMDb and test R for MOSI.
+and sentiment tasks), SST, and IMDb and test R2for MOSI.
 Representation Interpretable  Mθ MELD (e) MELD (s) SST IMDb MOSI
 SENTE CON(L) Yes Fine-tuned 57.2 68.1 93.4 95.1 0.672
 SENTE CON  (L) Yes Fine-tuned 59.9 68.1 93.2 95.0 0.673
 SENTE CON(E) Yes Fine-tuned 56.3 67.3 93.2 94.9 0.709
 SENTE CON  (E) Yes Fine-tuned 59.3 68.5 93.3 95.0 0.702
-Fine-tuned MPNet No - 59.8 67.8 93.4 95.1 0.694 2  Performance comparisons of SENTE CON( )and deep language representations when used in downstream
+Fine-tuned MPNet No - 59.8 67.8 93.4 95.1 0.694
+Table 2  Performance comparisons of SENTE CON( )and deep language representations when used in downstream
 prediction tasks. (L) indicates that LIWC was used as the base lexicon, while (E) indicates that Empath was used.
 The best result for each base lexicon choice is bolded. We report test evaluation metrics.
 5.2 Performance on downstream tasks
 We evaluate the implications of SENTE CON( )on
 downstream predictive performance. Our results,
 including comparisons with baseline models, are
-shown in Tables 1 2. Importantly, we find that 
+shown in Tables 1 and 2. Importantly, we find that 
 (1) Both SENTE CONand SENTE CON perform
- better than the Lexicon and Lexicon word vec
+ better than the Lexicon and Lexicon word2vec
  approaches do on downstream
 tasks (Table 1). This finding suggests that by modeling
  sentence-level context, SENTE CONandSENTECON improve
@@ -483,11 +510,11 @@ to not only human evaluation but also downstream
 prediction. Across all classification tasks (MELD,
 SST, and IMDb), SENTE CONandSENTE CON 
 achieve substantially higher accuracy than Lexicon
-and Lexicon word vec do, regardless of whether
+and Lexicon word2vec do, regardless of whether
 LIWC or Empath is used as the base lexicon. Likewise,
  SENTE CONandSENTE CON achieve substantially
- higher R on the MOSI regression task
-than Lexicon and Lexicon word vec do.
+ higher R2on the MOSI regression task
+than Lexicon and Lexicon word2vec do.
 (2) When used with a fine-tuned Mθ,SENTE CONand
  SENTE CON provide interpretability
 to deep language models at no cost to performance
@@ -512,13 +539,18 @@ models, and this type of performance is far beyond
 that achieved by existing lexicon-based methods.
 (3)SENTE CON offers performance improvements
  over SENTE CONwithout negatively impacting
- interpretability (Tables 1 2), supporting
+ interpretability (Tables 1 and 2), supporting
  the utility of using a reference corpus from the
-task data domain to refine SENTE CONrepresenta-Word Meaning 1 2Matching-sense
+task data domain to refine SENTE CONrepresenta-Word Meaning 1 Meaning 2Matching-sense
 similarityOpposing-sense
 similarityIndividual
 similarity ratio
-bright shining intelligent 0.692 0.608 1.139 0.677 0.539 1.256 0.686 0.591 1.161 0.614 0.488 1.258 0.419 0.292 1.433 3  Similarities between contextualized SENTE CONrepresentations of homonyms and their matching- and
+bright shining intelligent 0.692 0.608 1.139  
+hard forceful difficult 0.677 0.539 1.256   
+dull boring unintelligent 0.686 0.591 1.161   
+dark dim sinister 0.614 0.488 1.258   
+cool calm impressive 0.419 0.292 1.433   
+Table 3  Similarities between contextualized SENTE CONrepresentations of homonyms and their matching- and
 opposing-sense meanings.  denotes a difference with p  0.005, and   denotes a difference with p  0.0005 .
 Figure 4  t-SNE plots of contextualized SENTE CONrepresentations of homonyms show separation by word sense.
 tions. While fine-tuning Mθallows SENTE CON( )
@@ -642,9 +674,12 @@ candidates for problems in fields like medicine, social
 language use is an important part of the scientific
 process and where insight into a model s decisionmaking
  process can be paramount.
-7 1722822 1750439, and National Institutes of
-Health awards R MH125740, R MH132225,
-R MH096951 130767. Any opinions,
+7 Acknowledgements
+This material is based upon work partially supported
+ by National Science Foundation awards
+1722822 and 1750439, and National Institutes of
+Health awards R01MH125740, R01MH132225,
+R01MH096951 and R21MH130767. Any opinions,
  findings, conclusions, or recommendations
 expressed in this material are those of the author(s)
 and do not necessarily reflect the views of the
@@ -899,7 +934,8 @@ Soujanya Poria, Devamanyu Hazarika, Navonil Majumder,
  2019. MELD  A multimodal multi-party
 dataset for emotion recognition in conversations. In
 Proceedings of the 57th Annual Meeting of the Association
- for Computational Linguistics , pages 527 536, Florence, Italy. Association for Computational
+ for Computational Linguistics , pages 527 
+536, Florence, Italy. Association for Computational
 Linguistics.
 Emily Reif, Ann Yuan, Martin Wattenberg, Fernanda B
 Viegas, Andy Coenen, Adam Pearce, and Been Kim.
@@ -1050,7 +1086,7 @@ MiniLM (Wang et al., 2020), BERT (Devlin et al.,
 2019b), and RoBERTa (Liu et al., 2019), all of
 which are transformer-based language models like
 MPNet. Comparing the performance of SENTECONrepresentations
- to Lexicon and Lexiconword vec,
+ to Lexicon and Lexiconword2vec,
  we observe that SENTE CONcontinues
 to outperform both baselines across all choices of
 Mθ(Table 5), even for the smaller MiniLM model.
@@ -1062,7 +1098,8 @@ SENTE CONwith MPNet and RoBERTa as Mθare
 the best-performing variants of SENTE CON(aside
 from the MELD sentiment task, where SENTE CON
 with BERT achieves the best performance).
-A.3 4.2, we describe our approach for creating
+A.3 Choice of reference corpus
+In Section 4.2, we describe our approach for creating
  a reference corpus  using a held-out portion of
 the task dataset. However, it is useful to know
 whether the reference corpus must be from the
@@ -1093,12 +1130,13 @@ SENTE CON(L) 4 55.5 67.2 93.5 95.1 68.4
 SENTE CON  (L) 1 59.9 68.1 93.2 95.0 67.3
 SENTE CON  (L) 2 59.0 67.4 92.8 94.7 66.9
 SENTE CON  (L) 3 57.6 68.0 93.2 93.6 SENTE
- CON  (L) 4 55.3 66.9 93.1 93.8 4  Performance comparisons of SENTE CON( )across different numbers of centroids per category. We use
+ CON  (L) 4 55.3 66.9 93.1 93.8 Table
+ 4  Performance comparisons of SENTE CON( )across different numbers of centroids per category. We use
 LIWC as the base lexicon and fine-tuned MPNet as Mθ. We report test accuracy for MELD, SST, and IMDb and
-testR for MOSI.
+testR2for MOSI.
 Representation Mθ MELD (e) MELD (s) SST IMDb MOSI
 Lexicon (L) - 46.5 49.5 67.8 76.7 0.202
-LIWC word vec - 47.5 49.4 78.7 81.4 0.270
+LIWC word2vec - 47.5 49.4 78.7 81.4 0.270
 SENTE CON(L) MPNet 47.7 57.6 86.5 84.2 0.505
 SENTE CON(L) MiniLM 50.7 56.4 77.9 75.7 0.411
 SENTE CON(L) DistilRoBERTa 48.6 54.7 85.2 82.4 0.289
@@ -1108,10 +1146,16 @@ Pre-trained embedding MPNet 58.9 65.0 89.5 89.2 0.482
 Pre-trained embedding MiniLM 59.9 64.7 81.3 81.1 0.150
 Pre-trained embedding DistilRoBERTa 58.5 64.9 88.3 87.6 0.264
 Pre-trained embedding BERT 56.8 63.2 86.1 89.1 0.259
-Pre-trained embedding RoBERTa 60.5 65.0 90.3 92.0 0.177 5  Performance comparisons of SENTE CONwhen used with different pre-trained language models as Mθin
-downstream prediction tasks. We report test accuracy for MELD, SST, and IMDb and test R for MOSI.
+Pre-trained embedding RoBERTa 60.5 65.0 90.3 92.0 0.177
+Table 5  Performance comparisons of SENTE CONwhen used with different pre-trained language models as Mθin
+downstream prediction tasks. We report test accuracy for MELD, SST, and IMDb and test R2for MOSI.
 Reference corpus MELD (e) MELD (s)
-None 50.7 56.4 55.5 61.3 49.7 55.6 49.9 53.9 50.6 55.7 6  Performance comparisons of SENTE CON on
+None 50.7 56.4
+MELD 55.5 61.3
+Switchboard 49.7 55.6
+NYT 49.9 53.9
+PubMed 50.6 55.7
+Table 6  Performance comparisons of SENTE CON on
 MELD when used with different reference corpora. We
 use LIWC as the base lexicon and pre-trained MiniLM
 asMθ, and we report test accuracies.
@@ -1206,7 +1250,8 @@ sentence was expressing the topic.
  of the sentence clearly expresses the
 topic.
 Category batches. As mentioned in the main
-paper, the 52 5 sets of roughly equal size to avoid annotator
+paper, the 52 LIWC categories were randomly split
+into 5 sets of roughly equal size to avoid annotator
 fatigue. The splits were as follows 
  Batch 1  netspeak ,differ ,cause ,nonflu ,discrep,drivers
  ,relig,swear ,feel,home ,family
@@ -1258,20 +1303,21 @@ already publicly available, and the additional splits
 created for the reference corpora are available on
 our GitHub repository. All datasets are in English.
 B.5 Training details
-Our language models were built on the HuggingFace transformers
+Our language models were built on the HuggingFace10transformers
  library (version 4.16.2),
 with pre-trained models taken from the HuggingFace
  model hub. When fine-tuning these models on
 the task datasets, we used an Adam optimizer and
 learning rates [ 10 1,10 2,10 3,10 4,10 5], and
 we found 10 5to be the best learning rate across
-all models. We trained for 15 5-fold cross-validation loss.
+all models. We trained for 15 epochs and selected
+the model with the best 5-fold cross-validation loss.
 All other hyperparameters were set to Trainer class
 defaults from the transformers library.
 The number of parameters for each of the deep
 language models used is reported in Table 9. The
 license names for the models are also provided.
-6https //github.com/A Zadeh/CMU-MultimodalSDK/
+6https //github.com/A2Zadeh/CMU-MultimodalSDK/
 blob/master/LICENSE.txt
 7https //catalog.ldc.upenn.edu/license/
 ldc-non-members-agreement.pdf
@@ -1286,27 +1332,38 @@ small datasets. We estimate the number of GPU
 hours used in these experiments to be around 20.
 All experiments were conducted on machines with
 consumer-level NVIDIA graphics cards.Dataset ntrain ntest nreference ntotal License
-MELD 9,989 2,610 1,109 13,708 GPL-3.0 6,920 1,821 872 9,613 25,000 15,000 10,000 50,000 1,034 500 665 2,199 8
+MELD 9,989 2,610 1,109 13,708 GPL-3.0
+SST 6,920 1,821 872 9,613 Unknown
+IMDb 25,000 15,000 10,000 50,000 Unknown
+MOSI 1,034 500 665 2,199 Other8
 Switchboard - - 15,000 - Other9
 NYT - - 16,784 - CC BY-NC-SA 4.0
 PubMed - - 15,000 - Unknown
 Table 8  Composition of dataset splits. The number of train, test, and reference corpus samples is given, along with
 total samples for each dataset. Licensing information is also given.
 Language model # dimensions # parameters License
-MPNet 768 109,486,464 768 124,645,632 768 109,482,240 Apache-2.0 384 22,713,216 Apache-2.0 768 82,118,400 Apache-2.0 9  Number of dimensions, parameters, and license for each deep language model.SentenceLexicon
+MPNet 768 109,486,464 MIT
+RoBERTa 768 124,645,632 MIT
+BERT 768 109,482,240 Apache-2.0
+MiniLM 384 22,713,216 Apache-2.0
+DistilRoBERTa 768 82,118,400 Apache-2.0
+Table 9  Number of dimensions, parameters, and license for each deep language model.SentenceLexicon
 (L)LIWC 
-word vecSENTE CON
+word2vecSENTE CON
 (pre-trained)SENTE CON 
 (pre-trained)SENTE CON
 (fine-tuned)SENTE CON 
 (fine-tuned)
-What  0.112 0.218 -0.054 0.251 0.223 -0.129 0.211 -0.153 0.175 -0.011 0.147 0.089
+What  0.112 0.218 -0.054 0.251 0.223 -0.129
+Really  0.211 -0.153 0.175 -0.011 0.147 0.089
 It s really
 sweet and 
 and tender.0.001 0.284 0.273 0.325 0.260 0.003
 Tell her to
 wear her own
-earrings.0.222 0.239 0.307 0.445 0.260 0.003 0.453 0.358 0.663 0.672 0.465 0.409
+earrings.0.222 0.239 0.307 0.445 0.260 0.003
+This is totally
+your fault 0.453 0.358 0.663 0.672 0.465 0.409
 My first time
 with Carol
 was...0.166 0.234 0.456 0.487 -0.041 0.126
@@ -1325,6 +1382,10 @@ I should talk
 first.0.245 0.100 0.311 0.381 -0.026 0.126
 Hey. Call me
 when you get
-there. Okay 0.143 0.206 0.158 0.365 -0.049 0.314 0.407 0.293 0.646 0.529 0.284 0.320 10  Pearson correlations ( r) between human category annotations and category encodings produced by
+there. Okay 0.143 0.206 0.158 0.365 -0.049 0.314
+What   I
+didn t touch a
+guitar 0.407 0.293 0.646 0.529 0.284 0.320
+Table 10  Pearson correlations ( r) between human category annotations and category encodings produced by
 traditional lexicon-based methods, SENTE CON, and SENTE CON . We use SENTE CON( )with both pre-trained
 and fine-tuned MPNet as Mθ.

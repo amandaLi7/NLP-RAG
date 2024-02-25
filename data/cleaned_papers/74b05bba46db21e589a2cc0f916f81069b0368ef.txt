@@ -1,9 +1,11 @@
 1Preprint
 Bridging the Gap  A Survey on Integrating (Human) Feedback for
 Natural Language Generation
-Patrick Fernandes1,2,3Aman Madaan Emmy Liu António Farinhas2,3
-Pedro Henrique Martins Amanda Bertsch José G. C. de Souza Shuyan Zhou1 1,5André F. T. Martins2,3,4 1Carnegie Mellon University Instituto Superior Técnico (Lisbon ELLIS Unit)
-3Instituto de Telecomunicações Unbabel Inspired Cognition
+Patrick Fernandes1,2,3Aman Madaan1Emmy Liu1António Farinhas2,3
+Pedro Henrique Martins4Amanda Bertsch1José G. C. de Souza4Shuyan Zhou1
+Tongshuang Wu1Graham Neubig1,5André F. T. Martins2,3,4
+1Carnegie Mellon University2Instituto Superior Técnico (Lisbon ELLIS Unit)
+3Instituto de Telecomunicações4Unbabel5Inspired Cognition
 pfernand@cs.cmu.edu
 Abstract
 Many recent advances in natural language
@@ -86,7 +88,7 @@ machine and human generated text, and help in addressing
  when a measure becomes a target, it ceases to be a
 good measure  (Goodhart, 1984). This realization
 has spurred a growing interest in improving natural
-language generation systems by leveraging humanarXiv 2305.00955 2  [cs.CL]  1 20232Preprint
+language generation systems by leveraging humanarXiv 2305.00955v2  [cs.CL]  1 Jun 20232Preprint
 Format ( 3.1)Numerical Kreutzer et al. (2018)  Liu et al. (2018)  Fernandes et al. (2022)
 Ranking Stiennon et al. (2020)  Ouyang et al. (2022)  Bai et al. (2022a)
 Natural Language Li et al. (2017)  Madaan et al. (2023)  Scheurer et al. (2023)
@@ -153,7 +155,7 @@ Consider a model M X   Y which, given an
 input of some type x  X , outputs text ˆy  Y.
 Importantly, while xcan be of any format, we restrict
  ourselves to cases where yis in the space of
-natural language (i.e.,Y  Σ for some alphabet Preprint
+natural language (i.e.,Y  Σ for some alphabet3Preprint
 Σ). This general formulation encompasses a wide
 range of NLG tasks. For example 
  Summarization  Xis the space of documents,
@@ -199,7 +201,7 @@ newer learned metrics often aim to approximate
 the way humans provide feedback (see  5.1).
 More formally, we consider human feedback to
 be a family of functions Hsuch that each feedback
-function h  H takes an input x  X and one
+function h  H takes an input1x  X and one
 1Although feedback can be provided independently of the
 input (for example for fluency ), we assume some (potentially
 empty) input for simplicity of notation.or more outputs y1,   , yn  Y and returns some
@@ -245,9 +247,10 @@ direct feedback from humans whenever possible,
 the prohibitive cost of its collection means that it
 is often useful to instead use surrogate models that
 approximate human preferences.
-3 3.1 Format
+3 Describing Feedback
+3.1 Format
 An important decision to make when we want to improve
- language generation systems through human Preprint
+ language generation systems through human4Preprint
 Input Output(s) Feedback Type
 A melhor comida do mundo é
 a portuguesa.The worst food in the world
@@ -258,7 +261,8 @@ are Portuguese.0.7 Score
 Artificial intelligence has the
 potential to revolutionize
 industries (...) but ethical
-concerns need to be handled.AI can change industries.Fluency   1 0.7Multi-Aspect
+concerns need to be handled.AI can change industries.Fluency   1
+Relevance   0.7Multi-Aspect
 "Misses the ethical concerns."Natural
 Language
 Explain the moon landing
@@ -634,7 +638,7 @@ While directly optimizing model parameters provides
  greater control, modifying them may not always
  be feasible, particularly in the case of LLMs.
 Additionally, feedback might be unavailable during
-model training, limiting the scope for parameter Preprint
+model training, limiting the scope for parameter8Preprint
 adjustments. In such cases, leveraging human feedback
  during decoding plays a critical role in enhancing
  LLMs s performance. This type of feedback,
@@ -715,8 +719,8 @@ L(ϕ)   log
 σ 
 ˆhϕ(x, y 1) ˆhϕ(x, y 1)  
 (10)
-such that sample y 1 1for
-the same input x h(x, y 1, y 1)   ( y 1 1).
+such that sample y 1was preferred to y 1for
+the same input x h(x, y 1, y 1)   ( y 1  y  1).
 Variants of this loss have subsequently been used
 in other works (Ouyang et al., 2022  Askell et al.,
 2021  Liu et al., 2022  Qin et al., 2022  Yuan et al.,
@@ -732,7 +736,7 @@ BLEURT and COMET, respectively, to regress on
 human quality assessments of translation quality.
 For summarization, Zopf (2018) leveraged annotated
  pairwise preferences to train a preference
-model and Peyrard et al. (2017) learned a summary We
+model and Peyrard et al. (2017) learned a summary3We
  specify the feedback model with respect to the human
  feedback format, i.e.,reward andpreference model for
 numerical and ranking-based human feedback, respectively.9Preprint
@@ -810,7 +814,9 @@ end of this section)
 ˆhϕ(x, M θ(x)) βR(θ)i
 (11)
 Due to the similarities between both optimization
- problems, approaches to tackle Equation 11 4.2  joint-feedback modeling andreinforcement
+ problems, approaches to tackle Equation 11
+can be divided into two of the three categories
+in  4.2  joint-feedback modeling andreinforcement
  learning . Recall that while in  4.2 we discuss
  approaches for directly optimizing for human
 feedback, while this section is focused on cases
@@ -930,7 +936,7 @@ Collecting human feedback can be rather expensive
  and may present i ssues for the inexperienced,
 making it important to leverage existing resources
 and consider additional data collection carefully.
-We present an introduction to existing datasets and Preprint
+We present an introduction to existing datasets and11Preprint
 their collection methods, along with considerations
 for experimenters creating preference datasets for
 their own use cases. Additionally, we discuss ethical
@@ -980,8 +986,12 @@ partnership. For general alignment with human
 preferences, it may instead be prudent to recruit a
 diverse group of annotators to avoid overfitting to
 the preferences of specific demographics that may
-be more accessible in recruitment.6.2 2.1, actual feedback may
-be low-quality, contradictory, or adversarial.5 3.2, we must carefully specify annotation
+be more accessible in recruitment.6.2 Pitfalls and Ethical Considerations of
+Human Feedback
+Although we have focused on the idealized form
+of human feedback in  2.1, actual feedback may
+be low-quality, contradictory, or adversarial.5As
+discussed in  3.2, we must carefully specify annotation
  guidelines so that feedback is aligned towards
  the actual goals for the model (Ziegler et al.,
 2019). Even in the case where human experts are
@@ -990,7 +1000,10 @@ available, different groups of experts may not agree
  possible issues with human feedback, most
 of which are shared with other annotation tasks.
 We also touch on possible mitigation strategies.
-6.2.1 1, judgments are given on data D d1, ..., d N.
+6.2.1 Subjectivity and variance in judgment
+Considering Kannotators with feedback functions
+hiK
+i 1, judgments are given on data D d1, ..., d N.
 Inter-rater reliability metrics, such as Cohen s
 Kappa, Fleiss  Kappa, or Krippendorff s alpha,
 can assess annotator agreement (Hayes and Krippendorff,
@@ -1089,7 +1102,7 @@ States and encourage academic researchers using
 crowdworker annotation to file for this ethical review
  of their work.
 Media attention has also focused on fair pay
-for annotators, with one TIME article describing
+for annotators, with one TIME article6describing
 annotators paid $2 USD or less per hour to review
 toxic content and provide harmfulness annotations
 for model training. Research on crowdsourcing
@@ -1208,11 +1221,12 @@ Acknowledgments
 This work was supported by EU s Horizon Europe
 Research and Innovation Actions (UTTER, contract
  101070631) and by the projects MAIA and
-NextGenAI (LISBOA-01-0247-FEDER-045909 2022-C i0102-02).
+NextGenAI (LISBOA-01-0247-FEDER-045909
+and 2022-C05i0102-02).
 References
 Afra Feyza Akyürek, Ekin Akyürek, Aman
 Madaan, Ashwin Kalyan, Peter Clark, Derry Wijaya,
- and Niket Tandon. 2023. Rl f  Generating
+ and Niket Tandon. 2023. Rl4f  Generating
 natural language feedback with reinforcement
 learning for repairing model outputs.
 Saleema Amershi, Maya Cakmak, William Bradley
@@ -1233,16 +1247,16 @@ Chantal Amrhein and Rico Sennrich. 2022. Identifying
 case study for COMET. In Proceedings ofthe
 2ndConference oftheAsia-Pacific Chapter of
 theAssociation forComputational Linguistics
-andthe th International Joint Conference on
+andthe12th International Joint Conference on
 Natural Language Processing (V olume 1 Long
 Papers) , pages 1125 1141, Online only. Association
  for Computational Linguistics.
 Kushal Arora, Kurt Shuster, Sainbayar Sukhbaatar,
 and Jason Weston. 2022. Director  GeneratorClassifiers
  For Supervised Language Modeling.
- In Proceedings ofthe nd Conference
+ In Proceedings ofthe2nd Conference
 oftheAsia-Pacific Chapter oftheAssociation
-forComputational Linguistics and the th
+forComputational Linguistics and the12th
 International Joint Conference onNatural
 Language Processing.
 Amanda Askell, Yuntao Bai, Anna Chen, Dawn
@@ -1314,7 +1328,9 @@ Florian Böhm, Yang Gao, Christian M. Meyer,
 Ori Shapira, Ido Dagan, and Iryna Gurevych.
 2019. Better rewards yield better summaries 
  Learning to summarise without references.
- In Proceedings ofthe2019 9th International Joint
+ In Proceedings ofthe2019 Conference
+onEmpirical Methods inNatural Language
+Processing and the 9th International Joint
 Conference onNatural Language Processing
 (EMNLP-IJCNLP) , pages 3110 3120, Hong
 Kong, China. Association for Computational
@@ -1372,7 +1388,7 @@ Dangers, Strategies , 1st edition. Oxford University
 Arun Chaganty, Stephen Mussmann, and Percy
 Liang. 2018. The price of debiasing automatic
  metrics in natural language evalaution.
-InProceedings ofthe th Annual Meeting of
+InProceedings ofthe56th Annual Meeting of
 theAssociation forComputational Linguistics
 (V olume 1 Long Papers) , pages 643 653, Melbourne,
  Australia. Association for Computational
@@ -1385,10 +1401,10 @@ Elizabeth Clark, Tal August, Sofia Serrano, Nikita
 Haduong, Suchin Gururangan, and Noah A.
 Smith. 2021. All that s  human  is not gold 
 Evaluating human evaluation of generated text.
-InProceedings ofthe th Annual Meeting of
+InProceedings ofthe59th Annual Meeting of
 theAssociation forComputational Linguistics
-andthe th International Joint Conference on
-Natural Language Processing (V olume 1 Long Preprint
+andthe11th International Joint Conference on
+Natural Language Processing (V olume 1 Long16Preprint
 Papers) , pages 7282 7296, Online. Association
 for Computational Linguistics.
 Jacob Cohen. 1960. A coefficient of agreement for
@@ -1397,14 +1413,14 @@ Measurement, 20 37 46.
 Gonçalo M. Correia and André F. T. Martins.
 2019. A simple and effective approach to
 automatic post-editing with transfer learning.
-InProceedings ofthe th Annual Meeting of
+InProceedings ofthe57th Annual Meeting of
 theAssociation forComputational Linguistics ,
 pages 3050 3056, Florence, Italy. Association
 for Computational Linguistics.
 Michael Denkowski, Chris Dyer, and Alon Lavie.
 2014. Learning from post-editing  Online
 model adaptation for statistical machine translation.
- In Proceedings ofthe th Conference
+ In Proceedings ofthe14th Conference
 oftheEuropean Chapter oftheAssociation
 forComputational Linguistics , pages 395 404,
 Gothenburg, Sweden. Association for Computational
@@ -1557,7 +1573,7 @@ ACM.
 Yvette Graham, Timothy Baldwin, Alistair Moffat,
  and Justin Zobel. 2013. Continuous measurement
  scales in human evaluation of machine
-translation. In Proceedings ofthe thLinguistic
+translation. In Proceedings ofthe7thLinguistic
 Annotation Workshop andInteroperability with
 Discourse , pages 33 41, Sofia, Bulgaria. Association
  for Computational Linguistics.
@@ -1666,7 +1682,7 @@ Shah, and Larry Heck. 2018. Dialogue learning
 InProceedings ofthe2018 Conference ofthe
 North American Chapter oftheAssociation for
 Computational Linguistics  Human Language
-Technologies, V olume 1(Long Papers) , pages Preprint
+Technologies, V olume 1(Long Papers) , pages19Preprint
 2060 2069, New Orleans, Louisiana. Association
  for Computational Linguistics.
 Hao Liu, Carmelo Sferrazza, and Pieter Abbeel.
@@ -1676,7 +1692,7 @@ arXiv 2302.02676.
 Yixin Liu, Pengfei Liu, Dragomir Radev, and
 Graham Neubig. 2022. BRIO  Bringing order
 to abstractive summarization. In Proceedings
-ofthe th Annual Meeting oftheAssociation
+ofthe60th Annual Meeting oftheAssociation
 forComputational Linguistics (V olume 1 Long
 Papers) , pages 2890 2903, Dublin, Ireland. Association
  for Computational Linguistics.
@@ -1684,7 +1700,8 @@ Arle Lommel, Aljoscha Burchardt, and Hans
 Uszkoreit. 2014a. Multidimensional quality
  metrics (MQM)  A framework for declaring
  and describing translation quality metrics.
-Tradumàtica  tecnologies delatraducció , 0 455 463.
+Tradumàtica  tecnologies delatraducció , 0 455 
+463.
 Arle Lommel, Hans Uszkoreit, and Aljoscha Burchardt.
  2014b. Multidimensional quality metrics
  (MQM)  A framework for declaring and
@@ -1717,7 +1734,7 @@ Computational Linguistics.Nitika Mathur, Timothy Baldwin, and Trevor
 Cohn. 2020. Tangled up in BLEU  Reevaluating
  the evaluation of automatic machine translation
  evaluation metrics. In Proceedings of
-the th Annual Meeting oftheAssociation for
+the58th Annual Meeting oftheAssociation for
 Computational Linguistics , pages 4984 4997,
 Online. Association for Computational Linguistics.
 
@@ -1760,7 +1777,7 @@ models to follow instructions with human feedback.
 Santanu Pal, Sudip Kumar Naskar, Mihaela Vela,
 and Josef van Genabith. 2016. A neural network
  based approach to automatic post-editing.20Preprint
-InProceedings ofthe th Annual Meeting of
+InProceedings ofthe54th Annual Meeting of
 theAssociation forComputational Linguistics
 (V olume 2 Short Papers) , pages 281 286,
 Berlin, Germany. Association for Computational
@@ -1840,7 +1857,7 @@ Barbara Plank. 2022. The  problem  of human label
  variation  On ground truth in data, modeling
 and evaluation.
 Yiwei Qin, Weizhe Yuan, Graham Neubig, and
-Pengfei Liu. 2022. T score  Discriminative finetuning
+Pengfei Liu. 2022. T5score  Discriminative finetuning
  of generative evaluation metrics.
 Rafael Rafailov, Archit Sharma, Eric Mitchell,
 Stefano Ermon, Christopher D. Manning, and
@@ -1851,7 +1868,7 @@ Ricardo Rei, Craig Stewart, Ana C Farinha, and
 Alon Lavie. 2020a. COMET  A neural framework
  for MT evaluation. In Proceedings of
 the2020 Conference onEmpirical Methods in
-Natural Language Processing (EMNLP) , pages Preprint
+Natural Language Processing (EMNLP) , pages21Preprint
 2685 2702, Online. Association for Computational
  Linguistics.
 Ricardo Rei, Craig Stewart, Ana C Farinha, and
@@ -1913,7 +1930,9 @@ Peer  A collaborative language model. ArXiv ,
 abs/2208.11663.
 Natalie Schluter. 2017. The limits of automatic
  summarisation according to ROUGE.
-InProceedings ofthe 15 2,Short
+InProceedings ofthe 15th Conference of
+theEuropean Chapter oftheAssociation for
+Computational Linguistics  V olume 2,Short
 Papers , pages 41 45, Valencia, Spain. Association
  for Computational Linguistics.
 John Schulman, Filip Wolski, Prafulla Dhariwal,
@@ -1922,14 +1941,14 @@ policy optimization algorithms. arXiv preprint
 arXiv 1707.06347.
 Thibault Sellam, Dipanjan Das, and Ankur Parikh.
 2020. BLEURT  Learning robust metrics for text
-generation. In Proceedings ofthe th Annual
+generation. In Proceedings ofthe58th Annual
 Meeting oftheAssociation forComputational
 Linguistics , pages 7881 7892, Online. Association
  for Computational Linguistics.
 Shiqi Shen, Yong Cheng, Zhongjun He, Wei He,
 Hua Wu, Maosong Sun, and Yang Liu. 2016.
 Minimum risk training for neural machine translation.
- In Proceedings ofthe th Annual
+ In Proceedings ofthe54th Annual
 Meeting oftheAssociation forComputational
 Linguistics (V olume 1 Long Papers) , pages
 1683 1692, Berlin, Germany. Association for
@@ -1938,15 +1957,16 @@ Emily Sheng, Kai-Wei Chang, Premkumar Natarajan,
  and Nanyun Peng. 2019. The woman
 worked as a babysitter  On biases in language
  generation. In Proceedings ofthe
-2019 9th
-International Joint Conference onNatural Preprint
+2019 Conference onEmpirical Methods in
+Natural Language Processing and the 9th
+International Joint Conference onNatural22Preprint
 Language Processing (EMNLP-IJCNLP) , pages
 3407 3412, Hong Kong, China. Association for
 Computational Linguistics.
 Victor S. Sheng, Foster Provost, and Panagiotis G.
 Ipeirotis. 2008. Get another label  improving
  data quality and data mining using multiple,
- noisy labelers. In Proceedings ofthe th
+ noisy labelers. In Proceedings ofthe14th
 ACM SIGKDD International Conference on
 Knowledge Discovery andData Mining , KDD
  08, page 614 622, New York, NY , USA. Association
@@ -2039,7 +2059,7 @@ Teachable robots  Understanding human teaching
  Intelligence, 172(6) 716 737.
 Craig Thomson and Ehud Reiter. 2021. Generation
  challenges  Results of the accuracy evaluation
- shared task. In Proceedings ofthe th
+ shared task. In Proceedings ofthe14th
 International Conference onNatural Language
 Generation , pages 240 248, Aberdeen, Scotland,
 UK. Association for Computational Linguistics.
@@ -2103,7 +2123,8 @@ gradient-following algorithms for connectionist
 Bin Wu, Chenyan Xiong, Maosong Sun, and
 Zhiyuan Liu. 2018. Query suggestion with feedback
  memory network. In Proceedings ofthe
-2018 World Wide Web Conference , pages 1563 1571.
+2018 World Wide Web Conference , pages 1563 
+1571.
 Jeff Wu, Long Ouyang, Daniel M. Ziegler, Nisan
 Stiennon, Ryan Lowe, Jan Leike, and Paul Christiano.
  2021. Recursively summarizing books

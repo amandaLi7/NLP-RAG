@@ -115,7 +115,7 @@ non-white person is considered a microaggression
 et al., 2018  Jiang et al., 2021), ignoring context
 1While social biases and power dynamics are culturally
 dependent (Fiske, 2017), in this work, we operate from the
-U.S.-centric sociocultural perspective.arXiv 2306.01985 2  [cs.CL]  9 2023StatementContext Example Human Verif.
+U.S.-centric sociocultural perspective.arXiv 2306.01985v2  [cs.CL]  9 Jun 2023StatementContext Example Human Verif.
 Situation Speaker Listener (Dimension) Explanation Rating Suggest.
 All Asian moms are
 sluttyAsian culture
@@ -182,7 +182,7 @@ have several advantages over previous approaches
 to detecting offensiveness language. First, our
 free-text descriptions allow for rich representations
  of the relevant aspects of context (e.g., situational
- roles, social power dynamics, etc.), in con COntextual
+ roles, social power dynamics, etc.), in con2COntextual
  Bias fRAmestrast to modeling specific contextual features alone
 (e.g., user network features, race or dialect, conversational
  history  Ribeiro et al., 2017  Sap et al.,
@@ -369,10 +369,17 @@ could take, or on the long-term harms that repeated
 exposure to such statements could have. Examples
 include  not wanting to come into work anymore, 
  avoiding a particular teacher,  etc.Unique # Avg. # words
-Statements 11,648 14.34 23,577 6.90 10,683 3.11 13,554 4.05 29,895 14.97 11,126 3.48 12,766 10.46 30,802 19.66
+Statements 11,648 14.34ContextSituation 23,577 6.90
+Speakers 10,683 3.11
+Listeners 13,554 4.05ExplanationsIntents 29,895 14.97
+Target group 11,126 3.48
+Power dynamics 12,766 10.46
+Implication 30,802 19.66
 Emo. Reaction 28,429 16.82
-Cog. Reaction 29,826 22.06 2,527 2.09
-Total # in C OBRA CORPUS 32,582 2  General data statistics of C OBRA CORPUS
+Cog. Reaction 29,826 22.06
+Offensiveness 2,527 2.09
+Total # in C OBRA CORPUS 32,582
+Table 2  General data statistics of C OBRA CORPUS
 Offensiveness (Off.) captures, in 1-3 words, the
 type or degree of offensiveness of the statement
 (e.g.,  sexism ,  offensive generalization ). We
@@ -429,7 +436,7 @@ Appendix C.
 Verifying Contexts We randomly sample 500
 statement-context pairs and ask three annotators to
 rate the plausibility of the contexts (see Appendix
-A.2 for the exact questions).5 500 pairs,
+A.2 for the exact questions).5Of the 500 pairs,
 only 1% were marked as completely implausible
 or gibberish. 92% of the scenarios were marked as
 plausible by at least two workers, and some were
@@ -460,12 +467,17 @@ moderately high, with 75.37% pairwise agreement and freemarginal
 more off. 5.28% 43.09% 27.54% 2.85% 21.24%
 less off. 60.06% 16.6% 5.79% 11.38% 6.17%
 Table 3  Percentage of contexts occurring under each
-category/scenario in COBRA CORPUS -CF. Row 1 2 2021  Clark et al., 2021  Liu et al., 2022), we also
+category/scenario in COBRA CORPUS -CF. Row 1 indicates
+ statements that are more offensive due to their
+contexts vs Row 2 indicates those which are lesser offensive
+ in comparison
+2021  Clark et al., 2021  Liu et al., 2022), we also
 asked annotators to provide corrections or suggestions
  for those they consider unlikely. 97% of explanations
  were marked as likely by at least two
 annotators (majority vote) and 84% were marked
-as likely by all three annotators (unanimous).6 1, humans tend to have better
+as likely by all three annotators (unanimous).6As
+illustrated in Table 1, humans tend to have better
  explanations of the implications of statements,
 whereas machines sometimes re-use words from
 the statement. This might explain the gap between
@@ -538,7 +550,13 @@ console their friend  /intent  ...
 downplay the sexual harassment
  /intent  ...  type  sexism  /type 
 CHaRM
-T5 5 4  Experiment overview. CHARMis an encoder-decoder Transformer model based on pretrained FLAN-T5
+T5 Encoder T5 Decoder
+Training and
+Inference
+Training and
+Inference
+InferenceInference
+Figure 4  Experiment overview. CHARMis an encoder-decoder Transformer model based on pretrained FLAN-T5
 checkpoints (Chung et al., 2022). During the training stage, the model is finetuned to generate the explanation
 dimensions in a linearized format given the statement and context in COBRA CORPUS . We evaluate the quality of the
 generated explanation on COBRA CORPUS and the accuracy of detecting offensiveness in COBRA CORPUS -CF. The
@@ -560,7 +578,8 @@ counterfactual contexts. Then, for each microaggression
  in the corpus, we generated both a harmless
  and offensive context with GPT-3.5, prompted
 with five randomly sampled triples as in-context
-examples. This process yields 982 triples, as GPT3.5 18
+examples. This process yields 982 triples, as GPT3.5
+ failed to generate a harmless context for 18
 statements.
 Human Verification We then verify that the
 counterfactual contexts invert the offensiveness
@@ -605,7 +624,12 @@ including in public and at the workplace.
 8We have high average annotation agreement in this task
 (κ  0.73).Intent Target group Power Dynamics Implication Emotional React. Cognitive React. Offensiveness Average
 BLEU ROUGE BLEU ROUGE BLEU ROUGE BLEU ROUGE BLEU ROUGE BLEU ROUGE BLEU ROUGE BLEU ROUGE
-Small 46.3 58.1 20.2 52.6 51.7 67.2 29.5 37.9 22.9 28.8 17.1 24.2 30.9 48.8 31.2 45.4 48.7 60.3 22.8 55.8 52.3 67.2 31.3 40.2 20.4 29.2 18.5 25.3 31.9 48.3 32.3 46.6 52.3 63.2 29.2 59.3 55.9 70.3 35.1 43.1 23.0 31.9 19.4 26.8 32.2 50.2 35.3 49.2 54.6 64.7 32.5 60.4 54.5 70.2 36.3 44.2 23.0 31.5 18.7 26.8 30.2 48.8 35.7 49.5 55.6 65.3 36.1 61.2 54.0 69.9 36.7 44.7 23.2 32.6 18.3 27.1 29.8 47.5 36.2 49.8 4  Performance of different model sizes measured with automatic evaluation metrics, broken down by
+Small 46.3 58.1 20.2 52.6 51.7 67.2 29.5 37.9 22.9 28.8 17.1 24.2 30.9 48.8 31.2 45.4
+Base 48.7 60.3 22.8 55.8 52.3 67.2 31.3 40.2 20.4 29.2 18.5 25.3 31.9 48.3 32.3 46.6
+Large 52.3 63.2 29.2 59.3 55.9 70.3 35.1 43.1 23.0 31.9 19.4 26.8 32.2 50.2 35.3 49.2
+XL 54.6 64.7 32.5 60.4 54.5 70.2 36.3 44.2 23.0 31.5 18.7 26.8 30.2 48.8 35.7 49.5
+XXL 55.6 65.3 36.1 61.2 54.0 69.9 36.7 44.7 23.2 32.6 18.3 27.1 29.8 47.5 36.2 49.8
+Table 4  Performance of different model sizes measured with automatic evaluation metrics, broken down by
 explanation dimension. The best result is bolded. We also calculate the BERTScore (Zhang et al., 2020) for each
 model size, which shows similar trends (see Appendix B.2). Takeaway   unsurprisingly, the best-performing model
 is often CH ARM (XXL), but XL follows closely behind.
@@ -615,7 +639,7 @@ training models to explain offensive language on
 both COBRA CORPUS andCOBRA CORPUS -CF. Although
  GPT-3.5 s COBRA explanations are highly
 rated by human annotators ( 3.3), generating them
-is a costly process both from a monetary and energy
+is a costly process both from a monetary9and energy
  consumption perspective (Strubell et al., 2019 
 Taddeo et al., 2021  Dodge et al., 2022). Therefore,
  we also investigate whether such high-quality
@@ -708,7 +732,8 @@ personὈ0 Ὀ0 Ὀ0
 Class Professor Student Ὀ0  leaf  leaf
 Thats a good girl.Praising their daughter Parent Daughter Ὀ0 Ὀ0  leaf
 A professional setting Male bossFemale
-employeeὈ0 Ὀ0 Ὀ0 5  Examples of GPT-3.5 and CH ARM s prediction on C OBRA CORPUS -CF. leaf  harmless,Ὀ0  toxic.
+employeeὈ0 Ὀ0 Ὀ0
+Table 5  Examples of GPT-3.5 and CH ARM s prediction on C OBRA CORPUS -CF. leaf  harmless,Ὀ0  toxic.
 to see that CHARM (Large) achieves the best performance
  in the power dynamics and offensiveness
 dimension, which indicates that increasing modeling
@@ -717,7 +742,10 @@ explanation dimension in C OBRA .
 Training
 w/ contextInference
 w/ contextBLEU ROUGE Human*
-    33.0 47.6 66.54 31.0 45.0 70.82 35.7 49.5 75.46 6  Automatic and human evaluations of contextaware
+    33.0 47.6 66.54
+    31.0 45.0 70.82
+    35.7 49.5 75.46
+Table 6  Automatic and human evaluations of contextaware
  and context-agnostic versions of CHARM (XL).
 Human evaluations are done on the same random subset
 (100) on all three variations. Takeaway  context significantly
@@ -736,13 +764,20 @@ the automatic and human evaluation. This is consistent
 for understanding the toxicity of statements.
 How well do models adapt to counterfactual contexts 
  We then investigate how well our model,
-as well as GPT-3.5 ,10 10text-davinci-003 13 2022 1 50.0 100.0 50.0 67.8
-GPT-3.5 55.2 99.4 52.7 68.9 50.0 72.3 50.0 59.1 66.5 98.84 60.0 74.7 71.4 96.5 64.2 77.1 7  Accuracy, derived from binarizing the  offensiveness 
+as well as GPT-3.5 ,10identifies the offensiveness
+10text-davinci-003 Jan 13th 2022Accuracy Recall Precision F1
+All Toxic 50.0 100.0 50.0 67.8
+GPT-3.5 55.2 99.4 52.7 68.9
+XL WoC 50.0 72.3 50.0 59.1
+XL 66.5 98.84 60.0 74.7
+XXL 71.4 96.5 64.2 77.1
+Table 7  Accuracy, derived from binarizing the  offensiveness 
  explanation, for different models on
 COBRA CORPUS -CF(WoC means Without Context).
 All Toxic means predicting every statement as toxic.
 Takeaway  CH ARM adapts to counterfactual contexts
- better than GPT-3.5 ( text-davinci-003 13 2022).
+ better than GPT-3.5 ( text-davinci-003 Jan 13th
+2022).
 of statements when the context drastically alters
 the implications. We then compare different models 
  ability to classify whether the statement is offensive
@@ -808,7 +843,8 @@ the growing calls for transparency and accountability
 Besides content moderation, COBRA also has the
 potential to test linguistic and psychological theories
  about offensive statements. While we made
-some preliminary attempts in this direction in  3 4, more work is needed to fully realize this
+some preliminary attempts in this direction in  3
+and  4, more work is needed to fully realize this
 potential. For example, future studies could investigate
  the differences in in-group and out-group
 interpretations of offensive statements, as well as
@@ -964,7 +1000,7 @@ Enrico Bunde. 2023. AI-Assisted and Explainable
  Hate Speech Detection for
 Social Media Moderators. https //
 scholarspace.manoa.hawaii.edu/items/
-f c b34-5 62-40 0-919f-a e cfbbc32 .
+f21c8b34-5d62-40d0-919f-a4e07cfbbc32 .
 [Accessed 13-May-2023].
 Kai-Wei Chang, He He, Robin Jia, and Sameer Singh.
 2021. Robustness and adversarial examples in natural
@@ -1282,7 +1318,12 @@ Choi, and Noah Smith. 2021. Challenges in automated
 Proceedings of the 16th Conference of the European
 Chapter of the Association for Computational Linguistics 
  Main Volume .Intent Target group Power Dynamics Implication Emotional React. Cognitive React. Offensiveness Average
-Small 0.936 0.929 0.932 0.900 0.886 0.877 0.889 0.907 0.939 0.933 0.932 0.907 0.892 0.880 0.890 0.910 0.944 0.939 0.938 0.916 0.898 0.887 0.897 0.917 0.947 0.940 0.938 0.917 0.897 0.886 0.899 0.918 0.948 0.939 0.937 0.918 0.898 0.887 0.895 0.917 8  BERTScore of different model sizes measured with automatic evaluation metrics, broken down by
+Small 0.936 0.929 0.932 0.900 0.886 0.877 0.889 0.907
+Base 0.939 0.933 0.932 0.907 0.892 0.880 0.890 0.910
+Large 0.944 0.939 0.938 0.916 0.898 0.887 0.897 0.917
+XL 0.947 0.940 0.938 0.917 0.897 0.886 0.899 0.918
+XXL 0.948 0.939 0.937 0.918 0.898 0.887 0.895 0.917
+Table 8  BERTScore of different model sizes measured with automatic evaluation metrics, broken down by
 explanation dimension.
 A Crowd-sourcing on MTurk
 In this paper, human annotation is widely used in  3.2,  3.3,  4,  4,  5.2, and  5.2. We restrict our
@@ -1293,7 +1334,7 @@ provided suggestions for explanations. Annotators are compensated $12.8 per hour
 collection procedure was approved by our institution s IRB.
 A.1 Annotator demographics
 Due to the subjective nature of toxic language (Sap et al., 2022), we aim to collect a diverse set of
-annotators. In our final pool of 109 annotators, the average age is 36 (ranging from 18 65). For political
+annotators. In our final pool of 109 annotators, the average age is 36 (ranging from 18 to 65). For political
 orientation, we have 64/21/24 annotators identified as liberal/conservative/neutral, respectively. For gender
 identity, we have 61/46/2 annotators identify as man/woman/non-binary, respectively. There are also 40
 annotators that self-identified as being part of a minority group.
@@ -1303,14 +1344,18 @@ examples with explanations. The annotation snippet of collecting plausible scena
 5. The annotation snippet of collecting explanations ( 3.3) is in Figure 6. The annotation snippet of
 collecting adversarial examples ( 4) is in Figure 7.
 B CH ARM experiment details
-B.1 11, different variants of FLAN-T5, small, base, large, XL
+B.1 Training details
+With the HuggingFace s Transformers library11, different variants of FLAN-T5, small, base, large, XL
 and XXL, are finetuned on the COBRA training set for two epochs with AdamW optimizer with a learning
-rate of 1 4 16. We use beam search as the decoding algorithm and all reported results
+rate of 1e 4and batch size of 16. We use beam search as the decoding algorithm and all reported results
 are based on a single run. We also train a XL model using the same architecture and hyperparameters
-but without the context information. The sizes of CHARM range from 80 11B, the largest of which
-takes 10 32 5 6000 GPUs with NVLink, and can do inference in FP16 6000 GPU. We used HuggingFace evaluate package to evaluate the BLEU-2 and ROUGE-L scores.
-B.2 8 for the BERTScore metrics across different model sizes.
-C GPT-3 8. The example prompts for generating
+but without the context information. The sizes of CHARM range from 80M to 11B, the largest of which
+takes 10 hours to train in FP32 on 5 A6000 GPUs with NVLink, and can do inference in FP16 on a single
+A6000 GPU. We used HuggingFace evaluate package to evaluate the BLEU-2 and ROUGE-L scores.
+B.2 Evaluation details
+See Table 8 for the BERTScore metrics across different model sizes.
+C GPT-3 prompts used in this paper
+The example prompts for generating likely contexts are in Figure 8. The example prompts for generating
 adversarial contexts are in Figure 9. The example prompts for generating the likely explanations are in
 Figure 10.
 11https //github.com/huggingface/transformersFigure 5  The annotation snippet of collecting plausible scenarios ( 3.2)Figure 6  The annotation snippet of collecting explanations ( 3.2)Figure 7  The annotation snippet of collecting adversarial examples ( 4)statement speechContext speakerIdentity listenerIdentity

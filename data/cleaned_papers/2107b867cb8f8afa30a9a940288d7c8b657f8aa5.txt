@@ -1,4 +1,6 @@
-Proceedings of the 61 2  Short Papers , pages 1491 1499 9-14, 2023 2023 Association for Computational Linguistics
+Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics
+Volume 2  Short Papers , pages 1491 1499
+July 9-14, 2023  2023 Association for Computational Linguistics
 Zero-Shot and Few-Shot Stance Detection on Varied Topics via Conditional
 Generation
 Haoyang Wen andAlexander G. Hauptmann
@@ -25,7 +27,8 @@ target-related Wikipedia knowledge with the
 generation framework. Experiments show that
 our proposed method significantly outperforms
 several strong baselines on V AST, and achieves
-new state-of-the-art performance.1 1 Introduction
+new state-of-the-art performance.1
+1 Introduction
 Stance detection is an important task that identifies
  the polarity of text with regard to certain target
  (Somasundaran and Wiebe, 2010  Augenstein
@@ -40,7 +43,8 @@ Previous work on stance detection mostly focuses
  on in-domain or leave-out targets with only
 a few target choices (Mohtarami et al., 2018  Xu
 et al., 2018  Graells-Garrido et al., 2020  Zhang
-et al., 2020  Liang et al., 2021  Allaway et al., 2021 1The resource for reproducing this paper is available at
+et al., 2020  Liang et al., 2021  Allaway et al., 2021 
+1The resource for reproducing this paper is available at
 https //github.com/wenhycs/ACL2023-Zero-Shot-and
 -Few-Shot-Stance-Detection-on-Varied-Topics-via
 -Conditional-Generation .Input Text  Airports and the roads on east nor west coast
@@ -82,7 +86,7 @@ prediction with stance detection, which gives the
 input text and desired stance label to output possible
  targets. We use unlikelihood training (Welleck
 et al., 2020) that suppress the likelihood of manually
- constructed incorrect samples to enhance label BART Encoding s  T arget is high-speed rail. Stance is  stance  .  /s    /s   Airports ...
+ constructed incorrect samples to enhance label1491BART Encoding s  T arget is high-speed rail. Stance is  stance  .  /s    /s   Airports ...
 BART Decoding
  s  T arget is high-speed rail. Stance is supportive .  /s Partially-Filled T emplate Input T extFigure 1  Overall framework of BART-based generation
 framework for stance detection.
@@ -165,7 +169,7 @@ post-processing function that tries to find the polarity
  word after the prompt for stance.
 2.2.1 Joint Target Prediction
 Another advantage of using generation-based architecture
- is that we can leverage auxiliary generative Stance Detection
+ is that we can leverage auxiliary generative1492Stance Detection
 Input Target is high-speed rail. Stance is  stance  .
 Output Target is high-speed rail. Stance is supportive.
 Target Prediction
@@ -246,10 +250,14 @@ L Ls αtLt αuLu,
 where Ltrepresents the log-likelihood loss over
 the output template for target prediction, αt, αuare
 used to balance different loss functions.
-3 3.1 18,548 5,630 different
+3 Experiments
+3.1 Data
+V AST contains 18,548 examples from New York
+Times  Room for Debate  section with 5,630 different
  targets for zero-shot and few-shot stance
 detection. The original examples of V AST are collected
- from Habernal et al. (2018) under Apache2.0 2. We use Wikipedia knowledge collected
+ from Habernal et al. (2018) under Apache2.0
+ license2. We use Wikipedia knowledge collected
  by He et al. (2022), which uses API to
 crawl Wikipedia pages for targets. Wikipedia content
  can be used under Creative Commons Attribution
@@ -262,8 +270,13 @@ and McKeown, 2020). We compare our model
 2https //github.com/UKPLab/argument-reasoning
 -comprehension-task/blob/master/LICENSE
 3https //en.wikipedia.org/wiki/Wikipedia Reus
-ing_Wikipedia_content Model Precision Recall F 1 72.6 72.0 72.1
-BART w/ Template 75.7 75.1 75.3 76.0 75.6 75.7 76.4 75.9 75.9 78.0 77.3 77.4 3  Performance of different model variants on the
+ing_Wikipedia_content1493Model Precision Recall F 1
+BERT Classification 72.6 72.0 72.1
+BART w/ Template 75.7 75.1 75.3
+  Topic Prediction 76.0 75.6 75.7
+  Unlikelihood 76.4 75.9 75.9
+  Wikipedia 78.0 77.3 77.4
+Table 3  Performance of different model variants on the
 overall precision, recall and F 1on the development set
 (%). Each of our model variants is on top of the variant
 from its previous row.
@@ -271,11 +284,13 @@ Model Zero-Shot Few-Shot Overall
 TGA-Net 66.6 66.3 66.5
 BERT-GCN 68.6 69.7 69.2
 CKE-Net 70.2 70.1 70.1
-WS-BERT 75.3 73.6 74.5 76.4 78.0 77.3 4  Stance detection performance (%) on V AST.
+WS-BERT 75.3 73.6 74.5
+Our Model 76.4 78.0 77.3
+Table 4  Stance detection performance (%) on V AST.
 Our model significantly outperforms previous work on
 all metrics. Our results are obtained from averaging performances
  over 5 random seeds. p  0.001on overall
-F using Z-test with variance as the standard deviation
+F1using Z-test with variance as the standard deviation
 over multiple runs.
 with several existing systems including 1) TGANet
  (Allaway and McKeown, 2020)  2) BERTGCN
@@ -285,18 +300,20 @@ their setup, we use macro-average F 1as the evaluation
  metric, and we report performance on the
 subset of test set for zero-shot and few-shot, and
 the overall test set.
-We use BART-base as our base model, of which
+We use BART-base4as our base model, of which
 the number of parameters is roughly consistent with
 baselines on BERT-base5. Our best model is optimized
  with AdamW (Loshchilov and Hutter, 2019)
-for 30 1e-5. We use
-a linear scheduler with a warmup proportion of 0.1 32. We use greedy
+for 30 epochs with a learning rate of 1e-5. We use
+a linear scheduler with a warmup proportion of 0.1
+and the training batch size is 32. We use greedy
 search during inference. We reported performances
 on development set and test set using the averaged
 results from 5 different random seeds. Test results
 are reported based on the best overall F 1performance
  on the development set. αtis set to 1 and
-αuis set to 0.5. Our final model takes about 5 3090 GPU.
+αuis set to 0.5. Our final model takes about 5
+hours for training on one Nvidia RTX 3090 GPU.
 4https //huggingface.co/facebook/bart-base
 5https //huggingface.co/bert-base-uncased
 (a) Our model
@@ -304,7 +321,8 @@ are reported based on the best overall F 1performance
 Figure 2  The t-SNE visualization of intermediate representations
  from our model and BERT classification
 model. Color map  Supportive, Opposite, Neutral.
-3.3 3.3.1 Comparing with Model Variants
+3.3 Results
+3.3.1 Comparing with Model Variants
 We first conduct comparison of some of our model
 variants to illustrate the effectiveness of our proposed
  components. The results are shown in Table
@@ -318,12 +336,14 @@ framework can significantly improve the model performance.
 The final model with knowledge from Wikipedia,
 verifies the effectiveness of Wikipedia knowledge
 for stance detection with a generative framework.
-3.3.2 4. Our
+3.3.2 Comparing with Existing Systems
+Our overall performance is shown in Table 4. Our
 method can significantly outperform those previous
  baselines, indicating the effectiveness of our
 proposed generation framework for zero-shot and
 few-shot stance detection with varies topics.
-3.4 2 show the t-SNE (van der Maaten and Hinton,
+3.4 Qualitative Analysis
+Figure 2 show the t-SNE (van der Maaten and Hinton,
  2008) visualization of intermediate representations
  before the classification layer from our model
 and BERT classification model on the development
@@ -398,7 +418,8 @@ Emily Allaway and Kathleen McKeown. 2020. ZeroShot
  Stance Detection  A Dataset and Model using
 Generalized Topic Representations. In Proceedings
 of the 2020 Conference on Empirical Methods in
-Natural Language Processing (EMNLP) , pages 8913 8931, Online. Association for Computational Linguistics.
+Natural Language Processing (EMNLP) , pages 8913 
+8931, Online. Association for Computational Linguistics.
 
 Emily Allaway, Malavika Srikanth, and Kathleen McKeown.
  2021. Adversarial learning for zero-shot stance
@@ -419,7 +440,8 @@ Pilehvar, Chryssi Giannitsarou, Flavio Toxvaerd, and
 Nigel Collier. 2020. Will-they-won t-they  A very
 large dataset for stance detection on Twitter. In Proceedings
  of the 58th Annual Meeting of the Association
- for Computational Linguistics , pages 1715 1724, Online. Association for Computational Linguistics.
+ for Computational Linguistics , pages 1715 
+1724, Online. Association for Computational Linguistics.
 
 Jacob Devlin, Ming-Wei Chang, Kenton Lee, and
 Kristina Toutanova. 2019. BERT  Pre-training of
@@ -432,7 +454,7 @@ Computational Linguistics  Human Language Technologies,
 Computational Linguistics.
 Eduardo Graells-Garrido, Ricardo Baeza-Yates, and
 Mounia Lalmas. 2020. Representativeness of abortion
- legislation debate on twitter  A case study in argentina and chile. In Companion Proceedings of
+ legislation debate on twitter  A case study in1495argentina and chile. In Companion Proceedings of
 the Web Conference 2020 , WWW  20, page 765 774,
 New York, NY , USA. Association for Computing
 Machinery.
@@ -450,7 +472,8 @@ Felix Caspelherr, Debanjan Chaudhuri, Christian M.
 Meyer, and Iryna Gurevych. 2018. A retrospective
 analysis of the fake news challenge stance-detection
 task. In Proceedings of the 27th International Conference
- on Computational Linguistics , pages 1859 1874, Santa Fe, New Mexico, USA. Association for
+ on Computational Linguistics , pages 1859 
+1874, Santa Fe, New Mexico, USA. Association for
 Computational Linguistics.
 Zihao He, Negar Mokhberian, and Kristina Lerman.
 2022. Infusing knowledge from Wikipedia to enhance
@@ -474,7 +497,7 @@ page 837 847, New York, NY , USA. Association for
 Computing Machinery.
 Mike Lewis and Angela Fan. 2019. Generative question
 answering  Learning to answer the whole question.
-In th International Conference on Learning Representations,
+In7th International Conference on Learning Representations,
  ICLR 2019, New Orleans, LA, USA, May
 6-9, 2019 . OpenReview.net.
 Mike Lewis, Yinhan Liu, Naman Goyal, Marjan
@@ -529,9 +552,10 @@ weight decay regularization. In International Conference
  on Learning Representations .
 Saif Mohammad, Svetlana Kiritchenko, Parinaz Sobhani,
  Xiaodan Zhu, and Colin Cherry. 2016.
-SemEval-2016 6  Detecting stance in tweets.
+SemEval-2016 task 6  Detecting stance in tweets.
 InProceedings of the 10th International Workshop
-on Semantic Evaluation (SemEval-2016) , pages 31 41, San Diego, California. Association for Computational
+on Semantic Evaluation (SemEval-2016) , pages 31 
+41, San Diego, California. Association for Computational
  Linguistics.
 Mitra Mohtarami, Ramy Baly, James Glass, Preslav
 Nakov, Lluís Màrquez, and Alessandro Moschitti.
@@ -548,7 +572,9 @@ of transfer learning with a unified text-to-text transformer.
  J. Mach. Learn. Res. , 21(1).
 Parinaz Sobhani, Diana Inkpen, and Xiaodan Zhu. 2017.
 A dataset for multi-target stance detection. In Proceedings
- of the 15 2, Short Papers , pages 551 557,
+ of the 15th Conference of the European
+Chapter of the Association for Computational Linguistics 
+ Volume 2, Short Papers , pages 551 557,
 Valencia, Spain. Association for Computational Linguistics.
 
 Swapna Somasundaran and Janyce Wiebe. 2010. Recognizing
@@ -576,7 +602,8 @@ Linguistics.
 Hang Yan, Junqi Dai, Tuo Ji, Xipeng Qiu, and Zheng
 Zhang. 2021. A unified generative framework for
 aspect-based sentiment analysis. In Proceedings
-of the 59 11th International
+of the 59th Annual Meeting of the Association for
+Computational Linguistics and the 11th International
 Joint Conference on Natural Language Processing
 (Volume 1  Long Papers) , pages 2416 2429, Online.
 Association for Computational Linguistics.
@@ -595,7 +622,9 @@ stance identification for online breast cancer cam discussions.
 Conference on World Wide Web Companion , WWW
  17 Companion, page 1073 1081, Republic and Canton
  of Geneva, CHE. International World Wide Web
-Conferences Steering Committee.1497 2023 1. Did you describe the limitations of your work 
+Conferences Steering Committee.1497ACL 2023 Responsible NLP Checklist
+A For every submission 
+  A1. Did you describe the limitations of your work 
 Limitations
   A2. Did you discuss any potential risks of your work 
 Limitations
@@ -604,13 +633,17 @@ Abstract, Introduction
   A4. Have you used AI writing assistants when working on this paper 
 Left blank.
 B  Did you use or create scientiﬁc artifacts 
-Introduction, Section 3.1 1. Did you cite the creators of artifacts you used 
-Introduction, Section 3.1 2. Did you discuss the license or terms for use and / or distribution of any artifacts 
-Section 3.1 3. Did you discuss if your use of existing artifact(s) was consistent with their intended use, provided
+Introduction, Section 3.1 Data
+  B1. Did you cite the creators of artifacts you used 
+Introduction, Section 3.1 Data
+  B2. Did you discuss the license or terms for use and / or distribution of any artifacts 
+Section 3.1 Data
+  B3. Did you discuss if your use of existing artifact(s) was consistent with their intended use, provided
 that it was speciﬁed  For the artifacts you create, do you specify intended use and whether that is
 compatible with the original access conditions (in particular, derivatives of data accessed for research
 purposes should not be used outside of research contexts) 
-Section 3.1 Data, Section 3.2 4. Did you discuss the steps taken to check whether the data that was collected / used contains any
+Section 3.1 Data, Section 3.2 Experimental Setup
+  B4. Did you discuss the steps taken to check whether the data that was collected / used contains any
 information that names or uniquely identiﬁes individual people or offensive content, and the steps
 taken to protect / anonymize it 
 We use an existing resource and detail of the data is discussed and introduced in their own published
@@ -629,13 +662,16 @@ C  Did you run computational experiments
 Left blank.
   C1. Did you report the number of parameters in the models used, the total computational budget
 (e.g., GPU hours), and computing infrastructure used 
-Section 3.2 2023 2022, with the addition of a question on AI writing
-assistance.1498 2. Did you discuss the experimental setup, including hyperparameter search and best-found
+Section 3.2 Experimental Setup
+The Responsible NLP Checklist used at ACL 2023 is adopted from NAACL 2022, with the addition of a question on AI writing
+assistance.1498  C2. Did you discuss the experimental setup, including hyperparameter search and best-found
 hyperparameter values 
-Section 3.2 3. Did you report descriptive statistics about your results (e.g., error bars around results, summary
+Section 3.2 Experimental Setup
+  C3. Did you report descriptive statistics about your results (e.g., error bars around results, summary
 statistics from sets of experiments), and is it transparent whether you are reporting the max, mean,
 etc. or just a single run 
-Section 3.2 Experimental Setup, Table 1 4. If you used existing packages (e.g., for preprocessing, for normalization, or for evaluation), did
+Section 3.2 Experimental Setup, Table 1
+  C4. If you used existing packages (e.g., for preprocessing, for normalization, or for evaluation), did
 you report the implementation, model, and parameter settings used (e.g., NLTK, Spacy, ROUGE,
 etc.) 
 Section 3.2 Experimental Setup

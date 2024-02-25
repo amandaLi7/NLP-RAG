@@ -2,7 +2,7 @@ TOWARDS IMPROVING HARMONIC SENSITIVITY AND PREDICTION
 STABILITY FOR SINGING MELODY EXTRACTION
 Keren Shao* Ke Chen* Taylor Berg-Kirkpatrick Shlomo Dubnov
 University of California San Diego
-{k shao, knutchen, tberg, sdubnov}@ucsd.edu
+{k5shao, knutchen, tberg, sdubnov}@ucsd.edu
 ABSTRACT
 In deep learning research, many melody extraction models
  rely on redesigning neural network architectures to improve
@@ -90,10 +90,13 @@ address the problem. When they are implemented alongside
 the prediction performance, we derive a differentiable loss
 component that specifically penalizes spurious short-term
 predictions of these kinds during training, thus potentially
-guiding the model to produce consistently stable predictions.arXiv 2308.02723 1
-  [cs.SD]  4 2023modification   STFT
+guiding the model to produce consistently stable predictions.arXiv 2308.02723v1
+  [cs.SD]  4 Aug 2023modification   STFT
 Frequency (Hz)Magnitudemodification   z-transform
-k 0.0007 0.0006 0.0002 0 1 . Top  the transformation pipeline of the original
+k 0.0007
+k 0.0006
+k 0.0002
+k 0Figure 1 . Top  the transformation pipeline of the original
 CFP representation, and our proposed z-CFP representation.
  Bottom  modified Spectrum  Swith different growing
 rateskapplied. Note that the original CFP corresponds to
@@ -184,16 +187,16 @@ We then generate the generalized cepstrum of spectrum
  GCoS from cepstrum  GCthe same way as in the original
 CFP. Finally, each time slice of our modified CFP representation
   X R3 T Fconsists of {S, GC,  GCoS }withExtraction Models
-2   Conv D (3,5,48)
-2   Conv D (3,5,96)
-2   Conv D (3,5,128)
+2   Conv2D (3,5,48)
+2   Conv2D (3,5,96)
+2   Conv2D (3,5,128)
 Dense
-Bi-GRU2   Conv D (3,5,128)
+Bi-GRU2   Conv2D (3,5,128)
 Dense   SoftmaxPianoNet
-3   Conv D (5,5,3 128)
+3   Conv2D (5,5,3   128)
 SF-ModuleFTA-Module
 SF-ModuleFTA-Module
-SoftmaxSoftmax3   Conv D (5,5,128 1)MSNet
+SoftmaxSoftmax3   Conv2D (5,5,128   1)MSNet
 FTANet
 downsampling-block (kernel, kernel, channel)
 upsampling-block (kernel, kernel, channel)Figure 2 . The model architecture. Note that we choose
@@ -218,7 +221,7 @@ for voice detection. All 2D-convolutional layers come with
 3-layer decoder, and a 4-layer bottleneck module. Both encoder
  and decoder contain FTA-modules and SF-modules
 to process the audio latent features. The channel size is
-shifted from 3 128, then back to 1. More specifications
+shifted from 3to128, then back to 1. More specifications
 of MSNet and FTANet can be found in their papers [8,12].
 The PianoNet we use for this task is modified from
 a sub-network of [21]. It starts with four convolutional
@@ -227,7 +230,8 @@ with kernel sizes (3, 5) and (3, 3) respectively, a batch normalization
  layer and a ReLU activation. Then it is followed
 by bidirectional-GRU and softmax layers, with dense layers
  as transitions. The layer bias is turned off for all layers
-1.0 0.00.5
+1.0
+0.00.5
 Time FrameV-D Prob
 Subsequence Processing
 reject such segments
@@ -265,7 +269,7 @@ we assume that the voice detection output is binary valueda
  {0,1}. Formally, we do not want  sharp-burst"
 sequences inside the following set 
 Bv Mv[
-m 3{a1...am a1 0, ai  1 1, m}(4)
+m 3{a1...am a1 am  0, ai  1for i   1, m}(4)
 where Mvis a hyperparameter threshold, above which the
 duration of vocal segments becomes reasonable. Figure 3
 illustrates examples of  sharp-burst" sequences in Bv(and
@@ -275,40 +279,48 @@ To make the model avoid predicting the short burst vocal
 segment, i.e., 010, we construct a polynomial objective that
 can fulfill the goal by satisfying the following 
 L3
-v(a a a3)   
-1 3 010 0 otherwise(5)
+v(a1a2a3)   
+1where a1a2a3  010
+0 otherwise(5)
 A decent choice will then be
 L3
-v(a a a3)   (1 1)a2(1 3) (6)
+v(a1a2a3)   (1  a1)a2(1 a3) (6)
 which can be easily extended to sequences with longer
 length m.
 L4
-v(a a a a4)   (1 1)a a3(1 4)
+v(a1a2a3a4)   (1  a1)a2a3(1 a4)
 ...
 Lm
-v(a1...am)   (1 1)(1 am)m 1 2ai (7)
+v(a1...am)   (1  a1)(1 am)m 1Y
+i 2ai (7)
 However, there is a small caveat in this extension when
 we move back from binary values to probability values
 a [0,1]. For example, our loss component will be
 having trouble capturing sequences like {0.1,0.4,0.6,0.1}
-and{0.1,0.6,0.4,0.1}as both L3 4
+and{0.1,0.6,0.4,0.1}as both L3
+vandL4
 vresult in relatively
  small values. However, we observe that polynomials
-(1 1)(1 2)a3(1 4)and(1 1)a2(1 3)(1 4)
+(1 a1)(1 a2)a3(1 a4)and(1 a1)a2(1 a3)(1 a4)
 respectively works better than our original L4
 v, but still insufficient
  to work standalone.
 Since none of the polynomials above gives high values
 to sequences outside of Bvin4-length, a simple solution
-would be to redefine L4 4
-v  (1 1)(1 4)(a a3 2(1 3)   (1 2)a3)
+would be to redefine L4
+vto be the sum of all such polynomials 
+
+L4
+v  (1 a1)(1 a4)(a2a3 a2(1 a3)   (1  a2)a3)
 ...
 Lm
-v  (1 1)(1 am)X
+v  (1 a1)(1 am)X
 c1...cm {0,1}m
-at least one ci  0 1 2aci
+at least one ci  0m 1Y
+i 2aci
 i(1 ai)1 ci
-  (1 1)(1 am)(1 1 2(1 ai)) (8)
+  (1 a1)(1 am)(1 m 1Y
+i 2(1 ai)) (8)
 This redefined loss Lvallows better recognition of the
 bad sequences mentioned above while not falsely flagging
 sequences outside of Bv. Furthermore, when dealing with
@@ -331,7 +343,8 @@ Lm
 v (Lm
 v)r
 (Lmv)r  (1 Lmv)r(9)where r Randr  1. It will amplify those sequences
-that receive loss values closer to 1 0.
+that receive loss values closer to 1 and suppress those sequences
+ with loss values closer to 0.
 Finally, for each m [3, Mv], we compute Lm
 vacross
 allm-length subsequences in the model s output. The aggregated
@@ -342,7 +355,7 @@ Now analogously, assuming non-vocal sequences beyond
  length Mnvbecome reasonable, we can perform the
 same analysis on the following set of sequences 
 Bnv Mnv[
-m 3{a1...am a1 1, ai  0 1, m}
+m 3{a1...am a1 am  1, ai  0for i   1, m}
 (10)
 and consequently obtain Lnv. Practically, Lm
 nvof any sequence
@@ -354,8 +367,10 @@ L LBCE  Lv Lnv (11)
 3. EXPERIMENTS
 3.1 Datasets and Experiment Setup
 For the training data, we complied with the setting of
-[10, 12] and chose all 1000 35 vocal tracks from MedleyDB [22]. For the
-testing data, we chose 12 2004 9 052. We also selected 12 tracks from MedleyDB
+[10, 12] and chose all 1000 Chinese pop songs from MIR1K1and
+ 35 vocal tracks from MedleyDB [22]. For the
+testing data, we chose 12 tracks in ADC2004 and 9 tracks
+in MIREX052. We also selected 12 tracks from MedleyDB
  that are disjoint from those already used for training.
 
 For the signal processing part, we used 8000 Hz sampling
@@ -365,8 +380,9 @@ tracks. Note that the time resolution of our labels is 0.01
 seconds, and this hop size was chosen to match that. Then,
 when creating z-CFP representations, we set the time dimension
  of the representation to be T  128 , or1.28seconds,
- and the number of frequency bins F  360 , or60 6octaves. The start and stop frequencies
- are 32.5 2050 Hz . Hence, the input shape
+ and the number of frequency bins F  360 , or60
+bins per octave across 6octaves. The start and stop frequencies
+ are 32.5 Hz and2050 Hz . Hence, the input shape
 becomes X R3 128 360and the output/label shape becomes
  Y R128 361.
 Within the extra loss component, we set the duration
@@ -383,17 +399,26 @@ raw chroma accuracy (RCA), and overall accuracy (OA)
 from the mir_eval library [24]. Following the convention
  of this task, overall accuracy (OA) is regarded as the
 1http //mirlab.org/dataset/public/MIR-1K.zip
-2https //labrosa.ee.columbia.edu/projects/melody/Dataset ADC 2004 05 87.21 14.62 84.28 84.30 84.48 91.98 6.14 86.54 86.55 89.19 69.38 13.74 61.81 62.80 73.70
-PianoNet   z-CFP 88.25 7.58 84.87 84.93 86.27 93.44 6.21 86.78 86.79 89.33 68.76 11.91 62.22 63.10 74.80 3 87.33 14.58 84.35 84.38 84.55 92.08 6.15 86.60 86.62 89.23 69.49 13.77 61.86 62.86 73.71 7 87.58 14.53 84.46 84.48 84.65 92.47 6.14 86.78 86.8 89.35 69.71 13.83 61.92 62.91 73.71 15 89.13 14.21 84.89 84.91 85.06 93.27 6.58 86.82 86.84 89.21 70.31 14.43 61.91 62.90 73.42
+2https //labrosa.ee.columbia.edu/projects/melody/Dataset ADC 2004 MIREX 05 MEDLEY DB
+Metrics VR VFA  RPA RCA OA VR VFA  RPA RCA OA VR VFA  RPA RCA OA
+PianoNet 87.21 14.62 84.28 84.30 84.48 91.98 6.14 86.54 86.55 89.19 69.38 13.74 61.81 62.80 73.70
+PianoNet   z-CFP 88.25 7.58 84.87 84.93 86.27 93.44 6.21 86.78 86.79 89.33 68.76 11.91 62.22 63.10 74.80
+PianoNet   3 point median 87.33 14.58 84.35 84.38 84.55 92.08 6.15 86.60 86.62 89.23 69.49 13.77 61.86 62.86 73.71
+PianoNet   7 point median 87.58 14.53 84.46 84.48 84.65 92.47 6.14 86.78 86.8 89.35 69.71 13.83 61.92 62.91 73.71
+PianoNet   15 point median 89.13 14.21 84.89 84.91 85.06 93.27 6.58 86.82 86.84 89.21 70.31 14.43 61.91 62.90 73.42
 PianoNet   {Lv,Lnv} 90.92 13.58 86.06 86.12 86.13 91.87 5.79 87.50 87.50 89.94 71.16 15.77 63.66 64.81 73.66
-PianoNet   z-CFP   {Lv,Lnv}90.50 7.99 85.76 85.82 86.92 92.84 6.39 87.57 87.59 89.76 68.88 12.29 62.05 62.91 74.53 89.78 23.12 80.83 81.60 80.10 84.85 11.44 77.76 78.09 81.68 53.49 9.41 46.90 48.24 68.15
-MSNet   z-CFP   {Lv,Lnv}90.61 14.62 81.96 82.57 82.59 88.38 14.85 80.83 81.01 82.39 62.95 14.60 53.60 55.31 69.07 81.26 2.70 77.17 77.36 80.89 87.34 5.11 81.56 81.61 86.40 62.44 10.41 55.94 56.58 72.30
-FTANet   z-CFP   {Lv,Lnv}90.29 10.83 85.06 85.19 85.82 90.50 6.63 83.94 83.99 87.36 63.71 9.35 56.32 57.29 73.02 1 . Ablation studies on ADC2004, MIREX05 and MedleyDB testsets. Baselines use CFP as the input representation
+PianoNet   z-CFP   {Lv,Lnv}90.50 7.99 85.76 85.82 86.92 92.84 6.39 87.57 87.59 89.76 68.88 12.29 62.05 62.91 74.53
+MSNet 89.78 23.12 80.83 81.60 80.10 84.85 11.44 77.76 78.09 81.68 53.49 9.41 46.90 48.24 68.15
+MSNet   z-CFP   {Lv,Lnv}90.61 14.62 81.96 82.57 82.59 88.38 14.85 80.83 81.01 82.39 62.95 14.60 53.60 55.31 69.07
+FTANet 81.26 2.70 77.17 77.36 80.89 87.34 5.11 81.56 81.61 86.40 62.44 10.41 55.94 56.58 72.30
+FTANet   z-CFP   {Lv,Lnv}90.29 10.83 85.06 85.19 85.82 90.50 6.63 83.94 83.99 87.36 63.71 9.35 56.32 57.29 73.02
+Table 1 . Ablation studies on ADC2004, MIREX05 and MedleyDB testsets. Baselines use CFP as the input representation
 andLBCE as the loss function. {Lv,Lnv}denotes the use of our proposed loss function in section 2.3. Among median
-filter sizes in the range [3,100] Z, 3 point works best for MedleyDB, 7 05, and 15 2004. But they neither significantly outperform our proposed loss component in any single dataset,
+filter sizes in the range [3,100] Z, 3 point works best for MedleyDB, 7 point works best for MIREX 05, and 15 point
+works best for ADC 2004. But they neither significantly outperform our proposed loss component in any single dataset,
 nor uniformly outperform in all three datasets.
 most important metric. All models are trained and tested
-in NVIDIA RTX 2080 3.
+in NVIDIA RTX 2080Ti GPUs and implemented in PyTorch3.
 
 3.2 Ablation Study
 We choose three extraction models, namely MSNet [8],
@@ -440,7 +465,8 @@ better performance than the models carrying only one of
 the techniques. These models appear to be an averaging
 weighting or an ensemble of models improved with either
 technique, implying better generalization.
-3.3 2 presents the results as we compare our best model,
+3.3 Comprehensive Performance Comparison
+Table 2 presents the results as we compare our best model,
 i.e., PianoNet with z-transform and {Lv,Lnv}, with other
 SoTA models. Among these SoTAs, there are two models
 with  *", indicating that these are only partial comparisons.
@@ -450,7 +476,8 @@ implementation, we report its results based on our own reimplementation.
 reported performance from the original paper.
 From Table 2, our improved PianoNet with z-transform
 and{Lv,Lnv}yield the best OA performance over all
-datasets, the best RPA and RCA on ADC 2004 05 datasets. We do note, despite the use of the extra loss
+datasets, the best RPA and RCA on ADC 2004 and MIREX
+05 datasets. We do note, despite the use of the extra loss
 component, that our model s VFA is not necessarily the
 smallest. This is because the extra loss component only
 targets a particular type of false positive, and is not meant
@@ -467,7 +494,9 @@ MSNet [8] 89.8 23.1 80.8 81.6 80.1
 FTANet [12] 81.3 2.7 77.2 77.4 80.9
 TONet [10] 91.8 17.1 82.6 82.9 82.6
 SpecTNT* [25] 85.4 8.2 83.5 83.6 85.0
-H-GNN* [13] 89.2 21.3 84.8 86.1 83.9 90.5 8.0 85.7 85.8 86.9 05
+H-GNN* [13] 89.2 21.3 84.8 86.1 83.9
+Ours 90.5 8.0 85.7 85.8 86.9
+Dataset MIREX 05
 Metrics VR VFA  RPA RCA OA
 MCDNN [4] 66.5 4.6 64.1 64.4 75.4
 DSM [14] 91.4 45.3 75.7 77.0 68.4
@@ -475,7 +504,8 @@ MSNet [8] 84.8 11.4 77.8 78.1 81.7
 FTANet [12] 87.3 5.1 81.6 81.6 86.4
 TONet [10] 91.6 8.5 83.8 84.0 86.6
 SpecTNT* [25] 82.2 8.7 77.4 77.5 82.5
-H-GNN* [13] 93.2 21.7 85.2 86.4 81.3 92.8 6.4 87.6 87.6 89.8
+H-GNN* [13] 93.2 21.7 85.2 86.4 81.3
+Ours 92.8 6.4 87.6 87.6 89.8
 Dataset MEDLEY DB
 Metrics VR VFA  RPA RCA OA
 MCDNN [4] 37.4 5.3 34.2 35.3 62.3
@@ -484,7 +514,9 @@ MSNet [8] 53.5 9.4 46.9 48.2 68.1
 FTANet [12] 62.4 10.4 55.9 56.6 72.3
 TONet [10] 64.2 12.5 56.6 58.0 71.6
 SpecTNT* [25] 62.7 18.8 54.7 56.4 63.9
-H-GNN* [13] 71.7 21.6 61.2 65.8 67.9 68.9 12.3 62.1 62.9 74.5 2 . The comprehensive performance comparison
+H-GNN* [13] 71.7 21.6 61.2 65.8 67.9
+Ours 68.9 12.3 62.1 62.9 74.5
+Table 2 . The comprehensive performance comparison
 among our improved models and current baselines.
 Another thing we found is that the PianoNet, as one of
 SoTAs in the piano transcription task and ported by us to
@@ -513,8 +545,11 @@ Time (second)
 Time (second)Original MSNet Improved MSNet
 Original FT ANet Improved FT ANet
 Original PianoNet Improved PianoNet
-Time (second)Freq. (Hz)01000 1000 0 4 . The effect of applying the loss LvandLnv.
-The top three plots are values of L30 05 dataset. The bottom two plots are one 5-sec
+Time (second)Freq. (Hz)01000 1000
+0Original PianoNet Improved PianoNet Groudtruth LabelFigure 4 . The effect of applying the loss LvandLnv.
+The top three plots are values of L30
+vacross the entire
+MIREX05 dataset. The bottom two plots are one 5-sec
 MIREX05 predictions.
 Lnv, across the entire MIREX05 dataset (i.e., we concatenate
  all tracks in the dataset). We see that cases in which
@@ -527,12 +562,12 @@ The pair of plots in the last row compares the prediction
 performance of PianoNets, trained without and with the extra
  loss components, on a zoomed-in section of MIREX05.
 Note that the original PianoNet has a short burst non-vocal
-segment in between the 10 11th second. Further,
+segment in between the 10th second and 11th second. Further,
  it has a considerable number of short burst vocal segments
  around the 12th second. Once trained with the extra
 loss components, these issues are resolved. Also note that
 both the original version and the improved version make
-a mistake in between the 13 14th second. This
+a mistake in between the 13th and the 14th second. This
 is because the length of that non-vocal transition is greater
 than our threshold Mnv, which ends up not triggering Lnv.
 All these observations further verify the effectiveness of
@@ -595,7 +630,8 @@ singing melody extraction from polyphonic music,  in
 Proc. ICASSP , 2022, pp. 626 630.
 [11] P. Gao, C. You, and T. Chi,  A multi-dilation and multiresolution
  fully convolutional network for singing
-melody extraction,  in Proc. ICASSP , 2020, pp. 551 555.
+melody extraction,  in Proc. ICASSP , 2020, pp. 551 
+555.
 [12] S. Yu, X. Sun, Y . Yu, and W. Li,  Frequency-temporal
 attention network for singing melody extraction,  in
 Proc. ICASSP , 2021, pp. 251 255.[13] S. Yu, X. Chen, and W. Li,  Hierarchical graph-based
@@ -603,7 +639,8 @@ neural network for singing melody extraction,  in Proc.
 ICASSP , 2022, pp. 626 630.
 [14] R. M. Bittner, B. McFee, J. Salamon, P. Li, and J. P.
 Bello,  Deep salience representations for f0 estimation
-in polyphonic music.  in Proc. ISMIR , 2017, pp. 63 70.
+in polyphonic music.  in Proc. ISMIR , 2017, pp. 63 
+70.
 [15] L. Su and Y .-H. Yang,  Combining spectral and temporal
  representations for multipitch estimation of polyphonic
  music,  IEEE Trans. Audio, Speech, Lang. Process.

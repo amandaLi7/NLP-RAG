@@ -41,7 +41,7 @@ barrier to entry to cutting-edge research is raised, particularly impacting rese
 with fewer resources and exacerbating disparities in the AI research landscape. Moreover, the
 escalating energy consumption associated with these computation-intensive models leads to serious
  This work was done during Tom Sherborne s internship at AI2.  denotes equal contribution.
-Preprint. Under review.arXiv 2307.09701 1  [cs.CL]  19 2023environmental concerns (Lacoste et al., 2019  Schwartz et al., 2020  Henderson et al., 2020  Strubell
+Preprint. Under review.arXiv 2307.09701v1  [cs.CL]  19 Jul 2023environmental concerns (Lacoste et al., 2019  Schwartz et al., 2020  Henderson et al., 2020  Strubell
 et al., 2020, inter alia ).
 Therefore, building more efficient models for AI systems has become a pressing challenge, drawing
 widespread attention from the community (Reddi et al., 2020  Tay et al., 2020  Treviso et al., 2022 
@@ -137,14 +137,19 @@ it helps disentangle the efficiency gains due to algorithmic innovations from th
 implementations that can equally benefit all models. Further, a dedicated in-house server allows us to
 measure energy consumption, which would otherwise be very challenging to incorporate ( 2.3).
 The hosting machine of Pentathlon has two NVIDIA RTX 8000 GPUs, two Intel Xeon Ice Lake Gold
-6348 28-Core CPUs, and 1 4 memory. It supports evaluation using GPUs and CPUs, and
+6348 28-Core CPUs, and 1TB DDR4 memory. It supports evaluation using GPUs and CPUs, and
 CPUs only. We plan to extend Pentathlon to offer a broader selection of hardware in the near future.2
 To accurately measure each submission s efficiency without interference, we have implemented a
 scheduler on the server. This ensures that only one inference workload is running at any given time.
 In Pentathlon, the efficiency measurement begins when the model has been loaded and is ready for
 predictions, excluding the overhead associated with both model and data loading.
 2.2 Realistic Evaluation Scenarios Designed to Emulate Real-world Applications
-Scenarios Acc. TP. Latency Mem. Energy & CO 2 1 1  Four evaluation scenarios and the metrics they focus on. Acc.  accuracy, TP.  throughput,
+Scenarios Acc. TP. Latency Mem. Energy & CO 2 BSZ Online
+Fixed batching           User specified  
+Poisson batching           Random  
+Single stream           1  
+Offline           User specified  
+Table 1  Four evaluation scenarios and the metrics they focus on. Acc.  accuracy, TP.  throughput,
 Mem.  memory. In the three online scenarios, Pentathlon interfaces with the submitted model via
 standard input/output ( stdio ), providing inputs and capturing outputs in real-time. Rearrangement of
 instance order is prohibited in these scenarios. In the offline scenario, the model is given immediate
@@ -155,7 +160,7 @@ queries are unpredictable, and so is the model s inference batch size. An AI ass
 smartphone typically processes one request at a time, while an offline translation system translating an
 entire book must use large batch sizes to prioritize maximizing throughput. These practical scenarios
 are rarely reflected by conventional efficiency evaluations in the research context, where models are
-2 2 Module ( https //developer.nvidia.com/embedded/
+2We plan to use the NVIDIA Jetson TX2 Module ( https //developer.nvidia.com/embedded/
 jetson-tx2 ) to simulate limited-resource settings such as on an automobile, and extend Pentathlon to a
 smartphone to evaluate machine learning models designed to run on mobile devices.
 3typically assessed with a fixed batch size. Such disparity underscores the pressing need for evaluation
@@ -257,9 +262,9 @@ underlying system implementation and allow for the installation of user dependen
 enables support for a diversity of backend frameworks and runtimes as the user is not constrained
 to a single deep learning framework or data format. For example, Pentathlon allows users to use
 both research frameworks (e.g., eager execution PyTorch and TensorFlow 2.0) as well as specialized
-3 4 for power consumption measurement  https //shop.openenergymonitor.com/
+3We use an emonTx V4 for power consumption measurement  https //shop.openenergymonitor.com/
 single-phase-6-channel-energy-monitoring-emontx-v4/ .
-4 2022 reproducibility track  https 
+4This is a lesson that some of the authors learned from the NAACL2022 reproducibility track  https 
 //2022.naacl.org/blog/reproducibility-track/
 5We provide a Python tool for this stdio interaction. Users can implement their own interfaces if they decide
 to use other programming languages.
@@ -272,7 +277,8 @@ those obtained from optimizing the model architectures or from utilizing faster 
 Pentathlon builds upon established software developed and maintained by AI2. These tools have
 been thoroughly tested by AI2 researchers and engineers, enhancing Pentathlon s robustness and ease
 of use. For example, empowered by Catwalk, Pentathlon supports a diverse set of NLP tasks, and
-allows Pentathlon to easily extend to many other tasks and research fields.6 3 Experiments
+allows Pentathlon to easily extend to many other tasks and research fields.6
+3 Experiments
 We use Pentathlon to benchmark several established models for machine translation and text classification
  with the RAFT dataset (Alex et al., 2021). In the interest of space, we refer the readers to the
 appendices for the RAFT experiments.
@@ -302,12 +308,13 @@ and the inference batch sizes for the fixed batching and offline scenarios are t
 maximum for the available GPU hardware.
 Models. We benchmark the following publicly-available models covering a wide range of sizes 
  MBART (Tang et al., 2021)  a 610M-parameter-sized Transformer model for multilingual translation.
- It has two variants, many-to-one (MBART M O) translates other languages into English,
-and many-to-many (M M) can translate between multiple language pairs. We use the MBART50
+ It has two variants, many-to-one (MBART M2O) translates other languages into English,
+and many-to-many (M2M) can translate between multiple language pairs. We use the MBART50
 variant, originally pre-trained on monolingual corpora in 25 languages, by fine-tuning on parallel
 corpora in across 50 languages for direct use as a translation engine.
- M M100 (Fan et al., 2021)  Transformer-based multilingual models for many-to-many translation.
-We report on two sizes with 418 1.2B parameters respectively. The M M100 6Catwalk provides a unified interface to a broad range of existing NLP tasks and models. A list of tasks that
+ M2M100 (Fan et al., 2021)  Transformer-based multilingual models for many-to-many translation.
+We report on two sizes with 418M and 1.2B parameters respectively. The M2M100 model is
+6Catwalk provides a unified interface to a broad range of existing NLP tasks and models. A list of tasks that
 are currently supported by Pentathlon can be found at https //github.com/allenai/catwalk .
 7In this scenario the models are granted immediate access to all instances and can sort them by length. If
 the instances were drawn from the test set, this would result in the artifact that groups duplicates of the same
@@ -318,7 +325,7 @@ translation between any two of 100 languages.
 DE- EN translation. The model is trained on OPUS bitext corpora (Tiedemann, 2012).
  WMT19-Meta (Ng et al., 2019)  a DE- EN Transformer model with 314M parameters.
 This system won the WMT19 task on German to English news translation (Barrault et al., 2019).
- WMT21-Meta (Tran et al., 2021)  a M O Transformer model with 4.7B parameters. Unlike
+ WMT21-Meta (Tran et al., 2021)  a M2O Transformer model with 4.7B parameters. Unlike
 WMT19-Meta , this model is multilingual and trained on data from all languages for the WMT
 2021 shared task.Training data is a mixture of parallel corpora, monolingual corpora and mined
 bitext. This multilingual system ranked high in several WMT21 news translation tasks (Akhbardeh
@@ -328,10 +335,10 @@ effect of quantization. In our preliminary experiments, we found that employing 
 quantization techniques such as 8-bit and 4-bit quantization using naive methods led to severely
 compromised translation quality, with the BLEU score dropping to around 1, effectively resulting in
 a failed translation. All models  implementation and checkpoints are available on Hugging Face.
-Results. Figure 2 14
+Results. Figure 2 summarizes the efficiency performance of different models in on the WMT14
 DE-EN dataset, along with their translation quality. Overall, models trained for English translation
 demonstrated better trade-offs between translation quality and efficiency. Notably, OPUS outperforms
-the much larger MBART M M and M M100 models in both accuracy and all aspects of efficiency,
+the much larger MBART M2M and M2M100 models in both accuracy and all aspects of efficiency,
 and is the most efficient model among all. Although WMT21-Meta, the largest model considered,
 provides the highest BLEU score, it takes a substantial hit in efficiency.
 Interestingly, despite being more than four times larger, WMT19-Meta achieves efficiency performance
@@ -342,16 +349,17 @@ landscape of efficiency in practical applications.
 With ONNX, the models achieve over 20% improvements in latency and throughput in the singlestream
  scenario, accompanied by a significant reduction in memory and energy overhead. However,
 less efficiency improvement is observed in other scenarios with larger batch sizes.
-Larger models benefit more from FP16 quantization. By comparing Figures 2 2b, we
+Larger models benefit more from FP16 quantization. By comparing Figures 2a and 2b, we
 observe that FP16 quantization improves all models  efficiency performance (except #Params.),
 particularly memory overhead. Larger models appear to benefit more from quantization. As shown
-in Figures 2 2d, while OPUS experiences minimal efficiency gains from quantization apart
+in Figures 2c and 2d, while OPUS experiences minimal efficiency gains from quantization apart
 from increased throughput, WMT21-Meta s efficiency dramatically improves with FP16 quantization,
 nearly doubling throughput and reducing latency, memory overhead, and energy consumption by half
 or more. These results highlight the promise of advancing quantization techniques for larger models
 in order to improve the trade-off between accuracy and efficiency.
 In single-GPU inference, the GPU accounts for only a minor portion of the energy consumption.
-This is demonstrated by Figure 3. This experiment uses a single RTX8000 260W. We note that the GPU rarely operates at full power, implying that GPU hours, a
+This is demonstrated by Figure 3. This experiment uses a single RTX8000 GPU with a maximum
+power of 260W. We note that the GPU rarely operates at full power, implying that GPU hours, a
 metric commonly used to gauge training computational overhead (Henderson et al., 2020  Kasai et al.,
 2021b), is unsuitable for estimating inference GPU energy. Even during the most GPU-intensive
 runs by the WMT21-Meta model, where it does operate at full capacity, the GPU only accounts for
@@ -369,25 +377,64 @@ Latency
 (ms)
 GPU Memory
 (GiB)Energy
-(W.h)30 35 40 45 100 418 100 1.2 19-Meta
+(W.h)30 35 40 45MBART M2O
+MBART M2M
+M2M100 418M
+M2M100 1.2B
+OPUS
+WMT19-Meta
 WMT21-Meta
-10 40080012001600 1000 700 400 100 24 16 8 0150 100 50 0(a) FP32.
+10B1B100M10M
+40080012001600
+1000 700 400 100
+24
+16
+8
+0150
+100
+50
+0(a) FP32.
 BLEU#ParamsThroughput
 (words/s)
 Latency
 (ms)
 GPU Memory
 (GiB)Energy
-(W.h)30 35 40 45 100 418 100 1.2 19-Meta
+(W.h)30 35 40 45MBART M2O
+MBART M2M
+M2M100 418M
+M2M100 1.2B
+OPUS
+WMT19-Meta
 WMT21-Meta
-10 40080012001600 1000 700 400 100 24 16 8 0150 100 50 0 (b) FP16
+10B1B100M10M
+40080012001600
+1000 700 400 100
+24
+16
+8
+0150
+100
+50
+0 (b) FP16
 BLEU#ParamsThroughput
 (words/s)
 Latency
 (ms)
 GPU Memory
 (GiB)Energy
-(W.h)30 35 40 45 32 16 10 40080012001600 1000 700 400 100 24 16 8 0150 100 50 0
+(W.h)30 35 40 45FP32
+FP16
+10B1B100M10M
+40080012001600
+1000 700 400 100
+24
+16
+8
+0150
+100
+50
+0
 (c) OPUS, FP32 vs. FP16.
 BLEU#ParamsThroughput
 (words/s)
@@ -395,17 +442,86 @@ Latency
 (ms)
 GPU Memory
 (GiB)Energy
-(W.h)30 35 40 45 32 16 10 40080012001600 1000 700 400 100 24 16 8 0150 100 50 0 (d) WMT21-Meta, FP32 vs. FP16.
-Figure 2 14 DE-EN, represented in terms of BLEU
+(W.h)30 35 40 45FP32
+FP16
+10B1B100M10M
+40080012001600
+1000 700 400 100
+24
+16
+8
+0150
+100
+50
+0 (d) WMT21-Meta, FP32 vs. FP16.
+Figure 2  Performance of various models on the WMT14 DE-EN, represented in terms of BLEU
 scores and a range of efficiency metrics. To more accurately reflect real-world applications, the
 figures include throughput metrics from the offline scenario, latency and GPU memory metrics from
 the single stream scenario, and energy metrics from the fixed batching scenario. For all metrics, outer
 rings indicate better performance . #Params is presented on a logarithmic scale.
-Average Power (W)0200400600800 16 226 260 87 178 81 90 110 216 92 185 98 202 99 199 482 533 459 455 448 463 464 488 469 477 455 480 464 463 33.0%28.2%30.7%17.6%17.8%16.4%30.1%29.6%27.9%19.2%16.3%15.4%16.0%31.9%
-MBART M OMBART M MM M M M OPUSWMT19-MetaWMT21-Meta M M M1.2 4.7B
+Average Power (W)0200400600800
+FP32FP16FP32FP16FP32FP16FP32FP16FP32FP16FP32FP16FP32FP16
+226
+260
+87
+178
+81
+90
+110
+216
+92
+185
+98
+202
+99
+199
+482
+533
+459
+455
+448
+463
+464
+488
+469
+477
+455
+480
+464
+463Power of the RestGPU Power33.0%28.2%30.7%17.6%17.8%16.4%30.1%29.6%27.9%19.2%16.3%15.4%16.0%31.9%
+MBART M2OMBART M2MM2M100M2M100OPUSWMT19-MetaWMT21-Meta610M610M418M1.2B74M314M4.7B
 (a) Single stream.
-Average Power (W)0200400600800 16 226 260 87 178 81 90 110 216 92 185 98 202 99 199 482 533 459 455 448 463 464 488 469 477 455 480 464 463 33.0%28.2%30.7%17.6%17.8%16.4%30.1%29.6%27.9%19.2%16.3%15.4%16.0%31.9%
-MBART M OMBART M MM M M M OPUSWMT19-MetaWMT21-Meta M M M1.2 4.7B (b) Offline.
+Average Power (W)0200400600800
+FP32FP16FP32FP16FP32FP16FP32FP16FP32FP16FP32FP16FP32FP16
+226
+260
+87
+178
+81
+90
+110
+216
+92
+185
+98
+202
+99
+199
+482
+533
+459
+455
+448
+463
+464
+488
+469
+477
+455
+480
+464
+463Power of the RestGPU Power33.0%28.2%30.7%17.6%17.8%16.4%30.1%29.6%27.9%19.2%16.3%15.4%16.0%31.9%
+MBART M2OMBART M2MM2M100M2M100OPUSWMT19-MetaWMT21-Meta610M610M418M1.2B74M314M4.7B (b) Offline.
 Figure 3  Power consumption in Watts across different model inference runs in the single stream (3a)
 and offline (3b) scenarios. Purple bars indicate the power consumed by the GPU, while the light blue
 bars represent the power consumption of all other system components, excluding the GPU. The white
@@ -456,7 +572,7 @@ Neel Alex, Eli Lifland, Lewis Tunstall, Abhishek Thakur, Pegah Maham, C. Jess Ri
 Hine, Carolyn Ashurst, Paul Sedille, Alexis Carlier, Michael Noetel, and Andreas Stuhlmüller.
 RAFT  A real-world few-shot text classification benchmark. In Thirty-fifth Conference on Neural
 Information Processing Systems Datasets and Benchmarks Track (Round 2) , 2021. URL https 
-//openreview.net/forum id bgWHz FMB7 .
+//openreview.net/forum id bgWHz41FMB7 .
 Phyllis Ang, Bhuwan Dhingra, and Lisa Wu Wills. Characterizing the efficiency vs. accuracy trade-off
 for long-context NLP models. In Proceedings of NLP Power  The First Workshop on Efficient
 Benchmarking in NLP , pp. 113 121, Dublin, Ireland, May 2022. Association for Computational
@@ -489,7 +605,7 @@ Roberts, Paul Barham, Hyung Won Chung, Charles Sutton, Sebastian Gehrmann, et al
 Scaling language modeling with pathways. arXiv preprint arXiv 2204.02311 , 2022.
 Mostafa Dehghani, Yi Tay, Anurag Arnab, Lucas Beyer, and Ashish Vaswani. The efficiency
 misnomer. In International Conference on Learning Representations , 2022. URL https //
-openreview.net/forum id iulEMLYh uR .
+openreview.net/forum id iulEMLYh1uR .
 Jesse Dodge, Taylor Prewitt, Remi Tachet des Combes, Erika Odmark, Roy Schwartz, Emma Strubell,
 Alexandra Sasha Luccioni, Noah A. Smith, Nicole DeCario, and Will Buchanan. Measuring the
 carbon intensity of ai in cloud instances. In 2022 ACM Conference on Fairness, Accountability,
@@ -586,7 +702,7 @@ of bloom, a 176b parameter language model, 2022.
 Zhiyi Ma, Kawin Ethayarajh, Tristan Thrush, Somya Jain, Ledell Yu Wu, Robin Jia, Christopher
 Potts, Adina Williams, and Douwe Kiela. Dynaboard  An Evaluation-As-A-Service Platform for
 Holistic Next-Generation Benchmarking. November 2021. URL https //openreview.net/
-forum id TCarYAus JL .
+forum id TCarYAus7JL .
 Peter Mattson, Vijay Janapa Reddi, Christine Cheng, Cody Coleman, Greg Diamos, David Kanter,
 Paulius Micikevicius, David Patterson, Guenther Schmuelling, Hanlin Tang, et al. Mlperf  An
 industry standard benchmark suite for machine learning performance. IEEE Micro , 40(2) 8 16,
@@ -602,8 +718,8 @@ Weizhu Chen, Jianfeng Gao, Barlas Oguz, Xilun Chen, Vladimir Karpukhin, Stan Pes
 Dmytro Okhonko, Michael Schlichtkrull, Sonal Gupta, Yashar Mehdad, and Wen-tau Yih. Neurips
 2020 efficientqa competition  Systems, analyses and lessons learned. In Hugo Jair Escalante and
 Katja Hofmann (eds.), Proceedings of the NeurIPS 2020 Competition and Demonstration Track ,
-volume 133 of Proceedings of Machine Learning Research , pp. 86 111. PMLR, 06 12 2021.
-URL https //proceedings.mlr.press/v133/min a.html .
+volume 133 of Proceedings of Machine Learning Research , pp. 86 111. PMLR, 06 12 Dec 2021.
+URL https //proceedings.mlr.press/v133/min21a.html .
 Nathan Ng, Kyra Yee, Alexei Baevski, Myle Ott, Michael Auli, and Sergey Edunov. Facebook fair s
 wmt19 news translation task submission. In Proc. of WMT , 2019.
 David Patterson, Joseph Gonzalez, Urs Hölzle, Quoc Le, Chen Liang, Lluis-Miquel Munguia, Daniel
@@ -707,7 +823,8 @@ benchmark platform for responsible natural language processing. In Proceedings o
 Conference of the European Chapter of the Association for Computational Linguistics  System
 Demonstrations , pp. 329 336, Online, April 2021. Association for Computational Linguistics. doi 
 10.18653/v1/2021.eacl-demos.39. URL https //aclanthology.org/2021.eacl-demos.39 .
-14 1. For all authors...
+14Checklist
+1. For all authors...
 (a)Do the main claims made in the abstract and introduction accurately reflect the paper s
 contributions and scope  [Yes]
 (b)Did you describe the limitations of your work  [Yes] As mentioned in Section 2.1,
@@ -780,7 +897,9 @@ Board (IRB) approvals, if applicable  [N/A]
 spent on participant compensation  [N/A]
 8For more information see the WMT-14 Task https //www.statmt.org/wmt14/translation-task.
 html and the EuroParl Corpus https //www.statmt.org/europarl/
-16 11 datasets that focus on few-shot text classification in real-world settings.
+16Appendices
+A Text Classification with RAFT
+RAFT is a collection of 11 datasets that focus on few-shot text classification in real-world settings.
 Here we focus on the ADE Corpus V2 (ADE) portion, aiming to classify sentences derived from
 medical reports as related or unrelated to adverse drug effects. Several baseline models, provided by
 the authors, were evaluated for efficiency, including 
@@ -794,10 +913,21 @@ has not released the gold labels of the test split, and therefore we report the 
 et al. (2021).
 F1#Params Throughput (inst./s)
 Latency (ms)
-GPU Memory (GiB) Energy (W.h)20 40 60 80 2
+GPU Memory (GiB) Energy (W.h)20 40 60 80AdaBoost
+GPT2
 BART
 Maj.
-1 1 101001 60 40 20 0 3 2 1 030 20 10 0 4  Models  efficiency and accuracy
+1B1M1K1
+101001K10K
+60 40 20 0
+3
+2
+1
+030
+20
+10
+0
+Figure 4  Models  efficiency and accuracy
  performance on RAFT test data. F1
 numbers are due to Alex et al. (2021).Results. Figure 4 provides a comparison of the above
 models with a majority-class baseline (Maj.). AdaBoost, a
@@ -807,17 +937,19 @@ despite having fewer parameters, lags behind BART in
 terms of throughput, latency, and energy consumption. We
 believe that this could be due to the in-context few-shot
 examples, which lead to significantly longer inputs for
-GPT-2 compared to BART. Nonetheless, GPT-2 1 score in this experiment.
+GPT-2 compared to BART. Nonetheless, GPT-2 manages
+to achieve the highest F1 score in this experiment.
 B Additional
 Experiments with Machine Translation
 All models  implementation and checkpoints are available on Hugging Face, with the following
 identifiers 
   MBART50  facebook/mbart-large-50-many-to-{many, one}-mmt  
-  M M100  facebook/m m100_{418M, 1.2B}  
+  M2M100  facebook/m2m100_{418M, 1.2B}  
   OPUS  Helsinki-NLP/opus-mt-de-en  
   WMT19-Meta  facebook/wmt19-de-en  
   WMT21-Meta  facebook/wmt21-dense-24-wide-en-x .
-Additional FP32 vs. FP16 comparisons. Figure 5 32 16 14 DE-EN, complementing the results presented in
+Additional FP32 vs. FP16 comparisons. Figure 5 provides an additional set of comparisons between
+FP32 and FP16 across various models on WMT14 DE-EN, complementing the results presented in
 Section 3. The general trends mirror those observed earlier, with larger models benefiting more in
 terms of efficiency from quantization compared to smaller ones.
 ONNX improves throughput, latency, and energy overhead, at the cost of increased GPU
@@ -836,15 +968,15 @@ As shown in Figure 7, when comparing five different models in a single-stream sc
 PyTorch and ONNX runtime, ONNX delivers substantial improvements in throughput, latency, and
 energy overhead, especially for larger models. However, this comes with an increase in GPU memory
 consumption, which is likely due to the storage of pre-compiled computational graphs on the GPU.
-WMT19 21, which utilize the Fully Sharded Data Parallel technique (FSDP  Zhao
+WMT19 Meta and WMT21, which utilize the Fully Sharded Data Parallel technique (FSDP  Zhao
 et al., 2021), are excluded from this experiment due to compatibility challenges with ONNX and
 FSDP.
 Our preliminary experiments find that ONNX brings marginal efficiency improvements in other
 scenarios that use larger batch sizes, which is consistent with the observation by Fernandez et al.
 (2023).
 Results on WMT14 EN- DE.
-Figure 6 14 Englishto-German
- (EN- DE) translation task. The results are shown for both FP32 16 models. The
+Figure 6 provides a summary of the efficiency performance of various models on the WMT14 Englishto-German
+ (EN- DE) translation task. The results are shown for both FP32 and FP16 models. The
 observed trends align with those discussed in Section 3.
 18BLEU#ParamsThroughput
 (words/s)
@@ -852,38 +984,93 @@ Latency
 (ms)
 GPU Memory
 (GiB)Energy
-(W.h)30 35 40 45 32 16 10 40080012001600 1000 700 400 100 24 16 8 0150 100 50 0(a) MBART M O.
+(W.h)30 35 40 45FP32
+FP16
+10B1B100M10M
+40080012001600
+1000 700 400 100
+24
+16
+8
+0150
+100
+50
+0(a) MBART M2O.
 BLEU#ParamsThroughput
 (words/s)
 Latency
 (ms)
 GPU Memory
 (GiB)Energy
-(W.h)30 35 40 45 32 16 10 40080012001600 1000 700 400 100 24 16 8 0150 100 50 0 (b) MBART M M.
+(W.h)30 35 40 45FP32
+FP16
+10B1B100M10M
+40080012001600
+1000 700 400 100
+24
+16
+8
+0150
+100
+50
+0 (b) MBART M2M.
 BLEU#ParamsThroughput
 (words/s)
 Latency
 (ms)
 GPU Memory
 (GiB)Energy
-(W.h)30 35 40 45 32 16 10 40080012001600 1000 700 400 100 24 16 8 0150 100 50 0
-(c) M M100 418M.
+(W.h)30 35 40 45FP32
+FP16
+10B1B100M10M
+40080012001600
+1000 700 400 100
+24
+16
+8
+0150
+100
+50
+0
+(c) M2M100 418M.
 BLEU#ParamsThroughput
 (words/s)
 Latency
 (ms)
 GPU Memory
 (GiB)Energy
-(W.h)30 35 40 45 32 16 10 40080012001600 1000 700 400 100 24 16 8 0150 100 50 0 (d) M M100 1.2B.
+(W.h)30 35 40 45FP32
+FP16
+10B1B100M10M
+40080012001600
+1000 700 400 100
+24
+16
+8
+0150
+100
+50
+0 (d) M2M100 1.2B.
 BLEU#ParamsThroughput
 (words/s)
 Latency
 (ms)
 GPU Memory
 (GiB)Energy
-(W.h)30 35 40 45 32 16 10 40080012001600 1000 700 400 100 24 16 8 0150 100 50 0
+(W.h)30 35 40 45FP32
+FP16
+10B1B100M10M
+40080012001600
+1000 700 400 100
+24
+16
+8
+0150
+100
+50
+0
 (e) WMT19 Meta.
-Figure 5 14 DE-EN using FP32 (red) and FP16
+Figure 5  Additional results of various models on the WMT14 DE-EN using FP32 (red) and FP16
 (blue). Similarly to Figure 2, the throughput metrics are from the offline scenario, latency and GPU
 memory metrics from the single stream scenario, and energy metrics from the fixed batching scenario.
 19BLEU#ParamsThroughput
@@ -892,18 +1079,47 @@ Latency
 (ms)
 GPU Memory
 (GiB)Energy
-(W.h)30 35 40 45 100 418 100 1.2 19-Meta
+(W.h)30 35 40 45MBART M2O
+MBART M2M
+M2M100 418M
+M2M100 1.2B
+OPUS
+WMT19-Meta
 WMT21-Meta
-10 40080012001600 1000 700 400 100 24 16 8 0150 100 50 0(a) FP32.
+10B1B100M10M
+40080012001600
+1000 700 400 100
+24
+16
+8
+0150
+100
+50
+0(a) FP32.
 BLEU#ParamsThroughput
 (words/s)
 Latency
 (ms)
 GPU Memory
 (GiB)Energy
-(W.h)30 35 40 45 100 418 100 1.2 19-Meta
+(W.h)30 35 40 45MBART M2O
+MBART M2M
+M2M100 418M
+M2M100 1.2B
+OPUS
+WMT19-Meta
 WMT21-Meta
-10 40080012001600 1000 700 400 100 24 16 8 0150 100 50 0 (b) FP16 6 14 EN-DE. Following Figure 2, the figures
+10B1B100M10M
+40080012001600
+1000 700 400 100
+24
+16
+8
+0150
+100
+50
+0 (b) FP16
+Figure 6  Performance of various models on the WMT14 EN-DE. Following Figure 2, the figures
 include throughput metrics from the offline scenario, latency and GPU memory metrics from the
 single stream scenario, and energy metrics from the fixed batching scenario. For all metrics, outer
 rings indicate better performance . #Params is presented on a logarithmic scale.
@@ -913,39 +1129,94 @@ Latency
 (ms)
 GPU Memory
 (GiB)Energy
-(W.h)25 30 35 40 10 70140210280 450 300 150 0 12 8 4 045 30 15 0(a) MBART M O.
+(W.h)25 30 35 40PyT orch
+ONNX
+10B1B100M10M
+70140210280
+450 300 150 0
+12
+8
+4
+045
+30
+15
+0(a) MBART M2O.
 BLEU#ParamsThroughput
 (words/s)
 Latency
 (ms)
 GPU Memory
 (GiB)Energy
-(W.h)25 30 35 40 10 70140210280 450 300 150 0 12 8 4 045 30 15 0 (b) MBART M M.
+(W.h)25 30 35 40PyT orch
+ONNX
+10B1B100M10M
+70140210280
+450 300 150 0
+12
+8
+4
+045
+30
+15
+0 (b) MBART M2M.
 BLEU#ParamsThroughput
 (words/s)
 Latency
 (ms)
 GPU Memory
 (GiB)Energy
-(W.h)25 30 35 40 10 70140210280 450 300 150 0 12 8 4 045 30 15 0
-(c) M M100 418M.
+(W.h)25 30 35 40PyT orch
+ONNX
+10B1B100M10M
+70140210280
+450 300 150 0
+12
+8
+4
+045
+30
+15
+0
+(c) M2M100 418M.
 BLEU#ParamsThroughput
 (words/s)
 Latency
 (ms)
 GPU Memory
 (GiB)Energy
-(W.h)25 30 35 40 10 70140210280 450 300 150 0 12 8 4 045 30 15 0 (d) M M100 1.2B.
+(W.h)25 30 35 40PyT orch
+ONNX
+10B1B100M10M
+70140210280
+450 300 150 0
+12
+8
+4
+045
+30
+15
+0 (d) M2M100 1.2B.
 BLEU#ParamsThroughput
 (words/s)
 Latency
 (ms)
 GPU Memory
 (GiB)Energy
-(W.h)25 30 35 40 10 70140210280 450 300 150 0 12 8 4 045 30 15 0
+(W.h)25 30 35 40PyT orch
+ONNX
+10B1B100M10M
+70140210280
+450 300 150 0
+12
+8
+4
+045
+30
+15
+0
 (e) OPUS.
 Figure 7  Accuracy and efficiency performance comparisons of five different models while using
-PyTorch (red) and ONNX (blue) runtime. WMT19 21 Meta rely on the Fully Sharded
+PyTorch (red) and ONNX (blue) runtime. WMT19 Meta and WMT21 Meta rely on the Fully Sharded
 Data Parallel (FSDP  Zhao et al., 2021) in their implementation, which complicates their conversions
 to ONNX, and are therefore not included in this figure. All efficiency metrics are measured in the
 single-stream scenario  in preliminary experiments, we observe that the efficiency gains from ONNX

@@ -1,16 +1,17 @@
 IMPROVING AUDIO CAPTIONING MODELS WITH FINE-GRAINED AUDIO FEATURES,
 TEXT EMBEDDING SUPERVISION, AND LLM MIX-UP AUGMENTATION
 Shih-Lun Wu1, Xuankai Chang1, Gordon Wichern2, Jee-weon Jung1,
-Franc  ois Germain2, Jonathan Le Roux2, Shinji Watanabe1 1Language Technologies Institute, Carnegie Mellon University, Pittsburgh, PA, USA
+Franc  ois Germain2, Jonathan Le Roux2, Shinji Watanabe1
+1Language Technologies Institute, Carnegie Mellon University, Pittsburgh, PA, USA
 2Mitsubishi Electric Research Labs (MERL), Cambridge, MA, USA
 ABSTRACT
 Automated audio captioning (AAC) aims to generate informative descriptions
  for various sounds from nature and/or human activities. In
 recent years, AAC has quickly attracted research interest, with stateof-the-art
- systems now relying on a sequence-to-sequence (seq seq)
+ systems now relying on a sequence-to-sequence (seq2seq)
 backbone powered by strong models such as Transformers. Following
  the macro-trend of applied machine learning research, in
-this work, we strive to improve the performance of seq seq AAC
+this work, we strive to improve the performance of seq2seq AAC
 models by extensively leveraging pretrained models and large language
  models (LLMs). Specifically, we utilize BEAT Sto extract
 fine-grained audio features. Then, we employ I NSTRUCTOR LLM
@@ -36,11 +37,11 @@ Research progress on AAC has accelerated in recent years thanks
 to the yearly DCASE challenges, the impressive performance of
 Transformer-based language models, and the release of the open audio
  captioning datasets Clotho [2] and AudioCaps [3]. Recent leading
- works in AAC [4 9] all used the sequence-to-sequence (seq seq)
+ works in AAC [4 9] all used the sequence-to-sequence (seq2seq)
 modeling framework, where an audio encoder is used to extract features
  from the input audio, and a text decoder learns to generate the
 caption autoregressively based on the extracted audio features.
-While our work is also seq seq-based, we extensively leverage
+While our work is also seq2seq-based, we extensively leverage
 machine learning models that are pretrained on large-scale datasets
 to improve AAC performance from multiple aspects, namely, audio
 This work used Bridges2-PSC and Delta-NCSA through allocation
@@ -91,8 +92,8 @@ Our AAC model attains a state-of-the-art SPIDEr-FL score of
 32.6 (on Clotho V2 [2] evaluation set) and is the winner of the 2023
 DCASE AAC Challenge.1Despite the numerous components introduced
  to our model, we show in our ablation study (Section 3.4)
-1 2023 technical report  https //dcase.community/
-documents/challenge2023/technical reports/DCASE2023 Wu t a.pdf.arXiv 2309.17352 2  [cs.SD]  10 202412
+1DCASE Challenge 2023 technical report  https //dcase.community/
+documents/challenge2023/technical reports/DCASE2023 Wu31t6a.pdf.arXiv 2309.17352v2  [cs.SD]  10 Jan 202412
 BEATs
 encoder
 BART
@@ -102,7 +103,7 @@ Conformer
  on pebbles"
 cross
 attention
-Conv D downsample
+Conv1D downsample
 Global mean pool
 (50Hz) (17Hz) audio
 embedding
@@ -130,7 +131,8 @@ train Conformer s output audio representation to mimic the corresponding
  caption s I NSTRUCTOR sentence embedding.
 that every component is indispensable to its great performance. We
 open-source our implementation,2pretrained model weights,3and
-ChatGPT-generated caption mix-ups.4 2. METHOD
+ChatGPT-generated caption mix-ups.4
+2. METHOD
 2.1. Network Architecture and Main Loss Function
 We utilize BEATs [13] as our main audio encoder. The BEATs
 module takes a 16 kHz audio waveform as input, converts the waveform
@@ -173,7 +175,7 @@ autoregressively. The main loss function to our BEATs-BART captioning
  model, applied on the BART s output distributions, is the
 negative log-likelihood (NLL) of audio captions, i.e.,
 LNLL E(x,y) D trainh y X
-n 1 logp(yn y1 1 x)i
+n 1 logp(yn y1 n 1 x)i
 , (1)
 where Dtrainis the training dataset, xis the input audio waveform,
 yis an audio caption, and ynis the nthtoken in the caption. A
@@ -213,7 +215,7 @@ i 1 logsim(ai,ci)P B
 j 1sim(ai,cj)i
 ,(4)
 LInfoNCE   0.5 (LInfoNCE a LInfoNCE c), (5)
-where sim( , )is the exponentiated temperature-scaled cosine sim As
+where sim( , )is the exponentiated temperature-scaled cosine sim5As
  of May 2023, when our project was being carried out.Table 1   Randomly chosen samples of ChatGPT mix-up augmentations. In general, ChatGPT is able to faithfully reflect all content in the
 two input captions grammatically, and sometimes exhibits creativity in sentence structuring and vocabulary choice.
 Clotho caption #1 Clotho caption #2 ChatGPT mix-up
@@ -253,13 +255,13 @@ more straightforward  we follow the algorithm used in WavLM [33],
 scaling the two waveforms to ensure their relative root-mean-square
 energy is within  5 dB before adding them together.
 Table 1 displays a few examples of ChatGPT-generated mix-ups.
-We try including either 50 100K ChatGPT mix-ups, and using
+We try including either 50K or 100K ChatGPT mix-ups, and using
 50K yields a better performance. The API cost for generating 50K
 mix-ups is roughly $8.50.
 2.4. Sampling and Reranking
 In past AAC research works, the most commonly used decoding algorithm
  has been beam search [4 6]. However, we find that, after introducing
- all the techniques in Section 2.1 2.3, around 1/3 of generations
+ all the techniques in Section 2.1  2.3, around 1/3 of generations
  using nucleus sampling [26], which is known to produce more
 diverse and informative generations than beam search, score higher
 in terms of SPIDEr-FL than those using beam search. This reveals
@@ -271,11 +273,11 @@ reranking metrics we consider are
  Caption log-likelihood  We feed the input waveform xand the
 generated caption ˆyinto our captioning model to directly computelogp(ˆy x)
   P ˆy 
-n 1logp(ˆyn ˆy1 1 x)(cf. Eq. (1)). As
+n 1logp(ˆyn ˆy1 n 1 x)(cf. Eq. (1)). As
 6Generally speaking, a higher temperature makes the contrastive objective
  more challenging, as the distribution is made less peaky. We perform a
 search in τ {0.03, 0.07, 0.2, 0.5, 1.0 }and find τ  0.5 works the best.
-7 1% of ChatGPT mix-ups are detected as disfluent.the log-likelihood is computed on decoder outputs, we call this
+7Less than 1% of ChatGPT mix-ups are detected as disfluent.the log-likelihood is computed on decoder outputs, we call this
 decoder reranking .
  Audio-caption representation similarity  We feed the generated
  caption ˆyinto the I NSTRUCTOR model to get its text embedding
@@ -298,28 +300,30 @@ steps), and then finetune it on Clotho (development split,  4K samples)
  for 40 epochs (or 1.2K steps). Teacher-forcing is applied on
 the BART decoder inputs. We adopt the AdamW optimizer with a
 2 10 4learning rate for the  AudioCaps  ChatGPT mix-up  pretraining
- stage, and 2 10 5for the Clotho finetuning stage.
+ stage, and 2  10 5for the Clotho finetuning stage.
 As the Conformer attention (see Section 2.1) is the primary
 memory bottleneck due to the long sequence length of audio features,
  there is a tradeoff between the batch size that can be used and
-the downsampling rate for the Conv D layer between our BEATs
+the downsampling rate for the Conv1D layer between our BEATs
 and Conformer modules using less downsampling gives the model
 finer-grained audio features, but a smaller batch size would lead
 to less reliable gradients and hamper contrastive learning [35].
 Through experiments, we settle on the 3x downsampling rate, which
 allows a batch size of 32 and achieves the best performance.
 We train the model on two NVIDIA A100 (40GB) GPUs, and
-the two training stages take around 6 3 hours respectively. Nexttoken
+the two training stages take around 6 and 3 hours respectively. Nexttoken
  prediction accuracy on the Clotho validation split is used as
 the checkpoint selection criterion.
 At inference time, we experiment with generating {20, 50, 100 }
-candidate captions per test case with nucleus sampling,9 50 strikes the best balance between performance gain
+candidate captions per test case with nucleus sampling,9and find
+that generating 50 strikes the best balance between performance gain
 and compute efficiency. Additionally, we leverage the FENSE evaluator
  [32] to filter out generations with fluency issues. We tune the
 weights of the reranking metrics (see Section 2.4) on the Clotho validation
  split and eventually pick {0.3, 0.7 }respectively for decoder
-and encoder reranking metrics.10 8 6 words, leading to 35K remaining samples.
-9 0.5  cumulative distribution
+and encoder reranking metrics.10
+8We filter out captions with  6 words, leading to 35K remaining samples.
+9Nucleus sampling hyperparameters  temperature 0.5  cumulative distribution
  truncation point, i.e., top- p, 0.95.
 10Weights for ablated models (see Table 2) are separately tuned to be fair.Table 2   Ablation study on Clotho [2] evaluation split. The results demonstrate that all components in our AAC model, i.e., BEATs [13] audio
 encoder (Section 2.1), I NSTRUCTOR [17] sentence embedding supervision (Section 2.2), ChatGPT [18] mix-up augmentation (Section 2.3),
@@ -366,34 +370,37 @@ it had been the official evaluation metric in DCASE AAC challenges
 until 2022. In 2023, the official metric was changed to SPIDEr-FL,
 which uses FENSE [32], i.e., a BERT-based binary classifier, to penalize
  the SPIDEr score of disfluent generations by 90%.
-Our evaluation is done on the public  evaluation  split of the
+Our evaluation is done on the public  evaluation  split11of the
 Clotho [2] dataset, which consists of 1,045 samples. Evaluation results
- of our full model can be found in the 1 2.
+ of our full model can be found in the 1strow of Table 2.
 3.3. Comparison with Past and Concurrent Works
 We compare our model (i.e., winner of the DCASE 2023 AAC challenge)
- to other top performers in the 2022 2023 challenges [5 8].
+ to other top performers in the 2022 and 2023 challenges [5 8].
 We note that while all the best-scoring systems for each participant
 were ensemble models, we present the metrics for single models for
-fairness and practicality reasons.12 3 11DCASE challenge uses the blind  test  split to rank the submissions.
-12Ensembles can contain a wildly different # of models (e.g., 3 20), and
+fairness and practicality reasons.12The comparison in Table 3 shows
+11DCASE challenge uses the blind  test  split to rank the submissions.
+12Ensembles can contain a wildly different # of models (e.g., 3  20), and
 the performance gain can seldom justify the extra compute required.that our model is state-of-the-art in terms of the new official metric,
 SPIDEr-FL, and performs competitively on other metrics. Moreover,
 while optimizing CIDEr with reinforcement learning has been popular
  among challenge submissions, the resulting disfluency issues [36]
-get severely punished on SPIDEr-FL (see 6 3).
+get severely punished on SPIDEr-FL (see 6throw in Table 3).
 3.4. Ablation Study
 To show that every component in our AAC model is indispensable
 to achieve the best performance, we conduct a comprehensive ablation
- study that tries to remove components one at a time . Table 2 2-point improvement
+ study that tries to remove components one at a time . Table 2
+presents the results that corroborate the necessity of all of our model
+components Each one of them gives at least a 2-point improvement
 on SPIDEr-FL,13with BEATs audio encoder (replacing the popular
 PANN) being the most crucial one causing a 6-point difference.
 Some intriguing additional findings are  (i) hybrid reranking is
-required to outperform beam search (see rows 1 4 2), suggesting
+required to outperform beam search (see rows 1  4 in Table 2), suggesting
  that decoder and encoder reranking methods are strongly
 complementary and hence should be used together when possible 
 (ii) the  sampling  reranking  decoding approach improves performance
  the most when both BEATs encoder and ChatGPT mix-ups
-are used (see rows  1 vs. 4 ,  5 vs. 6 , and  8 vs. 9 2).
+are used (see rows  1 vs. 4 ,  5 vs. 6 , and  8 vs. 9  in Table 2).
 4. CONCLUSION AND FUTURE WORK
 In this work, we improved audio captioning models from multiple
 aspects with an extensive use of pretrained models. We employed
@@ -423,18 +430,19 @@ captioning dataset,  in Proc. ICASSP , 2020.
 [3] C. D. Kim, B. Kim, H. Lee and G. Kim,  AudioCaps  Generating
  captions for audios in the wild,  in Proc. NAACL-HLT ,
 2019.
-[4] W. Yuan, Q. Han, D. Liu et al.,  The DCASE 2021 6 system  Automated audio captioning with weakly supervised
+[4] W. Yuan, Q. Han, D. Liu et al.,  The DCASE 2021 challenge
+task 6 system  Automated audio captioning with weakly supervised
  pre-training and word selection methods,  Tech. Rep.,
 DCASE Challenge, 2021.
 [5] X. Xu, Z. Xie, M. Wu and K. Yu,  The SJTU system for
-DCASE2022 6  Audio captioning with audiotext
+DCASE2022 challenge task 6  Audio captioning with audiotext
  retrieval pre-training,  Tech. Rep., DCASE Challenge,
 2022.
 [6] Z. Ye, Y . Zou, F. Cui and Y . Wang,  Automated audio captioning
  with multi-task learning,  Tech. Rep., DCASE Challenge,
 2022.
 [7] J.-H. Cho, Y .-A. Park, J. Kim and J.-H. Chang,  HYU submission
- for the DCASE 2023 6a  Automated audio captioning
+ for the DCASE 2023 task 6a  Automated audio captioning
 model using AL-MixGen and synonyms substitution,  Tech.
 Rep., DCASE Challenge, 2023.
 [8] E. Labb  e, T. Pellegrini and J. Pinquier,  IRIT-UPS DCASE

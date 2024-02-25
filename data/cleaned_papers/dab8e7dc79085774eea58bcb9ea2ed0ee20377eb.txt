@@ -1,15 +1,19 @@
 ESPnet-ST-v2  Multipurpose Spoken Language Translation Toolkit
-Brian Yan*1Jiatong Shi*1 2
-Yifan Peng Siddharth Dalmia Peter Polák Patrick Fernandes1 2 1,5 1 3Charles University Nagoya University Johns Hopkins University
+Brian Yan*1Jiatong Shi*1Yun Tang2Hirofumi Inaguma2
+Yifan Peng1Siddharth Dalmia1Peter Polák3Patrick Fernandes1
+Dan Berrebbi1Tomoki Hayashi4Xiaohui Zhang2Zhaoheng Ni2
+Moto Hira2Soumi Maiti1Juan Pino2Shinji Watanabe1,5
+1Carnegie Mellon University2Meta AI
+3Charles University4Nagoya University5Johns Hopkins University
 {byan, jiatongs}@cs.cmu.edu
 Abstract
 ESPnet-ST-v2 is a revamp of the open-source
 ESPnet-ST toolkit necessitated by the broadening
  interests of the spoken language translation
- community. ESPnet-ST-v2 1)
+ community. ESPnet-ST-v2 supports 1)
 offline speech-to-text translation (ST), 2) simultaneous
  speech-to-text translation (SST), and
-3) offline speech-to-speech translation (S ST)
+3) offline speech-to-speech translation (S2ST)
   each task is supported with a wide variety
 of approaches, differentiating ESPnet-ST-v2
 from other open source spoken language translation
@@ -22,7 +26,8 @@ direct discrete unit models. In this paper, we
 describe the overall design, example models for
 each task, and performance benchmarking behind
  ESPnet-ST-v2, which is publicly available
-athttps //github.com/espnet/espnet .1 1 Introduction
+athttps //github.com/espnet/espnet .1
+1 Introduction
 The objective of this project is to contribute to
 the diversity of the open-source spoken language
 translation ecosystem. Toward this, we launched
@@ -31,23 +36,23 @@ this ESPnet-ST-v2 update in collaboration with researchers
 TorchAudio (Yang et al., 2021b). This project focuses
  on  offline speech-to-text (ST), simultaneous
 speech-to-text (SST), and offline speech-to-speech
-(S ST). These three spoken language translation
+(S2ST). These three spoken language translation
 tasks have drawn significant interest, as evidenced
-by rising IWSLT shared task participation.
+by rising IWSLT2shared task participation.
 The ST task can be considered a base form of
 spoken language translation. Early approaches to
 ST stemmed from coupling statistical automatic
 speech recognition (ASR) (Huang et al., 2014) and
 text-to-text translation (MT) (Al-Onaizan et al.,
 1999), and this type of cascaded approach is still
-1Please see our documentation for ST/SST and S ST to
+1Please see our documentation for ST/SST and S2ST to
 get started. Example models and tutorials are provided.
 2International Workshop on Spoken Language Translationcommon in the neural network era (Bentivogli et al.,
 2021  Zhang et al., 2022). End-to-end differentiable
- (E E) approaches have recently emerged as
+ (E2E) approaches have recently emerged as
 an alternative offering greater simplicity and superior
  performance in some cases (Inaguma et al.,
-2021b)  however, E E approaches still benefit from
+2021b)  however, E2E approaches still benefit from
 techniques originating from ASR and MT (Gaido
 et al., 2021  Inaguma et al., 2021a).
 SST modifies ST by imposing an additional
@@ -59,30 +64,30 @@ adapted for SST (Ma et al., 2020b  Iranzo-Sánchez
 et al., 2021  Chen et al., 2021), although the more
 direct nature of the latter may be advantageous for
 latency-sensitive applications. On the other hand,
-S ST extends ST by producing target speech rather
+S2ST extends ST by producing target speech rather
 than target text. Again, cascaded approaches of
 ST followed by text-to-speech (TTS) came first
-(Waibel et al., 1991  Black et al., 2002) and E E
+(Waibel et al., 1991  Black et al., 2002) and E2E
 approaches followed (Jia et al., 2019  Lee et al.,
 2022a  Jia et al., 2022a  Inaguma et al., 2022), with
 the latter offering smaller footprints and greater
 potential to retain source speech characteristics.
-Given the recent swell in E E ST, SST, and S ST
+Given the recent swell in E2E ST, SST, and S2ST
 research, we have revamped ESPnet-ST (Inaguma
-et al., 2020) which previously only supported E E
+et al., 2020) which previously only supported E2E
 ST. In particular, this work 
- Implements ST, SST, and S ST using common
+ Implements ST, SST, and S2ST using common
 Pytorch-based modules, including encoders, decoders,
  loss functions, search algorithms, and
 self-supervised representations.
- Builds a variety of example E E models 
+ Builds a variety of example E2E models 
 attentional encoder-decoders, CTC/attention,
 multi-decoders with searchable intermediates,
 and transducers for ST. Blockwise attentional
 encoder-decoders, time-synchronous blockwise
 CTC/attention and blockwise transducers for
-SST. Spectral models (i.e. Translatotron) andarXiv 2304.04596 3  [cs.SD]  6 2023discrete unit based models for S ST.
- Benchmarks the ST, SST, and S ST performance
+SST. Spectral models (i.e. Translatotron) andarXiv 2304.04596v3  [cs.SD]  6 Jul 2023discrete unit based models for S2ST.
+ Benchmarks the ST, SST, and S2ST performance
 of ESPnet-ST-v2 against top IWSLT shared task
 systems and other prior works.
 With this major update, ESPnet-ST-v2 keeps pace
@@ -101,20 +106,21 @@ In Table 1 we compare ESPnet-ST-v2 to Fairseq
 (Wang et al., 2020) and NeurST (Zhao et al., 2021),
 two toolkits which also cover multiple types of spoken
  language translation. Fairseq and NeurST offer
-cascaded and E E approaches to ST and SST (some
+cascaded and E2E approaches to ST and SST (some
 of which are not offered by ESPnet-ST-v2). Meanwhile,
- ESPnet-ST-v2 focuses on E E approaches
+ ESPnet-ST-v2 focuses on E2E approaches
 and offers multiple unique core architectures not
-covered by the other toolkits. For S ST, Fairseq
+covered by the other toolkits. For S2ST, Fairseq
 and ESPnet-ST-v2 both offer a range of approaches.
 All told, ESPnet-ST-v2 offers the greatest variety
-across ST, SST, and S ST   however, we view these
+across ST, SST, and S2ST   however, we view these
 toolkits as complementary. The following section
 elaborates on the unique features of ESPnet-ST-v2.
 3 ESPnet-ST-v2
 In this section, we first describe the overall design
 and then introduce a few key features.
-3.1 1 illustrates the software architecture of
+3.1 Modular Design
+Figure 1 illustrates the software architecture of
 ESPnet-ST-v2. This modular design is an improvement
  over the ESPnet-ST-v1 where monolithic
 model and task definitions made it more difficult
@@ -128,7 +134,7 @@ and loss functions, inherit from common abstract
 classes making them easy to interchange. These
 modules, which are detailed further in the nextFEATURES ESPNET-ST-V2
 ESPNET-ST-V1
-FAIRSEQ-S T
+FAIRSEQ-S2T
 NEURST
 Offline ST     
 End-to-End Architecture(s)        
@@ -150,19 +156,20 @@ End-to-End Architecture(s)   -  Contextual
  Attn Enc-Dec - -   Monotonic
  Attn Enc-Dec - -   Cascaded
  Architectures - -    3
-Offline S ST   -  End-to-End
+Offline S2ST   -  End-to-End
  Architecture(s)   -  Spec
  Enc-Dec (Translatotron)   -  Spec
  Multi-Dec (Translatotron 2)   -  Discrete
  Enc-Dec (Speech-to-Unit)   -  Discrete
  Multi-Decoder (UnitY)   -  Speech
  SSL Representations  1-  Neural
- V ocoder Support  2 1  Key features of ESPnet-ST-v2 compared to
+ V ocoder Support  2    Table
+ 1  Key features of ESPnet-ST-v2 compared to
 ESPnet-ST-v1 (Inaguma et al., 2020), Fairseq (Wang
 et al., 2020), and NeurST (Zhao et al., 2021). Comparison
  intends to highlight unique features of ESPnetST-v2
  and not to comprehensively review all toolkits.
-1Supports S PRL (Yang et al., 2021a).2Supports both
+1Supports S3PRL (Yang et al., 2021a).2Supports both
 spectral and discrete.3Only supports text-to-text.
 subsection, are used as building blocks in wrapper
 classes which are used to construct model architectures.
@@ -185,16 +192,16 @@ FBANK) and features extracted from speech selfsupervised
  learning (SSL) representations are supported,
  as well as fusions over multiple features
 (Berrebbi et al., 2022). For speech SSL features,
-ESPnet-ST-v2 integrates with the S PRL toolkit
+ESPnet-ST-v2 integrates with the S3PRL toolkit
 (Yang et al., 2021a). These speech SSL representations
  are also used to generate discrete targets for
-S ST (Lee et al., 2022a).
+S2ST (Lee et al., 2022a).
 Encoder Architectures Conformer (Gulati et al.,
 2020  Guo et al., 2021), Branchformer (Peng et al.,
 2022), EBranchformer (Kim et al., 2023), and
 Transformer (Vaswani et al., 2017  Karita et al.,
 2019) encoder architectures are supported for ST
-and S ST. For SST, a blockwise scheme is adopted
+and S2ST. For SST, a blockwise scheme is adopted
 following (Tsunoo et al., 2021  Deng et al., 2022) to
 form contextual block Conformer and Transformer
 encoders. Intermediate CTC (Lee and Watanabe,
@@ -207,7 +214,7 @@ source-to-target re-ordering (Yan et al., 2023).
 Decoder Architectures Attentional Transformer
 and recurrent neural network decoders are supported
  (Karita et al., 2019). Multi-decoder schemes
-which allow for E E differentiable decoder cascades
+which allow for E2E differentiable decoder cascades
  via searchable hidden intermediates (Dalmia
 et al., 2021), are also supported  this techniquehas been shown to improve sequence modeling for
 tasks which naturally decompose into sub-tasks. Finally,
@@ -219,7 +226,7 @@ decoders), CTC, and Transducer are supported
 for ST and SST. Multi-objective training with
 CTC/attention and CTC/transducer as well as multitasked
  training (e.g. ASR/MT/ST) is also supported.
- For S ST, L1 and mean square error losses
+ For S2ST, L1 and mean square error losses
 are also supported for spectral models.
 Search Algorithms For offline attentional decoder
  models, label-synchronous beam search is
@@ -242,7 +249,7 @@ Synthesis & Post-processing For ST, Minimum
 Bayes Risk (MBR) ensembling (Fernandes et al.,
 2022) is supported for leveraging quality-metrics
 (e.g. BLEU) to compare and rank n-best outputs
- from one or more models. For S ST, neural
+ from one or more models. For S2ST, neural
  vocoders are supported for both spectral and
 discrete inputs (Hayashi et al., 2020, 2021).
 4 Example Models
@@ -271,7 +278,7 @@ Multi-Decoder CTC/Attention (MCA) As
 shown in Figure 2, the Multi-decoder decomposes
 ST into two sub-tasks, logically corresponding to
 ASR and MT encoder-decoder models, while maintaining
- E E differentiability (Dalmia et al., 2021).
+ E2E differentiability (Dalmia et al., 2021).
 This Multi-decoder scheme is also combined with
 the CTC/attention scheme described in the blurb
 above, following Yan et al. (2022). We use Conformer
@@ -286,7 +293,7 @@ joint CTC/attention beam search.
 Time-Synchronous Blockwise CTC/Attention
 (TBCA) As shown in Figure 3, we adapt the
 aforementioned CTC/attention model for ST ( 4.1)
-Figure 4  Discrete Multi-Decoder (UnitY) for S ST.
+Figure 4  Discrete Multi-Decoder (UnitY) for S2ST.
 to SST by replacing the Conformer encoder with
 a contextual block Conformer (Tsunoo et al.,
 2021). During inference, we initially followed
@@ -320,11 +327,11 @@ later proposed alignment-synchronous algorithms
  is required to avoid overly short outputs.
 Incremental decoding is applied in the same manner
  as for TBCA.
-4.3 S ST Models
+4.3 S2ST Models
 Spectral Multi-Decoder (Translatotron 2) Similar
  to the MCA model for ST ( 4.1), the spectral
  Multi-decoder (Jia et al., 2022a) decomposes
-S ST into ST and TTS sub-tasks. The ST sub-TOOLKIT MODEL TYPE DE ES FR avg
+S2ST into ST and TTS sub-tasks. The ST sub-TOOLKIT MODEL TYPE DE ES FR avg
 OFFLINE SPEECH TRANSLATION (ST) BLEU  
 NeurST (Zhao et al., 2021) Attentional Enc-Dec (AED) 22.8 27.4 33.3 27.8
 Fairseq (Wang et al., 2020) Attentional Enc-Dec (AED) 22.7 27.2 32.9 27.6
@@ -333,10 +340,11 @@ ESPnet-ST-v2 (this work) Multi-Decoder CTC/Attn (MCA) 27.9 32.1 38.5 32.8
 SIMULTANEOUS SPEECH TRANSLATION (SST) BLEU  / AL 
 Fairseq (Wang et al., 2020) Wait-K Attentional Enc-Dec (WAED) 18.6 / 6.8 22.9 / 6.9 28.5 / 6.7 23.3 / 6.8
 ESPnet-ST-v2 (this work) Time-Sync Blockwise CTC/Attn (TBCA) 23.5 /2.3 29.2 /2.4 32.7 /2.3 28.5 /2.3
-OFFLINE SPEECH -TO-SPEECH TRANSLATION (S ST) ASR-BLEU  
+OFFLINE SPEECH -TO-SPEECH TRANSLATION (S2ST) ASR-BLEU  
 Fairseq (Inaguma et al., 2022) Discrete Multi-Decoder (UnitY) 25.5 32.3 30.9 29.6
-ESPnet-ST-v2 (this work) Discrete Multi-Decoder (UnitY) 23.7 32.0 33.1 29.6 2  Overview of ESPnet-ST-v2 s ST, SST, and S ST performances compared to other open-source toolkits.
-Results are presented on MuST-C-v1 (English-to-X) for ST/SST and on CVSS-C (X-to-English) for S ST.
+ESPnet-ST-v2 (this work) Discrete Multi-Decoder (UnitY) 23.7 32.0 33.1 29.6
+Table 2  Overview of ESPnet-ST-v2 s ST, SST, and S2ST performances compared to other open-source toolkits.
+Results are presented on MuST-C-v1 (English-to-X) for ST/SST and on CVSS-C (X-to-English) for S2ST.
 task is modeled with an encoder-decoder network
 while the TTS sub-task is modeled with an autoregressive
  synthesizer. The synthesizer attends over
@@ -354,11 +362,11 @@ model (Inaguma et al., 2022) is similar to Translatotron
 speech SSL representations rather than spectral
 information in the final stage. In other words,
 UnitY is Multi-decoder consisting of a ST subtask
- followed by a text-to-unit (T U) sub-task (see
+ followed by a text-to-unit (T2U) sub-task (see
 Figure 4). We use Transformer-based encoderdecoders
  for both sub-tasks. During inference,
 the ST stage is first decoded and then followed by
-the T U stage. Both stages use label synchronous
+the T2U stage. Both stages use label synchronous
 beam search. The final speech is generated with a
 unit HiFi-GAN vocoder with Fastspeech-like duration
  prediction (Polyak et al., 2021  Lee et al.,
@@ -373,39 +381,45 @@ Attn Enc-Dec (AED) - 25.7
 Multi-Decoder Attn Enc-Dec (MAED) - 27.6
 CTC/Attention (CA)   28.6
 Multi-Decoder CTC/Attn (MCA)   28.8
-Transducer (T)   27.6 3  Example ST models   results on MuST-C-v2
+Transducer (T)   27.6
+Table 3  Example ST models   results on MuST-C-v2
 En-De tst-COMMON.
 5.1 Experimental Setup
 Please refer to  A.1 for reproducibility details. The
 following is only a summary of our setup.
 Data We use MuST-C-v1 or MuST-C-v2
 (Di Gangi et al., 2019) for ST/SST and CVSS-C
-for S ST (Jia et al., 2022b). For IWSLT comparisons,
+for S2ST (Jia et al., 2022b). For IWSLT comparisons,
  we combine MuST-C-v1, MuST-C-v2, and
 ST-TED (Niehues et al., 2018) for ST/SST.
 Models Unless otherwise indicated, we use a
 "base" setting for our models. Our base models
-have 40-80 400h of single language pair
+have 40-80M trainable parameters across all tasks
+and are trained on a  400h of single language pair
 data from a single corpus. For ST/SST, we also use
 a "large" setting for benchmarking against IWSLT
-submissions. Our large models have 150-200 1000h of
+submissions. Our large models have 150-200M
+trainable parameters and are trained on  1000h of
 single language pair data from multiple corpora.
 Scoring For ST/SST, we evaluate detokenized
 case-sensitive BLEU (Post, 2018). For SST, we
 additionally evaluate Average Lagging (AL) (Ma
-et al., 2020a). For S ST, we evaluate ASR-BLEU
+et al., 2020a). For S2ST, we evaluate ASR-BLEU
 by transcribing the generated speech and then evaluating
  the BLEU of this transcription.MODEL KD BT E NS BLEU 
-IWSLT 21 (Top 3 6)
-1V olctrans E E   -  24.3 2 22.6 3 22.2
+IWSLT 21 (Top 3 of 6)
+1V olctrans E2E   -  24.3
+2OPPO Cascade       22.6
+3V olctrans Cascade       22.2
 ESPnet-ST-v2
 ABase CA - - - 23.2
 BBase MCA - - - 23.6
 CLarge CA - - - 24.3
 DLarge MCA - - - 25.1
-EMBR ( A B C D ) - -   25.4 4  Base and large CTC/attention (CA) and Multidecoder
+EMBR ( A B C D ) - -   25.4
+Table 4  Base and large CTC/attention (CA) and Multidecoder
  CTC/attention (MCA) models compared to top
-IWSLT 2021 2020
+IWSLT 2021 systems for the given segmentation tst2020
 En-De test set. KD Knowledge Distillation, BT BackTranslation,
  Ens Ensemble. Uses WMT MT data.
 MODEL BSZBLEU /AL 
@@ -416,13 +430,16 @@ Blockwise Transducer (BT) 40 22.9 / 2.37
 Blockwise Attn Enc-Dec (BAED) 20 21.0 / 2.77
 Label-Sync Blockwise CTC/Attn (LBCA) 20 22.9 / 2.77
 Time-Sync Blockwise CTC/Attn (TBCA) 20 22.8 / 1.63
-Blockwise Transducer (BT) 20 20.9 / 1.71 5  Example SST models   results on MuST-C-v2
+Blockwise Transducer (BT) 20 20.9 / 1.71
+Table 5  Example SST models   results on MuST-C-v2
 En-De tst-COMMON. BSz Block Size.
-5.2 2 summarizes
+5.2 Results
+Toolkit Comparison Table 2 summarizes
 ESPnet-ST-v2 performance, showing one best
 example model ( 4) for each task. ESPnet-ST-v1,
 Fairseq, and NeurST models are also referenced
-for comparison. On ST/SST, ESPnet-ST-v2 4-7 4.5 sec lower AL.3On S ST
+for comparison. On ST/SST, ESPnet-ST-v2 is 4-7
+BLEU higher with 4.5 sec lower AL.3On S2ST
 ESPnet-ST-v2 is on par with Fairseq.
 ST Table 3 shows a variety of approaches,
 of which the CTC/attention and Multi-decoder
@@ -430,18 +447,22 @@ CTC/attention (MCA) models show the strongest
 performances. In Table 4, we scale these two approaches
  by training on larger corpora and increasing
  model capacity   our large MCA model outperforms
- the best IWSLT 2021 2020 test set with given segmentation.
+ the best IWSLT 2021 offline track submission
+on the 2020 test set with given segmentation.
 SST Table 5 shows a variety of approaches, of
 which the blockwise Transducer (BT) and timesynchronous
  blockwise CTC/attention (TBCA)
 3This comparison refers to the originally published results
 from the toolkit description papers. Note that subsequent
 works using these toolkits have improved the performance.MODEL SSL LLM KD BLEU  / AL 
-IWSLT 22 (Top 3 5)
-1CUNI-KIT E E     - 31.5 /1.93 2UPV Cascade - - - 27.8 / 1.93 3FBK E E - -   25.0 / 1.99
+IWSLT 22 (Top 3 of 5)
+1CUNI-KIT E2E     - 31.5 /1.93
+2UPV Cascade - - - 27.8 / 1.93
+3FBK E2E - -   25.0 / 1.99
 ESPnet-ST-v2
 ABase TBCA - - - 24.7 / 1.93
-BLarge TBCA - - - 26.6 /1.93 6  Base and large time-sync CTC/attention
+BLarge TBCA - - - 26.6 /1.93
+Table 6  Base and large time-sync CTC/attention
 (TBCA) models compared to top IWSLT 2022 systems
  for the medium latency regime. Evaluated on EnDe
  tst-COMMON-v2. SSL Speech Self-Supervised
@@ -449,12 +470,16 @@ Learning, LLM Large Pre-trained Language Model,
 KD Knowledge Distillation. Uses WMT MT data.
 MODEL TYPE ASR-BLEU  
 Prior Works
-1Translatotron (Jia et al., 2019) Spectral 14.4 2 2 (Jia et al., 2022a) Spectral 30.3 4Speech-to-Unit (Lee et al., 2022a) Discrete 30.8 5UnitY (Inaguma et al., 2022) Discrete 32.3
+1Translatotron (Jia et al., 2019) Spectral 14.4
+2Translatotron2 (Jia et al., 2022a) Spectral 30.3
+4Speech-to-Unit (Lee et al., 2022a) Discrete 30.8
+5UnitY (Inaguma et al., 2022) Discrete 32.3
 ESPnet-ST-v2
 AAttn Enc-Dec (Translatotron) Spectral 16.6
 BMulti-Decoder (Translatotron2) Spectral 24.3
 CAttn Enc-Dec (Speech-to-Unit) Discrete 31.3
-DMulti-Decoder (UnitY) Discrete 32.0 7  Example S ST models   results on CVSS-C
+DMulti-Decoder (UnitY) Discrete 32.0
+Table 7  Example S2ST models   results on CVSS-C
 Es-En test set. Prior works shown for comparison.
 models have the lowest AL. We choose to scale
 the TBCA to compare with IWSLT submissions
@@ -462,19 +487,33 @@ due to its superior translation quality, but note that
 the BT has lower computational overhead due primarily
  to the lack of source-target computation 
 AL is non-computation aware. In Table 6, we fit
-the TBCA to the 2 32 3 6 2022 submissions without using any SSL / LLM
+the TBCA to the 2 second AL latency regime by
+selecting a blocksize of 32 and scale it with more
+data and model capacity   our large TBCA model
+would have ranked 3rd out of 6 amongst IWSLT
+2022 submissions without using any SSL / LLM
 representations or knowledge distillation.
-S ST Table 7 shows a variety of approaches compared
+S2ST Table 7 shows a variety of approaches compared
  to prior works with comparable architectures
- our S ST models are generally on par with prior
+ our S2ST models are generally on par with prior
 works which are considered state-of-the-art. In
 fact, all of our models slightly outperform their
 respective prior works except for Translatotron 2.
 Further, in Table 8 we ablate a range of SSL types
 for both the frontend and discrete units demonstrating
  the flexibility of our toolkit.FRONTEND DISCRETE UNIT ASR-BLEU  
-FBANK HuBERT 14.8 2 21.2 21.4 21.5 22.8 15.0 2 21.6 22.1 22.0 23.1 8  Ablation on different types of SSL for the
-frontend and discrete unit portions of S ST models.
+FBANK HuBERT 14.8
+wav2vec2  HuBERT 21.2
+HuBERT  HuBERT 21.4
+mHuBERT HuBERT 21.5
+WavLM  HuBERT 22.8
+FBANK WavLM 15.0
+wav2vec2  WavLM 21.6
+HuBERT  WavLM 22.1
+mHuBERT WavLM 22.0
+WavLM  WavLM 23.1
+Table 8  Ablation on different types of SSL for the
+frontend and discrete unit portions of S2ST models.
  Trained with large settings, others with base settings.
 6 Conclusion
 We presented ESPnet-ST-v2 which now supports
@@ -488,14 +527,14 @@ integrations via TorchAudio.
 Limitations
 The first set of limitations to be aware of are datarelated.
  Although prior works have shown the feasibility
- of building E E systems without source language
+ of building E2E systems without source language
  transcriptions (Lee et al., 2022b  Chen et al.,
 2022  Zhang et al., 2021), in this work we only
 investigate cases where triplet data (source speech,
 source transcript, target translation) is available for
 ST/SST and where quadruplet data (source speech,
 source transcript, target translation, target speech)
-is available for S ST.
+is available for S2ST.
 The second set of limitations to be aware of
 are evaluation-related. For SST, we follow prior
 works (Ma et al., 2020a  Wang et al., 2020  Anastasopoulos
@@ -503,12 +542,12 @@ works (Ma et al., 2020a  Wang et al., 2020  Anastasopoulos
 a measure of how much the system outputs lags
 behind the amount of input read. Notably, this
 does not consider the actual computation time and
-only the input-to-output ratio. For S ST, we follow
+only the input-to-output ratio. For S2ST, we follow
 prior works (Jia et al., 2022a  Inaguma et al., 2022)
 and evaluate ASR-BLEU. This evaluation is dependent
  on an ASR system, which is not standardized
 across prior works. And further, our evaluation of
-S ST outputs does not include naturalness. Finally,
+S2ST outputs does not include naturalness. Finally,
 in this work we have not conducted any human
 evaluation of translation outputs.Acknowledgements
 Brian Yan and Shinji Watanabe are supported
@@ -518,7 +557,7 @@ Science and Engineering Discovery Environment
 (XSEDE) (Towns et al., 2014), which is supported
 by National Science Foundation grant number ACI1548562 
  specifically, the Bridges system (Nystrom
- et al., 2015), as part of project cis p,
+ et al., 2015), as part of project cis210027p,
 which is supported by NSF award number ACI1445606,
  at the Pittsburgh Supercomputing Center.
 This work also used GPUs donated by the NVIDIA
@@ -553,14 +592,17 @@ Luisa Bentivogli, Mauro Cettolo, Marco Gaido, Alina
 Karakanta, Alberto Martinelli, Matteo Negri, and
 Marco Turchi. 2021. Cascade versus direct speech
 translation  Do the differences still make a difference 
- In Proceedings of the 59 11th International Joint Conference on Natural
+ In Proceedings of the 59th Annual Meeting
+ of the Association for Computational Linguistics
+and the 11th International Joint Conference on Natural
  Language Processing (Volume 1  Long Papers) ,
 pages 2873 2887.
 Dan Berrebbi, Jiatong Shi, Brian Yan, Osbel LópezFrancisco,
  Jonathan Amith, and Shinji Watanabe.
 2022. Combining Spectral and Self-Supervised Features
  for Low Resource Speech Recognition and
-Translation. In Proc. Interspeech 2022 , pages 3533 3537.Alan W Black, Ralf D Brown, Robert Frederking, Rita
+Translation. In Proc. Interspeech 2022 , pages 3533 
+3537.Alan W Black, Ralf D Brown, Robert Frederking, Rita
 Singh, John Moody, and Eric Steinbrecher. 2002.
 Tongues  Rapid development of a speech-to-speech
 translation system. In Proceedings of Second International
@@ -639,7 +681,7 @@ pages 7654 7658. IEEE.
 Tomoki Hayashi, Ryuichi Yamamoto, Takenori
 Yoshimura, Peter Wu, Jiatong Shi, Takaaki
 Saeki, Yooncheol Ju, Yusuke Yasuda, Shinnosuke
-Takamichi, and Shinji Watanabe. 2021. ESPnet TTS 
+Takamichi, and Shinji Watanabe. 2021. ESPnet2TTS 
  Extending the edge of TTS research. arXiv
 preprint arXiv 2110.07840 .
 Xuedong Huang, James Baker, and Raj Reddy. 2014. A
@@ -707,7 +749,8 @@ merging for speech recognition. In 2022 IEEE Spoken
 Jungil Kong, Jaehyeon Kim, and Jaekyoung Bae. 2020.
 Hifi-GAN  Generative adversarial networks for efficient
  and high fidelity speech synthesis. Advances in
-Neural Information Processing Systems , 33 17022 17033.
+Neural Information Processing Systems , 33 17022 
+17033.
 Oleksii Kuchaiev, Jason Li, Huyen Nguyen, Oleksii
 Hrinchuk, Ryan Leary, Boris Ginsburg, Samuel Kriman,
  Stanislav Beliaev, Vitaly Lavrukhin, Jack Cook,
@@ -738,7 +781,8 @@ loss regularization for CTC-based speech recognition.
 Danni Liu, Gerasimos Spanakis, and Jan Niehues.
 2020a. Low-Latency Sequence-to-Sequence Speech
 Recognition and Translation by Partial Hypothesis
-Selection. In Proc. Interspeech 2020 , pages 3620 3624.
+Selection. In Proc. Interspeech 2020 , pages 3620 
+3624.
 Yinhan Liu, Jiatao Gu, Naman Goyal, Xian Li, Sergey
 Edunov, Marjan Ghazvininejad, Mike Lewis, and
 Luke Zettlemoyer. 2020b. Multilingual denoising
@@ -792,11 +836,13 @@ Speech Resynthesis from Discrete Disentangled SelfSupervised
 2021 .
 Matt Post. 2018. A call for clarity in reporting BLEU
 scores. In Proceedings of the Third Conference on
-Machine Translation  Research Papers , pages 186 191, Brussels, Belgium. Association for Computational
+Machine Translation  Research Papers , pages 186 
+191, Brussels, Belgium. Association for Computational
  Linguistics.
 Ramon Sanabria and Florian Metze. 2018. Hierarchical
 multitask learning with CTC. In 2018 IEEE Spoken
-Language Technology Workshop (SLT) , pages 485 490. IEEE.
+Language Technology Workshop (SLT) , pages 485 
+490. IEEE.
 George Saon, Zoltán Tüske, and Kartik Audhkhasi.
 2020. Alignment-length synchronous decoding for
 RNN transducer. In ICASSP 2020 - 2020 IEEE International
@@ -828,11 +874,11 @@ Alex Waibel, Ajay N Jain, Arthur E McNair, Hiroaki
 Saito, Alexander G Hauptmann, and Joe Tebelskis.
 1991. JANUS  a speech-to-speech translation system
 using connectionist and symbolic processing strategies.
- In [Proceedings] ICASSP 91 1991 International
+ In [Proceedings] ICASSP 91  1991 International
  Conference on Acoustics, Speech, and Signal
 Processing , pages 793 796 vol.2.Changhan Wang, Yun Tang, Xutai Ma, Anne Wu,
 Dmytro Okhonko, and Juan Pino. 2020. Fairseq
-S T  Fast speech-to-text modeling with fairseq. In
+S2T  Fast speech-to-text modeling with fairseq. In
 Proceedings of the 1st Conference of the Asia-Pacific
 Chapter of the Association for Computational Linguistics
  and the 10th International Joint Conference
@@ -918,30 +964,34 @@ Ye, and Lei Li. 2021. NeurST  Neural speech translation
  for Computational Linguistics (ACL)  System
 Demonstrations .
 A Appendix
-A.1 9 5. All of our data preparation scripts
+A.1 Reproducibility
+Table 9 shows the hyperparameters for the models
+presented in  5. All of our data preparation scripts
 are available in ESPnet  https //github.com/
 espnet/espnet/tree/master/egs2 .Model Task Encoder(s) Decoder(s) Frontend Pre-Train Init Multi-Obj Src BPE Tgt BPE # Params
-AED (Table 3) ST 12 lyr, 4 head, 256 adim (ASR) 6 lyr, 4 head FBANK ASR Enc/Dec ASR 4 4 60M
+AED (Table 3) ST 12 lyr, 4 head, 256 adim (ASR) 6 lyr, 4 head FBANK ASR Enc/Dec ASR 4k 4k 60M
 (ST) 6 lyr, 4 head
-MAED (Table 3) ST (ASR) 12 lyr, 4 head, 256 adim (ASR) 6 lyr, 4 head FBANK ASR Enc/Dec ASR 4 4 60M
+MAED (Table 3) ST (ASR) 12 lyr, 4 head, 256 adim (ASR) 6 lyr, 4 head FBANK ASR Enc/Dec ASR 4k 4k 60M
 (MT) 2 lyr, 4 head, 256 adim (MT) 6 lyr, 4 head
-CA (Table 3) ST 18 lyr, 4 head, 256 adim (ASR) 6 lyr, 4 head FBANK ASR Enc/Dec ASR 4 4 70M
+CA (Table 3) ST 18 lyr, 4 head, 256 adim (ASR) 6 lyr, 4 head FBANK ASR Enc/Dec ASR 4k 4k 70M
 (ST) 6 lyr, 4 head
-MCA (Table 3) ST (ASR) 18 lyr, 4 head, 256 adim (ASR) 6 lyr, 4 head FBANK ASR Enc/Dec/CTC ASR 4 4 70M
+MCA (Table 3) ST (ASR) 18 lyr, 4 head, 256 adim (ASR) 6 lyr, 4 head FBANK ASR Enc/Dec/CTC ASR 4k 4k 70M
 (MT) 4 lyr, 4 head, 256 adim (MT) 6 lyr, 4 head
-T (Table 3) ST 18 lyr, 4 head, 256 1 lyr, 512 dim, 640 joint FBANK ASR Enc/Dec/CTC ASR 4 4 70M
+T (Table 3) ST 18 lyr, 4 head, 256 adim 1 lyr, 512 dim, 640 joint FBANK ASR Enc/Dec/CTC ASR 4k 4k 70M
 (ASR) 6 lyr, 4 head
-Large CA (Table 4) ST 18 lyr, 8 head, 512 adim (ASR) 6 lyr, 4 head HuBERT ASR Enc/Dec/CTC ASR 8 16 210M
+Large CA (Table 4) ST 18 lyr, 8 head, 512 adim (ASR) 6 lyr, 4 head HuBERT ASR Enc/Dec/CTC ASR 8k 16k 210M
 (ST) 6 lyr, 4 head
-Large MCA (Table 4) ST (ASR) 18 lyr, 8 head, 512 adim (ASR) 6 lyr, 8 head HuBERT ASR Enc/Dec/CTC ASR 8 8 210M
+Large MCA (Table 4) ST (ASR) 18 lyr, 8 head, 512 adim (ASR) 6 lyr, 8 head HuBERT ASR Enc/Dec/CTC ASR 8k 8k 210M
 (MT) 4 lyr, 8 head, 512 adim (MT) 6 lyr, 8 head
-BAED (Table 5) SST 18 lyr, 4 head, 256 6 lyr, 4 1-12 - 4 4 70M
-LBCA (Table 5) SST 18 lyr, 4 head, 256 6 lyr, 4 1-12 - 4 4 70M
-TBCA (Table 5) SST 18 lyr, 4 head, 256 6 lyr, 4 1-12 - 4 4 70M
-BT (Table 5) SST 18 lyr, 4 head, 256 1 lyr, 4 head, 640 1-12 - 4 4 40M
-Large TBCA (Table 6) SST 18 lyr, 8 head, 512 6 lyr, 8 1-12 - 8 8 150M
-Translatotron (Table 7) S ST 12 lyr, 4 head, 256 6 lyr, 1024 dim FBANK - ASR, ST 7 500 80 2 (Table 7) S ST 16 lyr, 4 head, 256 adim (ST) 6 lyr, 4 head FBANK - ASR, ST 7 500 50M
+BAED (Table 5) SST 18 lyr, 4 head, 256 adim 6 lyr, 4 head FBANK ASR Enc lyr 1-12 - 4k 4k 70M
+LBCA (Table 5) SST 18 lyr, 4 head, 256 adim 6 lyr, 4 head FBANK ASR Enc lyr 1-12 - 4k 4k 70M
+TBCA (Table 5) SST 18 lyr, 4 head, 256 adim 6 lyr, 4 head FBANK ASR Enc lyr 1-12 - 4k 4k 70M
+BT (Table 5) SST 18 lyr, 4 head, 256 adim 1 lyr, 4 head, 640 joint FBANK ASR Enc lyr 1-12 - 4k 4k 40M
+Large TBCA (Table 6) SST 18 lyr, 8 head, 512 adim 6 lyr, 8 head FBANK ASR Enc lyr 1-12 - 8k 8k 150M
+Translatotron (Table 7) S2ST 12 lyr, 4 head, 256 adim 6 lyr, 1024 dim FBANK - ASR, ST 7k 500 80M
+Translatotron2 (Table 7) S2ST 16 lyr, 4 head, 256 adim (ST) 6 lyr, 4 head FBANK - ASR, ST 7k 500 50M
 (TTS) 2 lyr, 1024 dim
-Speech-to-Unit (Table 7) S ST 12 lyr, 4 head, 512 6 lyr, 8 head FBANK - ASR, ST 7 500 40M
-UnitY (Table 7) S ST (ST) 16 lyr, 4 head, 256 adim (ST) 4 lyr, 4 head FBANK - ASR, ST 7 500 40M
-(T U) 2 lyr, 4 head, 256 adim (T U) 2 lyr, 8 9  ST, SST, and S ST model hyperparameters. Parameter counts are rounded to the nearest 10 million.
+Speech-to-Unit (Table 7) S2ST 12 lyr, 4 head, 512 adim 6 lyr, 8 head FBANK - ASR, ST 7k 500 40M
+UnitY (Table 7) S2ST (ST) 16 lyr, 4 head, 256 adim (ST) 4 lyr, 4 head FBANK - ASR, ST 7k 500 40M
+(T2U) 2 lyr, 4 head, 256 adim (T2U) 2 lyr, 8 head
+Table 9  ST, SST, and S2ST model hyperparameters. Parameter counts are rounded to the nearest 10 million.

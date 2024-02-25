@@ -1,5 +1,10 @@
 HomeRobot  Open-Vocabulary Mobile Manipulation
-Sriram Yenamandra 1 1 1,2 1 2,3Tsung-Yen Yang Vidhi Jain3 4 1,2 2 2,3 2 1Georgia Tech FAIR, Meta AI Carnegie Mellon Simon Fraser
+Sriram Yenamandra 1Arun Ramachandran 1Karmesh Yadav 1,2Austin Wang1
+Mukul Khanna1Theophile Gervet2,3Tsung-Yen Yang2Vidhi Jain3
+Alexander William Clegg2John Turner2Zsolt Kira1Manolis Savva4
+Angel Chang4Devendra Singh Chaplot2Dhruv Batra1,2Roozbeh Mottaghi2
+Yonatan Bisk2,3Chris Paxton2
+1Georgia Tech2FAIR, Meta AI3Carnegie Mellon4Simon Fraser
 homerobot-info@googlegroups.com
 Abstract  HomeRobot
  (noun )  An affordable compliant robot that navigates
@@ -38,7 +43,9 @@ sets, or small, single-room environments that are easily explored. However, rece
 tying language and vision have enabled robots to generalize beyond specific categories [ 9 13],
 often through multi-modal models such as CLIP [ 14]. Further, comparison across methods has
 remained difficult and reproduction of results across labs impossible, since many aspects of the
-7th Conference on Robot Learning (CoRL 2023), Atlanta, USA.arXiv 2306.11565 2  [cs.RO]  10 2024 1  Open-V ocabulary Mobile Manipulation requires agents to search for a previously unseen
+7th Conference on Robot Learning (CoRL 2023), Atlanta, USA.arXiv 2306.11565v2  [cs.RO]  10 Jan 2024ChairToy AnimalTableFind Object on Start ReceptaclePick Object from Start ReceptacleFind Goal ReceptaclePlace Object on Goal Receptacle
+DrawerPitcherServing CartMove toy animal from chair to table
+Move pitcher from drawer to serving cartSIMREALFigure 1  Open-V ocabulary Mobile Manipulation requires agents to search for a previously unseen
 object at a particular location, and move it to the correct receptacle.
 settings (environments, and robots) have not been standardized. This is especially important now, as
 a new wave of research projects have begun to show promising results in complex, open-vocabulary
@@ -73,16 +80,19 @@ Our library also supports a number of sub-tasks, including manipulation learning
 learning [25], navigation [26], and object-goal navigation [2].
 1https //github.com/facebookresearch/home-robot
 2Object Continuous Robotics Open
-Scenes Cats Inst. Actions Sim Real Stack Licensing Manipulation
+Scenes Cats Inst. Actions Sim2Real Stack Licensing Manipulation
 Room Rearrangement [28] 120 118 118          
 Habitat ObjectNav Challenge[29] 216 6 7,599          
 TDW-Transport [30] 15 50 112          
 VirtualHome [31] 6 308 1,066          
-ALFRED [6] 120 84 84 2.0 HAB [21] 105 20 20          
+ALFRED [6] 120 84 84          
+Habitat 2.0 HAB [21] 105 20 20          
 ProcTHOR [32] 10,000 108 1,633          
 RoboTHOR [33] 75 43 731          
 Behavior-1K [34] 50 1,265 5,215          
-ManiSkill-2 [35] 1 2,000 2,000 200 150 7,892 1  Comparisons of our proposed benchmark with prior work. We provide a large number of
+ManiSkill-2 [35] 1 2,000 2,000          
+OVMM   HomeRobot 200 150 7,892          
+Table 1  Comparisons of our proposed benchmark with prior work. We provide a large number of
 environments and unique objects, focusing on manipulable objects, with a continuous action space.
 Uniquely, we also provide a multi-purpose, real-world robotics stack, with demonstrated sim-to-real
 capabilities, allowing others to reproduce and deploy their own solutions. Additional nuances in
@@ -120,7 +130,7 @@ environments in which these robots are used vary dramatically, leading to evalua
 (e.g., object navigation, SLAM) in isolation, instead of as components of a larger system that
 3ALFRED uses object masks for interaction. ObjectNav uses scans, not full object meshes. ProcThor scenes
 are procedurally generated, this has the benefit that the potential number of environments is unbounded.
-3 2  A low-cost home robot performing tasks in both a simulated and a real-world environment.
+3REALSIMFigure 2  A low-cost home robot performing tasks in both a simulated and a real-world environment.
 We provide both (1) challenging simulated tasks, wherein a mobile manipulator robot must find and
 grasp multiple seen and unseen objects, and (2) a corresponding real-world robotics stack to allow
 others to reproduce this research and evaluation to produce useful home robot assistants.
@@ -179,21 +189,27 @@ picking up object , finding goal_receptacle , and placing object on the goal. Ov
 is true if all four stages were accomplished. We compute partial success as a tie-breaker, in which
 agents receive 1 point for each successive stage accomplished, normalized by the number of stages.
 More details in Appendix C.
-3.1 3  HSSD scenes.The Habitat Synthetic Scenes Dataset (HSSD) [ 19] consists of 200 
-human-authored 3 18 3D models of
+3.1 Simulation Dataset
+Figure 3  HSSD scenes.The Habitat Synthetic Scenes Dataset (HSSD) [ 19] consists of 200 
+human-authored 3D home scenes containing over 18k 3D models of
 real-world objects. Like most real houses, these scenes are cluttered
 with furniture and other objects placed into realistic architectural
 layouts, making navigation and manipulation similarly difficult to
-the real world. We used a subset of HSSD [ 19] consisting of 60 4. For our experiments, these are
+the real world. We used a subset of HSSD [ 19] consisting of 60
+scenes for which additional metadata and simulation structures were
+authored to support rearrangement4. For our experiments, these are
 divided into train, validation, and test splits of 38, 12, and 10 scenes
 each, following the splits in the original HSSD paper [19].
-Objects and Receptacles. We aggregate objects from AI Thor
+Objects and Receptacles. We aggregate objects from AI2Thor
  [ 59], Amazon-Berkeley Objects [ 60], Google Scanned Objects
  [ 61] and the HSSD [ 19] dataset to create a large and diverse
-dataset of real-world robot problems. In total, we annotated 2,535 129 total categories.We identified 21 different categories
+dataset of real-world robot problems. In total, we annotated 2,535 objects
+ from 129 total categories.We identified 21 different categories
 of receptacles which appear in the HSSD dataset [19].
 SC, SI SC, UI UC, UI Total
-Cats 85 64 44 129 1,363 748 424 2,535 2  # of objects in the sim for each split of
+Cats 85 64 44 129
+Insts 1,363 748 424 2,535
+Table 2  # of objects in the sim for each split of
 (S)een and (U)nseen (I)nstance and (C)ategory.We construct our final set of furniture receptacle
 objects by first automatically labeling stable areas
 on top of receptacles, then manually refining and
@@ -202,8 +218,8 @@ processing these in order to remove invalid or inaccessible
 meshes were automatically generated and in many
 cases manually corrected to support physically accurate
  procedural placement of object arrangements.
-4 200  scenes with rearrangement support will be released soon.
-5 4 
+4All 200  scenes with rearrangement support will be released soon.
+5Figure 4 
  HomeRobot is a simple, easy-to-set-up library that works in multiple environments and
 requires only relatively affordable hardware. Computationally intensive operations are performed on
 a desktop PC with a GPU, and a dedicated consumer-grade router provides a network interface to a
@@ -278,15 +294,26 @@ We first evaluate the two baselines in our simulated benchmark, followed by eval
  held-out test apartment. These results highlight the significance of OVMM as a challenging
 new benchmark, encompassing numerous essential challenges that arise when deploying robots in
 real-world environments.
-We break down the results by sub-task in addition to reporting the overall performance in Tables 3 4. The columns FindObj ,Pick andFindRec refer to the first 3 phases of the task mentioned in
+We break down the results by sub-task in addition to reporting the overall performance in Tables 3
+and 4. The columns FindObj ,Pick andFindRec refer to the first 3 phases of the task mentioned in
 the scoring section (Sec. 3), and succeeding in the final Place phase leads to a successful episode.
 Simulation. We evaluate the baselines on held-out scenes, with objects from unseen instances of
 seen classes, and unseen instances of unseen classes, as described in Sec. 3.1. We show results with
 two different perception systems  Ground Truth segmentation, where we use the segmentation
 input directly from the simulator, and DETIC segmentation [ 27], where the RGB images from the
 simulator are passed through DETIC, an open-vocabulary object detector.
-7 54.1 48.5 31.5 5.1 34.8 56.5 51.5 42.3 13.2 40.9 65.4 54.8 43.7 7.3 42.8 66.6 61.1 50.9 14.8 48.3
-DETIC [27] Heuristic None Heuristic 28.7 15.2 5.3 0.4 12.4 29.4 13.2 5.8 0.5 12.2 21.9 11.5 6.0 0.6 10.0 21.7 10.2 6.2 0.4 9.6 3  Partial and overall success rate (SR) (in %) for different combinations of skills and perception
+7Simulation Results Skill Partial Success Rates Overall
+Success RatePartial
+Success MetricPerception Navigation Gaze Place FindObj Pick FindRec
+Ground Truth Heuristic None Heuristic 54.1 48.5 31.5 5.1 34.8
+Heuristic RL RL 56.5 51.5 42.3 13.2 40.9
+RL None Heuristic 65.4 54.8 43.7 7.3 42.8
+RL RL RL 66.6 61.1 50.9 14.8 48.3
+DETIC [27] Heuristic None Heuristic 28.7 15.2 5.3 0.4 12.4
+Heuristic RL RL 29.4 13.2 5.8 0.5 12.2
+RL None Heuristic 21.9 11.5 6.0 0.6 10.0
+RL RL RL 21.7 10.2 6.2 0.4 9.6
+Table 3  Partial and overall success rate (SR) (in %) for different combinations of skills and perception
 systems. The partial SR for each skill is dependent on the previous skill s SR. The partial SR for the
 place skill is the same as the overall SR. The partial success metric is calculated by averaging the 4
 partial SRs. One of the main causes of failures for our baseline systems was perception  ground-truth
@@ -304,12 +331,15 @@ found in Appendix Figure 18, and comparisons of seen versus unseen categories in
 Real World. Finally, we conducted a series of experiments in a real-world held-out apartment setting.
 We performed a total of 20episodes, utilizing a combination of seen and unseen object classes as
 our target objects. The results of these experiments are presented in Table 4. RL performed slightly
-better than the Heuristic baseline, successfully completing 1 20%. This difference primarily stemmed from the pick and place sub-tasks. In the pick task,
+better than the Heuristic baseline, successfully completing 1 extra episode and achieving a success
+rate of 20%. This difference primarily stemmed from the pick and place sub-tasks. In the pick task,
 the RL Gaze skill plays a crucial role in achieving better alignment between the agent and the target
 object, which leads to more successful grasping. Similarly, the RL place skill demonstrated more
 precision, ensuring that the object stayed closer to the surface of the receptacle.
 Real World FindObj Pick FindRec Overall Success
-Heuristic Only 70 35 30 15 70 45 30 20 4  Success Rate (in %) for heuristic and RL
+Heuristic Only 70 35 30 15
+RL Only 70 45 30 20
+Table 4  Success Rate (in %) for heuristic and RL
 baselines in the real world OVMM task. In both
 cases, the grasping action is executed as described
 in Sec. 4  but initial conditions of the robot such
@@ -431,7 +461,7 @@ generation. In NeurIPS , 2022.
 E. VanderBilt, M. Wallingford, L. Weihs, M. Yatskar, and A. Farhadi. RoboTHOR  An Open
 Simulation-to-Real Embodied AI Platform. In CVPR , 2020.
 [34] C. Li, R. Zhang, J. Wong, C. Gokmen, S. Srivastava, R. Martín-Martín, C. Wang, G. Levine,
-M. Lingelbach, J. Sun, et al. Behavior-1 1,000 everyday
+M. Lingelbach, J. Sun, et al. Behavior-1k  A benchmark for embodied ai with 1,000 everyday
 activities and realistic simulation. In CoRL , 2023.
 [35] T. Mu, Z. Ling, F. Xiang, D. C. Yang, X. Li, S. Tao, Z. Huang, Z. Jia, and H. Su. Maniskill 
 Generalizable manipulation skill benchmark with large-scale demonstrations. In NeurIPS
@@ -492,7 +522,7 @@ Robotics and Automation Letters , 2020.
 [57] W. Lian, T. Kelch, D. Holz, A. Norton, and S. Schaal. Benchmarking off-the-shelf solutions to
 robotic assembly tasks. In IROS , 2021.
 [58] A. Kadian, J. Truong, A. Gokaslan, A. Clegg, E. Wijmans, S. Lee, M. Savva, S. Chernova, and
-D. Batra. Are we making real progress in simulated environments  measuring the sim real
+D. Batra. Are we making real progress in simulated environments  measuring the sim2real
 gap in embodied visual navigation. arXiv , 2019.
 [59] E. Kolve, R. Mottaghi, W. Han, E. VanderBilt, L. Weihs, A. Herrasti, D. Gordon, Y . Zhu,
 A. Gupta, and A. Farhadi. AI2-THOR  an interactive 3d environment for visual AI. arXiv ,
@@ -527,7 +557,7 @@ schema challenge at scale. In AAAI , 2019.
 Microsoft coco  Common objects in context. In ECCV , 2014.
 [72] P. Rajpurkar, J. Zhang, K. Lopyrev, and P. Liang. Squad  100,000  questions for machine
 comprehension of text. In EMNLP , 2016.
-[73] L. Pinto and A. Gupta. Supersizing self-supervision  Learning to grasp from 50 700
+[73] L. Pinto and A. Gupta. Supersizing self-supervision  Learning to grasp from 50k tries and 700
 robot hours. In ICRA , 2016.
 [74] S. Levine, P. Pastor, A. Krizhevsky, J. Ibarz, and D. Quillen. Learning hand-eye coordination
 for robotic grasping with deep learning and large-scale data collection. IJRR , 2018.
@@ -625,27 +655,36 @@ W. Paul, K. Ellis, R. Chellappa, et al. Conceptgraphs  Open-vocabulary 3d scene 
 perception and planning. arXiv preprint arXiv 2309.16650 , 2023.
 [113] M. Quigley, K. Conley, B. Gerkey, J. Faust, T. Foote, J. Leibs, R. Wheeler, A. Y . Ng, et al. Ros 
 an open-source robot operating system. In ICRA Workshop on Open Source Software , 2009.
-15 16 17 18
+15Appendix
+Table of Contents
+A Extended Related Work 16
+B Limitations 17
+C Metrics 18
 C.1 Simulation Success Metrics . . . . . . . . . . . . . . . . . . . . . . . . . . . . 18
-C.2 Real World Success Metrics . . . . . . . . . . . . . . . . . . . . . . . . . . . . 18 19
+C.2 Real World Success Metrics . . . . . . . . . . . . . . . . . . . . . . . . . . . . 18
+D Simulation Details 19
 D.1 Object Categories Appearing in the Scene Dataset . . . . . . . . . . . . . . . . 19
 D.2 Episode Generation Details . . . . . . . . . . . . . . . . . . . . . . . . . . . . 21
 D.3 Diversity in Receptacle Instances . . . . . . . . . . . . . . . . . . . . . . . . . 22
 D.4 Scene Clutter Complexity . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 22
 D.5 Improved scene visuals . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 23
-D.6 Action Space Implementation . . . . . . . . . . . . . . . . . . . . . . . . . . . 24 24
+D.6 Action Space Implementation . . . . . . . . . . . . . . . . . . . . . . . . . . . 24
+E HomeRobot Implementation Details 24
 E.1 Pose Information . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 25
 E.2 Low-Level Control for Navigation . . . . . . . . . . . . . . . . . . . . . . . . . 25
 E.3 Heuristic Grasping Policy . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 25
 E.4 Heuristic Placement Policy . . . . . . . . . . . . . . . . . . . . . . . . . . . . 26
 E.5 Navigation Planning . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 27
-E.6 Navigation Limitations . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 28 28
+E.6 Navigation Limitations . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 28
+F Reinforcement Learning Baseline 28
 F.1 Action Space . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 29
 F.2 Observation Space . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 29
 F.3 Training Setup . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 29
-F.4 ConceptFusion . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 31 31
+F.4 ConceptFusion . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 31
+G Additional Analysis 31
 G.1 Number of steps taken in each stage by different baselines . . . . . . . . . . . . 32
-G.2 Performance on Seen vs. Unseen Object Categories . . . . . . . . . . . . . . . 33 34
+G.2 Performance on Seen vs. Unseen Object Categories . . . . . . . . . . . . . . . 33
+H Hardware Setup 34
 H.1 Hardware Choice . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 34
 H.2 Robot Setup . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 35
 H.3 Visualizing The Robot . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 36
@@ -709,7 +748,9 @@ with replanning, as would be ideal for a long horizon task [100].
 C Metrics
 We informally defined our scoring metrics in Sec. 3. Here, we provide formal definitions of our
 partial success metrics.
-C.1 0.1m of a viewpoint of the target object on
+C.1 Simulation Success Metrics
+Success in simulation is defined per stage as 
+ FindObj  Successful if the agent reaches within 0.1m of a viewpoint of the target object on
 start_receptacle , and at least 0.1%of the pixels in its camera frame belong to an object
 instance.
  Pick  Successful if FindObj succeeded, the agent enables the gripper at an instant where an
@@ -720,9 +761,9 @@ goal_receptacle , and at least 0.1%of the pixels in its camera frame belong to t
 a valid receptacle.
  Place  Successful if FindRec succeeded, the agent releases the object and subsequently the
 object stays in contact with the goal_receptacle with linear and angular velocities below a
-threshold of 5 3m/s and 5 2rad/s respectively for 50 contiguous steps. Further, the agent should
+threshold of 5e 3m/s and 5e 2rad/s respectively for 50 contiguous steps. Further, the agent should
 not collide with the scene while attempting to place the object.
-An episode is considered to have succeeded if it succeeds in all 4 1250 steps.
+An episode is considered to have succeeded if it succeeds in all 4 stages within 1250 steps.
 Better pick success condition. We plan to use a more realistic grasping condition in simulation. We
 try replacing the magic snap in simulation with a stricter condition that requires the agent to move
 its arm near the object without colliding with the scene or other objects. Additionally, we tested a
@@ -730,7 +771,9 @@ baseline (Figure 5) that performs top-down grasps resembling our real-world gras
 resorting to side-ways grasps when the object is farther. While this baseline succeeds in reaching the
 object starting from an object viewpoint 79% of the time, it does so without colliding only 47% of
 the time.
-C.2 1m of the target object onstart_receptacle
+C.2 Real World Success Metrics
+Success in real world is defined per stage as 
+ FindObj  Successful if the agent reaches within 1m of the target object onstart_receptacle
 and the object is visible in the RGB image from the camera.
  Pick  Successful if FindObj succeeded and the agent successfully picks up the object from the
 start_receptacle .
@@ -741,7 +784,7 @@ and the object settles down on the goal_receptacle stably.
 Given that the scene we use in the real world is much smaller than the apartments in the simulation,
 we allow the agent to act in the environment for 300 timesteps. The episode is considered to have
 succeeded if it succeeds in all 4 stages.
-18 5  A few success and failure cases for our simple grasping policy under the new grasp success
+18Figure 5  A few success and failure cases for our simple grasping policy under the new grasp success
 condition that requires the agent s arm to reach near the object without colliding. The agent resorts to
 sideways grasps when the object can t be reached via a top-down grasp that bends the gripper. Most
 grasping failures are because of the collisions with the scene.
@@ -817,9 +860,10 @@ pan
 vase
 plate
 plant saucer
-Figure 7 6 categories. The cushion, cup, and pan
+Figure 7  Example objects in our object dataset across 6 categories. The cushion, cup, and pan
 categories are in the train split, and the vase, plate, and plant saucer are in the validation and test sets.
-20D.2 8  Visualization of the navigable geometry (top row) and top-down views of example scenes
+20D.2 Episode Generation Details
+Figure 8  Visualization of the navigable geometry (top row) and top-down views of example scenes
 from the Habitat Synthetic Scenes Dataset (HSSD) [ 19]. We use the computed navigable area to
 efficiently generate a large number of episodes for the Open-V ocabulary Mobile Manipulation task.
 Object placement positions are sampled to be near navigable areas of the map, atop one of a large
@@ -840,13 +884,14 @@ orgoal_receptacle , and represents a nearby location where the robot can see the
 within 1.5meters. Fig. 10 gives examples of where these viewpoints are created.
 Navmesh  We precompute a navigable scene geometry as done in [ 20] for faster collision checks of
 the agent with the scene. The  mesh  comprising this navigable geometry is referred to as a navmesh.
-21 10  Viewpoints created for an object during episode generation. The gray area is the navigable
+21Figure 10  Viewpoints created for an object during episode generation. The gray area is the navigable
 region of the scene. The big red dot and the black box are the object s center and bounding box
 respectively. The surrounding dots are viewpoint candidates  red dots were rejected because they
 weren t navigable, and blue dots were rejected because they were too far from the object. The green
 dots are the final set of viewpoints.
 Figure 11  The variation in instances belonging to the "table" category in our dataset.
-Number of objects  This is dynamically set per scene to 1.5-2 2. For example, if the total receptacle surface area for a scene is 10 2, then 15-20 objects will be
+Number of objects  This is dynamically set per scene to 1.5-2  the total available receptacle area in
+m2. For example, if the total receptacle surface area for a scene is 10m2, then 15-20 objects will be
 placed. The exact number of objects will be randomly selected per episode to be in this range.
 The full set of included receptacles in simulation is  bathtub, bed, bench, cabinet, chair,
 chest_of_drawers, couch, counter, filing_cabinet, hamper, serving cart,
@@ -860,7 +905,7 @@ Our procedural placement of target and distractor objects creates diverse and in
 that require reasoning over which direction to approach receptacles, stable placement in clutter, open
 vocabulary object detection under occlusion which makes the task quite challenging. Figure 12 shows
 a few examples of clutter surrounding target objects in our scenes.
-22 12  A few examples of clutter surrounding the target object in our simulation settings.
+22Figure 12  A few examples of clutter surrounding the target object in our simulation settings.
 Figure 13  Here we present the improvements in scene visuals with Horizon-based Ambient
 Occlusion (HBAO) and expanded Physics-based Rendering (PBR) material support added to the
 Habitat renderer. The top row shows images from the default renderer whereas the bottom row shows
@@ -878,11 +923,12 @@ for both direct and indirect (IBL) lighting.
 We present comparisons between default Habitat visuals and improved renderings in Figure 13.
 We also benchmark the ObjectNav training speeds of a DDPPO-based RL agent with and without the
 improved rendering and present the results in 14. We see that the improvement in scene lighting and
-23 14  Minor drop in FPS with improved scene rendering   Here, we benchmark the training
+23Figure 14  Minor drop in FPS with improved scene rendering   Here, we benchmark the training
 speeds (through FPS numbers) of two ObjectNav training runs with and without the HBAO and
 PBR-based improved scene visuals. We observe that the improved rendering leads to a very small
-drop in FPS from around 340 330 (3 % drop).
-rendering comes at the cost of only a 3% dip in training FPS (decreasing from around 340 330).
+drop in FPS from around 340 to 330 (3 % drop).
+rendering comes at the cost of only a 3% dip in training FPS (decreasing from around 340 to around
+330).
 D.6 Action Space Implementation
 We look at two different choices of action space for our navigation agents, either making discrete or
 continuous predictions about where to move next. Our expectation from prior work might be that the
@@ -938,10 +984,11 @@ orientation into account. In addition, our semantic mapping requires a list of c
 DETIC [ 27]  instead, it would be good to use a fully open-vocabulary scene representation like
 CLIP-Fields [ 11], ConceptFusion [ 15], or USA-Net [ 12], which would also improve our motion
 planning significantly.
-E.3 15  Grasping tests in various lab environments. To provide a strong baseline, we tuned the
+E.3 Heuristic Grasping Policy
+Figure 15  Grasping tests in various lab environments. To provide a strong baseline, we tuned the
 grasp policy to be highly reliable given the Stretch s viewpoint, on a variety of objects.
-Numerous powerful grasp generation models have been proposed in the literature, such as GraspNet Billion
- [ 99], 6-DOF GraspNet [ 98], and Contact-GraspNet [ 97]. However, for transparency, repro Figure
+Numerous powerful grasp generation models have been proposed in the literature, such as GraspNet1Billion
+ [ 99], 6-DOF GraspNet [ 98], and Contact-GraspNet [ 97]. However, for transparency, repro25Figure
  16  An example of the robot navigating to a goal_receptacle (sofa) and using the heuristic
 place policy to put down the object (stuffed animal). Heuristic policies provide an interpretable and
 easily extended baseline.
@@ -1003,8 +1050,8 @@ backproject first-person semantic segmentation into a point cloud using the perc
 into a 3D semantic voxel map, and finally sum over the height to compute a 2D semantic map.
 We keep track of objects detected, obstacles, and explored areas in an explicit metric map of the
 environment from [ 105]. Concretely, it is a binary KxMxMmatrix where MxMis the map
-size and Kis the number of map channels. Each cell of this spatial map corresponds to 25 2(5cm
-x cm) in the physical world. Map channels K C  4where Cis the number of semantic object
+size and Kis the number of map channels. Each cell of this spatial map corresponds to 25cm2(5cm
+x5cm) in the physical world. Map channels K C  4where Cis the number of semantic object
 categories, and the remaining 4channels represent the obstacles, the explored area, and the agent s
 current and past locations. An entry in the map is one if the cell contains an object of a particular
 semantic category, an obstacle, or is explored, and zero otherwise. The map is initialized with all
@@ -1025,7 +1072,7 @@ finding objects. We make the following changes to the original planning policy [
 reach the object
 2.If the object is not found but start_receptacle appears in the semantic map after excluding
  the regions within 1m of the agent s past locations, plan to reach the start_receptacle
-27 17  Real-world examples (also see Fig 2). Our system is able to find held-out objects in an
+27Figure 17  Real-world examples (also see Fig 2). Our system is able to find held-out objects in an
 unseen environment and navigate to receptacles in order to place them, all with no information about
 the world at all, other than the relevant classes. However, we see this performance is highly dependent
 on perception performance for now  many real-world examples also fail due to near-miss collisions.
@@ -1071,7 +1118,7 @@ joint states, including the gripper. RGB image is available to the agent but not
 F.3 Training Setup
 All skills are trained using a slack reward of -0.005 per step, incentivizing completion of task using
 minimum number of steps. For faster training, we learn our policies using images with a reduced
-resolution of 160 120 (compared to Stretch s original resolution of 640 480).
+resolution of 160x120 (compared to Stretch s original resolution of 640x480).
 F.3.1 Navigation Skills
 We train FindObject andFindReceptacle policies for the agent to reach a candidate object or
 a candidate target receptacle respectively. The training procedure is the same for both skills. We
@@ -1105,7 +1152,7 @@ angle between agent s heading direction and the ray from agent to closest goal i
 did_collide (t)indicates if the action the agent took at time t 1resulted in a collision at time t. The
 training reward is given by 
 RFindX (t)  α[d(t 1) d(t)]  β1[d(t) Dclose][θ(t 1) θ(t)]  γ1[did_collide (t)]
-withα  1,β  1,γ  0.3 3.
+withα  1,β  1,γ  0.3andDclose  3.
 F.3.2 GazeAtObject
 TheGazeAtObject skill starts near the object and provides some final refinement steps until the
 agent is close enough to call a grasp action, i.e. it is in arm s length of the object and the object is
@@ -1137,7 +1184,8 @@ Letθ(t)denote the angle (in radians) between the ray from the agent s camera to
 camera s normal. Then the reward is given as 
 RGaze(t)  α[d(t 1) d(t)]  β1[d(t) γ]cos(θ(t))
 withα  2,β  1andγ  0.8in our case.
-The agent receives an additional positive reward of 2 0.5for centering its camera towards the wrong object.
+The agent receives an additional positive reward of 2once the episode succeeds and receives a
+negative reward of  0.5for centering its camera towards the wrong object.
 30F.3.3 PlaceObject
 Finally, the robot must move its arm in order to place the object on a free spot in the world. In this
 case, it starts at a viewpoint near a goal_receptacle . It must move up to the object and open its
@@ -1185,33 +1233,46 @@ Here, we provide some additional analysis of the different skills we trained to 
  Pick a toy from a table and place it on a stool. Figure 18  We show multiple executions of the Open-V ocabulary Mobile Manipulation task in a
 variety of simulated environments.
 Nav. Manip. Perception FindObj Gaze FindRec Place Total
-Heuristic Heuristic Ground Truth 291.8 - 65.5 8.4 360.5 293.5 19.4 64.3 84.4 438.7 295.1 - 105.0 7.0 401.6 302.4 25.7 112.8 45.9 455.2
+Heuristic Heuristic Ground Truth 291.8 - 65.5 8.4 360.5
+Heuristic RL Ground Truth 293.5 19.4 64.3 84.4 438.7
+RL Heuristic Ground Truth 295.1 - 105.0 7.0 401.6
+RL RL Ground Truth 302.4 25.7 112.8 45.9 455.2
 Heuristic Heuristic DETIC [27] 335.0 - 29.5 6.7 361.8
 Heuristic RL DETIC [27] 330.1 152.0 27.5 68.2 556.5
 RL Heuristic DETIC [27] 509.5 - 153.3 7.1 610.4
-RL RL DETIC [27] 539.1 101.3 124.4 33.7 634.7 5  The number of steps that the agent takes performing each of the skills for different baselines.
+RL RL DETIC [27] 539.1 101.3 124.4 33.7 634.7
+Table 5  The number of steps that the agent takes performing each of the skills for different baselines.
 Note that here we only consider the cases where the skill terminates. The last column gives the total
 number of steps the agent takes on average for executing the four skills.
-G.1 5 shows the number of steps taken by each skill in our baseline. With DETIC perception, we
+G.1 Number of steps taken in each stage by different baselines
+Table 5 shows the number of steps taken by each skill in our baseline. With DETIC perception, we
 observed that the RL skills explored less efficiently than our simple heuristic-based planner  this
 translates to far fewer steps taken in successful episodes, although because RL exploration essentially
  gives up  if an object isn t nearby, it can take lots of steps in many situations. In the real world, we
 saw similar behavior - sometimes, the RL policies would not explore enough to be able to find a goal
 at all.
 32Nav. Manip. Perception FindObj Gaze Pick FindRec Place Place terminates
-Heuristic Heuristic Ground Truth 100.0 - 65.1 65.1 62.1 62.1 100.0 65.6 64.3 64.3 61.3 52.2 100.0 - 76.3 76.2 66.8 66.8 100.0 77.0 74.5 74.5 65.1 60.6
+Heuristic Heuristic Ground Truth 100.0 - 65.1 65.1 62.1 62.1
+Heuristic RL Ground Truth 100.0 65.6 64.3 64.3 61.3 52.2
+RL Heuristic Ground Truth 100.0 - 76.3 76.2 66.8 66.8
+RL RL Ground Truth 100.0 77.0 74.5 74.5 65.1 60.6
 Heuristic Heuristic DETIC [27] 100.0 - 34.7 34.7 31.1 31.1
 Heuristic RL DETIC [27] 100.0 33.9 27.2 27.2 24.4 17.6
 RL Heuristic DETIC [27] 100.0 - 32.9 32.7 24.2 24.2
-RL RL DETIC [27] 100.0 34.7 24.9 24.8 18.1 15.3 6  We report the percentage of times each skill gets invoked for each of the different baselines.
+RL RL DETIC [27] 100.0 34.7 24.9 24.8 18.1 15.3
+Table 6  We report the percentage of times each skill gets invoked for each of the different baselines.
 The last column gives the percentage of times the agent finishes executing all skills.
 FindObj Success. PickObj Success. FindRec Success Overall Success
 Nav. Manip. Perception SC,UI UC,UI All SC,UI UC,UI Total SC,UI UC,UI All SC,UI UC,UI All
-Heuristic Heuristic Ground Truth 50.9 53.2 54.1 46.4 47.2 48.5 27.5 30.0 31.5 4.1 5.2 5.1 54.9 58.2 56.5 48.6 55.1 51.5 39.0 37.3 42.3 14.5 12.0 13.2 67.1 64.1 65.4 55.0 51.0 54.8 44.8 44.8 43.7 6.2 7.8 7.3 68.4 65.8 66.6 63.7 57.6 61.1 54.7 49.0 50.9 15.7 14.4 14.8
+Heuristic Heuristic Ground Truth 50.9 53.2 54.1 46.4 47.2 48.5 27.5 30.0 31.5 4.1 5.2 5.1
+Heuristic RL Ground Truth 54.9 58.2 56.5 48.6 55.1 51.5 39.0 37.3 42.3 14.5 12.0 13.2
+RL Heuristic Ground Truth 67.1 64.1 65.4 55.0 51.0 54.8 44.8 44.8 43.7 6.2 7.8 7.3
+RL RL Ground Truth 68.4 65.8 66.6 63.7 57.6 61.1 54.7 49.0 50.9 15.7 14.4 14.8
 Heuristic Heuristic DETIC [27] 22.2 21.1 28.7 12.5 10.5 15.2 3.2 3.3 5.3 0.9 0.7 0.4
 Heuristic RL DETIC [27] 22.4 22.2 29.4 11.9 11.8 13.2 5.1 3.5 5.8 0.3 1.4 0.5
 RL Heuristic DETIC [27] 18.7 23.0 21.9 9.9 11.8 11.5 5.8 5.3 6.0 0.3 0.0 0.6
-RL RL DETIC [27] 21.5 20.7 21.7 10.9 11.0 10.2 6.9 6.2 6.2 1.0 0.7 0.4 7  Performance breakdown by seen and unseen categories, and compared to overall performance.
+RL RL DETIC [27] 21.5 20.7 21.7 10.9 11.0 10.2 6.9 6.2 6.2 1.0 0.7 0.4
+Table 7  Performance breakdown by seen and unseen categories, and compared to overall performance.
 In our baselines, we relied heavily on a pretrained object detector for generalization, so we don t see
 a dramatic difference in performance between seen and unseen objects.
 Next, we observe that the Gaze and Place policies, which were trained with ground truth perception,
@@ -1228,14 +1289,25 @@ data (e.g.,  cup ), but not a specific  cup  that appeared in the training data.
 the training data at all.
 In general, because we are relying on DETIC and not training our own semantic perception for this
 baseline, we do not see a large difference between the two categories of object.
-G.2.1 5, we observe that the Gaze policy takes a significantly longer time to terminate with
+G.2.1 Example DETIC predictions
+In Table 5, we observe that the Gaze policy takes a significantly longer time to terminate with
 DETIC [ 27] perception. The gaze policy (see Fig. 19) tries to center the agent on the object of
 interest by allowing the agent to move its base and camera tilt. For this, it relies on DETIC s ability
 to detect novel objects. Now, we visualize DETIC segmentations of agent s egocentric observations
 by placing agent at the points where the Gaze skill is expected to start  the object  s viewpoints. We
 observe that while DETIC succeeds in a few cases, it fails at consistently detecting the objects in the
 egocentric frame.
-33 19 7 $200,000 7 $30,000 5 $5,000 7 $100,000 4 $19,000 6 $25,000 8  Notes on platform selection. We chose the Stretch with DexWrist as a good compromise
+33Figure 19  RL Gaze skill in action  The agent is allowed to move its base and change its camera tilt
+to get closer to object and bring object at the center of its camera frame
+Human Commercially Manipulation Approximate
+Name Mobile Sized Safe Available DOF Cost
+Boston Dynamics Spot         7 $200,000
+Franka Emika Panda         7 $30,000
+Locobot         5 $5,000
+Fetch         7 $100,000
+Hello Robot Stretch         4 $19,000
+Stretch with DexWrist         6 $25,000
+Table 8  Notes on platform selection. We chose the Stretch with DexWrist as a good compromise
 between manipulation, navigation, and cost, while being human-safe and approximately human-sized.
 H Hardware Setup
 Here, we will discuss choices related to the real-world hardware setup in extra detail along with
@@ -1248,7 +1320,7 @@ We describe some options for commercially available robotics hardware in Tab. 8.
 Emika Panda is not a mobile robot, we include it here because it s a very commonly used platform in
 both industrial research labs and at universities, making its price a fair comparison point for what is
 reasonable.
-34 20  Visualization of groundtruth and DETIC [ 27] segmentation masks for agent s egocentric
+34Figure 20  Visualization of groundtruth and DETIC [ 27] segmentation masks for agent s egocentric
 RGB observations. Note that we use a DETIC vocabulary consisting of the fixed list of receptacle
 categories and target object name. We observed that DETIC often fails to accurately detect all the
 objects present in the given frame.
@@ -1269,7 +1341,7 @@ the HomeRobot startup instructions, which can be done over SSH. Then, with a pro
 robot and router, you can visualize information on the desktop side, showing the robot s position,
 map from SLAM, and cameras. On the robot side, the only necessary command is 
 roslaunch home_robot_hw startup_stretch_hector_slam.launch
-35 21  Network setup diagram for HomeRobot. We can run visualizations on a GPU-enabled
+35Figure 21  Network setup diagram for HomeRobot. We can run visualizations on a GPU-enabled
 workstation while running only the necessary code on a robot for low-level control and SLAM.
 Checking network performance. We describe the visualization tools available briefly in the next
 section, but to check that the setup is working properly, you can start rviz and wave your hand in
@@ -1298,7 +1370,7 @@ open-source community with wide industry backing.
 H.4 Using The Stretch  Navigation vs. Position Mode
 We leave API documentation to the HomeRobot code base, but want to note one other complexity
 when using the robot. Stretch s manipulator arm is pointed to the right of its direction of motion,
-36 22  Exploring a real-world apartment during testing. The robot uses Detic [ 27] to perceive
+36Figure 22  Exploring a real-world apartment during testing. The robot uses Detic [ 27] to perceive
 the world and update a 2D map (center) which captures where it s seen relevant classes, and which
 obstacles exist  detections aren t always reliable, especially given a large and changing vocabulary of
 objects that we care about. In the HomeRobot stack, we provide a variety of tools for visualizing and

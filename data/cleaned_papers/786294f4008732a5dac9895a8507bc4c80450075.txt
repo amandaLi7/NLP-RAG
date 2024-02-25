@@ -1,6 +1,9 @@
-arXiv 2309.09510 1  [eess.AS]  18 2023DYNAMIC-SUPERB  TOWARDS A DYNAMIC, COLLABORATIVE, AND COM PREHENSIVE
+arXiv 2309.09510v1  [eess.AS]  18 Sep 2023DYNAMIC-SUPERB  TOWARDS A DYNAMIC, COLLABORATIVE, AND COM PREHENSIVE
 INSTRUCTION-TUNING BENCHMARK FOR SPEECH
-Chien-yu Huang1, Ke-Han Lu 1, Shih-Heng Wang 1, Chi-Yuan Hsiao 1, Chun-Yi Kuan 1, Haibin Wu 1 2, Kai-Wei Chang 1, Jiatong Shi2, Yifan Peng2, Roshan Sharma2, Shinji Watanabe2 2,3, Shady Shehata3, Hung-yi Lee1 1National Taiwan University, Taiwan,2Carnegie Mellon University, USA
+Chien-yu Huang1, Ke-Han Lu 1, Shih-Heng Wang 1, Chi-Yuan Hsiao 1, Chun-Yi Kuan 1, Haibin Wu 1
+Siddhant Arora 2, Kai-Wei Chang 1, Jiatong Shi2, Yifan Peng2, Roshan Sharma2, Shinji Watanabe2
+Bhiksha Ramakrishnan2,3, Shady Shehata3, Hung-yi Lee1
+1National Taiwan University, Taiwan,2Carnegie Mellon University, USA
 3Mohamed bin Zayed University of Artiﬁcial Intelligence, Un ited Arab Emirates
 ABSTRACT
 Text language models have shown remarkable zero-shot capability
@@ -14,7 +17,8 @@ instruction tuning to perform multiple tasks in a zero-shot fashion.
 To achieve comprehensive coverage of diverse speech tasks a nd harness
  instruction tuning, we invite the community to collabo rate and
 contribute, facilitating the dynamic growth of the benchmark. To initiate,
- Dynamic-SUPERB features 55 33 22 datasets. This spans a broad spectrum o f dimensions,
+ Dynamic-SUPERB features 55 evaluation instances by combining
+ 33 tasks and 22 datasets. This spans a broad spectrum o f dimensions,
  providing a comprehensive platform for evaluati on. Additionally,
  we propose several approaches to establish ben chmark
 baselines. These include the utilization of speech models, text language
@@ -142,7 +146,12 @@ datasets for instances. Due to the space limit, we cannot lis t all tasks
 in detail. The full collection of tasks is available on the Dy namicSUPERB
  ofﬁcial page1.Table 1   Statistics of Dynamic-SUPERB.
 Attribute Status CNT SPK SEM DEG PRL AUD
-Datasets - 5 3 3 6 7 3 3 2 2 4 3 0 2 1 2 8 3 3 9 3 2 6 4 0 2 2 4 13 3 7 2.4. Task format
+Datasets - 5 3 3 6 7 3
+TasksSeen 3 2 2 4 3 0
+Unseen 2 1 2 8 3 3
+InstancesSeen 9 3 2 6 4 0
+Unseen 2 2 4 13 3 7
+2.4. Task format
 Each task consists of at least three components  speech utte rance, instruction,
  and label. We sourced it from widely-used corpor a such as
 LibriSpeech [37], LJSpeech [38], and VCTK [39]. Depending o n the
@@ -155,7 +164,8 @@ more complex than text-based ones. Text instructions serve as an intermediary,
  bridging text and spoken instruction tuning. T o generate
 various instructions, we initially created some basic ones manually
 and then used ChatGPT to rephrase them and generate addition al
-variations. This results in each task containing approxima tely 10 30 different types of instructions.
+variations. This results in each task containing approxima tely 10 to
+30 different types of instructions.
 A standard classiﬁcation model produces a distribution ove r all
 potential labels. For instance, an emotion classiﬁer assig ns probabilities
  to each emotion category, including happy, angry, and sad.
@@ -244,17 +254,21 @@ Speech samples are converted into utterance-level feature s and subsequently
 tasks in Dynamic-SUPERB across different dimensions. Entr ies
 marked with  -  indicate an empty task set.
 Model CNT SPK SEM DEG PRL AUD
-BERT-GSLM 66.3 45.0 47.1 68.2 52.7 95.3 55.6 54.9 71.1 49.4 ImageBind-LLM
+BERT-GSLM 66.3 45.0 47.1 68.2 52.7 Whisper
+ 95.3 55.6 54.9 71.1 49.4 ImageBind-LLM
  64.3 42.1 47.6 78.7 59.8 Whisper-LLM
  77.6 92.3 55.5 91.0 66.3 ASR-ChatGPT
  - - - - - Random
- 49.9 54.1 41.0 45.9 67.1 3   Average accuracy (%) of the proposed baselines on unseen
+ 49.9 54.1 41.0 45.9 67.1 Table
+ 3   Average accuracy (%) of the proposed baselines on unseen
 tasks in Dynamic-SUPERB across different dimensions.
 Model CNT SPK SEM DEG PRL AUD
-BERT-GSLM 0.0 32.8 5.3 41.6 12.6 0.0 14.4 58.0 13.8 55.4 8.5 0.8
+BERT-GSLM 0.0 32.8 5.3 41.6 12.6 0.0
+Whisper 14.4 58.0 13.8 55.4 8.5 0.8
 ImageBind-LLM 15.7 45.4 24.7 47.6 20.6 35.7
 Whisper-LLM 8.7 60.6 20.9 59.0 6.6 15.9
-ASR-ChatGPT 65.0 40.3 70.0 43.5 22.9 9.8 11.8 50.2 33.1 43.1 21.0 23.4
+ASR-ChatGPT 65.0 40.3 70.0 43.5 22.9 9.8
+Random 11.8 50.2 33.1 43.1 21.0 23.4
 for computational efﬁciency. During training, ImageBind r emained
 ﬁxed, and only adapter modules in LLaMA were updated.
 While ImageBind-LLM shows promise, we observed that its
@@ -344,9 +358,14 @@ the instructions explicitly outlined available options, t he model responded
  in a generative manner. It could produce answers tha t wereTable 4   Average accuracy (%) across different dimensions based on
 seen/unseen instructions. Only seen tasks were evaluated.
 Model Instruction CNT SPK SEM DEG PRL
-BERT-GSLMSeen 66.5 44.2 47.1 68.2 69.3 65.9 45.4 47.1 60.6 54.6 95.4 55.3 54.6 71.0 65.8 95.0 55.4 55.6 50.5 49.6
-ImageBind-LLMSeen 64.1 42.9 47.1 78.6 75.8 64.8 41.6 49.0 62.8 59.7
-Whisper-LLMSeen 77.3 92.5 55.0 91.1 84.7 78.1 92.1 56.6 84.9 66.4
+BERT-GSLMSeen 66.5 44.2 47.1 68.2 69.3
+Unseen 65.9 45.4 47.1 60.6 54.6
+WhisperSeen 95.4 55.3 54.6 71.0 65.8
+Unseen 95.0 55.4 55.6 50.5 49.6
+ImageBind-LLMSeen 64.1 42.9 47.1 78.6 75.8
+Unseen 64.8 41.6 49.0 62.8 59.7
+Whisper-LLMSeen 77.3 92.5 55.0 91.1 84.7
+Unseen 78.1 92.1 56.6 84.9 66.4
 not among the given options, leading to a performance that wa s
 even worse than what a random guess would achieve. BERT-GSLM
 and Whisper struggled to select from the provided options, w hich
@@ -395,7 +414,7 @@ community and drive the research frontier together.6. REFERENCES
 [1] Aaron van den Oord, Yazhe Li, and Oriol Vinyals,  Representation
  learning with contrastive predictive coding,  
 arXiv 1807.03748 , 2018.
-[2] Alexei Baevski et al.,  wav vec 2.0  A framework for self supervised
+[2] Alexei Baevski et al.,  wav2vec 2.0  A framework for self supervised
  learning of speech representations,  NeurIPS , 2020.
 [3] Wei-Ning Hsu et al.,  Hubert  Self-supervised speech re presentation
  learning by masked prediction of hidden units,  

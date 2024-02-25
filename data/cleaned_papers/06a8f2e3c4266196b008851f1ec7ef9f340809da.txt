@@ -56,7 +56,7 @@ ambiguities. The successful modeling of a regular
 language is important since it implies a model s
 ability to learn the underlying rules of the data. For
 example, if the training data are arithmetic operations
- such as 1 2 3, the model should learn the
+ such as 1   2 3, the model should learn the
 rules of a b,a b, and that  has a higher priority
 than . Learning unambiguous rules behind the
 data is a critical step toward sequence modeling
@@ -86,7 +86,7 @@ In this section, we show that most LRNNs are unable
  to represent arithmetic operations, posing a
 serious issue under the extrapolation setting where
 1Formally speaking, the rules are defined/recognized by
-the underlying finite state machine.arXiv 2309.07412 1  [cs.CL]  14 2023the model has to learn the underlying language to
+the underlying finite state machine.arXiv 2309.07412v1  [cs.CL]  14 Sep 2023the model has to learn the underlying language to
 combat the length distributional shift.
 2.1 Linear RNN
 In this paper, we consider a general family of
@@ -118,21 +118,22 @@ Unit. We show in Proposition 1 that such inputindependent
  Amatrix cannot represent subtraction.
 Proposition 1. An input-independent LRNN is inconsistent
  in representing subtraction.
-Proof. Denote u0,u , and u as the input vector
+Proof. Denote u0,u , and u1as the input vector
 w.r.t. input character 0, -, and 1. Denote zas the
 initial state vector. The sequences "0-1" and "1-0"
 are represented as
-x0 1 0 1,for "0-1"
-x1 0 1 0,for "1-0"
-Because 0 1 1 0, by forcing x0 1 1 0,
+x0 1 A3z A2u0 Au  u1,for "0-1"
+x1 0 A3z A2u1 Au  u0,for "1-0"
+Because 0 1   1 0, by forcing x0 1  x1 0,
 we have
-A u0 1 1 0.On the other hand, let x0 0 u be
+A2u0 Au  u1  A2u1 Au  u0.On the other hand, let x0  A2z Au0 u be
 the vector representation for "0-". The sequences
 "0-0-1" and "0-1-0" are represented as
-x0 0 1 0 0 1 0 1 0 0 1 0.
+x0 0 1 A3x0  A2u0 Au  u1
+x0 1 0 A3x0  A2u1 Au  u0.
 Notice x0 0 1is for "0-0-1" while x0 1 0for "01-0".
- Enforcing x0 0 1 0 1 0, we have
-A u0 1 1 0,
+ Enforcing x0 0 1 x0 1 0, we have
+A2u0 Au  u1 A2u1 Au  u0,
 which is a contradiction.
 2.3 Input-dependent Diagonal LRNN
 To reduce the computational complexity of LRNNs,
@@ -158,7 +159,8 @@ Note the failure in representation implies the extrapolation
  error is large, but the model may still
 perform well if the testing length is no greater than
 the training length. We will evaluate this in  4.
-3 3.1 Motivation from Liquid-S4
+3 Proposed Method
+3.1 Motivation from Liquid-S4
 The recently proposed liquid-S4 (Hasani et al.,
 2023) can be seen as a generalization of Eq. (2)
 and(3), as its transition matrix is composed of
@@ -219,7 +221,7 @@ a sufficiently small p.
 Take p  1as an example. Every block A(i)
 kis
 a matrix that none of its column norms is greater
-than 1 1. This implies A(i)
+than 1 in       1. This implies A(i)
 k 1A(i)
 kis the same
 kind of matrix. Specifically, let v(1), ..., v(b)be the
@@ -227,7 +229,8 @@ columns of A(i)
 k 1A(i)
 k. We have
  
- v(1) 1. . . v(b) 1 1 A(i)
+ v(1) 1. . . v(b) 1 
+  1 A(i)
 k 1A(i)
 k
   1 A(i)
@@ -239,13 +242,14 @@ operations. The last two inequalities follow from
 thatA(i)
 k 1andA(i)
 k s column norms are no greater
-than 1 1.
+than 1 in       1.
 Eq.(7)demonstrates that p  1can stabilize the
 proposed block-diagonal recurrence, Eq. (5). However,
  a small prestricts a model s expressiveness.
 In  4.3, we will show that p  1.2is small enough
 to yield good empirical performance.
-4 4.1 Regular Language Tasks
+4 Experiments
+4.1 Regular Language Tasks
 Regular language is the type of formal language
  recognized by a Finite State Automata
 (FSA) (Chomsky, 1956). An FSA is described by
@@ -262,29 +266,34 @@ In this work, we follow the regular language
 transduction tasks in Deletang et al. (2023). We
 are particularly interested in Sum(5) ,EvenPair(5) ,
 ModArith(5) . For Sum(M) , the input is a string
-{si}n 1 0of numbers in [0, ..., M  1]. The
-output is the sum of them under modulo M Pn 1 0simodM. For example, when M  5, the
+{si}n 1
+i 0of numbers in [0, ..., M  1]. The
+output is the sum of them under modulo M Pn 1
+i 0simodM. For example, when M  5, the
 input "0324" corresponds to the output "4" because
-0 3 2 4 5 4 . Notably, Sum(2) is the
+0   3   2   4 mod5   4 . Notably, Sum(2) is the
 famous PARITY problem that evaluates whether
 there is an odd number of 1 s in a bit string. Thus,
 Sum(M) is a generalization of PARITY and shares
 the same characteristic  If one error occurs during
 the summation, the output will be wrong.
-InEvenPair(M) , the input is a string {si}n 1 0
-of numbers in [0, ..., M  1]. The output is 1 1 0 otherwise. For example, when
+InEvenPair(M) , the input is a string {si}n 1
+i 0
+of numbers in [0, ..., M  1]. The output is 1 if
+sn 1 s0and 0 otherwise. For example, when
 M  5, the input "0320" corresponds to the output
 "1" because the first entry equals the last entry.
 Since EvenPair(M) only cares about the first and
 last entries, the model should learn to remember
 the first entry and forget the entries i [1, .., n 2].
-InModArith(M) , the input is a string {si}n 1 0
+InModArith(M) , the input is a string {si}n 1
+i 0
 of odd length (i.e., nis odd). The even entries ( i 
 [0,2, ...]) are numbers in [0, ..., M  1]  The odd entries
  ( i [1,3, ...]) are symbols in { , , }. Theoutput is the answer of the mathematical expression
 under modulo M. For example, when M  5, the
-input "1 2-3 4" corresponds to the output "1" because
- 1 2 3 4 5 9 5 1 .
+input "1 2-3  4" corresponds to the output "1" because
+ 1   2 3 4mod5   9mod5   1 .
 ModArith(M) is much more complicated than
 Sum(M) andEvenPair(M) because the model
 should learn to prioritize multiplication over addition
@@ -308,25 +317,29 @@ same FSA.
 Table 1 summarizes the extrapolation setting.
 We mostly follow the requirements in Deletang
 et al. (2023), where the training and extrapolation
- lengths are 40 500. The lengths for
-ModArith(5) are 39 499 because this task requires
+ lengths are 40 and 500. The lengths for
+ModArith(5) are 39 and 499 because this task requires
  odd-length inputs.
 Sum(5) EvenPair(5) ModArith(5)
-Ltr 40 40 39 500 500 499 1  Our Training and Extrapolation Settings.
+Ltr 40 40 39
+Lex 500 500 499
+Table 1  Our Training and Extrapolation Settings.
 LtrandLexrepresent the training and extrapolation
 sequence lengths, respectively.
-4.3 4 (Gu et al.,
-2022), S D (Gupta et al., 2022), and Liquid-S4
+4.3 Experimental Results
+We implemented LRNNs such as S4 (Gu et al.,
+2022), S4D (Gupta et al., 2022), and Liquid-S4
 (Hasani et al., 2023) using their released codebases
 as baseline methods. For the proposed method, we
 setp  1.2in Eq. (6)and train the block-diagonal
 input-dependent LRNN with (b, h)   (8, 8). Because
  ModArith is more complicated than Sum
-andEvenPair ,ModArith uses 3 1 layer. Each layer is a full pass of
+andEvenPair ,ModArith uses 3 layers while the
+others take 1 layer. Each layer is a full pass of
 LRNN as Eq. (1).To accelerate the computational speed, all
 LRNNs in Table 2 are implemented with the parallel
  scan algorithm (Martin and Cundy, 2018). The
-computational cost of our model is O(b hlog(T))
+computational cost of our model is O(b2hlog(T))
 where b, handTare block size, number of blocks,
 and sequence length, respectively. Because the
 embedding dimension is held fixed as bh, the complexity
@@ -336,9 +349,9 @@ model with other LRNN baselines on regular language
  tasks. As we can see, the proposed model,
 Eq.(5)and(6), is the only LRNN that can extrapolate
  on regular language.
-S4 and S D cannot extrapolate on ModArith .
-This is expected as Prop. 1 4 and
-S D cannot represent subtraction due to their inputindependent
+S4 and S4D cannot extrapolate on ModArith .
+This is expected as Prop. 1 shows that S4 and
+S4D cannot represent subtraction due to their inputindependent
  transition matrices. As for Liquid-S4,
 although it uses input-dependent block matrices
 (discussed in  3.1), it still cannot extrapolate on
@@ -348,10 +361,11 @@ proposed model (Eq. (5)and(6)). Overall, we can
 see that the combination of input dependency and
 sufficient expressiveness plays an important role in
 terms of regular language modeling.
-Ours S4 S D Liquid-S4
+Ours S4 S4D Liquid-S4
 Sum(5) 1.00 0.27 0.27 0.27
 EvenPair(5) 0.99 0.81 0.82 0.72
-ModArith(5) 1.00 0.27 0.27 0.27 2  Extrapolation on Regular Language Tasks.
+ModArith(5) 1.00 0.27 0.27 0.27
+Table 2  Extrapolation on Regular Language Tasks.
 Each reported number is an average of five random trials.
 Each random trial returns the best testing accuracy over
 40,000 gradient updates.
@@ -371,7 +385,8 @@ Kyunghyun Cho, Bart van Merriënboer, Caglar Gulcehre,
 phrase representations using RNN encoder decoder
 for statistical machine translation. In Proceedings
 of the 2014 Conference on Empirical Methods in
-Natural Language Processing (EMNLP) , pages 1724 1734, Doha, Qatar. Association for Computational
+Natural Language Processing (EMNLP) , pages 1724 
+1734, Doha, Qatar. Association for Computational
 Linguistics.
 Noam Chomsky. 1956. Three models for the description
 of language. IRE Transactions on information theory ,
@@ -408,7 +423,8 @@ Rus. 2023. Liquid structural state-space models. In
 The Eleventh International Conference on Learning
 Representations .
 Sepp Hochreiter and Jürgen Schmidhuber. 1997. Long
-short-term memory. Neural computation , 9(8) 1735 1780.
+short-term memory. Neural computation , 9(8) 1735 
+1780.
 Michael I Jordan. 1997. Serial order  A parallel distributed
  processing approach. In Advances in psychology
  , volume 121, pages 471 495. Elsevier.
@@ -418,7 +434,7 @@ recurrent neural nets over sequence length. In International
 Antonio Orvieto, Samuel L Smith, Albert Gu, Anushan
 Fernando, Caglar Gulcehre, Razvan Pascanu, and
 Soham De. 2023. Resurrecting recurrent neural networks
- for long sequences. In Proceedings of the th International Conference on Machine Learning ,
+ for long sequences. In Proceedings of the40th International Conference on Machine Learning ,
 volume 202 of Proceedings of Machine Learning
 Research , pages 26670 26698. PMLR.
 Bo Peng, Eric Alcaide, Quentin Anthony, Alon Albalak,
@@ -443,30 +459,34 @@ Kaiser, and Illia Polosukhin. 2017. Attention is all
 you need. Advances in neural information processing
 systems , 30.
 A Additional Proofs
-A.1 2
+A.1 Proof of Proposition 2
 Denote (A0, u0),(A , u ), and (A1, u1)as the
 pair of (transition matrix, input vector) w.r.t. input
-character 0, -, and 1. Note that A0,A , andA are
+character 0, -, and 1. Note that A0,A , andA1are
 diagonal matrices by assumption.
 Denote zas the initial state vector. The sequences
  "0-1" and "1-0" are represented as
-x0 1 0 1 1 0 1 0.
+x0 1 A1A A0z A1A u0 A1u  u1
+x1 0 A0A A1z A0A u1 A0u  u0.
 Note x0 1is for "0-1" while x1 0for "1-0". Because
- A s are diagonal, we know A A A0 1. Because 0 1 1 0, by enforcing
-x0 1 1 0, we have
-A A u0 1 1 0.
+ A s are diagonal, we know A1A A0 
+A0A A1. Because 0 1   1 0, by enforcing
+x0 1  x1 0, we have
+A1A u0 A1u  u1  A0A u1 A0u  u0.
 (8)
-On the other hand, let x0 0 u 
+On the other hand, let x0  A A0z A u0 u 
 be the vector representation for "0-". Consider two
 other sequences  "0-0-1" and "0-1-0". Their vector
 representations are
-x0 0 1 0 0 1 0 1 0 0 1 0.
+x0 0 1 A1A A0x0  A1A u0 A1u  u1
+x0 1 0 A0A A1x0  A0A u1 A0u  u0.
 Note x0 0 1is for "0-0-1" while x0 1 0for
-"0-1-0". Similarly, because A s are diagonal and0 0 1 0 1 0, by enforcing x0 0 1 0 1 0, we have
-A A u0 1 1 0.
+"0-1-0". Similarly, because A s are diagonal and0 0 1   0  1 0, by enforcing x0 0 1 
+x0 1 0, we have
+A1A u0 A1u  u1 A0A u1 A0u  u0.
 (9)
 Because Eq. (8)contradicts with Eq. (9), the two
-relations x0 1 1 0 0 0 1 0 1 0cannot
+relations x0 1  x1 0andx0 0 1 x0 1 0cannot
  co-exist. We hence conclude that an inputdependent
  diagonal linear RNN is inconsistent in
 representing subtraction.

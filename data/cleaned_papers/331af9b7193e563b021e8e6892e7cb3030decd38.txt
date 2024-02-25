@@ -1,7 +1,8 @@
 SEGMENT-LEVEL VECTORIZED BEAM SEARCH BASED ON
 PARTIALLY AUTOREGRESSIVE INFERENCE
-Masao Someki1, Nicholas Eng2, Yosuke Higuchi3, Shinji Watanabe4 1IBM Japan Ltd., Japan The University of Auckland, New Zealand
-3Waseda University, Japan Carnegie Mellon University, USA
+Masao Someki1, Nicholas Eng2, Yosuke Higuchi3, Shinji Watanabe4
+1IBM Japan Ltd., Japan2The University of Auckland, New Zealand
+3Waseda University, Japan4Carnegie Mellon University, USA
 ABSTRACT
 Attention-based encoder-decoder models with autoregressive (AR)
 decoding have proven to be the dominant approach for automatic
@@ -16,7 +17,7 @@ attention-based architecture. It first generates an initial hypothesis
 based on their output probabilities. We then utilize the decoder
 to perform segment-level vectorized beam search on these tokens,
 re-predicting in parallel with minimal decoder calculations. Experimental
- results show that our method is 12to times faster
+ results show that our method is 12to13times faster
 in inference on the LibriSpeech corpus over AR decoding whilst
 preserving high accuracy.
 Index Terms  Decoding algorithm, autoregressive, semiautoregressive,
@@ -93,7 +94,7 @@ search iterations, hypotheses can be predicted in a batch [23], or
 the search process can be stopped prematurely [24]. In addition,
 other approaches focus on utilizing machine resources more efficiently
  [25 27], rather than relying solely on the model architecture,
-979-8-3503-0689-7/23/$31.00 2023 2309.14922 2  [eess.AS]  1 2023(a) Autoregressive (AR)
+979-8-3503-0689-7/23/$31.00  2023 IEEEarXiv 2309.14922v2  [eess.AS]  1 Oct 2023(a) Autoregressive (AR)
  (b) Non-autoregressive (NAR)
  (c) Partially autoregressive (PAR)
 Fig. 1   Overview and comparison of AR, NAR, and PAR decoding.  sos  denotes the  start-of-sequence  symbol,and the mask token
@@ -141,10 +142,11 @@ Fig. 2   Average inference time and proportion of time spent on the
 encoder, decoder, and CTC computation for (a) AR, as well as the
 encoder and decoder computation for (b) NAR architectures.Table 1   Decoding example from the LibriSpeech test-clean set (1089-134686-0002). The target sequence is initially predicted by gCTC and
 replaced with masks ( # ). Consecutive masks are merged into one mask. Red tokens indicate the best hypotheses from the segment-level
-vectorized beam search at each iteration. We set max iteration to and have five sentences for this sample. However, we only show iterations
-1 2 since there is no difference from the third iteration.
+vectorized beam search at each iteration. We set max iteration to5and have five sentences for this sample. However, we only show iterations
+1 and 2 since there is no difference from the third iteration.
 Masked sequence after early night# the yellow lamps would light up here and there the squalid quarter of the#el#
-iteration 1 2 after early nightfall the yellow lamps would light up here and there the squalid quarter of the brothels
+iteration 1 after early nightfall the yellow lamps would light up here and there the squalid quarter of the braels
+iteration 2 after early nightfall the yellow lamps would light up here and there the squalid quarter of the brothels
 Ground truth after early nightfall the yellow lamps would light up here and there the squalid quarter of the brothels
 then used to estimate the next token, e. This simple left-to-right
 beam search similar to [15] is widely used in ASR to search for the
@@ -217,7 +219,7 @@ beam search, we can solve the NAR accuracy issue related to the
 incorrect target length.
 As an example, let us focus on a case where only one mask is in
 the sequence for simplicity, and let the Pthres represent the threshold
-value ranging from 0 1. Initially, we use the gCTC result, obtained
+value ranging from 0to1. Initially, we use the gCTC result, obtained
 without the AR process. However, the resulting text can contain
 errors due to the conditional independence assumption. We expect
 these errors can be corrected by the AR process, where we utilize the
@@ -250,7 +252,8 @@ Initialize hypotheses YS,Band end-of-sequences ES
 fori  1tomax iteration do
 Calculate probability prob  Decoder (YS,B, X, C )
 Update hypotheses YS,Bby top-k method.
-fors  1 1toBdo
+fors  1toSdo
+forb  1toBdo
 iflast token of Ys,bisEsthen
 Fs.push (Ys,b)
 end if
@@ -307,8 +310,8 @@ PAR decoding can be seen as an optimization of AR decoding, PAR
 can be tested using pre-trained AR models. As a result, for both
 AR and PAR inference, we used E-Branchformer models [6] that
 were pre-trained on the following datasets and are publicly available
- on the HuggingFace hub  AISHELL-11, JSUT LibriSpeech h3,
- LibriSpeech-960 4, TED-LIUM25. Note that we used two
+ on the HuggingFace hub  AISHELL-11, JSUT2LibriSpeech100h3,
+ LibriSpeech-960h4, TED-LIUM25. Note that we used two
 types of models trained with LibriSpeech  a model trained with the
 entire dataset of 960 hours of audio (LS-960), and another model
 trained with the subset of 100hours of audio (LS-100). The model
@@ -326,7 +329,7 @@ For AR decoding, we set the beam size to 10, the CTC weight to 0.3,
 and employed the vectorized beam search [23]. For PAR decoding,
 the beam size is set to 10, but note that for PAR inference, we do not
 compute the CTC prefix score, so the CTC weight is set to 0. We
-also set the Pthres to0.95andmax iteration to for PAR decoding.
+also set the Pthres to0.95andmax iteration to5for PAR decoding.
 The decoding speed was measured using a single RTX 2080 Ti.
 5.1.3. Evaluation Datasets
 We used several datasets of different languages for evaluation,
@@ -348,8 +351,9 @@ the mean of all evaluation sets. The speedup column compares the
 RTF values with PAR compared to AR.
 1https //huggingface.co/pyf98/aishell ebranchformer
 2https //huggingface.co/pyf98/jsut ebranchformer
-3https //huggingface.co/pyf98/librispeech 100 4https //huggingface.co/asapp/e branchformer librispeech
-5https //huggingface.co/pyf98/tedlium2 2   Dataset descriptions. The order of evaluation sets corresponds to the error results in Table 3. Data split based on ESPnet [35].
+3https //huggingface.co/pyf98/librispeech 100ebranchformer
+4https //huggingface.co/asapp/e branchformer librispeech
+5https //huggingface.co/pyf98/tedlium2 ebranchformerTable 2   Dataset descriptions. The order of evaluation sets corresponds to the error results in Table 3. Data split based on ESPnet [35].
 Dataset Language Hours Token Metric Evaluation Sets
 AISHELL-1 [36] zh 170 char CER dev / test
 JSUT [37] ja 10 char CER dev / test (  )
@@ -360,7 +364,8 @@ Table 3   Comparison of WER, CER, RTF, elapsed time, and memory usage for each m
 mean and standard deviation (in brackets) values. The symbols (  ) and ( ) indicate a lower or higher number is preferable, respectively.
 AR PAR
 Dataset RTF (  ) Error [%] (  ) Memory Usage [MB] RTF (  ) Error [%] (  ) Memory Usage [MB] Speedup (  )
-AISHELL-1 0.027 (0.006) 4.6 / 5.0 176.3 (4.2) 0.010 (0.006) 4.6 / 4.9 176.3 (5.9) 2.70 0.129 (0.021) 11.8 / 13.2 208.4 (6.2) 0.018 (0.008) 12.0 / 13.3 199.4 (6.4) 7.17  
+AISHELL-1 0.027 (0.006) 4.6 / 5.0 176.3 (4.2) 0.010 (0.006) 4.6 / 4.9 176.3 (5.9) 2.70  
+JSUT 0.129 (0.021) 11.8 / 13.2 208.4 (6.2) 0.018 (0.008) 12.0 / 13.3 199.4 (6.4) 7.17  
 LS-100 0.111 (0.038) 6.2 / 16.8 / 6.4 / 17.1 197.5 (25.3) 0.009 (0.006) 6.5 / 17.2 / 6.7 / 17.7 210.6 (81.6) 12.33  
 LS-960 0.110 (0.039) 2.2 / 5.2 / 2.5 / 5.2 528.4 (44.8) 0.008 (0.006) 2.2 / 5.5 / 2.5 / 5.6 550.5 (132.6) 13.75  
 TED-LIUM2 0.182 (0.060) 7.3 / 7.1 281.1 (47.7) 0.012 (0.008) 7.6 / 7.3 474.8 (298.9) 15.17  
@@ -381,7 +386,7 @@ compared to AR. In particular, since the inference speed does not
 largely depend on the audio length, the standard deviation is approximately
  17.5%of that of AR decoding. This feature is more effective
  for longer audio and in the test-clean dataset, and we observed
-89.7 29second audio as the maximum speedup. Note
+89.7 speed up for 29second audio as the maximum speedup. Note
 that this speedup depends on several factors, such as the number of
 masks or input audio length.
 Fig. 3 shows the proportion of time spent on the encoder and
@@ -401,7 +406,7 @@ search iterations is fixed. The computation speed of the encoder or
 decoder depends on the audio length, but its impact on the overall
 inference speed is small.
 We investigated the correlation between the WER and RTF
-as shown in Fig. 4, by changing the beam size from 1 20, and
+as shown in Fig. 4, by changing the beam size from 1to20, and
 measured the WER and RTF using the test-clean dataset from
 Librispeech on the E-Branchformer based pre-trained models for
 LS-100 and LS-960 datasets. Comparing the AR models, the RTF
@@ -425,7 +430,8 @@ is different. In this work, we added a dummy hypothesis as mentioned
 for PAR decoding is S B, where the batch size for NAR decoding
 isS. Therefore, it seems that the computation time per decoder isFig. 4   The comparison of WER and RTF measured using the AR
 and PAR methods. We used the models trained with LS-100 and
-LS-960 1 20.
+LS-960 datasets and measured by changing the beam size between 1
+and20.
 shorter for Mask-CTC NAR, and the resulting decoder processing
 time becomes faster.
 In terms of accuracy, we can see that PAR outperforms NAR.
@@ -441,14 +447,16 @@ been realized.
 Table 4   Comparison with NAR. The speedup shows the speedup
 from the AR decoding.
 Model RTF (  ) WER [%] (  ) Speedup (  )
-AR CTC/Attention 0.198 (0.080) 6.7 / 18.3 / 7.0 / 18.6 1.00 0.005 (0.004) 7.7 / 21.0 / 7.9 / 21.4 39.60  
+AR CTC/Attention 0.198 (0.080) 6.7 / 18.3 / 7.0 / 18.6 1.00  
+NARCTC 0.005 (0.004) 7.7 / 21.0 / 7.9 / 21.4 39.60  
 Mask-CTC 0.008 (0.005) 7.1 / 20.8 / 7.5 / 21.0 24.75  
-PAR CTC/Attention 0.014 (0.009) 6.2 / 18.5 / 6.6 / 18.7 14.14 5.3. Limitations
+PAR CTC/Attention 0.014 (0.009) 6.2 / 18.5 / 6.6 / 18.7 14.14  
+5.3. Limitations
 5.3.1. Accuracy with PAR
 The accuracy of PAR can be degraded if the gCTC result is not accurate.
  If the result of gCTC is incorrect with high confidence, we
 cannot use the AR process to refine the gCTC result. From the comparison
- of the LS-100 and LS-960 3, we can see that
+ of the LS-100 and LS-960 models in Table 3, we can see that
 more accuracy degradation can occur with the LS-100 model.
 The accuracy may also degrade at a higher Pthres because the
 number of target tokens per mask may exceed max iteration . Since
@@ -460,9 +468,9 @@ WER and Pthres formax iteration . Using a max iteration of5, we
 observe the accuracy degrades at higher Pthres levels. This issue is
 caused by the lack of beam search iterations, so to solve this problem,
  we need to increase the max iteration . In Fig. 5, we increased
-themax iteration to and observed a more accurate result.
+themax iteration to8and observed a more accurate result.
 Fig. 5   The relationship between the WER and Pthres. We evaluated
- by changing the Pthres from 0.95 0.999. We used the EBranchformer-based
+ by changing the Pthres from 0.95to0.999. We used the EBranchformer-based
  pre-trained model for LS-960.
 5.3.2. Memory usage
 It is important to note the standard deviation of memory usage in
@@ -542,7 +550,8 @@ Transactions on Pattern Analysis and Machine Intelligence ,
 2023.
 [11] Nanxin Chen, Shinji Watanabe, Jes  us Villalba, Piotr  Zelasko,
 and Najim Dehak,  Non-autoregressive transformer for speech
-recognition,  IEEE Signal Processing Letters , vol. 28, pp. 121 125, 2021.
+recognition,  IEEE Signal Processing Letters , vol. 28, pp. 121 
+125, 2021.
 [12] William Chan, Chitwan Saharia, Geoffrey Hinton, Mohammad
 Norouzi, and Navdeep Jaitly,  Imputer  Sequence modelling
 via imputation and dynamic programming,  in Proc. ICML ,
@@ -581,7 +590,8 @@ the knowledge in a neural network,  in NIPS Deep Learning
 and Representation Learning Workshop , 2015.
 [22] Heng-Jui Chang, Shu-wen Yang, and Hung-yi Lee,  DistilHuBERT 
  Speech representation learning by layer-wise distillation
- of hidden-unit bert,  in Proc. ICASSP , 2022, pp. 7087 7091.
+ of hidden-unit bert,  in Proc. ICASSP , 2022, pp. 7087 
+7091.
 [23] Hiroshi Seki, Takaaki Hori, Shinji Watanabe, Niko Moritz,
 and Jonathan Le Roux,  Vectorized beam search for CTCattention-based
  speech recognition,  in Proc. Interspeech ,

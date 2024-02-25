@@ -1,7 +1,9 @@
 AudioGPT  Understanding and Generating Speech,
 Music, Sound, and Talking Head
-Rongjie Huang1 , Mingze Li1 , Dongchao Yang2 , Jiatong Shi3 , Xuankai Chang3 1, Yuning Wu4, Zhiqing Hong1, Jiawei Huang1, Jinglin Liu1, Yi Ren1,
-Zhou Zhao1, Shinji Watanabe3 1, Peking University2, Carnegie Mellon University3, Remin University of China4
+Rongjie Huang1 , Mingze Li1 , Dongchao Yang2 , Jiatong Shi3 , Xuankai Chang3
+Zhenhui Ye1, Yuning Wu4, Zhiqing Hong1, Jiawei Huang1, Jinglin Liu1, Yi Ren1,
+Zhou Zhao1, Shinji Watanabe3
+Zhejiang University1, Peking University2, Carnegie Mellon University3, Remin University of China4
 {rongjiehuang, limingze, zhaozhou}@zju.edu.cn ,{dongchao98}@stu.pku.edu.cn ,
 {jiatongs, xuankaic, dongsli}@cs.cmu.edu ,
 {yuningwu}@ruc.edu.cn ,{shinjiw}@ieee.org
@@ -36,7 +38,7 @@ using spoken language across daily conversations, and utilize spoken assistant (
 boost life convenience  2) As an inherent part of intelligence, processing audio modality information
 is a necessity to achieve artiﬁcial general intelligence. Understanding and generating speech, music,
 sound, and talking head could be the critical step for LLMs toward more advanced AI systems.
- Equal contributionsarXiv 2304.12995 1  [cs.CL]  25 2023Despite the beneﬁts of audio modality, training LLMs that support audio processing is still challenging
+ Equal contributionsarXiv 2304.12995v1  [cs.CL]  25 Apr 2023Despite the beneﬁts of audio modality, training LLMs that support audio processing is still challenging
 due to the following issues  1) Data  Obtaining human-labeled speech data is an expensive and
 time-consuming task, and there are only a few resources available that provide real-world spoken
 dialogues. Furthermore, the amount of data is limited compared to the vast corpora of web-text
@@ -86,7 +88,8 @@ AudioGPT in terms of consistency, capability, and robustness.
  Demonstrations present the efﬁciency of AudioGPT in audio understanding and generation
 with multiple rounds of dialogue, which empowers humans to create rich and diverse audio
 content with unprecedented ease.
-2 2.1 Large Language Models
+2 Related Works
+2.1 Large Language Models
 The research areas of AI are being revolutionized by the rapid progress of Large Language Models
 (LLMs) (Brown et al., 2020  Ouyang et al., 2022  Zhang et al., 2022a), where they can serve as
 a general-purpose language task solver, and the research paradigm has been shifting towards the
@@ -125,7 +128,8 @@ models from scratch that enables the processing of complex audio information. Di
 LLMs (i.e., ChatGPT) as the general-purpose interface and leverage various audio foundational
 models to solve audio understanding and generation tasks, where AudioGPT is further connected
 with modality transformation to support speech conversations.
-33 3.1 System Formulation
+33 AudioGPT
+3.1 System Formulation
 As brieﬂy discussed in Sec. 1, AudioGPT is a prompt-based system, deﬁned as
 AudioGPT   (T,L,M,H,{Pi}P
 i 1), (1)
@@ -204,7 +208,7 @@ As aforementioned, the task family is determined through the task handler Hby co
 modality. To be speciﬁc, the families are 
   Audio-to-Text
  Speech Recognition  Transcribe human speech
-4 1  Supported Tasks in AudioGPT
+4Table 1  Supported Tasks in AudioGPT
 Task Input Output Domain Model
 Speech Recognition Audio Text Speech Whisper (Radford et al., 2022)
 Speech Translation Audio Text Speech MultiDecoder (Dalmia et al., 2021)
@@ -270,7 +274,8 @@ audio foundation models closely aligned with human cognition and problem-solving
 which measures the performance of audio foundation models in handling complex audio tasks,
 understanding and generating speech, music, sound, and talking head in a zero-shot fashion  and 3)
 Robustness, which measures the ability of LLMs deals with special cases.
-4.2 2  A high-level overview of consistency evaluation.
+4.2 Consistency
+Figure 2  A high-level overview of consistency evaluation.
 { Please generate a voice from text ,  Text to Speech}
 LLMsDoes the response align with human intention faithfully 
 Audio ModelsRespond
@@ -279,7 +284,8 @@ Table 2  Ratings that have been used in the evaluation of query-answer consisten
 Rating Consistency Deﬁnition
 20 Completely inconsistent Very annoying and objectionable inconsistency.
 40 Mostly inconsistent Annoying but not objectionable inconsistency.
-60 80 Mostly consistent Just perceptible but not annoying inconsistency.
+60 somewhat consistent Perceptible and slightly annoying inconsistency
+80 Mostly consistent Just perceptible but not annoying inconsistency.
 100 Completely consistent Imperceptible inconsistency
 In the consistency evaluation for the zero-shot setting, models are directly evaluated on the questions
 without being provided any prior examples of the speciﬁc tasks, which evaluate whether multi-modal
@@ -342,14 +348,16 @@ discussed in Sec.4.2. In the ﬁrst step, human annotators provide prompts based
 7categories. In the second step, the prompts are fed into the LLM to formulate a complete interaction
 session. Finally, a different set of subjects recruited from multi-modal LLMs rate the interaction on
 the same 20-100 scale as described in Sec.4.2.
-5 5.1 Experimental Setup
+5 Experiments
+5.1 Experimental Setup
 In our experiments, we employ the gpt-3.5-turbo of the GPT models as the large language models
 and guide the LLM with LangChain (Chase, 2022). The deployment of the audio foundation models
 requires only a ﬂexible NVIDIA T4 GPU on hugging face space. We use a temperature of zero to
 generate output using greedy search and set the maximum number of tokens for generation to 2048.
 The current manuscript mainly covers the system description, where the experiments are designed
 more for demonstration.
-5.2 3 12-rounds dialogue case of AudioGPT, which demonstrates the capabilities of AudioGPT
+5.2 Case Study on Multiple Rounds Dialogue
+Figure 3 shows a 12-rounds dialogue case of AudioGPT, which demonstrates the capabilities of AudioGPT
  for processing audio modality, covering a series of AI tasks in generating and understanding
 speech, music, sound, and talking head. The dialogue involves multiple requests to process audio
 information and shows that AudioGPT maintains the context of the current conversation, handles
@@ -358,7 +366,7 @@ follow-up questions, and interacts with users actively.
 AudioGPT equips ChatGPT with audio foundation models, where ChatGPT is regarded as the
 general-purpose interface to solve numerous audio understanding and generation tasks. We test
 AudioGPT on a wide range of audio tasks in generating and understanding speech, music, sound, and
-talking head, where some cases are illustrated in Figure 4 5.
+talking head, where some cases are illustrated in Figure 4 and 5.
 6 Limitation
 Although AudioGPT excels at solving complex audio-related AI tasks, limitations could be observed
 in this system as follows  1) Prompt Engineering   AudioGPT uses ChatGPT to connect a large
@@ -381,12 +389,13 @@ AI tasks with speech, music, sound, and talking head understanding and generatio
 dialogues, empowering humans to create rich and diverse audio content with unprecedented ease.
 The current manuscript mainly covers the system description, where the experiments are designed
 more for demonstration.
-8 1  Hi, who are you 
+8Q1  Hi, who are you 
 A1  Hi, I m AudioGPT, a powerful audio dialogue
  assistant tool that can help with a wide range
 of tasks and provide valuable insights and information
  on a wide range of topics.
-Q2 2 I can help with a wide range of tasks related
+Q2  What can you do 
+A2 I can help with a wide range of tasks related
 to audio, such as generating audio from user input
  text, generating audio from an image, synthesizing
  speech from user input text, generating
@@ -398,49 +407,51 @@ sound events from an audio, synthesizing binasound
 Q3  I am tired today, can you generate
       a music for me 
 A3  The singing voice is generated and saved
-       as      audio/1b c d.wav. Enjoy 
+       as      audio/1b870c1d.wav. Enjoy 
 Q4  I try to dub for moive. Can you help me
 generate a background sound that includes
 birds singing and people speaking 
 A4  The audio is generated and saved as
-           audio/c dfd256.wav. Enjoy 
+           audio/c2dfd256.wav. Enjoy 
 Q5  Please write an caption based on the audio.
-A5  The caption for     audio/c dfd256.wav is  a
+A5  The caption for     audio/c2dfd256.wav is  a
        woman is speaking with a man, while some
         birds are sining.
 Q6  What events in this audio 
-          audio/932 0.wav
+          audio/932dfe0.wav
 A6  The audio includes applause and speech
 events. The predicted probability as following 
 Q7  Synthesize a speech with text  My name
        is Audio GPT, I am happy to help you  
 A7  Synthesized speech saved as
-             audio/71a f.wav.
+             audio/71a3503f.wav.
 Q8  Please transfer the synthesized
       audio into binaural audio.
 
-A8  Binaural audio saved as     audio/a d3.
+A8  Binaural audio saved as     audio/a08211d3.
        wav. Is there anything else I can help
        you with 
 Q9  Speak using the voice of this audio. The
-     text is "here we go".     audio/a f f.wav
+     text is "here we go".     audio/a806f68f.wav
 
 A9  Received  Here is the audio ﬁle you
-            request       audio/9 31081.wav
+            request       audio/9df31081.wav
 Q10  Generate an audio based
          on the picture.
 A10  Received  Here is the audio ﬁle you
          request  Here is the audio you requested 
-              audio/10d ac b.wav
+              audio/10d1ac8b.wav
 Q11  I want to inpaint the audio.
-A11 12 12  Here are the predict audio and the mel
-         spectrum.      audio/d d.wav
+A11  Please enter the mask region 
+Q12  The mask region as follow 
+A12  Here are the predict audio and the mel
+         spectrum.      audio/d109610d.wav
               image/9181abac.png
 Figure 3  Qualitative analysis on multiple rounds of dialogue between humans and AudioGPT.
 9Image To Audio Generation
 Query  Can you generate an audio based
 on the image 
-Response  The audio ﬁle    "audio/5b bb fc.wav"
+Response  The audio ﬁle    "audio/5b7bb1fc.wav"
  has been generated.
  It is an audio based on
 the image.
@@ -451,9 +462,13 @@ Query  please generate a piece of singing
 voice. Text sequence is  Text sequence is
 小酒窝长睫毛 AP 是你最美的记号 . Note sequence
  is C#4/Db4   F#4/Gb4   G#4/Ab4  
- A#4/Bb4 F#4/Gb4    A#4/Bb4   G#4/Ab4 4. Note duration sequence is 0.407140 0.376190 0.344510 0.283770 0.323390 0.376190 0.344510 0.283770 0.323390 0.360340.
+ A#4/Bb4 F#4/Gb4    A#4/Bb4   G#4/Ab4  
+b4. Note duration sequence is 0.407140  
+ 0.376190  0.344510   0.283770   0.323390
+ 0.376190  0.344510   0.283770   0.323390
+  0.360340.
 Response   The audio ﬁle
-    "audio/860c e.wav" has
+    "audio/860c524e.wav" has
 been generated. It is a singing
 voice with the text.
  Call Text-ToSing
@@ -462,7 +477,7 @@ Audio to Face Generation
 Query  Generate a talking human
 portrait video based on the audio.
 Response   Here is the video 
-    video/457o ffe.mp4"
+    video/457o1ffe.mp4"
 Call Talking
 Face Synthesis
 Model
@@ -480,12 +495,18 @@ Query  Please help me transfer the mono
 audio into binaural.
 Response  The generated binaural
  audio is saved on     audio/
-56 9.wav
+56jkoo9.wav
  Call Mono To
 Binaural Mod
 el
 Figure 4  Qualitative analysis on simple tasks.
-10 1.9 3.8 5.9 9.3 seconds.
+10Target Sound Detection
+Query  When did the keyboard sound
+             happen in the audio 
+Response  The keyboard sound
+happened in this audio from 1.9
+to 3.8 seconds and from 5.9 to
+9.3 seconds.
 Call Target Sound
  Detection
 Model
@@ -493,7 +514,7 @@ Sound Extraction
 Query  I want to extract the explosive
             sound from the mixture
 Response   The extracted audio is
-saved on     "audio/786 3.wav".
+saved on     "audio/786tfc3.wav".
 Call Sound Extract
  Model
 Speech Enhancement
@@ -509,7 +530,7 @@ Query  Can you help me to separate the
 Response  The mixture audio includes
  two speakers, the separated
  audios are saved on    "audio/
-fhb il.wav" and     "audio/iugp
+fhb32il.wav" and     "audio/iugp
 67w.wav"
 Call Speech
 Separation Model
@@ -520,7 +541,7 @@ Query  Translate the English speech into
 Content  it can be found in algeria lebanon
                portugal and spain
 Response  The generated audio
-is saved on    audio/83 9.wav
+is saved on    audio/83jkoo9.wav
 Content  se encuentra en argelia
            líbano portugal y españa
 Call Speech Translation
@@ -636,7 +657,8 @@ via integrating the acoustic and semantic information. arXiv preprint arXiv 2110
 Ye, Z., Jiang, Z., Ren, Y ., Liu, J., He, J., and Zhao, Z. Geneface  Generalized and high-ﬁdelity
 audio-driven 3d talking face synthesis. arXiv preprint arXiv 2301.13430 , 2023.
 Zeghidour, N., Luebs, A., Omran, A., Skoglund, J., and Tagliasacchi, M. Soundstream  An end-to-end
-neural audio codec. IEEE/ACM Transactions on Audio, Speech, and Language Processing , 30 495 507, 2021.
+neural audio codec. IEEE/ACM Transactions on Audio, Speech, and Language Processing , 30 
+495 507, 2021.
 Zhang, S., Roller, S., Goyal, N., Artetxe, M., Chen, M., Chen, S., Dewan, C., Diab, M., Li, X., Lin,
 X. V ., et al. Opt  Open pre-trained transformer language models. arXiv preprint arXiv 2205.01068 ,
 2022a.

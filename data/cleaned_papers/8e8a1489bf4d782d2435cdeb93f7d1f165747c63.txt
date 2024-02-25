@@ -1,6 +1,7 @@
 Large Language Models Enable Few-Shot Clustering
 Vijay Viswanathan1, Kiril Gashteovski2,
-Carolin Lawrence2, Tongshuang Wu1, Graham Neubig1, 3 1Carnegie Mellon University,2NEC Laboratories Europe,3Inspired Cognition
+Carolin Lawrence2, Tongshuang Wu1, Graham Neubig1, 3
+1Carnegie Mellon University,2NEC Laboratories Europe,3Inspired Cognition
 Abstract
 Unlike traditional unsupervised clustering,
 semi-supervised clustering allows users to provide
@@ -25,7 +26,8 @@ where LLMs can be incorporated into clustering
  quality, and that LLMs enable a user to
 make trade-offs between cost and accuracy to
 produce desired clusters. We release our code
-and LLM prompts for the public to use.1 1 Introduction
+and LLM prompts for the public to use.1
+1 Introduction
 Unsupervised clustering aims to do an impossible
 task  organize data in a way that satisfies a domain
 expert s needs without any specification of what
@@ -61,7 +63,8 @@ been shown to give experts control of the final clusters.
  However, they require significant effort from
 the expert. For example, in a simulation that uses
 split/merge, pairwise constraint, and lock/refine interactions
- (Coden et al., 2017), it took between 20 100 human-machine interactions to get any
+ (Coden et al., 2017), it took between 20
+and 100 human-machine interactions to get any
 clustering algorithm to produce clusters that fit the
 human s needs. Therefore, for large, real-world
 datasets with a large number of possible clusters,
@@ -76,7 +79,7 @@ In particular, we answer the following research
 question  Can an expert provide a few demonstrations
  of their desired interaction (e.g., pairwise
 constraints) to a large language model, then let the
-LLM direct the clustering algorithm arXiv 2307.00524 1  [cs.CL]  2 2023We explore three places in the text clustering
+LLM direct the clustering algorithm arXiv 2307.00524v1  [cs.CL]  2 Jul 2023We explore three places in the text clustering
 process where an LLM could be leveraged  before
 clustering, during clustering, and after clustering.
 We leverage an LLM before clustering by augmenting
@@ -169,7 +172,8 @@ single vector, and concatenate this vector with the
 original document s text representation. To disentangle
  the knowledge from an LLM with the benefits
  of a better encoder, we encode the keyphrases
-using the same encoder as the original text.2 2An exception to this is entity clustering. There, the BERT
+using the same encoder as the original text.2
+2An exception to this is entity clustering. There, the BERT
 encoder has been specialized for clustering Wikipedia sen-2.2 Pseudo-Oracle Pairwise Constraint
 Clustering
 We explore the situation where a user conceptually
@@ -222,7 +226,7 @@ thekpoints with the least margin between the nearest
 tences, so we use DistilBERT to support keyphrase clustering.
  Current
 Cluster
-2 3 3  After performing clustering, we identify lowconfidence
+2nd Closest Cluster 3rd Closest Cluster Figure 3  After performing clustering, we identify lowconfidence
  points. For these points, we ask an LLM
 whether the current cluster assignment is correct. If the
 LLM responds negatively, we ask the LLM whether this
@@ -245,13 +249,14 @@ positively, then we reassign the point to this new
 cluster. If the LLM responds negatively for all alternative
  choices, we maintain the existing cluster
 assignment.
-3 3.1 Entity Canonicalization
+3 Tasks
+3.1 Entity Canonicalization
 Task. Inentity canonicalization , we must group
 a collection of noun phrases M {mi}N
 1into subgroups
  {Cj}K
-1 1 2 Cjif
-and only if m andm refer to the same entity. For
+1such that m1 Cjandm2 Cjif
+and only if m1andm2refer to the same entity. For
 example, the noun phrases President Biden ( m1),
 Joe Biden ( m2)andthe 46th U.S. President ( m3)
 should be clustered in one group (e.g., C1). The
@@ -272,14 +277,14 @@ and relatively few points per cluster, making this a
 difficult clustering task that requires lots of human
 feedback to be effective.
 Datasets. We experiment with two datasets 
- OPIEC k (Shen et al., 2022) contains 22K
+ OPIEC59k (Shen et al., 2022) contains 22K
 noun phrases (with 2138 unique entity surface
 forms) belonging to 490 ground truth clusters.
 The noun phrases are extracted by MinIE (Gashteovski
  et al., 2017, 2019), and the ground truth
 entity clusters are anchor texts from Wikipedia
 that link to the same Wikipedia article.
- ReVerb k (Vashishth et al., 2018) contains
+ ReVerb45k (Vashishth et al., 2018) contains
 15.5K mentions (with 12295 unique entity surface
  forms) belonging to 6700 ground truth clusters.
  The noun phrases are the output of the
@@ -331,19 +336,23 @@ short textual documents. This clustering task has
 been extensively studied in the literature (Aggarwal
 and Zhai, 2012).
 Datasets. We use three datasets in this setting 
- Bank77 (Casanueva et al., 2020) contains 3,080 77 intent categories.
+ Bank77 (Casanueva et al., 2020) contains 3,080
+user queries for an online banking assistant from
+77 intent categories.
  CLINC (Larson et al., 2019) contains 4,500 user
 queries for a task-oriented dialog system from
 150 intent categories, after removing  out-ofscope 
  queries (as in (Zhang et al., 2023).
- Tweet (Yin and Wang, 2016) contains 2,472 89 categories.
+ Tweet (Yin and Wang, 2016) contains 2,472
+tweets from 89 categories.
 Metrics. Following prior work (Zhang et al.,
 2021), we compare our text clusters to the ground
 truth using normalized mutual information and accuracy
  (obtained by finding the best alignment between
  ground truth and predicted clusters using the
 Hungarian algorithm (Kuhn, 1955)).
-4 4.1 K-Means on Embeddings
+4 Baselines
+4.1 K-Means on Embeddings
 We build our methods on top of a baseline of
 K-means clustering (Lloyd, 1982) over encoded
 data with k-means   cluster initialization (Arthur
@@ -392,19 +401,21 @@ Vassilvitskii, 2007) in a shared vector space, we
 can match their reported performance.
 Finally, regarding the number of cluster centers,
  following the Log-Jump method of Shen
-et al. (2022), we choose 490 6687 clusters
-for OPIEC k and ReVerb k, respectively.
+et al. (2022), we choose 490 and 6687 clusters
+for OPIEC59k and ReVerb45k, respectively.
 Intent Clustering For the Bank77 and CLINC
 datasets, we follow Zhang et al. (2023) and encode
 each user query using the Instructor encoder. We
 use a simple prompt to guide the encoder   Represent
  utterances for intent classification . Again
-following previous work, we choose 150 77 77, respectively.Tweet Clustering Following Zhang et al. (2021),
+following previous work, we choose 150 and 77
+clusters for CLINC and Bank77, respectively.Tweet Clustering Following Zhang et al. (2021),
 we encode each tweet using a version of DistilBERT
  (Sanh et al., 2019) finetuned for sentence
 similarity classification4(Reimers and Gurevych,
 2019). We use 89 clusters (Zhang et al., 2021).
-4.2 2,
+4.2 Clustering via Contrastive Learning
+In addition to the methods described in Section 2,
 we also include two other methods for text clustering,
  where previously reported  SCCL (Zhang
 et al., 2021) and ClusterLLM (Zhang et al., 2023).
@@ -426,16 +437,19 @@ Instructor (Su et al., 2022) for Bank77 and CLINC
 and DistilBERT (finetuned for sentence similarity
  classification) (Sanh et al., 2019  Reimers and
 Gurevych, 2019) for Tweet.
-5 5.1 1 2.5
+5 Results
+5.1 Summary of Results
+We summarize empirical results for entity canonicalization
+ in Table 1 and text clustering in Table 2.5
 We find that using the LLM to expand textual representations
  is the most effective, achieving state-ofthe-art
  results on both canonicalization datasets and
 significantly outperforming a K-Means baseline for
 all text clustering datasets. Pairwise constraint Kmeans,
- when provided with 20,000 pairwise con This
+ when provided with 20,000 pairwise con4This
  model is distilbert-base-nli-stsb-mean-tokens
 on HuggingFace.
-5 4, when performing entity canonicalization,
+5As discussed in Section 4, when performing entity canonicalization,
  we assign mentions to the same cluster if they contain
  the same entity surface form (e.g.   Marseille  ), following
 prior work (Vashishth et al., 2018  Shen et al., 2022). This approach
@@ -446,23 +460,35 @@ To our knowledge, we are the first to highlight the limitations
  of this  surface form clustering  approach. We present
 the optimal performance under this assumption in Table 1,
 finding that the baseline of Shen et al. (2022) is already nearoptimal
- on some metrics, particularly for ReVerb k.Dataset / MethodOPIEC k ReVerb k
-Macro F1 1 1 1 1 1 Avg
-Optimal Clust. 80.3 0.0 97.0 0.0 95.5 0.0 90.9 84.8 0.0 93.5 0.0 92.1 0.0 90.1 52.8 0.0 90.7 0.0 84.7 0.0 76.1 66.1 0.0 87.9 0.0 89.4 0.0 81.1 53.5 0.0 91.0 0.0 85.6 0.0 76.7 69.6 0.0 89.1 0.0 89.3 0.0 82.7 58.7 0.0 91.5 0.0 86.1 0.0 78.7 72.0 0.0 88.5 0.0 87.0 0.0 82.5 58.7 0.0 91.5 0.0 85.2 0.0 78.4 69.9 0.0 89.2 0.0 88.4 0.0 82.5
-Keyphrase Clust. 60.3 0.0 92.5 0.0 87.3 0.0 80.0 72.3 0.0 90.2 0.0 90.0 0.0 84.2 1  Comparing methods for integrating LLMs into entity canonicalization.  CMVC  refers to the multi-view
+ on some metrics, particularly for ReVerb45k.Dataset / MethodOPIEC59k ReVerb45k
+Macro F1 Micro F1 Pair F1 Avg Macro F1 Micro F1 Pair F1 Avg
+Optimal Clust. 80.3 0.0 97.0  0.0 95.5  0.0 90.9 84.8 0.0 93.5  0.0 92.1  0.0 90.1
+CMVC 52.8 0.0 90.7  0.0 84.7  0.0 76.1 66.1 0.0 87.9  0.0 89.4  0.0 81.1
+KMeans 53.5 0.0 91.0  0.0 85.6  0.0 76.7 69.6 0.0 89.1  0.0 89.3  0.0 82.7oursPCKMeans 58.7 0.0 91.5  0.0 86.1  0.0 78.7 72.0 0.0 88.5  0.0 87.0  0.0 82.5
+LLM Correction 58.7 0.0 91.5  0.0 85.2  0.0 78.4 69.9 0.0 89.2  0.0 88.4  0.0 82.5
+Keyphrase Clust. 60.3 0.0 92.5 0.0 87.3 0.0 80.0 72.3 0.0 90.2 0.0 90.0 0.0 84.2
+Table 1  Comparing methods for integrating LLMs into entity canonicalization.  CMVC  refers to the multi-view
 clustering method of Shen et al. (2022), while  KMeans  refers to our simplified reimplementation of the same
 method. Where applicable, standard deviations are obtained by running clustering 5 times with different seeds.
-Dataset / MethodBank77 0.0 0.0 0.0 0.0 78.2 0.0 89.2 0.0 71.2 0.0 0.0 83.8 0.0 0.0 0.0 0.0 64.0 0.0 81.7 0.0 77.7 0.0 91.5 0.0 57.5 0.0 80.6 0.0 59.6 0.0 79.6 0.0 79.6 0.0 92.1 0.0 65.3 0.0 85.1 0.0 64.1 0.0 81.9 0.0 77.8 0.0 91.3 0.0 59.0 0.0 81.5 0.0 65.3 0.0 82.4 0.0 79.4 0.0 92.6 0.0 62.0 0.0 83.8 0.0 2  Comparing methods for integrating LLMs into text clustering.  SCCL  refers to Zhang et al. (2021) while
+Dataset / MethodBank77 CLINC Tweet
+Acc NMI Acc NMI Acc NMI
+SCCL   0.0    0.0   0.0    0.0 78.2 0.0 89.2  0.0
+ClusterLLM 71.2 0.0    0.0 83.8 0.0    0.0   0.0    0.0
+KMeans 64.0 0.0 81.7  0.0 77.7 0.0 91.5  0.0 57.5 0.0 80.6  0.0oursPCKMeans 59.6 0.0 79.6  0.0 79.6 0.0 92.1  0.0 65.3 0.0 85.1 0.0
+LLM Correction 64.1 0.0 81.9  0.0 77.8 0.0 91.3  0.0 59.0 0.0 81.5  0.0
+Keyphrase Clustering 65.3 0.0 82.4 0.0 79.4 0.0 92.6 0.0 62.0 0.0 83.8  0.0
+Table 2  Comparing methods for integrating LLMs into text clustering.  SCCL  refers to Zhang et al. (2021) while
  ClusterLLM  refers to Zhang et al. (2023). We use the same base encoders as those methods in our experiments.
 Where applicable, standard deviations are obtained by running clustering 5 times with different seeds.
 straints pseudo-labeled by an LLM, achieves strong
-performance on 3 5 datasets (beating the current
-state-of-the-art on OPIEC k). Below, we conduct
+performance on 3 of 5 datasets (beating the current
+state-of-the-art on OPIEC59k). Below, we conduct
  more in-depth analyses on what makes each
 method (in-)effective.
-5.2 1 2, we see that the  Keyphrase
+5.2 LLMs excel at text expansion
+In Table 1 and Table 2, we see that the  Keyphrase
 Clustering  approach is our strongest approach,
-achieving the best results on 3 5 datasets
+achieving the best results on 3 of 5 datasets
 (and giving comparable performance to the next
 strongest method, pseudo-oracle PCKMeans, on
 the other 2 datasets). This suggests that LLMs are
@@ -474,19 +500,19 @@ the ability to specify task-specific modeling instructions,
 function via demonstrations, or do LLMs contain
 knowledge that smaller neural encoders lack 
 We answer this question with an ablation study.
-For OPIEC k and CLINC, we consider the
+For OPIEC59k and CLINC, we consider the
  Keyphrase Clustering  technique but omit either
 the instruction or the demonstration examples from
-the prompt. For CLINC, we also compare withDataset / MethodOPIEC k CLINC
+the prompt. For CLINC, we also compare withDataset / MethodOPIEC59k CLINC
 Avg F1 Acc NMI
 Keyphrase Clust. 80.0 79.4 0.092.6 0.0
-w/o Instructions 79.1 78.4 0.0 92.7 0.0
-w/o Demonstrations 79.8 78.7 0.0 91.8 0.0
-Instructor-base - - - 74.8 0.0 90.7 0.0
-Instructor-large - - - 77.7 0.0 91.5 0.0
-Instructor-XL - - - 77.2 0.0 91.9 0.0
+w/o Instructions 79.1 78.4 0.0 92.7  0.0
+w/o Demonstrations 79.8 78.7 0.0 91.8  0.0
+Instructor-base - - - 74.8 0.0 90.7  0.0
+Instructor-large - - - 77.7 0.0 91.5  0.0
+Instructor-XL - - - 77.2 0.0 91.9  0.0
 (Su et al., 2022)
-Instructor-XL - - - 70.8 0.0 88.6 0.0
+Instructor-XL - - - 70.8 0.0 88.6  0.0
 (GPT-3.5 prompt)
 Table 3  We compare the effect of LLM intervention
 without demonstrations or without instructions. We see
@@ -500,10 +526,12 @@ providing either instructions or demonstrations in
 the prompt to the LLM enables the LLM to improve
  cluster quality, but that providing both gives
 the most consistent positive effect. Qualitatively,
-providing instructions but omitting demonstrationsDataset / Method OPIEC k CLINC Tweet
+providing instructions but omitting demonstrationsDataset / Method OPIEC59k CLINC Tweet
 Counts
 Data Size 2138 4500 2472
-# of LLM Reassignmnts 109 149 78 55.0 57.0 89.7 86.7 95.0 96.8
+# of LLM Reassignmnts 109 149 78
+Accuracy of Reassignments 55.0 57.0 89.7
+Overall Accuracy of Pairwise 86.7 95.0 96.8
 Pseudo-Oracle
 Table 4  When re-ranking the top 500 points in each
 dataset, the LLM rarely disagrees from the original clustering,
@@ -517,7 +545,7 @@ Why is keyphrase clustering using GPT-3.5 in
 the instruction-only ( without demonstrations ) setting
  better than Instructor, which is an instructionfinetuned
  encoder  While GPT-3.5 s size is
-not published, GPT-3 175B parameters,
+not published, GPT-3 contains 175B parameters,
  Instructor-base/large/xl contain 110M,
 335M parameters, and 1.5B parameters, respectively.
  The modest scaling curve suggests that scale
@@ -534,7 +562,8 @@ are insufficient to support the detailed, task-specific
 prompts that facilitate few-shot clustering.
 5.3 The limitations of LLM post-correction
 LLM post-correction consistently provides small
-gains on datasets over all metrics   between 0.1 5.2 absolute points of improvement. In Table
+gains on datasets over all metrics   between 0.1
+and 5.2 absolute points of improvement. In Table
  4, we see that when we provide the top 500
 most-uncertain cluster assignments to the LLM
 to reconsider, the LLM only reassigns points in a
@@ -546,9 +575,14 @@ clustering already had low confidence.
 We ve shown that using an LLM to guide the clustering
  process can improve cluster quality. How-PCKMeans Correction Keyphrase
 Method Data Size Cost in USD
-OPIEC k 2138 $42.03 $12.73 $2.24 12295 $33.81 $10.24 $10.66 77 3080 $10.25 $3.38 $1.23 4500 $9.77 $2.80 $0.95 2472 $11.28 $3.72 $0.99 5  We compare the pseudo-labeling costs of different
+OPIEC59k 2138 $42.03 $12.73 $2.24
+ReVerb45k 12295 $33.81 $10.24 $10.66
+Bank77 3080 $10.25 $3.38 $1.23
+CLINC 4500 $9.77 $2.80 $0.95
+Tweet 2472 $11.28 $3.72 $0.99
+Table 5  We compare the pseudo-labeling costs of different
  LLM-guided clustering approaches. We used
-OpenAI s gpt-3.5-turbo-0301 2023.
+OpenAI s gpt-3.5-turbo-0301 API in June 2023.
 ever, large language models can be expensive  using
  a commercial LLM API during clustering imposes
  additional costs to the clustering process.
@@ -580,26 +614,31 @@ able to yield an improvement in Macro F1 (suggesting
  better purity of clusters) without dramatically
 reducing Pairwise or Micro F1.
 Is this cost reasonable  For the $41 spent on the
-OpenAI API for OPIEC k (as shown in Table 5),
+OpenAI API for OPIEC59k (as shown in Table 5),
 one could hire a worker for 3.7 hours of labeling
 time, assuming an $11-per-hour wage (Hara et al.,
 2017). We observe that an annotator can label
-roughly 3 pairs per minute. Then, $41 700 20K GPT-3.5 labels.
-Based on the feedback curve in Figure 5, we see0 10 20 0.50.60.70.8 1
+roughly 3 pairs per minute. Then, $41 in worker
+wages would generate  700 human labels at the
+same cost as 20K GPT-3.5 labels.
+Based on the feedback curve in Figure 5, we see0 10K 20K0.50.60.70.8OPIEC59kMacro F1
 PCKMeans (LLM oracle)
 PCKMeans (True oracle)
 KMeans
-0 10 20 0.80.850.90.95 1 0 10 20 0.60.650.70.750.8
-# of Constraintsreverb k
-0 10 20 0.80.91
+0 10K 20K0.80.850.90.95Pair F1
+0 10K 20K0.60.650.70.750.8
+# of Constraintsreverb45k
+0 10K 20K0.80.91
 # of Constraints
 Figure 5  Collecting more pseudo-oracle feedback for
-pairwise constraint K-Means on OPIEC k improves
+pairwise constraint K-Means on OPIEC59k improves
 the Macro F1 metric without reducing other metrics.
 Compared to the same algorithm with true oracle constraints,
  we see the sensitivity of this algorithm to a
 noisy oracle.
-that GPT-3.5 2500 pairs labeled by a true
+that GPT-3.5 is remarkably more effective than a
+true oracle pairwise constraint oracle at this price
+point  unless at least 2500 pairs labeled by a true
 oracle are provided, pairwise constraint KMeans
 fails to deliver any value for entity canonicalization.
  This suggests that if the goal is maximizing
@@ -719,7 +758,9 @@ Christopher Clarke, Andrew Lee, Parker Hill,
 Jonathan K. Kummerfeld, Kevin Leach, Michael A.
 Laurenzano, Lingjia Tang, and Jason Mars. 2019. An
 evaluation dataset for intent classification and out-ofscope
- prediction. In Proceedings of the 2019 9th International Joint Conference
+ prediction. In Proceedings of the 2019 Conference
+ on Empirical Methods in Natural Language Processing
+ and the 9th International Joint Conference
 on Natural Language Processing (EMNLP-IJCNLP) ,
 pages 1311 1316, Hong Kong, China. Association
 for Computational Linguistics.
@@ -767,7 +808,7 @@ Unsupervised deep embedding for clustering analysis.
 InInternational Conference on Machine Learning .
 Jianhua Yin and Jianyong Wang. 2016. A model-based
 approach for text clustering with outlier detection.
-2016 32nd International Conference on Data
+2016 IEEE 32nd International Conference on Data
 Engineering (ICDE) , pages 625 636.
 Dejiao Zhang, Feng Nan, Xiaokai Wei, Shang-Wen
 Li, Henghui Zhu, Kathleen McKeown, Ramesh Nallapati,
@@ -790,7 +831,7 @@ We use a task-specific prompt for the pairwise constraint
 dataset as demonstration examples. We provide
 an example of one of the exact prompts used, for
 reference 
-OPIEC k Prompt
+OPIEC59k Prompt
 You are tasked with clustering entity
 strings based on whether they refer to
 the same Wikipedia article. To do this,
@@ -831,7 +872,7 @@ consistently refer to the same Wikipedia
 articles.
 1) B.A
 Context Sentences  a) "He matriculated
-at Jesus College , Oxford on 26 1616 , aged 16 , then transferred to Christ
+at Jesus College , Oxford on 26 April1616 , aged 16 , then transferred to Christ
  s College , Cambridge ( B.A 1620 , M.A.
 1623 , D.D. 1640 ) ."
 2) M.D.
@@ -844,7 +885,8 @@ M.D. link to the same entity s article on
 Wikipedia  No
 1) B.A
 Context Sentences  a) "He matriculated
-at Jesus College , Oxford on 26 1616 , aged 16 , then transferred to Christ
+at Jesus College , Oxford on 26 April
+1616 , aged 16 , then transferred to Christ
  s College , Cambridge ( B.A 1620 , M.A.
 1623 , D.D. 1640 ) ."
 2) bachelor
@@ -877,7 +919,7 @@ George III and uncle of Queen Victoria
 1820s , and takes its name from Prince
 Frederick , Duke of York and Albany
 , the younger brother of King George
-IV ." c) "He entered the 1 1795 and served in
+IV ." c) "He entered the 1st Battalion ofGrenadier Guards in 1795 and served in
 Holland under Prince Frederick , Duke of
 York and Albany , second son of George
 III ."
@@ -930,12 +972,13 @@ African-American lawyer in the Civil
 Rights Division ." b) "Shortridge served
 as a special attorney for the Justice Department
  in Washington , D.C. from
-1939 1943 ." c) "The Justice Department
+1939 to 1943 ." c) "The Justice Department
  appealed the decision to the
 Supreme Court in April 1992 , but the
 court declined to review the case ."
 2) United States Department of State
-Context Sentence  a) "He spent 1946 47 at the United States Department of
+Context Sentence  a) "He spent 1946  
+47 at the United States Department of
 State in Washington , D.C. as Palestine
 Desk Officer ." b) "Atherton also served
 on the Philippine Commission and at
@@ -943,7 +986,7 @@ the United States Department of State
 in Washington , D.C. ." c) "The United
 States Department of State added Deif
 to its list of Specially Designated Global
-Terrorists on 8 2015 ."
+Terrorists on 8 September 2015 ."
 Given this context, would Justice Department
  and United States Department of
 State link to the same entity s article on
@@ -953,7 +996,7 @@ We provide a domain-specific prompt to the keyword
  expansion clusterer, using 4 entities from each
 dataset as demonstration examples. We provide the
 exact prompts used for reference 
-OPIEC k Prompt
+OPIEC59k Prompt
 I am trying to cluster entity strings on
 Wikipedia according to the Wikipedia article
  title they refer to. To help me with

@@ -1,5 +1,6 @@
 Cross-Modal Fine-Tuning  Align then Reﬁne
-Junhong Shen1 2Liam Li Lucio M. Dery Corey Staten Mikhail Khodak Graham Neubig1 1 2
+Junhong Shen1 2Liam Li2Lucio M. Dery1Corey Staten2Mikhail Khodak1Graham Neubig1
+Ameet Talwalkar1 2
 Abstract
 Fine-tuning large-scale pretrained models has led
 to tremendous progress in well-studied modalities
@@ -17,7 +18,8 @@ the pretraining modality. The pretrained model is
 then ﬁne-tuned on the embedded data to exploit
 the knowledge shared across modalities. Through
 extensive experiments, we show that ORCA obtains
- state-of-the-art results on 3 60 12 modalities, outperforming
+ state-of-the-art results on 3 benchmarks containing
+ over 60 datasets from 12 modalities, outperforming
  a wide range of hand-designed, AutoML,
  general-purpose, and task-speciﬁc methods.
  We highlight the importance of data alignment
@@ -36,7 +38,7 @@ in-modality transfer within these well-studied areas for
 example, BERT models (Devlin et al., 2019) are typically
 only adapted for text-based tasks, and vision transformers
 (Dosovitskiy et al., 2021) only for image datasets.
-1Carnegie Mellon University Hewlett Packard Enterprise. Correspondence
+1Carnegie Mellon University2Hewlett Packard Enterprise. Correspondence
  to  Junhong Shen  junhongs@andrew.cmu.edu  .But imagine if we could use pretrained BERT models to
 tackle genomics tasks, or vision transformers to solve PDEs 
 Effective cross-modal ﬁne-tuning could have immense impact
@@ -74,11 +76,11 @@ distortion of the pretrained weights and exploit the knowledge
  performance on 3 benchmarks NAS-Bench-360 (Tu
 et al., 2022), PDEBench (Takamoto et al., 2022), and
 OpenML-CC18 (Vanschoren et al., 2014) which contain
-over 60 12 distinct data modalities.
+over 60 datasets from 12 distinct data modalities.
 Concretely, ORCA adapts any pretrained transformer model
 to a downstream task via a three-stage workﬂow (Figure 1).
 First, ORCA generates a task-speciﬁc embedding network
-architecture that maps the target inputs to sequence fea-arXiv 2302.05738 2  [cs.LG]  18 2023Cross-Modal Fine-Tuning  Align then Reﬁne
+architecture that maps the target inputs to sequence fea-arXiv 2302.05738v2  [cs.LG]  18 Mar 2023Cross-Modal Fine-Tuning  Align then Reﬁne
 Figure 1  ORCA s three-stage ﬁne-tuning workﬂow enables fast and automatic exploitation of large-scale pretrained models for solving
 diverse tasks. In stage 1, given target data (xt,yt)and a pretrained transformer body gs,ORCA constructs an embedder architecture ftto
 map the input to the dimensionality of gs, and a predictor architecture htto convert the output of gsto the target output, e.g., classiﬁcation
@@ -101,7 +103,7 @@ We validate ORCA s effectiveness along three axes  breadth,
 depth, and comparison with existing work. Breadthwise,
 we evaluate ORCA on NAS-Bench-360 (Tu et al., 2022),
 an AutoML benchmark that includes 10 tasks with diverse
-input dimensions (1 2D), prediction types (point and
+input dimensions (1D and 2D), prediction types (point and
 dense), and modalities (vision, audio, electrocardiogram,
 physics, protein, genomics, and cosmic-ray). The empirical
 results, combined with our analysis, show the following 
@@ -118,7 +120,8 @@ demonstrates that data alignment is important.
 learning time is only  10% of the ﬁne-tuning time.
 Depthwise, we study two established benchmarks in practical
  modalities  PDEBench for solving partial differential
-equations (Takamoto et al., 2022) and OpenML-CC18 1Due to privacy and computational efﬁciency concerns, we do
+equations (Takamoto et al., 2022) and OpenML-CC18 for
+1Due to privacy and computational efﬁciency concerns, we do
 not assume access to the pretraining data and instead work with
 publicly available proxy data, e.g., CIFAR-10 for vision models.classifying tabular data (Vanschoren et al., 2014). We perform
  in-depth analysis to show that ORCA adapts vision and
@@ -190,7 +193,7 @@ several modalities together (e.g., Radford et al., 2021  Hu
 these methods still focus on adapting to in-modality tasks.
 General-purpose models propose ﬂexible architectures applicable
  to various tasks such as optical ﬂow, point clouds,
-and reinforcement learning (Jaegle et al., 2021 2022  Reed
+and reinforcement learning (Jaegle et al., 2021  2022  Reed
 et al., 2023). These approaches train multitask transformersfrom
  scratch using a large body of data from different
 tasks. Though more versatile than unimodal models, they
@@ -227,7 +230,8 @@ Frozen Pretrained Transformers (FPT) (Lu et al., 2022)
 is a cross-modal ﬁne-tuning workﬂow that transforms the
 inputs to be compatible with the pretrained models. Although
  FPT and ORCA are both general-purpose, FPT does
-not account for the modality difference (no stage 2 1), but we show this step is necessary to obtain effective
+not account for the modality difference (no stage 2 in Figure
+ 1), but we show this step is necessary to obtain effective
 predictive models and outperform existing baselines.
 3. O RCA Workﬂow
 In this section, we formalize the problem setup and introduce
@@ -274,7 +278,7 @@ Applying pretrained models to a new problem usually requires
  addressing the problem of dimensionality mismatch.
 To make ORCA work for different input/output dimensions,
 we decompose a transformer-based learner minto three
-parts (Figure 1 1)  an embedder fthat transforms
+parts (Figure 1 stage 1)  an embedder fthat transforms
 inputxinto a sequence of features, a model body gthat
 applies a series of pretrained attention layers to the embedded
  features, and a predictor hthat generates the outputs
@@ -354,15 +358,21 @@ study in Section 3.4 on three representatives.
 We choosekfor the embedder such that Hout Wout Sso
 the output shape is (D,H out,Wout). Then, we ﬂatten the last two
 dimensions and transpose to get shape (S,D )compatible with the
-transformer. The transformer output is mapped to (S,k K)by a
-linear layer. We transpose and reshape to get (k K,H out,Wout)
+transformer. The transformer output is mapped to (S,k2K)by a
+linear layer. We transpose and reshape to get (k2K,H out,Wout)
 and apply pixelshufﬂe (Shi et al., 2016) to get (K,H in,Win).Cross-Modal Fine-Tuning  Align then Reﬁne
 Table 2  Prediction errors ( ) on 10 diverse tasks.  NAS-Bench-360  refers to the task-wise best of all AutoML baselines evaluated in
 the paper, including DARTS (Liu et al., 2019b), DenseNAS (Fang et al., 2020), and 4 others.  FPT  refers to ﬁne-tuning the layer norms
 of RoBERTa/Swin. On 7/10 problems, O RCA ranks the ﬁrst among all competitors. See Appendix A.4.2 for the error bars.
-CIFAR-100 0-1 error (%) 0-1 error (%) relative ℓ2 81-AUROC 0-1 error (%) 1- mAP 1 - F1 0-1 error (%) 1- AUROC
+CIFAR-100 Spherical Darcy Flow PSICOV Cosmic NinaPro FSD50K ECG Satellite DeepSEA
+0-1 error (%) 0-1 error (%) relative ℓ2 MAE 81-AUROC 0-1 error (%) 1- mAP 1 - F1 score 0-1 error (%) 1- AUROC
 Hand-designed 19.39 67.41 8E-3 3.35 0.127 8.73 0.62 0.28 19.80 0.30
-NAS-Bench-360 23.39 48.23 2.6E-2 2.94 0.229 7.34 0.60 0.34 12.51 0.32 24.37 71.28 7.9E-3 3.30 0.19 6.60 0.60 0.32 12.28 0.28 70.04 82.57 2.4E-2 8.06 0.485 22.22 0.72 0.66 15.93 0.38 10.11 76.38 2.1E-2 4.66 0.233 15.69 0.67 0.50 20.83 0.37 6.53 29.85 7.28E-3 1.91 0.152 7.54 0.56 0.28 11.59 0.29 3.3. Weight Reﬁning for Downstream Adaptation
+NAS-Bench-360 23.39 48.23 2.6E-2 2.94 0.229 7.34 0.60 0.34 12.51 0.32
+DASH 24.37 71.28 7.9E-3 3.30 0.19 6.60 0.60 0.32 12.28 0.28
+Perceiver IO 70.04 82.57 2.4E-2 8.06 0.485 22.22 0.72 0.66 15.93 0.38
+FPT 10.11 76.38 2.1E-2 4.66 0.233 15.69 0.67 0.50 20.83 0.37
+ORCA 6.53 29.85 7.28E-3 1.91 0.152 7.54 0.56 0.28 11.59 0.29
+3.3. Weight Reﬁning for Downstream Adaptation
 After training the embedder, we perform full ﬁne-tuning by
 updating all model parameters to minimize the target loss.
 This step further aligns the embedder and predictor with
@@ -403,7 +413,8 @@ target label sets into the shared space of distributions over
  datasets. For dense prediction tasks with continuous
 labels, we ﬁrst perform clustering on the data labels to generate
 pseudo-labels.
-1.0 1.1 1.2 1.3 1.4 1.5 0255075100-Suboptimal Tasks (%)
+1.0 1.1 1.2 1.3 1.4 1.5
+0255075100-Suboptimal Tasks (%)
 OTDD
 MMD
 EuclideanFigure 2  Performance proﬁles (Dolan & Mor  e, 2002) of ORCA
@@ -411,7 +422,8 @@ with different alignment metrics. Larger values (fractions of tasks
 on which a method is within τ-factor of the best) are better. The
 OTDD curve being in the upper left shows it is often the best.
 different labels using the p-Wasserstein distance associated
-with thel distance  xt  xs 2 2in X, which in turn allows
+with thel2distance  xt  xs 2
+2in X, which in turn allows
 us to measure the distributional difference in  X Y  
 d X Y(
 (  xt,yt),(  xs,ys))
@@ -445,9 +457,10 @@ modalities  (2) we perform in-depth analyses in twoCross-Modal Fine-Tuning  Alig
 Table 3  Prediction errors ( ) ofORCA, naive ﬁne-tuning, and training RoBERTa/Swin from scratch. We consider adapting all parameters
 (full setting) vs. only the layer norms (FPT setting). ORCA is better in both settings. The fact that full ﬁne-tuning generally outperforms
 tuning only the layer norms is also consistent with recent observations (Rothermel et al., 2021). See Appendix A.4.3 for the error bars.
-CIFAR-100 Spherical Darcy Flow PSICOV Cosmic NinaPro FSD K ECG Satellite DeepSEA
+CIFAR-100 Spherical Darcy Flow PSICOV Cosmic NinaPro FSD50K ECG Satellite DeepSEA
 Train-from-scratch 50.87 76.67 8.0E-2 5.09 0.50 9.96 0.75 0.42 12.38 0.39
-Fine-tuning 7.67 55.26 7.34E-3 1.92 0.17 8.35 0.63 0.44 13.86 0.51 6.53 29.85 7.28E-3 1.91 0.152 7.54 0.56 0.28 11.59 0.29
+Fine-tuning 7.67 55.26 7.34E-3 1.92 0.17 8.35 0.63 0.44 13.86 0.51
+ORCA 6.53 29.85 7.28E-3 1.91 0.152 7.54 0.56 0.28 11.59 0.29
 Fine-tuning (layernorm) 10.11 76.38 2.11E-2 4.66 0.233 15.69 0.67 0.50 20.83 0.37
 ORCA (layernorm) 7.99 42.45 2.21E-2 4.97 0.227 15.99 0.64 0.47 20.54 0.36
 modalities, PDE solving and tabular classiﬁcation, to show
@@ -475,7 +488,7 @@ In this section, we highlight the most important observation
  of this work  cross-modal ﬁne-tuning with
 data alignment can solve diverse tasks effectively and
 efﬁciently . To show this, we test ORCA on 10 tasks
-from NAS-Bench-3604 1D/2D problems
+from NAS-Bench-3604covering diverse 1D/2D problems
 such as protein folding, cardiac disease prediction, and
 cosmic-ray detection. Following Table 1, we consider
 3 classes of baselines  (1) hand-designed, task-speciﬁc
@@ -484,15 +497,21 @@ models represented by Perceiver IO (Jaegle et al., 2022)
 (3) AutoML methods, including the leading algorithm on
 NAS-Bench-360, DASH (Shen et al., 2022).
 We report the prediction error for each method on each
-task in Table 2 3. ORCA achieves the lowest error rates on 7 10
+task in Table 2 and visualize the aggregate performance in
+Figure 3. ORCA achieves the lowest error rates on 7 of 10
 tasks and the best aggregate performance . Speciﬁcally,
 it outperforms hand-designed architectures on all tasks. It
-4NAS-Bench-360 2022 AutoML
+4NAS-Bench-360 is designed for testing how well ML algorithms
+ generalize and is a core component of the 2022 AutoML
 Decathlon competition. See Appendix A.4.1 for the task summary.
-1 2 3 4 5 6 0255075100-Suboptimal Tasks (%)
+1 2 3 4 5 6
+0255075100-Suboptimal Tasks (%)
 ORCA
 Hand-designed
-NAS-Bench-360 3 2 results using performance proﬁles
+NAS-Bench-360
+DASH
+Perceiver IO
+FPTFigure 3  Aggregating Table 2 results using performance proﬁles
  (Dolan & Mor  e, 2002). Larger values (fractions of tasks on
 which a method is within τ-factor of the best) are better. ORCA
 being in the top left corner means it is often the best.
@@ -527,8 +546,13 @@ DeepSea. We conjecture that this is because when the target
 modality differs signiﬁcantly from the pretraining modality,
 naive ﬁne-tuning may harm transfer, but aligning the feature
 distribution using ORCA can resolve this issue and beneﬁtCross-Modal Fine-Tuning  Align then Reﬁne
-0 10 20 30 400.140.150.16 0 10 20 30 401.11.21.3 0 20 40 600.350.400.450.50 85868788 91.091.592.092.5 0.640.660.680.70
-Embedder Learning EpochsEmb. OTDD (1 2)
+0 10 20 30 400.140.150.16NinaPro
+0 10 20 30 401.11.21.3Satellite
+0 20 40 600.350.400.450.50DeepSEA
+85868788
+91.091.592.092.5
+0.640.660.680.70
+Embedder Learning EpochsEmb. OTDD (1e2)
 Fine-tuning Score
 3 4 5
 Num Target Data (log10)255075 Accuracy (%)Satellite
@@ -582,7 +606,7 @@ using O RCA with full ﬁne-tuning for better performance.KEY3  A DAPTING FROM T
 Finally, we study how the pretraining modality affects ﬁnetuning.
  In the results reported so far, we choose pretrained
 models for each task based on the input dimension, i.e., we
-use RoBERTa for all 1 2D tasks.
+use RoBERTa for all 1D tasks and Swin for all 2D tasks.
 Now, we evaluate the opposite approach, focusing on two
 tasks  DeepSEA (1D) and Spherical (2D). This evaluation is
 straightforward to perform by switching the model bodies,
@@ -618,21 +642,30 @@ two speciﬁc modalities, PDE solving and tabular classiﬁcation,
  to show that cross-modal ﬁne-tuning is promising for
 model development in highly specialized areas. ORCA can
 not only achieve high prediction accuracy in both domains,Cross-Modal Fine-Tuning  Align then Reﬁne
-102 101 100Advection
+102
+101
+100Advection
 Burgers
 Diff-React
 Diff-Sorp
 NaiverStokes
 DarcyFlow
 ShallowWater
-Diff-React 2DPDEs# wins vs. U-Net  6/6 102 101 100
-nRMSE# wins vs. PINN  8/8 102 101 100# wins vs. FNO  4/8U-Net
+Diff-React 2DPDEs# wins vs. U-Net  6/6
+102
+101
+100
+nRMSE# wins vs. PINN  8/8
+102
+101
+100# wins vs. FNO  4/8U-Net
 PINN
 FNO
 ORCA
 Figure 5  Left  Normalized Root Mean Squared Errors (nRMSEs,  ) for ORCA vs. baselines on 8 PDEBench tasks with varying
 dimensions (1D/2D). We only evaluate datasets that can ﬁt into a single V100 GPU. Overall, O RCA is much better than U-Net and
-PINN and on par with FNO. For detailed numerical results, see Table 14 in the Appendix. Right  ORCA is trained on resolution 256 512. The prediction still matches the ground truth.
+PINN and on par with FNO. For detailed numerical results, see Table 14 in the Appendix. Right  ORCA is trained on resolution 256
+and directly evaluated on resolution 512. The prediction still matches the ground truth.
 but also recover an important property of Neural Operators 
 modeling PDEs with zero-shot super-resolution.
 PDEB ENCH FOR SCIENTIFIC ML
@@ -679,11 +712,11 @@ classical approaches and advanced transformer methods on
 OpenML-CC18 LightGBM CatBoost XGBoost AutoGluon TabPFN ORCA
 # Wins/Ties 1/30 1/30 3/30 12/30 7/30 12/30
 Avg. AUROC ( ) 0.884 0.8898 0.8909 0.8947 0.8943 0.8946
-Diff. from XGBoost -6.97E-3 -1.18E-3 0 3.74E-3 3.38E-3 3.63E-3
+Diff. from XGBoost -6.97E-3 -1.18E-3 0  3.74E-3  3.38E-3  3.63E-3
 LIFT Tasks LogisticRegression SVM XGBoost LIFT GPT-3 ORCA
 # Wins/Ties 2/14 3/14 2/14 2/14 7/14
 Avg. Acc. ( ) 79.58 80.63 78.21 79.63 83.80
-Diff. from XGBoost  1.37 2.42 0 1.42 5.60
+Diff. from XGBoost  1.37  2.42 0  1.42  5.60
 Similar to Hollmann et al. (2022), we evaluate ORCA on 30
 datasets from the OpenML-CC18 benchmark (Vanschoren
 et al., 2014), comparing against both classical boosting
@@ -708,18 +741,19 @@ As stated in the introduction, one motivation of ORCA is
 that the handful of existing cross-modal methods are mostly
 ad-hoc and tailored to speciﬁc modalities. Developing them
 thus requires a thorough understanding of the target data. To
-show that ORCA performs better while being generally appli See
+show that ORCA performs better while being generally appli5See
  Table 18 for per-task scores, Table 19 for task meta-data.Cross-Modal Fine-Tuning  Align then Reﬁne
 Table 5  Coefﬁcient of determination ( R2, ) on two drug response
  prediction datasets. ORCA outperforms IGTD, which converts
  raw tabular features to images to apply vision models.
-R Dataset 1 2  GDSC
-IGTD-CNN 0.856 0.003 0.74 0.006 0.86 0.002 0.831 0.002
+R2Dataset 1  CTRP Dataset 2  GDSC
+IGTD-CNN 0.856  0.003 0.74 0.006
+ORCA 0.86 0.002 0.831 0.002
 cable to arbitrary domains, we compare with (1) IGTD (Zhu
 et al., 2021), which converts gene-drug features to images
 and applies CNNs to predict drug response  and (2) LIFT
 (Dinh et al., 2022), which transforms tabular data into text
-to prompt a pretrained GPT-3. Table 5 shows the R score
+to prompt a pretrained GPT-3. Table 5 shows the R2score
 for the drug response tasks, and Table 4 (bottom) shows
 the classiﬁcation accuracy for LIFT datasets. Once again,
 ORCA beats these carefully curated task-speciﬁc methods,
@@ -789,7 +823,7 @@ Alvarez-Melis, D. and Fusi, N. Geometric dataset distances
 via optimal transport. Advances in Neural Information
 Processing Systems (NeurIPS) , 2020.
 Baevski, A., Zhou, H., rahman Mohamed, A., and Auli, M.
-wav vec 2.0  A framework for self-supervised learning of
+wav2vec 2.0  A framework for self-supervised learning of
 speech representations. Advances in Neural Information
 Processing Systems (NeurIPS) , 2020.
 Bahng, H., Jahanian, A., Sankaranarayanan, S., and Isola, P.
@@ -832,7 +866,7 @@ software with performance proﬁles. Mathematical Programming
 Dosovitskiy, A., Beyer, L., Kolesnikov, A., Weissenborn,
 D., Zhai, X., Unterthiner, T., Dehghani, M., Minderer,
 M., Heigold, G., Gelly, S., Uszkoreit, J., and Houlsby,
-N. An image is worth 16 16 words  Transformers for
+N. An image is worth 16x16 words  Transformers for
 image recognition at scale. International Conference on
 Learning Representations , 2021.
 Erickson, N., Mueller, J., Shirkov, A., Zhang, H., Larroy, P.,
@@ -845,7 +879,7 @@ neural architecture search. 2020 IEEE/CVF Conference
 on Computer Vision and Pattern Recognition (CVPR) , pp.
 10625 10634, 2020.
 Fonseca, E., Favory, X., Pons, J., Font, F., and Serra, X.
-Fsd k  an open dataset of human-labeled sound events.
+Fsd50k  an open dataset of human-labeled sound events.
 ArXiv , abs/2010.00475, 2021.Gretton, A., Borgwardt, K. M., Rasch, M. J., Sch  olkopf,
 B., and Smola, A. A kernel two-sample test. Journal of
 Machine Learning Research , 13 723 773, 2012.
@@ -907,7 +941,7 @@ Reiman, D. A., Clancy, E., Zielinski, M., Steinegger, M.,
 Pacholska, M., Berghammer, T., Bodenstein, S., Silver,
 D., Vinyals, O., Senior, A. W., Kavukcuoglu, K., Kohli,
 P., and Hassabis, D. Highly accurate protein structure
-prediction with alphafold. Nature , 596 583 589, 2021.
+prediction with alphafold. Nature , 596 583   589, 2021.
 Ke, G., Meng, Q., Finley, T., Wang, T., Chen, W., Ma,
 W., Ye, Q., and Liu, T.-Y . Lightgbm  A highly efﬁcient
 gradient boosting decision tree. In Advances in Neural
@@ -983,7 +1017,7 @@ Pan, S. J. and Yang, Q. A survey on transfer learning. IEEE
 Transactions on knowledge and data engineering , 22(10) 
 1345 1359, 2009.
 Pele, O. and Werman, M. Fast and robust earth mover s
-distances. 2009 12th International Conference on
+distances. 2009 IEEE 12th International Conference on
 Computer Vision , pp. 460 467, 2009.
 Peng, X., Bai, Q., Xia, X., Huang, Z., Saenko, K., and Wang,
 B. Moment matching for multi-source domain adaptation.
@@ -999,7 +1033,8 @@ International Conference on Machine Learning , 2021.
 Raissi, M., Perdikaris, P., and Karniadakis, G. E. Physicsinformed
  neural networks  A deep learning framework for
 solving forward and inverse problems involving nonlinear
-partial differential equations. J. Comput. Phys. , 378 686 707, 2019.
+partial differential equations. J. Comput. Phys. , 378 686 
+707, 2019.
 Real, E., Liang, C., So, D. R., and Le, Q. V . Automl-zero 
 Evolving machine learning algorithms from scratch. In
 International Conference on Machine Learning , 2020.
@@ -1121,7 +1156,7 @@ proposed two variants of OTDD the exact one and a Gaussian approximation, we obs
 optimizing the exact OTDD leads to better performance. In the following, we will focus on analyzing the computational cost
 of the exact OTDD.
 Given datasets with D-dimensional feature vectors, estimating vanilla OT distances can be computationally expensive and
-has a worst-case complexity of O(D logD)(Pele & Werman, 2009). However, adding an entropy regularization term
+has a worst-case complexity of O(D3logD)(Pele & Werman, 2009). However, adding an entropy regularization term
 ϵH(π α β)to Equation 1, where His the relative entropy and ϵcontrols the time-accuracy trade-off, can be solved
 efﬁciently with the Sinkhorn algorithm (Cuturi, 2013). This reduces OT s empirical complexity to O(D2)and makes the
 time cost for computing OTDD manageable for O RCA s workﬂow.
@@ -1148,8 +1183,14 @@ forr [R]do
 Subsamplebtarget data points Diruniformly at random from Di
 Compute class-wise distance dir OTDD (Dir,S)
 end for
-Approximate class-wise OTDD by di 1 1 1 6  Screenshot of OTDD curves during embedding learning in one task. x-axis is the number of optimization steps,
-y-axis represents OTDD (1 2). We use Algorithm 1 to approximate the exact OTDD as the loss function for optimization on
+Approximate class-wise OTDD by di 1
+R R
+i 1dir
+end for
+Approximate OTDD by d  Kt
+i 1wi di
+Figure 6  Screenshot of OTDD curves during embedding learning in one task. x-axis is the number of optimization steps,
+y-axis represents OTDD (1E2). We use Algorithm 1 to approximate the exact OTDD as the loss function for optimization on
 GPU (purple curve). We also track the actual OTDD on CPU (blue curve). We can see that the proposed algorithm works
 well, which allows us to perform embedding learning efﬁciently.
 Leveraging both the Sinkhorn algorithm and class-wise approximation, the embedder learning process only takes up a small
@@ -1158,12 +1199,13 @@ invest a reasonable time budget but achieve signiﬁcantly improved cross-domain
 A.2. O RCA Implementation
 A.2.1. P RETRAINED MODELS
 We evaluated ORCA with two pretrained models in our experiments. In Table 2, for all 2D tasks including CIFAR-100,
-Spherical, Darcy Flow, PSICOV , Cosmic, NinaPro, and FSD K, we use the following model. As Swin has a pretrained
+Spherical, Darcy Flow, PSICOV , Cosmic, NinaPro, and FSD50K, we use the following model. As Swin has a pretrained
 resolution, we reshape the inputs for our tasks to the resolution before feeding them into the model.
 Name Pretrain Resolution Num Params FLOPS FPS
-Swin-base (Liu et al., 2021b) ImageNet-22 224 224 88 15.4 278 1D tasks including ECG, Satellite, DeepSEA, JSB Chorales, ListOps,and Homology, we use the following model 
+Swin-base (Liu et al., 2021b) ImageNet-22K 224  224 88M 15.4G 278
+For all 1D tasks including ECG, Satellite, DeepSEA, JSB Chorales, ListOps,and Homology, we use the following model 
 Name Pretrain Num Params FLOPS
-RoBERTa-base (Liu et al., 2019c) Five English-language corpora 125 1.64E Cross-Modal Fine-Tuning  Align then Reﬁne
+RoBERTa-base (Liu et al., 2019c) Five English-language corpora 125M 1.64E20Cross-Modal Fine-Tuning  Align then Reﬁne
 We use the Hugging Face transformers library (Wolf et al., 2019) to implement the pretrained models.
 A.2.2. H YPERPARAMETER TUNING
 AsORCA is both task-agnostic and model-agnostic, it can be applied to ﬁne-tuning a variety of pretrained transformers on
@@ -1176,20 +1218,23 @@ et al., 2020a) to the standard ﬁne-tuning setting (i.e., after initializing th
 updating all model weights to minimize the task loss) to identify a proper training conﬁguration. Then, we use the same set
 of hyperparameters found for all our experiments for the particular (model, task) combination. Note that even though we did
 not explicitly state this in the main text, the hyperparameter tuning stage can be directly integrated into the ORCA workﬂow
-between stage 1 2. In this sense, ORCA is still an automated cross-modal transfer workﬂow that works for diverse
+between stage 1 and stage 2. In this sense, ORCA is still an automated cross-modal transfer workﬂow that works for diverse
 tasks and different pretrained models.
 The conﬁguration space for ASHA can be customized for each task. In general, the following search space is sufﬁcient 
-  Target sequence length  8, 64, 512 4, 16, 64
-  Gradient clipping  -1, 1 0, 0.05
+  Target sequence length  8, 64, 512 for RoBERTa
+  Batch size  4, 16, 64
+  Gradient clipping  -1, 1
+  Dropout  0, 0.05
   Optimizer  SGD, Adam, AdamW
-  Learning rate  1E-2, 1E-3, 1E-4, 1E-5 0, 1E-2, 1E-4
+  Learning rate  1E-2, 1E-3, 1E-4, 1E-5
+  Weight decay  0, 1E-2, 1E-4
 A.2.3. M ORE DETAILS ON EMBEDDER ARCHITECTURE DESIGN
 In the current workﬂow, we use the following procedure to determine the kernel size kfor the embedder s convolution layer 
  For RoBERTa  we apply hyperparameter search to the vanilla ﬁne-tuning baseline to ﬁnd the optimal sequence length
 s for the second dimension of the embedder output with shape (batchsize,seqlen,embed dim). The conﬁguration
 space is{8,64,512}. Then,kis set to largest value such that after applying convolution with cout embeddim (e.g.,
 768for RoBERTa) and transposing the last two dimensions, the seqlendimension of the output tensor is closest to the
-searched value s . For example, if the input length is 1024 256, thenk(and the stride) is 4, so
+searched value s . For example, if the input length is 1024 and the searched s is256, thenk(and the stride) is 4, so
 the output of the conv layer has shape (batchsize, 768,256) . We then transpose it to get (batchsize, 256,768) .
  For Swin  given that Swin Transformers already have the patchify operation, we want to reuse the pretrained patchify
 layer, which has k  4. Thus, given the target task, we ﬁrst resize the height and width of the target input to those of
@@ -1203,12 +1248,13 @@ OTDD. In practice, we can pass the source data through the pretrained embedder o
 so we don t have to pay the cost of obtaining the source features each time we ﬁne-tune a new model.Cross-Modal Fine-Tuning  Align then Reﬁne
 For classiﬁcation tasks, we directly use the labels provided by the end task to compute OTDD. For dense tasks, we perform
 K-Means clustering on the target data to obtain pseudolabels for OTDD computation. The number of clusters is set to the
-number of classes of the source dataset, e.g., 10 2D tasks that use CIFAR-10 as the source dataset.
+number of classes of the source dataset, e.g., 10 for 2D tasks that use CIFAR-10 as the source dataset.
 To compute the embedding learning objective, we use the OTDD implementation of the original paper provided here 
 https //github.com/microsoft/otdd . We use the searched hyperparameters in Section A.2.2. The others are
 ﬁxed across different tasks 
-  Embedding learning epochs  60 0.2 20 epochs
-  Fine-tuning stage learning rate scheduler  we use the linear decay with min lr   0 5 warmup epochs
+  Embedding learning epochs  60
+  Embedding learning stage rate scheduler  decay by 0.2 every 20 epochs
+  Fine-tuning stage learning rate scheduler  we use the linear decay with min lr   0 and 5 warmup epochs
 A.3. Baseline Implementation
 For the standard ﬁne-tuning baseline, we use the same hyperparameter conﬁguration (number of epochs, batch size, learning
 rate, etc) as O RCA, except for setting embedding learning epochs to 0.
@@ -1218,13 +1264,13 @@ A.4. Experiments on NAS-Bench-360
 A.4.1. I NFORMATION ABOUT THE BENCHMARK AND EXPERIMENT PROTOCOL
 Table 6  Summary about each task and the hand-designed expert models used in NAS-Bench-360 (Tu et al., 2022).
 Task name # Data Data dim. Type License Learning objective Expert arch.
-CIFAR-100 60 2 4.0 100 classesDenseNet-BC
+CIFAR-100 60K 2D Point CC BY 4.0 Classify natural images into 100 classesDenseNet-BC
 (Huang et al., 2017)
-Spherical 60 2D Point CC BY-SAClassify spherically projected images S CN
+Spherical 60K 2D Point CC BY-SAClassify spherically projected images S2CN
 into 100 classes (Cohen et al., 2018)
 NinaPro 3956 2D Point CC BY-NDClassify sEMG signals into 18 classes Attention Model
 corresponding to hand gestures (Josephs et al., 2020)
-FSD K 51 2 4.0Classify sound events in log-mel VGG
+FSD50K 51K 2DPointCC BY 4.0Classify sound events in log-mel VGG
 (multi-label) spectrograms with 200 labels (Fonseca et al., 2021)
 Darcy Flow 1100 2D Dense MITPredict the ﬁnal state of a ﬂuid from its FNO
 initial conditions (Li et al., 2021)
@@ -1232,10 +1278,11 @@ PSICOV 3606 2D Dense GPLPredict pairwise distances between resi- DEEPCON
 duals from 2D protein sequence features (Adhikari, 2019)
 Cosmic 5250 2D Dense Open LicensePredict propablistic maps to identify cos- deepCR-mask
 mic rays in telescope images (Zhang & Bloom, 2020)
-ECG 330 1D Point ODC-BY 1.0Detect atrial cardiac disease from ResNet-1D
+ECG 330K 1D Point ODC-BY 1.0Detect atrial cardiac disease from ResNet-1D
 a ECG recording (4 classes) (Hong et al., 2020)
-Satellite 1 1 3.0 24 land cover types (Dempster et al., 2020)
-DeepSEA 250 1 4.0Predict chromatin states and binding DeepSEA
+Satellite 1M 1D Point GPL 3.0Classify satellite image pixels  time ROCKET
+series into 24 land cover types (Dempster et al., 2020)
+DeepSEA 250K 1DPointCC BY 4.0Predict chromatin states and binding DeepSEA
 (multi-label) states of RNA sequences (36 classes) (Zhou & Troyanskaya, 2015)
 For experiments, each dataset is preprocessed and split using the script available on https //github.com/rtu715/
 NAS-Bench-360 , with the training set being used for hyperparameter tuning, embedding learning, and ﬁne-tuning.
@@ -1246,19 +1293,27 @@ small performance differences to compare methods across multiple tasks robustly.
 method. The τon thex-axis denotes the fraction of tasks on which a method is no worse than a τ-factor from the best. The
 performance proﬁle for our experiments is shown in Figure 3.
 The code and conﬁguration ﬁle for reproducing each experiment can be found in our ofﬁcial GitHub repository.
-A.4.2. C OMPLETE RESULTS FOR TABLE 2 7  Prediction errors (  ) for 10 diverse tasks.  NAS-Bench-360  refers to the task-wise best of all AutoML baselines
+A.4.2. C OMPLETE RESULTS FOR TABLE 2WITH ERROR BARS
+Table 7  Prediction errors (  ) for 10 diverse tasks.  NAS-Bench-360  refers to the task-wise best of all AutoML baselines
 evaluated in the paper, including DARTS (Liu et al., 2019b), DenseNAS (Fang et al., 2020), AMBER (Zhang et al., 2020),
 Auto-DL (Liu et al., 2019a), WRN-ASHA (Li et al., 2020a), and XGBoost (Chen & Guestrin, 2016).  FPT  refers to
 ﬁne-tuning the layer norms of RoBERTa/Swin. On 7/10 problems, O RCA ranks the ﬁrst among all competitors.
-CIFAR-100 0-1 error (%) 0-1 error (%) relative ℓ2 8 1-AUROC 0-1 error (%) 1- mAP 1 - F1 0-1 error (%) 1- AUROC
-Hand-designed 19.39 0.20 67.41 0.76 8E-3 1E-3 3.35 0.14 0.127 0.01 8.73 0.90 0.62 0.004 0.28 0.00 19.80 0.00 0.30 0.024
-NAS-Bench-360 23.39 0.01 48.23 2.87 2.6E-2 1E-3 2.94 0.13 0.229 0.04 7.34 0.76 0.60 0.001 0.34 0.01 12.51 0.24 0.32 0.010 24.37 0.81 71.28 0.68 7.9E-3 2E-3 3.30 0.16 0.19 0.02 6.60 0.33 0.60 0.008 0.32 0.007 12.28 0.5 0.28 0.013 70.04 0.44 82.57 0.19 2.4E-2 1E-2 8.06 0.06 0.485 0.01 22.22 1.80 0.72 0.002 0.66 0.01 15.93 0.08 0.38 0.004 10.11 1.18 76.38 4.89 2.1E-2 1.3E-3 4.66 0.054 0.23 0.002 15.69 2.33 0.67 0.0068 0.50 0.0098 20.83 0.24 0.37 0.0002 6.53 0.079 29.85 0.72 7.3E-3 6.8E-5 1.91 0.038 0.152 0.005 7.54 0.39 0.56 0.013 0.28 0.0059 11.59 0.18 0.29 0.006
-A.4.3. C OMPLETE RESULTS FOR TABLE 3 8  Prediction errors (  ) of ORCA, vanilla ﬁne-tuning, and training RoBERTa/Swin from scratch. We consider
+CIFAR-100 Spherical Darcy Flow PSICOV Cosmic NinaPro FSD50K ECG Satellite DeepSEA
+0-1 error (%) 0-1 error (%) relative ℓ2 MAE 8 1-AUROC 0-1 error (%) 1- mAP 1 - F1 score 0-1 error (%) 1- AUROC
+Hand-designed 19.39  0.20 67.41 0.76 8E-3 1E-3 3.35 0.14 0.127 0.01 8.73 0.90 0.62 0.004 0.28 0.00 19.80 0.00 0.30 0.024
+NAS-Bench-360 23.39  0.01 48.23 2.87 2.6E-2 1E-3 2.94 0.13 0.229 0.04 7.34 0.76 0.60 0.001 0.34 0.01 12.51 0.24 0.32 0.010
+DASH 24.37  0.81 71.28 0.68 7.9E-3 2E-3 3.30 0.16 0.19 0.02 6.60 0.33 0.60 0.008 0.32 0.007 12.28 0.5 0.28 0.013
+Perceiver IO 70.04  0.44 82.57 0.19 2.4E-2 1E-2 8.06 0.06 0.485 0.01 22.22 1.80 0.72 0.002 0.66 0.01 15.93 0.08 0.38 0.004
+FPT 10.11  1.18 76.38 4.89 2.1E-2 1.3E-3 4.66 0.054 0.23 0.002 15.69 2.33 0.67 0.0068 0.50 0.0098 20.83 0.24 0.37 0.0002
+ORCA 6.53 0.079 29.85 0.72 7.3E-3 6.8E-5 1.91 0.038 0.152 0.005 7.54 0.39 0.56 0.013 0.28 0.0059 11.59 0.18 0.29 0.006
+A.4.3. C OMPLETE RESULTS FOR TABLE 3WITH ERROR BARS
+Table 8  Prediction errors (  ) of ORCA, vanilla ﬁne-tuning, and training RoBERTa/Swin from scratch. We consider
 ﬁne-tuning all parameters (full setting) vs. only the layer norms (FPT setting). O RCA is better in both settings.
-CIFAR-100 Spherical Darcy Flow PSICOV Cosmic NinaPro FSD K ECG Satellite DeepSEA
-Train-from-scratch 50.87 0.32 76.67 0.21 8.0E-2 1.3E-2 5.09 0.014 0.50 0.00 9.96 1.67 0.75 0.017 0.42 0.011 12.38 0.14 0.39 0.01
-Fine-tuning 7.67 0.55 55.26 1.63 7.34E-3 1.1E-4 1.92 0.039 0.17 0.011 8.35 0.75 0.63 0.014 0.44 0.0056 13.86 1.47 0.51 0.0001 6.53 0.079 29.85 0.72 7.28E-3 6.8E-5 1.91 0.038 0.152 0.005 7.54 0.39 0.56 0.013 0.28 0.0059 11.59 0.18 0.29 0.006
-Fine-tuning (layernorm) 10.11 1.18 76.38 4.89 2.1E-2 1.3E-3 4.66 0.054 0.233 0.002 15.69 2.33 0.67 0.0068 0.50 0.0098 20.83 0.24 0.37 0.0002
+CIFAR-100 Spherical Darcy Flow PSICOV Cosmic NinaPro FSD50K ECG Satellite DeepSEA
+Train-from-scratch 50.87  0.32 76.67 0.21 8.0E-2 1.3E-2 5.09 0.014 0.50 0.00 9.96 1.67 0.75 0.017 0.42 0.011 12.38 0.14 0.39 0.01
+Fine-tuning 7.67  0.55 55.26 1.63 7.34E-3 1.1E-4 1.92 0.039 0.17 0.011 8.35 0.75 0.63 0.014 0.44 0.0056 13.86 1.47 0.51 0.0001
+ORCA 6.53 0.079 29.85 0.72 7.28E-3 6.8E-5 1.91 0.038 0.152 0.005 7.54 0.39 0.56 0.013 0.28 0.0059 11.59 0.18 0.29 0.006
+Fine-tuning (layernorm) 10.11  1.18 76.38 4.89 2.1E-2 1.3E-3 4.66 0.054 0.233 0.002 15.69 2.33 0.67 0.0068 0.50 0.0098 20.83 0.24 0.37 0.0002
 ORCA (layernorm) 7.99 0.098 42.45 0.21 2.1E-2 7.4E-4 4.97 0.14 0.227 0.003 15.99 1.92 0.64 0.0093 0.47 0.007 20.54 0.49 0.36 0.0070
 A.4.4. A BLATION STUDY ON EMBEDDING LEARNING METRICS
 As motivated in Section 4.1, we present here an ablation study on the embedding learning metrics that we have considered
@@ -1271,8 +1326,11 @@ distance. We learn the embedders to minimize these metrics and then ﬁne-tune t
 follows, which are used to plot the performance proﬁles in Figure 3 (right).
 Table 9  Prediction errors (  ) of different distance metrics. OTDD achieves the best overall performance.  Naive ﬁne-tuning 
 represents ﬁne-tuning without embedder learning.
-CIFAR-100 6.53 0.079 29.85 0.72 7.28E-3 6.8E-5 1.91 0.038 0.152 0.005 7.54 0.39 0.56 0.013 0.28 0.0059 11.59 0.18 0.29 0.006 6.62 0.092 33.64 2.57 7.4E-3 3.4E-4 1.9 0.016 0.156 0.002 7.48 0.23 0.58 0.004 0.40 0.018 11.29 0.087 0.38 0.077 7.09 0.48 32.33 2.03 7.3E-3 1.9E-4 1.91 0.019 0.157 0.002 7.51 0.11 0.59 0.02 0.41 0.009 11.4 0.078 0.34 0.002
-Naive ﬁne-tuning 7.67 0.55 55.26 1.63 7.3E-3 1.1E-4 1.92 0.039 0.174 0.011 8.35 0.75 0.63 0.014 0.44 0.0056 13.86 1.47 0.51 0.0001Cross-Modal Fine-Tuning  Align then Reﬁne
+CIFAR-100 Spherical Darcy Flow PSICOV Cosmic NinaPro FSD50K ECG Satellite DeepSEA
+OTDD 6.53 0.079 29.85 0.72 7.28E-3 6.8E-5 1.91 0.038 0.152 0.005 7.54 0.39 0.56 0.013 0.28 0.0059 11.59 0.18 0.29 0.006
+MMD 6.62  0.092 33.64 2.57 7.4E-3 3.4E-4 1.9 0.016 0.156 0.002 7.48 0.23 0.58 0.004 0.40 0.018 11.29 0.087 0.38 0.077
+Euclidean 7.09  0.48 32.33 2.03 7.3E-3 1.9E-4 1.91 0.019 0.157 0.002 7.51 0.11 0.59 0.02 0.41 0.009 11.4 0.078 0.34 0.002
+Naive ﬁne-tuning 7.67  0.55 55.26 1.63 7.3E-3 1.1E-4 1.92 0.039 0.174 0.011 8.35 0.75 0.63 0.014 0.44 0.0056 13.86 1.47 0.51 0.0001Cross-Modal Fine-Tuning  Align then Reﬁne
 A.4.5. A BLATION STUDY ON LAYERNORM INITIALIZATION
 As discussed in Section 3.1, our embedder architecture contains a layernorm layer. For ORCA, we warm initialize the
 parameters of layernorm with those of the pretrained model. To see how this initialization strategy affects the performance,
@@ -1280,16 +1338,18 @@ we additionally evaluate standard ﬁne-tuning with warm initializing the layern
 of warm initialization is task-dependent, i.e, it helps adaptation for tasks like Spherical and Cosmic but slightly hurts the
 performance for tasks like Darcy Flow.
 Table 10  Prediction errors (  ) of O RCA, vanilla ﬁne-tuning, and ﬁne-tuning with warm initializing the layernorm.
-CIFAR-100 6.53 0.079 29.85 0.72 7.28E-3 6.8E-5 1.91 0.038 0.152 0.005 7.54 0.39 0.56 0.013 0.28 0.0059 11.59 0.18 0.29 0.006
-Fine-tuning 7.67 0.55 55.26 1.63 7.34E-3 1.1E-4 1.92 0.039 0.17 0.011 8.35 0.75 0.63 0.014 0.44 0.0056 13.86 1.47 0.51 0.0001
-Fine-tuning (warm init) 6.87 0.038 32.51 1.48 7.98E-3 7.18E-5 2.04 0.0077 0.163 0.003 9.56 0.26 0.62 0.006 0.30 0.011 12.49 0.04 0.33 0.006
+CIFAR-100 Spherical Darcy Flow PSICOV Cosmic NinaPro FSD50K ECG Satellite DeepSEA
+ORCA 6.53 0.079 29.85 0.72 7.28E-3 6.8E-5 1.91 0.038 0.152 0.005 7.54 0.39 0.56 0.013 0.28 0.0059 11.59 0.18 0.29 0.006
+Fine-tuning 7.67  0.55 55.26 1.63 7.34E-3 1.1E-4 1.92 0.039 0.17 0.011 8.35 0.75 0.63 0.014 0.44 0.0056 13.86 1.47 0.51 0.0001
+Fine-tuning (warm init) 6.87  0.038 32.51 1.48 7.98E-3 7.18E-5 2.04 0.0077 0.163 0.003 9.56 0.26 0.62 0.006 0.30 0.011 12.49 0.04 0.33 0.006
 A.4.6. R UNTIME OF ORCA VS . FPT
 We record the time for each stage of ORCA in Table 11. We can see that the embedder learning process only takes up a small
 fraction of the total ﬁne-tuning time in practice
 Table 11  We record the runtime (in hours) of ORCA s embedding learning stage and the ﬁne-tuning stage for each task.
 Then, we compute the ratio between the two. Averaged across tasks, embedding learning with OTDD only takes about 11%
 of the time needed for ﬁne-tuning. All experiments are performed on NVIDIA V100 GPUs.
-CIFAR-100 1.6 1.8 0.18 0.28 0.25 0.3 0.21 0.69 0.26 0.2
+CIFAR-100 Spherical Darcy Flow PSICOV Cosmic NinaPro FSD50K ECG Satellite DeepSEA
+Embedding 1.6 1.8 0.18 0.28 0.25 0.3 0.21 0.69 0.26 0.2
 Fine-tuning 9.2 9.3 0.86 3.47 2.95 1.1 12.5 10.1 37.5 7.6
 Embedding
 Fine-tuning17% 19% 20% 8% 8% 27% 2% 7% 1% 3%
@@ -1301,7 +1361,8 @@ Table 12  We record the total runtime (in hours) for four settings  ORCA with fu
 norms, full ﬁne-tuning (without embedding learning), and ﬁne-tuning layer norms (FPT). We can see that tuning the layer
 norms does not bring signiﬁcant beneﬁt in terms of reducing the model development time, but it sacriﬁces the downstream
 performance of the resulting models.
-CIFAR-100 10.8 11.1 1.04 3.75 3.2 1.4 12.71 10.79 37.76 7.8
+CIFAR-100 Spherical Darcy Flow PSICOV Cosmic NinaPro FSD50K ECG Satellite DeepSEA
+ORCA 10.8 11.1 1.04 3.75 3.2 1.4 12.71 10.79 37.76 7.8
 ORCA (layernorm) 8.7 8.9 0.76 3.35 3.1 1.0 8.96 9.05 25.56 5.7
 Fine-tuning 9.2 9.3 0.86 3.4 2.7 1.1 12.5 10.2 37.5 7.4
 Fine-tuning (layernorm) 7.1 7.1 0.58 3.1 2.5 0.7 8.75 8.5 25.3 5.5Cross-Modal Fine-Tuning  Align then Reﬁne
@@ -1310,9 +1371,9 @@ Table 13  Prediction errors and post-alignment OTDDs for different pretrained mo
 smaller errors.
 Error (OTDD) DeepSEA (1D) Spherical (2D)
 RoBERTa (1D) 0.295 0.006 (37.40) 68.28 0.017 (19.54)
-Swin (2D) 0.361 0.001 (64.83) 29.85 0.072(11.78)
+Swin (2D) 0.361  0.001 (64.83) 29.85 0.072(11.78)
 A.5. Experiments on PDEBench
-We test ORCA on all datasets in PDEBench except for 2 3D Navier-Stokes, which could not ﬁt into the memory of a
+We test ORCA on all datasets in PDEBench except for 2D and 3D Navier-Stokes, which could not ﬁt into the memory of a
 single V100 GPU. For each data, we select one set of parameters and initial conditions, as described in Table 14. We follow
 the ofﬁcial GitHub repo of PDEBench to download, preprcoess, and load the data. We use the normalized RMSE, which is
 scale-independent, as the loss function and evaluation metric.
@@ -1324,16 +1385,19 @@ relative to the baselines on most datasets. We also report ORCA s training time 
 which shows that cross-modal transfer is often both faster and more effective than domain-speciﬁc models.
 Table 14  Normalized RMSEs (  ) on 8 PDEBench datasets, with baseline results taken from Takamoto et al. (2022). Note
 that we only evaluated datasets that can ﬁt into a single NVIDIA V100 GPU, and the U-Net results for Naiver-Stokes and
-Darcy Flow are missing becuase the benchmark paper does not evaluate them also dueto memory issues. On 4 8 datasets,
+Darcy Flow are missing becuase the benchmark paper does not evaluate them also dueto memory issues. On 4 of 8 datasets,
 ORCA achieves the lowest nRMSEs. This aggregate result is the best even when compared with highly specialized neural
 operators such as FNO.
 Dimension Dataset Resolution Parameters PINN FNO U-Net O RCA
-1 1024 β  0.4 6.7E-1 1.1E-2 1.1 9.8E-3 1024 ν  1.0 3.6E-1 3.1E-3 9.9E-1 1.2E-2
+1DAdvection 1024 β  0.4 6.7E-1 1.1E-2 1.1 9.8E-3
+Burgers 1024 ν  1.0 3.6E-1 3.1E-3 9.9E-1 1.2E-2
 Diffusion-Reaction 1024 ν  0.5,ρ  1.0 6.0E-3 1.4E-3 8.0E-2 3.0E-3
 Diffusion-Sorption 1024 - 1.5E-1 1.7E-3 2.2E-1 1.6E-3
-Navier-Stokes 1024 η ζ  0.1, rand periodic 7.2E-1 6.8E-2 - 6.2E-2 2 128 128 β  0.1 1.8E-1 2.2E-1 - 8.1E-2
-Shallow-Water 128 128 - 8.3E-2 4.4E-3 1.7E-2 6.0E-3
-Diffusion-Reaction 128 128 - 8.4E-1 1.2E-1 1.6 8.2E-1 15 14. Baseline numbers are taken from
+Navier-Stokes 1024 η ζ  0.1, rand periodic 7.2E-1 6.8E-2 - 6.2E-2
+2DDarcy Flow 128  128 β  0.1 1.8E-1 2.2E-1 - 8.1E-2
+Shallow-Water 128  128 - 8.3E-2 4.4E-3 1.7E-2 6.0E-3
+Diffusion-Reaction 128  128 - 8.4E-1 1.2E-1 1.6 8.2E-1
+Table 15  Per epoch and total training time for each method evaluated in Table 14. Baseline numbers are taken from
 (Takamoto et al., 2022). On 1D tasks, though it takes longer time for ORCA-RoBERTa to iterate over the entire dataset, our
 method converges faster, so overall O RCA is still more efﬁcient than FNO and U-Net.
 FNO U-Net PINN ORCA
@@ -1346,10 +1410,13 @@ In addition to the above experiments, we also study whether under certain condit
 backbone, O RCA can indeed generalize to higher-resolution inputs. The detailed results are as follows.
 Table 16  We study zero-shot super-resolution (trained on lower resolution and tested on higher resolution) on the 1D
 Advection problem. ORCA-RoBERTa achieves this since the nRMSEs are similar across rows for different train-test
-resolution pairs. Note that the metrics differ slightly from the one reported in Table 14 14, whereas pointwise convolution with
+resolution pairs. Note that the metrics differ slightly from the one reported in Table 14 because the kernel size of the
+convolution layer in the embedder is searched via ASHA for experiments in Table 14, whereas pointwise convolution with
 kernel size 1 is used to achieve super-resolution for experiments in this table.
 Train Resolution (Spatial) Test Resolution (Spatial) nRMSE
-1 256 256 1.13E-2 2.71E-4 1 256 512 1.27E-2 9.54E-5 1 512 512 1.02E-2 2.37E-4
+1D Advection 256 256 1.13E-2  2.71E-4
+1D Advection 256 512 1.27E-2  9.54E-5
+1D Advection 512 512 1.02E-2  2.37E-4
 A.5.3. R ESULTS FOR FINE -TUNING AND TRAIN -FROM -SCRATCH BASELINES
 Similar to the NAS-Bench-360 experiments, we also want to study how much data alignment and knowledge transfer from
 pretrained models beneﬁt downstream adaptation for PDE tasks. Therefore, we compare ORCA with the vanilla ﬁne-tuning
@@ -1360,8 +1427,9 @@ task-dependent. In some cases, naive ﬁne-tuning without data alignment can eve
 Table 17  Normalized RMSEs (  ) with error bars of ORCA, vanilla ﬁne-tuning, and training RoBERTa/Swin from scratch on
 PDEBench datasets.
 Advection Burgers Diffusion-Reaction Diffusion-Sorption Navier-Stokes Darcy Flow Shallow-Water Diffusion-Reaction
-Train-from-scratch 1.7E-2 7.0E-4 1.3E-2 4.6E-4 1.7E-2 2.2E-4 3.2E-3 1.0E-6 9.9E-1 3.6E-6 9.0E-2 3.6E-3 6.0E-3 3.5E-6 8.4E-1 1.8E-3
-Fine-tuning 1.4E-2 1.7E-3 1.4E-2 3.6E-4 9.3E-3 5.7E-3 3.1E-3 6.5E-5 9.9E-1 2.0E-5 8.1E-2 2.5E-3 6.1E-3 7.3E-6 8.3E-1 9.3E-5 9.8E-3 1.4E-4 1.2E-2 3.6E-4 3.0E-3 1.5E-4 1.6E-3 1.7E-4 6.2E-2 1.9E-3 8.1E-2 8.1E-4 6.0E-3 4.5E-6 8.2E-1 4.6E-5
+Train-from-scratch 1.7E-2  7.0E-4 1.3E-2 4.6E-4 1.7E-2 2.2E-4 3.2E-3  1.0E-6 9.9E-1 3.6E-6 9.0E-2 3.6E-3 6.0E-3 3.5E-6 8.4E-1 1.8E-3
+Fine-tuning 1.4E-2  1.7E-3 1.4E-2 3.6E-4 9.3E-3 5.7E-3 3.1E-3  6.5E-5 9.9E-1 2.0E-5 8.1E-2 2.5E-3 6.1E-3 7.3E-6 8.3E-1 9.3E-5
+ORCA 9.8E-3 1.4E-4 1.2E-2 3.6E-4 3.0E-3 1.5E-4 1.6E-3  1.7E-4 6.2E-2 1.9E-3 8.1E-2 8.1E-4 6.0E-3 4.5E-6 8.2E-1 4.6E-5
 A.6. Experiments on OpenML Tabular Datasets
 We obtain the datasets using the built-in get dataset function of the openml library. For preprocessing, we follow the
 procedure in Dinh et al. (2022). Speciﬁcally, we ﬁrst remove all the rows whose labels are NaN and drop the columns with
@@ -1392,27 +1460,69 @@ mfeat-fourier 0.9786 0.9816 0.9803 0.9843 0.9811 0.9729
 breast-w 0.991 0.9931 0.9896 0.9933 0.9934 0.9939
 mfeat-karhunen 0.9979 0.9986 0.9983 0.9987 0.9978 0.9968
 mfeat-morphologica.. 0.9601 0.9629 0.9612 0.9698 0.9669 0.9647
-mfeat-zernike 0.9716 0.9759 0.9735 0.9908 0.9823 0.9829 0.7288 0.7256 0.7299 0.7331 0.7276 0.7237
+mfeat-zernike 0.9716 0.9759 0.9735 0.9908 0.9823 0.9829
+cmc 0.7288 0.7256 0.7299 0.7331 0.7276 0.7237
 credit-approval 0.9415 0.9389 0.9422 0.9415 0.9322 0.934
-credit-g 0.7684 0.7852 0.7853 0.7941 0.7894 0.7748 0.8247 0.8383 0.8378 0.8391 0.841 0.8239
-tic-tac-toe 0.9988 0.9992 1 1 0.9759 0.9973 0.9232 0.9302 0.9282 0.9416 0.9589 0.9591 0.8931 0.8979 0.9004 0.9204 0.9245 0.9084
-analcatdata author.. 0.9999 0.9999 0.9997 0.9993 1 0.9996 0.5461 0.5589 0.5743 0.5657 0.579 0.5627 4 0.9301 0.9413 0.9291 0.9428 0.9383 0.9226 3 0.8178 0.8247 0.8288 0.8282 0.8373 0.8411 2 0.8141 0.8323 0.8227 0.8242 0.8346 0.8431 1 0.8321 0.86 0.8489 0.8578 0.8761 0.8767
+credit-g 0.7684 0.7852 0.7853 0.7941 0.7894 0.7748
+diabetes 0.8247 0.8383 0.8378 0.8391 0.841 0.8239
+tic-tac-toe 0.9988 0.9992 1 1 0.9759 0.9973
+vehicle 0.9232 0.9302 0.9282 0.9416 0.9589 0.9591
+eucalyptus 0.8931 0.8979 0.9004 0.9204 0.9245 0.9084
+analcatdata author.. 0.9999 0.9999 0.9997 0.9993 1 0.9996
+analcatdata dmft 0.5461 0.5589 0.5743 0.5657 0.579 0.5627
+pc4 0.9301 0.9413 0.9291 0.9428 0.9383 0.9226
+pc3 0.8178 0.8247 0.8288 0.8282 0.8373 0.8411
+kc2 0.8141 0.8323 0.8227 0.8242 0.8346 0.8431
+pc1 0.8321 0.86 0.8489 0.8578 0.8761 0.8767
 banknote-authentic.. 1 1 1 1 1 1
-blood-transfusion-.. 0.7144 0.7403 0.7312 0.7364 0.7549 0.7565 0.6917 0.7279 0.7171 0.723 0.7379 0.7419
-qsar-biodeg 0.9126 0.9217 0.9191 0.9276 0.9336 0.9349 0.9904 0.9931 0.9904 0.9956 0.9964 0.9929
+blood-transfusion-.. 0.7144 0.7403 0.7312 0.7364 0.7549 0.7565
+ilpd 0.6917 0.7279 0.7171 0.723 0.7379 0.7419
+qsar-biodeg 0.9126 0.9217 0.9191 0.9276 0.9336 0.9349
+wdbc 0.9904 0.9931 0.9904 0.9956 0.9964 0.9929
 cylinder-bands 0.8556 0.8757 0.8782 0.8878 0.8336 0.844
-dresses-sales 0.5593 0.5696 0.5823 0.5507 0.5376 0.6025 0.9997 0.9999 0.9998 1 0.9999 0.9969 0.9925 0.9955 0.9948 0.998 0.995 0.9983
+dresses-sales 0.5593 0.5696 0.5823 0.5507 0.5376 0.6025
+MiceProtein 0.9997 0.9999 0.9998 1 0.9999 0.9969
+car 0.9925 0.9955 0.9948 0.998 0.995 0.9983
 steel-plates-fault.. 0.9626 0.9655 0.9656 0.9666 0.9655 0.9543
 climate-model-simu.. 0.9286 0.9344 0.9255 0.9391 0.9415 0.9416
 # Wins 1 1 3 12 7 12
-Avg. AUROC 0.884 0.1301 0.8898 0.1232 0.8909 0.1224 0.8947 0.1266 0.8943 0.1249 0.8946 0.1206
+Avg. AUROC 0.884 0.1301 0.8898  0.1232 0.8909 0.1224 0.8947 0.1266 0.8943 0.1249 0.8946 0.1206
 Avg. Diff. from XGBoost -6.97E-3 9.1E-3 -1.18E-3 1.42E-2 0 3.74E-3 9.18E-3 3.38E-3 1.72E-2 3.63E-3 1.47E-2Cross-Modal Fine-Tuning  Align then Reﬁne
 Table 19  Meta-data for the OpenML-CC18 datasets taken from Hollmann et al. (2022). ORCA s training time depends
 on the size of the dataset as well as the sequence length of the generated features (note that the latter is determined by the
 kernel size in the embedder layer, which is searched via hyperparameter tuning). Average training time for ORCA is 4 min
 per dataset.
 OpenML ID Name #Feat. #Cat. #Inst. #Class. Minor. Class Size O RCA train time (min)
-11 balance-scale 5 1 625 3 49 8.7 14 mfeat-fourier 77 1 2000 10 200 10.49 15 breast-w 10 1 699 2 241 1.29 16 mfeat-karhunen 65 1 2000 10 200 3.84 18 mfeat-morphological 7 1 2000 10 200 21.46 22 mfeat-zernike 48 1 2000 10 200 4.55 23 10 8 1473 3 333 2.27 29 credit-approval 16 10 690 2 307 1.34 31 credit-g 21 14 1000 2 300 1.82 37 9 1 768 2 268 1.43 50 tic-tac-toe 10 10 958 2 332 1.50 54 19 1 846 4 199 2.10 188 20 6 736 5 105 2.06 458 analcatdata auth... 71 1 841 4 55 2.08 469 5 5 797 6 123 2.17 1049 4 38 1 1458 2 178 2.28 1050 3 38 1 1563 2 160 1.96 1063 2 22 1 522 2 107 1.10 1068 1 22 1 1109 2 77 1.68 1462 banknote-authenti... 5 1 1372 2 610 2.32 1464 blood-transfusion-... 5 1 748 2 178 1.46 1480 11 2 583 2 167 1.17 1494 qsar-biodeg 42 1 1055 2 356 11.06 1510 31 1 569 2 212 1.23 6332 cylinder-bands 40 22 540 2 228 1.07 23381 dresses-sales 13 12 500 2 210 1.47 40966 82 5 1080 8 105 2.51 40975 7 7 1728 4 65 17.19 40982 steel-plates-fault 28 1 1941 7 55 5.83 40994 climate-model-simu... 21 1 540 2 46 1.00Cross-Modal Fine-Tuning  Align then Reﬁne
+11 balance-scale 5 1 625 3 49 8.7
+14 mfeat-fourier 77 1 2000 10 200 10.49
+15 breast-w 10 1 699 2 241 1.29
+16 mfeat-karhunen 65 1 2000 10 200 3.84
+18 mfeat-morphological 7 1 2000 10 200 21.46
+22 mfeat-zernike 48 1 2000 10 200 4.55
+23 cmc 10 8 1473 3 333 2.27
+29 credit-approval 16 10 690 2 307 1.34
+31 credit-g 21 14 1000 2 300 1.82
+37 diabetes 9 1 768 2 268 1.43
+50 tic-tac-toe 10 10 958 2 332 1.50
+54 vehicle 19 1 846 4 199 2.10
+188 eucalyptus 20 6 736 5 105 2.06
+458 analcatdata auth... 71 1 841 4 55 2.08
+469 analcatdata dmft 5 5 797 6 123 2.17
+1049 pc4 38 1 1458 2 178 2.28
+1050 pc3 38 1 1563 2 160 1.96
+1063 kc2 22 1 522 2 107 1.10
+1068 pc1 22 1 1109 2 77 1.68
+1462 banknote-authenti... 5 1 1372 2 610 2.32
+1464 blood-transfusion-... 5 1 748 2 178 1.46
+1480 ilpd 11 2 583 2 167 1.17
+1494 qsar-biodeg 42 1 1055 2 356 11.06
+1510 wdbc 31 1 569 2 212 1.23
+6332 cylinder-bands 40 22 540 2 228 1.07
+23381 dresses-sales 13 12 500 2 210 1.47
+40966 MiceProtein 82 5 1080 8 105 2.51
+40975 car 7 7 1728 4 65 17.19
+40982 steel-plates-fault 28 1 1941 7 55 5.83
+40994 climate-model-simu... 21 1 540 2 46 1.00Cross-Modal Fine-Tuning  Align then Reﬁne
 A.6.2. R ESULTS FOR TRAIN -FROM -SCRATCH AND FINE -TUNING BASELINES ON OPENML-CC18
 We run the ﬁne-tuning and train-from-scratch baselines using the train-test split scheme in Hollmann et al. (2022) and
 compare their performance with ORCA. Unlike on NAS-Bench-360 and PDEBench, train-from-scratch performs better than
@@ -1423,14 +1533,14 @@ XGBoost  is the across-task average of per-task difference from XGBoost.
 OpenML-CC18 Train-from-scratch Fine-tuning O RCA
 # Wins/Ties 11/30 1/30 20/30
 Avg. AUROC ( ) 0.8673 0.8661 0.8946
-Diff. from XGBoost -2.4E-2 -2.5E-2 3.63E-3
+Diff. from XGBoost -2.4E-2 -2.5E-2  3.63E-3
 A.6.3. C OMPLETE RESULTS FOR TABLE 4 (B OTTOM )
 To compare with LIFT (Dinh et al., 2022) and use the baselines reported in their paper, we follow the same evaluation
 protocol and use the classiﬁcation accuracy as the score metric. The detailed results for each method on each task is shown
 in Table 21, with the task meta-data shown in Table 22.
 Table 21  Accuracies (  ) on the classiﬁcation tasks evaluated in (Dinh et al., 2022). Baselines include LIFT, the prompting
 method which that uses large-scale pretrained language models, and standard ML methods such as XGBoost. ORCA
-achieves competitive performances with existing methods and ranks ﬁrst on 7 14 datasets, signiﬁcantly outperforming
+achieves competitive performances with existing methods and ranks ﬁrst on 7 out of 14 datasets, signiﬁcantly outperforming
 the domain-speciﬁc cross-modal learning approach, LIFT.
 Dataset (ID) Logistic Regression Decision Tree SVM XGBoost LIFT w. GPT-3 ORCA
 Customers (1511) 87.12 0.54 85.98 0.53 86.36 0.00 85.23 0.00 84.85 1.42 86.93 1.13
@@ -1452,12 +1562,28 @@ Avg. Acc 79.58 18.06 73.06 18.17 80.63 16.87 78.21 16.57 79.63 16.09 83.80 12.81
 Avg. Diff. from XGBoost 1.37 9.42 -5.14 10.33 2.42 6.84 0 1.42 11.88 5.60 5.66Cross-Modal Fine-Tuning  Align then Reﬁne
 Table 22  Meta-data for the OpenML classiﬁcation datasets evaluted in Table 21. Taken from Dinh et al. (2022).
 ID Abbreviation No. Features No. Classes No. Instances Note
-1511 8 2 440 882 15 2 60 1 44 57 2 4601 1 1479 Hill-Valley 100 2 1212 1 48 5 3 151 23 9 3 1473 187 13 3 178 54 18 4 846 40496 7 10 500 1 28 64 10 5620 1 12 216 10 2000 1 871 5 2 3848 1467 20 2 540 1491 64 100 1600 1 1492 64 100 1600 1 1493 64 100 1599 1 symbolic feature
+1511 Customers 8 2 440 Imbalance
+882 Pollution 15 2 60 1 symbolic feature
+44 Spambase 57 2 4601 1 symbolic feature
+1479 Hill-Valley 100 2 1212 1 symbolic feature
+48 TAE 5 3 151 Categorical data
+23 CMC 9 3 1473 Meaningful feature Names
+187 Wine 13 3 178 Integral features
+54 Vehicle 18 4 846 Meaningful feature Names
+40496 LED 7 10 500 1 symbolic feature
+28 OPT 64 10 5620 1 symbolic feature
+12 Mfeat 216 10 2000 1 symbolic feature
+871 Pollen 5 2 3848 1467
+ Climate 20 2 540 1491
+ Margin 64 100 1600 1 symbolic feature
+1492 Shape 64 100 1600 1 symbolic feature
+1493 Texture 64 100 1599 1 symbolic feature
 A.7. Experiments on Drug Response Prediction
 We adapt the code from the ofﬁcial GitHub repo of IGTD and download, preprocess, and load the CTRP & GDSC data
 following the procedures described in the paper s supplementary material. Notably, both the gene expression data and the
-drug descriptors are normalized using min-max normalization so that each gene/drug feature has a maximum value of 1 0. We then concatenate the features for each gene-drug (treatment) pair. The number of features (cols)
-for each treatment sample (row) is 3901 3739 for GDSC. The processed data are stored locally for the ease
+drug descriptors are normalized using min-max normalization so that each gene/drug feature has a maximum value of 1 and
+a minimum value of 0. We then concatenate the features for each gene-drug (treatment) pair. The number of features (cols)
+for each treatment sample (row) is 3901 for CTRP and 3739 for GDSC. The processed data are stored locally for the ease
 of data loading. During training, we use the MSE as the loss function since we are in a regression setting. The prediction
 performance is measured by the coefﬁcient of determination ( R2).
 Table 5, we show the results for ORCA and the baselines, which include the domain-speciﬁc IGTD algorithm that transforms
@@ -1471,7 +1597,7 @@ removed some mislabeled outliers, and report the prediction errors
 ( ) for O RCA and ﬁne-tuning (using Swin-base).
 Real Painting Sketch Clipart
 ORCA 96.71 0.02 94.71 0.13 94.93 0.24 93.61 0.54
-Fine-tuning 93.33 1.33 75.79 0.86 83.00 0.13 86.01 2.62A natural question to ask is whether ORCA can also tackle
+Fine-tuning 93.33  1.33 75.79 0.86 83.00 0.13 86.01 2.62A natural question to ask is whether ORCA can also tackle
 in-modality tasks. While we design ORCA to enable crossmodal
  transfer, we hypothesize that it should facilitate
 same-modality transfer if two domains have large dataset
@@ -1492,7 +1618,9 @@ work studies visual prompting by modifying 2D inputs for querying vision transfo
 remaining tasks because either the inputs cannot be reshaped to look like images or the outputs are not classiﬁcation logits.
 Table 24  Prediction errors ( ) ofORCA vs. visual prompting methods.
 Spherical NinaPro ECG
-ORCA 29.85 0.72 7.54 0.39 0.28 0.0059 98.05 0.13 33.18 0.23 0.57 0.0044 49.53 1.45 31.46 0.83 0.40 0.016We test VPT with the pretrained Swin-Base Transformer
+ORCA 29.85 0.72 7.54 0.39 0.28 0.0059
+VP 98.05 0.13 33.18 0.23 0.57 0.0044
+VPT 49.53 1.45 31.46 0.83 0.40 0.016We test VPT with the pretrained Swin-Base Transformer
  (the same model we used for ORCA) and VP
 with the pretrained ResNet-50 (as the ofﬁcial implementation
  does not support vision transformers). The

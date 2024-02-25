@@ -1,9 +1,10 @@
-2023 22-25, 2023, New Paltz, NY
+2023 IEEE Workshop on Applications of Signal Processing to Audio and Acoustics October 22-25, 2023, New Paltz, NY
 EXPLORING THE INTEGRATION OF SPEECH SEPARATION AND RECOGNITION WITH
 SELF-SUPERVISED LEARNING REPRESENTATION
 Yoshiki Masuyama,1 Xuankai Chang,2 Wangyou Zhang,3Samuele Cornell,4
-Zhong-Qiu Wang,2Nobutaka Ono,1Yanmin Qian,3Shinji Watanabe,2 1Tokyo Metropolitan University, Japan Carnegie Mellon University, USA
-3Shanghai Jiao Tong University, China Universit  a Politecnica delle Marche, Italy
+Zhong-Qiu Wang,2Nobutaka Ono,1Yanmin Qian,3Shinji Watanabe,2
+1Tokyo Metropolitan University, Japan2Carnegie Mellon University, USA
+3Shanghai Jiao Tong University, China4Universit  a Politecnica delle Marche, Italy
 ABSTRACT
 Neural speech separation has made remarkable progress and its integration
  with automatic speech recognition (ASR) is an important
@@ -36,7 +37,7 @@ methods based on time-frequency (T-F) masking [4 7] used a DNN
 to estimate the T-F mask for each speaker from the short-time
 Fourier transform (STFT) of the observed mixture. Meanwhile,
 time-domain methods [8 10] have demonstrated promising results
-by directly processing time-domain signals in an end-to-end (E E)
+by directly processing time-domain signals in an end-to-end (E2E)
 manner. Recently, fully complex STFT-domain methods have been
 proven to be extremely effective [11 13]. In particular, TF-GridNet
 [13] has achieved state-of-the-art (SotA) performance on several
@@ -55,7 +56,7 @@ or
 TF-GridNetPre-training Pre-training Pre-training
 Joint fine-tuning
 Fine-tuned
- FrozenFigure 1  Overview of our E E integration. We pre-train speech
+ FrozenFigure 1  Overview of our E2E integration. We pre-train speech
 separation, SSLR, and ASR models separately, and fine-tune the
 speech separation and ASR models jointly while freezing WavLM.
 This could lead to mismatches with respect to the subsequent ASR
@@ -67,19 +68,19 @@ robust ASR, a neural beamformer and a joint connectionist temporal
  was extended to multi-speaker settings including MIMOSpeech
  [20]. It aims to directly improve the performance of multispeaker
  ASR while preserving the modularity of the entire system,
-as opposed to a fully E E black-box approach [23 25]. The intermediate
+as opposed to a fully E2E black-box approach [23 25]. The intermediate
  separated speech achieves a good separation quality [20],
 although any signal-level criteria are not used for training.
-Self-supervised learning (SSL) models such as Wav Vec
+Self-supervised learning (SSL) models such as Wav2Vec
 2.0 [26], HuBERT [27], and WavLM [28] have shown considerable
  potential in a wide range of speech processing tasks [29, 30].
-Recently, IRIS [31] demonstrated impressive results with an E E
+Recently, IRIS [31] demonstrated impressive results with an E2E
 model that integrates monaural speech enhancement, WavLM, and
 ASR models. MultiIRIS [32] expanded IRIS to perform multichannel
  speech enhancement and demonstrated the effectiveness of
 the joint training under noisy and reverberant conditions.
 Building upon MultiIRIS, this paper investigates MIMO-IRIS 
-an E E integration of speech separation, SSLR extraction, and ASR
+an E2E integration of speech separation, SSLR extraction, and ASR
 for multi-channel multi-speaker overlapping scenarios. We explore
 the combination of SSLR-based ASR models [33] with TF-GridNet
 [13] as well as well-established beamforming techniques as illustrated
@@ -89,7 +90,7 @@ the spatialized WSJ0-2mix [6] and WHAMR  [14] datasets, assessing
  show that the correlation between speech separation and
 ASR performance is not precisely positive. The separation performance
  after fine-tuning degraded the separation performance while
-the word error rate (WER) decreases. This is especially true for TF-arXiv 2307.12231 1  [cs.SD]  23 20232023 22-25, 2023, New Paltz, NY
+the word error rate (WER) decreases. This is especially true for TF-arXiv 2307.12231v1  [cs.SD]  23 Jul 20232023 IEEE Workshop on Applications of Signal Processing to Audio and Acoustics October 22-25, 2023, New Paltz, NY
 GridNet-based complex spectral mapping, while mask-based beamforming
  [34, 35] results in less degradation. Despite this, our best
 MIMO-IRIS model after joint training achieves SotA ASR performance
@@ -106,7 +107,7 @@ xm KX
 k 1sk,m nm, (1)
 where sk,m RLis the source image of speaker kat microphone
 m. The transcription sequence for speaker kis denoted as Rk. This
-section describes each part of the proposed E E system, depicted in
+section describes each part of the proposed E2E system, depicted in
 Fig. 1, including speech separation, SSLR extraction, and ASR.
 2.1. Speech Separation
 The goal of speech separation is to estimate each speaker s signal
@@ -189,15 +190,15 @@ modern front-ends can produce much less distortion in separated
 signals. We will compare their performance in our experiments,
 where TF-GridNet [13] and the joint CTC/attention-based encoderdecoder
  [38] are used for speech separation and ASR, respectively.
-2.2. SSLR Extraction and E E-ASR
+2.2. SSLR Extraction and E2E-ASR
 We extract SSLR from each separated signal bskin (2) and pass it to
-E E-ASR in the same way as in previous studies [31, 32] 
-bRk ASR(SSLR (bsk θssl) θasr), (11)2023 22-25, 2023, New Paltz, NY
+E2E-ASR in the same way as in previous studies [31, 32] 
+bRk ASR(SSLR (bsk θssl) θasr), (11)2023 IEEE Workshop on Applications of Signal Processing to Audio and Acoustics October 22-25, 2023, New Paltz, NY
 where θsslandθasrrepresent the parameters of the SSLR extractorSSLR
  ( )and ASR model ASR( ), respectively. Specifically,
 WavLM [28] is used to extract robust SSLR by applying the
 weighted sum of all transformer encoder embeddings. The weights
-are optimized with the following ASR model. E E-ASR is based
+are optimized with the following ASR model. E2E-ASR is based
 on the joint CTC/attention-based encoder-decoder framework [38].
 2.3. MIMO-IRIS  Integration of Separation, SSLR and ASR
 To recognize multi-speaker speech, one can directly send the outputs
@@ -206,7 +207,7 @@ This solution is, however, not optimal because ASR models are
 typically trained with single-speaker speech, while the separated
 speech usually contain residual interference. Following IRIS [31]
 and MultiIRIS [32], we integrate the speech separation model,
-SSLR extractor, and E E-ASR model into a single model as shown
+SSLR extractor, and E2E-ASR model into a single model as shown
 in Fig. 1. The speech separation model can generate multiple
 streams, one for each speaker, and the ASR model is shared among
 all separated streams along with the SSLR extractor. During the
@@ -214,16 +215,16 @@ training, PIT is applied to the CTC loss in the ASR model to determine
  the optimal permutation. The following attention-based decoder
  uses this permutation to select the corresponding reference
 transcript for each input stream in the teacher-forcing training. Our
-E E model can be extended from (11) as 
+E2E model can be extended from (11) as 
 {ˆR1, . . . , ˆRK} ASR(SSLR (SS(X θss) θssl) θasr),(12)
 where θssrepresents the parameters of the speech separation model,
 as discussed in Section 2.1. The loss function of the ASR task is the
 same as in MIMO-Speech [20]. We omit the details here.
-The E E model could be trained from scratch with multi-task
+The E2E model could be trained from scratch with multi-task
 learning, including speech separation and ASR objectives. Such
 training, however, requires intensive computation. In addition, previous
  studies on the integration of speech enhancement, SSLR extraction,
- and E E ASR reported that the integrated model resulted
+ and E2E ASR reported that the integrated model resulted
 in sub-optimal performance when trained from scratch [31, 32].
 We thus propose a two-stage approach. First, the speech separation
  model is pre-trained on commonly-used speech separation
@@ -243,11 +244,12 @@ experiments were conducted using the ESPnet-SE   toolkit1[3].
 We evaluated our systems on the spatialized WSJ0-2mix [6] and
 WHAMR  [14] datasets, both of which support anechoic and reverberant
  two-speaker mixture simulations. The training, validation,
- and test sets of both datasets contain 20,000, 5,000, and 3,000 1Our source codes and configurations will be available through ESPnet 
+ and test sets of both datasets contain 20,000, 5,000, and 3,000
+1Our source codes and configurations will be available through ESPnet 
 https //github.com/espnet/espnet .mixtures, respectively. Room impulse responses were simulated
 and convolved with dry source signals from WSJ0-2mix [4]. The
 signal-to-distortion ratio (SDR) [39] with respect to the input mixture
- is 0.07 0-2mix. WHAMR  [14] is one of
+ is 0.07 dB in spatialized WSJ0-2mix. WHAMR  [14] is one of
 the most challenging datasets for speech separation, as it contains
 two-channel real-recorded environmental noise. For WHAMR , the
 SDR with respect to the input mixture is -4.61 dB. To leverage the
@@ -259,8 +261,8 @@ both anechoic and reverberant conditions of the training and validation
 The ASR model ( ASR( )in (11) and (12)) consists of a Conformerbased
  encoder of 12 layers and a Transformer-based decoder of 6
 layers by following a previous study [32]. The encoder and decoder
- have 2,048 4 attention heads. We reduced
-the dimensions of the speaker-wise SSLR from 1,024 80 by a
+ have 2,048 hidden units and 4 attention heads. We reduced
+the dimensions of the speaker-wise SSLR from 1,024 to 80 by a
 fully-connected layer before feeding it to the ASR model. The ASR
 model and the learnable weight for the WavLM embeddings were
 pre-trained on the clean WSJ corpus. We used the Adam optimizer
@@ -272,25 +274,25 @@ As the speech separation model ( SS( )in (2) and (12)), our
 mask-based MVDR beamformer employed a 3-layer bidirectional
 long short-term memory of 512 units with a projection layer to estimate
  the T-F masks as in [20, 40]. STFT was implemented with
-the Hann window of 512 128-sample shift. The
+the Hann window of 512 samples with a 128-sample shift. The
 mask estimation network was optimized with the convolutive transfer
  function invariant signal-to-distortion ratio (CI-SDR) loss [41]
 on beamforming outputs. Meanwhile, TF-GridNet consists of 6
 blocks, where the TF-unit embedding dimension was 48. To reduce
 the computation, we increased the window shift size to 256 samples
-in STFT. TF-GridNet was optimized with a sum of the L loss on
-the waveform and on the STFT magnitude following [42], where
+in STFT. TF-GridNet was optimized with a sum of the L1loss on
+the waveform and on the STFT magnitude2following [42], where
 the weight for the waveform loss was 0.99. Both mask estimation
 network and TF-GridNet were pre-trained with the Adam optimizer.
 Then, the joint fine-tuning of the speech separation and ASR models
 was performed using the stochastic gradient descent method with a
-learning rate of 1.0 10 3 0.9. We used the max
+learning rate of 1.0 10 3and momentum of 0.9. We used the max
 condition of the spatialized WSJ0-2mix and WHAMR  datasets,
 mixtures of the non-trimmed utterances, in the joint fine-tuning.
 3.3. Results on Clean Multi-channel Speech Separation
-Table 1 0-2mix dataset.
+Table 1 presents the results on the spatialized WSJ0-2mix dataset.
 First, we show the results of the cascaded monaural TF-GridNet
-and ASR performance, an SDR of 19.4 4.8%.
+and ASR performance, an SDR of 19.4 dB and a WER of 4.8%.
 It outperformed an existing cascaded system with a time-domain
 masking-based method [43]. We then show the results in multichannel
  cases, where the speech separation models were fine-tuned
@@ -300,8 +302,9 @@ also in terms of WERs. This result demonstrates that the unconstrained
  complex spectral mapping is advantageous as an ASR
 2In our preliminary experiments, we also used the loss presented in [42]
 to train the mask-based beamformer. This resulted in worse WERs on the
-validation sets than using the CI-SDR loss [41].2023 22-25, 2023, New Paltz, NY
-Table 1  Separation and WER results on single-channel WSJ0-2 0-2mix.
+validation sets than using the CI-SDR loss [41].2023 IEEE Workshop on Applications of Signal Processing to Audio and Acoustics October 22-25, 2023, New Paltz, NY
+Table 1  Separation and WER results on single-channel WSJ0-2mix
+and spatialized WSJ0-2mix.
 SDR [dB] PESQ STOI WER (%)
 Monaural
 Time-domain [43] 13.8 - - 22.9
@@ -337,7 +340,7 @@ WERs in both anechoic and reverberant conditions while degrading
 distortion-less. Meanwhile, TF-GridNet-based unconstrained complex
  spectral mapping faced severe performance degradation, despite
  the better WER. In the anechoic case, the multi-channel TFGridNet
- can achieve an SDR of 26.43 3.2% without
+ can achieve an SDR of 26.43 dB and a WER of 3.2% without
  fine-tuning. However, the separation performance dropped to
 15.28 dB after joint fine-tuning. In detail, we observed buzzy artifacts
  in the intermediate separated signals3.
@@ -397,16 +400,17 @@ the WER, which is inconsistent with the tendency reported in a
 speech enhancement paper [32]. Our future work should focus
 on how this degradation can be prevented, e.g. by using continual
 learning strategies. Overall our best system, based on multi-channel
-TF-GridNet, WavLM, and E E ASR, was able to reach performance
+TF-GridNet, WavLM, and E2E ASR, was able to reach performance
 on par with the one achieved on clean, single-speaker WSJ [33].
 5. ACKNOWLEDGEMENTS
 Y . Masuyama was partially supported by JSPS KAKENHI
-Grant Numbers JP J21371 3.
+Grant Numbers JP21J21371 and JST CREST Grant Number JPMJCR19A3.
  X. Chang, Z.-Q. Wang, and W. Zhang used the
-Bridges2 210014 from the Advanced Cyberinfrastructure Coordination
+Bridges2 system at PSC and Delta system at NCSA through allocation
+ CIS210014 from the Advanced Cyberinfrastructure Coordination
  Ecosystem  Services & Support (ACCESS) program. S. Cornell
  was partially supported by Marche Region within the funded
-project  Miracle  POR MARCHE FESR 2014-2020.2023 22-25, 2023, New Paltz, NY
+project  Miracle  POR MARCHE FESR 2014-2020.2023 IEEE Workshop on Applications of Signal Processing to Audio and Acoustics October 22-25, 2023, New Paltz, NY
 6. REFERENCES
 [1] D. Raj and et al. ,  Integration of speech separation, diarization,
  and recognition for multi-speaker meetings  System description,
@@ -482,7 +486,7 @@ overlapped speech recognition,  in Proc. Interspeech , 2020,
 pp. 2797 2801.
 [25] I. Sklyar et al. ,  Streaming multi-speaker ASR with RNNT, 
  in Proc. ICASSP , 2021, pp. 6903 6907.
-[26] A. Baevski et al. ,  Wav vec 2.0  A framework for selfsupervised
+[26] A. Baevski et al. ,  Wav2vec 2.0  A framework for selfsupervised
  learning of speech representations,  in Proc.
 NeurIPS , 2020.
 [27] W. N. Hsu et al. ,  HuBERT  Self-supervised speech representation
@@ -501,7 +505,8 @@ pp. 1194 1198.
 generative capabilities,  in Proc. ACL , 2022, pp. 8479 8492.
 [31] X. Chang et al. ,  End-to-End Integration of Speech Recognition,
  Speech Enhancement, and Self-Supervised Learning
-Representation,  in Proc. Interspeech 2022 , 2022, pp. 3819 3823.
+Representation,  in Proc. Interspeech 2022 , 2022, pp. 3819 
+3823.
 [32] Y . Masuyama et al. ,  End-to-end integration of speech
 recognition, dereverberation, beamforming, and selfsupervised
  learning representation,  in Proc. SLT , 2023,
@@ -530,13 +535,15 @@ source separation,  IEEE Trans. Audio, Speech, Lang. Process.
  , vol. 14, no. 4, pp. 1462 1469, 2006.
 [40] W. Zhang et al. ,  End-to-end dereverberation, beamforming,
  and speech recognition in a cocktail party,  IEEE/ACM
-Trans. Audio, Speech, Lang. Process. , vol. 30, pp. 3173 3188, 2022.
+Trans. Audio, Speech, Lang. Process. , vol. 30, pp. 3173 
+3188, 2022.
 [41] C. Boeddeker and et al. ,  Convolutive transfer function invariant
  SDR training criteria for multi-channel reverberant
 speech separation,  in Proc. ICASSP , 2021, pp. 8428 8432.
 [42] Y . J. Lu and et al. ,  Towards low-distortion multi-channel
 speech enhancement  The ESPNET-SE submission to the
-L DAS22 challenge,  in Proc. ICASSP , 2022, pp. 9201 9205.
+L3DAS22 challenge,  in Proc. ICASSP , 2022, pp. 9201 
+9205.
 [43] T. von Neumann and et al. ,  End-to-end training of time domain
  audio separation and recognition,  in Proc. ICASSP ,
 2020, pp. 7004 7008.

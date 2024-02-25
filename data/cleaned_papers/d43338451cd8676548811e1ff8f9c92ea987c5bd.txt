@@ -2,7 +2,8 @@ REPRODUCING WHISPER-STYLE TRAINING USING AN OPEN-SOURCE TOOLKIT AND
 PUBLICLY A V AILABLE DATA
 Yifan Peng1, Jinchuan Tian1, Brian Yan1, Dan Berrebbi1, Xuankai Chang1, Xinjian Li1, Jiatong Shi1,
 Siddhant Arora1, William Chen1, Roshan Sharma1, Wangyou Zhang1,2, Yui Sudo3, Muhammad Shakeel3,
-Jee-weon Jung1, Soumi Maiti1, Shinji Watanabe1 1Carnegie Mellon University, USA
+Jee-weon Jung1, Soumi Maiti1, Shinji Watanabe1
+1Carnegie Mellon University, USA
 2Shanghai Jiao Tong University, China
 3Honda Research Institute Japan, Japan
 ABSTRACT
@@ -85,7 +86,7 @@ OpenAI Whisper [15] employs a single sequence-to-sequence model
 to perform multiple speech processing tasks, including LID, multilingual
  ASR, any-to-English ST, and utterance-level segmentation.
 2OWSM is pronounced as  awesome .
-979-8-3503-0689-7/23/$31.00 2023 2309.13876 3  [cs.CL]  24 2023SOPPrevious TextSOSLANGUAGEASRSTNO TIMESTAMPSTextStart TimeEnd TimeTextEOSStart TimeEnd TimeText Transcription aligned in utterance level
+979-8-3503-0689-7/23/$31.00  2023 IEEEarXiv 2309.13876v3  [cs.CL]  24 Oct 2023SOPPrevious TextSOSLANGUAGEASRSTNO TIMESTAMPSTextStart TimeEnd TimeTextEOSStart TimeEnd TimeText Transcription aligned in utterance level
 Text-only transcriptionXàYTranslationXàXRecognitionLanguageIdentificationFig. 1   Multitask data format used by our OWSM, which mostly follows OpenAI Whisper [15]. Different speech processing tasks are
 represented in a unified format, which can be predicted by an autoregressive decoder. Note that OWSM is designed to support any-toany
  speech-to-text translation, whereas Whisper can only perform any-to-English translation. Blue boxes denote standard text tokens, while
@@ -121,7 +122,7 @@ timestamps. Each long-form utterance is limited to a maximum duration
 precisely 30 seconds, optimizing the utilization of computational resources.
 
 To date, we have developed three versions at different scales,
-denoted as OWSM v1, v2, and v3 1. Our largest dataset,
+denoted as OWSM v1, v2, and v3 in Table 1. Our largest dataset,
 v3, comprises 180k hours of labeled audio data. This constitutes
 approximately one quarter of the total data employed by OpenAI
 Whisper in its training process [15]. The individual datasets utilized
@@ -129,10 +130,10 @@ by our models are listed below
   OWSM v1  AISHELL-1 [23], CoV oST2 [24], GigaSpeech [25],
 LibriSpeech [26], MuST-C [27], SPGISpeech [28], and
 TEDLIUM3 [29].
-  OWSM v2 1, GigaST [30], Multilingual LibriSpeech
- [31], and WenetSpeech [32].  OWSM v3 2, AIDATATANG [33], AMI [34],
+  OWSM v2  all data in v1, GigaST [30], Multilingual LibriSpeech
+ [31], and WenetSpeech [32].  OWSM v3  all data in v2, AIDATATANG [33], AMI [34],
 Babel [35], Common V oice [36], Fisher (Switchboard) [37],
-Fisher Callhome Spanish [38], FLEURS [39], Googlei n3,
+Fisher Callhome Spanish [38], FLEURS [39], Googlei18n3,
 KsponSpeech [40], MagicData [41], ReazonSpeech [42],
 Russian Open STT [43], VCTK [44], V oxForge [45], V oxPopuli
  [46], and WSJ [47].
@@ -141,16 +142,18 @@ OWSM follows Whisper to utilize a Transformer encoder-decoder
 architecture [1], where the encoder and decoder have the same number
  of layers. However, OWSM additionally employs a joint CTC
 loss for ASR targets [48], which was empirically shown to stabilize
- our training process. The input waveforms are converted to 80 25 10ms. The extracted features are augmented using
+ our training process. The input waveforms are converted to 80dimensional
+ log Mel filterbanks with a window length of 25ms and
+a hop length of 10ms. The extracted features are augmented using
 SpecAugment [49] and normalized by their global mean and variance.
  The features are then processed by a two-dimensional convolution
  module to reduce the sequence length. OpenAI Whisper [15]
 always downsamples the sequence by 2, resulting in a time resolution
- of 20ms. Our OWSM v2 3 4 times downsampling,
+ of 20ms. Our OWSM v2 and v3 perform 4 times downsampling,
 which further improves efficiency. The detailed configurations of
 Transformer encoder and decoder layers are summarized in Table 1.
-OWSM v1 3 use the same configurations as Whisper small and
-medium, respectively, while OWSM v2 3.4
+OWSM v1 and v3 use the same configurations as Whisper small and
+medium, respectively, while OWSM v2 is slightly smaller than v3.4
 For inference, OpenAI Whisper implements both greedy decoding
  and beam search with temperature fallback. The latter is a complicated
  procedure relying on many heuristics and hyperparameters
@@ -159,35 +162,51 @@ compression rate threshold. Our OWSM utilizes the ESPnet framework
  [22], thereby ensuring compatibility with various decoding algorithms
  originally supported by ESPnet, including greedy search,
 beam search, and joint CTC/attention decoding (for ASR only) [50].
-3 32, 35, 36, 37, 41, 42, 43, 44, 52, 53, 54, 61, 63, 64, 65, 66,
+3Resources 32, 35, 36, 37, 41, 42, 43, 44, 52, 53, 54, 61, 63, 64, 65, 66,
 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, and 86 from openslr.org .
 4OWSM has slightly more parameters than Whisper under the same configuration,
  because the ESPnet model has a larger convolution downsampling
 module and does not share the input embedding and output projection in its
 decoder.Table 1   Details of data, model architectures, and training configurations.
- We gradually increase data and model sizes from v1 3. The model configurations of OWSM v1 3 match those of
+ We gradually increase data and model sizes from v1 to
+v3. The model configurations of OWSM v1 and v3 match those of
 Whisper small and medium, respectively. Although OWSM v3 covers
  more languages than Whisper, our data size remains significantly
 smaller, making our task much more challenging. Our v3 model is
 initialized with the pre-trained v2 to reduce training time (see Section
  2.5).
 OpenAI Whisper OWSM (ours)
-small medium large v1 2 3 
+small medium large v1 v2 v3 
 Data
 Total hours (k) 680 38 129 180
 - English ASR 438 22 67 73
 - Multilingual ASR 117 1 22 67
-- Translation 125 15 40 40 99 22 23 151 51,865 20 50 50k
+- Translation 125 15 40 40
+Languages 99 22 23 151
+BPE vocabulary size 51,865 20k 50k 50k
 Model architectures
-Parameters (M) 244 769 1550 272 712 889 768 1024 1280 768 1024 1024 12 24 32 12 18 24 12 16 20 12 16 16
-Time resolution (ms) 20 20 20 20 40 40 256 256 1,048,576 300 500 470 2048 10 20 10 5e-4 2.5e-4 1.75e-4 1e-3 5e-4 2.5e-4 0.3 2.4. Training details
+Parameters (M) 244 769 1550 272 712 889
+Hidden size 768 1024 1280 768 1024 1024
+Layers 12 24 32 12 18 24
+Attention heads 12 16 20 12 16 16
+Time resolution (ms) 20 20 20 20 40 40
+Training configurations
+Batch size 256 256
+Total updates 1,048,576 300k 500k 470k
+Warmup updates 2048 10k 20k 10k
+Learning rate 5e-4 2.5e-4 1.75e-4 1e-3 5e-4 2.5e-4
+Optimizer AdamW AdamW
+Joint CTC weight NA 0.3
+2.4. Training details
 OWSM is implemented in ESPnet [22] based on PyTorch [51]. Table
  1 compares the training hyperparameters of different models.
 OWSM uses the same batch size as Whisper, but the number of total
  updates is smaller. OWSM is trained on NVIDIA A100 (40GB)
 GPUs. Each GPU takes two samples, and gradient accumulation
 is applied whenever necessary to ensure the total batch size is 256.
-Specifically, OWSM v1 7 32 100 2 3 10 64 100 GPUs. After training, five checkpoints with the highest validation
+Specifically, OWSM v1 is trained for around 7 days on 32 A100
+GPUs and OWSM v2 and v3 are trained for around 10 days on 64
+A100 GPUs. After training, five checkpoints with the highest validation
  accuracies are averaged to generate the final checkpoint.
 2.5. Challenges and training tips
 Large-scale distributed training presents significant challenges, particularly
@@ -198,23 +217,30 @@ challenges and provide valuable training tips to help overcome these
 obstacles effectively. We will release our scripts that support these
 techniques.
 Time resolution  Whisper employs a time resolution of 20ms
-within its encoder module, resulting in a sequence length of 1500 30-second inputs. This significantly increases GPU memory consumption
+within its encoder module, resulting in a sequence length of 1500 for
+30-second inputs. This significantly increases GPU memory consumption
  and makes training slower and more difficult. In contrast,
  contemporary state-of-the-art ASR and ST models [52 55]
 adopt larger downsampling rates. Starting from OWSM v2, we have
 adopted a time resolution of 40ms, effectively reducing the sequenceTable 2   WER % (  ) of English ASR using greedy search. OpenAI
  Whisper uses 438k hours of English ASR data, while OWSM
 uses at most 73k hours. As shown in Table 1, the configurations of
-OWSM v1 3 match those of Whisper small and medium, respectively.
+OWSM v1 and v3 match those of Whisper small and medium, respectively.
  Whisper large is significantly larger, so it is not included
 in the comparison. The larger degradation of OWSM v3 on WSJ
 is likely caused by inconsistent case and punctuation of the training
 data (see the last paragraph in Section 2.5). The gray color means
 OWSM is better than Whisper small and medium.
 DatasetOpenAI Whisper OWSM (ours)
-small medium v1 2 3 15.7 11.9 20.1 14.4 14.5 9.6 6.4 13.2 10.9 10.9
+small medium v1 v2 v3
+Common V oice en 15.7 11.9 20.1 14.4 14.5
+FLEURS en 9.6 6.4 13.2 10.9 10.9
 LibriSpeech test-clean 3.3 2.8 5.4 2.2 2.7
-LibriSpeech test-other 7.7 6.5 10.9 5.1 6.0 2000 22.2 19.4 28.7 20.4 17.2 4.6 5.1 6.6 4.6 4.8 8.5 7.6 14.2 10.3 9.2 92 4.3 2.9 4.3 3.7 13.4 
+LibriSpeech test-other 7.7 6.5 10.9 5.1 6.0
+Switchboard eval2000 22.2 19.4 28.7 20.4 17.2
+TEDLIUM test 4.6 5.1 6.6 4.6 4.8
+V oxPopuli en 8.5 7.6 14.2 10.3 9.2
+WSJ eval92 4.3 2.9 4.3 3.7 13.4 
 length and mitigating the associated computational demands. We
 have also found that a shorter sequence length facilitates easier convergence
  of the model.
@@ -225,7 +251,8 @@ observed suboptimal convergence of the attention-based encoderdecoder
 training and expedite convergence.
 Warm initialization  When training our largest model, OWSM
 v3, we employ a warm initialization technique by leveraging the pretrained
- OWSM v2. Specifically, the first 18 3 2 (which has precisely 18 layers), whereas the remaining
+ OWSM v2. Specifically, the first 18 layers of OWSM v3 are
+initialized with v2 (which has precisely 18 layers), whereas the remaining
  6 layers are initialized randomly. This v3 model converges
 much faster than training from scratch. However, it remains to be
 investigated whether a warm initialization adversely affects the final
@@ -236,7 +263,7 @@ large data. To train the BPE tokenization models using SentencePiece
  [56], we randomly select 10 million text transcriptions
 instead of using the whole set to reduce memory usage. For training,
  the entire text file is too large to be distributed across different
-workers. We partition the training set into 5 12 non-overlapping
+workers. We partition the training set into 5 to 12 non-overlapping
 subsets and use multiple data iterators to construct mini-batches.
 We further filter out samples with extremely long transcriptions
 (e.g., greater than 600 tokens including both prompt and target)
@@ -254,14 +281,29 @@ Inconsistent case and punctuation. Our training data is gathered
  from many public corpora. Some of them provide raw transcripts
  in true case with punctuation, but the others only provideTable 3   WER/CER % (  ) of multilingual ASR using greedy search. Training data sizes (in hours) are also provided. The gray color means
 OWSM is better than Whisper small and medium.
-Dataset Language MetricOpenAI Whisper OWSM v1 2 3 9.1 10.2 22 13.7 67 6.7 73 7.4 11 9.1 6.1 0.1 37.2 1.0 11.7 2.0 11.7 10 13.6 9.7 0.3 41.8 1.3 13.0 2.5 14.1 13 11.5 8.1 0.2 43.3 2.2 11.8 3.7 11.9 2.1 18.2 12.2 0.007 78.7 1.6 16.9 1.7 17.7 2.6 21.3 15.6 0.04 54.9 0.3 23.1 0.7 24.5 8.6 13.8 8.9 0.009 90.9 0.2 31.8 0.3 28.2 4.3 12.5 6.8 0 0.1 89.7 0.3 37.0
-AISHELL-1 25.1 15.7 0.2 22.6 15 5.9 16 7.1
-KsponSpeech eval-cleanKorean 8 24.0 17.60 0 1.0 20.5
-KsponSpeech eval-other 15.4 12.8 22.6 7 32.5 25.3 0 0 19 11.3 4   WER % (  ) of long-form ASR on the TEDLIUM2 test set.
+Dataset Language MetricOpenAI Whisper OWSM v1 OWSM v2 OWSM v3
+hours small medium hours result hours result hours result
+Multilingual LibriSpeechEnglish
+WER438k 9.1 10.2 22k 13.7 67k 6.7 73k 7.4
+Spanish 11k 9.1 6.1 0.1k 37.2 1.0k 11.7 2.0k 11.7
+French 10k 13.6 9.7 0.3k 41.8 1.3k 13.0 2.5k 14.1
+German 13k 11.5 8.1 0.2k 43.3 2.2k 11.8 3.7k 11.9
+Dutch 2.1k 18.2 12.2 0.007k 78.7 1.6k 16.9 1.7k 17.7
+Italian 2.6k 21.3 15.6 0.04k 54.9 0.3k 23.1 0.7k 24.5
+Portuguese 8.6k 13.8 8.9 0.009k 90.9 0.2k 31.8 0.3k 28.2
+Polish 4.3k 12.5 6.8 0 NA 0.1k 89.7 0.3k 37.0
+AISHELL-1 Chinese
+CER23k 25.1 15.7 0.2k 22.6 15k 5.9 16k 7.1
+KsponSpeech eval-cleanKorean 8k24.0 17.60 NA 0 NA 1.0k20.5
+KsponSpeech eval-other 15.4 12.8 22.6
+ReazonSpeech Japanese 7k 32.5 25.3  0 NA  0 NA 19k 11.3
+Table 4   WER % (  ) of long-form ASR on the TEDLIUM2 test set.
 Unsegmented long talks are transcribed in chunks of 30 seconds. It
 is shifted based on predicted timestamps.
 Beam sizeOpenAI Whisper OWSM (ours)
-small medium v2 3 1 4.4 3.8 7.2 9.2 5 4.2 3.8 6.6 7.6
+small medium v2 v3
+1 4.4 3.8 7.2 9.2
+5 4.2 3.8 6.6 7.6
 normalized transcripts in lower or upper case without any punctuation.
  During inference, we find that OWSM models are so powerful
 that they are able to recognize the corpus and generate outputs that
@@ -283,88 +325,109 @@ in ESPnet and evaluate Whisper in the same setup instead of reporting
 English or basic normalizer provided by Whisper. Whisper large is
 not included since it is significantly larger than the other models. Although
  many public ASR corpora are combined, our English training
-data is still significantly smaller than that of Whisper (73 438k
+data is still significantly smaller than that of Whisper (73k vs 438k
 hours). However, our OWSM models achieve competitive results
 in most benchmarks. OWSM models even outperform Whisper on
 LibriSpeech and Switchboard.
 By comparing different versions of OWSM, we observe that
-its English ASR capability is largely improved from v1 2,
+its English ASR capability is largely improved from v1 to v2,
 demonstrating the effectiveness of scaling up in terms of the number
-of model parameters and the amount of training data. However,OWSM v3 2 in all
+of model parameters and the amount of training data. However,OWSM v3 does not show a consistent improvement over v2 in all
 benchmarks. OWSM v3 achieves lower WERs on Switchboard
 and V oxPopuli test sets, likely because their training sets are newly
 added (see Section 2.2). OWSM v3 has slight degradations on LibriSpeech
  and a large degradation on WSJ. This is probably due to
-the shift of data distributions from v2 3. As shown in Table 1,
-our v3 2 (151 23), but the model size is only slightly increased (889 712M). Hence, the model has to adjust its capacity from English
+the shift of data distributions from v2 to v3. As shown in Table 1,
+our v3 dataset contains significantly more languages compared to
+v2 (151 vs 23), but the model size is only slightly increased (889M
+vs 712M). Hence, the model has to adjust its capacity from English
 to other languages or from one type of speech to another type. This
 issue might be mitigated with larger models and more diverse data.
 We will explore it in the future. Please refer to the last paragraph in
 Section 2.5 for more discussions.
 We have also investigated the inference speed. Specifically, we
-select 50 30 seconds from our prepared TEDLIUM
-dev set, and decode OWSM v3 40 GPU. The average decoding time for each 30-second
+select 50 utterances of 30 seconds from our prepared TEDLIUM
+dev set, and decode OWSM v3 with greedy search using a single
+NVIDIA A40 GPU. The average decoding time for each 30-second
 utterance is 2.3seconds.
 3.2. Multilingual speech recognition
 Table 3 shows the ASR results on multilingual benchmarks. In general,
  OpenAI Whisper achieves better performance than our OWSM,
 because Whisper employs significantly more training data in all languages
  except Japanese. For Japanese, OWSM v3 outperforms
-Whisper by a large margin (CER  11.3 25.3) thanks to the larger
-amount of training data (19 7k hours) from ReazonSpeech [42].
+Whisper by a large margin (CER  11.3 vs 25.3) thanks to the larger
+amount of training data (19k vs 7k hours) from ReazonSpeech [42].
 Notably, OWSM v2 achieves the best results on the English and
 Chinese test sets from Multilingual LibriSpeech and AISHELL,
 respectively, despite being trained on less data.
 The trend across different versions of OWSM is consistent with
-that in Section 3.1. OWSM v2 1 in all languages, which verifies the benefits of scaling up. OWSM
-v3 2 in a few languages but achieves comparable or
+that in Section 3.1. OWSM v2 is drastically improved compared to
+v1 in all languages, which verifies the benefits of scaling up. OWSM
+v3 outperforms v2 in a few languages but achieves comparable or
 slightly worse results in the others. Again, this is likely because the
 model needs to adjust its capacity to support much more languages
 in v3.
 3.3. Long-form speech recognition
 Similar to Whisper, OWSM performs long-form ASR by consecutively
- transcribing 30-second audio segments and shifting the win-Table 5 30-second audio segments, generated by OWSM v2 using greedy search. Utterances can be segmented in
+ transcribing 30-second audio segments and shifting the win-Table 5   Examples of ASR on 30-second audio segments, generated by OWSM v2 using greedy search. Utterances can be segmented in
 different ways, but the predicted timestamps are usually accurate. Differences between the reference and prediction are marked in red.
-# Groundtruth from the dev set of MuST-C v2 2 1 0.00 I m going to talk today about energy and climate.
-  3.50 4.28 And that might seem a bit surprising, because
+# Groundtruth from the dev set of MuST-C v2 Prediction by OWSM v2
+1 en  asr  0.00 I m going to talk today about energy and climate.
+  3.50  4.28 And that might seem a bit surprising, because
 my full-time work at the foundation is mostly about vaccines and seeds,
 about the things that we need to invent and deliver to help the poorest
-two billion live better lives.  18.38 19.64  But energy and climate
+two billion live better lives.  18.38   19.64  But energy and climate
 are extremely important to these people  in fact, more important than
-to anyone else on the planet.  28.52 0.00 I m going to talk today about energy and climate.
-  3.52 4.26 And that might seem a bit surprising, because
+to anyone else on the planet.  28.52   en  asr  0.00 I m going to talk today about energy and climate.
+  3.52  4.26 And that might seem a bit surprising, because
 my full-time work at the foundation is mostly about vaccines and seeds,
 about the things that we need to invent and deliver to help the poorest
-two billion live better lives.  18.40 19.62  But energy and climate
+two billion live better lives.  18.40   19.62  But energy and climate
 are extremely important to these people, in fact more important than to
-anyone else on the planet.  28.52 2 0.00 Several years ago here at TED, Peter Skillman
+anyone else on the planet.  28.52  
+2 en  asr  0.00 Several years ago here at TED, Peter Skillman
  introduced a design challenge called the marshmallow
-challenge.  5.60 5.80 And the idea s pretty simple  Teams of
+challenge.  5.60  5.80 And the idea s pretty simple  Teams of
 four have to build the tallest free-standing structure out of 20
 sticks of spaghetti, one yard of tape, one yard of string and a
-marshmallow.  16.52 16.52  The marshmallow has to be on
-top. 18.18 18.54  And, though it seems really simple, it s actually
+marshmallow.  16.52   16.52  The marshmallow has to be on
+top. 18.18   18.54  And, though it seems really simple, it s actually
  pretty hard because it forces people to collaborate very
-quickly.  25.04 25.42  And so, I thought this was an interesting
-idea, and I incorporated it into a design workshop.  29.72 0.00 Several years ago here at TED, Peter Skillman
+quickly.  25.04   25.42  And so, I thought this was an interesting
+idea, and I incorporated it into a design workshop.  29.72   en  asr  0.00 Several years ago here at TED, Peter Skillman
 introduced a design challenge called the Marshmellow Challenge, and
-the idea is pretty simple.  7.32 7.50 26 of spaghetti, one yard of tape,
-one yard of string and a marshmallow.  16.50 16.54  The marshmallow
- has to be on top.  18.20 18.54  And though it seems really
+the idea is pretty simple.  7.32  7.50 Teams of four have to build
+the tallest freestanding structure out of 26 of spaghetti, one yard of tape,
+one yard of string and a marshmallow.  16.50   16.54  The marshmallow
+ has to be on top.  18.20   18.54  And though it seems really
 simple, it s actually pretty hard because it forces people to collaborate
-very quickly.  25.04 25.44  And so I thought this was an interesting
- idea, and I incorporated it into a design workshop.  30.00 6   BLEU % (  ) of speech translation. OpenAI Whisper supports
+very quickly.  25.04   25.44  And so I thought this was an interesting
+ idea, and I incorporated it into a design workshop.  30.00  
+Table 6   BLEU % (  ) of speech translation. OpenAI Whisper supports
  any-to-English translation. OWSM can support more directions.
  The sizes of training sets (in hours) are also provided.
-Dataset Source TargetOpenAI Whisper OWSM v2 3
+Dataset Source TargetOpenAI Whisper OWSM v2 OWSM v3
 hours small medium hours result hours result
 MuST-C EnglishGerman
-NA k 28.5 14 27.9 14 20.5 14 20.7 1.0 10.5 1.0 9.4 0.5 23.4 0.5 22.5 0.5 28.5 0.5 26.2 4.3 26.2 34.8 0.2 18.6 0.2 18.0 12 6.3 13.6 0.01 3.0 0.01 3.3 8.9 15.9 22.9 0.001 0.1 0.001 0.1 6.7 34.2 40.2 0.1 24.9 0.1 22.7 4.5 27.8 34.8 0.3 26.0 0.3 23.7 7   Accuracy % (  ) of language identification. OWSM v3 151 languages, whereas Whisper supports 99 languages.
+NA14k 28.5 14k 27.9
+Chinese 14k 20.5 14k 20.7
+Japanese 1.0k 10.5 1.0k 9.4
+Spanish 0.5k 23.4 0.5k 22.5
+French 0.5k 28.5 0.5k 26.2
+CoV oSTGerman
+English4.3k 26.2 34.8 0.2k 18.6 0.2k 18.0
+Chinese 12k 6.3 13.6 0.01k 3.0 0.01k 3.3
+Japanese 8.9k 15.9 22.9 0.001k 0.1 0.001k 0.1
+Spanish 6.7k 34.2 40.2 0.1k 24.9 0.1k 22.7
+French 4.5k 27.8 34.8 0.3k 26.0 0.3k 23.7
+Table 7   Accuracy % (  ) of language identification. OWSM v3 supports
+ 151 languages, whereas Whisper supports 99 languages.
 DatasetOpenAI Whisper OWSM (ours)
-small medium v3 53.1 54.8 81.4
+small medium v3
+FLEURS 53.1 54.8 81.4
 dow based on predicted timestamps. Table 4 presents the long-form
 ASR results on the TEDLIUM test set, where each input audio is
-an unsegmented long talk. OWSM v2 7.2% WER with
+an unsegmented long talk. OWSM v2 achieves 7.2% WER with
 greedy decoding and 6.6% WER with beam search. Whisper models
 achieve lower WERs in both cases, likely because  (1) their training
 set is larger  (2) their data, collected from the Internet, is originally
@@ -378,10 +441,16 @@ are generated along with text tokens. Although utterances can beTable 8   WER/CE
 algorithms in ESPnet.
 Dataset Metric CTC Attention Joint CTC/attention
 Common V oice en
-WER18.6 14.5 12.9 17.3 10.9 9.7
+WER18.6 14.5 12.9
+FLEURS en 17.3 10.9 9.7
 LibriSpeech test-clean 4.5 2.7 2.6
-LibriSpeech test-other 8.1 6.0 5.4 2000 19.4 17.2 16.6 6.7 4.8 4.7 12.3 9.2 8.7 92 32.0 13.4 11.4
-AISHELL-1 9.2 7.1 6.5 17.0 11.3 10.3
+LibriSpeech test-other 8.1 6.0 5.4
+Switchboard eval2000 19.4 17.2 16.6
+TEDLIUM test 6.7 4.8 4.7
+V oxPopuli en 12.3 9.2 8.7
+WSJ eval92 32.0 13.4 11.4
+AISHELL-1 testCER9.2 7.1 6.5
+ReazonSpeech test 17.0 11.3 10.3
 segmented in different ways, the boundaries predicted by OWSM
 are usually very close to the reference.
 3.4. Speech translation
@@ -395,20 +464,22 @@ those of European languages even with enough training data. This
 indicates that the model has difficulty in translating between very
 different languages.
 On CoV oST, the performance of OWSM ranges across language
-pairs as the amount of training data varies from 1 300 hours. On
+pairs as the amount of training data varies from 1 to 300 hours. On
 Chinese and Japanese, OWSM outputs have low intelligibility while
 on the European languages OWSM outputs are moderately intelligible.
- On the other hand, Whisper is trained on 4 12k hours and
+ On the other hand, Whisper is trained on 4k to 12k hours and
 thus achieves greater BLEU scores on X-to-English in general.
-Similar to the findings in Section 3.1 3.2, OWSM v3 2.
+Similar to the findings in Section 3.1 and Section 3.2, OWSM v3
+shows comparable or slightly worse performance than OWSM v2.
 This is because OWSM v3 employs almost the same amount of STdata but it has to recognize drastically more languages (see Table 1).
 Some of its capacity needs to be assigned to these additional languages.
 
 3.5. Language identification
-As described in Section 2.1 1, OWSM predicts a language
+As described in Section 2.1 and Figure 1, OWSM predicts a language
  token at the beginning of decoding, which effectively performs
  the LID task. Table 7 compares Whisper and OWSM on the
-FLERUS test set prepared in ESPnet. OWSM v3 achieves a top-1 81.4%, which outperforms Whisper small and medium by
+FLERUS test set prepared in ESPnet. OWSM v3 achieves a top-1 accuracy
+ of 81.4%, which outperforms Whisper small and medium by
 a large margin. This is because OWSM v3 utilizes the training data
 from Common V oice and FLEURS, containing 151 languages in total,
  whereas Whisper supports 99 languages that only cover a subset
@@ -419,7 +490,7 @@ it is designed as a sequence-to-sequence model.
 OWSM is compatible with various decoding algorithms in ESPnet.
  Table 8 compares three commonly used algorithms  CTC
 only (greedy), attention only (greedy), and joint CTC/attention
-(with beam size 10 0.3). Beam search with joint
+(with beam size 10 and CTC weight 0.3). Beam search with joint
 CTC/attention achieves the best results in all test sets. Attentiononly
  decoding outperforms CTC-only, indicating that the decoder
 has strong capacity.
@@ -461,7 +532,8 @@ models and training logs. We believe this can promote transparency
 and facilitate advancements in the large-scale pre-training of speech
 models.
 6. ACKNOWLEDGEMENTS
-We use PSC Bridges2 210014, supported by National Science Foundation grants
+We use PSC Bridges2 and NCSA Delta via ACCESS allocation
+CIS210014, supported by National Science Foundation grants
 #2138259, #2138286, #2138307, #2137603, and #2138296.
 7. REFERENCES
 [1] A. Vaswani et al.,  Attention is all you need,  in Proc. NeurIPS ,
@@ -477,7 +549,7 @@ We use PSC Bridges2 210014, supported by National Science Foundation grants
 [6] Hugo Touvron et al.,  Llama  Open and efficient foundation
 language models,  arXiv 2302.13971 , 2023.
 [7] OpenAI,  GPT-4 Technical Report,  arXiv 2303.08774 , 2023.
-[8] Alexei Baevski, Yuhao Zhou, et al.,  wav vec 2.0  A framework
+[8] Alexei Baevski, Yuhao Zhou, et al.,  wav2vec 2.0  A framework
  for self-supervised learning of speech representations, 
 inProc. NeurIPS , 2020.
 [9] Wei-Ning Hsu et al.,  HuBERT  Self-Supervised Speech Representation
@@ -622,7 +694,7 @@ and Pruning of Self-Supervised Speech Models,  in Proc. Interspeech
  , 2023.
 [63] Yizeng Han, Gao Huang, et al.,  Dynamic neural networks  A
 survey,  vol. 44, no. 11, pp. 7436 7456, 2021.
-[64] Yifan Peng, Jaesong Lee, et al.,  I D  Transformer architectures
+[64] Yifan Peng, Jaesong Lee, et al.,  I3D  Transformer architectures
  with input-dependent dynamic depth for speech recognition, 
  in Proc. ICASSP , 2023.
 [65] German I Parisi, Ronald Kemker, et al.,  Continual lifelong

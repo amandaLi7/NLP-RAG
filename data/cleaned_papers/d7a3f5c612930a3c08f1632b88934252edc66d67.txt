@@ -1,6 +1,8 @@
 Minding Language Models  (Lack of) Theory of Mind 
 A Plug-and-Play Multi-Character Belief Tracker
-Melanie Sclar Sachin Kumar Peter West Alane Suhr3 1,3 1 1Paul G. Allen School of Computer Science & Engineering, University of Washington
+Melanie Sclar1Sachin Kumar2Peter West1Alane Suhr3
+Yejin Choi1,3Yulia Tsvetkov1
+1Paul G. Allen School of Computer Science & Engineering, University of Washington
 2Language Technologies Institute, Carnegie Mellon University
 3Allen Institute for Artificial Intelligence
 msclar@cs.washington.edu
@@ -70,7 +72,7 @@ Despite recent progress in language understanding
  abilities, large language models have been
 shown to lack theory of mind skills (Sap et al.,
 2022). Existing efforts to enable them have primarily
- relied on supervised methods (e.g., Grant et al.,arXiv 2306.00924 1  [cs.CL]  1 20232017  Nematzadeh et al., 2018  Arodi and Cheung,
+ relied on supervised methods (e.g., Grant et al.,arXiv 2306.00924v1  [cs.CL]  1 Jun 20232017  Nematzadeh et al., 2018  Arodi and Cheung,
 2021). However, current reading comprehension
 datasets for theory of mind reasoning are simplistic
 and lack diversity, leading to brittle downstream
@@ -92,8 +94,8 @@ people, most existing work on encoding belief
 states do not model this behavior relying on singular
  graphs (Jansen, 2022  Jacqmin et al., 2022).
 SYMBOLIC TOM, instead, utilizes a set of graphs ,
-each representing what the character p thinks that
-p believes that [...] pmassumes to be the current
+each representing what the character p1thinks that
+p2believes that [...] pmassumes to be the current
  state of the world , where mis the maximum
 reasoning depth as determined by the user. This explicit,
  recursive mental state representation enables
@@ -169,7 +171,8 @@ this behavior in ToM-bAbI by introducing noise in
 the form of flexible sentence ordering and distractor
  sentences and characters, we show it still faces
 the same pitfalls.
-1 22, 2023 with top_p 1 0 . Given the non-deterministic and continuously
+1Queried on May 22, 2023 with top_p 1 and
+temperature 0 . Given the non-deterministic and continuously
  changing nature of these models, exact examples may
 not produce the same response we report.3. Feed to Language Model1. Detect entities in the question, retrieve the relevant belief graph and perform recursion over the question2. Retrieve sentences captured by the graphWhere does Bob think  that Alice  will look for  the celery Where is the celery 
 is inis inis inis inroombasketboxceleryBobAliceAlice and Bob are in a room with a basket and a box. Alice puts some celery in the basket and leaves the room.
@@ -184,7 +187,8 @@ work, we argue against supervision as a way
 forward and instead call for unsupervised, or
 inference-time approaches that combine modern
 neural models and traditional symbolic algorithms.
-3 3.1 S YMBOLIC TOM  Algorithm Overview
+3 Methods
+3.1 S YMBOLIC TOM  Algorithm Overview
 Our goal is to automatically answer reading comprehension
  questions given a story involving multiple
  characters, without requiring any supervised
@@ -193,13 +197,13 @@ training or fine-tuning on this task. We first introduce
 overview of S YMBOLIC TOM (Algorithm 1).
 Notation We use the term k-th order theory of
 mind to refer to an estimate of what a character
-p thinks that p thinks that [...] pkthinks about
+p1thinks that p2thinks that [...] pkthinks about
 the world state . We denote this belief by Bp1,...,pk.
 We let k m, where mis a maximum reasoning
 depth. This is a user-specified limit, denoting the
 maximum recursion that the reader is assumed to
 be capable of performing. For instance, in Figure
-1, questions #1 and #2 1st- and 2nd-order
+1, questions #1 and #2 measure 1st- and 2nd-order
 theory of mind respectively  BBobrefers to Bob s
 beliefs about the current world state, and BBob,Alice
 represents Bob s estimation of Alice s beliefs about
@@ -226,7 +230,7 @@ stated relationship in the story. We construct the
 graphs by iterating through a story one sentence
 at a time, and adding both nodes and edges to the
 graph ( BELIEF TRACKING STRUCTURE   described
-in  3.2 2). Each edge is also paired
+in  3.2 and Algorithm 2). Each edge is also paired
 with the sentence from the story from which it was
 constructed. We refer to the set of all belief state
 graphs as the local contexts . We also maintain a
@@ -272,7 +276,7 @@ p1,. . ., p k, question  PROCESS QUESTION (question )
 S  SENTENCES REPRESENTED BYGRAPH (Bp1,...,pk)
 S   FILTER BASED ONQUESTION (S , question )
 return S  , question 
-3.2 1...pk
+3.2 Computing the Belief Graphs Bp1...pk
 Assuming each story is told chronologically, SYMBOLIC
  TOMprocesses each sentence ssequentially
 in two stages (Algorithm 2). First, it extracts all
@@ -287,7 +291,7 @@ pi  W , and leave the rest unchanged.
 As an example, when processing the last sentence
  in Figure 3, we update Bob and Charles s
 state ( BBobandBCharles ) and the perception of
-2 3 is also capable of
+2Our explorations show that GPT3 is also capable of
 rephrasing the questions zero-shot (see  A.3), but we refrained
 from this solution due to budget concerns.
 Alice and Bob are in a room with a basket and a box. Alice puts some celery in the basket and leaves the room. Bob then moves the celery into the box. Charles immediately enters the room. Charles puts the celery in a chest.roombasketchestceleryBob
@@ -387,7 +391,9 @@ that current datasets evaluate. If memory were a
 concern, one could process the questions first for
 memory efficiency, and compute only the graphs
 Bp1,...,pkrequired for target queries.
-4 2, the
+4 Fundamental Issues in Existing ToM
+Datasets
+Construction of ToMi As introduced in  2, the
 sole large-scale theory of mind dataset for reading
 comprehension tasks is ToMi (Le et al., 2019). Barring
  its added distractor characters and sentences,
@@ -448,7 +454,8 @@ Resolving Unintentional Ambiguities ToMi s
 story construction process often leaves object locations
  ambiguous, which forces humans to (incorrectly)
  rely on their physical commonsense. For
-example, the location of the basket in line 4 1 is ambiguous. This ambiguity is at times
+example, the location of the basket in line 4 of Table
+ 1 is ambiguous. This ambiguity is at times
 resolved at a later step in the story (Arodi and
 Cheung, 2021), but it is not true for all cases, and
 these resolutions were not expressly intended by
@@ -467,8 +474,9 @@ solely measure theory of mind reasoning skills, we
 automatically add a sentence that disambiguates
 the location of each container immediately after
 each primitive (c) or (e) (e.g., adding  The basket
-3Using Amazon Mechanical Turk, we present 20 1, using either (hat,box) or(apple,
-pantry) . Workers are paid $1 per HIT.is in the front yard  as line 5 1). Finally,
+3Using Amazon Mechanical Turk, we present 20 humans
+with the template in Table 1, using either (hat,box) or(apple,
+pantry) . Workers are paid $1 per HIT.is in the front yard  as line 5 in Table 1). Finally,
 as reported in Arodi and Cheung (2021)  Sap et al.
 (2022), ToMi contains some mislabeled secondorder
  questions, which we also correct.
@@ -495,7 +503,7 @@ modifications ( 5.2). Finally, we explore SYMBOL ICTOM s
  robustness to linguistic diversity ( 5.3).
 Supervised Models For comparison, we train
 two supervised models  Textual Time Travel (TTT)
-(Arodi and Cheung, 2021), and a fine-tuned GPT Curie.
+(Arodi and Cheung, 2021), and a fine-tuned GPT3Curie.
  TTT is a modification of EntNet (Henaff
 et al., 2017) designed for theory of mind tasks 
 GPT3-Curie is finetuned on 6000 ToMi examples
@@ -516,7 +524,11 @@ first-order false-belief questions for Flan-T5-XL,
 questions for GPT3.5, among other improvements.
 In addition, we observe all models maintain nearperfect
  performance with and without SYMBOL ICTOMin
- memory questions. Supervised models0.00.51.01 0.00.51.02 0.0 0.5 1.00.00.51.0 0.0 0.5 1.0 4  Accuracy for each ToMi question type and
+ memory questions. Supervised models0.00.51.01st order ToM True Belief1st order ToM False Belief
+0.00.51.02nd order ToM True Belief2nd order ToM False Belief
+0.0 0.5 1.00.00.51.0Reality
+0.0 0.5 1.0Memory
+Base model accuracyBase model   SymbolicToM accuracyFigure 4  Accuracy for each ToMi question type and
 base model (higher is better). Dots in the upper triangle
 have higher performance with SYMBOLIC TOMthan
 the base model out-of-the-box. Horizontal lines give
@@ -545,25 +557,32 @@ We create three test sets by modifying ToMi s stories
 or linguistic diversity. These tests were only evaluated
  once, after finishing development of SYMBOL ICTOM.
  Test sets are defined below. See Appendix
-B.2 for concrete examples.D1 2 3
+B.2 for concrete examples.D1 D2 D3
 Off-the-shelf models
-Macaw-3 8 12 30
+Macaw-3B 8 12 30
 Flan-T5-XL 86 51 68
-Flan-T5-XXL 69 59 52 3-Curie 37 39 57 3-Davinci 20 25 39 3.541 0 48 4 58 62 97
-LLaMA-7 17 17 17
-LLaMA-13 26 36 37
+Flan-T5-XXL 69 59 52
+GPT3-Curie 37 39 57
+GPT3-Davinci 20 25 39
+GPT3.541 0 48
+GPT4 58 62 97
+LLaMA-7B 17 17 17
+LLaMA-13B 26 36 37
 SYMBOLIC TOM  Off-the-shelf models
-Macaw-3 89 ( 81) 71( 60) 70( 41)
+Macaw-3B 89 ( 81) 71( 60) 70( 41)
 Flan-T5-XL 76 (-10) 96( 46) 100 ( 33)
 Flan-T5-XXL 93 ( 24) 100 ( 41) 100 ( 49)
 GPT3-Curie 84 ( 48) 81( 42) 73( 16)
 GPT3-Davinci 92 ( 73) 91( 66) 90( 50)
 GPT3.5 100 ( 99) 100 ( 99) 99( 51)
 GPT4 100 ( 42) 100 ( 38) 100 (  4)
-LLaMA-7 99 ( 82) 92( 75) 88( 71)
-LLaMA-13 78 ( 52) 84( 48) 84( 47)
+LLaMA-7B 99 ( 82) 92( 75) 88( 71)
+LLaMA-13B 78 ( 52) 84( 48) 84( 47)
 Supervised models
-TTT 49 65 78 3 51 68 32 2 100 stories for each of the modified test sets
+TTT 49 65 78
+Finetuned GPT3 51 68 32
+Table 2  Precision using SYMBOLIC TOMon all questions
+ from 100 stories for each of the modified test sets
 Di. Supervised models were trained on ToMi  all others
 do not require training. Parenthesis reflect differences
 between using and not using SYMBOLIC TOM bold reflects
@@ -571,7 +590,7 @@ between using and not using SYMBOLIC TOM bold reflects
 highest net improvements when using SYMBOLIC TOM.
 Double Room False Belief Story ( D1)Two false
 belief substories involving the same two characters
-p1, p are concatenated to yield a longer, more complex
+p1, p2are concatenated to yield a longer, more complex
  story. Each substory has different objects being
  moved, across different containers. The system
 is probed using all four combinations of secondorder
@@ -579,20 +598,21 @@ is probed using all four combinations of secondorder
 characters and locations. Questions are evenly split
 between the first and second substory.
 Three Active Characters Story ( D2)Three
-characters p1, p2, p are in the same room, where
-an object o and three containers c1, c2, c are available.
- The story is as follows  p leaves before p1 2, butp witnesses the move.
+characters p1, p2, p3are in the same room, where
+an object o1and three containers c1, c2, c3are available.
+ The story is as follows  p2leaves before p1
+moves o1fromc1toc2, butp3witnesses the move.
 4Low scores are due to the model refusing to answer, e.g.
 answering  There is no information in the given text to determine
- where Bob thinks Alice searches for the celery.  Then, p leaves the room. Later, p moves the object
- to container c without any witnesses. The
+ where Bob thinks Alice searches for the celery.  Then, p1leaves the room. Later, p3moves the object
+ to container c3without any witnesses. The
 system is probed using all combinations of secondorder
  theory of mind questions.
 Multiple Object Movements Across Four Containers
- ( D3)Two characters p1, p are in a room,
+ ( D3)Two characters p1, p2are in a room,
 with a single object, and four containers c1, . . . , c 4.
-p moves the object from c toc and right before
-leaving the room, p enters. p then moves the
+p1moves the object from c1toc2and right before
+leaving the room, p2enters. p2then moves the
 object to c3, and then c4. We probe with all first
 and second-order theory of mind questions.
 Results Supervised models significantly overfit
@@ -600,8 +620,9 @@ to ToMi s original story structures (Table 2). In contrast,
  all models had high accuracy when equipped
 with SYMBOLIC TOM, especially larger models,
 such as GPT3.5, LLaMA-{7B,13B}, among others.
-D may also be used to test third-order ToM reasoning,
- asking questions such as  Where does p1 1  .
+D2may also be used to test third-order ToM reasoning,
+ asking questions such as  Where does p1
+think that p2thinks that p1will search for the o1  .
 Third-order ToM is a reasoning depth currently
 untested by available NLP benchmarks. SYMBOL ICTOMconsistently
  enhances the performance of
@@ -632,7 +653,12 @@ losses in false-belief questions (-40 average accuracy)
  but is robust for other question types.
 Methods without supervision also suffer significant
  losses, but SYMBOLIC TOMstill results in
-0.00.51.01 0.00.51.02 0.0 0.5 1.00.00.51.0 0.0 0.5 1.0 5 3 as implementation of RESULTING STATE (Davinci
+0.00.51.01st order ToM True Belief1st order ToM False Belief
+0.00.51.02nd order ToM True Belief2nd order ToM False Belief
+0.0 0.5 1.00.00.51.0Reality
+0.0 0.5 1.0Memory
+Base model accuracyBase model   SymbolicToM accuracyFigure 5  Results for ParaphrasedToMi when prompting
+GPT3 as implementation of RESULTING STATE (Davinci
 for all except for Curie). Dots in the upper triangle imply
 performance with SYMBOLIC TOMis higher than using
 the base model out-of-the-box. Horizontal lines reflect
@@ -756,7 +782,7 @@ human-written stories. This may be alleviated using
  (Stanovsky et al., 2018)) to create and update
 the graphs, the presented approach may propagate
 errors as revealed in the linguistic diversity experiments.
- However, these issues can be largely alle As
+ However, these issues can be largely alle5As
  a part of out-of-domain testing, we also create a more
 challenging version of the available ToM datasets, available
 athttps //github.com/msclar/symbolictom along with
@@ -822,7 +848,7 @@ Google Ph.D. Fellowship. We also thank OpenAI
 for providing academic access to their language
 model API. This material is based upon work
 partly funded by the DARPA CMO under Contract
- No. HR C0124, by DARPA MCS program
+ No. HR001120C0124, by DARPA MCS program
  through NIWC Pacific (N66001-19-2-4031),
 by NSF DMS-2134012, by NSF CAREER Grant
 No. IIS2142739, and an Alfred P. Sloan Foundation
@@ -837,7 +863,8 @@ Mikuláš Zelinka, Marc-Antoine Rondeau, Romain
 Laroche, Pascal Poupart, Jian Tang, Adam Trischler,
 and Will Hamilton. 2020. Learning dynamic belief
 graphs to generalize on text-based games. Advances
-in Neural Information Processing Systems , 33 3045 3057.
+in Neural Information Processing Systems , 33 3045 
+3057.
 Arjun R. Akula, Keze Wang, Changsong Liu, Sari SabaSadiya,
  Hongjing Lu, Sinisa Todorovic, Joyce Chai,
 and Song-Chun Zhu. 2022. Cx-tom  Counterfactual
@@ -903,7 +930,8 @@ Roller, Dirk Rowe, Weiyan Shi, Joe Spisak, Alexander
  Wei, David Wu, Hugh Zhang, and Markus Zijlstra.
  2022. Human-level play in the game of
  i diplomacy /i  by combining language models
-with strategic reasoning. Science , 378(6624) 1067 1074.
+with strategic reasoning. Science , 378(6624) 1067 
+1074.
 C.D. Frith, D.M. Wolpert, Uta Frith, and Christopher D.
 Frith. 2003. Development and neurophysiology of
 mentalizing. Philosophical Transactions of the Royal
@@ -939,7 +967,8 @@ natural language. arXiv preprint arXiv 2212.13894 .
 Matthew Le, Y-Lan Boureau, and Maximilian Nickel.
 2019. Revisiting the evaluation of theory of mind
 through question answering. In Proceedings of the
-2019 9th International
+2019 Conference on Empirical Methods in Natural
+ Language Processing and the 9th International
 Joint Conference on Natural Language Processing
 (EMNLP-IJCNLP) , pages 5872 5877.
 Alan M Leslie, Ori Friedman, and Tim P German. 2004.
@@ -965,7 +994,8 @@ Maxwell Nye, Michael Tessler, Josh Tenenbaum, and
 Brenden M Lake. 2021. Improving coherence and
 consistency in neural sequence models with dualsystem,
  neuro-symbolic reasoning. Advances in
-Neural Information Processing Systems , 34 25192 25204.OpenAI. 2022. ChatGPT  Optimizing language models
+Neural Information Processing Systems , 34 25192 
+25204.OpenAI. 2022. ChatGPT  Optimizing language models
 for dialogue.
 OpenAI. 2023. GPT-4 technical report.
 Christopher Osterhaus, Susanne Koerber, and Beate
@@ -1011,7 +1041,8 @@ and Ido Dagan. 2018. Supervised open information
 extraction. In Proceedings of the 2018 Conference
 of the North American Chapter of the Association
 for Computational Linguistics  Human Language
-Technologies, Volume 1 (Long Papers) , pages 885 895.
+Technologies, Volume 1 (Long Papers) , pages 885 
+895.
 Oyvind Tafjord and Peter Clark. 2021. General-purpose
 question-answering with macaw. arXiv preprint
 arXiv 2109.02593 .
@@ -1045,7 +1076,7 @@ what students perceive about a virtual teaching assistant.
  In Proceedings of the 2021 CHI Conference on
 Human Factors in Computing Systems , pages 1 14.
 Yuanfei Wang, fangwei zhong, Jing Xu, and Yizhou
-Wang. 2022. Tom c  Target-oriented multi-agent
+Wang. 2022. Tom2c  Target-oriented multi-agent
 communication and cooperation with theory of mind.
 InInternational Conference on Learning Representations
  .
@@ -1086,7 +1117,8 @@ instead be stored in the local contexts of the people
 that heard the speech. Since verbal interactions are
 not tested by available datasets, this distinction is
 not relevant in ToMi.
-A.2 3-Curie we 2-shot prompt with the
+A.2 Prompts for Resulting State Extraction
+For GPT3-Curie we 2-shot prompt with the
 following prompt (both for original and linguistic
 diversity experiments) 
 John quit his job. The resulting state
@@ -1112,19 +1144,29 @@ We observe that GPT3 is significantly more robust
 are poor at detecting the resulting state for florid
 paraphrases, although the original phrasings are a
 straightforward task for Flan-T5.
-Larger models like GPT3.5 4 are able to
+Larger models like GPT3.5 and GPT4 are able to
 perform the task well zero-shot, similarly to GPT3 
 LLaMA models require fewer demonstrations than
 Flan-T5. We ran all main experiments implementing
- Resulting State Extraction with GPT3.A.3 3 3 (Curie and
+ Resulting State Extraction with GPT3.A.3 Solving PROCESS QUESTION using GPT3
+Our explorations suggest that GPT3 (Curie and
 GPT3-Davinci text-davinci-002  the version
 used in all our experiments) can successfully extract
  entities and rephrase the question. See Figure
 6 for an example prompt.
-Figure 6 3 shows one-shot generalization abilities
+Figure 6  GPT3 shows one-shot generalization abilities
 from first-order to second-order questions.
 B Details on Out-Of-Domain Evaluation
-B.1 38 36 31 21 19 18 9 3  Number of paraphrases per original sentence
+B.1 Linguistic Diversity Per ToMi Template
+Sentence type Count
+Object s Position 38
+Distractor Negative Sentiment 36
+Distractor Positive Sentiment 31
+Person Entered Room 21
+Person Exited Room 19
+Person Moved Object 18
+Person s Position 9
+Table 3  Number of paraphrases per original sentence
 template. Paraphrases were obtained from prompting
 GPT3-Davinci ( text-davinci-002 ).
 B.1.1 All Paraphrases of PersonX entered
@@ -1174,69 +1216,93 @@ PersonX hurried from the RoomY.
 PersonX crawled from the RoomY.
 PersonX crept from the RoomY.
 PersonX tiptoed from the RoomY.
-B.1.3 1 1.
+B.1.3 All Paraphrases of The Object1 is in
+the Container1.
 Prompted with Object1 apple ,
 Container1 {fridge, envelope, bathtub} .
 Then filtered to remove object-specific wording.
-The Object1 1.
-The Object1 1.
-The Object1 1.
-The Object1 1.
-The Object1 1.
-The Object1 1.
-The Object1 1.
-The Object1 1.
-The Object1 1.
-The Object1 1.
-The Object1 1.
-The Object1 1.The Object1 1.
-The Object1 1.
-The Object1 1.
-The Object1 1.
-The Object1 1.
-The Object1 1.
-The Object1 1.
-The Container1 1.
-The Object1 1.
-The Object1 1.
-The Container1 1 is.
-The Container1 1.
-The Container1 1.
-The Container1 1.
-The Container1 1.
-The Container1 1.
-The Container1 1 within it.
-The Container1 1 inside of
+The Object1 is in the Container1.
+The Object1 is stored in the Container1.
+The Object1 is kept in the Container1.
+The Object1 is located in the Container1.
+The Object1 is situated in the Container1.
+The Object1 is set in the Container1.
+The Object1 is placed in the Container1.
+The Object1 is found in the Container1.
+The Object1 is positioned in the
+Container1.
+The Object1 is set upon in the Container1.
+The Object1 is put in the Container1.
+The Object1 is laid in the Container1.The Object1 is deposited in the
+Container1.
+The Object1 is stationed in the
+Container1.
+The Object1 is put to rest in the
+Container1.
+The Object1 is set to rest in the
+Container1.
+The Object1 is rested in the Container1.
+The Object1 is set aside in the
+Container1.
+The Object1 is stowed in the Container1.
+The Container1 contains the Object1.
+The Object1 is inside the Container1.
+The Object1 is within the Container1.
+The Container1 is where the Object1 is.
+The Container1 has the Object1.
+The Container1 is holding the Object1.
+The Container1 is keeping the Object1.
+The Container1 is safeguarding the
+Object1.
+The Container1 is storing the Object1.
+The Container1 has the Object1 within it.
+The Container1 has the Object1 inside of
 it.
-The Container1 1
+The Container1 is holding the Object1
 within it.
-The Container1 1
+The Container1 is keeping the Object1
 inside of it.
-The Container1 1 inside of it.
-The Container1 1
+The Container1 is safeguarding the
+Object1 inside of it.
+The Container1 is storing the Object1
 inside of it.
-There is a Object1 1.
-A Object1 1.
-The Container1 1 in it.
-Inside the Container1 1.
-B.1.4 1 1.
-PersonX moved the Object1 1.
-PersonX relocated the Object1 1.
-PersonX transferred the Object1 1.
-PersonX shifted the Object1 1.
-PersonX placed the Object1 1.
-PersonX set the Object1 1.
-PersonX put the Object1 1.PersonX stowed the Object1 1.
-PersonX stored the Object1 1.
-PersonX hid the Object1 1.
-PersonX shoved the Object1 1.
-PersonX pushed the Object1 1.
-PersonX carried the Object1 1.
-PersonX conveyed the Object1 1.
-PersonX led the Object1 1.
-PersonX transported the Object1 1.
-PersonX brought the Object1 1.
-PersonX took the Object1 1.
+There is a Object1 in the Container1.
+A Object1 is in the Container1.
+The Container1 has a Object1 in it.
+Inside the Container1 is a Object1.
+B.1.4 All Paraphrases of PersonX moved the
+Object1 to the Container1.
+PersonX moved the Object1 to the
+Container1.
+PersonX relocated the Object1 to the
+Container1.
+PersonX transferred the Object1 to the
+Container1.
+PersonX shifted the Object1 to the
+Container1.
+PersonX placed the Object1 in the
+Container1.
+PersonX set the Object1 in the Container1.
+PersonX put the Object1 in the Container1.PersonX stowed the Object1 in the
+Container1.
+PersonX stored the Object1 in the
+Container1.
+PersonX hid the Object1 in the Container1.
+PersonX shoved the Object1 into the
+Container1.
+PersonX pushed the Object1 to the
+Container1.
+PersonX carried the Object1 to the
+Container1.
+PersonX conveyed the Object1 to the
+Container1.
+PersonX led the Object1 to the Container1.
+PersonX transported the Object1 to the
+Container1.
+PersonX brought the Object1 to the
+Container1.
+PersonX took the Object1 to the
+Container1.
 B.1.5 All Paraphrases of PersonX is in the
 RoomY.
 PersonX is in the RoomY.
@@ -1248,7 +1314,9 @@ PersonX is to be found in the RoomY.
 PersonX is contained in the RoomY.
 The RoomY holds PersonX.
 The RoomY shelters PersonX.
-B.1.6 1 fever.
+B.1.6 All Paraphrases of positive distractor
+sentences
+PersonX has a bad case of Object1 fever.
 PersonX is Object1 crazy.
 PersonX is Object1-crazed.
 PersonX is Object1-obsessed.
@@ -1320,61 +1388,73 @@ The Object1 turns PersonX s stomach.
 B.2 Structure of Story Structure Robustness
 Test Sets
 B.2.1 Double Room False-Belief Episode
-person1 1.
-person2 1.
-The object1 1.
-The container1 1.
-person2 1.
-person1 1 2.
-The container2 1.
-person1 1.
-person2 2.
-person1 2.
-The object2 3.
-The container3 2.
-person1 2.
-person2 2 4.
-The container4 2.
-person2 2.
-B.2.2 1 1.
-person2 1.
-person3 1.
-The object1 1.
-The container1 1.
-person2 1.
-person1 1 2.
-The container2 1.
-person1 1.
-person3 1 3.
-The container3 1.
-person3 1.
+person1 entered the room1.
+person2 entered the room1.
+The object1 is in the container1.
+The container1 is in the room1.
+person2 exited the room1.
+person1 moved the object1 to the
+container2.
+The container2 is in the room1.
+person1 exited the room1.
+person2 entered the room2.
+person1 entered the room2.
+The object2 is in the container3.
+The container3 is in the room2.
+person1 exited the room2.
+person2 moved the object2 to the
+container4.
+The container4 is in the room2.
+person2 exited the room2.
+B.2.2 Three Active Characters Story
+person1 entered the room1.
+person2 entered the room1.
+person3 entered the room1.
+The object1 is in the container1.
+The container1 is in the room1.
+person2 exited the room1.
+person1 moved the object1 to the
+container2.
+The container2 is in the room1.
+person1 exited the room1.
+person3 moved the object1 to the
+container3.
+The container3 is in the room1.
+person3 exited the room1.
 B.2.3 True-Belief Interaction, Falsified by
 Unwitnessed Third-Person Story
-person1 1.
-person2 1.
-The object1 1.
-The container1 1.
-person1 1 2.
-The container2 1.
-person2 1.person1 1.
-person3 1.
-person3 1 1.
-B.2.4 1 1.
-The object1 1.
-The container1 1.
-person1 1 2.
-The container2 1.
-person2 1.
-person1 1.
-person2 1 3.
-The container3 1.
-person2 1 4.
-The container4 1.
+person1 entered the room1.
+person2 entered the room1.
+The object1 is in the container1.
+The container1 is in the room1.
+person1 moved the object1 to the
+container2.
+The container2 is in the room1.
+person2 exited the room1.person1 exited the room1.
+person3 entered the room1.
+person3 moved the object1 to the
+container1.
+B.2.4 Four Containers with Multiple
+Movements
+person1 is in the room1.
+The object1 is in the container1.
+The container1 is in the room1.
+person1 moved the object1 to the
+container2.
+The container2 is in the room1.
+person2 entered the room1.
+person1 exited the room1.
+person2 moved the object1 to the
+container3.
+The container3 is in the room1.
+person2 moved the object1 to the
+container4.
+The container4 is in the room1.
 C Expanded Results
 Experimental Note  All zero-shot GPT3
 (text-curie-001 and text-davinci-002 )
 experiments were performed between November
-2022 2023. GPT3.5 ( gpt-3.5-turbo )
+2022 and January 2023. GPT3.5 ( gpt-3.5-turbo )
 and GPT4 ( gpt-4 ) were added in May 2023.
 C.1 Ablating FILTER BASED ONQUESTION
 from S YMBOLIC TOM
@@ -1396,7 +1476,11 @@ and a mild negative one on Flan-T5-XL, and GPT4
 (-5.3, and -4 points of accuracy on average). See
 Table 7 for all differences between executing SYMBOLIC
  TOMusing this final filtering or not. Figure
-7 0.00.51.01 0.00.51.02 0.0 0.5 1.00.00.51.0 0.0 0.5 1.0 7  Precision using SYMBOLIC TOMon ToMi, for
+7 visually represents the accuracy of all models by0.00.51.01st order ToM True Belief1st order ToM False Belief
+0.00.51.02nd order ToM True Belief2nd order ToM False Belief
+0.0 0.5 1.00.00.51.0Reality
+0.0 0.5 1.0Memory
+Base model accuracyBase model   SymbolicToM accuracyFigure 7  Precision using SYMBOLIC TOMon ToMi, for
 several language models without the final filter function.
 Performance is shown for each question type, dots in
 upper triangle imply performance improvements. Full
@@ -1408,7 +1492,7 @@ question type. Regardless of the final filter application,
 and Memory questions. For Flan-T5-XL, FlanT5-XL 
  SYMBOLIC TOMoutperforms Flan-T5-XL
 significantly in all four ToM question types (e.g.
- 76 36 points in accuracy for first and secondorder
+ 76 and  36 points in accuracy for first and secondorder
  false belief questions), and shows slight declines
  for Reality and Memory questions in line
 with findings on the full algorithm, but with less
@@ -1423,29 +1507,36 @@ mind questions for all models. We only find the filter
 in theory of mind questions for Flan-T5-XXL.
 C.2 Third-Order Theory of Mind Evaluation
 We ask all third-order theory of mind questions for
-eachD story, such as  Where does p think that
-p thinks that p will search for the o1  . Questions
- involving p will have a final answer c1, since
-everyone saw p leaving. We ask all six possibleD2 S THIRD -ORDER
+eachD2story, such as  Where does p1think that
+p2thinks that p1will search for the o1  . Questions
+ involving p2will have a final answer c1, since
+everyone saw p2leaving. We ask all six possibleD2 S THIRD -ORDER
 TOMQUESTIONS
 Off-the-shelf models
-Macaw-3 13
+Macaw-3B 13
 Flan-T5-XL 32
-Flan-T5-XXL 62 3-Curie 28 3-Davinci 19 3.5 8 4 26
-LLaMA-7 22
-LLaMA-13 39
+Flan-T5-XXL 62
+GPT3-Curie 28
+GPT3-Davinci 19
+GPT3.5 8
+GPT4 26
+LLaMA-7B 22
+LLaMA-13B 39
 SYMBOLIC TOM  Off-the-shelf models
-Macaw-3 85 ( 72)
+Macaw-3B 85 ( 72)
 Flan-T5-XL 97 ( 65)
 Flan-T5-XXL 100 ( 38)
 GPT3-Curie 89 ( 61)
 GPT3-Davinci 90 ( 71)
 GPT3.5 100 ( 91)
 GPT4 100 ( 73)
-LLaMA-7 90 ( 68)
-LLaMA-13 95 ( 57)
+LLaMA-7B 90 ( 68)
+LLaMA-13B 95 ( 57)
 Supervised models
-TTT 52 3 76 4 100 stories for each of the modified test sets
+TTT 52
+Finetuned GPT3 76
+Table 4  Precision using SYMBOLIC TOMon all questions
+ from 100 stories for each of the modified test sets
 Di. Supervised models were trained on ToMi  all others
 do not require training. Parenthesis reflect differences
 between using and not using SYMBOLIC TOM bold reflects
@@ -1453,11 +1544,12 @@ between using and not using SYMBOLIC TOM bold reflects
 highest net improvements when using SYMBOLIC TOM.
 questions involving p2. We also ask the two thirdorder
  theory of mind questions that do not involve
-p nor repeats the same person twice consecutively
-( Where does p think that p thinks that p will
-search for the o1 1  ), totaling
-eight questions per D story.
-Table 4 2
+p2nor repeats the same person twice consecutively
+( Where does p1think that p3thinks that p1will
+search for the o1   and  Where does p3think that
+p1thinks that p3will search for the o1  ), totaling
+eight questions per D2story.
+Table 4 shows results for all models using k  2
 representations (same depth as in the main paper).
 Using SYMBOLIC TOMsignificantly outperforms
 the supervised baselines and yields dramatic improvements
@@ -1466,7 +1558,14 @@ the supervised baselines and yields dramatic improvements
 theoretically requires k  3, the second-order theory
  of mind representation already helps models
 avoid attending to parts of the story that are inaccessible
- to relevant characters.C.3 0.00.51.01 0.00.51.02 0.0 0.5 1.00.00.51.0 0.0 0.5 1.0 8  Results for ParaphrasedToMi when using the
+ to relevant characters.C.3 Alternative RESULTING STATE
+Implementations
+0.00.51.01st order ToM True Belief1st order ToM False Belief
+0.00.51.02nd order ToM True Belief2nd order ToM False Belief
+0.0 0.5 1.00.00.51.0Reality
+0.0 0.5 1.0Memory
+Base model accuracyBase model   SymbolicToM accuracy
+Figure 8  Results for ParaphrasedToMi when using the
 same model for implementing the RESULTING STATE
 function as in the final question-answering task (except
 using Davinci for Macaw, who did not show reliable
@@ -1490,7 +1589,7 @@ for all non-GPT3-based models.
 We find GPT3 to be among the most reliable
 to answer the resulting state of a given action in
 a zero-shot (Davinci) or two-shot (Curie) manner.
-Similarly, GPT3.5 4 perform well zeroshot 
+Similarly, GPT3.5 and GPT4 perform well zeroshot 
  for experiments, we use GPT3.5 zero-shot
 and GPT4 two-shot to improve the resulting phrasing
  stability.Additional exploration shows that although FlanT5
@@ -1508,43 +1607,50 @@ and seven-shot prompting for LLaMA-13B. Accuracy
 using GPT3.
 C.4 Detailed Result Tables
 All results in the appendix show accuracy as a ratio
-(between 0 1). For simplicity of reading, in
+(between 0 and 1). For simplicity of reading, in
 the main text, they are referred to in percentages
-(values 0 100, higher is better). Figures 5, 6, and
+(values 0 to 100, higher is better). Figures 5, 6, and
 7 show performances when applying the final filtering
  function, when not applying it, and the difference
- in performance between the two, respectively.1 1 2 2nd FB Reality Memory
-Macaw-3 0.86 [0.50] 0.79 [0.33] 0.86 [0.34] 0.84 [0.17] 0.10 [0.14] 0.95 [0.91]
+ in performance between the two, respectively.1st TB 1st FB 2nd TB 2nd FB Reality Memory
+Macaw-3B 0.86 [0.50] 0.79 [0.33] 0.86 [0.34] 0.84 [0.17] 0.10 [0.14] 0.95 [0.91]
 GPT3-Curie 0.77 [0.42] 0.82 [0.35] 0.73 [0.26] 0.89 [0.26] 0.61 [0.69] 0.99 [0.86]
 GPT3-Davinci 0.96 [0.75] 0.96 [0.25] 0.93 [0.14] 0.90 [0.26] 0.77 [0.86] 0.98 [0.98]
 Flan-T5-XL 0.98 [0.97] 0.80 [0.18] 0.98 [0.68] 0.78 [0.56] 0.73 [0.97] 1.00 [1.00]
 Flan-T5-XXL 0.98 [0.84] 0.95 [0.67] 1.00 [0.76] 0.90 [0.39] 0.13 [0.63] 1.00 [1.00]
-LLaMA-7 0.82 [0.32] 0.95 [0.66] 0.66 [0.31] 0.72 [0.41] 0.87 [0.37] 1.00 [0.83]
-LLaMA-13 0.82 [0.60] 0.86 [0.67] 0.70 [0.53] 0.62 [0.77] 0.87 [0.48] 1.00 [0.90]
+LLaMA-7B 0.82 [0.32] 0.95 [0.66] 0.66 [0.31] 0.72 [0.41] 0.87 [0.37] 1.00 [0.83]
+LLaMA-13B 0.82 [0.60] 0.86 [0.67] 0.70 [0.53] 0.62 [0.77] 0.87 [0.48] 1.00 [0.90]
 GPT3.5 0.97 [0.76] 0.95 [0.66] 0.99 [0.02] 0.87 [0.09] 0.98 [1.00] 0.99 [0.80]
 GPT4 0.98 [0.83] 0.94 [0.73] 0.98 [0.36] 0.89 [0.64] 0.94 [1.00] 1.00 [1.00]
 Finetuned GPT3 0.95 0.99 0.97 1.00 1.00 1.00
-TTT-learned 0.84 1.00 0.82 0.88 1.00 1.00 5  Performance per model and question using SYMBOLIC TOM, with out-of-the-box performance shown in
+TTT-learned 0.84 1.00 0.82 0.88 1.00 1.00
+Table 5  Performance per model and question using SYMBOLIC TOM, with out-of-the-box performance shown in
 brackets (100 samples per question type). Bottom rows represent supervised baselines.
-1 1 2 2nd FB Reality Memory
-Macaw-3 0.54 [0.50] 0.86 [0.33] 0.56 [0.34] 0.88 [0.17] 0.16 [0.14] 0.98 [0.91]
+1st TB 1st FB 2nd TB 2nd FB Reality Memory
+Macaw-3B 0.54 [0.50] 0.86 [0.33] 0.56 [0.34] 0.88 [0.17] 0.16 [0.14] 0.98 [0.91]
 GPT3-Curie 0.66 [0.42] 0.79 [0.35] 0.69 [0.26] 0.87 [0.26] 0.65 [0.69] 0.94 [0.86]
 GPT3-Davinci 0.94 [0.75] 0.88 [0.25] 0.90 [0.14] 0.83 [0.26] 0.83 [0.86] 0.90 [0.98]
 Flan-T5-XL 1.00 [0.97] 0.94 [0.18] 1.00 [0.68] 0.92 [0.56] 0.88 [0.97] 0.85 [1.00]
 Flan-T5-XXL 0.74 [0.84] 0.69 [0.67] 0.68 [0.76] 0.64 [0.39] 0.44 [0.63] 1.00 [1.00]
-LLaMA-7 0.48 [0.32] 0.95 [0.66] 0.38 [0.31] 0.98 [0.41] 0.48 [0.37] 0.84 [0.83]
-LLaMA-13 0.75 [0.60] 0.96 [0.67] 0.70 [0.53] 0.96 [0.77] 0.57 [0.48] 0.89 [0.90]
+LLaMA-7B 0.48 [0.32] 0.95 [0.66] 0.38 [0.31] 0.98 [0.41] 0.48 [0.37] 0.84 [0.83]
+LLaMA-13B 0.75 [0.60] 0.96 [0.67] 0.70 [0.53] 0.96 [0.77] 0.57 [0.48] 0.89 [0.90]
 GPT3.5 0.99 [0.76] 1.00 [0.66] 1.00 [0.02] 0.98 [0.09] 0.98 [1.00] 0.90 [0.80]
 GPT4 0.99 [0.83] 1.00 [0.73] 1.00 [0.36] 0.98 [0.64] 1.00 [1.00] 1.00 [1.00]
 Finetuned GPT3 0.95 0.99 0.97 1.00 1.00 1.00
-TTT-learned 0.84 1.00 0.82 0.88 1.00 1.00 6  Performance per model and question using SYMBOLIC TOMwithout FILTER BASED ONQUESTION , with
+TTT-learned 0.84 1.00 0.82 0.88 1.00 1.00
+Table 6  Performance per model and question using SYMBOLIC TOMwithout FILTER BASED ONQUESTION , with
 out-of-the-box performance shown in brackets (100 samples per question type). Bottom rows represent supervised
 baselines.
-1 1 2 2nd FB Reality Memory
-Macaw-3 0.32 -0.07 0.30 -0.04 -0.06 -0.03 3-Curie 0.11 0.03 0.04 0.02 -0.04 0.05 3-Davinci 0.02 0.08 0.03 0.07 -0.06 0.08
+1st TB 1st FB 2nd TB 2nd FB Reality Memory
+Macaw-3B 0.32 -0.07 0.30 -0.04 -0.06 -0.03
+GPT3-Curie 0.11 0.03 0.04 0.02 -0.04 0.05
+GPT3-Davinci 0.02 0.08 0.03 0.07 -0.06 0.08
 Flan-T5-XL -0.02 -0.14 -0.02 -0.14 -0.15 0.15
 Flan-T5-XXL 0.24 0.26 0.32 0.26 -0.31 0.00
-LLaMA-7 0.34 0.00 0.28 -0.26 0.39 0.16
-LLaMA-13 0.07 -0.10 0.00 -0.34 0.30 0.11 3.5 -0.02 -0.05 -0.01 -0.11 0.00 0.09 4 -0.01 -0.06 -0.02 -0.09 -0.06 0.00 7  Differences between accuracy of base models using SYMBOLIC TOMwith the final FILTER BASED ONQUESTION
- filter, and without using the final filter. As shown in Table 5 6, both versions are still far superior to not
+LLaMA-7B 0.34 0.00 0.28 -0.26 0.39 0.16
+LLaMA-13B 0.07 -0.10 0.00 -0.34 0.30 0.11
+GPT3.5 -0.02 -0.05 -0.01 -0.11 0.00 0.09
+GPT4 -0.01 -0.06 -0.02 -0.09 -0.06 0.00
+Table 7  Differences between accuracy of base models using SYMBOLIC TOMwith the final FILTER BASED ONQUESTION
+ filter, and without using the final filter. As shown in Table 5 and 6, both versions are still far superior to not
 using S YMBOLIC TOM.

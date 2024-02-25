@@ -1,5 +1,6 @@
 How About Kind of Generating Hedges using End-to-End Neural Models 
-Alafate Abulimiti1,2, Chloé Clavel3, Justine Cassell1,4 1INRIA, Paris ENS/PSL  alafate.abulimiti@inria.fr 
+Alafate Abulimiti1,2, Chloé Clavel3, Justine Cassell1,4
+1INRIA, Paris2ENS/PSL  alafate.abulimiti@inria.fr 
 3LTCI, Insitut Polytechnique de Paris, Telecom Paris  chloe.clavel@telecom-paris.fr 
 4Carnegie Mellon University  justine@cs.cmu.edu 
 Abstract
@@ -79,7 +80,7 @@ algebra equation.
 Tutoring is one context in which hedges are
 found in abundance and where recognizing them
 might be important for intelligent tutoring systems,
-as attested by the number of computational ap-arXiv 2306.14696 1  [cs.CL]  26 2023proaches that attempt to do so (see section 2). Interestingly,
+as attested by the number of computational ap-arXiv 2306.14696v1  [cs.CL]  26 Jun 2023proaches that attempt to do so (see section 2). Interestingly,
  even unskilled tutors use them. In fact,
 research on peer tutoring has shown that when rapport
  between a peer tutor and tutee is low, but the
@@ -164,7 +165,7 @@ Madaio et al. (2017) built a classifier to detect hedging
  and achieved an accuracy of 81%. Recent work
 by Raphalen et al. (2022) improved the detection of
 different types of hedges and achieved a weighted
-F1 0.97.
+F1 score of 0.97.
 Hedging is a particular kind of indirectness, and
 therefore as we look at prior work in the area,
 we include approaches to the generation of indirect
@@ -224,7 +225,8 @@ trained on written dialogue datasets, which facilitated
  the task. However, our spontaneous dialogue
 dataset may lead the way for cutting-edge models
 trained on a real-world, face-to-face interactional
-dataset.3 3.1 Task Description
+dataset.3 Methodology
+3.1 Task Description
 LetD {d1, d2, d3, ...d n}be a set of dialogues,
 where each dialogue d {u1, u2, u3...um}is composed
  of mturns, where uiis a turn. Each tutor
@@ -243,7 +245,7 @@ the dialogue history hi.
 The dataset we used in the current work is the
 same as that used in our prior work (Raphalen
 et al., 2022  Goel et al., 2019  Zhao et al., 2014).
-24 12 15, half boys
+24 American teenagers aged 12 to 15, half boys
 and half girls, were assigned to same-gender pairs.
 They took turns tutoring each other in linear algebra
  once a week for five weeks, for a total of 60
@@ -293,7 +295,9 @@ loss between uiandu
 i, where u  R V ,Vis the
 vocabulary.
 J(ui, u 
-i)   1 1ui,jlog(u 
+i)   1
+nj  V X
+j 1ui,jlog(u 
 i,j) (1)
 3.3.2 Reranking Method
 Since a hedge classifier was developed for prior
@@ -319,7 +323,10 @@ means the one with the highest sentence score. 5) If
 none of the candidates matches the selected hedge
 strategy, we output the one that has the highest
 sentence score.
-1 4 4.1 60 20 20 ratio. Of these, 60% is the training set,
+1See Appendix C for the details4 Experimental Setting
+4.1 Data Processing
+We randomly split the final dataset based on a
+60 20 20 ratio. Of these, 60% is the training set,
 20% is the validation set, and 20% is the test set.
 Since our dataset is highly unbalanced, if we
 used it as is the results would be too biased towards
@@ -332,7 +339,7 @@ hedges in the test set, and combine the data to form
 a new balanced test set. On the other hand, in order
 to have a large enough training set, we retain all tutor
  turns from the complete dataset, which therefore
-consists of 701 4455 non-hedge
+consists of 701 hedge turns and 4455 non-hedge
 turns, resulting in a dataset that is very skewed, but
 has more turns.
 While the complete dataset contains a relatively
@@ -392,7 +399,7 @@ tutor  ...
 tutee ...tutor  ... l_i
 Test DataFigure 2  Reranking method
 threads. BlenderBot (Roller et al., 2021) uses the
-standard Seq Seq Transformer architecture, but
+standard Seq2Seq Transformer architecture, but
 incorporates a number of dialogue training sets 
 Empathetic Dialogue (Rashkin et al., 2019), PersonaChat
  (Zhang et al., 2018), ConvAI2 (Dinan
@@ -456,7 +463,8 @@ that may serve to give the speaker time to plan the
 next utterance (Biber et al., 1999  Thornbury and
 Slade, 2006). We therefore did not assess fluency
 in this work.
-5 5.1 1  How well do end-to-end models
+5 Results
+5.1 RQ1  How well do end-to-end models
 perform alone for generating hedges 
 Table 2 compares the performance of the generation
  models. BlenderBot outperforms the other 2
@@ -466,7 +474,8 @@ in each score is relatively wide. This discrepancy
 is most apparent on measures that compute scores
 based on n-gram-level overlaps (BLEU, ROUGE).
 To find the reason for this discrepancy, we calculate
-the average length of the outputs of the 3 5.2 words for BART, 11.8 words for
+the average length of the outputs of the 3 models
+and observe 5.2 words for BART, 11.8 words for
 BlenderBot, and 14.5 words for DialoGPT, while
 the average length of the tutor s utterances in test
 data is 15.2 words. The average length of the output
@@ -477,12 +486,13 @@ the other hand, BART tends to generate shorter
 turns, consequently demonstrating lower scores on
 metrics that require the calculation of repetition
 grams to yield scores. Note that in similar tasks,
-the best model was Blenderbot with a BLEU 2 6.21, in the case of emotional support conversational
+the best model was Blenderbot with a BLEU 2
+score of 6.21, in the case of emotional support conversational
  strategy generation (Liu et al., 2021),
 while DialoGPT reached 5.52. The best score in
 the positive text reframing task, meanwhile, was
-11.0 1 (Ziems et al., 2022), while BART
-reached 10.1 and GPT-2 4.2.
+11.0 for BLEU 1 (Ziems et al., 2022), while BART
+reached 10.1 and GPT-2 reached 4.2.
 Table 1 shows that BART has the lowest perplexity
  score, indicating that BART is more adaptive
 to our dataset compared to the other two models.
@@ -492,7 +502,8 @@ Section 4.2) that corrupt input texts with an arbitrary
 more accurate predictions in our noisy real-world
 dataset.
 BART BlenderBot DialoGPT
-34.9 69.3 72.4 1  Language Model (LM) Perplexity (the lower is the
+34.9 69.3 72.4
+Table 1  Language Model (LM) Perplexity (the lower is the
 better
 In response to our first research question, then,
 the performance of all three models was comparable
@@ -502,14 +513,21 @@ to learn hedge knowledge implicitly.
 We therefore next turn to an approach that may
 improve performance by screening utterances with
 a given label.
-5.2 2 2 shows the performance of each model for
+5.2 RQ2  Does reranking improve hedge
+generation 
+Table 2 shows the performance of each model for
 the reranking method. BlenderBot once again per-MetricsModelsBlenderBot DialoGPT BART R_BlenderBot R_DialoGPT R_BART
 BLEU_1 11.2 11.4 2.7 12.3 10.9 6.0 
-BLEU_2 5.8 4.7 1.5 6.2 3.9 3.1 8.6 9.1 8.1 11.0 8.4 9.7 17.6 17.0 9.3 17.6 17.5 12.2 
-BARTScore -3.92 -5.62 -4.33 -3.98 -4.79 -4.24 39.9 38.3 38.5 40.5 37.5 39.4
-F Score
+BLEU_2 5.8 4.7 1.5 6.2 3.9 3.1 
+ROUGEL8.6
+ 9.1 8.1 11.0 8.4 9.7
+CHRF 17.6 17.0 9.3 17.6 17.5 12.2 
+BARTScore -3.92 -5.62 -4.33 -3.98 -4.79 -4.24
+BERTScore 39.9 38.3 38.5 40.5 37.5 39.4
+F1Score
 (human
-evaluation)0.54 0.41 0.44 0.84 0.64 0.85 2  Results of the fine-tuned models and reranking
+evaluation)0.54 0.41 0.44 0.84 0.64 0.85
+Table 2  Results of the fine-tuned models and reranking
 method applied to the fine-tuned models. means this result is
 significantly different from the fine-tuning method ( p   . 05)
 forms well on all metrics and has a virtually identical
@@ -566,7 +584,8 @@ We first divide these strategy mismatches into overgeneration
  errors , where the generator generates
 a hedge where it should not and under-generation
 errors when it does not generate a hedge but should.
-Among the 1395 3 generators, there are 13.3% of over-generation
+Among the 1395 annotated turns outputted by the
+3 generators, there are 13.3% of over-generation
 errors and 86.7% under-generation errors . These
 errors are particularly interesting in the context of
 reranking, as it relied strongly on the hedge classifier.
@@ -586,7 +605,7 @@ of the model output (where they labeled the output
  as hedge or non-hedge) with the output of the
 BERT-based classifier on the same generated utterances
  to calculate the F1 score. We find that there
-is a difference of about 9 1
+is a difference of about 9 points between the F1
 score for human annotation (85%) shown in Table
 2, and the F1 score for the same BERT-based hedge
 classifier (94%) reported in Raphalen et al. (2022).
@@ -639,12 +658,13 @@ our corpus contained rapport annotations for every
 30 seconds of the interaction, we looked at the rapport
  level in play when the model over-generated
 and under-generated hedges. Since rapport is annotated
- from 1 7 in the dataset, for convenience, we
+ from 1 to 7 in the dataset, for convenience, we
 divided it into 3 levels  high (5-7), medium (3-5),
 and low rapport (1-3), as shown in Table 3.
 TypeRapportHigh Medium Low
 Over-generation 0 3 0
-Under-generation 13 130 75 3  Goal Mismatch Errors DistributionTutor  mhm, so what are the two things that y ou can
+Under-generation 13 130 75
+Table 3  Goal Mismatch Errors DistributionTutor  mhm, so what are the two things that y ou can
 do, there are only two .
 Tutee  I  could mo ve x over to three x.
 Tutor  Y eah what do y ou think we should, should we
@@ -665,7 +685,8 @@ Tutor    laughter  oka y problem four is four ( nonhedge
 System   We just found out the answer is two x equals
 three
 ( hedge )
-Goal Mismatch Error Classification ErrorFigure 3 3 errors appear in the category of overgeneration
+Goal Mismatch Error Classification ErrorFigure 3  Strategy Mismatch Errors for Reranking Method
+As only 3 errors appear in the category of overgeneration
  error , we cannot obtain a meaningful
 conclusion due to size. However, the generators
 generate fewer hedges when rapport is low, an
@@ -716,9 +737,9 @@ dependence on and bias of probabilistic learningbased
  classifiers. Indeed, learning-based classifiers
 may be biased towards predicting the categories
 that are the most frequent in the dataset. Furthermore,
- the rule-based classifier reaches a 94.7 1
+ the rule-based classifier reaches a 94.7 F1
 score (Raphalen et al., 2022), which is comparable
- to the best performance (96.7 1 score) using
+ to the best performance (96.7 F1 score) using
 the Light Gradient-Boosting Machine (LGBM) (Ke
 et al., 2017) classifier.
 The above results show that the model can spontaneously
@@ -813,7 +834,7 @@ our questions about their prior work. This study received
  support from the French government, administered
  by the Agence Nationale de la Recherche,
 as part of the "Investissements d avenir" program,
-with reference to ANR-19-P IA-0001 (PRAIRIE
+with reference to ANR-19-P3IA-0001 (PRAIRIE
 3IA Institute).
 Limitations
 Several limitations apply to the current study.
@@ -945,7 +966,8 @@ Wei Chen, Weidong Ma, Qiwei Ye, and Tie-Yan Liu.
 processing systems , 30.
 Klaus Krippendorff. 2004. Reliability in content analysis 
  Some common misconceptions and recommendations.
- Human communication research , 30(3) 411 433.
+ Human communication research , 30(3) 411 
+433.
 George Lakoff. 1975. Hedges  A study in meaning
 criteria and the logic of fuzzy concepts. In Contemporary
  research in philosophical logic and linguistic
@@ -982,7 +1004,9 @@ Association for Computational Linguistics.
 Siyang Liu, Chujie Zheng, Orianna Demasi, Sahand
 Sabour, Yu Li, Zhou Yu, Yong Jiang, and Minlie
 Huang. 2021. Towards emotional support dialog
-systems. In Proceedings of the 59 11th International Joint Conference on Natural
+systems. In Proceedings of the 59th Annual Meeting
+ of the Association for Computational Linguistics
+and the 11th International Joint Conference on Natural
  Language Processing (Volume 1  Long Papers) ,
 pages 3469 3483, Online. Association for Computational
  Linguistics.
@@ -1010,7 +1034,8 @@ Review of Research in Open and Distributed Learning,
  13(1) 167 190.
 Tong Niu and Mohit Bansal. 2018. Polite dialogue
 generation without parallel data. Transactions of the
-Association for Computational Linguistics , 6 373 389.
+Association for Computational Linguistics , 6 373 
+389.
 OpenAI. 2022. Chatgpt  Optimizing language models
 for dialogue.
 Bo Pang, Erik Nijkamp, Wenjuan Han, Linqi Zhou, Yixian
@@ -1108,7 +1133,8 @@ Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob
 Uszkoreit, Llion Jones, Aidan N. Gomez, Lukasz
 Kaiser, and Illia Polosukhin. 2017. Attention is all
 you need. In Advances in Neural Information Processing
- Systems 30 2017, December 4-9,
+ Systems 30  Annual Conference on Neural
+Information Processing Systems 2017, December 4-9,
 2017, Long Beach, CA, USA , pages 5998 6008.
 Veronika Vincze. 2014. Uncertainty detection in natural
 language texts. PhD, University of Szeged , 141.
@@ -1174,11 +1200,12 @@ A Clauses to Turns
 In our task formulation, a dialogue is composed of
 tutor-tutee turns. However, in the corpus considered
  for this study, the available annotations are at
-the clause level. The choice of annotation unit was
+the clause2level. The choice of annotation unit was
 made because the annotation in hedges was part of
 a larger annotation campaign dedicated to the annotation
  of various conversational strategies (e.g.,
-praise) at the clause level. This corpus contains 23 156 clauses, of which 21 192 contain non-hedges
+praise) at the clause level. This corpus contains 23
+156 clauses, of which 21 192 contain non-hedges
 and 1 964 hedges. In order to obtain annotations
 at a turn level, we apply the simplest way to merge
 the hedge labels. If one or multiple clauses of one
@@ -1231,10 +1258,10 @@ level of uncertainty when an LM generates a new
 token.
 C Implementation Details
 The implementation of all models was based on
-the Transformer library3, in addition, the PytorchLightning library
+the Transformer library3, in addition, the PytorchLightning4library
  was used for training control.
 We apply AdamW (Loshchilov and Hutter, 2018)
-as our optimizer with a learning rate 10 5. All
+as our optimizer with a learning rate 10e 5. All
 the models are trained with 10 epochs but with
 an Early-stopping mechanism on validation loss,
 which means when the validation loss remains for
@@ -1243,9 +1270,9 @@ which means when the validation loss remains for
 the small version of BlenderBot, and also the small
 version of DialoGPT. For the reranking method,
 we use beam search as our decoding strategy. To
-prevent repetition, we allow the 2 grams to oc github.com/huggingface/transformers
+prevent repetition, we allow the 2 grams to oc3github.com/huggingface/transformers
 
-4github.com/Lightning-AI/lightningIDA IDE IDQ IDS Percentage of labels (%)Percentage of labels per category
+4github.com/Lightning-AI/lightningIDA IDE IDQ IDS010203040506070Percentage of labels (%)Percentage of labels per category
 Human
 BART
 BlenderBot

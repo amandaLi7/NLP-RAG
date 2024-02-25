@@ -19,12 +19,13 @@ def parse_pdfs(input_folder, output_file_dir):
 
     for pdf_path in input_folder_path.glob('*.pdf'):
         output_file_path = f"{output_file_dir}/{pdf_path.stem}.txt"
-        output_text = extract_text(pdf_path)
-        
-        # Write to text file
-        with open(output_file_path, 'w', encoding='utf-8') as output:
-            output.write(output_text)
+        # If file has not already been parsed
+        if not os.path.exists(output_file_path):
+            output_text = extract_text(pdf_path)
 
+            with open(output_file_path, 'w', encoding='utf-8') as output:
+                output.write(output_text)
+        
 
 if __name__ == "__main__":
 
@@ -35,7 +36,7 @@ if __name__ == "__main__":
 
     start = time.time()
 
-    parse_pdfs(paper_dir, paper_output_dir)
+    # parse_pdfs(paper_dir, paper_output_dir)
     parse_pdfs(other_pdf_dir, other_pdf_output_dir)
 
     print(f"Total parsing time: {time.time() - start} seconds")

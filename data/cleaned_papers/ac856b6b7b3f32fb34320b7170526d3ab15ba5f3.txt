@@ -1,6 +1,9 @@
 Fairness Continual Learning Approach to Semantic
 Scene Understanding in Open-World Environments
-Thanh-Dat Truong1, Hoang-Quan Nguyen1, Bhiksha Raj2,3, and Khoa Luu1 1CVIU Lab, University of Arkansas, Fayetteville, AR, 72701 2Carnegie Mellon University, Pittsburgh, PA, 15213 3Mohammed bin Zayed University of AI, Abu Dhabi, UAE
+Thanh-Dat Truong1, Hoang-Quan Nguyen1, Bhiksha Raj2,3, and Khoa Luu1
+1CVIU Lab, University of Arkansas, Fayetteville, AR, 72701
+2Carnegie Mellon University, Pittsburgh, PA, 15213
+3Mohammed bin Zayed University of AI, Abu Dhabi, UAE
 {tt032, hn016, khoaluu}@uark.edu, bhiksha@cs.cmu.edu
 Abstract
 Continual semantic segmentation aims to learn new classes while maintaining
@@ -18,10 +21,11 @@ and background shift. Our proposed loss has also been proven as a novel, general
 learning. Moreover, the proposed Conditional Structural Consistency loss further
 regularized the structural constraint of the predicted segmentation. Our proposed
 approach has achieved State-of-the-Art performance on three standard scene understanding
- benchmarks, i.e., ADE K, Cityscapes, and Pascal VOC, and promoted
+ benchmarks, i.e., ADE20K, Cityscapes, and Pascal VOC, and promoted
 the fairness of the segmentation model.
-1 1  The Class Distribution of ADE K.
-In the ADE K 50-50 (3 steps) benchmark, the
+1 Introductions
+Figure 1  The Class Distribution of ADE20K.
+In the ADE20K 50-50 (3 steps) benchmark, the
 distribution of classes in the majority group in
 the early step dominates the ones in the minority
 groups in the later steps. The distributions of
@@ -43,7 +47,7 @@ to its close-set setup. Also, this approach requires
 access to both original and new training data. In
 practice, the segmentation models should be capable
  of learning new classes continually without
-Preprint. Under review.arXiv 2305.15700 4  [cs.CV]  1 2023re-training from the previous data. This paradigm is defined as Continual Semantic Segmentation
+Preprint. Under review.arXiv 2305.15700v4  [cs.CV]  1 Oct 2023re-training from the previous data. This paradigm is defined as Continual Semantic Segmentation
 [12,46]. The current continual semantic segmentation approaches [ 12,46] concentrate on addressing
 two main challenges, i.e., (1) catastrophic forgetting [ 33,14,38] and (2) background shift [ 12,46].
 The former problem indicates the forgetting issue of the model about the previous knowledge when
@@ -167,7 +171,7 @@ i,jL(yi,j,ˆyi,j cb)
  X
 ca,cb C1..TEx,ˆ y DX
 i,jL(yi,j,ˆyi,j ca) Ex,ˆ yX
-i,jL(yi,j,ˆyi,j cb) 2 1..T[Ex,ˆ y DL(F(x, θ),ˆ y)](3)
+i,jL(yi,j,ˆyi,j cb) 2C1..T[Ex,ˆ y DL(F(x, θ),ˆ y)](3)
 As shown in the above inequality, the constraint of Eqn. (2)has been bounded by the loss function in
 Eqn. (1). Although minimizing Eqn. (1)could also impose the constraint in Eqn. (2), the fairness
 issue still remains unsolved due to the imbalanced class distributions indicated through Eqn. (4).
@@ -225,7 +229,7 @@ the Eqn. (7), there are three learning objectives as follows
 loss which is the continual learning objective. This objective aims to address the catastrophic
 forgetting and background shift problems. To achieve this desired goal, we introduce a novel
 Prototypical Contrastive Clustering Loss that will be discussed in Sec. 3.2.
-4 2  The Proposed Fairness
+4Figure 2  The Proposed Fairness
 Continual Learning Framework.
 The predicted segmentation maps
 are imposed the cross-entropy loss,
@@ -265,7 +269,7 @@ would be pulled closer while features of different classes would be pushed far a
 deep representations of unknown classes will be grouped into the same cluster of unknown classes to
 produce discriminative features against other classes.
 Formally, for each class c  C1..t, it is represented by a prototypical vector pc. In addition, the
-additional prototypical vector p represents a cluster of unknown classes. Let ft
+additional prototypical vector p0represents a cluster of unknown classes. Let ft
 i,jbe a feature
 representation of pixel at location (i, j)of the input xt. Then, the Prototypical Contrastive Clustering
 LossLcluster can be defined via a distance Das follows 
@@ -287,7 +291,7 @@ i,jof an unknown-class pixel will utilize a pseudo label where its assigned
 label is computed based on the closest cluster. In addition, since the prototypical vectors of classes
 c  C1..t 1have been well learned to represent for classes, these vectors pc(where c  C1..t 1) will
 be frozen at step tto maintain its learned knowledge of classes C1..t 1.
-5The set of prototypical vectors at current step t, i.e., p andpcwhere c  Ctare updated gradually
+5The set of prototypical vectors at current step t, i.e., p0andpcwhere c  Ctare updated gradually
 with respect to the growth of feature vectors. In particular, the prototypical vector pcwill be
 periodically updated (after every Miterations) with momentum ηbased on the set of features fi,jof
 class c. Following common practices [ 20,16], to effectively support the updating step and memory
@@ -304,7 +308,8 @@ samples of previous tasks. In this paper, we demonstrate that our Prototypical C
 approach is a comprehensive upper limit of the Knowledge Distillation approach. In particular, the
 common knowledge distillation approach can be formulated as follows 
 Ldistill (xt,F, θt, θt 1)  D(ft 1,ft) (10)
-where ftandft 1 1, respectively  and the distance metric Dmeasure the knowledge gap between ftandft 1.
+where ftandft 1are the features of the input xtproduced by the segmentation model at step tand
+stept 1, respectively  and the distance metric Dmeasure the knowledge gap between ftandft 1.
 Proposition 1  The Prototypical Constrative Clustering Approach is the generalized upper bound of
 the Knowledge Distillation Approach.
 Ldistill (xt,F, θt, θt 1)  O 
@@ -319,7 +324,8 @@ the metric Das follows
 c 
 D(ft,pc)  D(pc,ft 1)  (12)
 where  C is the number of prototypical vectors. The prototypical vectors pcand the feature vectors
-ft 1 1 1has been fixed at step t. Thus, the distance D(pc,ft 1)could be
+ft 1produced by the segmentation model at step t 1are considered as constant features as the
+model in the previous model t 1has been fixed at step t. Thus, the distance D(pc,ft 1)could be
 considered as constant number. Then, Eqn. (12) can be further derived as follows 
 D(ft,ft 1)  O
 1
@@ -363,9 +369,15 @@ Formally, the conditional structure consistency can be formed via the Gaussian k
 (i ,j ) N(i,j)exp(
    xi,j
 t xt
-i ,j   2 2 2σ2 1   yi,j
+i ,j   2
+2
+2σ2
+1   yi,j
 t yt
-i ,j   2 2 2σ2 2)
+i ,j   2
+2
+2σ2
+2)
 (15)
 where N(i, j)is the set of neighbor pixels of (i, j),{σ1, σ2}are the scale hyper-parameters of the
 Gaussian kernels. The conditional structural consistency loss defined in Eqn. (15) enhance the
@@ -376,35 +388,50 @@ In this section, we first describe the datasets and metrics used in our experime
 the ablation studies to illustrate the effectiveness of our proposed method. Finally, we compare our
 approach with prior CSS methods to demonstrate our SOTA performance.
 4.1 Datasets and Evaluation Protocols
-Datasets ADE K [49] is a semantic segmentation dataset that consists of more than 20 150 semantic categories. Each image has been densely annotated with pix-level objects and
+Datasets ADE20K [49] is a semantic segmentation dataset that consists of more than 20K scene
+images of 150 semantic categories. Each image has been densely annotated with pix-level objects and
 objects parts labels. Cityscapes [10] is a real-world autonomous driving dataset collected in European.
 This dataset includes 3,975urban images with high-quality, dense labels of 30 semantic categories.
-PASCAL VOC [13] is a common dataset that consists of more than 10 20classes.
+PASCAL VOC [13] is a common dataset that consists of more than 10K images of 20classes.
 Implementation Two segmentation network architectures are used in our experiments, i.e., (1)
 DeepLab-V3 [ 6] with the ResNet-101 backbone, and (2) SegFormer [ 45] with MiT-B3 backbone.
 Further details of our implementation will be available in our supplementary.
 Evaluation Protocols  Following [ 12], we focus on the overlapped CSS evaluation. Our proposed
-method is evaluated on several settings for each dataset, i.e., ADA K 100-50 (2 steps), ADA K
+method is evaluated on several settings for each dataset, i.e., ADA20K 100-50 (2 steps), ADA20K
 Backbone Lcluster LclassLcons0-100 100-150 all avg
 mIoU STD mIoU STD mIoU STD mIoU STD
-DeepLab-V30.08 0.84 19.52 20.18 6.52 13.14 24.41 13.14 41.71 19.90 15.33 21.96 32.97 23.03 37.58 23.03 42.25 19.31 18.55 20.52 34.40 22.07 38.35 22.07 43.40 19.08 24.04 19.12 36.99 21.67 40.45 21.67 0.10 0.84 23.18 19.83 7.74 15.74 25.82 15.74 43.40 19.35 21.60 22.06 36.18 22.32 39.85 22.32 43.35 19.03 23.50 20.75 36.78 21.86 40.34 21.86 43.56 18.71 25.46 19.99 37.56 21.10 40.73 21.10 1 100-50 benchmark. Two different networks,
+DeepLab-V30.08 0.84 19.52 20.18 6.52 13.14 24.41 13.14
+  41.71 19.90 15.33 21.96 32.97 23.03 37.58 23.03
+    42.25 19.31 18.55 20.52 34.40 22.07 38.35 22.07
+      43.40 19.08 24.04 19.12 36.99 21.67 40.45 21.67
+SegFormer0.10 0.84 23.18 19.83 7.74 15.74 25.82 15.74
+  43.40 19.35 21.60 22.06 36.18 22.32 39.85 22.32
+    43.35 19.03 23.50 20.75 36.78 21.86 40.34 21.86
+      43.56 18.71 25.46 19.99 37.56 21.10 40.73 21.10
+Table 1  Effectiveness of our approach on the ADE20K 100-50 benchmark. Two different networks,
 i.e., DeepLab-V2 [ 5] and SegFormer [ 45], and three different losses, i.e., Prototypical Contrastive
 Clustering ( Lcluster ), Fairness Loss ( Lclass), and Conditional Structural Consistency ( Lcons).
-7100-10 (6 steps), ADA K 100-5 (11 steps), Cityscapes 11-5 (3 steps), Cityscapes 11-1 (11 steps),
+7100-10 (6 steps), ADA20K 100-5 (11 steps), Cityscapes 11-5 (3 steps), Cityscapes 11-1 (11 steps),
 Cityscapes 1-1 (21 steps), Pascal VOC 15-1 (3 steps), and Pascal VOC 10-1 (11 steps). The mean
 Intersection over Union (mIoU) metric is used in our experiments. The mIoU is computed after the
 last step for the classes learned from the first step, the later continual classes, and all classes. The
 mIoU for the initial classes shows the robustness of the model to catastrophic forgetting, while the
 metric for the later classes reflects the ability to learn new classes. To measure the fairness of the
 model, we also report the standard deviation (STD) of IoUs over all classes.
-4.2 100-50 benchmark (Table 1).
-Method11-5 11-1 1-1 3 11 21 79.30 79.30 79.30
+4.2 Ablation Study
+Our ablative experiments study the effectiveness of our proposed FairCL approach on the performance
+of the CSS model and fairness improvement on the ADE20K 100-50 benchmark (Table 1).
+Method11-5 11-1 1-1
+3 steps 11 steps 21 steps
+Joint 79.30 79.30 79.30
 LWF-MC [31] 58.90 56.92 31.24
 ILT [25] 59.14 57.75 30.11
 MiB [3] 61.51 60.02 42.15
 PLOP [12] 63.51 62.05 45.24
 RCIL [46] 64.30 63.00 48.90
-FairCL   DeepLab-V3 66.96 66.61 49.22 67.85 67.09 55.68 2  Final mIoU (%) for Continual Semantic
+FairCL   DeepLab-V3 66.96 66.61 49.22
+FairCL   SegFormer 67.85 67.09 55.68
+Table 2  Final mIoU (%) for Continual Semantic
 Segmentation on Cityscapes.Effectiveness of the Network Backbone Table
  1 illustrates the results of our approach using
  the DeepLab-V3 [ 5] with the Resnet101
@@ -415,7 +442,8 @@ models using a more powerful backbone, i.e.,
 Transformer, outperforms the models using the
 Resnet backbone. The capability of learning
 new classes has been improved notably, i.e., the
-mIoU of classes 101-150 19.86% to25.46%
+mIoU of classes 101-150 in the full configuration
+ has been improved from 19.86% to25.46%
 while the model keeps robust to catastrophic
 forgetting, the mIoU has been increased from
 41.96% to43.56% in the classes 0-100. Additionally, fairness between classes has been promoted
@@ -424,7 +452,8 @@ Effectiveness of the Prototypical Contrastive Clustering Loss We evaluate the im
 Prototypical Contrastive Clustering Loss ( Lcluster ) in improving the performance in the continual
 learning problem compared to the fine-tuning approach. As shown in Table 1, the clustering loss has
 significant improvements in the catastrophic forgetting robustness compared to using only the Softmax
-loss. In particular, the mIoU of classes 0-100 for both DeepLab-V3 41.63% and 43.30% respectively that makes the overall mIoU increase by
+loss. In particular, the mIoU of classes 0-100 for both DeepLab-V3 and SegFormer backbones has
+been improved by  41.63% and 43.30% respectively that makes the overall mIoU increase by
  26.45% and 28.44%, and the average mIoU between classes increases by  13.17% and 14.03%.
 Although the STD of IoUs has slightly increased in this setting, the major target of our Lcluster is
 used to model the catastrophic forgetting and background shift problems in CSS illustrated by the
@@ -437,7 +466,8 @@ respectively. The results have shown that our approach has promoted the fairness
 Effectiveness of the Conditional Structural Consistency The full configuration in Table 1 shows
 experimental results of our model using conditional structure constraint loss Lcons. As illustrated
 Method100-50 (2 steps) 50-50 (3 steps) 100-10 (6 steps)
-0-100 101-150 0-50 51-150 0-100 101-150 44.30 28.20 38.90 - 51.10 32.80 38.90 - 44.30 28.20 38.90 ILT
+0-100 101-150 all avg 0-50 51-150 all avg 0-100 101-150 all avg
+Joint 44.30 28.20 38.90 - 51.10 32.80 38.90 - 44.30 28.20 38.90 ILT
  [25] 18.29 14.40 17.00 29.42 3.53 12.85 9.70 30.12 0.11 3.06 1.09 12.56
 MiB [3] 40.52 17.17 32.79 37.31 45.57 21.01 29.31 38.98 38.21 11.12 29.24 35.12
 PLOP [12] 41.87 14.89 32.94 37.39 48.83 20.99 30.40 39.42 40.48 13.61 31.59 36.64
@@ -445,23 +475,27 @@ RCIL [46] 42.30 18.80 34.50 38.48 48.30 25.00 32.50 - 39.30 17.60 32.10 MiB
    AWT [15] 40.90 24.70 35.60 - 46.60 26.85 33.50 - 39.10 21.28 33.20 SSUL
  [4] 41.28 18.02 33.58 - 48.38 20.15 29.56 - 40.20 18.75 33.10 SATS
  [30] - - - - - - - - 41.42 19.09 34.18 FairCL
-   DeepLab-V3 43.40 24.04 36.99 40.45 49.65 26.84 34.55 41.68 41.73 20.36 34.65 39.01 43.56 25.46 37.56 40.73 49.62 27.78 35.15 42.25 42.21 21.91 35.49 39.36 3  Continual Semantic Segmentation results on ADE k in Mean IoU (%).
+   DeepLab-V3 43.40 24.04 36.99 40.45 49.65 26.84 34.55 41.68 41.73 20.36 34.65 39.01
+FairCL   SegFormer 43.56 25.46 37.56 40.73 49.62 27.78 35.15 42.25 42.21 21.91 35.49 39.36
+Table 3  Continual Semantic Segmentation results on ADE20k in Mean IoU (%).
 8in our results, the conditional structure constraint demonstrates effective improvement. Indeed, it
 promotes the accuracy of the initial classes and the novel classes when the mIoU has been increased
 from 43.35% to43.56% and from 23.50% to25.46% respectively with the Transformer backbone.
-The fairness of classes is also improved as the standard deviation of the IoU of classes 0-100 101-150 19.03% to18.71% and from 20.75% to19.99%.
+The fairness of classes is also improved as the standard deviation of the IoU of classes 0-100 and
+classes 101-150 is reduced from 19.03% to18.71% and from 20.75% to19.99%.
 4.3 Comparison with State-of-the-Art Methods
 Figure 3  Qualitative results of Our Approach
-and PLOP [12] on ADE K 100-10.Cityscapes As shown in Table 2, our FairCL outperforms
+and PLOP [12] on ADE20K 100-10.Cityscapes As shown in Table 2, our FairCL outperforms
  previous SOTA methods evaluated on
 Cityscapes benchmarks. In particular, in the 11-5
 task, our method using Resnet and Transformer
 achieves the mIoU of 66.96% and67.85% respectively
  which shows better performance than prior
-methods. Meanwhile, the results for the 11-1 66.61% and67.09% w.r.t. the Resnet
+methods. Meanwhile, the results for the 11-1
+task are 66.61% and67.09% w.r.t. the Resnet
 and Transformer backbones. For the 1-1 task, the
 mIoU of our method is 49.22% and55.68%.
-ADE K Table 3 presents our experimental results
+ADE20K Table 3 presents our experimental results
  using ResNet and Transformer backbones
 compared to prior SOTA approaches. Our proposed
  approach achieves SOTA performance and
@@ -470,34 +504,37 @@ outperforms prior methods. In particular, our approach
 Resnet and 37.56% for Transformer in the 10050
  tasks. For the 50-50 tasks, the model reaches the final mIoU of 34.55% and35.15% for the Resnet
 and Transformer backbones, respectively while the result of the prior method [ 15] is33.50%. Meanwhile,
- the overall results of our method for the 100-10 34.65% and35.49% which shows
+ the overall results of our method for the 100-10 task are 34.65% and35.49% which shows
 outperforming previous approaches. Fig. 3 visualizes the qualitative result of our method compared to
 PLOP [ 12]. Initially, the ground truth contains the class  car  in the first step and the class  minibike 
 in the third step. Then, in the fourth step, the class  bicycle  is included. As a result, PLOP [ 12]
 partly forgets the  minibike  information when learning the class  bicycle  information. Meanwhile,
 our method consistently maintains the information of  minibike  and predicts segmentation correctly.
 Method15-1 (6 steps) 10-1 (11 steps)
-0-15 16-20 0-10 11-20 79.8 72.4 77.4 78.4 76.4 77.4
+0-15 16-20 all 0-10 11-20 all
+Joint 79.8 72.4 77.4 78.4 76.4 77.4
 LWF [31] 6.0 3.9 5.5 8.0 2.0 4.8
 ILT [25] 9.6 7.8 9.2 7.2 3.7 5.5
 MiB [3] 38.0 13.5 32.2 20.0 20.1 20.1
 SDR [26] 47.3 14.7 39.5 32.4 17.1 25.1
 PLOP [12] 65.1 21.1 54.6 44.0 15.5 30.5
 RCIL [46] 70.6 23.7 59.4 55.4 15.1 34.3
-FairCL   DeepLab-V3 72.0 22.7 60.3 42.3 25.6 34.4 73.5 22.8 61.5 57.1 14.2 36.6 4  The mIoU (%) of CSS on Pascal VOC.Pascal VOC As shown in Table 4, the proposed
+FairCL   DeepLab-V3 72.0 22.7 60.3 42.3 25.6 34.4
+FairCL   SegFormer 73.5 22.8 61.5 57.1 14.2 36.6
+Table 4  The mIoU (%) of CSS on Pascal VOC.Pascal VOC As shown in Table 4, the proposed
 method outperforms the prior approaches evaluated
  on the Pascal VOC 2012 dataset. In detail,
 our method achieves the overall mIoU of 61.5%
 in the 15-1 task while the result of the previous
 method [ 46] is59.4%. Meanwhile, the mIoU
-in the 10-1 36.6%which shows better
+in the 10-1 task is 36.6%which shows better
 performance than the prior methods.
 5 Conclusions and Dicussions
 Conclusions  This paper introduces a novel fairness
  continual learning approach in semantic segmentation by analyzing the effect of class distribution.
 Furthermore, a new learning paradigm of continual learning, i.e., the prototypical Contrastive clustering
  loss, is proposed to sufficiently address the catastrophic forgetting and the background shift
-problems. The experimental results on the three CSS benchmarks, i.e., ADE K, Cityscapes, and
+problems. The experimental results on the three CSS benchmarks, i.e., ADE20K, Cityscapes, and
 Pascal VOC, have shown our SOTA performance.
 Limitations  Our paper has chosen specific configurations of network backbones and hyperparameters
  to support our hypothesis. However, the other aspects of learning have not been fully
@@ -573,7 +610,7 @@ of the IEEE/CVF international conference on computer vision workshops , pages 0 
 disentangled latent representations. In Proc. Conf. Comp. Vision Pattern Rec. , 2021.
 [27] F. Ozdemir, P. Fuernstahl, and O. Goksel. Learn the new, keep the old  Extending pretrained models with
 new anatomy and images. In Medical Image Computing and Computer Assisted Intervention MICCAI
-2018 21st International Conference, Granada, Spain, September 16-20, 2018, Proceedings, Part IV 11 ,
+2018  21st International Conference, Granada, Spain, September 16-20, 2018, Proceedings, Part IV 11 ,
 pages 361 369. Springer, 2018.
 [28] F. Ozdemir and O. Goksel. Extending pretrained segmentation networks with additional anatomical
 structures. International journal of computer assisted radiology and surgery , 14 1187 1195, 2019.
@@ -624,9 +661,10 @@ target structure learning for domain adaptive semantic segmentation. arXiv prepr
 [48] B. Zhao, X. Xiao, G. Gan, B. Zhang, and S.-T. Xia. Maintaining discrimination and fairness in class
 incremental learning. In Proceedings of the IEEE/CVF conference on computer vision and pattern
 recognition , pages 13208 13217, 2020.
-[49] B. Zhou, H. Zhao, X. Puig, S. Fidler, A. Barriuso, and A. Torralba. Scene parsing through ade k dataset.
+[49] B. Zhou, H. Zhao, X. Puig, S. Fidler, A. Barriuso, and A. Torralba. Scene parsing through ade20k dataset.
 InCVPR , pages 633 641, 2017.
-12 6 Proof of Eqn. (6)
+12Supplementary
+6 Proof of Eqn. (6)
 θ  Z
 L(y,ˆ y)q(y)q(ˆ y)dydˆ y
  Z
@@ -698,17 +736,22 @@ the ResNet-101 backbone, and (2) SegFormer [ 45] with MiT-B3 backbone. Our frame
 in PyTorch and trained on four 40GB-VRAM NVIDIA A100 GPUs. The model is optimized by the SGD
 optimizer [  ] with momentum 0.9, weight decay 10 4, and batch size of 6per GPU. The learning rate is set
 individually for each step and dataset. In particular, the learning rate for the initial step and the continual steps of
-the ADE K dataset is 10 2 10 3respectively, while the learning rate for the Cityscapes experiment is
-2 10 2 2 10 3. The feature vectors from the last layer of the decoder are used for the prototypical
-13 1  Prototypical Constrative Clustering Loss
+the ADE20K dataset is 10 2and10 3respectively, while the learning rate for the Cityscapes experiment is
+2 10 2and2 10 3. The feature vectors from the last layer of the decoder are used for the prototypical
+13Algorithm 1  Prototypical Constrative Clustering Loss
 Input  Current iteration iof step t  A set of prototypical vectors {pc} C1..t 
 c 0   A set of features fi,j  Momentum
 parameter  η  A set of storing features {Sc} C1..t 
-c 0 1  Initialize pcwhere c  Ctin the first iteration.
-2 0 3 4  For each c  {0}   Ct
+c 0
+1  Initialize pcwhere c  Ctin the first iteration.
+2 Lcluster  0
+3 ifi  Mthen
+4  For each c  {0}   Ct
 5  pc Ef Scf.
 6  Lcluster  Compute Prototypical Constrative Clustering Loss based on Eqn. (9).
-7 8  ifi%M   0 9  For each c  {0}   Ct
+7 else if i   M then
+8  ifi%M   0 then
+9  For each c  {0}   Ct
 10  pc ηpc  (1 η)Ef Scf.
 11  Lcluster  Compute Prototypical Constrative Clustering Loss based on Eqn. (9).
 12 return Lcluster
@@ -717,9 +760,10 @@ clustering loss. For each class, the number of feature vectors in each set Scfor
 ourℓin the Prototypical Contrastive Clustering loss Lcluster and the margin  between features of different
 classes is set to 10. The momentum ηto update the prototypical vectors is set to 0.99. Following [ 5,39], in the
 conditional structural consistency loss, the number of neighbor pixels is within a window size of 3 3.
-10 10.1 Performance Improvement of Major and Minor Groups
+10 Additional Experiments
+10.1 Performance Improvement of Major and Minor Groups
 To illustrate the performance improvement of our proposed method in major and minor classes, we include the
-results of the mIoU (all) and the STD among IoUs of the major group and the minor group on the ADE K
+results of the mIoU (all) and the STD among IoUs of the major group and the minor group on the ADE20K
 100-50 (Table 5) and Cityscapes 11-5 (Table 6) benchmarks. As shown in the table below, our proposed
 approach has improved the performance of both major and minor groups. Thus, these results illustrated that
 the performance improvement in mIoU is also coming from the minority classes. It helps to enhance the mIoU
@@ -728,19 +772,32 @@ predictions.
 Backbone Lcluster Lclass LconsMajor Group Minor Group
 mIoU STD mIoU STD
   48.78 18.12 25.13 21.12
-DeepLab-V3 48.89 17.87 27.24 20.76 50.11 17.46 30.52 20.43 5 150-50 87.44 9.25 53.37 16.72
-DeepLab-V3 88.29 8.85 55.72 13.39 89.20 8.41 56.70 11.96 6 11-5 Benchmark
+DeepLab-V3     48.89 17.87 27.24 20.76
+      50.11 17.46 30.52 20.43
+Table 5  ADE20K 150-50 Benchmark
+Backbone Lcluster Lclass LconsMajor Group Minor Group
+mIoU STD mIoU STD
+  87.44 9.25 53.37 16.72
+DeepLab-V3     88.29 8.85 55.72 13.39
+      89.20 8.41 56.70 11.96
+Table 6  Cityscapes 11-5 Benchmark
 Similarly, to illustrate the effectiveness and robustness of our method in the non-incremental setting. We
-report our results after the first learning step on the ADE K 100-50 (Table 7) and Cityscapes 11-5 (Table 8)
+report our results after the first learning step on the ADE20K 100-50 (Table 7) and Cityscapes 11-5 (Table 8)
 benchmarks. Our proposed fairness approach has also contributed to the performance improvement of both
 major and minor classes in non-incremental settings. The comparison table of major and minor groups in the
 first step is illustrated below.
-14 49.07 18.35 35.45 19.08
-DeepLab-V3 49.17 18.31 35.57 18.24 50.04 17.92 37.88 18.19 7 150-50 Benchmark (Non-incremental Setting)
+14Backbone Lcluster Lclass LconsMajor Group Minor Group
+mIoU STD mIoU STD
+  49.07 18.35 35.45 19.08
+DeepLab-V3     49.17 18.31 35.57 18.24
+      50.04 17.92 37.88 18.19
+Table 7  ADE20K 150-50 Benchmark (Non-incremental Setting)
 Backbone Lcluster Lclass LconsMajor Group Minor Group
 mIoU STD mIoU STD
   87.64 8.96 53.78 17.16
-DeepLab-V3 88.56 8.70 56.45 13.46 89.52 8.08 57.87 12.08 8 11-5 Benchmark (Non-incremental Setting)
+DeepLab-V3     88.56 8.70 56.45 13.46
+      89.52 8.08 57.87 12.08
+Table 8  Cityscapes 11-5 Benchmark (Non-incremental Setting)
 10.2 The Role of Conditional Structural Consistency
 The goal of conditional structural consistency is to improve the prediction gap among neighbor pixels, thus,
 enhancing the smoothness of the predictions. In addition, it helps to increase fairness among classes. It is
@@ -749,26 +806,31 @@ minor classes. Therefore, the loss alleviates the dominance of the major groups 
 minor groups, thus, resulting in fairness that has also been further improved (as illustrated in Table 1 in the main
 paper).
 10.3 The Choice of Margin  
-We also perform an additional ablation study on the ADE K (100-50) benchmark to investigate the impact of
+We also perform an additional ablation study on the ADE20K (100-50) benchmark to investigate the impact of
 the delta. As shown in Table 9, the impact of  does not significantly influence the results due to the minor
 performance drop.
-  0-100 101-150 5 43.04 23.84 36.68 40.23 10 43.40 24.04 36.99 40.45 15 42.89 23.92 36.61 40.26 9 10.4 The Performance Analysis of ADE K, Cityscapes, and Pascal VOC
+  0-100 101-150 all avg
+    5 43.04 23.84 36.68 40.23
+    10 43.40 24.04 36.99 40.45
+    15 42.89 23.92 36.61 40.26
+Table 9  The effectiveness of  
+10.4 The Performance Analysis of ADE20K, Cityscapes, and Pascal VOC
 We have observed the performance improvement of our approach on Pascal VOC is less significant than the
-ADE K and Cityscapes because of the minor bias in Pascal VOC. In particular, the data distributions of these
+ADE20K and Cityscapes because of the minor bias in Pascal VOC. In particular, the data distributions of these
 datasets are visualized in Figure 4 in the rebuttal file (the PDF file of the rebuttal is attached in Global Response).
 We calculated the entropy value of the data distributions that illustrate the balance level of the datasets (the
 higher value of entropy, the more balance the dataset as the data distribution tends to be more uniform). Then,
-based on the data distributions and entropy values, we observe the data distributions of ADE K and Cityscapes
-suffer more bias than the Pascal VOC since the entropy value of Pascal VOC (H   0.81) is higher than ADE K
-(H   0.69) and Cityscapes (H   0.62). Thus, ADE K and Cityscapes suffer severe fairness issues compared
+based on the data distributions and entropy values, we observe the data distributions of ADE20K and Cityscapes
+suffer more bias than the Pascal VOC since the entropy value of Pascal VOC (H   0.81) is higher than ADE20K
+(H   0.69) and Cityscapes (H   0.62). Thus, ADE20K and Cityscapes suffer severe fairness issues compared
 to Pascal VOC. Our approach aims to improve the fairness of the model. Therefore, on the more severe bias
-datasets (ADE K and Cityscapes), our approach performs more significantly.
-15 4  Data Distribution of ADE K, Cityscapes, and Pascal VOC. The data distributions of
-ADE K and Cityscapes suffer a more severe imbalance compared to Pascal VOC.
+datasets (ADE20K and Cityscapes), our approach performs more significantly.
+15Figure 4  Data Distribution of ADE20K, Cityscapes, and Pascal VOC. The data distributions of
+ADE20K and Cityscapes suffer a more severe imbalance compared to Pascal VOC.
 10.5 Memory Efficiency
 We would like to highlight that storing prototypical vectors requires significantly less memory than using the
-additional teacher model as used in distillation approaches [ 12]. For example, in the ADE K benchmark,
-storing DeepLab-V3 (151 classes) requires 58.664M parameters, while storing 152 2048 -D vectors
+additional teacher model as used in distillation approaches [ 12]. For example, in the ADE20K benchmark,
+storing DeepLab-V3 (151 classes) requires 58.664M parameters, while storing 152prototypical 2048 -D vectors
 (including the unknown cluster) only uses 0.311M parameters. In addition, the computation of loss with is
 cheaper than a forward pass of the entire network used in distillation. Therefore, in terms of computational cost
 and memory, our approach remains more efficient compared to knowledge distillation approaches.

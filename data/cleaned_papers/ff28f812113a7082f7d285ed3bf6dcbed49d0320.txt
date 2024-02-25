@@ -84,7 +84,7 @@ cases in which the particular article was not alleged
 probability of a positive task A label (violation)
 given its task B label (allegation) can be very high
 in the LexGLUE dataset, we posit that models can
-fall into this pitfall of identifying dominant articlesarXiv 2302.00768 3  [cs.CL]  13 2023with high conditional violation probability, missing
+fall into this pitfall of identifying dominant articlesarXiv 2302.00768v3  [cs.CL]  13 Feb 2023with high conditional violation probability, missing
  information speciﬁc to violation classiﬁcation.
 Thus, we experiment with multi-task architectures
 to decouple these reasoning steps involved in Task
@@ -218,11 +218,11 @@ obtained article-interaction-aware allegation representationsc
 
 band allegation label probability logits
 o 
-b with article-speciﬁc case representations cto
+b1with article-speciﬁc case representations cto
 obtain the enhanced article-speciﬁc representation
 for Task A as cai  [ci,c 
 bi,o 
-bi]. We again em We
+bi]. We again em1We
  use non-binarized response (i.e. probability logits) as
 it avoids the information loss that can occur in the probability
 space due to binarization.ploy multi-head self-attention mechanism on these
@@ -338,9 +338,11 @@ Following Chalkidis et al. 2022b, we report microF1
  (µ-F1) and macro-F1 (m-F1) scores across theTable 1  Results on Task A and B.  feat. ,  lab, .  Cont. 
 indicate feature, label and contrastive, respectively
 Task B Task A
-Model µ-F1 m-F1µ-F1 m-F1 hm-F1 76.20 67.15 - - Task
+Model µ-F1 m-F1µ-F1 m-F1 hm-F1
+Task B only 76.20 67.15 - - Task
  A only - - 68.42 56.26 54.14
-Multi-task 78.17 69.16 69.29 58.05 55.57 79.29 70.97 71.26 65.24 60.90
+Multi-task 78.17 69.16 69.29 58.05 55.57
+Our Method 79.29 70.97 71.26 65.24 60.90
 w/o feat. & lab. 78.93 71.45 70.07 59.14 57.09
 w/o feat. 78.59 71.56 70.68 63.93 59.28
 w/o label 79.09 71.38 70.32 64.12 61.70
@@ -373,7 +375,8 @@ micro-F1 but achieves a larger beneﬁt ( 5%) in
 task A macro-F1 and hard macro-F1 metrics. This
 suggests that our model is of particular utility for
 sparser classes.
-3.3 3.3.1 Ablation on Task Dependency Learning
+3.3 Analysis
+3.3.1 Ablation on Task Dependency Learning
 We create three ablation conditions by removing
 one interaction mechanism in each of them  (i) w/o
 feature & label (article-speciﬁc representation but
@@ -404,7 +407,7 @@ of the predicted ones. We create two variants  only
 gold labels andgold labels   features (gold labels
 along with task B features). From the third section
 of Table 1, we observe that performance on Task
-A increases substantially in micro-F1 1,
+A increases substantially in micro-F1 and macroF1,
  which is intuitive as the model gets access to
 perfect allegation information. Interestingly, when
 adding task allegation feature information, we notice
@@ -535,7 +538,7 @@ aligning their inferences with legal expert reasoning.
 2https //hudoc.echr.coe.intcommunity increasingly addressing ethical aspects
 of developed systems in the context of technical
 research (e.g., Wang et al. 2021  Medvedeva et al.
-2021, 2022 2021  Leins
+2021, 2022  Tsarapatsanis and Aletras 2021  Leins
 et al. 2020).
 In this work, we use COC as a technical benchmarking
  task that allows the development and study
@@ -557,7 +560,7 @@ Nikolaos Aletras, Dimitrios Tsarapatsanis, Daniel
 Preo  tiuc-Pietro, and Vasileios Lampos. 2016. Predicting
  judicial decisions of the european court of
 human rights  A natural language processing perspective.
- PeerJ Computer Science , 2 93.
+ PeerJ Computer Science , 2 e93.
 Vithor Gomes Ferreira Bertalan and Evandro Eduardo
  Seron Ruiz. 2020. Predicting judicial outcomes
  in the brazilian legal system using textual features.
@@ -654,13 +657,15 @@ Bingfeng Luo, Yansong Feng, Jianbo Xu, Xiang Zhang,
 and Dongyan Zhao. 2017. Learning to predict
 charges for criminal cases with legal basis. In Proceedings
  of the 2017 Conference on Empirical Methods
- in Natural Language Processing , pages 2727 2736.
+ in Natural Language Processing , pages 2727 
+2736.
 Vijit Malik, Rishabh Sanjay, Shubham Kumar Nigam,
 Kripabandhu Ghosh, Shouvik Kumar Guha, Arnab
 Bhattacharya, and Ashutosh Modi. 2021. Ildc for
 cjpe  Indian legal documents corpus for court judgment
  prediction and explanation. In Proceedings of
-the 59 11th International
+the 59th Annual Meeting of the Association for Computational
+ Linguistics and the 11th International
 Joint Conference on Natural Language Processing
 (Volume 1  Long Papers) , pages 4046 4062.
 Masha Medvedeva, Ahmet Üstün, Xiao Xu, Michel
@@ -719,8 +724,9 @@ from overﬁtting. The journal of machine learning
 research , 15(1) 1929 1958.
 Benjamin Strickson and Beatriz De La Iglesia. 2020.
 Legal judgement prediction for uk courts. In Proceedings
- of the 2020 3rd international conference
- on information science and system , pages 204 209.
+ of the 2020 the 3rd international conference
+ on information science and system , pages 204 
+209.
 Octavia-Maria   Sulea, Marcos Zampieri, Mihaela Vela,
 and Josef van Genabith. 2017. Predicting the law
 area and decisions of french supreme court cases. In
@@ -746,7 +752,7 @@ Copino, Michelle P Neverida, Vanesa O Osiana,
 Elmer C Peramo, Joanna G Syjuco, and Glenn
 Brian A Tan. 2018. Predicting decisions of the
 philippine supreme court using natural language processing
- and machine learning. In 2018 42nd
+ and machine learning. In 2018 IEEE 42nd
 annual computer software and applications conference
  (COMPSAC) , volume 2, pages 130 135. IEEE.
 Bernhard Waltl, Georg Bonczek, Elena Scepankova,
@@ -768,7 +774,8 @@ Nuo Xu, Pinghui Wang, Long Chen, Li Pan, Xiaoyan
 Wang, and Junzhou Zhao. 2020. Distinguish confusing
  law articles for legal judgment prediction. In
 Proceedings of the 58th Annual Meeting of the Association
- for Computational Linguistics , pages 3086 3095.
+ for Computational Linguistics , pages 3086 
+3095.
 Wenmian Yang, Weijia Jia, Xiaojie Zhou, and Yutao
 Luo. 2019. Legal judgment prediction via multiperspective
  bi-feedback network. In Proceedings of

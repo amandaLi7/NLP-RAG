@@ -27,7 +27,8 @@ strategic upweighting of training loss on potentially
 accuracy of a strong pretrained MT model on
 idiomatic sentences by up to 13% in absolute
 accuracy, but also holds potential benefits for
-non-idiomatic sentences.1 1 Introduction
+non-idiomatic sentences.1
+1 Introduction
 An idiom is a conventionalized expression in which
 the intended meaning differs from its literal translation.
  The translation of idioms has remained a problem
@@ -43,7 +44,8 @@ from commercial systems in Table 1.3
  Currently works at Google Research.
 1Code and data available at https //github.com/n
 ightingal3/idiom-translation/
-3 2022.Although idiom translation has been recognized
+3Translations from commercial systems were collected at
+the end of 2022.Although idiom translation has been recognized
 as a problem even before the advent of neural machine
  translation (Bar-Hillel, 1952  Wehrli, 1998),
 most work has focused on identifying and evaluating
@@ -83,7 +85,7 @@ three natural languages, and find a drop in performance
 processing other long-tail phenomena, and similar
 tactics to those used to deal with rare phenomena
 may work (Kandpal et al., 2022).
-With this intuition, we improve the idiomaticarXiv 2310.07081 2  [cs.CL]  20 2023Source Target Translation Language System
+With this intuition, we improve the idiomaticarXiv 2310.07081v2  [cs.CL]  20 Oct 2023Source Target Translation Language System
 V ous devez avoir la dalle. You gotta be starving. You must have the slab. fr DeepL
 Il lui faut toujours chercher la petite
 bête.He has to dot all the i s, cross all the t s. He always has to look for the little beast. fr DeepL
@@ -178,7 +180,9 @@ translated correctly by the oracle as a whole, but
 it cannot be translated correctly by individually
 translating parts of the sentence and joining them
 (according to the target language s word order). In
-other words, for a string of tokens x1, ..., x n,4 1YTRANSLATE (xi)  TRANSLATE (nM
+other words, for a string of tokens x1, ..., x n,4
+nM
+i 1YTRANSLATE (xi)  TRANSLATE (nM
 i 1Xxi)(1)
 We note that this definition is very general and
 also includes other phenomena such as multi-word
@@ -271,7 +275,10 @@ Translation
 4.1 Artificial Language Translation
 We first use the definition of non-compositional
 translation in ( 2)to create a synthetic task. ThisLanguage Idiom matches Idiomatic Literal Random (in) Random (out) Total
-fr 85632 777 79 777 777 2410 51811 449 81 449 449 1428 23018 3253 389 3253 3253 10148 2  Size of test sets for each language. The idiomatic
+fr 85632 777 79 777 777 2410
+fi 51811 449 81 449 449 1428
+ja 23018 3253 389 3253 3253 10148
+Table 2  Size of test sets for each language. The idiomatic
  and literal sentences contain strings matching
 known idioms (after lemmatization), and the in-domain
 random set contains unrelated sentences from OpenSubtitles,
@@ -287,7 +294,7 @@ the data generation setup and examine model behaviour
  along many different conditions, such as
 informativity.
 The source language in these experiments
-was composed of tokens 0 9, X 
+was composed of tokens 0 through 9, X 
 {0,1,2, ...,9}. The target language was produced
 by adding 10 to each token, Y {10, ...,19}.
 The translation rule was to add 10 to the value
@@ -299,8 +306,9 @@ sequence length to 6 tokens.
 We generated synthetic training corpora of several
  sizes containing different numbers of occurrences
  of the non-compositional rule 0 1 12.
-The number of training sentences ranged from 100 10M, while the number of noncompositional occurrences
- ranged from 10 1M. We examined
+The number of training sentences ranged from 100k
+to 10M, while the number of noncompositional occurrences
+ ranged from 10 to 1M. We examined
 two informativity conditions, corresponding to the
 case where the context provides no information (tokens
  are randomized around the non-compositional
@@ -318,7 +326,7 @@ the small transformer had 3 encoder and decoder
 layers, the medium transformer 8, and the large
 transformer 16. We fix the number of epochs for
 the small, medium and large models to respectivelybe 10, 20, and 30 in the non-informative case and
-15, 15 25 in the informative case.5Further
+15, 15 and 25 in the informative case.5Further
 training details can be found in Appendix A.
 Although this may seem like a simple task, we
 found it surprisingly difficult for models to learn
@@ -359,7 +367,9 @@ literal, and random sentences. Results are in Table
  3. We observe drops in translation quality on
 idiomatic sentences in all languages, with lower
 automatic metrics overall.
-5 100 1k non-compositional examples,
+5The number of training epochs was determined by the
+number of epochs it took for the validation loss to plateau in
+the 100k size corpus with 1k non-compositional examples,
 rounded up to multiples of 5. This was done to mimic the
 typical training process for MT models, which are trained until
 loss or accuracy plateaus on a general dev set. Since idiomatic
@@ -370,7 +380,15 @@ tracked.Uninformative context
  Informative contextFigure 1  Accuracy of a transformer in translating a non-compositional phrase after training on datasets of different
 sizes, with different numbers of non-compositional patterns (only non-compositional translation accuracy is
 depicted). Results are averaged across 5 seeds, and standard deviation is shown.
-0.2 0.4 0.6 0.8 0.140.150.160.17 0.2 0.4 0.6 0.8 0.89750.90000.90250.90500.9075 0.2 0.4 0.6 0.8 0.420.440.460.480.50 0.2 0.4 0.6 0.8 0.300.320.340.36 2  Automatic metrics   Quality of DeepL French
+0.2 0.4 0.6 0.8
+Percentiles0.140.150.160.17Metric ScoreBLEU
+0.2 0.4 0.6 0.8
+Percentiles0.89750.90000.90250.90500.9075ScoreBERTScore
+0.2 0.4 0.6 0.8
+Percentile of idioms in OS0.420.440.460.480.50Metric ScoreROUGE
+0.2 0.4 0.6 0.8
+Percentile of idioms in OS0.300.320.340.36ScoreMETEOR
+Figure 2  Automatic metrics   Quality of DeepL French
 translations on idiomatic test set bucketed by idiom
 frequency. The bottom 20% of least common idioms
 are excluded, as they may occur fewer than 3 times and
@@ -388,19 +406,34 @@ for other languages and systems are in Appendix H.
 This indicates that like in the synthetic experiments,
 there may be strong frequency effects on translation
 quality of idioms.Language System BLEU METEOR BERTScore
-fiidiomatic DeepL 0.1001 0.2497 0.8866 0.0923 0.2250 0.8726
- LM-base 0.1608 0.3592 0.9126 0.1488 0.3908 0.9146 0.1398 0.3577 0.9017
+fiidiomatic DeepL 0.1001 0.2497 0.8866
+Google 0.0923 0.2250 0.8726
+ LM-base 0.1608 0.3592 0.9126
+filiteral DeepL 0.1488 0.3908 0.9146
+Google 0.1398 0.3577 0.9017
  LM-base 0.2093 0.5050 0.9350
-firandom-out DeepL 0.2052 0.4082 0.9103 0.2288 0.4357 0.9062
- LM-base 0.2365 0.4971 0.9145 0.1575 0.3278 0.9006 0.1261 0.2794 0.8808
- LM-base 0.2001 0.4393 0.9211 0.2219 0.4022 0.9122 0.2034 0.3830 0.9012
+firandom-out DeepL 0.2052 0.4082 0.9103
+Google 0.2288 0.4357 0.9062
+ LM-base 0.2365 0.4971 0.9145
+fridiomatic DeepL 0.1575 0.3278 0.9006
+Google 0.1261 0.2794 0.8808
+ LM-base 0.2001 0.4393 0.9211
+frliteral DeepL 0.2219 0.4022 0.9122
+Google 0.2034 0.3830 0.9012
  LM-base 0.2778 0.5504 0.9377
-frrandom-out DeepL 0.2854 0.4650 0.9125 0.3103 0.4922 0.9149
- LM-base 0.2778 0.5504 0.9377 0.1172 0.2735 0.8932 0.0672 0.1839 0.8644
- LM-base 0.09048 0.2998 0.9234 0.1517 0.3440 0.9059 0.0937 0.2565 0.8829
+frrandom-out DeepL 0.2854 0.4650 0.9125
+Google 0.3103 0.4922 0.9149
+ LM-base 0.2778 0.5504 0.9377
+jaidiomatic DeepL 0.1172 0.2735 0.8932
+Google 0.0672 0.1839 0.8644
+ LM-base 0.09048 0.2998 0.9234
+jaliteral DeepL 0.1517 0.3440 0.9059
+Google 0.0937 0.2565 0.8829
  LM-base 0.1416 0.4222 0.9222
-jarandom-out DeepL 0.1074 0.2934 0.8878 0.1079 0.2834 0.8829
- LM-base 0.0948 0.3436 0.8946 3  Performance of commercial systems on idiomatic,
+jarandom-out DeepL 0.1074 0.2934 0.8878
+Google 0.1079 0.2834 0.8829
+ LM-base 0.0948 0.3436 0.8946
+Table 3  Performance of commercial systems on idiomatic,
  literal, and random test sets. There is a clear
 degradation in performance on idiomatic sentences.
 5 Methods to Improve
@@ -443,11 +476,11 @@ predicted by the base model, and the distribution
 predicted by the retrieved kneighbours.6
 p(y(j)
 i x(j),ˆy(j)
-1 1)  λpkNN(y(j) x(j),ˆy(j)
-1 1)
+1 i 1)  λpkNN(y(j) x(j),ˆy(j)
+1 i 1)
   (1 λ)pθ(y(j)
 i x(j),ˆy(j)
-1 1)(4)
+1 i 1)(4)
 We also combine loss weighting with kNN-MT,
 where a model is trained with sentence upweighting
 and interpolated with a datastore based on representations
@@ -462,7 +495,8 @@ details are in Appendix C.simply be their rarity. Upweighting training examples
  Furthermore, retrieving similar examples
  may find occurrences of the same idiom
 which were translated correctly.
-6 6.1 Experimental Settings
+6 Experimental Settings
+6.1 Experimental Settings
 We run experiments on  LM-base, a transformer
 encoder-decoder model with 360M parameters, a
 larger version of which ranked first in the WMT21
@@ -488,10 +522,12 @@ conduct a human evaluation inspired by MQM
 (Lommel et al., 2014). Only errors that would
 fall under the terminology  and  accuracy  error
 types are considered, as we are focused on severe
-semantic errors. We give a score of 0 0.5 for major errors. A score
+semantic errors. We give a score of 0 for severe
+errors and a score of 0.5 for major errors. A score
 of 1 is given otherwise. Exact evaluation standards
 are in Appendix E.
-7 7.1 Automatic and Human Evaluation
+7 Results
+7.1 Automatic and Human Evaluation
 In most cases, as reported in Figure 3, using a combination
  of sentence upweighting and kNN-MT led
 to the greatest increase in automatic metrics on all
@@ -500,42 +536,66 @@ idiomatic test set ( fr), 2.69 BLEU points on the
 literal test set ( fi), and 5.75 points on the random
 test set ( fr). In all cases except ja-rand , using
  one or more of these methods improved overFI - BLEU
-0.150.160.170.180.19 0.200.210.220.220.230.24 0.190.200.200.210.22
+0.150.160.170.180.19
+Idioms0.200.210.220.220.230.24
+Literal0.190.200.200.210.22
 Rand-in0.210.230.240.260.27
 Rand-outFI - RougeL-sum
-0.360.380.390.400.42 0.480.490.510.530.54 0.500.510.520.53
+0.360.380.390.400.42
+Idioms0.480.490.510.530.54
+Literal0.500.510.520.53
 Rand-in0.500.520.540.560.58
 Rand-outFI - BertScore
-0.900.910.910.920.92 0.9320.9360.940 0.9320.9360.940
+0.900.910.910.920.92
+Idioms0.9320.9360.940
+Literal0.9320.9360.940
 Rand-in0.900.910.920.93
 Rand-outFI - Meteor
-0.300.330.350.380.40 0.450.480.500.530.55 0.470.480.480.490.49
+0.300.330.350.380.40
+Idioms0.450.480.500.530.55
+Literal0.470.480.480.490.49
 Rand-in0.450.480.500.530.55
 Rand-out
 FR - BLEU
-0.180.200.210.220.24 0.270.280.290.300.310.32 0.300.310.320.33
+0.180.200.210.220.24
+Idioms0.270.280.290.300.310.32
+Literal0.300.310.320.33
 Rand-in0.260.280.300.320.34
 Rand-outFR - RougeL-sum
-0.400.420.440.460.48 0.520.530.540.54 0.580.590.600.61
+0.400.420.440.460.48
+Idioms0.520.530.540.54
+Literal0.580.590.600.61
 Rand-in0.450.500.550.600.65
 Rand-outFR - BertScore
-0.920.920.930.930.93 0.9350.9360.937 0.940.940.940.950.95
+0.920.920.930.930.93
+Idioms0.9350.9360.937
+Literal0.940.940.940.950.95
 Rand-in0.900.910.920.930.940.95
 Rand-outFR - Meteor
-0.410.420.430.45 0.550.550.560.560.570.57 0.570.580.580.590.59
+0.410.420.430.45
+Idioms0.550.550.560.560.570.57
+Literal0.570.580.580.590.59
 Rand-in0.480.520.560.600.64
 Rand-out
 JP - BLEU
-0.090.090.100.100.10 0.120.130.130.140.140.15 0.140.140.150.150.160.16
+0.090.090.100.100.10
+Idioms0.120.130.130.140.140.15
+Literal0.140.140.150.150.160.16
 Rand-in0.080.090.090.100.10
 Rand-outJP - RougeL-sum
-0.250.260.270.280.290.30 0.380.390.390.400.40 0.390.400.400.400.41
+0.250.260.270.280.290.30
+Idioms0.380.390.390.400.40
+Literal0.390.400.400.400.41
 Rand-in0.320.330.340.340.350.36
 Rand-outJP - BertScore
-0.9000.9020.905 0.920.920.930.930.93 0.9200.9220.923
+0.9000.9020.905
+Idioms0.920.920.930.930.93
+Literal0.9200.9220.923
 Rand-in0.890.890.900.900.90
 Rand-outJP - Meteor
-0.260.270.280.300.32 0.400.410.420.430.440.45 0.390.400.400.40
+0.260.270.280.300.32
+Idioms0.400.410.420.430.440.45
+Literal0.390.400.400.40
 Rand-in0.300.320.330.340.36
 Rand-outNormal Upweight Knn Knn   upweightFigure 3  Results of automatic metrics. In most cases, combining loss weighting with KNN-MT improves automatic
 metrics the most on all three test sets, including the out-of-distribution (Random) test set.
@@ -580,7 +640,8 @@ fi-literal 0.7692 0.8462 0.8205 0.8141
 fi-rand-out 0.7647 0.8235 0.7771 0.828
 ja-idioms 0.4152 0.4286 0.4643 0.4598
 ja-literal 0.6475 0.6516 0.6557 0.6434
-ja-rand-out 0.6207 0.5560 0.5776 0.5862 4  Human-judged accuracy on sentence-level semantics.
+ja-rand-out 0.6207 0.5560 0.5776 0.5862
+Table 4  Human-judged accuracy on sentence-level semantics.
 
 7.2 Error analysis
 We repeat the frequency analysis performed on
@@ -593,7 +654,24 @@ translated better.7A representative example (for
 7This trend is different in retrieval of long-tail facts in question
  answering, in which retrieval flattens out the differenceFrench) is in Figure 4. A complete set of plots are
 in Appendix I.
-0.2 0.4 0.6 0.8 0.150.200.25 0.2 0.4 0.6 0.8 0.9150.9200.9250.9300.935 0.2 0.4 0.6 0.8 0.4000.4250.4500.4750.500 0.2 0.4 0.6 0.8 0.4000.4250.4500.4750.500 4  Automatic metrics for fr-idiom sentences,
+0.2 0.4 0.6 0.8
+Percentiles0.150.200.25Metric ScoreBLEU
+base
+upweight knn
+0.2 0.4 0.6 0.8
+Percentiles0.9150.9200.9250.9300.935ScoreBERTScore
+base
+upweight knn
+0.2 0.4 0.6 0.8
+Percentile of idioms in OS0.4000.4250.4500.4750.500Metric ScoreROUGE
+base
+upweight knn
+0.2 0.4 0.6 0.8
+Percentile of idioms in OS0.4000.4250.4500.4750.500ScoreMETEOR
+base
+upweight knnbase
+upweight knn
+Figure 4  Automatic metrics for fr-idiom sentences,
 plotted by frequency, for base and upweight knn.
 We examine the rate of severe and major errors
 made in the base model and the upweight knn
@@ -607,15 +685,25 @@ note that it s possible for the rate of major errors
 to be higher in the upweight knn model because
 some severe errors transitioned to major errors.
 System Severe (  ) Major (  )
-fi-idioms base 0.4258 0.1648 0.3242 0.0962
-fi-literal base 0.1728 0.1234 0.1234 0.1358
-fi-random base 0.1317 0.2009 0.0603 0.2188
-fr-idioms base 0.3042 0.1528 0.198 0.1092
-fr-literal base 0.2326 0.1047 0.2209 0.04651
-fr-random base 0.1624 0.1688 0.09407 0.1649
-ja-idioms base 0.4643 0.2411 0.4464 0.1875
-ja-literal base 0.2867 0.1311 0.2787 0.1557
-ja-random base 0.2931 0.1724 0.3190 0.1897 5  Rate of major and severe errors in translations.
+fi-idioms base 0.4258 0.1648
+upweight knn 0.3242 0.0962
+fi-literal base 0.1728 0.1234
+upweight knn 0.1234 0.1358
+fi-random base 0.1317 0.2009
+upweight knn 0.0603 0.2188
+fr-idioms base 0.3042 0.1528
+upweight knn 0.198 0.1092
+fr-literal base 0.2326 0.1047
+upweight knn 0.2209 0.04651
+fr-random base 0.1624 0.1688
+upweight knn 0.09407 0.1649
+ja-idioms base 0.4643 0.2411
+upweight knn 0.4464 0.1875
+ja-literal base 0.2867 0.1311
+upweight knn 0.2787 0.1557
+ja-random base 0.2931 0.1724
+upweight knn 0.3190 0.1897
+Table 5  Rate of major and severe errors in translations.
 One question is why the error rate on out-ofdistribution
  sentences drops for French and Finnish.
 Infi-rand , the severe error rate more than
@@ -778,7 +866,8 @@ Santiago Castro. 2017. Fast Krippendorff  Fast computation
 https //github.com/pln-fing-udela
 r/fast-krippendorff .
 Thomas C. Cooper. 1999. Processing of Idioms by L2
-Learners of English. TESOL Quarterly , 33(2) 233 262.
+Learners of English. TESOL Quarterly , 33(2) 233 
+262.
 Verna Dankers, Elia Bruni, and Dieuwke Hupkes. 2022a.
 The paradox of the compositionality of natural language 
  A neural machine translation case study. In
@@ -838,7 +927,8 @@ Diederik P. Kingma and Jimmy Ba. 2017. Adam  A
 method for stochastic optimization.
 Klaus Krippendorff. 1970. Estimating the reliability,
 systematic error and random error of interval data.
-Educational and Psychological Measurement , 30 61 70.
+Educational and Psychological Measurement , 30 61
+  70.
 Lori Levin, Teruko Mitamura, Brian MacWhinney,
 Davida Fromm, Jaime Carbonell, Weston Feely,
 Robert Frederking, Anatole Gershman, and Carlos
@@ -954,7 +1044,7 @@ Methods in Natural Language Processing , pages
 1482 1488, Copenhagen, Denmark. Association for
 Computational Linguistics.
 Eric Wehrli. 1998. Translating idioms. In COLING
-1998 2 17th International Conference
+1998 Volume 2  The 17th International Conference
 on Computational Linguistics .
 Chunli Yang. 2010. Cultural differences on chinese and
 english idioms of diet and the translation. English
@@ -1031,10 +1121,11 @@ For kNN-MT, three datastores were built for approximate
  kNN search using the training set from
 OpenSubtitles. These datastores were built with
 thefaiss library (Johnson et al., 2019). The
-Finnish datastore contained 248 507k centroids, while the French datastore contained
- 348 713k centroids, and the Japanese
-datastore 17.8 73k centroids. All vectors
-were stored in fp16 32. The
+Finnish datastore contained 248M vectors with
+507k centroids, while the French datastore contained
+ 348M with 713k centroids, and the Japanese
+datastore 17.8M with 73k centroids. All vectors
+were stored in fp16 with a code size of 32. The
 vectors used as keys in the datastore correspond
 to the input to the last feedforward layer. Additionally,
  a hyperparameter search for each language
@@ -1048,7 +1139,8 @@ The best hyperparameters were as follows  fi
 fr  (λ  0.2,temp   10 ,num neighbours   20 ),
 ja  (λ  0.4,temp   10 ,num neighbours   20 )
 During test time, the best hyperparameters for each
-language were used, with a probe size of 20 5.
+language were used, with a probe size of 20 and
+beam size of 5.
 Experiments with  LM and kNN-MT were
 implemented in fairseq (version from September
 2021) (Ott et al., 2019).
@@ -1118,7 +1210,14 @@ Due to  LM often making errors with numbers and
 named entities, we assigned these errors a major
 rather than critical severity in most cases, although
 these would generally be critical severity errors
-0.2 0.4 0.6 0.8 0.060.080.100.12 0.2 0.4 0.6 0.8 0.870.880.890.90 0.2 0.4 0.6 0.8 0.250.300.350.400.45 0.2 0.4 0.6 0.8 0.200.250.30 5  Effect of idiom frequency on translations by
+0.2 0.4 0.6 0.8
+Percentiles0.060.080.100.12Metric ScoreBLEU
+0.2 0.4 0.6 0.8
+Percentiles0.870.880.890.90ScoreBERTScore
+0.2 0.4 0.6 0.8
+Percentile of idioms in OS0.250.300.350.400.45Metric ScoreROUGE
+0.2 0.4 0.6 0.8
+Percentile of idioms in OS0.200.250.30ScoreMETEORFigure 5  Effect of idiom frequency on translations by
 DeepL in Finnish
 in business documents. If part of a sentence was
 missing, we based the error severity on whether or
@@ -1141,10 +1240,13 @@ Statistical significance results are shown in Table 7.
 H Effect of Frequency on Commercial
 Translations
 The effect of idiom frequency on commercial models 
- translations is in Figure 5 9.
+ translations is in Figure 5 through Figure 9.
 I Effect of Frequency on  LM
 The effect of frequency on  LM for Finnish and
-Japanese is shown in Figure 10 11 8.Language Src Ref Hyp Severity
+Japanese is shown in Figure 10 and Figure 11
+J Automatic Metrics in Detail
+Exact results for automatic metrics are shown in
+Table 8.Language Src Ref Hyp Severity
 fr- Eh oui, l habit ne fait pas le
 moine.Yes, clothes don t make the man.Yes, clothes don t make you a
 monk.Major
@@ -1168,18 +1270,132 @@ fi idioms 0.0*
 literal 0.003*
 rand 0.018*
 fr idioms 0.0*
-literal 0.234 0.0*
-ja idioms 0.058 0.083 0.088 7  p-values obtained using approximate randomization
+literal 0.234
+rand 0.0*
+ja idioms 0.058
+literal 0.083
+rand 0.088
+Table 7  p-values obtained using approximate randomization
  on translations produced by the base model and
 the upweight knn model.
-0.2 0.4 0.6 0.8 0.060.080.100.12 0.2 0.4 0.6 0.8 0.870.880.890.90 0.2 0.4 0.6 0.8 0.250.300.350.400.45 0.2 0.4 0.6 0.8 0.200.250.30 6 0.2 0.4 0.6 0.8 0.120.130.14 0.2 0.4 0.6 0.8 0.8800.8820.8840.886 0.2 0.4 0.6 0.8 0.400.420.440.46 0.2 0.4 0.6 0.8 0.270.280.29 7 0.2 0.4 0.6 0.8 0.0750.1000.1250.1500.175 0.2 0.4 0.6 0.8 0.880.890.90 0.2 0.4 0.6 0.8 0.300.350.40 0.2 0.4 0.6 0.8 0.2250.2500.2750.300 8  Effect of idiom frequency on translations by
+0.2 0.4 0.6 0.8
+Percentiles0.060.080.100.12Metric ScoreBLEU
+0.2 0.4 0.6 0.8
+Percentiles0.870.880.890.90ScoreBERTScore
+0.2 0.4 0.6 0.8
+Percentile of idioms in OS0.250.300.350.400.45Metric ScoreROUGE
+0.2 0.4 0.6 0.8
+Percentile of idioms in OS0.200.250.30ScoreMETEOR
+Figure 6  Effect of idiom frequency on translations by
+Google in Finnish
+0.2 0.4 0.6 0.8
+Percentiles0.120.130.14Metric ScoreBLEU
+0.2 0.4 0.6 0.8
+Percentiles0.8800.8820.8840.886ScoreBERTScore
+0.2 0.4 0.6 0.8
+Percentile of idioms in OS0.400.420.440.46Metric ScoreROUGE
+0.2 0.4 0.6 0.8
+Percentile of idioms in OS0.270.280.29ScoreMETEORFigure 7  Effect of idiom frequency on translations by
+Google in French
+0.2 0.4 0.6 0.8
+Percentiles0.0750.1000.1250.1500.175Metric ScoreBLEU
+0.2 0.4 0.6 0.8
+Percentiles0.880.890.90ScoreBERTScore
+0.2 0.4 0.6 0.8
+Percentile of idioms in OS0.300.350.40Metric ScoreROUGE
+0.2 0.4 0.6 0.8
+Percentile of idioms in OS0.2250.2500.2750.300ScoreMETEOR
+Figure 8  Effect of idiom frequency on translations by
 DeepL in JapaneseLanguage Test Set Model BLEU RougeL-sum BertScore Meteor
-fi Idioms Normal 0.1608 0.3737 0.9126 0.3592 0.179 0.3904 0.9152 0.3745 0.1773 0.3895 0.9154 0.3709 0.182 0.4027 0.9172 0.3833 0.2093 0.5053 0.9350 0.5050 0.2257 0.535 0.937 0.5161 0.2314 0.5281 0.9364 0.5258 0.2362 0.5335 0.9387 0.5217
-Random-in Normal 0.2056 0.5044 0.9321 0.4739 0.1991 0.5067 0.9316 0.4732 0.2044 0.5048 0.9324 0.4728 0.2120 0.5224 0.9351 0.488
-Random-out Normal 0.2365 0.535 0.9145 0.4971 0.2557 0.5602 0.9183 0.5178 0.2374 0.5458 0.9163 0.5102 0.2498 0.564 0.9193 0.5261 0.2001 0.4329 0.9211 0.4393 0.2154 0.4547 0.9235 0.4493 0.2174 0.4398 0.9235 0.4419 0.2309 0.4568 0.926 0.4581 0.2778 0.5261 0.9377 0.5504 0.2824 0.5318 0.9387 0.5544 0.2923 0.5332 0.9384 0.5564 0.2883 0.5325 0.9399 0.5549
-Random-in Normal 0.3197 0.5942 0.9443 0.5803 0.3142 0.5949 0.9438 0.5774 0.3079 0.5884 0.9427 0.5715 0.3258 0.6036 0.9461 0.5865
-Random-out Normal 0.2778 0.528 0.9377 0.5504 0.3396 0.6573 0.928 0.6146 0.3078 0.5458 0.9223 0.5856 0.3353 0.652 0.9272 0.6075 0.09048 0.2826 0.9234 0.2998 0.09376 0.2767 0.9034 0.2905 0.09505 0.285 0.9052 0.3022 0.09589 0.2841 0.905 0.2982 0.1416 0.3951 0.9222 0.4222 0.1418 0.3947 0.9223 0.4183 0.1427 0.3923 0.9221 0.4222 0.1509 0.3962 0.9226 0.4228
-Random-in Normal 0.1443 0.4008 0.9212 0.3927 0.1535 0.4036 0.9218 0.3960 0.1430 0.3981 0.9212 0.3925 0.1543 0.407 0.9224 0.4009
-Random-out Normal 0.0948 0.3539 0.8946 0.3436 0.09051 0.3389 0.8934 0.3284 0.09228 0.3522 0.8947 0.3392 0.09752 0.3545 0.8959 0.341 8  Results of automatic metrics. In most cases, combining loss weighting with KNN-MT improves automatic
-metrics the most on all three test sets, including the out-of-distribution (Random) test set.0.2 0.4 0.6 0.8 0.0000.0250.0500.0750.100 0.2 0.4 0.6 0.8 0.850.860.870.88 0.2 0.4 0.6 0.8 0.300.350.40 0.2 0.4 0.6 0.8 0.1500.1750.2000.2250.250 9 0.2 0.4 0.6 0.8 0.100.150.20 0.2 0.4 0.6 0.8 0.900.910.920.93 0.2 0.4 0.6 0.8 0.30.40.5 0.2 0.4 0.6 0.8 0.30.40.5 10  Translation metrics for Finnish idiomatic sentences, for base and upweight knn models.
-0.2 0.4 0.6 0.8 0.000.050.100.15 0.2 0.4 0.6 0.8 0.890.900.91 0.2 0.4 0.6 0.8 0.200.250.300.35 0.2 0.4 0.6 0.8 0.200.250.300.35 11  Translation metrics for Japanese idiomatic sentences, for base and upweight knn models.
+fi Idioms Normal 0.1608 0.3737 0.9126 0.3592
+Knn 0.179 0.3904 0.9152 0.3745
+Upweight 0.1773 0.3895 0.9154 0.3709
+Knn   upweight 0.182 0.4027 0.9172 0.3833
+Literal Normal 0.2093 0.5053 0.9350 0.5050
+Knn 0.2257 0.535 0.937 0.5161
+Upweight 0.2314 0.5281 0.9364 0.5258
+Knn   upweight 0.2362 0.5335 0.9387 0.5217
+Random-in Normal 0.2056 0.5044 0.9321 0.4739
+Knn 0.1991 0.5067 0.9316 0.4732
+Upweight 0.2044 0.5048 0.9324 0.4728
+Knn   upweight 0.2120 0.5224 0.9351 0.488
+Random-out Normal 0.2365 0.535 0.9145 0.4971
+Knn 0.2557 0.5602 0.9183 0.5178
+Upweight 0.2374 0.5458 0.9163 0.5102
+Knn   upweight 0.2498 0.564 0.9193 0.5261
+fr Idioms Normal 0.2001 0.4329 0.9211 0.4393
+Knn 0.2154 0.4547 0.9235 0.4493
+Upweight 0.2174 0.4398 0.9235 0.4419
+Knn   upweight 0.2309 0.4568 0.926 0.4581
+Literal Normal 0.2778 0.5261 0.9377 0.5504
+Knn 0.2824 0.5318 0.9387 0.5544
+Upweight 0.2923 0.5332 0.9384 0.5564
+Knn   upweight 0.2883 0.5325 0.9399 0.5549
+Random-in Normal 0.3197 0.5942 0.9443 0.5803
+Knn 0.3142 0.5949 0.9438 0.5774
+Upweight 0.3079 0.5884 0.9427 0.5715
+Knn   upweight 0.3258 0.6036 0.9461 0.5865
+Random-out Normal 0.2778 0.528 0.9377 0.5504
+Knn 0.3396 0.6573 0.928 0.6146
+Upweight 0.3078 0.5458 0.9223 0.5856
+Knn   upweight 0.3353 0.652 0.9272 0.6075
+ja Idioms Normal 0.09048 0.2826 0.9234 0.2998
+Knn 0.09376 0.2767 0.9034 0.2905
+Upweight 0.09505 0.285 0.9052 0.3022
+Knn   upweight 0.09589 0.2841 0.905 0.2982
+Literal Normal 0.1416 0.3951 0.9222 0.4222
+Knn 0.1418 0.3947 0.9223 0.4183
+Upweight 0.1427 0.3923 0.9221 0.4222
+Knn   upweight 0.1509 0.3962 0.9226 0.4228
+Random-in Normal 0.1443 0.4008 0.9212 0.3927
+Knn 0.1535 0.4036 0.9218 0.3960
+Upweight 0.1430 0.3981 0.9212 0.3925
+Knn   upweight 0.1543 0.407 0.9224 0.4009
+Random-out Normal 0.0948 0.3539 0.8946 0.3436
+Knn 0.09051 0.3389 0.8934 0.3284
+Upweight 0.09228 0.3522 0.8947 0.3392
+Knn   upweight 0.09752 0.3545 0.8959 0.341
+Table 8  Results of automatic metrics. In most cases, combining loss weighting with KNN-MT improves automatic
+metrics the most on all three test sets, including the out-of-distribution (Random) test set.0.2 0.4 0.6 0.8
+Percentiles0.0000.0250.0500.0750.100Metric ScoreBLEU
+0.2 0.4 0.6 0.8
+Percentiles0.850.860.870.88ScoreBERTScore
+0.2 0.4 0.6 0.8
+Percentile of idioms in OS0.300.350.40Metric ScoreROUGE
+0.2 0.4 0.6 0.8
+Percentile of idioms in OS0.1500.1750.2000.2250.250ScoreMETEORFigure 9  Effect of idiom frequency on translations by
+Google in Japanese0.2 0.4 0.6 0.8
+Percentiles0.100.150.20Metric ScoreBLEU
+base
+upweight knn
+0.2 0.4 0.6 0.8
+Percentiles0.900.910.920.93ScoreBERTScore
+base
+upweight knn
+0.2 0.4 0.6 0.8
+Percentile of idioms in OS0.30.40.5Metric ScoreROUGE
+base
+upweight knn
+0.2 0.4 0.6 0.8
+Percentile of idioms in OS0.30.40.5ScoreMETEOR
+base
+upweight knnbase
+upweight knnFigure 10  Translation metrics for Finnish idiomatic sentences, for base and upweight knn models.
+0.2 0.4 0.6 0.8
+Percentiles0.000.050.100.15Metric ScoreBLEU
+base
+upweight knn
+0.2 0.4 0.6 0.8
+Percentiles0.890.900.91ScoreBERTScore
+base
+upweight knn
+0.2 0.4 0.6 0.8
+Percentile of idioms in OS0.200.250.300.35Metric ScoreROUGE
+base
+upweight knn
+0.2 0.4 0.6 0.8
+Percentile of idioms in OS0.200.250.300.35ScoreMETEOR
+base
+upweight knnbase
+upweight knn
+Figure 11  Translation metrics for Japanese idiomatic sentences, for base and upweight knn models.

@@ -1,6 +1,7 @@
 CROSS-MODAL MULTI-TASKING FOR SPEECH-TO-TEXT TRANSLATION
 VIA HARD PARAMETER SHARING
-Brian Yan1, Xuankai Chang1, Antonios Anastasopoulos3, Yuya Fujita4, Shinji Watanabe1,2 1Carnegie Mellon University, US,2Johns Hopkins University, US,
+Brian Yan1, Xuankai Chang1, Antonios Anastasopoulos3, Yuya Fujita4, Shinji Watanabe1,2
+1Carnegie Mellon University, US,2Johns Hopkins University, US,
 3George Mason University, US,4Yahoo Japan Corporation, JP
 ABSTRACT
 Recent works in end-to-end speech-to-text translation (ST) have
@@ -53,7 +54,7 @@ obtained by applying k-means clustering on self-supervised learning
 (SSL) representations contain sufficient semantic information to be
 effective system inputs for ASR [14] and ST [15]. Similarly, speech
 discretization has been applied in TTS [16 19] and speech-to-speech
-translation (S ST) [15, 20, 21]. These developments in speech discretization
+translation (S2ST) [15, 20, 21]. These developments in speech discretization
  appear to drastically reduce the speech-text modality gap,
 suggesting that the modality-specific modules employed by soft parameter
  sharing methods may not be necessary.
@@ -80,8 +81,9 @@ WavLM [22]) and down-sampled via repetition removal and subword
  tokenization while text is up-sampled via token repetition.
 In our experiments, we first show that our hard parameter sharing
  approach improves AED, CTC, RNN-T, and CTC/Attn models
- when trained from scratch by an average of  0.5 2 5 for a full accounting of the novelties in this work.arXiv 2309.15826 1  [cs.CL]  27 2023Fig. 2 . Speech/text pre-processing (left) produces two discrete sequences
- of similar length which are ingested by Seq Seq models
+ when trained from scratch by an average of  0.5 BLEU on the
+2Please refer to  5 for a full accounting of the novelties in this work.arXiv 2309.15826v1  [cs.CL]  27 Sep 2023Fig. 2 . Speech/text pre-processing (left) produces two discrete sequences
+ of similar length which are ingested by Seq2Seq models
 (right) with hard parameter sharing between ST/MT tasks.
 MuST-C ST corpus [23] without any external MT data ( 4.1). Next,
 we show that leveraging external WMT [24] MT data via our multitasking
@@ -93,7 +95,7 @@ of transfer learning by  1.8 BLEU from pre-trained textual models
 In this section, we first describe our method of converting continuous
  speech into sequences of discrete units ( 2.1) and then explain
  how discrete speech inputs enable hard parameter sharing
-( 2.2).  2.3 describes the set of sequence-to-sequence (seq seq)
+( 2.2).  2.3 describes the set of sequence-to-sequence (seq2seq)
 frameworks which we investigate.
 Figure 2 also summarizes our approach. The color-coding in the
 figure matches bolded keywords in the following section.
@@ -124,7 +126,8 @@ same consecutive unit. Finally, subword modeling can be applied
 to further reduce the sequence length [14]  we use the unigram al-gorithm from SentencePiece [32] to construct a vocabulary of 4000
 tokens. To reduce over-fitting on particular segmentation patterns,
 we also apply BPE-dropout [33] during training. Ultimately, we obtain
- discrete speech sequences with an average length of 122 6.4 seconds.
+ discrete speech sequences with an average length of 122 tokens
+from original audio with an average duration of 6.4 seconds.
 2.2. ST/MT Multi-Tasking with Hard Parameter Sharing
 2.2.1. ST from Discrete Speech Inputs
 With discrete speech inputs, the ST task seeks to map a sequence
@@ -160,7 +163,7 @@ to the speech subword tokens VSPE. This modification correspondingly
  expands the embedding layer, but does not impact any other
 component in the architecture. Note that this joint speech-text vocabulary
  allows our models to indiscriminately ingest speech or text
-into any seq seq model, sharing all non-embedding parameters between
+into any seq2seq model, sharing all non-embedding parameters between
  ST and MT. The only modality-specific parameters are within
 the embedding layer, as speech and text tokens are still disjoint.
 Now MT multi-tasking can be achieved by simply combining
@@ -172,7 +175,7 @@ in the following section) are applied with equal weighting between
 the two tasks. Allparameters are updated in each iteration. Models
 do not have any explicit sense of whether a particular example is an
 MT or ST task   all are processed in the same manner.
-2.3. Seq Seq Models
+2.3. Seq2Seq Models
 In this work, we examine AED [39, 40], CTC [41], RNN-T [42],
 and CTC/Attn [43, 44] models. We use a hierarchical encoding
 scheme, as in [44], for all of our models. This method applies an
@@ -189,8 +192,8 @@ denoted as LRNNT . AED and RNN-T models are jointly trained
 with CTC losses but CTC likelihoods are not applied during decoding.
  All told, our models are optimized using an interpolated loss
 defined as L λ1LSRC CTC λ2LTGT CTC λ3LCE/RNNT . We use
-λ1 λ2 0.3andλ3 1 for our experiments. For CTC models,
-the last term is omitted and we use λ1 λ2 1.
+λ1 λ2  0.3andλ3  1 for our experiments. For CTC models,
+the last term is omitted and we use λ1 λ2  1.
 3. EXPERIMENTAL SETUP
 We compare the performance of our hard multi-task models vs.
 single-task baselines with identical architectures. The single-task
@@ -201,7 +204,7 @@ discrete speech inputs compared to those with continuous spectral
 inputs  this aspect has been addressed elsewhere [14]. We use the
 ESPnet-ST-v2 toolkit [48] for our experiments.
 Data  We use the En-De, En-Es, and En-Fr portions of MuST-C [23]
-which consist of 408/504/492 234K/270K/292K
+which consist of 408/504/492 audio hours and 234K/270K/292K
 sentences. Experiments using external MT data were conducted on
 the En-De language pair using the WMT 16 corpus [24] which consists
  of 4.6M sentences. Speed perturbation is applied to up-sample
@@ -218,13 +221,14 @@ layer E-Branchformer [49] encoders with ASR CTC applied on the
 section) use 256dim size, 1024 feed-forward dim, and 4heads. Our
 larger models (denoted by E-F the following section) use 512dim
 size, 2048 feed-forward dim, and 8heads. We use 6 layer Transformer
- decoders for AED and CTC/Attn models with 2048 4/8heads for base/large models. Finally, for
+ decoders for AED and CTC/Attn models with 2048 feedforward
+ dim and either 4/8heads for base/large models. Finally, for
 models with mBART we initialize only the decoder while freezing
 feed-forward and self-attention parameters and use 2x convolutional
 down-sampling after the encoder, following [50, 51].
 To ensure fair comparison, all models are trained for the same
 number of iterations regardless the training data size. All model converge
- within 350 10 best checkpoints.
+ within 350K iterations and we average the 10 best checkpoints.
 AED, RNN-T, and CTC/Attn models use beam search with beam
 size 10. CTC models use greedy decoding.
 Evaluation  We measure detokenized case-sensitive BLEU [52].
@@ -237,11 +241,17 @@ multi-task approaches for CTC, RNN-T, AED, CTC/Attn models.
 MUST-C
 # MODEL SIZE En-De En-Es En-Fr avg
 CTC
-A1 Single-Task 50 23.2 27.9 32.2 27.8 2 Hard Multi-Task 50 23.4 28.4 33.6 28.5
+A1 Single-Task 50M 23.2 27.9 32.2 27.8
+A2 Hard Multi-Task 50M 23.4 28.4 33.6 28.5
 RNN-T
-B1 Single-Task 60 26.4 30.4 33.1 30.0 2 Hard Multi-Task 60 26.7 31.0 33.8 30.5 1 Single-Task 60 27.4 32.8 37.4 32.5 2 Hard Multi-Task 60 27.7 33.1 38.0 33.0
+B1 Single-Task 60M 26.4 30.4 33.1 30.0
+B2 Hard Multi-Task 60M 26.7 31.0 33.8 30.5
+AED
+C1 Single-Task 60M 27.4 32.8 37.4 32.5
+C2 Hard Multi-Task 60M 27.7 33.1 38.0 33.0
 CTC/A TTN
-D1 Single-Task 60 28.6 33.0 38.7 33.4 2 Hard Multi-Task 60 29.2 33.2 39.2 33.9
+D1 Single-Task 60M 28.6 33.0 38.7 33.4
+D2 Hard Multi-Task 60M 29.2 33.2 39.2 33.9
 learning from pre-trained textual models ( 4.3). We also provide
 ablations over sequence lengths ( 4.4).
 4.1. Hard Parameter Sharing
@@ -256,7 +266,7 @@ combine all ST/MT examples to form a training set.
 The results in Table 1 compare our hard multi-tasking method
 compared to the single-task baseline for CTC, RNN-T, AED, and
 CTC/Attn models. We observe consistent improvements in the range
-of  0.2 1.4 BLEU points across three different language pairs
+of  0.2 to  1.4 BLEU points across three different language pairs
 and for all model types. We attribute these improvements to primarily
  to the regularization effect of hard parameter sharing [4], as we
 do not explicitly tell the model how to relate corresponding text and
@@ -269,12 +279,13 @@ The ability to add external MT data into the training mixture is a
 major benefit of ST/MT multi-tasking. Our approach is simple 
 wesimply concatenate data sources and train on the combined
 set. The first two horizontal partitions of Table 2 present results on
-English-to-German ST with 4.6 16. Comparing E toE2 , we see the full effect of
+English-to-German ST with 4.6M sentences of external MT data
+from WMT 16. Comparing E1toE2 , we see the full effect of
 multi-tasking with external MT data   1.1 BLEU. A portion of this
 gain must be attributed to that of hard parameter sharing. To understand
  the impact of the external MT data on its own, we compare
 multi-tasking without external data, E2, to multi-tasking with external
- data, E2 0.8 BLEU. Note that we can pre-train our entire
+ data, E2    0.8 BLEU. Note that we can pre-train our entire
 model on this same external MT data, but this constitutes a form of
 transfer learning which we will discuss in the subsequent section.Table 2 . Performance of hard ST/MT multi-task CTC/Attn models
  with external MT data or mBART initialization. Single-task
@@ -284,24 +295,33 @@ shown for comparison.  Uses WMT16 MT data (4.6M sentences).
 EXTDATA
 # MODEL SIZE MT Text En-De
 - ConST 22 [8] 150M - - 25.7
-- M ST 23 [11] - - - 26.4 1 Single-Task CTC/Attn 190M - - 29.0 2 Hard Multi-Task CTC/Attn 190M - - 29.3
+- M3ST 23 [11] - - - 26.4
+E1 Single-Task CTC/Attn 190M - - 29.0
+E2 Hard Multi-Task CTC/Attn 190M - - 29.3
 - ConST 22 [8] 150M   - 28.3
-- M ST 23 [11] -   - 29.3 2  Hard Multi-Task CTC/Attn 190M   - 30.1 1 Single-Task CTC/Attn 740 29.3 2 Hard Multi-Task CTC/Attn 740 31.1 3 . Ablation study on the importance of up-sampling MT input
+- M3ST 23 [11] -   - 29.3
+E2  Hard Multi-Task CTC/Attn 190M   - 30.1
+F1 Single-Task CTC/Attn 740M     29.3
+F2 Hard Multi-Task CTC/Attn 740M     31.1
+Table 3 . Ablation study on the importance of up-sampling MT input
 text. MT   Use of MT multi-task. Up   Up-sampling factor of MT
 input text. Ratio   Average length ratio of discrete speech to text.
 MT Up Ratio BLEU
 - - - 28.6
-  - 6.0 28.5 2 3.0 28.8 4 1.5 29.2 6 1.0 28.7
+  - 6.0 28.5
+  2x 3.0 28.8
+  4x 1.5 29.2
+  6x 1.0 28.7
 We take two representative works for comparison in this section.
 The ConST model [8] is a soft multi-tasking approach which utilizes
  a contrastive loss to encourage matched speech and text inputs
 to be closer, relative to unmatched speech and text inputs. ConST
 also uses multiple strategies to create harder examples for the contrastive
- loss. The M ST model [11] is another soft multi-tasking approach
+ loss. The M3ST model [11] is another soft multi-tasking approach
  which utilizes a multi-stage training strategy. The first stage
 is a purely textual pre-training stage which incorporates external MT
 data while the next two stages are ST fine-tuning stages which perform
- data mix-up and contrastive learning. ConST and M ST appear
+ data mix-up and contrastive learning. ConST and M3ST appear
  to gain more from the same external MT data, although their
 baselines are indeed much weaker. Nonetheless, we suspect that
 modality-specific modules can limit interference from extremely unbalanced
@@ -321,12 +341,12 @@ the speech-based fine-tuning domain. Cross-modal pre-training [6,
 fine-tuning method has a similar effect.
 3https //huggingface.co/facebook/mbart-large-50-many-to-many-mmtThe results in the final horizontal partition of Table 2 presents
 models with mBART decoder initialization (see  3). Comparing the
-single-task model F with the multi-task model F2, we see that the
+single-task model F1with the multi-task model F2, we see that the
 latter is  1.8 BLEU better. The single-task model only improves by
- 0.3 BLEU from mBART initialization ( E vs.F1)  prior works
+ 0.3 BLEU from mBART initialization ( E1vs.F1)  prior works
 have also noted similarly muted gains [51, 56], indicating deficiencies
  in transfer learning across modalities. Our method exhibits a
-more efficient transfer ( E vs.F2), yielding  1.8 BLEU. Note that
+more efficient transfer ( E2vs.F2), yielding  1.8 BLEU. Note that
 mBART has been fine-tuned on large scale MT data, so we do not
 find it necessary to include WMT data in our training mixture.
 4.4. Ablations on Sequence Lengths
@@ -362,12 +382,12 @@ Second, our work follows a long line of prior works which investigate
  ST/MT multi-tasking [5 13]. The common theme amongst
 these approaches is soft parameter sharing, which is a major difference
  compared to our approach. Further, we examine a larger set of
-Seq Seq models to demonstrate general applicability.
+Seq2Seq models to demonstrate general applicability.
 6. CONCLUSION
 We present a method for ST/MT multi-tasking with hard parameter
  sharing, which is not trivially achieved due to the speech-text
 modality gap. Our approach resolves this by pre-processing speech
-into discrete sequences of tokens. This allows us to build Seq Seq
+into discrete sequences of tokens. This allows us to build Seq2Seq
 models capable of ingesting speech and text via an input vocabulary
 consisting of discrete speech and text tokens. Given the consistent
 improvements in ST, we will apply this approach to spoken language

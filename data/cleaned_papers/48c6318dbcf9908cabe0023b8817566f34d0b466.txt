@@ -1,6 +1,7 @@
-I D  TRANSFORMER ARCHITECTURES WITH INPUT-DEPENDENT DYNAMIC DEPTH
+I3D  TRANSFORMER ARCHITECTURES WITH INPUT-DEPENDENT DYNAMIC DEPTH
 FOR SPEECH RECOGNITION
-Yifan Peng1, Jaesong Lee2, Shinji Watanabe1 1Carnegie Mellon University NA VER Corporation
+Yifan Peng1, Jaesong Lee2, Shinji Watanabe1
+1Carnegie Mellon University2NA VER Corporation
 ABSTRACT
 Transformer-based end-to-end speech recognition has achieved great
 success. However, the large footprint and computational overhead
@@ -8,9 +9,9 @@ make it difﬁcult to deploy these models in some real-world applications.
  Model compression techniques can reduce the model size and
 speed up inference, but the compressed model has a ﬁxed architecture
  which might be suboptimal. We propose a novel Transformer
-encoder with Input- Dependent Dynamic Depth (I D) to achieve
+encoder with Input- Dependent Dynamic Depth (I3D) to achieve
 strong performance-efﬁciency trade-offs. With a similar number of
-layers at inference time, I D-based models outperform the vanilla
+layers at inference time, I3D-based models outperform the vanilla
 Transformer and the static pruned model via iterative layer pruning.
 We also present interesting analysis on the gate probabilities and the
 input-dependency, which helps us better understand deep encoders.
@@ -52,16 +53,16 @@ but it continues to focus on streaming ASR and the architecture isstill determin
 frame-level prediction may be expensive and suboptimal, as it only
 captures frame-level local features.
 We propose a Transformer encoder with Input- Dependent
-Dynamic Depth (I D) for end-to-end ASR. Instead of using carefully
+Dynamic Depth (I3D) for end-to-end ASR. Instead of using carefully
 designed ﬁne-grained operations within submodules like attention,
-I D predicts whether to skip an entire self-attention block or an
+I3D predicts whether to skip an entire self-attention block or an
 entire feed-forward network through a series of local gate predictors
 or a single global gate predictor. The prediction is made at the utterance
  level (or chunk level if extended to streaming cases), which
 is easier to implement and reduces additional cost. It also captures
 global statistics of the input. As analyzed in Sec. 3.4, the length of
 an utterance affects the inference architecture. Some blocks may be
-useful for longer inputs. Results show that I D models consistently
+useful for longer inputs. Results show that I3D models consistently
 outperform Transformers trained from scratch and the static pruned
 models via iterative layer pruning [29], when using a similar number
  of layers for inference. We also perform interesting analysis on
@@ -78,22 +79,22 @@ where X(l)is the output of the l-th Transformer layer and X(l 1)is
 thus the input to the l-th layer. Y(l)is the output of the MHA at the
 l-th layer, which is also the input of the FFN at the l-th layer. These
 sequences all have a length of Tand a feature size of d.
-2.2. Overall architecture of I D encoders
-Fig. 1a shows the overall architecture of I D encoders. A waveform
+2.2. Overall architecture of I3D encoders
+Fig. 1a shows the overall architecture of I3D encoders. A waveform
 is ﬁrst converted to a feature sequence by a frontend, and further
 processed and downsampled by a CNN, after which positional embeddings
  are added. Later, the sequence is processed by a stack of N
-I D encoder layers to produce high-level features. This overall design
+I3D encoder layers to produce high-level features. This overall design
  follows that of Transformer. However, Transformer always uses
-a ﬁxed architecture regardless of the input. Our I D selects different
+a ﬁxed architecture regardless of the input. Our I3D selects different
 combinations of MHA and FFN depending on the input utterance.
 To determine whether a module should be executed or skipped, a binary
- gate is introduced for each MHA or FFN module. The functionarXiv 2303.07624 1  [cs.CL]  14 2023FrontendCNNPositionalEmbeddingAudio WaveformI D Encoder Layer 𝑁Encoder Output SequenceEncoder Input Sequence(a) Overall encoder architecture.
-Multi-HeadSelf-AttentionFeed-ForwardNetwork MeanLocal Gate PredictorI D Encoder Layer (b) I D encoder layer with a local gate predictor.
+ gate is introduced for each MHA or FFN module. The functionarXiv 2303.07624v1  [cs.CL]  14 Mar 2023FrontendCNNPositionalEmbeddingAudio WaveformI3D Encoder Layer 𝑁Encoder Output SequenceEncoder Input Sequence(a) Overall encoder architecture.
+Multi-HeadSelf-AttentionFeed-ForwardNetwork MeanLocal Gate PredictorI3D Encoder Layer (b) I3D encoder layer with a local gate predictor.
 Multi-HeadSelf-AttentionFeed-ForwardNetwork
  MeanGlobal Gate PredictorLayer 1Layer 𝑁 𝑁 
-Encoder Input SequenceEncoder Output Sequence (c) I D encoder with a global gate predictor.
-Fig. 1   Architectures of our proposed I D encoders.
+Encoder Input SequenceEncoder Output Sequence (c) I3D encoder with a global gate predictor.
+Fig. 1   Architectures of our proposed I3D encoders.
 of thel-th layer (see Eqs. (1) and (2) for the vanilla Transformer)
 now becomes 
 Y(l) X(l 1) g(l)
@@ -106,7 +107,9 @@ FFN {0,1}are input-dependent gates. If a gate is
 predicted to be 0, then the corresponding module will be skipped,
 which effectively reduces computation. The total training loss is 
 Ltotal LASR λ Lutility, (5)
-Lutility 1 2 1(
+Lutility 1
+2NN 
+l 1(
 g(l)
 MHA g(l)
 FFN)
@@ -144,11 +147,12 @@ will minimize the overall computation instead of simply the number of layers.pro
 to the discrete version. We use τ  1in our experiments.
 For thel-th MHA, a discrete probability distribution p(l)
 MHA R2
-over two possible gate values (0 1) is predicted, where 0 1 means executing it. Then, a soft sample
+over two possible gate values (0 and 1) is predicted, where 0 means
+skipping this module and 1 means executing it. Then, a soft sample
 is drawn from this discrete distribution using Eq. (8), which is used
 as the gate in Eq. (3) during training. Similarly, for the l-th FFN, a
 distribution p(l)
-FFN R is predicted, from which a soft gate is drawn
+FFN R2is predicted, from which a soft gate is drawn
 and used in Eq. (4). The gate distributions are generated by a gate
 predictor based on the input features, as deﬁned in Sec. 2.3.
 2.3. Local and global gate predictors
@@ -157,7 +161,7 @@ We propose two types of gate predictors, namely the local gate predictor
  (MLP) with a single hidden layer of size 32 in all experiments,
 which has little computational overhead.
 Thelocal gate predictor (LocalGP or LGP) is associated with a
-speciﬁc I D encoder layer, as illustrated in Fig. 1b. Every layer has
+speciﬁc I3D encoder layer, as illustrated in Fig. 1b. Every layer has
 its own gate predictor whose parameters are independent. Consider
 thel-th encoder layer with an input sequence X(l 1) RT d. This
 sequence is ﬁrst converted to a d-dimensional vector x(l 1) Rd
@@ -169,7 +173,7 @@ MHA,p(l)
 FFN LGP(l)(x(l 1)), (9)
 where p(l)
 MHA,p(l)
-FFN R are introduced in Sec. 2.2, and LGP(l)is the
+FFN R2are introduced in Sec. 2.2, and LGP(l)is the
 local gate predictor at the l-th layer. With this formulation, the decision
  of executing or skipping any MHA or FFN module depends on
 the input to the current layer, which further depends on the decision
@@ -187,8 +191,8 @@ MHA)1is the probability of executing the MHA and (p(l)
 FFN)1
 is the probability of executing the FFN. We use β  0.5by default,
 but it is also possible to adjust the inference cost by changing β.18 20 22 24 26 28 30 32 34 3611.512.012.513.013.5
-Average number of layers% WER (  )Transformer LayerDrop I D-LocalGP
-I D-GlobalGP I D-GlobalGP ( βvaries)
+Average number of layers% WER (  )Transformer LayerDrop I3D-LocalGP
+I3D-GlobalGP I3D-GlobalGP ( βvaries)
 (a) LibriSpeech test clean
 18 20 22 24 26 28 30 32 34 3626.027.028.029.030.0
 Average number of layers% WER (  )
@@ -199,17 +203,17 @@ threshold for generating binary gates as deﬁned in Eqs. (10) (11).
 18 20 22 24 26 28 30 32 34 3611.411.611.812.012.212.4
 Average number of layers% WER (  )Transformer
 LayerDrop
-I D-GlobalGP
+I3D-GlobalGP
 (a) LibriSpeech test clean
 18 20 22 24 26 28 30 32 34 3626.026.527.027.5
 Average number of layers% WER (  ) Transformer
 LayerDrop
-I D-GlobalGP
+I3D-GlobalGP
 (b) LibriSpeech test other
 Fig. 3   Word error rates (%) of InterCTC -based models vs. average
 number of layers used for inference on LibriSpeech test sets.
 The global gate predictor (GlobalGP or GGP), on the other
-hand, is deﬁned for an entire I D encoder, as shown in Fig. 1c. It predicts
+hand, is deﬁned for an entire I3D encoder, as shown in Fig. 1c. It predicts
  the gate distributions for all layers based on the encoder s input,
 which is also the input to the ﬁrst layer  X X(0) RT d. In particular,
  the sequence is transformed to a single vector x x(0) Rd
@@ -222,8 +226,8 @@ FFN}N
 l 1 GGP(x), (12)
 where p(l)
 MHA,p(l)
-FFN R are the gate probability distributions at the
-l-th layer, and the I D encoder has Nlayers in total. Here, the decisions
+FFN R2are the gate probability distributions at the
+l-th layer, and the I3D encoder has Nlayers in total. Here, the decisions
  of executing or skipping modules are made immediately after
 seeing the encoder s input, which has lower computational overhead
 than LocalGP and allows for more ﬂexible control over the inference
@@ -233,35 +237,38 @@ architecture. During inference, we can still use a ﬁxed threshold
 3.1. Experimental setup
 We use PyTorch [32] and follow the ASR recipes in ESPnet [33] to
 train all models. We mainly use the CTC framework on LibriSpeech18 20 22 24 26 28 30 32 34 3610111213
-Average number of layers% WER (  )Transformer I D-LocalGP I D-GlobalGP
+Average number of layers% WER (  )Transformer I3D-LocalGP I3D-GlobalGP
 Fig. 4   Word error rates (%) of CTC -based models vs. average number
  of layers used for inference on the Tedlium2 test set.
 Table 1   Word error rates (%) and average number of inference layers
  of AED -based models on LibriSpeech 100h .
 Modeldev clean test clean
 Ave #layers WER (  ) Ave #layers WER (  )
-Transformer36 7.8 36 8.0 27 8.2 27 8.5
-I D-LGP-36 27.3 7.9 27.1 8.3
-I D-GGP-36 27.2 7.8 27.1 8.2 100h [34]. In Sec. 3.5, we also show that I D can be applied to
-AED and another corpus, Tedlium2 [35]. Our I D encoders have
+Transformer36 7.8 36 8.0
+27 8.2 27 8.5
+I3D-LGP-36 27.3 7.9 27.1 8.3
+I3D-GGP-36 27.2 7.8 27.1 8.2
+100h [34]. In Sec. 3.5, we also show that I3D can be applied to
+AED and another corpus, Tedlium2 [35]. Our I3D encoders have
 36 layers in total. They are initialized with trained standard Transformers
- and ﬁne-tuned with a reduced learning rate ( 1 3) and
-variousλ(usually ranging from 1 13) in Eq. (5) to trade off WER
-and computation. The ﬁne-tuning epochs for LibriSpeech 100 2 50 35, respectively. We compare I D with two
+ and ﬁne-tuned with a reduced learning rate ( 1e 3) and
+variousλ(usually ranging from 1 to 13) in Eq. (5) to trade off WER
+and computation. The ﬁne-tuning epochs for LibriSpeech 100h and
+Tedlium2 are 50 and 35, respectively. We compare I3D with two
 baselines. First, we train standard Transformers with a reduced number
  of layers. Second, we train a 36-layer Transformer with LayerDrop
  [36, 37] or Intermediate CTC (InterCTC) [38] and perform
 iterative layer pruning [29] using the validation set to get a variety
 of models with smaller and ﬁxed architectures. This baseline is denoted
- as  LayerDrop  in Figs. 2 3. We can compare I D, whose
+ as  LayerDrop  in Figs. 2 and 3. We can compare I3D, whose
 layers are dynamically reduced based on the input, against the static
 pruned models.
 3.2. Main results
-Fig. 2 compares our I D models with two baselines. We train I DCTC
+Fig. 2 compares our I3D models with two baselines. We train I3DCTC
  models with different λin Eq. (5) to adjust the operating point.
 We calculate the number of layers as the average of the number of
-MHA blocks and the number of FFN blocks. Both I D-LocalGP and
-I D-GlobalGP outperform the standard Transformer and the pruned
+MHA blocks and the number of FFN blocks. Both I3D-LocalGP and
+I3D-GlobalGP outperform the standard Transformer and the pruned
 version using iterative layer pruning [29]. We can reduce the average
  number of layers to around 20 while still matching the Transformer
  trained from scratch. LocalGP achieves similar performance
@@ -271,24 +278,24 @@ be more efﬁcient for inference. The reason why LocalGP is not better
 or skip a block based on the current layer s input, which depends on
 decisions at previous layers. This sequential procedure can lead to
 more severe error propagation. We also show that it is possible to
-adjust the computational cost of a trained I D model by changing β
-(see Eqs. (10) (11)) at inference time. Three I D-GlobalGP models
+adjust the computational cost of a trained I3D model by changing β
+(see Eqs. (10) (11)) at inference time. Three I3D-GlobalGP models
 are decoded with different β. Asβdecreases, more blocks are used,
 and the WER is usually improved.
 Fig. 3 shows the results using InterCTC [38]. The WERs are
 lower than those in Fig. 2, thanks to the auxiliary CTC loss which
-regularizes training. Again, I D is consistently better than the Transformer
+regularizes training. Again, I3D is consistently better than the Transformer
  trained from scratch and the pruned model.
 3.3. Analysis of gate distributions
 Fig. 5 shows the mean and standard deviation (std) of the gate probabilities
- generated by an I D-GlobalGP model using CTC on Lib-1 6 11 16 21 26 31 3600.51
+ generated by an I3D-GlobalGP model using CTC on Lib-1 6 11 16 21 26 31 3600.51
 Layer indexProbability
 (a) MHA gate probabilities.
 1 6 11 16 21 26 31 3600.51
 Layer indexProbability
 (b) FFN gate probabilities.
 Fig. 5   Predicted gate probabilities (mean and std) at different layers
- of an I D-GlobalGP model on LibriSpeech test other. A higher
+ of an I3D-GlobalGP model on LibriSpeech test other. A higher
 probability means the layer is more likely to be executed.
 1 6 11 16 21 26 31 3600.51
 Layer indexProbability
@@ -297,13 +304,13 @@ Layer indexProbability
 Layer indexProbability
 (b) FFN gate probabilities (trained with InterCTC).
 Fig. 6   Predicted gate probabilities (mean and std) at different layers
-of an I D-GlobalGP model with InterCTC on LibriSpeech test other.
+of an I3D-GlobalGP model with InterCTC on LibriSpeech test other.
 A higher probability means the layer is more likely to be executed.
 riSpeech test-other. Most layers have a stable probability. Several
 layers have larger variations depending on the input. For both MHA
 and FFN, upper layers are executed with high probabilities while
 lower layers tend to be skipped, which is consistent with [28].
-We also show the gate probabilities from an I D-GlobalGP
+We also show the gate probabilities from an I3D-GlobalGP
 model trained with InterCTC [38] in Fig. 6. Interestingly, the overall
  trend is very different from Fig. 5. Now, the upper layers are
 almost skipped while the lower layers are executed with very high
@@ -315,24 +322,28 @@ effectively improves its capacity and also the ﬁnal performance.
 We believe this gate analysis can provide a way to interpret the
 layer-wise behavior of deep networks.
 3.4. Analysis of input-dependency
-It has been shown that our I D models can dynamically adjust the
+It has been shown that our I3D models can dynamically adjust the
 encoder depth based on the characteristics of an input utterance,
 which achieves strong performance even with reduced computation.
 But it is unclear which features are important for the gate predictor
  to determine the modules used during inference. We have found
 that the speech length generally affects the inference architecture.
 Fig. 7 shows the speech length distributions categorized by the number
- of MHA or FFN blocks used by an I D-GlobalGP model during
+ of MHA or FFN blocks used by an I3D-GlobalGP model during
 inference. We observe that utterances using more blocks tend to
 be longer. This is probably because longer utterances contain more
 complex information and longer-range dependency among frames,
 which require more blocks (especially MHA) to process.
-We also considered two other factors that may affect the infer-0 5 10 15 20 2500.20.4 18 19 20 21 blocks
+We also considered two other factors that may affect the infer-0 5 10 15 20 2500.20.4
+Input speech length in secondsFrequency18 blocks 19 blocks
+20 blocks 21 blocks
 (a) MHA
-0 5 10 15 20 2500.1 19 20 21 22 blocks
+0 5 10 15 20 2500.1
+Input speech length in secondsFrequency19 blocks 20 blocks
+21 blocks 22 blocks
 (b) FFN
 Fig. 7   Distributions of speech lengths categorized by the number of
-MHA or FFN blocks used for inference. This is an I D-GlobalGP
+MHA or FFN blocks used for inference. This is an I3D-GlobalGP
 model evaluated on LibriSpeech test other. Utterances using more
 blocks tend to be longer.
 ence architecture, namely the difﬁculty of utterances measured by
@@ -340,25 +351,25 @@ WERs, and the audio quality measured by DNSMOS scores [39].
 However, in general, we didn t observe a clear relationship between
 these metrics and the number of layers used for inference.
 3.5. Generalizability
-We demonstrate that the proposed I D encoders can be directly applied
+We demonstrate that the proposed I3D encoders can be directly applied
  to other datasets and ASR frameworks. Fig. 4 shows the results
-of CTC-based models on Tedlium2. Our I D models consistently
+of CTC-based models on Tedlium2. Our I3D models consistently
 achieve lower WERs than the standard Transformer with similar or
-even fewer layers during inference.2We further apply I D to the
+even fewer layers during inference.2We further apply I3D to the
 attention-based encoder-decoder (AED) framework. Only the encoder
  is changed while the decoder is still a standard Transformer
-decoder. Table 1 100h. With
-around 27 layers on average during inference, our I D models outperform
+decoder. Table 1 presents the results on LibriSpeech 100h. With
+around 27 layers on average during inference, our I3D models outperform
  the 27-layer Transformer trained from scratch on both dev
-clean and test clean sets. The I D with a global gate predictor is
+clean and test clean sets. The I3D with a global gate predictor is
 slightly better than that with a local gate predictor.
 4. CONCLUSION
-In this work, we propose I D, a Transformer-based encoder which
+In this work, we propose I3D, a Transformer-based encoder which
 dynamically adjusts its depth based on the characteristics of input
 utterances to trade off performance and efﬁciency. We design two
-types of gate predictors and show that I D-based models consistently
+types of gate predictors and show that I3D-based models consistently
  outperform the vanilla Transformer trained from scratch and
-the static pruned model. I D can be applied to various end-to-end
+the static pruned model. I3D can be applied to various end-to-end
 ASR frameworks and corpora. We also present interesting analysis
  on the predicted gate probabilities and the input-dependency to
 better interpret the behavior of deep encoders and the effect of intermediate
@@ -366,12 +377,13 @@ better interpret the behavior of deep encoders and the effect of intermediate
 apply this method to large pre-trained models. We will explore only
 ﬁne-tuning gate predictors to signiﬁcantly reduce training cost.
 5. ACKNOWLEDGEMENTS
-This work used Bridges2 210014 from the Advanced Cyberinfrastructure Coordination
+This work used Bridges2 at PSC and Delta at NCSA through allocation
+ CIS210014 from the Advanced Cyberinfrastructure Coordination
  Ecosystem  Services & Support (ACCESS) program, which
 is supported by National Science Foundation grants #2138259,
 #2138286, #2138307, #2137603, and #2138296.
-2 960h. Observations are consistent
- with LibriSpeech 100 2.6. REFERENCES
+2We have also evaluated I3D on LibriSpeech 960h. Observations are consistent
+ with LibriSpeech 100h and Tedlium2.6. REFERENCES
 [1] A. Graves, S. Fern  andez, et al.,  Connectionist temporal classiﬁcation 
  labelling unsegmented sequence data with recurrent
 neural networks,  in Proc. ICML , 2006.

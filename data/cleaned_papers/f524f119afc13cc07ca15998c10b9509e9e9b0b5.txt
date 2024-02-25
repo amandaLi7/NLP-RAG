@@ -1,7 +1,8 @@
 End-to-End Evaluation for Low-Latency Simultaneous Speech Translation
 Christian Huber1, Tu Anh Dinh1, Carlos Mullov1, Ngoc Quan Pham1,
 Thai Binh Nguyen1, Fabian Retkowski1, Stefan Constantin1, Enes Yavuz Ugan1,
-Danni Liu1, Zhaolin Li1, Sai Koneru1, Jan Niehues and Alexander Waibel1,2 1Karlsruhe Institute of Technology, Karlsruhe, Germany
+Danni Liu1, Zhaolin Li1, Sai Koneru1, Jan Niehues1and Alexander Waibel1,2
+1Karlsruhe Institute of Technology, Karlsruhe, Germany
 firstname.lastname@kit.edu
 2Carnegie Mellon University, Pittsburgh PA, USA
 alexander.waibel@cmu.edu
@@ -63,17 +64,17 @@ speech translation. Thereby we focus on a framework
 as realistic conditions as possible. The system is
 able to simulate different load conditions as well
 as compare systems using different design choices.
-Finally, we also provide a web interface to present
+Finally, we also provide a web interface1to present
 the low-latency model outputs to the user.
 The main contributions of our paper are 
- A framework for low-latency speech translation
+ A framework2for low-latency speech translation
  with dynamic latency adjustment
  An evaluation setup that allows for assessing
 the quality and latency of a low-latency scenario
  in an end-to-end fashion
 1https //lecture-translator.kit.edu
 2https //git.scc.kit.edu/isl/lt-middleware/
-ltpipelinearXiv 2308.03415 2  [cs.CL]  23 2023 A comprehensive evaluation of different translation
+ltpipelinearXiv 2308.03415v2  [cs.CL]  23 Oct 2023 A comprehensive evaluation of different translation
  approaches and streaming algorithms
 In the next section, we describe the overall architecture
  of the framework. The two following
@@ -123,8 +124,8 @@ worker.
 2) Backend request  The backend contains the
 hosted models. It processes the requests without
 3https //kafka.apache.org
-EncoderDecoder[M1]S0 1    Hello my name is Kris Input [M]   Audio or TextStable output [S]Model forwardModel output [H]
-[M1, M2]S S2 1   common_prefix(H1, H0     )     H2    Hello my name is Christian Koo Model forward[M1, M2, M3]S S3 3 2  Stability detection
+EncoderDecoder[M1]S0     H1    Hello my name is Kris Input [M]   Audio or TextStable output [S]Model forwardModel output [H]
+[M1, M2]S1S2     Hello my name is S1   common_prefix(H1, H0     )     H2    Hello my name is Christian Koo Model forward[M1, M2, M3]S2S3    Hello my name is Christian H3    Hello my name is Christian Huber Model forwardFigure 2  Stability detection
 additional state information, is flexible to run on
 any device and is shared between different sessions.
 Because of the division in a stateful middleware
@@ -145,7 +146,8 @@ fixed mode (Liu et al., 2020a  Polák et al., 2022)
 where the component is only allowed to send stable
 output. For fixed mode (and the revision mode of
 the ASR component), the component needs to perform
- a stability detection (see Sections 3 4 2), i.e., determine which parts of the output
+ a stability detection (see Sections 3 and 4 and
+Figure 2), i.e., determine which parts of the output
  should be considered stable. Note that for our
 streaming algorithms the backend models need to
 support prefix decoding, i.e., one can send a prefix
@@ -189,12 +191,14 @@ stable text. Let s denote this first model output by
 H1. After the segment contains (at least) Cmore
 seconds of audio (denoted by M2) the model is run
 again with all the audio and outputs H2. Then the
-component outputs the common prefix of H and
-H as stable output S2. After the segment again
+component outputs the common prefix of H1and
+H2as stable output S2. After the segment again
 contains (at least) Cmore seconds of audio (denoted
  by M3) the model is run again with all the
-audio. However, now S is forced as prefix in the
-ASR/ST model decoding. The model outputs H3 3. This procedure is continued until
+audio. However, now S2is forced as prefix in the
+ASR/ST model decoding. The model outputs H3
+and the common prefix from H2andH3is the next
+stable output S3. This procedure is continued until
 the speech segment ends.
 Note that the ASR/ST model has a certain maximum
  input size due to latency, memory and compute
@@ -272,7 +276,19 @@ Original messages receivedSelecting first-unchanged
 messages from the original.Message
 arrival
 timeAudio streaming time
-1 1 3 1 2 4 2 4 1 2 1 2 3 3  Example of collecting first-unchanged messages
+1
+1
+3
+1 2
+4
+2 4tr1
+unstable tr2
+unstable tr3tste1
+ts
+ts
+tste2
+te3
+te4tr4Figure 3  Example of collecting first-unchanged messages
  from an unstable-to-stable message block. The
 first-unchanged messages are in green.
 WER  In order to assess the transcription quality
@@ -326,7 +342,10 @@ A  D  C  F  GAudio streaming time
 unstable
 stableMessage
 arrival
-timetr1 2 3 4  Example of flickers (denoted by red arrows)
+timetr1
+unstabletr2
+unstabletr3
+tr4Figure 4  Example of flickers (denoted by red arrows)
 in an unstable-to-stable message block.
 Then we calculate the latency as the weighted
 average of the delays of all mfirst-unchanged messages
@@ -364,20 +383,34 @@ differ, then it is counted as a flicker (see Figure 4).
 The flickering rate is calculated as the total number
 of flickers divided by the total number of words in
 the reference.
-6 6.1 Evaluation data
+6 Experimental setup
+6.1 Evaluation data
 We test our system using datasets from different
 language pairs. Test datasets includes 
  Test data from the IWSLT shared task ( tst19,
 tst20 ) (Anastasopoulos et al., 2021, 2022),
 where the domain is TED talks.Test data Lang. pair Hours # Utterances
-tst19 4.82 2279 20 4.09 1804 6.39 2454 2.66 1516 2.07 1012 2.16 999
-ACL dev * en  X 0.95 468 1  Statistics of the test data. *Test data containing
+tst19 en  de 4.82 2279
+tst20 en  de 4.09 1804
+LT CS de  en 6.39 2454
+LT nonCS de  en 2.66 1516
+mTEDx es  en 2.07 1012
+it en 2.16 999
+ACL dev * en  X 0.95 468
+Table 1  Statistics of the test data. *Test data containing
 en audio with translations into de, ja, zh, ar, nl, fr, fa, pt,
 ru and tr.
-Cascaded ST E E ST
+Cascaded ST E2E ST
 Testset C W  B L  B L 
-tst19 .5 20.8 21.6 3.6 20.5 2.1 1 17.0 24.6 5.6 22.8 2.6 2 16.4 25.5 6.8 23.2 3.9 3 16.6 25.7 7.8 23.6 5.0
-ACL .5 18.7 29.8 4.3 22.4 2.1 1 16.7 32.6 6.2 25.4 2.7 2 16.7 34.2 7.4 26.5 4.0 3 17.2 35.2 8.6 26.2 5.3 2  Quality vs. latency (in fixed mode).
+tst19 .5 20.8 21.6 3.6 20.5 2.1
+1 17.0 24.6 5.6 22.8 2.6
+2 16.4 25.5 6.8 23.2 3.9
+3 16.6 25.7 7.8 23.6 5.0
+ACL .5 18.7 29.8 4.3 22.4 2.1
+dev 1 16.7 32.6 6.2 25.4 2.7
+2 16.7 34.2 7.4 26.5 4.0
+3 17.2 35.2 8.6 26.2 5.3
+Table 2  Quality vs. latency (in fixed mode).
 C LA2_chunk_size (s), W  WER, B  BLEU score,
 L  Latency (s) of the translation output.
  The test split of Multilingual TEDx Corpus
@@ -405,7 +438,16 @@ et al., 2021) for the encoder and the MBART50
 the translation models are based on the pretrained
 6With the recipe available at here.
 3 4 5 6 7 8 9
-Latency (s)30323436 0.5 1 2 3 5  Latency vs. quality (for the cascaded
+Latency (s)30323436BLEU score
+Revision mode
+Fixed modeC 0.5
+
+C 1
+
+C 2
+
+C 3
+ Figure 5  Latency vs. quality (for the cascaded
  model) in revision mode or fixed mode.
 C LA2_chunk _size (s).
 DeltaLM (Ma et al., 2021). For the en  X direction,
@@ -416,7 +458,8 @@ commonly available datasets7.
 Finally, for the end-to-end ST system, we used
 the language-agnostic model from Huber et al.
 (2022) that can decode en-de ST and de ASR.
-7 7.1 Quality vs Latency trade-off
+7 Results and Discussion
+7.1 Quality vs Latency trade-off
 In the first experiment, we assess the trade-off between
  translation quality and latency by modifying
 theLA2_chunk _size parameter. The results are
@@ -444,7 +487,14 @@ the additional re-translation overhead.
 TildeMODEL, DGT, Europarl, QED and NewsCommentary.1 2 3 4 5 6 7
 Latency (s)253035BLEU score
 Cascaded ST
-End-to-End STC 0.5 1 2 3 6  Latency vs. quality (in revision mode)
+End-to-End STC 0.5
+
+C 1
+
+C 2
+
+C 3
+ Figure 6  Latency vs. quality (in revision mode)
 for the cascaded ST or End-to-End ST model.
 C LA2_chunk _size (s).
 7.3 Cascaded vs End-to-End
@@ -486,7 +536,13 @@ higher load, fewer requests are sent to the backend
 and we observe less flickering. Here our automatic
 load balancing can be seen in action.Speech processing Text processing
 w s B   L  F  B  L F 
-1 1 25.9 3.2 0.5 34.9 6.7 0.5 2 26.1 20.2 0.5 34.6 8.4 0.4 5 21.3 28.2 0.2 34.8 28.1 0.2 5 1 26.2 3.2 0.6 35.1 6.1 0.5 2 26.5 4.6 0.5 33.6 8.0 0.5 5 25.3 16.7 0.3 34.5 15.9 0.2 3  Quality, latency and flickering rate when
+1 1 25.9 3.2 0.5 34.9 6.7 0.5
+2 26.1 20.2 0.5 34.6 8.4 0.4
+5 21.3 28.2 0.2 34.8 28.1 0.2
+5 1 26.2 3.2 0.6 35.1 6.1 0.5
+2 26.5 4.6 0.5 33.6 8.0 0.5
+5 25.3 16.7 0.3 34.5 15.9 0.2
+Table 3  Quality, latency and flickering rate when
 scaling the number of sessions (with one hosted
 model per language). w  number of middleware
  workers, s  number of parallel sessions , B  Quality
@@ -532,7 +588,7 @@ Acknowledgements
 The projects on which this paper is based were
 funded by the Federal Ministry of Education and
 Research (BMBF) of Germany under the numbers
-01IS A (OML) and 01EF B (RELATER).
+01IS18040A (OML) and 01EF1803B (RELATER).
 References
 Sweta Agrawal, Antonios Anastasopoulos, Luisa
 Bentivogli, Ond ˇrej Bojar, Claudia Borg, Marine
@@ -637,7 +693,8 @@ for Computational Linguistics.
 Danni Liu, Gerasimos Spanakis, and Jan Niehues.
 2020a. Low-Latency Sequence-to-Sequence Speech
 Recognition and Translation by Partial Hypothesis
-Selection. In Proc. Interspeech 2020 , pages 3620 3624.Yinhan Liu, Jiatao Gu, Naman Goyal, Xian Li, Sergey
+Selection. In Proc. Interspeech 2020 , pages 3620 
+3624.Yinhan Liu, Jiatao Gu, Naman Goyal, Xian Li, Sergey
 Edunov, Marjan Ghazvininejad, Mike Lewis, and
 Luke Zettlemoyer. 2020b. Multilingual denoising
 pre-training for neural machine translation. Transactions
@@ -687,7 +744,8 @@ simultaneous speech translation task at iwslt 2022.
 arXiv preprint arXiv 2204.06028 .
 Matt Post. 2018. A call for clarity in reporting BLEU
 scores. In Proceedings of the Third Conference on
-Machine Translation  Research Papers , pages 186 191, Brussels, Belgium. Association for Computational
+Machine Translation  Research Papers , pages 186 
+191, Brussels, Belgium. Association for Computational
  Linguistics.
 Elizabeth Salesky, Kareem Darwish, Mohamed AlBadrashiny,
  Mona Diab, and Jan Niehues. 2023.
@@ -723,11 +781,24 @@ A video demonstrating the system can be found
 here  Video linkOffline Online  Revision mode Online  Fixed mode
 BLEU    BLEU  Latency  Flickering rate    BLEU  Latency  
 TED
-(en de)tst19 27.2 -1.3 5.4 0.5 -1.7 5.3 20 29.8 -1.1 5.1 0.5 -1.5 6.9
+(en de)tst19 27.2 -1.3 5.4 0.5 -1.7 5.3
+tst20 29.8 -1.1 5.1 0.5 -1.5 6.9
 LT
-(de en)CS 25.2 -2.0 5.6 0.6 -2.4 6.0 28.5 -0.2 7.1 0.6 -1.2 5.7
+(de en)CS 25.2 -2.0 5.6 0.6 -2.4 6.0
+nonCS 28.5 -0.2 7.1 0.6 -1.2 5.7
 mTEDx
-(X en)es 31.0 -2.5 7.5 0.4 -2.6 7.6 31.5 -4.2 12.5 0.5 -5.1 11.6
+(X en)es 31.0 -2.5 7.5 0.4 -2.6 7.6
+it 31.5 -4.2 12.5 0.5 -5.1 11.6
 ACL dev
-(en X)de 36.5 -1.9 6.6 0.5 -2.0 7.5 39.6 -1.6 8.4 0.1 -5.2 8.7 45.3 -0.5 8.0 0.1 -4.6 8.0 28.3 -0.8 6.8 0.5 -1.1 7.3 42.7 -1.3 6.4 0.5 -2.5 7.4 43.7 -0.4 5.9 0.5 -1.0 7.6 21.8 -0.8 6.8 0.7 -1.8 7.5 45.2 -1.2 6.0 0.4 -1.8 7.3 13.5 -1.0 6.5 0.5 -1.2 7.4 20.1 -0.9 6.6 0.5 -1.2 7.4 4 2_chunk _size set to 2 seconds  Quality, latency and
+(en X)de 36.5 -1.9 6.6 0.5 -2.0 7.5
+ja 39.6 -1.6 8.4 0.1 -5.2 8.7
+zh 45.3 -0.5 8.0 0.1 -4.6 8.0
+ar 28.3 -0.8 6.8 0.5 -1.1 7.3
+nl 42.7 -1.3 6.4 0.5 -2.5 7.4
+fr 43.7 -0.4 5.9 0.5 -1.0 7.6
+fa 21.8 -0.8 6.8 0.7 -1.8 7.5
+pt 45.2 -1.2 6.0 0.4 -1.8 7.3
+ru 13.5 -1.0 6.5 0.5 -1.2 7.4
+tr 20.1 -0.9 6.6 0.5 -1.2 7.4
+Table 4  Overall performance of our cascaded system with LA2_chunk _size set to 2 seconds  Quality, latency and
 flickering rate.  BLEU  difference compared the corresponding offline setting.

@@ -1,7 +1,11 @@
-Proceedings of the 60 1  Long Papers , pages 2160 - 2174 22-27, 2022 2022 Association for Computational Linguistics
+Proceedings of the 60th Annual Meeting of the Association for Computational Linguistics
+Volume 1  Long Papers , pages 2160 - 2174
+May 22-27, 2022 c 2022 Association for Computational Linguistics
 "You might think about slightly revising the title"  Identifying Hedges in
 Peer-tutoring Interactions
-Yann Raphalen1, Chloé Clavel2, Justine Cassell1,3 1 2LTCI, Institut Polytechnique de Paris, Telecom-Paris
+Yann Raphalen1, Chloé Clavel2, Justine Cassell1,3
+1Inria Paris
+2LTCI, Institut Polytechnique de Paris, Telecom-Paris
 3Carnegie Mellon University
 yann.raphalen.pro@gmail.com ,justine@cs.cmu.edu ,
 chloe.clavel@telecom-paris.fr
@@ -103,7 +107,8 @@ to see if we could discover surprising features that
 the classification model would associate to hedges
 in this context, and we describe those below. The
 code of the models described in the paper is also
-provided.1 2 Related work
+provided.1
+2 Related work
 Hedges  According to Fraser (2010), hedging is
 a rhetorical strategy that attenuates the strength
 of a statement. One way to produce a hedge is
@@ -171,7 +176,7 @@ as related to hedges in conversation, as it focuses
 on a formal and academic language register (Hyland,
  1998  Varttala, 1999). As noted by Prokofieva
 and Hirschberg (2014), the functions of hedges are
-domain- and genre-dependent, therefore this bias towards formality implies that the existing work
+domain- and genre-dependent, therefore this bias2161towards formality implies that the existing work
 may not adapt well to the detection of hedges in
 conversation between teenagers. A consequence is
 that the existing work does not consider terms like
@@ -239,7 +244,8 @@ It corresponds to the following research question
 RQ2  "What are the most important linguistic
 features that characterize our hedge classes in a
 peer-tutoring setting "
-4 4.1 Corpus
+4 Methodology
+4.1 Corpus
 Data collection  The dialogue corpus used here
 was collected as part of a larger study on the effects
 of rapport-building on reciprocal peer tutoring. 24
@@ -248,7 +254,9 @@ max   15), half male and half female, came to
 a lab where half of the participants were paired
 with a same-age, same-gender friend, and the other
 half paired with a stranger. The participants were
-assigned to a total of 12 5 weekly hour-long
+assigned to a total of 12 dyads in which the participants
+ alternated tutoring one another in linear
+algebra equation solving for 5 weekly hour-long
 sessions, for a total corpus of nearly 60 hours of
 face-to-face interactions. Each session was structured
  such that the students engaged in brief social
@@ -265,7 +273,7 @@ maintained. Because of temporal misalignment for
 parts of the corpus, many paraverbal phenomena,
 such as prosody, were unfortunately not available
 to us. Since our access to the dataset is covered by
-a Non-Disclosure Agreement, it cannot be released publicly. However the original experimenters  Institutional
+a Non-Disclosure Agreement, it cannot be released2162publicly. However the original experimenters  Institutional
  Review Board (IRB) approval allows us
 to view, annotate, and use the data to train models.
 This also allows us to provide a link to a pixelated
@@ -371,13 +379,18 @@ Propositional hedges Qualifying words to reduce intensity or certainty of uttera
 Extenders Words used to indicate uncertainty by referring to vague categories  It ll be the number x or whatever variable you have. 
 Table 1  Definition of the classes
 Prop. hedges Apologizers Subjectivizers Not hedged Total
-1210 128 626 21192 23156 2  Distribution of the classes
+1210 128 626 21192 23156
+Table 2  Distribution of the classes
 Features name Automatic extraction Vector size
 Rule-based label Yes 4
 Unigram Yes ~250
 Bigram Yes ~250
-POS Yes ~1200 73 24 6
-Total ~1800 3  List of automatically extracted and manually
+POS Yes ~1200
+LIWC Yes 73
+Nonverbal No 24
+Tutoring moves No 6
+Total ~1800
+Table 3  List of automatically extracted and manually
 annotated features with their size.
 mostly tentative answers.
 Nonverbal and paraverbal behaviors  As in Goel
@@ -393,7 +406,7 @@ and  Gaze elsewhere ), and head nods. Each feature
 time for each interlocutor. Inter-rater reliability
 for nonverbal behavior was 0.89 (as measured by
 Krippendorff s alpha) for eye gaze, 0.75 for smile
-count, 0.64 0.99 for head
+count, 0.64 for smile duration and 0.99 for head
 nod. Laughter is also reported in the transcript at
 the word level. We separate the tutor s behaviors
 from those of the tutee. The collection process for
@@ -446,7 +459,7 @@ the type of hedge class in the next clause.
 Formally, we want to infer yiusing yi 
 max y Classes P(y X(ui), X(ui 1), ..., X (ui K))
 , where K is the number of previous clauses
-that the model will take into account. The MLP model presented above infers yiusing
+that the model will take into account. The2164MLP model presented above infers yiusing
 yi  max y Classes P(y X(ui)), therefore a
 difference of performance between the two models
 would be a sign that using information from the
@@ -502,7 +515,8 @@ can both provide local and global explanations. For
 the Gradient Boosting model, we use an adapted
 version of SHAP (Lundberg et al., 2018), called
 TreeSHAP.
-5 5.1 Experimental setting
+5 Experiments and results
+5.1 Experimental setting
 To detect the best set of features, we used LightGBM
  and proceeded incrementally, by adding the
 group of features we thought to be most likely associated
@@ -522,11 +536,13 @@ report here as "3-classes", and at the average of the
 weighted F1-scores for the 4 classes, that we report
 as "4-classes". Details of the hyperparameters and
 experimental settings are provided in Appendix A.
-5.2 4 6 4.3
-for the multi-class problem. Best performance (F score
+5.2 Model comparison and feature analysis
+Overall results  Table 4 presents the results obtained
+ by the 6 models presented in Section 4.3
+for the multi-class problem. Best performance (F1score
  of 79.0) is obtained with LightGBM leveraging
  almost all the features. In the appendix (see
-Table 8 9) we indicate the confidence
+Table 8 and Table 9) we indicate the confidence
 intervals to represent the significance of the differences
  between the models.
 First, and perhaps surprisingly, we notice that
@@ -535,12 +551,12 @@ rules built from linguistic knowledge of hedges
 in the LightGBM model outperforms the use of
 pre-trained embeddings within a fine-tuned BERT
 model (79.0 vs. 70.6), and in the neural baseline
-from (Goel et al., 2019) (79.0 64.5).
+from (Goel et al., 2019) (79.0 vs 64.5).
 The low scores obtained by the LGBM, LSTM
 and MLP models with pre-trained sentence embeddings
  versus Knowledge-Driven features might
 signal that the word patterns characterizing hedges
-are not salient in these representations (i.e. the Models KD Feat. (KDF) Pre-Trained Emb. (PTE) KDF   PTE
+are not salient in these representations (i.e. the2165Models KD Feat. (KDF) Pre-Trained Emb. (PTE) KDF   PTE
 Rule-based (3-classes) 67.6    
 MLP (3-classes) 68.5 (1.6) 35.8 (3.1) 64.8 (1.1)
 Attention-CNN (3-classes)   64.5 (3.0)  
@@ -553,7 +569,7 @@ Attention-CNN (4-classes)   94.4 (0.2)
 LSTM (4-classes) 93.9 (1.4) 89.1 (1.4) 94.1 (1.2)
 BERT (4-classes)   94.9 (0.4)  
 LGBM (4-classes) 96.7 (0.2) 91.0 (0.2) 95.4 (0.2)
-Table 4 1-scores (and standard
+Table 4  Averaged weighted F1-scores (and standard
 deviation) for the three minority classes and for the 4
 classes, for all models. "KD" stands for "KnowledgeDriven",
  meaning that the features are derived from
@@ -567,7 +583,8 @@ combination of KD features and Pre-trained embeddings
 only, which suggests that the information from the
 Pre-trained embeddings is redundant with the one
 from the KD Features. This result may be due to
-the high dimensionality of the input vector (868 2500 otherwise).
+the high dimensionality of the input vector (868
+with PCA on the KD Features  2500 otherwise).
 A second finding is that the use of gradient boosting
  models on top of rule-based classifiers better
 models the hedge classes. The other machine learning
@@ -576,7 +593,7 @@ for BERT.
 Feature analysis using LightGBM  Using the best
 performing model, Table 5 shows the role of each
 feature set in the prediction task. The significance
-of the differences is shown in Table 10 11.
+of the differences is shown in Table 10 and Table 11.
 Compared to the rule-based model, the introduction
 of n-grams significantly improved the performance
 of our classifier, suggesting that some lexical and
@@ -639,14 +656,14 @@ likeahandohare strongly associated with Apologizer
  , as are disfluencies (n 12)  (ii)the use of
 POS tags seems to be very relevant for characterizing
  the different classes (2-gram of POS tag
-features occur in the top-ranked features of all the
+features3occur in the top-ranked features of all the
 3Note that there is strong redundancy between some features
  of LIWC and the spaCy POS tagger that both produce
 a "Pronoun" category, using a lexicon in the first case, and a
-neural inference in the second.2166 1-gram and 2-gram   POS   LIWC   TM   Nonverbal
+neural inference in the second.2166Models Label RB   1-gram and 2-gram   POS   LIWC   TM   Nonverbal
 3-classes 68.8 (0.8) 78.2 (1.6) 78.1 (1.3) 79.0 (1.3) 78.5 (2.4) 78.7 (1.8)
 4-classes 95.0 (0.2) 96.5 (0.3) 96.5 (0.2) 96.7 (0.2) 96.6 (0.4) 96.7 (0.3)
-Table 5 1-scores for the three classes of hedges and the four classes, with an additive
+Table 5  Averaged weighted F1-scores for the three classes of hedges and the four classes, with an additive
 integration of KDF features in the LightGBM model. The standard deviation is computed across five folds.
 Rank Apologizer Subjectivizers Prop. Hedges Not hedged
 1 Function words (LIWC) "I" Class label Class label
@@ -724,7 +741,7 @@ like to investigate the potential of multimodal patterns
 that are considered as important are coherent with
 the definition of the classes ( Ifor subjectivizers,
 sorry for apologizers, justfor propositional hedges).
-However, we discovered that features like utterance size can also serve as indicators of certain classes
+However, we discovered that features like utterance2167size can also serve as indicators of certain classes
 of hedges. A limitation of SHAP is that it makes a
 feature independence assumption, which prompts
 the explanatory model to underestimate the importance
@@ -756,12 +773,14 @@ Many thanks to members of the ArticuLabo at INRIA
 was supported in part by the the French government
  under management of Agence Nationale de la
 Recherche as part of the  Investissements d avenir 
-program, reference ANR-19-P IA-0001 (PRAIRIE
+program, reference ANR-19-P3IA-0001 (PRAIRIE
 3IA Institute).
 References
 Heike Adel and Hinrich Schütze. 2017. Exploring different
  dimensions of attention for uncertainty detection.
- In Proceedings of the 15 1, Long Papers , pages
+ In Proceedings of the 15th Conference of the
+European Chapter of the Association for Computational
+ Linguistics  Volume 1, Long Papers , pages
 22 34, Valencia, Spain. Association for Computational
  Linguistics.
 Shoshana Blum-Kulka. 1987. Indirectness and politeness
@@ -771,7 +790,8 @@ Penelope Brown and Stephen C Levinson. 1987. Politeness
  Some universals in language usage , volume 4.
 Cambridge university press.Judee K Burgoon and Randall J Koper. 1984. Nonverbal
 and relational communication associated with reticence.
- Human Communication Research , 10(4) 601 626.
+ Human Communication Research , 10(4) 601 
+626.
 Ian Covert, Scott M Lundberg, and Su-In Lee. 2020.
 Understanding global feature contributions with additive
  importance measures. Advances in Neural
@@ -782,7 +802,8 @@ bidirectional transformers for language understanding.
  In Proceedings of the 2019 Conference of the
 North American Chapter of the Association for Computational
  Linguistics  Human Language Technologies,
- Volume 1 (Long and Short Papers) , pages 4171 4186.
+ Volume 1 (Long and Short Papers) , pages 4171 
+4186.
 Richárd Farkas, Veronika Vincze, György Móra, János
 Csirik, and György Szarvas. 2010. The conll-2010
 shared task  learning to detect hedges and their scope
@@ -816,7 +837,8 @@ Wei Chen, Weidong Ma, Qiwei Ye, and Tie-Yan Liu.
 processing systems , 30 3146 3154.
 Klaus Krippendorff. 2004. Reliability in content analysis 
  Some common misconceptions and recommendations.
- Human communication research , 30(3) 411 433.
+ Human communication research , 30(3) 411 
+433.
 George Lakoff. 1975. Hedges  A study in meaning
 criteria and the logic of fuzzy concepts. In Contemporary
  research in philosophical logic and linguistic
@@ -852,7 +874,8 @@ Lerer, James Bradbury, Gregory Chanan, Trevor
 Killeen, Zeming Lin, Natalia Gimelshein, Luca
 Antiga, et al. 2019. Pytorch  An imperative style,
 high-performance deep learning library. Advances
-in neural information processing systems , 32 8026 8037.
+in neural information processing systems , 32 8026 
+8037.
 James W Pennebaker, Ryan L Boyd, Kayla Jordan, and
 Kate Blackburn. 2015. The development and psychometric
  properties of liwc2015. Technical report.
@@ -870,11 +893,13 @@ Emotion, Social Signals, Sentiment & Linked Open
 Data, Reykjavik, Iceland .
 Nils Reimers and Iryna Gurevych. 2019. Sentence-bert 
 Sentence embeddings using siamese bert-networks.
-InProceedings of the 2019 9th
+InProceedings of the 2019 Conference on Empirical
+Methods in Natural Language Processing and the 9th
 International Joint Conference on Natural Language
 Processing (EMNLP-IJCNLP) , pages 3982 3992.Oscar J Romero, Ran Zhao, and Justine Cassell. 2017.
 Cognitive-inspired conversational-strategy reasoner
-for socially-aware agents. In IJCAI , pages 3807 3813.
+for socially-aware agents. In IJCAI , pages 3807 
+3813.
 Tim Rowland. 2007.  well maybe not exactly, but it s
 around fifty basically    Vague language in mathematics
  classrooms. In Vague language explored ,
@@ -957,7 +982,7 @@ hyperparameters were selected using Optuna (Akiba,
  et al., 2014) 300-D words embeddings as
 the vector representation. For each models, the
 results are cross-validated using 5 folds (we chose
-5 10 to avoid having folds with too few
+5 instead of 10 to avoid having folds with too few
 samples per class). We corrected the loss function
 for class imbalance to force the model to adapt
 more to the less frequent classes. The strength of
@@ -970,7 +995,7 @@ class proportion" correction was selected. Neural
  models were trained using AdamW as an optimizer
  (Loshchilov and Hutter, 2018), and used
 a reduced feature vector, obtained with the application
- of PCA ( dinit   1800 100 99.8
+ of PCA ( dinit   1800  d   100   99.8
 % of the information is conserved). No significant
  performance differences were observed between
  the original vector and the reduced vector
@@ -985,7 +1010,7 @@ paper  https //github.com/YannRaphalen/HedgesDetection.
 
 The BERT model was fine-tuned on a Nvidia
 Quadro RTX 8000 GPU.
-B Tables Class Rule (regexp)
+B Tables2170Class Rule (regexp)
 Subj. (  what).*(i we)  (don t didn t did)   (not) 
 (guess guessed thought think believe believed suppose supposed)
  (whether if is that it this) .*
@@ -1026,7 +1051,7 @@ BERT (PTE) No No Yes Yes Yes Yes Yes Yes Yes Yes No
 LGBM (KDF) Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes
 LGBM (PTE) Yes Yes No Yes Yes Yes Yes Yes Yes Yes Yes
 LGBM (KDF   PTE) No No Yes Yes Yes Yes Yes Yes No Yes Yes
-Table 8 3-classes part of Table 4. "Yes" means that the difference is statistically significant.
+Table 8  Significance table for the 3-classes part of Table 4. "Yes" means that the difference is statistically significant.
 Models RB MLP (KDF) MLP (PTE) MLP (K P) CNN (PTE) LSTM (KDF) LSTM(PTE) LSTM (K P) BERT (PTE) LGB (KDF) LGB (PTE) LGB (K P)
 Rule-based No Yes Yes No Yes Yes No No Yes Yes Yes
 MLP (KDF) No Yes Yes No Yes Yes Yes No Yes Yes No
@@ -1040,7 +1065,7 @@ BERT (PTE) No No Yes Yes No Yes Yes Yes Yes Yes No
 LGBM (KDF) Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes
 LGBM (PTE) Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes Yes
 LGBM (KDF   PTE) Yes No Yes Yes Yes Yes Yes Yes No Yes Yes
-Table 9 4-classes part of Table 4. "Yes" means that the difference is statistically significant.
+Table 9  Significance table for the 4-classes part of Table 4. "Yes" means that the difference is statistically significant.
 Models Label RB   1-gram and 2-gram   POS   LIWC   TM   Nonverbal
 Label RB Yes Yes Yes Yes Yes
   1-gram and 2-gram Yes No No No No
@@ -1048,14 +1073,14 @@ Label RB Yes Yes Yes Yes Yes
   LIWC Yes No No No No
   TM Yes No No No No
   Nonverbal Yes No No No No
-Table 10 3-classes part of Table 5. "Yes" means that the difference is statistically
-significant.2171 2  Absolute averaged feature contribution, as indicated by SHAP. The longer the bar is for one color, the
+Table 10  Significance table for the 3-classes part of Table 5. "Yes" means that the difference is statistically
+significant.2171Figure 2  Absolute averaged feature contribution, as indicated by SHAP. The longer the bar is for one color, the
 more the feature is associated with the class represented by that color.
 Figure 3  Averaged contribution of features to the detection of the "Not indirect" class, as indicated by SHAP. Each
 dot corresponds to a classified clause. A red dot indicates that the feature is present in the clause, while a blue
 dot indicates that the feature is absent. The farther on the right the dot is, the more the feature contributed to its
-classification as a hedge.2172 4  Averaged contribution of features to the detection of "Apologizers", as indicated by SHAP.
-Figure 5  Averaged contribution of features to the detection of "Propositional hedges", as indicated by SHAP.2173 6  Averaged contribution of features to the detection of "Subjectivizers", as indicated by SHAP.
+classification as a hedge.2172Figure 4  Averaged contribution of features to the detection of "Apologizers", as indicated by SHAP.
+Figure 5  Averaged contribution of features to the detection of "Propositional hedges", as indicated by SHAP.2173Figure 6  Averaged contribution of features to the detection of "Subjectivizers", as indicated by SHAP.
 Models Label RB   1-gram and 2-gram   POS   LIWC   TM   Nonverbal
 Label RB Yes Yes Yes Yes Yes
   1-gram and 2-gram Yes No No No No
@@ -1063,5 +1088,5 @@ Label RB Yes Yes Yes Yes Yes
   LIWC Yes No No No No
   TM Yes No No No No
   Nonverbal Yes No No No No
-Table 11 4-classes part of Table 5. "Yes" means that the difference is statistically
+Table 11  Significance table for the 4-classes part of Table 5. "Yes" means that the difference is statistically
 significant.2174

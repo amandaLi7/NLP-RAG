@@ -1,6 +1,9 @@
-Fusion-in-T5 1 , Chenghao Fan2 , Chenyan Xiong3, David Jin4, Zhiyuan Liu15, and Zhenghao Liu6 1Dept. of Comp. Sci. & Tech., Institute for AI, Tsinghua University, Beijing, China
+Fusion-in-T5  Unifying Document Ranking Signals for Improved
+Information Retrieval
+Shi Yu1 , Chenghao Fan2 , Chenyan Xiong3, David Jin4, Zhiyuan Liu15, and Zhenghao Liu6
+1Dept. of Comp. Sci. & Tech., Institute for AI, Tsinghua University, Beijing, China
 2School of Comp. Sci., Huazhong University of Science and Technology, Wuhan, China
-3Microsoft Research, Redmond, USA MIT, Cambridge, USA
+3Microsoft Research, Redmond, USA4MIT, Cambridge, USA
 5Beijing National Research Center for Information Science and Technology, Beijing, China
 6Dept. of Comp. Sci. & Tech., Northeastern University, Shenyang, China
 Abstract
@@ -82,7 +85,7 @@ Further analysis reveals that FiT5 effectively leverages
  ranking features through its global attention
 architecture, enabling the model to better differentiate
  between similar documents and ultimately
-produce better ranking results.arXiv 2305.14685 1  [cs.IR]  24 2023 1  Architecture of Fusion-in-T5. The query,
+produce better ranking results.arXiv 2305.14685v1  [cs.IR]  24 May 2023Figure 1  Architecture of Fusion-in-T5. The query,
 document, and ranking feature are filled in the input
 template to form the input. We use retrieval score as the
 ranking feature.
@@ -114,7 +117,8 @@ Attention over Multiple Texts Our work
 leverages similar ideas from Fusion-in-Decoder
 (FiD) (Izacard and Grave, 2021) and TransformerXH
  (Zhao et al., 2020) to incorporate global information.
- FiD adds a T5 5 document encoders to fuse all thetext evidences through the decoder-encoder attention
+ FiD adds a T5 decoder model on top of the
+independent T5 document encoders to fuse all thetext evidences through the decoder-encoder attention
  and generate the answer for open-domain QA.
 Transformer-XH builds eXtra Hop attention across
 the text evidences inside the BERT layers to model
@@ -123,7 +127,9 @@ the structure of texts for multi-hop QA. In this paper,
 into the T5 encoder and build a fully-connected attention
  graph to model all the mutual relationships
 between candidate documents.
-3 3.1 5 performs re-ranking on a set of candidate documents
+3 Methodology
+3.1 Overview
+FiT5 performs re-ranking on a set of candidate documents
  D {d1, d2, ..., d n}retrieved by a firststage
  retriever, given a query q. Unlike typical
 re-ranking models which calculate sisolely based
@@ -132,13 +138,14 @@ si f(q, di), FiT5 goes beyond the approach by
 further incorporating the ranking feature riand the
 information from all the documents in D, which
 can be formulated as si f(q, di, ri, D).
-Figure 1 5. FiT5 is based on the encoder-decoder model
+Figure 1 presents the overall architecture of
+FiT5. FiT5 is based on the encoder-decoder model
 T5 (Raffel et al., 2020). It takes a triple of (q, di, ri)
 as the input and outputs a relevant score si. Global
 attention is introduced in the late layers of the encoder
  to incorporate information from other documents
  in D. We describe the input and output
-format in  3.2 3.3.
+format in  3.2 and the global attention in  3.3.
 3.2 Input and Output
 We pack (q, di, ri)using a template to form the
 input to FiT5. The template consists of slots for
@@ -157,15 +164,20 @@ the normalized probability of the token  true .
 3.3 Global Attention
 In the document set D, there may exist many related
  documents that may share similar content
-with the current example. The distinctions betweenModel # ParamsMS MARCO TREC DL 19 20
-MRR@10 MAP NDCG@10 MRR NDCG@10 25 18.7 19.5 50.58 70.36 47.96 65.85
+with the current example. The distinctions betweenModel # ParamsMS MARCO TREC DL 19 TREC DL 20
+MRR@10 MAP NDCG@10 MRR NDCG@10 MRR
+First Stage Retrieval
+BM25   18.7 19.5 50.58 70.36 47.96 65.85
 coCondenser (2022)   38.3 37.6 71.45 86.75 67.97 84.41
 Two-stage Ranking (coCondenser  *)
-BERT Re-ranker (2019) 110 39.2 38.6 70.12 83.80 69.23 82.26 5 (2020) 220 40.6 39.9 72.55 84.79 67.73 85.05 5 227 43.9 43.3 77.63 87.40 75.24 85.48
+BERT Re-ranker (2019) 110M 39.2 38.6 70.12 83.80 69.23 82.26
+monoT5 (2020) 220M 40.6 39.9 72.55 84.79 67.73 85.05
+FiT5 227M 43.9 43.3 77.63 87.40 75.24 85.48
 Three-stage Ranking (For Reference)
-HLATR-base (2022) 132 42.5          
-HLATR-large (2022) 342 43.7          
-Expando-Mono-Duo (2021) 2 3 42.0 78.37 87.98 1 19 & 20.
+HLATR-base (2022) 132M 42.5          
+HLATR-large (2022) 342M 43.7          
+Expando-Mono-Duo (2021) 2 3B 42.0       78.37 87.98
+Table 1  Overall results on MS MARCO and TREC DL 19 & 20.
 these documents may not be captured effectively
 via point-wise inference over the  local  information(q,
  di, ri). To enhance the effectiveness of
@@ -209,7 +221,8 @@ in the representation of the [CLS] token and can be
 further leveraged by the following layer(s). This
 provides a chance for the model to adjust the representation
  according to other relating documents.
-4 5 on MS
+4 Experimental Methodology
+Datasets and Metrics We train FiT5 on MS
 MARCO passage ranking dataset (Nguyen et al.,2016) and evaluate it on the development set and
 TREC Deep Learning Tracks (TREC DL) 2019 &
 2020 (Craswell et al., 2020, 2021). MS MARCO
@@ -243,8 +256,15 @@ pipelines is kept the same as FiT5. We also report
 the performance of three-stage ranking pipelines
 HLATR (Zhang et al., 2022) and Expando-MonoDuo
  (Pradeep et al., 2021) for reference.
-5 5,
-and analyses its effectiveness.Model MARCO DL 19 20 5 40.56 72.55 67.73 5 (w/ feature) 40.95 72.12 68.73 5 (w/o feature) 42.79 74.94 70.02 5 (linear combination) 43.65 75.41 70.95 5 43.93 77.63 75.24 2 5. The evaluation metric
+5 Evaluation Results
+This section presents the overall results of FiT5,
+and analyses its effectiveness.Model MARCO DL 19 DL 20
+monoT5 40.56 72.55 67.73
+monoT5 (w/ feature) 40.95 72.12 68.73
+FiT5 (w/o feature) 42.79 74.94 70.02
+FiT5 (linear combination) 43.65 75.41 70.95
+FiT5 43.93 77.63 75.24
+Table 2  Ablation study of FiT5. The evaluation metric
 is MRR@10 on MS MARCO and NDCG@10 on TREC
 DL.
 Model FiT5 (w/o feature) FiT5
@@ -252,10 +272,14 @@ All layers ( l  1) 41.23 40.83
 Top-6 layers ( l  7) 42.49 43.36
 Top-3 layers ( l  10 ) 42.79 43.93
 Top-2 layers ( l  11 )42.95 43.43
-Top-1 layer ( l  12 ) 42.78 43.07 41.49 40.95 3  Performance on MS MARCO with global attention
+Top-1 layer ( l  12 ) 42.78 43.07
+No global attention 41.49 40.95
+Table 3  Performance on MS MARCO with global attention
  started to introduce at top- ktransformer layers.
 The evaluation metric is MRR@10.
-5.1 1. By incorporating
+5.1 Overall Performance
+The results of passage ranking on MS MARCO and
+TREC DL are presented in Table 1. By incorporating
  multiple types of ranking information, FiT5
 greatly improves over the first-stage retrieval model
 coCondenser, and outperforms typical BERT Reranker
@@ -264,11 +288,12 @@ retriever. On MS MARCO, FiT5 further outperforms
  three-stage ranking pipelines HLATR-large
 and Expando-Mono-Duo, which uses significantly
 larger models (RoBERTa-large (Liu et al., 2019) /
-2 5-3B) and one additional re-ranking stage.
+2 T5-3B) and one additional re-ranking stage.
 5.2 Ablation Study
 In this section, we study the contribution of additional
  ranking features (retrieval score) and global
-attention in the effectiveness of FiT5 2. Removing the feature
+attention in the effectiveness of FiT5 and present
+the results in Table 2. Removing the feature
 score (FiT5 (w/o feature)) or the global attention
 (monoT5 (w/ feature)) both results in significant
 performance drop. Notably, monoT5 (w/ feature)
@@ -283,20 +308,34 @@ documents.
 5.3 Attention Depth
 In this experiment, we investigate the impact of the
 number of transformer layers with global attention
-0.0 0.5 1.0 0123 10 11 12 (last layer)(a) At each layer.
-0.0 0.5 1.0 0123 30 31 32 33
+0.0 0.5 1.0
+Attention Value0123 Probability Denisity FunctionLayer 10
+Layer 11
+Layer 12 (last layer)(a) At each layer.
+0.0 0.5 1.0
+Attention Value0123 Probability Denisity Function30
+31
+32
+33
  (b) At last layer.
-Figure 2 20. (a) presents the attention weights from passages
+Figure 2  Attention weights distribution on TREC DL
+20. (a) presents the attention weights from passages
 labeled 3 (perfectly relevant) to other passages in each
 global attention layer. (b) depicts the last-layer attention
 weights between perfectly-relevant docs and others.
-0.0 0.5 1.0 0123 0 12 3
+0.0 0.5 1.0
+score0123 Probability Denisity Function0
+12
+3
 (a) monoT5 (w/ ret. score).
-0.0 0.5 1.0 0123 Probability Denisity Function (b) FiT5.
-Figure 3 20. 0,
+0.0 0.5 1.0
+score0123 Probability Denisity Function (b) FiT5.
+Figure 3  Output score distributions on passages at different
+ annotated relevance levels from TREC DL 20. 0,
 1, 2, and 3 are relevance levels from irrelevant (0) to
 perfectly relevant (3).
-on the model s performance. We re-train FiT5 1, 2, 3, 6, and 12 layer(s) incorporated
+on the model s performance. We re-train FiT5 on
+MS MARCO with top 1, 2, 3, 6, and 12 layer(s) incorporated
  with global attention, respectively. The
 results presented in Table 3 reveal that starting to
 integrate global attention from a late layer ( l  10 )
@@ -350,7 +389,8 @@ for soft-matching n-grams in ad-hoc search. In Proceedings
  of WSDM , pages 126 134.
 Luyu Gao and Jamie Callan. 2022. Unsupervised corpus
  aware language model pre-training for dense passage
- retrieval. In Proceedings of ACL , pages 2843 2853.
+ retrieval. In Proceedings of ACL , pages 2843 
+2853.
 Luyu Gao, Xueguang Ma, Jimmy Lin, and Jamie Callan.
 2022. Tevatron  An efficient and flexible toolkit for
 dense retrieval. arXiv preprint arXiv 2203.05765 .
@@ -444,18 +484,21 @@ passage ranking. For every query, we take top100
  documents retrieved using coCondenser for reranking,
  which is implemented with Tevatron (Gao
 et al., 2022). We divide MS MARCO training into a
-training set of 495 3195 samples.
+training set of 495k samples and our own validation
+set of 3195 samples.
 TREC Deep Learning Tracks are the test collections
  designed to study ad hoc ranking in a large
 data regime. The passage corpus of MSMARCO
 is shared with TREC-DL 19 (Craswell et al., 2020)
 and TREC-DL 20 (Craswell et al., 2021) collections
- with 43 54 queries respectively. We evaluate
+ with 43 and 54 queries respectively. We evaluate
  our model on these collections.
 B Baselines
 We compare against the following baselines 
 BERT Re-ranker  (Nogueira and Cho, 2019)
-We use BERT-base to re-rank the top 100 100k steps as the result. In order to maintain consistency
+We use BERT-base to re-rank the top 100 documents
+ from coCondenser and take the checkpoint
+at 100k steps as the result. In order to maintain consistency
  with FiT5, title information is also added
 during training of BERT-reranker.
 monoT5  (Nogueira et al., 2020) We use
@@ -499,19 +542,22 @@ the training on FiT5 (w/o feature) using the template
 Before incorporating feature scores, we normalize
 the coCondenser score to [0,1] using min-max normalization.
  To reduce the impact of extreme values,
-we set the minimum value at 165 190 during normalization. The scores are then
+we set the minimum value at 165 and the maximum
+at 190 during normalization. The scores are then
 discretized to an integer in [0,100] by retaining
 two decimal places, input to the model as normal
 strings. In the training of FiT5, the learning rate
 for the document ranking task is 2 10 5, and the
-total batch size is 256. We train FiT5 5 (w/o feature) and use the result of the 1.5k
+total batch size is 256. We train FiT5 on the MS
+MARCO training set from the checkpoint saved of
+FiT5 (w/o feature) and use the result of the 1.5k
 steps as the final result.
 In addition to incorporating feature information
  as text feature and fusing them with language
 model, we also employed a linear fusion method, as
-shown in the table 2 5 (linear combination).
+shown in the table 2 as FiT5 (linear combination).
 We used the linear fusion method in coor-ascent
-from RankLib to fuse the ranking scores obtained
+from RankLib1to fuse the ranking scores obtained
 from the first stage FiT5 (w/o feature) and the feature
  scores from coCondenser. Specifically, we
 randomly sampled 10k instances from the training
@@ -520,7 +566,7 @@ data and trained RankLib to obtain the best linear
 combination).
 D Experiment Details
 In the experiment analyzing attention distribution
-in  5.4, we compute attention values using the fol https //sourceforge.net/p/lemur/code/HEAD/tree/RankLib/lowing
+in  5.4, we compute attention values using the fol1https //sourceforge.net/p/lemur/code/HEAD/tree/RankLib/lowing
  method. We assume that the global attention
  similarity between the i-th and k-th samples in
 thej-th layer of transformers is denoted by Aj
@@ -537,14 +583,14 @@ Assuming the i-th sample is associated with a relevance
 value of global attention similarity Aj
 q(R1, R2)in
 thej-th layer between samples with relevance
-scores R andR2,which indicate the model s ability
+scores R1andR2,which indicate the model s ability
  to distinguish between similar documents.
 Aj
 q(R1, R2)  Pn
-i 1,li R Pn
-k 1,rk R Aj
+i 1,li R1Pn
+k 1,rk R2Aj
 i,kPn
-i 1,li R Pn
+i 1,li R1Pn
 k 1,lk R21
 (6)
 To facilitate smoother visualization of the results
@@ -553,6 +599,8 @@ on the those scores in the same layer j.
 {Aj
 q(R1, R2)} Min-Max ({Aj
 q(R1, R2)})(7)
-Forjequal to 10, 11, and 12, with R andR2 0 3, the outcomes are presented in
-Figure 2a. Additionally, for jequal to 12, with R1 3 0 3, the outcomes are
+Forjequal to 10, 11, and 12, with R1andR2
+ranging from 0 to 3, the outcomes are presented in
+Figure 2a. Additionally, for jequal to 12, with R1
+at 3 and R2ranging from 0 to 3, the outcomes are
 shown in Figure 2b.

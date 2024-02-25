@@ -91,7 +91,7 @@ Akyürek et al., 2022  Dai et al., 2022  von Oswald
 et al., 2022).
 Differently, in this work we are interested in
 understanding from where the in-context learning
-ability is acquired, through a perspective of pre-arXiv 2306.15091 1  [cs.CL]  26 2023training data. Although not many, some recent
+ability is acquired, through a perspective of pre-arXiv 2306.15091v1  [cs.CL]  26 Jun 2023training data. Although not many, some recent
 work have investigated this direction. For instance,
 Shin et al. (2022) pretrain a variety of language
 models on different corpora. They study correlations
@@ -153,7 +153,8 @@ section, we provide some background and adapt
 ORCA for large language models in a setting of incontext
  learning (ICL), finding supportive pretraining
  data for downstream tasks with demonstration
-examples.1 2.1 Methodology
+examples.1
+2.1 Methodology
 Assume we have a pretrained language model (LM)
 θand data pairs (x,y)representing the inputs and
 ground truth outputs of task Dtask. Both xandy
@@ -251,14 +252,18 @@ may prevent selecting examples associated with only one class
 of the task, a case of poor calibration.
 3More details of the ORCA algorithm can be found in Han
 and Tsvetkov (2022).Algorithm 1 ORCA-ICL
-1  Load a pretrained language model as θ0 2 1, Mdo
-3 1 4 1 argtop -k
+1  Load a pretrained language model as θ0
+2 fori 1, Mdo
+3 ifi  1then
+4 S1 argtop -k
 w DPT[cos( θLPT
 θ0(w), θP
 DtaskLICL
 θ0(x,y))]
-5 θ1 1(θ0)
-6 7 Si argtop -k
+5 θ1 SGD
+S1(θ0)
+6 else
+7 Si argtop -k
 w DPT[cos( θLPT
 θ0(w), θP
 DtaskLICL
@@ -266,7 +271,11 @@ DtaskLICL
 8 θi SGD
  i
 j 1Sj(θ0)
-9 10 11 1 2  ORCA-ICL, an iterative gradient-based selection
+9 end if
+10 end for
+11  Return supportive pretraining data S   M
+i 1Si
+Figure 2  ORCA-ICL, an iterative gradient-based selection
  of supportive pretraining data for ICL.
 2.2 Setup
 Language model Throughout the work, we use a
@@ -279,7 +288,8 @@ et al., 2022). We apply the LM on the tasks with
 both a zero-shot and in-context learning setup. We
 extract tasks that achieve at least 10% better performance
  with in-context demonstrations. We group
-17 6 typical tasks among them 
+17 tasks that satisfies the constraint and further select
+ 6 typical tasks among them 
 SST-2   Movie review sentiment classification
 (Socher et al., 2013). AG News   News topic classification
  (Zhang et al., 2015). Story Cloze Test  
@@ -306,7 +316,7 @@ Pretraining Considering the size of pretraining
 dataDPT, we include an as large portion of OPT s
 pretraining data as possible under a reasonable budget.
  Specifically, in this work we use a total of
-2.5 2048
+2.5M pretraining instances each consists of 2048
 tokens.5For computing efficiency, we use intralayer
  model parallelism (Shoeybi et al., 2019) and
 fully sharded data parallel (Ott et al., 2021).6
@@ -314,10 +324,10 @@ Implementation Details We run ORCA-ICL
 with a maximum of M  5 iterations. In each
 iteration we extract k  400 pretraining instances
 with top gradient similarity with the ICL task data.
-We use a batch size of 16 2e-5
+We use a batch size of 16 and learning rate of 2e-5
 for the one-pass gradient descent with an Adam
 optimizer (Kingma and Ba, 2014). This results in
-a total of 125 updates to the original LM after all
+a total of 125 updates7to the original LM after all
 iterations as the perturbative continued pretraining.
 2.3 Results
 Perturbative continued pretraining As the
@@ -345,9 +355,9 @@ bottom number of the cell shows the continued pretraining
  result with random data at a same size of
 our selection, accompanied by a standard deviation.
 The performance of our selection is bolded when
-5 5 3% of OPT s 180B full
+5The total 5B tokens are about 3% of OPT s 180B full
 pretraining data.
-6 4 input data for each backward pass in our
+6This groups 4 input data for each backward pass in our
 setup. The 4 instances receive a same gradient similarity score,
 equivalent to an aggregated instance 4 times of the length.
 7The one-pass descent hasM k
@@ -355,10 +365,10 @@ batch sizesteps.the performance difference with random selection
 exceeds one standard deviation.
 The diagonal cells show the performance of perturbed
  models on the same task used for selecting
-supportive data. We observe on 4 6 source
+supportive data. We observe on 4 of the 6 source
 tasks, our selection of supportive pretraining data
 is effective. For the cross-task performance, we
-observe on 5 6 source tasks, our selection
+observe on 5 of the 6 source tasks, our selection
 is effective for at least three tasks.8We conclude
 thatour identified supportive pretraining data
 is overall effective for ICL , though the cross-task
@@ -399,16 +409,68 @@ instances, investigating three aspects of the pretraining
 8Negative result is observed with TweetQA, on which
 we conjecture the patterns in the demonstration examples
 are more difficult to transfer to the test input (e.g., factual
-knowledge instead of sentiment indicators).SourceEval SST-2 140 75.47 74.12 66.09 45.07 67.23 62.36
-SST-2 83.15 75.87 1.6474.91 73.24 1.2467.76 66.24 1.2552.48 49.82 4.5069.03 66.23 1.2462.20 61.75 0.26 79.04 74.99 0.7775.40 73.77 0.4168.34 66.38 0.6959.24 46.55 4.2468.96 66.23 1.2461.86 62.02 0.55 75.33 72.50 2.5374.12 73.77 0.4167.47 65.25 1.5251.36 47.15 4.9069.92 66.23 1.2462.33 62.02 0.55 73.88 75.87 1.6472.78 73.77 0.4167.25 65.25 1.5264.69 46.55 4.2463.70 66.33 1.3462.13 61.75 0.26 140 77.56 73.49 2.3372.78 73.77 0.4166.78 66.38 0.6951.64 44.52 2.4566.66 66.00 1.4162.93 61.64 0.21 75.22 72.50 2.5371.52 73.01 1.4266.27 64.91 2.0143.09 44.52 2.4566.76 66.33 1.3461.31 61.33 0.80 1  Evaluation of supportive pretraining data to ICL. We obtain supportive pretraining data using the guidance
+knowledge instead of sentiment indicators).SourceEval SST-2 AG News Story
+ClozeSMS
+SpamSentiment
+140TweetQA
+75.47 74.12 66.09 45.07 67.23 62.36
+SST-2 83.15
+75.87  1.6474.91
+73.24  1.2467.76
+66.24  1.2552.48
+49.82  4.5069.03
+66.23  1.2462.20
+61.75  0.26
+AG News 79.04
+74.99  0.7775.40
+73.77  0.4168.34
+66.38  0.6959.24
+46.55  4.2468.96
+66.23  1.2461.86
+62.02  0.55
+Story Cloze 75.33
+72.50  2.5374.12
+73.77  0.4167.47
+65.25  1.5251.36
+47.15  4.9069.92
+66.23  1.2462.33
+62.02  0.55
+SMS Spam 73.88
+75.87  1.6472.78
+73.77  0.4167.25
+65.25  1.5264.69
+46.55  4.2463.70
+66.33  1.3462.13
+61.75  0.26
+Sentiment 140 77.56
+73.49  2.3372.78
+73.77  0.4166.78
+66.38  0.6951.64
+44.52  2.4566.66
+66.00  1.4162.93
+61.64  0.21
+TweetQA 75.22
+72.50  2.5371.52
+73.01  1.4266.27
+64.91  2.0143.09
+44.52  2.4566.76
+66.33  1.3461.31
+61.33  0.80
+Table 1  Evaluation of supportive pretraining data to ICL. We obtain supportive pretraining data using the guidance
 of asource task and evaluate ICL on all tasks. In the headers, we show the ICL performance of the original LM.
 We perform perturbative continued pretraining with both our selected supportive data (top number in cells) and an
 equal number of randomly sampled pretraining data (bottom number in cells). Diagonal cells indicate same-task
 evaluation and are marked purple. Our performance is bolded when the difference exceeds one standard deviation.
-On 4 6 tasks, the same-task ICL performance gain is observed (diagonal). On 5 6 tasks, the corresponding
+On 4 of 6 tasks, the same-task ICL performance gain is observed (diagonal). On 5 of 6 tasks, the corresponding
 supportive pretraining data improves ICL on at least three tasks (rows).
 Zero-shot Eval Original   ICL-supportive
-SST-2 46.82 46.83 46.14 44.05 50.43 51.39 44.41 43.84 140 55.84 54.90 50.44 50.32 2  Control evaluation. We report the zero-shot
+SST-2 46.82 46.83
+AG News 46.14 44.05
+Story Cloze 50.43 51.39
+SMS Spam 44.41 43.84
+Sentiment 140 55.84 54.90
+TweetQA 50.44 50.32
+Table 2  Control evaluation. We report the zero-shot
 prompting performance of the original LM and the perturbed
  LM after trained on our selected supportive pretraining
  data. No significant performance gain is observed
@@ -443,7 +505,7 @@ MAUVE score (Pillutla et al., 2021) to measure an
 information divergence between two text distributions.
  We compute two MAUVE scores, between
 the target task data and our selected supportive
-pretraining data, and between the task data and ran This
+pretraining data, and between the task data and ran9This
  view of supportive data will be revisited in  3.3.Figure 3  The MAUVE score between the supportive
 pretraining data and target task data, subtracted by the
 MAUVE score between random data and target task
@@ -459,7 +521,7 @@ He et al. (2022).
 Results We show the difference of MAUVE
 scores in Figure 3. The error bar shows the 95%
 confidence interval using 32 random seeds. We
-find that for 5 6 tasks, there is no significant
+find that for 5 of the 6 tasks, there is no significant
  difference between the MAUVE scores of
 supportive pretraining data and random data. For
 SST-2, the supportive pretraining data even shows
@@ -644,7 +706,7 @@ a controlled distribution of concepts. Garg et al.
 (2022) empirically show that Transformer models
 can be trained to learn unseen linear functions from
 in-context demonstration examples. Olsson et al.
-(2022) present evidence that multi-layer attention Recent
+(2022) present evidence that multi-layer attention12Recent
  work like Wei et al. (2023) and Pan et al. (2023)
 show the related findings would depend on model scales as
 well.based models form an induction head and perform
@@ -716,7 +778,8 @@ that requires back-propagation. Since we iterate
 through a large size of pretraining data, the cost
 of computation is similar to training a language
 model with a batch size of 1 on the considered
-pretraining data. On our 4 8 100 GPUs, finding the supportive pretraining
+pretraining data. On our 4 nodes each consists of
+8 Nvidia V100 GPUs, finding the supportive pretraining
  data for each source task in our experiment
 would take about a week. One mitigating aspect of
 such computation is that the gradient calculation
@@ -797,7 +860,7 @@ in-context  a case study of simple function classes.
 arXiv preprint arXiv 2208.01066 .
 Alec Go, Richa Bhayani, and Lei Huang. 2009. Twitter
  sentiment classification using distant supervision.
-CS N project report, Stanford , 1(12) 2009.
+CS224N project report, Stanford , 1(12) 2009.
 Yuxian Gu, Li Dong, Furu Wei, and Minlie Huang. 2023.
 Pre-training to learn in context.
 Kelvin Guu, Albert Webson, Elizabeth-Jane Pavlick,
@@ -961,7 +1024,7 @@ Odyssey  VR headset (discovered by RoadtoVR)
 would point to "no." Most of the specs are
 staying the same as its prior, Windowsdependent
  Odyssey model  Each eye still gets a
-3.5-inch screen with 1,440 1,600
+3.5-inch screen with 1,440 by 1,600
 resolution, combining for a 110-degree field
 of view, and AMOLED technology will be used to
 guarantee dark blacks and rich colors.

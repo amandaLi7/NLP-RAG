@@ -1,4 +1,5 @@
-Findings of the Association for Computational Linguistics  EACL 2023 , pages 1092 1106 2-6, 2023 2023 Association for Computational Linguistics
+Findings of the Association for Computational Linguistics  EACL 2023 , pages 1092 1106
+May 2-6, 2023  2023 Association for Computational Linguistics
 Long-tailed Extreme Multi-label Text Classification by the Retrieval of
 Generated Pseudo Label Descriptions
 Ruohong Zhang and Yau-Shian Wang
@@ -49,10 +50,11 @@ this challenge by the text classification community
 include Bayesian modeling of graphical dependencies
  among labels (Gopal and Yang, 2010  Gopal
 et al., 2012), novel loss or regularization of label
-embeddings (Babbar and Schölkopf, 2019 0 5000 10000 15000 20000 25000 300000%5%10%15%20%25%30%35%DEPL
+embeddings (Babbar and Schölkopf, 2019a  Wei
+0 5000 10000 15000 20000 25000 300000%5%10%15%20%25%30%35%DEPL
 X-TransformerFigure 1  The classification performance of XTransformer
  and DEPL (ours) measured in macroaveraged
- F1@19 10-31K dataset.
+ F1@19 on the Wiki10-31K dataset.
 et al., 2021), clustering-based algorithms (Chang
 et al., 2020  Khandagale et al., 2019  Prabhu et al.,
 2018), and so on. Despite the remarkable progresses
@@ -77,7 +79,7 @@ Label ( DEPL ). It treats each input document as a
 query and uses a neural network model to retrieve
 relevant labels from the candidate space based on
 the textual descriptions of the labels. The underlying
- assumption is, if the label descriptions are highly informative for text-based matching, then
+ assumption is, if the label descriptions are1092highly informative for text-based matching, then
 the retrieval system should be able to find relevant
 labels. The system would be particularly helpful
 for tail label prediction as the retrieval effectiveness
@@ -99,7 +101,7 @@ each label, which we call the pseudo description
 of the label. Since the learned label embeddings of
 the BoW classifier encode token importance information,
  it is natural and efficient to leverage them
-for keywords extraction. In sections 4 6, we
+for keywords extraction. In sections 4 and 6, we
 further provide theoretical motivations and empirical
  evidence to show the advantage of unsupervised
 statistical features for classification under extreme
@@ -158,7 +160,8 @@ produce extended label descriptions from predefined
  label descriptions. However, the algorithm
 can not scale to the extreme label space and relies
 on the availability of sufficient training data.
-3 3.1 Preliminaries
+3 Proposed Method
+3.1 Preliminaries
 LetD {(xi,yi)Ntrain
 i 1}be the training data where
 xiis the input text and yi  {0,1}Lare the binary
@@ -173,8 +176,8 @@ Typically, the label embedding wlis randomly
 initialized and trained from the supervised signal.
 While learning the embedding as free parameters is
 expressive when data is abundant, it could be difficult
- to be optimized under the scarce data situation.1093documentBERTbookmusic kakurophase Learned token importance for labelDocuments
-LabelsSVM Doc featureMusicjazz, piano kakuropuzzle, clue Phase drug, test Extract keywords by importance scoreBERTPseudo descriptionNeuralretrievalKakurois a kind oflogic puzzlethat is often referred to as a  Figure 2  The proposed DEPL framework. First, we train a BoW classifier (SVM) and extract the top keywords
+ to be optimized under the scarce data situation.1093documentBERTbookmusic kakurophase4Learned token importance for labelDocuments
+LabelsSVM Doc featureMusicjazz, piano kakuropuzzle, clue Phase4drug, test Extract keywords by importance scoreBERTPseudo descriptionNeuralretrievalKakurois a kind oflogic puzzlethat is often referred to as a  Figure 2  The proposed DEPL framework. First, we train a BoW classifier (SVM) and extract the top keywords
 from the label embeddings according to the learned token importance. Then, we concatenate the keywords with the
 original label names to form pseudo descriptions. Finally, we leverage the neural retrieval model to rank the labels
 according to semantic matching between document text and label descriptions.
@@ -198,8 +201,11 @@ l
 The label embedding weight wsvm
 lis optimized
 with the hinge loss 
-Lhinge 1 1 1max(0 ,1  yl fsparse(xi, l))
-where  yl  2 1  {  1,1},Bis the batch size.
+Lhinge 1
+LBB 
+i 1L 
+l 1max(0 ,1  yl fsparse(xi, l))
+where  yl  2yl 1  {  1,1},Bis the batch size.
 For a trained SVM model, wsvm
 lhas the dimension
  equal to the vocabulary size and each valuewsvm
@@ -226,7 +232,7 @@ The similarity between text and label representation
 fdual(x, l)   ϕdoc(x), ϕlabel(text( l)) 
 where text(l)is the textual information of the label
 l. When the textual information only includes the
-label name given in the dataset, we call the model DE-ret . Otherwise, when the textual information
+label name given in the dataset, we call the model1094DE-ret . Otherwise, when the textual information
 includes the generated pseudo label description, we
 call the model DEPL .
 The document embedding ϕdoc(x)is obtained
@@ -267,7 +273,9 @@ the batch is filled with uniformly random sampled
 negatives labels.
 LetSbbe the subset of labels sampled for a batch.
 The objective for the dual encoder is 
-Ldual  1 1( 
+Ldual  1
+B Sb B 
+i 1( 
 p y 
 ilogσ(fdual(xi, p))
   
@@ -322,7 +330,8 @@ it doesn t significantly increase the number of parameters
 2021)  and 2) when the two modules are optimized
 together, the system can take advantages of both
 units according to the situation of head or tail label
-predictions.10954 4.1 Rethinking Dense and Sparse Model for
+predictions.10954 Theoretical Analyses of DEPL
+4.1 Rethinking Dense and Sparse Model for
 Imbalanced Text Classification
 We analyze dense and sparse models from a gradient
  perspective for classification problems with
@@ -334,9 +343,11 @@ l 1yllogpl  (1 yl) log(1  pl)
 The derivative of LBCEw.r.t the logits slis 
  LBCE
  sl {
-pl 1 1
+pl 1ifyl  1
 pl otherwise(5)
-Q1 5, the gradient
+Q1  Why would sparse model with BOW feature
+benefit tail label prediction 
+Applying the chain rule to equation 5, the gradient
  ofLBCEw.r.t the document feature ϕn(x)is 
  LBCE(yl, pl)
  ϕn(x) {
@@ -400,7 +411,7 @@ given that the selected keywords are important and
 the sparse classifier can separate the positive from
 the negative instances with non-trivial margin.
 Notation  Letϕt(x)be the normalized tf-idf feature
- vector of text with  ϕt(x) 2 1 . The
+ vector of text with  ϕt(x) 2  1 . The
 sparse label embeddings {w1, . . . ,wL}satisfies
  wl 2 1, wli 0. In fact, label embeddings
 can be transformed to satisfy the condition without
@@ -416,7 +427,8 @@ Definition 1. For label landδ 0, the sparse keyword
  ϕt(x),wl   δ.
 Definition 2. For two labels pandn, the error
 margin µis the difference between the predicted
-scores µ(ϕ(x),wp,wn)   ϕ(x),wp wn .1096 3. Letϕt(x)andϕn(x)be the sparse
+scores µ(ϕ(x),wp,wn)   ϕ(x),wp wn .1096The main theorem is stated as below 
+Theorem 3. Letϕt(x)andϕn(x)be the sparse
 and dense (dimension d) document feature, wl
 be the label embedding and zlbe the δbounded
  keywords. For a positive label p, let
@@ -427,7 +439,8 @@ An error Eiof the neural classifier occurs when
 µ(ϕn(x), ϕn(zp), ϕn(zni)) 0 (6)
 The probability of any such error happening satisfies
 
-P(E1 . . .  EMp) 4Mpexp( (ϵ δ)2 50)
+P(E1 . . .  EMp) 4Mpexp( (ϵ δ)2d
+50)
 When (ϵ δ) 10 
 logMp
 d, the probability is
@@ -446,21 +459,25 @@ margin ϵmeasures the difficulty the correctly predicted
 model. The theorem states that the model achieves
 a lower bound performance as sparse classifier if
 the keywords are informative and error margin is
-non-trivial. Proofs are in section A.2 8.
+non-trivial. Proofs are in section A.2 for interested
+readers and limitations are discussed in section 8.
 5 Evaluation Design
 Dataset Ntrain Ntest Ld L  Ltail 
-EURLex-4 15,539 3,809 5.30 3,956 2,413
-AmazonCat-13 1,186,239 306,782 5.04 13,330 3,936 10-31 14,146 6,616 18.64 30,938 26,545
-Wiki-500 1,779,881 769,421 4.75 501,070 338,719 1  Corpus Statistics  NtrainandNtestare the number
+EURLex-4K 15,539 3,809 5.30 3,956 2,413
+AmazonCat-13K 1,186,239 306,782 5.04 13,330 3,936
+Wiki10-31K 14,146 6,616 18.64 30,938 26,545
+Wiki-500K 1,779,881 769,421 4.75 501,070 338,719
+Table 1  Corpus Statistics  NtrainandNtestare the number
  of training and testing instances respectively   Ldis
 the average number of labels per document, and Lis
 the number of unique labels.  Ltail is the number of tail
 labels with 1 9positive training instances.
-5.1 4benchmark
-datasets  EURLex-4K, AmazonCat-13K, Wiki K
+5.1 Datasets
+We conduct our experiments on 4benchmark
+datasets  EURLex-4K, AmazonCat-13K, Wiki1031K
  and Wiki-500K. The statistics of the datasetsare shown in Table 1. An unstemmed version of
 EURLex-4K is obtained from the APLC-XLNet
-github and the rest are from the Extreme classification
+github1and the rest are from the Extreme classification
  Repository2.
 For comparative evaluation of methods in tail label
  prediction, we consider the subset of labels with
@@ -474,7 +491,9 @@ highly skewed.
 Micro-averaged PSP@k  The PSP (Jain et al.,
 2016a) metric re-weights the score of each instance
 according to the label frequency 
-PSP @k 1 11y(pl)
+PSP @k 1
+kk 
+l 11y(pl)
 prop( pl)
 where the propensity score prop( pl)in the denominator
  gives higher weights to tail labels.
@@ -490,11 +509,11 @@ to all the labels (we apply it to tail labels specifically).
  It is defined as the average of the labelspecific
  F1@kvalues, calculated based on a contingency
  table for each label, as shown in table 2.
-The precision, recall and F for a predicted ranked
+The precision, recall and F1for a predicted ranked
 list of length kare computed as P  TP
 TP FP,R  
 TP
-TP FN, and F1 2P R
+TP FN, and F1   2P R
 P R.
 Table 2  Contingency table for label l.
 lis true label lis not true label
@@ -502,7 +521,8 @@ lpredicted True Positive ( TPl) False Positive ( FPl)
 lnot predicted False Negative ( FNl) True Negative ( TNl)
 For micro-averaged PSP@k, we choose k 
 1,3,5as in previous works. For macro-averaged
-F1@k, we choose k  19 10-31 18.64 5for the
+F1@k, we choose k  19 for Wiki10-31K because
+it has an average of 18.64labels and k  5for the
 rest datasets.
 1https //github.com/huiyegit/APLC_XLNet.git
 2http //manikvarma.org/downloads/XC/
@@ -532,7 +552,10 @@ Our experiments reveal the effectiveness of our
 model on the tail label prediction and we also include
  and discuss the performance on the overall
 prediction in appendix A.1.4.
-6.1 1 3. Surprisingly, a simple
+6.1 Results in Tail Label Prediction
+SVM on Tail Label Prediction The results evaluated
+ with the F1 metric averaged on the tail labels
+ are shown in figure 3. Surprisingly, a simple
 statistical SVM baseline achieves competitive results
  on the tail label predictions. We observe that
 SVM model can outperform most of the pretrained
@@ -555,14 +578,15 @@ a label-word attention to calculate a label specific
  document representation. As we observe in
 figure 3, among the baseline models, the AttentionXML
  performs the best on the tail label predictions,
- beating the other baselines on 3 4benchmark datasets. The superior performance
+ beating the other baselines on 3out of the
+4benchmark datasets. The superior performance
 could come from the local word and label matching
 which benefits the tail label prediction.
 As mentioned in section 3, X-Transformer model
 ensembles a neural classifier and a SVM model by
 directly summing the prediction scores. Although
 X-Transformer outperforms SVM on the overall label
- prediction, it underperforms SVM on 3 4
+ prediction, it underperforms SVM on 3out of 4
 benchmark datasets. This shows that model performance
  on tail label is dragged down by the neural
 model prediction, and a simple ensemble does fully
@@ -573,7 +597,7 @@ better performance on both macro-F1 and microPSP
 the retrieval of augmented label descriptions rather
 than a pure ensemble.
 DEPL Performance On the 3smaller scale
-benchmark datasets, EURLex-4K, AmazonCat K
+benchmark datasets, EURLex-4K, AmazonCat13K
  and Wiki10-31K, our model directly ranks
 all the labels. On the large Wiki-500K dataset, our
 model leverages the prediction of cluster-based algorithm
@@ -599,25 +623,61 @@ biased on the tail label prediction.
 According to the evaluation with the PSP metric
 shown in table 3, it also confirms that our proposed
 models DEPL andDEPL  cls improves over the
-previous SOTA neural models on all the benchmark EURLex-4 10-31KAmazonCat-13KWiki-500K      
+previous SOTA neural models on all the benchmark1098EURLex-4KWiki10-31KAmazonCat-13KWiki-500K      
         Macro-avg F10%2.5%5%7.5%10%12.5%15%
-10.12 11.47 9.77 11.15 9.7 10.8 8.1 8.9 1.4 8.4 6.7 7.9 0.2 5.9LightXMLX-TransformerXLNet-APLCSVMAttentionXMLDEPL clsDEPLMacro-avg F10%3.33%6.67%10%13.33%16.67%20%
-18.3 6.89 17.5 6.25 16.9 2.3 14.4 6.0 10.4 2.5 15.8 3.1 13.7 0.9LightXMLX-TransformerXLNet-APLCSVMAttentionXMLDEPL clsDEPLFigure 3  Tail-label prediction results in F1@kon the labels with 1 9positive training instances, with k  19 10-31 5for the rest.  and indicates the macro t-test is significant ( p  0.05) over
+10.12
+11.47
+9.77
+11.15
+9.7
+10.8
+8.1
+8.9
+1.4
+8.4
+6.7
+7.9
+0.2
+5.9LightXMLX-TransformerXLNet-APLCSVMAttentionXMLDEPL clsDEPLMacro-avg F10%3.33%6.67%10%13.33%16.67%20%
+18.3
+6.89
+17.5
+6.25
+16.9
+2.3
+14.4
+6.0
+10.4
+2.5
+15.8
+3.1
+13.7
+0.9LightXMLX-TransformerXLNet-APLCSVMAttentionXMLDEPL clsDEPLFigure 3  Tail-label prediction results in F1@kon the labels with 1 9positive training instances, with k  19
+for the Wiki10-31K dataset and k  5for the rest.  and indicates the macro t-test is significant ( p  0.05) over
 SVM and previous best neural model respectively.
 Table 3  Tail label prediction results of methods in PSP @k, with indicating significant improvement ( p  0.05)
 over the previous best model on the micro sign test.
-EURLex-4 10-31K AmazonCat-13K Wiki-500K
+EURLex-4K Wiki10-31K AmazonCat-13K Wiki-500K
 Methods PSP@1 PSP@3 PSP@5 PSP@1 PSP@3 PSP@5 PSP@1 PSP@3 PSP@5 PSP@1 PSP@3 PSP@5
 X-Transformer 37.85 47.05 51.81 13.52 14.62 15.63 51.42 66.14 75.57 31.20 36.78 40.21
-XLNet-APLC 42.21 49.83 52.88 14.43 15.38 16.47 52.55 65.11 71.36 29.73 30.26 30.59 40.54 47.56 50.50 14.09 14.87 15.52 50.70 63.14 70.13 31.01 37.10 39.28 44.20 50.85 53.87 14.49 15.65 16.54 53.94 68.48 76.43 30.05 37.31 41.74 39.18 48.31 53.37 11.84 14.00 15.81 51.83 65.41 72.82 32.12 32.75 35.20 45.60* 52.28* 53.52 17.20* 16.90* 16.95 55.94* 70.01* 76.87* 32.07 40.60* 43.74*
-DEPL cls 44.60 52.74* 54.64 16.73* 16.84* 16.67 55.21* 69.73* 75.94 32.18 39.89* 41.46 4 10-31K. The classifier is trained with only 1positive
+XLNet-APLC 42.21 49.83 52.88 14.43 15.38 16.47 52.55 65.11 71.36 29.73 30.26 30.59
+LightXML 40.54 47.56 50.50 14.09 14.87 15.52 50.70 63.14 70.13 31.01 37.10 39.28
+AttentionXML 44.20 50.85 53.87 14.49 15.65 16.54 53.94 68.48 76.43 30.05 37.31 41.74
+SVM 39.18 48.31 53.37 11.84 14.00 15.81 51.83 65.41 72.82 32.12 32.75 35.20
+DEPL 45.60* 52.28* 53.52 17.20* 16.90* 16.95 55.94* 70.01* 76.87* 32.07 40.60* 43.74*
+DEPL cls 44.60 52.74* 54.64 16.73* 16.84* 16.67 55.21* 69.73* 75.94 32.18 39.89* 41.46
+Table 4  Examples of SVM generated keywords from Wiki10-31K. The classifier is trained with only 1positive
 training instance per label. The top 20keywords are shown. with meaningful words highlighted in red manually.
 Label Text #training instance Top Keywords
-phase4 1 1 2004 1nikoli kakuro puzzles crossword clues entries entry values sums cells
-cross digits dell solvers racehorse guineas aa aa digit clue kaji
+phase4 1trials clinical protection personal directive processed data trial drug phase eu
+processing patients sponsor controller legislation regulation art investigator study
+ensemble 1boosting kurtz ferrell weak algorithms learners misclassified learner kearns ensemble
+charges bioterrorism indictment doj indict cae correlated 2004 reweighted boost
+kakuro 1nikoli kakuro puzzles crossword clues entries entry values sums cells
+cross digits dell solvers racehorse guineas aa3aa digit clue kaji
 datasets, with  indicates significant improvement
 (p   0.05) over the previous best model on the
-micro sign test (Yang and Liu, 1999). The Wiki K
+micro sign test (Yang and Liu, 1999). The Wiki1031K
  dataset has the most skewed distribution as
 the most frequent label covers more than 85% of
 the training instances, resulting in a low PSP score.
@@ -642,11 +702,29 @@ argue that it provides a more accurate and fine-1099grained evaluation on tail l
 better reveals the success of XMTC models on
 predicting rare categories.
 0%2.5%5%7.5%10%12.5%15%
-9.9 6.5 10.7 10.1 6.9 11.5 9.3 5.5 9.9 8.9 3.1 9.4 0.7 1.4 7.9BERTDE-retDEPL-8DEPL-16DEPL-32Ablation Results of DEPL w.r.tPseudo Label Length
-EURLex-4 10-31KAmazonCat-13 4  The ablation-test results of DEPL in Macroaveraged
+9.9
+6.5
+10.7
+10.1
+6.9
+11.5
+9.3
+5.5
+9.9
+8.9
+3.1
+9.4
+0.7
+1.4
+7.9BERTDE-retDEPL-8DEPL-16DEPL-32Ablation Results of DEPL w.r.tPseudo Label Length
+EURLex-4KWiki10-31KAmazonCat-13K
+Figure 4  The ablation-test results of DEPL in Macroaveraged
  F1@k metric with varying length of pseudo
 label descriptions.
-6.2 4 10-31 1training example. We manually
+6.2 Ablation on Generated Pseudo Label
+Table 4 shows examples of the SVM generated
+keywords trained on the Wiki10-31K dataset for
+labels with only 1training example. We manually
 highlight the meaningful terms related to the label
 meaning. For example, the label name phase4 is
 ambiguous, whose meaning needs to be inferred
@@ -871,7 +949,9 @@ We introduce the micro-averaged P@kas the metric
  for all-label prediction. Given a ranked list of
 the predicted labels for each test document, the
 micro-averaged P@k is 
-P@k 1 11y 
+P@k 1
+kk 
+i 11y 
 i(pi) (7)
 where piis the i-th label in the list pand 1y 
 iis
@@ -894,7 +974,7 @@ We tokenize and lemmatize the raw text with the
 spaCy (Honnibal and Montani, 2017) library and
 extract the tf-idf feature with the Sklearn (Pedregosa
  et al., 2011) library, with unigram whose
-df count is    2 70% of the
+df count is    2and df frequency    70% of the
 total documents.
 We use the BERT model as the contextualize
 function for our retrieval model, which is initialized
@@ -902,10 +982,10 @@ function for our retrieval model, which is initialized
  we fine-tune a 12layer BERT-base model
 with different learning rates for the BERT encoder,
 BERT pooler and the classifier. The learning
-rates are (1 5,1 4,1 3)for Wiki K
- and (5 5,1 4,2 3)for the rest
+rates are (1e 5,1e 4,1e 3)for Wiki1031K
+ and (5e 5,1e 4,2e 3)for the rest
 datasets. For the negative sampling, we sample
-batch of 500 10-31K, and 300for
+batch of 500instances for Wiki10-31K, and 300for
 EURLex-4K and AmazonCat-13K. For Wiki-500K
 dataset, we leverage the cluster-based algorithm in
 X-Transformer, and perform label re-ranking using
@@ -914,8 +994,8 @@ our DEPL model to replace the linear model in XTransformer.
 for to train the re-ranker.
 We include 10hard negatives predicted by the
 SVM model for each instances. We used learning
- rate 1 5for fine-tuning the BERT of our
-retrieval model and 1 4for the pooler and label
+ rate 1e 5for fine-tuning the BERT of our
+retrieval model and 1e 4for the pooler and label
 embeddings. For the pseudo label descriptions, we
 concatenate the provided label description with the
 generated the top 20keywords. The final length is
@@ -929,10 +1009,22 @@ metric is reported in table 5. Our model is compared
  against the SOTA sparse and dense classifiers.
 DEPL  c achieves the best or second best performance
  on all the 4benchmark datasets, achieving
-comparable results to the previous best SOTA models.1102EURLex-4 10-31K AmazonCat-13K Wiki-500K
-Methods P@1 P@3 P@5 P@1 P@3 P@5 P@1 P@3 P@5 P@1 P@3 P@5 83.21 70.39 58.73 84.13 74.72 65.94 93.81 79.08 64.06 70.21 50.57 39.68 73.14 60.16 50.54 83.57 68.61 59.10 91.75 77.97 63.68 56.25 37.32 28.16 79.17 66.80 56.09 83.66 73.28 64.51 92.50 78.12 63.51 65.17 46.32 36.15 82.12 68.91 57.89 84.19 72.46 63.37 93.02 79.14 64.51 68.70 49.57 38.64 82.30 69.55 58.35 84.52 73.76 64.69 92.98 79.13 64.46 69.26 46.72 36.46 85.12 72.80 61.01 86.46 77.22 67.98 95.53 82.03 67.00 75.20 56.42 44.10
+comparable results to the previous best SOTA models.1102EURLex-4K
+ Wiki10-31K AmazonCat-13K Wiki-500K
+Methods P@1 P@3 P@5 P@1 P@3 P@5 P@1 P@3 P@5 P@1 P@3 P@5
+DisMEC 83.21 70.39 58.73 84.13 74.72 65.94 93.81 79.08 64.06 70.21 50.57 39.68
+PfastreXML 73.14 60.16 50.54 83.57 68.61 59.10 91.75 77.97 63.68 56.25 37.32 28.16
+eXtremeText 79.17 66.80 56.09 83.66 73.28 64.51 92.50 78.12 63.51 65.17 46.32 36.15
+Parabel 82.12 68.91 57.89 84.19 72.46 63.37 93.02 79.14 64.51 68.70 49.57 38.64
+Bonsai 82.30 69.55 58.35 84.52 73.76 64.69 92.98 79.13 64.46 69.26 46.72 36.46
+AttentionXML 85.12 72.80 61.01 86.46 77.22 67.98 95.53 82.03 67.00 75.20 56.42 44.10
 X-Transformer 85.46 72.87 60.79 87.12 76.51 66.69 95.75 82.46 67.22 75.28 55.46 42.75
-XLNet-APLC 86.83 74.34 61.94 88.99 78.79 69.79 94.56 79.78 64.59 72.95 51.23 38.64 86.12 73.87 61.67 87.39 77.02 68.21 94.61 79.83 64.45 75.96 56.55 44.22 83.44 70.62 59.08 84.61 74.64 65.89 93.20 78.89 64.14 69.92 49.35 38.8 85.38 71.86 59.91 84.63 74.80 65.96 94.86 80.85 64.55 74.69 55.72 42.71 86.43 73.77 62.19 88.57 78.04 68.75 96.16 82.23 67.65 76.83 57.15 45.07 5  The all-label prediction results of representative classification systems evaluated in the micro-avg P@k
+XLNet-APLC 86.83 74.34 61.94 88.99 78.79 69.79 94.56 79.78 64.59 72.95 51.23 38.64
+LightXML 86.12 73.87 61.67 87.39 77.02 68.21 94.61 79.83 64.45 75.96 56.55 44.22
+SVM 83.44 70.62 59.08 84.61 74.64 65.89 93.20 78.89 64.14 69.92 49.35 38.8
+DEPL 85.38 71.86 59.91 84.63 74.80 65.96 94.86 80.85 64.55 74.69 55.72 42.71
+DEPL c 86.43 73.77 62.19 88.57 78.04 68.75 96.16 82.23 67.65 76.83 57.15 45.07
+Table 5  The all-label prediction results of representative classification systems evaluated in the micro-avg P@k
 metric. The bold phase and underscore highlight the best and second best model performance.
 We argue that though our models perform significantly
  better on the tail label prediction, the
@@ -944,7 +1036,8 @@ metric is averaged over instances and can be dominated
 instances. Therefore, the metric is incapable of
 reflecting the tail label performance. We want to
 emphasis that over 26,545(88.65%) labels in the
-Wiki10-31 10training instances, constituting a majority
+Wiki10-31K dataset belong to the tail labels with
+less than 10training instances, constituting a majority
  of the label space. The overall classification
 precision (P@k) only reflects a part of the success
 of a classification system, and the tail label evaluation
@@ -996,23 +1089,32 @@ and PSP metrics.
 Negative Sampling We used the top negative predictions
  by the SVM model as the choice of hard
 negative labels. By default, we use 10hard negatives
- for each instance in the batch. In table 6, we Table 6  Ablation-test results of DEPL under different
+ for each instance in the batch. In table 6, we1103Table 6  Ablation-test results of DEPL under different
 training conditions.
 Methods P@1 P@3 P@5 PSP@1 PSP@3 PSP@5
 EUR-Lex
-DE-ret -1.34 -1.18 -1.16 -3.2 -2.11 0.18
+DE-ret -1.34 -1.18 -1.16 -3.2 -2.11  0.18
 w/o pre-train -6.81 -6.72 -6.16 -6.87 -7.09 -5.87
-w/o neg -2.52 -2.63 -2.2 -3.59 -3.66 -1.9 5 hard negative -1.55 -1.19 -1.12 -3.57 -2.98 -1.32 10-31K
+w/o neg -2.52 -2.63 -2.2 -3.59 -3.66 -1.9
+5 hard negative -1.55 -1.19 -1.12 -3.57 -2.98 -1.32
+Wiki10-31K
 DE-ret -3.40 -7.71 -10.74 -7.63 -5.09 -1.20
 w/o pre-train -4.81 -8.66 -12.1 -2.46 -2.00 -1.92
-w/o hard negative -2.01 -5.89 -4.93 -1.15 -1.17 -1.37 5 hard negative -0.84 -3.03 -4.16 -1.22 -0.99 -0.92 7  Ablation-test results of DEPL with CLSand
+w/o hard negative -2.01 -5.89 -4.93 -1.15 -1.17 -1.37
+5 hard negative -0.84 -3.03 -4.16 -1.22 -0.99 -0.92
+Table 7  Ablation-test results of DEPL with CLSand
 mean-pooling.
 Methods PSP@1 PSP@3 PSP@5
 EUR-Lex
-DE-ret 44.87 52.17 53.40 42.32 47.26 47.53
-DEPL with mean-pooling 45.60 52.28 53.52 10-31K
-DE-ret 16.71 15.76 16.35 14.71 14.58 15.33
-DEPL with mean-pooling 17.20 16.90 16.95 5hard negatives are used for training.
+DE-ret 44.87 52.17 53.40
+DEPL with cls 42.32 47.26 47.53
+DEPL with mean-pooling 45.60 52.28 53.52
+Wiki10-31K
+DE-ret 16.71 15.76 16.35
+DEPL with cls 14.71 14.58 15.33
+DEPL with mean-pooling 17.20 16.90 16.95
+observe a performance drop when no hard negatives
+ or only 5hard negatives are used for training.
 CLS vs. Mean-pooling Table 7 shows an ablation
  test for the design of label description encoder.
 We observe that using a mean-pooling over the last
@@ -1020,7 +1122,8 @@ layer of label keyword embeddings outperforms
 that using the CLSembedding by a large margin.
 This could be because the label keywords are not
 natural language the optimization using CLSembedding
- is more difficult.1104A.2 3.
+ is more difficult.1104A.2 Proof
+We include the assumptions and proofs of Theorem 3.
 Assumptions Similar to Luan et al. (2020), we treat neural embedding as fixed dense vector E Rd v
 with each entry sampled from a random Gaussian N(0, d 1/2).ϕn(x)  Eϕt(x)is weighted average of
 word embeddings by the sparse vector representation of text. According to the Johnson-Lindenstrauss (JL)
@@ -1032,41 +1135,51 @@ margins satisfy
 Proof. By the definition of δ-bounded keywords,
  ϕt(x),wp   δ   ϕt(x),vp     ϕt(x),wp  (8)
    ϕt(x),wn       ϕt(x),vn       ϕt(x),wn  δ (9)
-Adding equation 8 9 finishes the proof 
+Adding equation 8 and equation 9 finishes the proof 
  ϕt(x),wp wn   δ   ϕt(x),vp vn     ϕt(x),wp wn  δ (10)
 Lemma 5. Letϕt(x)andϕn(x)be the sparse and dense (dimension d) document feature, wlbe the
 label embedding and zlbe the δ-bounded keywords. Let pbe a positive label and nbe a negative label
 ranked below pbe the sparse classifier. The error margin is ϵ µ(ϕt(x),wp,wn). An error Eof neural
-classification occurs when µ(ϕn(x), ϕn(zp), ϕn(zn)) 0. The probability P(E) 4 exp( (ϵ δ)2 50).
+classification occurs when µ(ϕn(x), ϕn(zp), ϕn(zn)) 0. The probability P(E) 4 exp( (ϵ δ)2d
+50).
 Proof. By the JL Lemma (Ben-David et al., 2002)  For any two vectors a,b Rv, letE Rd vbe a
 random matrix such that the entries are sampled from a random Gaussian. Then for every constant γ  0 
 P(
   Ea,Eb     a,b    γ
 2(
- a 2 2))
+ a 2  b 2))
  4 exp(
- γ2 8)
+ γ2d
+8)
 (11)
-Letγ 2 5(ϵ δ),a ϕt(x)andb vp vn. Since  a 2 1 2 ( vp 2 2)2 4, the
+Letγ 2
+5(ϵ δ),a ϕt(x)andb vp vn. Since  a 2  1and b 2 ( vp 2  vn 2)2 4, the
 JL Lemma gives
 P(  Eϕt(x),E(vp vn)     ϕt(x),vp vn    ϵ δ) (12)
- 4 exp( (ϵ δ)2 50) (13)
+ 4 exp( (ϵ δ)2d
+50) (13)
 To complete the proof, we need to show P(E) Eq.12 
 E      Eϕt(x),E(vp vn)     ϕt(x),wp wn    ϵ (14)
       Eϕt(x),E(vp vn)     ϕt(x),vp vn    ϵ δ (15)
-where the equation 15 4 
+where the equation 15 is derived by Lemma 4 
   Eϕt(x),E(vp vn)     ϕt(x),vp vn   (16)
    Eϕt(x),E(vp vn)     ϕt(x),wp wn    (17)
   ϕt(x),wp wn     ϕt(x),vp vn   (18)
  ϵ δ (19)
-Therefore P(E) Eq.12, which completes the proof.1105 3
+Therefore P(E) Eq.12, which completes the proof.1105Proof of Theorem 3
 Proof. The Lemma 2 shows that
-P(Ei) 4 exp( (ϵi δ)2 50) 4 exp( (ϵ δ)2 50) (20)
+P(Ei) 4 exp( (ϵi δ)2d
+50) 4 exp( (ϵ δ)2d
+50) (20)
 By an union bound on the error events {E1,E2, . . . ,EMp},
 P(E1 . . .  EMp) Mp 
-i 14 exp( (ϵi δ)2 50) (21)
-  4Mpexp( (ϵ δ)2 50) (22)
+i 14 exp( (ϵi δ)2d
+50) (21)
+  4Mpexp( (ϵ δ)2d
+50) (22)
 When (ϵ δ)2 10 
 logMp
-d, we have exp( (ϵ δ)2 50) 1 4Mp and therefore P(E1 . . . EMp) 1
+d, we have exp( (ϵ δ)2d
+50) 1
+4Mp2and therefore P(E1 . . . EMp) 1
 Mp.1106

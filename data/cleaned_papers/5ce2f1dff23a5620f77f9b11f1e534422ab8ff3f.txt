@@ -1,7 +1,7 @@
 Plan, Eliminate, and Track  
 Language Models are Good Teachers for Embodied Agents.
-Yue Wu So Yeon Min Yonatan Bisk Ruslan Salakhutdinov Amos Azaria Yuanzhi Li1 3
-Tom M. Mitchell Shrimai Prabhumoye4
+Yue Wu1So Yeon Min1Yonatan Bisk1Ruslan Salakhutdinov1Amos Azaria2Yuanzhi Li1 3
+Tom M. Mitchell1Shrimai Prabhumoye4
 Abstract
 Pre-trained large language models (LLMs)
 capture procedural knowledge about the
@@ -37,8 +37,8 @@ Humans can abstractly plan their everyday tasks without
 make coﬀee, before grabbing eggs to scramble. Embodied
  agents, endowed with this capability will generalize
 more eﬀectively by leveraging common-sense reasoning.
-1Carnegie Mellon University Ariel University Microsoft
-Research Nvidia Research. Correspondence to  Yue Wu
+1Carnegie Mellon University2Ariel University3Microsoft
+Research4Nvidia Research. Correspondence to  Yue Wu
  ywu5@andrew.cmu.edu  .
 Figure 1. PET framework. Plan module uses LLM to generate
  a high-level plan. Eliminate Module uses a QA model
@@ -68,7 +68,7 @@ On the other hand, to successfully  cut some lettuce
 in a real-world room, one has to  ﬁnd a knife , which
 can be non-trivial since there can be multiple drawers
 or cabinets (Chaplot et al., 2020  Min et al., 2021 
-Blukis et al., 2021). A more realistic scenario leads to aarXiv 2305.02412 2  [cs.CL]  7 2023Plan, Eliminate, and Track
+Blukis et al., 2021). A more realistic scenario leads to aarXiv 2305.02412v2  [cs.CL]  7 May 2023Plan, Eliminate, and Track
 diverse, complicated set of tasks or large and changing
 action space. Furthermore, the text description of the
 observation increases as a function of the number of
@@ -418,7 +418,8 @@ egg to put it in the microwave.  Each training instance
 in AlfWorld comes with an expert, from which we
 collected our training demonstration.
 Human Goal Speciﬁcation The crowd-sourced human
- goal speciﬁcations for evaluation contain 66 189 unseen nouns (Shridhar et al., 2020b).
+ goal speciﬁcations for evaluation contain 66 unseen
+verbs and 189 unseen nouns (Shridhar et al., 2020b).
 In comparison, the template goals use only 12 ways of
 goal speciﬁcation. In addition, the sentence structure
 for human goal speciﬁcation is more diverse compared
@@ -436,7 +437,8 @@ Model seen unseen seen unseen
 BUTLER   DAgger* (Shridhar et al., 2020b) 40 35 8 3
 BUTLER   BC (Shridhar et al., 2020b) 10 9 - GPT
  (Micheli & Fleuret, 2021) 91 95 42 57
-PET   Action Attention (Ours) 70 67.5 52.5 60 1. Comparison of diﬀerent models in terms of completion rate per evaluation split (seen and unseen), with and
+PET   Action Attention (Ours) 70 67.5 52.5 60
+Table 1. Comparison of diﬀerent models in terms of completion rate per evaluation split (seen and unseen), with and
 without human annotated goals. PET under-performs GPT on Template goal speciﬁcations but generalizes better to
 human goal speciﬁcations. *We include the performance of BUTLER with DAgger for completeness. All other rows are
 trained without interaction with the environment, MLE for GPT and behavior cloning for BUTLER BC and PET.
@@ -451,7 +453,7 @@ tracking), we use the same Macaw-11b model as the
 Eliminate module answer to Yes/No questions.
 Actor Model Design. OurAction Attention
 agent (MQandMK) is a 12-layer transformer with
-12 384. The last layer
+12 heads and hidden dimension 384. The last layer
 is then fed into two linear heads to generate Kand
 Q. For embedding of actions and observations, we use
 pre-trained RoBERTa-large (Liu et al., 2019) with embedding
@@ -508,7 +510,7 @@ not trained on the task, it generalizes to the variations
 for human goal speciﬁcations as shown in Section 4.5.
 Quantitatively, GPT suﬀers from a relative 50% performance
  drop transferring from template to human-goal
-speciﬁcations, whereas PET incurs only a 15 25%
+speciﬁcations, whereas PET incurs only a 15  25%
 drop.
 The setting closest to PET is BUTLER with behavior
 cloning (BUTLER   BC). Since BUTLER   BC performs
@@ -563,14 +565,17 @@ split. In addition, we note that object receptacle accuracy
  is generally lower than object accuracy because of
 the counter-intuitive spawning locations described in
 Section 4.5. In our experiments, a decision threshold
-of 0.4 0 .91 40% on average.
+of 0.4 has a recall of 0 .91 and reduces the number of
+objects in observation by 40% on average.
 Track module Since sub-task alignment information
 is not provided by the environment, we explore an
 alternative performance metric for the detection of the
 event of completion. Ideally, a sub-task tracker should
 record the last sub-task as  ﬁnished  if and only if the
 environment is  fully solved  by the expert. As an
-agreement measure, we report a precision of 0.99 0.78 for Macaw-11 0.96 0.96 for Macaw-large. The larger model
+agreement measure, we report a precision of 0.99 and
+a recall of 0.78 for Macaw-11B and a precision of 0.96
+and a recall of 0.96 for Macaw-large. The larger model
 (Macaw-11b) is more precise but misses more detection,
 therefore limiting the theoretical performance to 78%.
 The smaller model is much less accurate according to
@@ -597,10 +602,13 @@ with almost perfect embedding similarity for all tasks.
 Figure 6. Plot of AUC scores of zero-shot relevance identiﬁcation across all tasks in the Alfworld-Thor environment,
 with the Macaw-11b model. The ground truth is obtained as receptacles/objects accessed by the rule-based expert.
 Top  Receptacle relevance identiﬁcation. Bottom  Object relevance identiﬁcation. The QA model achieves an average
-AUC-ROC score of 65 76 on objects.
+AUC-ROC score of 65 for receptacles and 76 on objects.
 Model Ablations seen unseen
-Action Attention 25 9 25 11
-Action Attention   Plan & Track 35 15 52.5 27.5 3. Comparison of diﬀerent ablations of PET trained
+Action Attention 25 9
+Action Attention   Eliminate 25 11
+Action Attention   Plan & Track 35 15
+Action Attention   PET 52.5 27.5
+Table 3. Comparison of diﬀerent ablations of PET trained
 on a sampled set of 140 demonstrations from the training
 set, in terms of completion rate per evaluation split (seen
 and unseen). Applying Eliminate module alone has an
@@ -615,12 +623,12 @@ synonym variations.
 Eliminate Module We observe that the main
 source of elimination error occurs when the moduleincorrectly masks a receptacle that contains the object
 of interest so the agent fails to ﬁnd such receptacles.
-This is often because some objects in the AI Thor
+This is often because some objects in the AI2Thor
 simulator do not spawn according to common sense.
 As noted in the documentation of the environment2,
 objects like Apple or Egg has a chance of spawning in
 unexpected receptacles like GarbageCan, or TVStand.
-However, such generations in AI Thor are unlikely in
+However, such generations in AI2Thor are unlikely in
 real deployment  thus, the  mistakes  of our Eliminate
 module are reasonable.
 Track Module Experimentally, we ﬁnd that subtask
@@ -631,7 +639,7 @@ in cabinet  into two repeating set of sub-tasks   take
 soapbar place soapbar in/on cabinet . Sub-task planning
  and tracking, therefore, simplify the hard problem
 of counting.
-2ai thor.allenai.org/ithor/documentation/objects/objecttypes/Plan,
+2ai2thor.allenai.org/ithor/documentation/objects/objecttypes/Plan,
  Eliminate, and Track
 Human Goal Speciﬁcation Examples
 Task Chill a cup and place it in the cabinet.
@@ -774,7 +782,7 @@ Fulda, N., Ricks, D., Murdoch, B., and Wingate,
 D. What can you do with a rock  aﬀordance
 extraction via word embeddings. arXiv preprint
 arXiv 1703.03429 , 2017.
-Goyal, P., Niekum, S., and Mooney, R. Pixl r  Guiding
+Goyal, P., Niekum, S., and Mooney, R. Pixl2r  Guiding
 reinforcement learning using natural language by
 mapping pixels to rewards. In Conference on Robot
 Learning , pp. 485 497. PMLR, 2021.
@@ -802,7 +810,8 @@ Jiang, Y., Gu, S. S., Murphy, K. P., and Finn, C. Language
  learning. Advances in Neural Information
 Processing Systems , 32, 2019.
 Kollar, T., Tellex, S., Roy, D., and Roy, N. Toward
-understanding natural language directions. In 2010 5th ACM/IEEE International Conference on HumanRobot
+understanding natural language directions. In 2010
+5th ACM/IEEE International Conference on HumanRobot
  Interaction (HRI) , pp. 259 266. IEEE, 2010.
 Lin, B. Y., Huang, C., Liu, Q., Gu, W., Sommerer,
 S., and Ren, X. On grounded planning for embodied

@@ -1,6 +1,7 @@
 MD ACE  MIMIC Documents Annotated with Code Evidence
 Hua Cheng1, Rana Jafari1, April Russell1, Russell Klopfer1,
-Edmond Lu1, Benjamin Striner1, Matthew R. Gormley2 13M Health Information Systems,2Carnegie Mellon University
+Edmond Lu1, Benjamin Striner1, Matthew R. Gormley2
+13M Health Information Systems,2Carnegie Mellon University
 {hcheng, rjafari, arussell3, rklopfer, elu3, bstriner}@mmm.com, mgormley@cs.cmu.edu
 Abstract
 We introduce a dataset for evidence/rationale
@@ -23,7 +24,9 @@ specialized knowledge. In this paper, we introduce
 code evidence dataset, which is built on a subset
  of the MIMIC-III (English) clinical records.
 The dataset   annotated by professional medical
- coders   consists of 302 3,934 52 5,563 evidence spans. We implemented
+ coders   consists of 302 Inpatient charts
+with 3,934 evidence spans and 52 Profee charts
+with 5,563 evidence spans. We implemented
 several evidence extraction methods based on
 the EffectiveCAN model (Liu et al., 2021) to
 establish baseline performance on this dataset.
@@ -83,7 +86,7 @@ codes. There is no dataset for reference code evidence
  as it requires medical coding expertise and is
 costly to build. As a result, work until this point can
 only illustrate qualitatively that their models can
-extract text evidence that looks reasonable to hu-arXiv 2307.03859 1  [cs.CL]  7 2023mans. This approach is time-consuming and makes
+extract text evidence that looks reasonable to hu-arXiv 2307.03859v1  [cs.CL]  7 Jul 2023mans. This approach is time-consuming and makes
 the comparison of different methods extremely difficult.
  The need for a reference evidence dataset is
 obvious.
@@ -110,7 +113,7 @@ codes. But at the time of our annotation project, the
 clinical notes associated with the patient records
 had not been released.
 In this paper, we introduce MD ACE, the first
-publicly available code evidence dataset built on
+publicly available code evidence dataset1built on
 a subset of the MIMIC-III clinical records. The
 dataset contains evidence spans for diagnosis and
 procedure codes annotated by professional medical
@@ -188,7 +191,8 @@ MD ACE (Profee) 11,116 652 2 31.35 106.98
 EvidenceInference (Lehman et al., 2019) 4,200 1 3 4.19 4.19
 MovieReview (Zaidan et al., 2007a) 774 1 2 1 11.36
 FEVER (Thorne et al., 2018) 327 1 3 1 1.77
-e-SNLI (Camburu et al., 2018) 16 1 3 1 1 1  Comparison of a sampling of classification datasets that have evidence annotations (i.e. rationales) in terms
+e-SNLI (Camburu et al., 2018) 16 1 3 1 1
+Table 1  Comparison of a sampling of classification datasets that have evidence annotations (i.e. rationales) in terms
 of the average number of tokens per document, total number of unique labels / classes, average number of labels per
 document (i.e. for standard classification tasks this is 1, for multi-label settings this is  1), and average number of
 evidence annotations (i.e. highlights) per document. Our new MD ACE dataset consists of two parts  Inpatient (IP)
@@ -313,7 +317,7 @@ through the clinical notes, highlight text spans and
 assign labels (billing codes) to the spans. The annotation
  guideline is illustrated in Appendix E.
 We selected charts from Mullenbach et al.
-(2018) s testset to be annotated by our special GEMs
+(2018) s testset to be annotated by our special2GEMs
  are a comprehensive translation dictionary developed
  by multiple health organizations in the U.S. to effectively
 translate between the ICD-9 and ICD-10 codes.ists. Batches of 50 charts were chosen at random.
@@ -368,18 +372,22 @@ MD ACE, including the number of annotated charts,Inpatient Profee
 Number of Annotations 384 1,282
 Agreement on Initial Annotations
 Krippendorf s α 0.53 0 .24
-Fleiss  κ 0.53 0 .24 0.65 0 .38
+Fleiss  κ 0.53 0 .24
+Hooper s Measure 0.65 0 .38
 Agreement after Review
 Krippendorf s α 0.97 0 .96
-Fleiss  κ 0.97 0 .96 2  Inter-annotator agreement measures on initial
+Fleiss  κ 0.97 0 .96
+Table 2  Inter-annotator agreement measures on initial
 and reviewed annotations
 Annotated Inpatient Profee
-Encounters 302 52 604 588
-ICD-9 918 652
-ICD-10 1,024 734
+Encounters 302 52
+Documents 604 588
+ICD-9 Codes 918 652
+ICD-10 Codes 1,024 734
 Evidence for ICD-9 3,934 5,563
 Evidence for ICD-10 3,936 5,563
-Average evidence length (tokens) 2.18 1.96 3  Summary of MD ACE (Profee code and evidence
+Average evidence length (tokens) 2.18 1.96
+Table 3  Summary of MD ACE (Profee code and evidence
  counts include CPT codes)
 documents, unique codes, and evidence spans (Table
  3). Since annotating complete evidence is
@@ -395,7 +403,8 @@ tables show that although discharge summaries capture
 Inpatient, they are insufficient for Profee coding.
 Other notes, such as Physician and Radiology notes,
 should also be used.
-Table 5 3. There is less than 50%
+Table 5 shows the overlap between the MIMIC
+codes and MD ACE codes3. There is less than 50%
 code overlap, indicating that a high percentage of
 MIMIC codes are missing from our annotations.
 There are two possible explanations for this  firstly,
@@ -409,15 +418,29 @@ standards from the MIMIC coders. However, verifying
  such a claim without information about the
 MIMIC coding process is impossible. It should be
 3We ignored CPT codes for Evaluation and Management
-(E&M), which are in the range of 99201 99499 as they
+(E&M), which are in the range of 99201 and 99499 as they
 require a decision making calculator to arrive at the correct
 CPT codes rather than simply depending on the clinical text.Note Category Evidence Percentage
-Discharge Summary 3,434 87.3 364 9.3 60 1.5 28 0.7 19 0.5 2,082 37.4 1,584 28.5 1,269 22.8 256 4.6 207 3.7 66 1.2 4  Distribution of evidence spans in Inpatient and
+Discharge Summary 3,434 87.3
+Physician 364 9.3
+IP Radiology 60 1.5
+General 28 0.7
+Nutrition 19 0.5
+Physician 2,082 37.4
+Discharge Summary 1,584 28.5
+PF Radiology 1,269 22.8
+ECG 256 4.6
+Echo 207 3.7
+Rehab Services 66 1.2
+Table 4  Distribution of evidence spans in Inpatient and
 Profee notes (cutoff at 10)
 Codes Inpatient Profee
-MIMIC 5,250 694 3,414 1,630 2,370 (45.1%) 306 (44.1%)
+MIMIC 5,250 694
+MD ACE 3,414 1,630
+Agreed 2,370 (45.1%) 306 (44.1%)
 Missed 2,880 (54.9%) 388 (55.9%)
-Added (average) 3.457 25.462 5  Comparison of MIMIC-III and MD ACE codes
+Added (average) 3.457 25.462
+Table 5  Comparison of MIMIC-III and MD ACE codes
 noted that a similar observation of low agreement
 with MIMIC coders based on 508 re-annotated discharge
  summaries was also reported in (Kim and
@@ -446,7 +469,8 @@ EffectiveCAN (Liu et al., 2021) is a convolutionbased
  performance on ICD-9 code prediction
 on MIMIC-III. It encodes the input text through
 multiple layers of residual squeeze-and-excitation
-(Res-SE) convolutional block to generate informa-ICD-10 to ICD-9 2,525 (64.2%) 1,606 (28.9%)
+(Res-SE) convolutional block to generate informa-ICD-10 to ICD-9 Inpatient Profee
+Coder Verified 2,525 (64.2%) 1,606 (28.9%)
 Identical match 417 (10.6%) 1,387 (24.9%)
 Approximate match 687 (17.5%) 1,847 (33.2%)
 Multiple match 244 (6.2%) 704 (12.6%)
@@ -522,14 +546,14 @@ a CNN layer as another method for evidence extraction.
 of the two linear projection layers of the last ResSE
  block, the normalized attention scores, and the
 code embeddings, u. The inputs are then fed into
-a 1-D convolutional layer ( conv D ) with a kernel
+a 1-D convolutional layer ( conv1D ) with a kernel
 size of 9 and out-channel size of 10, followed by
 layer normalization, ReLU activation, and finally
 a linear layer ( f4) to project the output back to the
 original dimension (see Fig. 2 (b)).
 x f1(hl 4)  f2(ascaled)  f3(u) (4)
 ˆyevd σ 
-f4(conv D (x)) 
+f4(conv1D (x)) 
 (5)
 The output logits from the final layer are used for
 evidence prediction, with the same BCE loss as the
@@ -540,7 +564,14 @@ evaluating the evidence extraction methods introduced
  in Section 5, using the token- and span-level
 metrics in Section 6.2.Figure 1  The architecture of EffectiveCAN with supervised attention.
 Figure 2  (a) Linear, and (b) CNN token-level evidence tagging models.
-Train Set Code-F1 Token-F1 0 58 .3 32 .0 30 (12 .5%) 58 .1 32 .3 60 (25%) 57 .7 32 .8 121 (50%) 58 .2 33 .2 181 (75%) 58 .1 36 .2 242 (100%) 58 .1 36 .8 7  Supervised attention training performance on
+Train Set Code-F1 Token-F1
+0 58 .3 32 .0
+30 (12 .5%) 58 .1 32 .3
+60 (25%) 57 .7 32 .8
+121 (50%) 58 .2 33 .2
+181 (75%) 58 .1 36 .2
+242 (100%) 58 .1 36 .8
+Table 7  Supervised attention training performance on
 dev set for evidence training datasets of different sizes.
 6.1 Data Splits
 Rather than simply making random train/dev/test
@@ -555,10 +586,13 @@ Next, we used different portions of the remaining
 Code (c) c.train c.dev c.test
 47,719 1,631 3,372
 Evidence (ev) ev.train ev.dev ev.test
-Inpatient 181 60 61 31 10 11
+Inpatient 181 60 61
+Profee 31 10 11
 Code Evidence c.train c.dev c.test - ev.dev
   ev.train   ev.dev - ev.train
-Inpatient 47,900 1,691 3,131 47,750 1,641 3,331 8  Our new Code Evidence data splits based on
+Inpatient 47,900 1,691 3,131
+Profee 47,750 1,641 3,331
+Table 8  Our new Code Evidence data splits based on
 the splits of Mullenbach et al. (2018) for code prediction
 and our evidence dataset splits.
 the EffectiveCAN model as shown in Table 7. As
@@ -568,19 +602,29 @@ be used to create a more representative test set.
 We decided to use the 75% split point since the
 evidence training showed only slight improvement
 with more data. Hence, the created evidence dataModel ThresholdToken Match Position Independent Token Match
-Precision Recall F1 1
+Precision Recall F1 Precision Recall F1
 CAML
 Unsup. Attention 0.05 0.1 17.8 11.3 27 .5 11.8 21 .4 12.0 26.6 18.6 32 .2 11.1 28 .5 15.4
 EffectiveCAN
 Unsup. Attention 0.07 0.01 40.1 2.3 33 .2 0.6 36 .2 0.6 66.5 3.8 37 .2 0.4 47 .7 0.8
-Sup. Attention 0.05 0.01 40.5 3.0 46 .3 4.1 43 .0 0.2 65.3 4.4 50 .7 3.9 56 .8 0.7 0.23 0.06 45 .6 1.2 36.3 0.8 40 .4 0.1 68 .8 1.8 43.4 0.4 53 .3 0.8 0.32 0.08 35.5 0.4 51 .1 1.4 41.9 0.7 52.0 0.3 59 .8 2.0 55.6 1.0 1 1
+Sup. Attention 0.05 0.01 40.5 3.0 46 .3 4.1 43 .0 0.2 65.3 4.4 50 .7 3.9 56 .8 0.7
+Linear Tagging 0.23 0.06 45 .6 1.2 36.3 0.8 40 .4 0.1 68 .8 1.8 43.4 0.4 53 .3 0.8
+CNN Tagging 0.32 0.08 35.5 0.4 51 .1 1.4 41.9 0.7 52.0 0.3 59 .8 2.0 55.6 1.0
+ModelExact Span Match Position Independent Exact Span Match
+Precision Recall F1 Precision Recall F1
 CAML
 Unsup. Attention 4.9 8.2 13 .0 21.2 7 .1 11.8 7.7 12.7 14 .5 23.3 10 .1 16.5
 EffectiveCAN
 Unsup. Attention 19.8 1.6 35 .1 0.2 25 .3 1.3 32.2 2.3 38 .1 0.1 34 .9 1.4
-Sup. Attention 20.4 1.3 44.0 3.2 27 .8 0.6 33.2 2.5 48.0 2.6 39 .2 1.0 22.7 1.0 34.5 0.2 27 .3 0.7 34.3 1.6 41.4 0.8 37 .5 1.2 20.0 0.5 37 .9 1.7 26 .2 0.8 29.3 1.2 46 .3 2.2 35 .9 1.3 9  Evaluation results of evidence extraction methods on the IP discharge summary test set of MD ACE.
+Sup. Attention 20.4 1.3 44.0 3.2 27 .8 0.6 33.2 2.5 48.0 2.6 39 .2 1.0
+Linear Tagging 22.7 1.0 34.5 0.2 27 .3 0.7 34.3 1.6 41.4 0.8 37 .5 1.2
+CNN Tagging 20.0 0.5 37 .9 1.7 26 .2 0.8 29.3 1.2 46 .3 2.2 35 .9 1.3
+Table 9  Evaluation results of evidence extraction methods on the IP discharge summary test set of MD ACE.
 Dataset ThresholdToken Match Exact Span Match P.I. Token Match P.I. Exact Span Match
-P R F1 1 1 1 0.06 37.4 37.1 37.2 18.0 38.1 24.5 69.4 42.2 52.5 34.0 42.5 37.8 0.02 32.6 39.4 36.5 21.9 39.3 28.1 41.0 41.9 41.4 21.1 40.4 27.7 10  Evaluation results of the supervised attention model on the code-able notes test set of MD ACE.
+P R F1 P R F1 P R F1 P R F1
+Inpatient 0.06 37.4 37.1 37.2 18.0 38.1 24.5 69.4 42.2 52.5 34.0 42.5 37.8
+Profee 0.02 32.6 39.4 36.5 21.9 39.3 28.1 41.0 41.9 41.4 21.1 40.4 27.7
+Table 10  Evaluation results of the supervised attention model on the code-able notes test set of MD ACE.
 splits are 60%/20%/20% for train/dev/test. The
 new data splits for code and evidence are given in
 Table 84. We adopted the train/dev splits (c.train
@@ -607,7 +651,7 @@ the precision, recall, and micro-F1 score on four
 main metrics  Token match, Exact span match, Position
  independent (P.I.) token match, and P.I. exact
 span match. The token match metrics are used to
-measure the predicted evidence label of each to Four
+measure the predicted evidence label of each to4Four
  records in the code training set were removed because
  they do not contain any billing codes.ken in a document compared to its ground truth
 label. The span metrics measure the whole evidence
@@ -629,7 +673,10 @@ We use the model s precision-recall curve on the
 dev set to determine a threshold that maximizes the
 token match micro-F1 score, and use this threshold
 for evaluation on the test set.
-6.3 9, obtained by comparing
+6.3 Results
+The evaluation results of the various evidence extraction
+ methods on the discharge summaries of
+MD ACE are shown in Table 9, obtained by comparing
  to the ground-truth evidence, irrespective
 of whether or not the code was predicted. The results
  for each method/model are from the average
@@ -643,8 +690,8 @@ size of the training data.
 We provide the performance of CAML s
 attention-based explanation (Mullenbach et al.,
 2018) for comparison. It should be noted that the
-best micro-F1 0.523, lower than the
-F1 0.539as reported in the paper. Additionally,
+best micro-F1 we obtained is 0.523, lower than the
+F1 value of 0.539as reported in the paper. Additionally,
  one of the three trained CAML models
 with different seeds yielded significantly higher
 evidence performance. As a result, the standard
@@ -656,7 +703,7 @@ other code-able notes including physician and radiology
  notes to the input (Table 10). For training the
 model on Inpatient and Profee datasets, the maximum
  length for truncating text was increased from
-3,500 5,000. Table 10 shows the performance
+3,500to5,000. Table 10 shows the performance
 of Inpatient vs. Profee coding. The position sensitive
  exact span metrics on Profee are significantly
 higher than those of Inpatient, likely the result of
@@ -684,7 +731,7 @@ was better at extracting short, i.e., single token,
 evidence (e.g., "hypotension" and "asthma") than
 evidence with multiple tokens (e.g., "peptic ulcer
  disease"). Using the Exact span match metric,
- the SA model predicted 30 (90.9%) of the 33 3 (17.6%) of the
+ the SA model predicted 30 (90.9%) of the 33short evidence correctly but only 3 (17.6%) of the
 17 multi-token evidence correctly. Although the
 model couldn t extract the exact multi-token spans,
 it often identified partial evidence. For example,
@@ -884,7 +931,8 @@ Thomas Searle, Zina Ibrahim, and Richard Dobson.
 2020. Experimental evaluation and development of
 a silver-standard for the MIMIC-III clinical coding
 dataset. In Proceedings of the 19th SIGBioMed Workshop
- on Biomedical Language Processing , pages 76 85, Online. Association for Computational Linguistics.Elad
+ on Biomedical Language Processing , pages 76 
+85, Online. Association for Computational Linguistics.Elad
  Segal, Avia Efrat, Mor Shoham, Amir Globerson,
  and Jonathan Berant. 2020. A simple and effective
  model for answering multi-span questions. In
@@ -934,7 +982,8 @@ InProceedings of the 28th ACM International Conference
 Mo Yu, Yang Zhang, Shiyu Chang, and Tommi Jaakkola.
 2021. Understanding interlocking dynamics of cooperative
  rationalization. In Advances in Neural Information
- Processing Systems , volume 34, pages 12822 12835. Curran Associates, Inc.
+ Processing Systems , volume 34, pages 12822 
+12835. Curran Associates, Inc.
 Zheng Yuan, Chuanqi Tan, and Songfang Huang. 2022.
 Code synonyms do matter  Multiple synonyms
 matching network for automatic ICD coding. In
@@ -997,12 +1046,15 @@ coding uses CM and current procedural terminology
  (CPT) codes when assigning codes.
 B Code Mapping Procedure
 Procedure for backward mapping from ICD-10 to
-ICD-9 1.Use the identical match or single approximate
-match from an ICD-10 to ICD-9 2.When more than one mapping exists, choose
+ICD-9 
+1.Use the identical match or single approximate
+match from an ICD-10 to ICD-9 code 
+2.When more than one mapping exists, choose
 the ICD-9 code that is in the MIMIC-III code
 set. If none of the mapped codes is in MIMIC,
 choose the code with the description that overlaps
- the most with that of the ICD-10 3.When no mapping exists, use the mapped ICD9
+ the most with that of the ICD-10 code 
+3.When no mapping exists, use the mapped ICD9
  code of the parent ICD-10 code.This process allows all annotated ICD-10 codes
 to be mapped except for two in our dataset.
 C Examples of Initial Disagreement
@@ -1025,28 +1077,34 @@ and should be treated as agreements.
 For Profee coding, the initial disagreement was
 also due to the lack of experience of one coder.
 An example is that one coder assigned the code
-S04.40 6 49.20 for the same diagnosis
+S04.40XA for  traumatic 6th nerve palsy  documented
+ in the Discharge Summary whereas the
+other assigned the code H49.20 for the same diagnosis
  which is incorrect. The disagreement was
 resolved after discussion and it was agreed that
 S04.40XA was the correct code.
 D Model Parameters
-For results given in Table 7, λ1 0.5 1 without any
+For results given in Table 7, λ1  0.5was used
+as the hyperparameter in Equation 1 without any
 hyperparameter tuning. The λvalues in the loss
-Equations 1 3 1
+Equations 1 and 3 were tuned such that the microF1
  value for the code prediction task would remain
-close to the baseline value. For SA, 2.5 5.0
-were considered for the λcoefficient, and λ1 2.5yielded code micro-F1 0.585, close to the
+close to the baseline value. For SA, 2.5and5.0
+were considered for the λcoefficient, and λ1 
+2.5yielded code micro-F1 of 0.585, close to the
 baseline value of 0.584. For the tagging models,
-three values, 0.5,1.0 2.0, were considered,
-andλ2 0.5yielded code micro-F1 0.583,
+three values, 0.5,1.0and2.0, were considered,
+andλ2  0.5yielded code micro-F1 of 0.583,
 close to the baseline performance for CNN tagging.
 These values were used for the reported results.
-For evidence prediction threshold, steps of 0.02 0.05 were used to generate the precision-recall
+For evidence prediction threshold, steps of 0.02
+and 0.05 were used to generate the precision-recall
 curve for the attention-based and tagging methods
 respectively, and the threshold values are reported
-in Tables 9 10.
+in Tables 9 and 10.
 The EffectiveCAN based models have about 17
-million parameters, and each took about six hoursto train on a single NVIDIA Tesla V100 16 2 680g.
+million parameters, and each took about six hoursto train on a single NVIDIA Tesla V100 16GB
+GPU with CO 2emission of about 680g.
 E Annotation Guidelines
 The task is to annotate MIMIC charts with sufficient
  code evidence based on the documentations
@@ -1093,7 +1151,9 @@ the phrase to annotate.
 3.Open the Preferences popup, and set the following
  (Done once for a project) 
   Editor  brat (line-oriented)
-  Sidebar right  30 1000 4.In a document, double click on a word or highlight
+  Sidebar right  30
+  Page size  1000
+4.In a document, double click on a word or highlight
  a text span, and then select a label from
 the right panel. You can also start typing in the
 label box and the matching labels will show
@@ -1117,11 +1177,17 @@ Examples of predicted evidence, using unsupervised
 Code Human Annotation Unsupervised Attention Supervised Attention Code description
 36.15 left internal mammary artery to  mammary   left internal mammary  Single internal mammary-coronary
 left anterior descending artery   left anterior descending  artery bypass
-427.31 2 2 424.1 aortic stenosis   Sj   Sj  Aortic valve disorders
+427.31 Atrial fibrillation   Atrial   2  Atrial fibrillation   2 Atrial fibrillation
+ atrial 
+424.1 aortic stenosis   Sj   Sj  Aortic valve disorders
  Aortic (aortic  2) 
-441.2 428.0 2 2 Congestive heart failure, unspecified
-790.92 3 584.9 Acute Renal Failure   Renal   Acute Renal Failure  Acute kidney failure, unspecified
+441.2 thoracic aortic aneurysm   thoracic   thoracic  Thoracic aneurysm without mention
+ aneurysm  of rupture
+428.0  Congestive heart failure   Congestive   2  Congestive heart failure   2 Congestive heart failure, unspecified
+790.92 Supratherapeutic INR   INR   3  INR  Abnormal coagulation profile
+ Supratherapeutic INR 
+584.9 Acute Renal Failure   Renal   Acute Renal Failure  Acute kidney failure, unspecified
  creatinine   renal failure 
  renal 
-585.9 2 2 Chronic kidney disease, unspecified
+585.9  Chronic renal insufficiency   renal   2  renal insufficiency   2 Chronic kidney disease, unspecified
 Table 11  Examples of generated evidence

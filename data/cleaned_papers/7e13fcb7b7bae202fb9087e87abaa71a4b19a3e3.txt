@@ -1,5 +1,7 @@
 CONVOIFILTER  A CASE STUDY OF DOING COCKTAIL PARTY SPEECH RECOGNITION
-Thai-Binh Nguyen1, Alexander Waibel1,2 1 2Carnegie Mellon University
+Thai-Binh Nguyen1, Alexander Waibel1,2
+1Karlsruhe Institute of Technology
+2Carnegie Mellon University
 thai-binh.nguyen@kit.edu
 ABSTRACT
 This paper presents an end-to-end model designed to improve
@@ -60,7 +62,7 @@ that makes optimizing and choosing the best model more
 precise. (3) Different from [4, 5], we focus on improving
 WER like [6, 7] but joint tuning ASR and speaker extraction
 model rather than optimizing the loss function. (4) We make
-a pre-trained self-supervised model based on wav vec2 [10]
+a pre-trained self-supervised model based on wav2vec2 [10]
 architecture that works better for the noise acoustic condition.
 (5) For the mask estimation model, we use Conformer block
 [11] rather than LSTM and CNN in [6, 7]. Furthermore, we
@@ -86,7 +88,7 @@ noisy audio ( enoisy Rdemb). Afterwards, we concatenate
 the two embeddings (from the reference utterance and the
 noisy audio) and feed them through a feed-forward network
 to produce the final presentation for the target speaker ( e 
-FFN (eref, enoisy) Rdemb). Without cross-extraction,arXiv 2308.11380 2  [cs.SD]  8 2024Speaker encoderTarget speaker sreference utterance Noisy audioOutput audioMagnitudePhaseSTFTFFNFFN
+FFN (eref, enoisy) Rdemb). Without cross-extraction,arXiv 2308.11380v2  [cs.SD]  8 Jan 2024Speaker encoderTarget speaker sreference utterance Noisy audioOutput audioMagnitudePhaseSTFTFFNFFN
 SI-SNRLoss  *ConformerBlocks
 iSTFT
 ReLUx N
@@ -124,7 +126,8 @@ attenuate the amplitude of certain frequencies in the spectrogram,
  and therefore, it must be greater than or equal to zero.
 The ReLU function is applied to the output of the conformer
 block ( M ReLU (yN)).
- xi xi 1 2FFN( xi)
+ xi xi 1
+2FFN( xi)
 x 
 i   xi  MHSA(   xi)
 x  
@@ -132,7 +135,8 @@ i x
 i  Conv( x 
 i)
 yi  Layernorm( x  
-i 1 2FFN( x  
+i 1
+2FFN( x  
 i))(1)
 Finally, the estimated mask Mis multiplied element-wise
 with the magnitude spectrogram Fto obtain an enhancedmagnitude spectrogram. Phase information Pis combined
@@ -145,13 +149,13 @@ Self-supervised learning of speech representations [13] has
 recently shown its effectiveness in utilizing unlabeled speech
 data, resulting in outperforming the state-of-the-art (SoTA)
 in many automatic speech recognition (ASR) datasets. For
-our study, we utilized the pre-trained wav vec2 model [10]
-to construct our ASR model. The wav vec2 model acts as a
+our study, we utilized the pre-trained wav2vec2 model [10]
+to construct our ASR model. The wav2vec2 model acts as a
 speech encoder, and for the decoder, we used an RNN transducer
  [14]. Despite having a speech enhancement module to
 eliminate noise from the audio, the output may still contain
 noise. To address this issue, we utilized the self-supervised
-learning capabilities of wav vec2 and created a pre-trained
+learning capabilities of wav2vec2 and created a pre-trained
 model by incorporating noise and room reverb into the unlabeled
  data (see section 3.1 for dataset details). Our subsequent
  experiment demonstrated that this approach significantly
@@ -164,9 +168,9 @@ directly connect the enhancing module to the ASR module
 and optimize their total loss. However, there are two reasons
 why it does not work. Firstly, the enhancement works in a
 high resolution of the input (e.g., an audio 15s, rate of 16kHz,
-STFT has hop size of 128 2000 timeframes).
+STFT has hop size of 128 will output around 2000 timeframes).
  It makes the mask estimation module hard to work.
-Whereas with the wav vec model, the same audio will output
+Whereas with the wav2vec model, the same audio will output
 about 700 time-frames. Secondly, ConV oiFilter quickly fails
 the ASR module at the beginning of optimization because its
 output is too noisy.
@@ -177,13 +181,15 @@ module. Audio input is padded into integer times the chunk s
 size to ensure all chunks are the same after splitting.
 1def forward(noisy_audio, spk_embed,
 2 clean_audio, label) 
-3chunk_size   5 #5 4noisy_chunks   split(noisy_audio, chunk_size)
+3chunk_size   5 #5s each chunk
+4noisy_chunks   split(noisy_audio, chunk_size)
 5output_chunks   enhance(noisy_chunks, spk_embed)
 6output_audio   merge(output_chunks)
 7enh_loss   si_snr(output_audio, clean_audio)
 8if snr_loss   threshold  #enhancing is well
 9 output_text   asr(output_audio)
-10 11 output_text   asr(clean_audio)
+10 else 
+11 output_text   asr(clean_audio)
 12 asr_loss   transducer_loss(output_text, label)
 13 loss   enh_loss   asr_loss
 14 return loss
@@ -215,22 +221,24 @@ is cumulative of a few utterances and ambient noise. An utterance
  can be convolved with a room impulse response. We
 use random variables in the generating process to make the
 dataset more diverse. The number of other speakers  utterances
- is random, from 0 3. Ambient noise is added in 80%number of times. The room impulse response is applied 30%
+ is random, from 0 to 3. Ambient noise is added in 80%number of times. The room impulse response is applied 30%
 number of times. All other speaker s utterances and ambient
  sound is normalized (based on the target speaker s clean
-utterance) with SNR value around 1 20dB.
-Both training processes (self-supervised wav vec2 and
+utterance) with SNR value around 1 to 20dB.
+Both training processes (self-supervised wav2vec2 and
 ConV oiFilter model) use this data pipeline. One difference
-is that when we train self-supervised wav vec2, we do not
+is that when we train self-supervised wav2vec2, we do not
 use other speakers  utterances (the dashed arrow in figure 2 means
  no cross-talk) because it makes the data too noisy and
-can fail the wav vec2 model.
+can fail the wav2vec2 model.
 3.2. Model setup
-In our experiment, the ConV oiFilter model has 4 1024, STFT has nfft  512 ,
+In our experiment, the ConV oiFilter model has 4 layer conformers
+ with a hidden size is 1024, STFT has nfft  512 ,
 hope size is 128, speaker embedding is x-vector[8] model has
 demb   512 . A speaker s embedding is calculated from
 multiple utterances of that speaker. For the ASR model, we
-use the wav vec2-base architecture with 12 768.
+use the wav2vec2-base architecture with 12 hidden layers  the
+hidden size is 768.
 3.3. Evaluation
 Our system was evaluated using five different types of data.
 The first is the  Clean Audio  which consists of the original
@@ -249,10 +257,10 @@ We evaluated our system using four different model settings
 The first two settings consisted of ASR models only, which
 aimed to measure the ASR model s ability to handle noisy
 data. The first ASR model, named ASR based, was initialized
- from the pre-trained wav vec2 base model [10], which
+ from the pre-trained wav2vec2 base model [10], which
 was trained with 960 hours of Librispeech data. The second
 ASR model, ASR noisy, was initialized from our pre-trained
-wav vec2 base model, which was trained with the same 960
+wav2vec2 base model, which was trained with the same 960
 hours of data, but augmented with noise and reverb data. The
 remaining two settings incorporated a speech enhancement
 module. The third was a cascade model, in which ConV oiFilter
@@ -268,24 +276,28 @@ is presented in Table 1. Generally, the end-to-end models perform
  better than other models across most input sets, except
 for clean audio. In cases with cross-talk, the ConV oiFilterModel setting Clean Audio No cross-talkCross-talkNoisy Audio
 Ambient noise Reverberation
-ASR based 2.22 16.21 50.72 90.87 80.04 2.03 12.12 45.12 84.14 75.19 3.51 11.59 20.24 30.30 26.40
-End-to-end ConV oiFilter-ASR noisy 3.36 9.41 13.23 25.14 14.51 1 . %WERs for different types of model settings. The ConV oiFilter model uses x-vector as speaker encoder
+ASR based 2.22 16.21 50.72 90.87 80.04
+ASR noisy 2.03 12.12 45.12 84.14 75.19
+Cascade ConV oiFilter   ASR noisy 3.51 11.59 20.24 30.30 26.40
+End-to-end ConV oiFilter-ASR noisy 3.36 9.41 13.23 25.14 14.51
+Table 1 . %WERs for different types of model settings. The ConV oiFilter model uses x-vector as speaker encoder
 SystemOverlap ratio in %
-0 0 10 20 30 40
+0S 0L 10 20 30 40
 Baseline [21] 8.4 8.3 11.6 15.8 18.7 21.7
 Whisper-large 3.64 3.4 8.86 15.64 23.55 32.73
 ConV oiFilter  
-Whipser-large5.35 5.59 7.32 13.28 14.46 16.83 2 . %WERs for LibriCSS utterance-wise evaluation
+Whipser-large5.35 5.59 7.32 13.28 14.46 16.83
+Table 2 . %WERs for LibriCSS utterance-wise evaluation
 model demonstrates its effectiveness by using speaker embedding
  to extract the target speaker s voice, resulting in
 cleaner audio and a significant improvement in WER (the
-result in the cross-talk column, rows 2 4). The  Noisy
+result in the cross-talk column, rows 2 and 4). The  Noisy
 Audio  column displays the overall model performance, with
 only the ASR model achieving the best WER at 75.19%
 (ASR noisy). When combined with ConV oiFilter model, the
 WER can be significantly reduced to 26.40%. The end-toend
  model can further improve the performance, achieving
-a WER of 14.51%. Additionally, our pre-trained wav vec2
+a WER of 14.51%. Additionally, our pre-trained wav2vec2
 model (with noisy audio) proves its worth, with ASR noisy
 outperforming ASR based in all input sets.
 Table 2 presents the WER for the LibriCSS[21] dataset,
@@ -314,16 +326,18 @@ resulting from each change we made. Firstly, replacing biLSTM
  better optimization signals than the spectrogram-based
 MSE loss. Thirdly, although the x-vector and i-vector were
 trained with the same dataset, our experiment showed that theMethod SI-SNR SDR
-No Enhancement 1.04 1.14 13.97 15.14
+No Enhancement 1.04 1.14
+ConV oiFilter 13.97 15.14
 x-vector  i-vector 10.02 11.14
 Conformer  bi-LSTM 8.12 9.58
-SI-SNR loss  MSE loss 9.11 10.81 3 . Ablation study over each change in the ConV oiFilter
+SI-SNR loss  MSE loss 9.11 10.81
+Table 3 . Ablation study over each change in the ConV oiFilter
 model. Source to distortion ratio (SDR) and Scale invariant
 signal to noise ratio (SI-SNR) in dB.
 x-vector provided better results than the i-vector.
 Figure 3 illustrates the effectiveness of cross-extraction
 of speaker embedding. In this example, the input is a mixture
- of two people (labeled as per 1 2) and ambient
+ of two people (labeled as per 1 and per 2) and ambient
  noise. When we use the speaker embedding from per 1,
 both the model with and without cross-extraction can extract
 the target speaker as per 1. However, if the speaker embedding
@@ -387,7 +401,7 @@ speech separation,  2018 IEEE International Conference
  on Acoustics, Speech and Signal Processing
 (ICASSP) , pp. 696 700, 2018.
 [10] Alexei Baevski, Yuhao Zhou, Abdelrahman Mohamed,
-and Michael Auli,  wav vec 2.0  A framework for
+and Michael Auli,  wav2vec 2.0  A framework for
 self-supervised learning of speech representations,  in
 NeurIPS 2020 , 2020.
 [11] Anmol Gulati, James Qin, Chung-Cheng Chiu, Niki
@@ -420,7 +434,7 @@ on public domain audio books,  in 2015 IEEE International
 Processing (ICASSP) , 2015, pp. 5206 5210.
 [17] David Snyder, Guoguo Chen, and Daniel Povey,  MUSAN 
  A Music, Speech, and Noise Corpus,  2015,
-arXiv 1510.08484 1.
+arXiv 1510.08484v1.
 [18] Gordon Wichern, Joe Antognini, Michael Flynn,
 Licheng Richard Zhu, Emmett McQuinn, Dwight Crow,
 Ethan Manilow, and Jonathan Le Roux,  Wham  

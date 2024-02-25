@@ -80,7 +80,7 @@ on what is different about a task provides strong
 representation for continued pretraining. We provide
  intuitions to explain the strong performance
 ofDIFFERENCE -MASKING , along with extensive
-1 2305.14577 2  [cs.LG]  17 2023Density describes the relationship between the mass and volume of a substance.Choose whether to mask w based on similarity with anchors   Difference-Masking for Continued Pretraining
+1arXiv 2305.14577v2  [cs.LG]  17 Oct 2023Density describes the relationship between the mass and volume of a substance.Choose whether to mask w based on similarity with anchors   Difference-Masking for Continued Pretraining
 Multimodal VideoDensity describes the relationship between the mass and volume of a substance.Language
 Multimodal Video
 bodytrash bagfaceLanguageWhich words w should be masked 
@@ -313,7 +313,8 @@ from (Dery et al., 2023  Gururangan et al., 2020).
 Multimodal Datasets We also experiment on
 continued pretraining for two challenging multimodal
  video understanding tasks. TVQA (Lei
-et al., 2018) is a dataset containing 21,792 6 American television shows and questions
+et al., 2018) is a dataset containing 21,792 videos
+from 6 American television shows and questions
 and answers related to the videos. Each question is
 paired with 5 answer choices (one correct answer
 and 4 incorrect answers), and corresponding video,
@@ -345,7 +346,8 @@ DGA (Ke et al., 2023) 67.20 0.27 70.67 0.30 - Selective
  Masking (Gu et al., 2020) 69.06 1.80 82.94 0.47 - EntityBERT
  (Lin et al., 2021) 71.09 0.25 82.04 0.40 - Salient
  Span (Cole et al., 2023) 71.94 0.58 82.41 0.21 - DIFFERENCE
- -MASKING 74.04 2.01 83.94 0.39 71.37 0.58 81.73 1.13 1  We find that DIFFERENCE -MASKING outperforms strong baselines in both the language and multimodal
+ -MASKING 74.04 2.01 83.94 0.39 71.37 0.58 81.73 1.13
+Table 1  We find that DIFFERENCE -MASKING outperforms strong baselines in both the language and multimodal
 experimental settings. We note that our entirely self-supervised method also outperforms Selective Masking, which
 uses labelled data to inform its masking strategy. Values are average results over five trials, subscripts are standard
 deviations.
@@ -402,15 +404,16 @@ to mask a single word in the sentence. To apply the
 approach to the ChemProt and ACL-ARC domains
 requires NER models effective in those domains.
 For ChemProt we used the BioBERT model (Lee
-et al., 2019) fine-tuned in NER task with BC CDRchemicals
- (Li et al., 2016) and the BC CHEMD
+et al., 2019) fine-tuned in NER task with BC5CDRchemicals
+ (Li et al., 2016) and the BC4CHEMD
 (Krallinger et al., 2015) corpus and for ACL-ARC
 we used the popular SciBERT model (Beltagy
 et al., 2019).
 4.3 Experimental Methodology
 Language-only We reproduce the experimental
 setting from AANG (Dery et al., 2023), which employs
- a pretrained 110 5two heads  one for continued pretraining and one
+ a pretrained 110M RoBERTa basemodel with
+5two heads  one for continued pretraining and one
 for the downstream task. Our hyperparameters and
 other detailed configuration notes are described in
 Appendix A.
@@ -432,7 +435,8 @@ A detailed description of our implementation of
 DIFFERENCE -MASKING in the multimodal setting
 can be found in Appendix B, and our hyperparameters
  can be found in Appendix A.
-5 5.1 Comparison with Baseline Approaches
+5 Results and Discussion
+5.1 Comparison with Baseline Approaches
 Our experiments compare our proposed
 DIFFERENCE -MASKING with established
 baselines including Random Masking (at the
@@ -574,7 +578,9 @@ AttnMask), the difference between the proportion
 of tokens masked from people by these approaches
 is also most pronounced (90% in DIFFERENCE MASKING
  vs 19% in AttnMask).
-75.3 3, DIFFERENCE -MASKING determines masking
+75.3 Sensitivity Analysis
+Similarity Function As described in Section
+ 3, DIFFERENCE -MASKING determines masking
  probabilities by comparing the anchor representations
  to the token representation. Because
 the token representation is a single vector and the
@@ -603,7 +609,8 @@ dataset such as ChemProt, but substantially differently
 We evaluate this alternative in Table 3.
 ACL-ARC ChemProt
 Centroid 69.02 83.66
-Nearest-Neighbor 74.04 83.94 3  Ablating DIFFERENCE -MASKING  s anchorscoring
+Nearest-Neighbor 74.04 83.94
+Table 3  Ablating DIFFERENCE -MASKING  s anchorscoring
  function based on nearest-neighbor and replacing
  it with one based on similarity with the anchor
  embeddings  centroids leads to performance degradation.
@@ -625,7 +632,8 @@ concepts that are not representative of the domain.
 We find that there is indeed a  sweet spot , and
 interestingly that it is the same for both datasets 
 20. These results are visualized in Figure 4.
-Figure 4 20 anchors. We hypothesize that each
+Figure 4  Performance on both tasks is best at the hyperparameter
+ K  20 anchors. We hypothesize that each
 task may have an optimal setting of this hyperparameter.
 6 Conclusion
 In this paper we introduce DIFFERENCE MASKING
@@ -642,7 +650,8 @@ method performs well on various tasks. The crosstask
 supports the effectiveness of our framework for
 SSL pretraining in language, vision, and other
 domains.
-7 3, DIFFERENCE MASKING
+7 Limitations
+As described in Section 3, DIFFERENCE MASKING
  is based on the intuition that it is
 more beneficial to mask based on what is unique
 (XT/PT ) about a downstream task s domain. However,
@@ -673,9 +682,9 @@ SSL in a resource-constrained context, both increase
 Acknowledgements
 This material is based upon work partially supported
  by National Science Foundation awards
-1722822 1750439, and National Institutes of
-Health awards R MH125740, R MH132225,
-R MH096951 130767. Any opinions,
+1722822 and 1750439, and National Institutes of
+Health awards R01MH125740, R01MH132225,
+R01MH096951 and R21MH130767. Any opinions,
  findings, conclusions, or recommendations
 expressed in this material are those of the author(s)
 and do not necessarily reflect the views of the
@@ -718,7 +727,8 @@ Jeremy R. Cole, Aditi Chaudhary, Bhuwan Dhingra,
 and Partha Talukdar. 2023. Salient span masking
 for temporal understanding. In Proceedings of the
 17th Conference of the European Chapter of the Association
- for Computational Linguistics , pages 3052 3060, Dubrovnik, Croatia. Association for Computational
+ for Computational Linguistics , pages 3052 
+3060, Dubrovnik, Croatia. Association for Computational
  Linguistics.
 Elisa De Stefani and Doriana De Marco. 2019. Language,
  gesture, and emotional communication  An
@@ -742,13 +752,14 @@ Kolesnikov, Dirk Weissenborn, Xiaohua Zhai,
 Thomas Unterthiner, Mostafa Dehghani, Matthias
 Minderer, Georg Heigold, Sylvain Gelly, Jakob
 Uszkoreit, and Neil Houlsby. 2021. An image
-is worth 16 16 words  Transformers for image
+is worth 16x16 words  Transformers for image
 recognition at scale. In International Conference on
 Learning Representations .
 Linus Ericsson, Henry Gouk, Chen Change Loy, and
 Timothy M Hospedales. 2022. Self-supervised representation
  learning  Introduction, advances, and challenges.
- IEEE Signal Processing Magazine , 39(3) 42 62.
+ IEEE Signal Processing Magazine , 39(3) 42 
+62.
 Yuxian Gu, Zhengyan Zhang, Xiaozhi Wang, Zhiyuan
 Liu, and Maosong Sun. 2020. Train no evil  Selective
 masking for task-guided pre-training. In Proceedings
@@ -873,7 +884,7 @@ Systems , 34 726 738.
 Alex Wilf, Martin Q. Ma, Paul Pu Liang, Amir Zadeh,
 and Louis-Philippe Morency. 2023. Face-to-face
 contrastive learning for social intelligence questionanswering.
- In 2023 17th International Conference
+ In 2023 IEEE 17th International Conference
  on Automatic Face and Gesture Recognition
 (FG) , pages 1 7.
 Zhilin Yang, Zihang Dai, Yiming Yang, Jaime Carbonell,
@@ -913,7 +924,9 @@ tokens with random values.
 CPT FTHyperparametersLanguage Multimodal Language Multimodal
 learning_rate 0.0001 0.000005 1.00E-06 5.00E-06
 num_train_epochs 150 20 10 20
-eval_every_n_epochs 30 1 1 1 20 5 3 5 4  List of hyperparameters used in both continuous
+eval_every_n_epochs 30 1 1 1
+patience 20 5 3 5
+Table 4  List of hyperparameters used in both continuous
  pretraining (CPT) and finetuning (FT).
 We reproduce MERLOT-Reserve s original training
  on TVQA  we decompose samples in SocialIQ
@@ -926,7 +939,7 @@ with loss that encourages the model to minimize
 estimated likelihood of incorrect answers and maximize
  likelihood of correct answers.
 From video frames, we mask image patches
-into 16 16 patches as determined by MERLOTReserve s
+into 16x16 patches as determined by MERLOTReserve s
  backbone image transformer ViT (Dosovitskiy
  et al., 2021). The language experiments
 took nine hours of runtime each on a single 12GB
@@ -957,7 +970,8 @@ Table 5.
 Masking Strategy TVQA Social-IQ
 Random Masking 73.75 69.05
 DIFFERENCE -MASKING (Face) 81.51 69.13
-DIFFERENCE -MASKING (Body) 81.73 71.37 5  Results of DIFFERENCE -MASKING on multimodal
+DIFFERENCE -MASKING (Body) 81.73 71.37
+Table 5  Results of DIFFERENCE -MASKING on multimodal
  video understanding benchmarks TVQA and
 Social IQ. DIFFERENCE -MASKING leads to an improvement
  of 8% and 2% accuracy over random accuracy.
@@ -977,7 +991,8 @@ robust enough for video datasets which led to masking
  person .
 TVQA Social-IQ
 CLIP (Radford et al., 2021) 73.58 68.75
-DIFFERENCE -MASKING 81.73 71.37 6  We validate our hypothesis that masking
+DIFFERENCE -MASKING 81.73 71.37
+Table 6  We validate our hypothesis that masking
 patches using DIFFERENCE -MASKING is more effective
  than masking using CLIP similarity.
 C Masking Language Tokens
@@ -1002,7 +1017,9 @@ Empirically, we find that this decision improved
 performance substantially, as shown in the results
 in Table 7 below.
 ACL-ARC ChemProt
-Token 0.6501 0.8224 0.7404 0.8394 7  We validate our hypothesis that masking tokens
+Token 0.6501 0.8224
+Word 0.7404 0.8394
+Table 7  We validate our hypothesis that masking tokens
 using DIFFERENCE -MASKING at the word-level is more
 effective than masking at the token-level.
 13

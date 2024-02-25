@@ -1,8 +1,12 @@
-Proceedings of the 61 1  Long Papers , pages 12933 12950 9-14, 2023 2023 Association for Computational Linguistics
+Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics
+Volume 1  Long Papers , pages 12933 12950
+July 9-14, 2023  2023 Association for Computational Linguistics
 Model-Generated Pretraining Signals Improves
 Zero-Shot Generalization of Text-to-Text Transformers
 Linyuan Gong1 , Chenyan Xiong2, Xiaodong Liu2, Payal Bajaj2,
-Yiqing Xie3 , Alvin Cheung1, Jianfeng Gao and Xia Song2 1UC Berkeley,2Microsoft,3 1{gly,akcheung}@berkeley.edu
+Yiqing Xie3 , Alvin Cheung1, Jianfeng Gao2and Xia Song2
+1UC Berkeley,2Microsoft,3Carnegie Mellon University
+1{gly,akcheung}@berkeley.edu
 2{chenyan.xiong,xiaodl,payal.bajaj,jfgao,xiaso}@microsoft.com
 3yiqingxi@andrew.cmu.edu
 Abstract
@@ -22,7 +26,7 @@ then prompt-finetuned on a mixture of NLP
 tasks. METRO-T0 outperforms all similarsized
  baselines on prompted NLP benchmarks,
 such as T0 Eval andMMLU , and rivals the
-state-of-the-art T0 11 8%of
+state-of-the-art T0 11Bmodel with only 8%of
 its parameters. Our analysis on model s neural
 activation and parameter sensitivity reveals that
 the effectiveness of METRO-T0 stems from
@@ -80,19 +84,26 @@ issues, thus bringing in the benefits of ELECTRAstyle
  on a family of multi-task training mixtures of
 NL-prompted dataset, which has previously been
 used to train the T0 models (Sanh et al., 2022). Our
-model, METRO-T0, is a T model pretrained with
+model, METRO-T0, is a T0model pretrained with
 Model generated dE noising TR aining O bjective.
 Experimental results show that METRO-T0 is
 highly parameter efficient . It consistently outperforms
  similar-sized baselines on all NL-prompted
-benchmark we evaluated upon. As shown in Fig-12933607080 20406080 303540 1 60708090COPA
-T B(Sanh et al., 2022) T base   (256M) Metro-T0 base   (256M) Metro-T0 large   (775M)Figure 1  Prompt learning results of METRO-T0 0 0 3Bby Sanh et al. (2022) on 4 0 Eval benchmark. Each point denotes the accuracy using one prompt template, except that the median
+benchmark we evaluated upon. As shown in Fig-12933607080RTE
+20406080CB
+303540ANLI r1
+60708090COPA
+T03B(Sanh et al., 2022) T0base   (256M) Metro-T0 base   (256M) Metro-T0 large   (775M)Figure 1  Prompt learning results of METRO-T0 versus our T0 baseline and T0 3Bby Sanh et al. (2022) on 4 tasks
+in the T0 Eval benchmark. Each point denotes the accuracy using one prompt template, except that the median
 accuracy over all templates of T0 3Bis indicated by the blue point. The plots of other tasks are in Appendix A.7.
-ure 1, METRO-T0 0 3B(Sanh
+ure 1, METRO-T0 BASE  outperforms T0 3B(Sanh
 et al., 2022) with only 7% of its parameters on
-theT0 Eval benchmark. Moreover, METROT0 14 0 11B, the stateof-the-art
+theT0 Eval benchmark. Moreover, METROT0  
+ LARGE   rivals 14x larger T0   11B, the stateof-the-art
  in prompt-based learning. Our method
-is also compute efficient   METRO-T0 500 0 2M steps.
+is also compute efficient   METRO-T0 pretrained
+for 500k steps has similar performance as its T0
+counterpart pretrained for 2M steps.
 To further understand the benefit of METRO pretraining,
  we conduct two studies on the pretrained
 METRO-T0 model, analyzing its neural activation
@@ -119,7 +130,7 @@ and usability. Such a procedure is called promptfinetuning.
  mixtures of NLP tasks (Sanh et al., 2022  Wei
 et al., 2021), dialogs (Chung et al., 2022), or even
 chain-of-thoughts (Wei et al., 2022). Our work
-aims to improve the zero-shot generalization of T like
+aims to improve the zero-shot generalization of T5like
  text-to-text LMs in prompt-based learning by
 efficient and effective pretraining strategies.
 Efficient pretraining using model-generated signals.
@@ -140,7 +151,8 @@ single-task benchmarks like GLUE (Wang et al.,
  signals to pretrain T5-like Transformer
 encoder-decoder models and evaluate this model
 on large-scale NL-prompted benchmarks.
-3 5 and
+3 Preliminaries
+This section provides an overview of T5 and
 METRO-style pretraining.
 3.1 Text-to-Text Transformers
 Our models are based on the T5 framework (Raffel
@@ -176,7 +188,7 @@ enhances its performance on held-out new tasks.
 The finetuning corpus is usually a multi-task mixture
  of NLP datasets, where each input-output pair
 is an example formatted with an NL prompt template.
- The finetuning procedure is standard seq seq
+ The finetuning procedure is standard seq2seq
 learning  the input sequence is fed to the encoder,
 and the target sequence serves as the ground truth
 to compute the cross-entropy loss of the decoder
@@ -272,7 +284,7 @@ i), (12)
 L LMLM λRTDLRTD λCLMLCLM. (13)
 In crafting METRO-T0 s pretraining algorithm,
 we explored various alternatives before finalizing
-our design. For example, an alternative method ABCDEC
+our design. For example, an alternative method12935ABCDEC
 MergingOrig Token or NotA[MASK][MASK]D[MASK]Auxiliary Transformer( BERT )BFGSamplingTarget  B
 Adding MasksEABFDGEncoder( T5 Encoder )     Target       Target  BCE
 [CLS]Decoder( T5 Decoder )ABCDABCDEFigure 2  The architecture of METRO-T0 during pretraining using BERT as the auxiliary model to generate signals.
@@ -329,13 +341,14 @@ contiguous span masking in METRO-T0 pretraining
 teacher-forced training, the decoder has access to
 the ground truth Xorigbefore position i. It can comparexorig
 
-i 1 1. If the two disagree, it is likely
+i 1withxnoise
+i 1. If the two disagree, it is likely
 the following position iis also masked out. As a result,
  the model can exploit this shortcut to achieve
 high RTD accuracy without learning meaningful
 representations of natural languages. Therefore,
 METRO-T0 uses i.i.d. random masking .
-4.2 5
+4.2 Architectural Upgrades over T5
 We incorporate model architecture changes that
 have been proved to be beneficial in earlier works.
 The vanilla T5 exclusively uses relative positional
@@ -375,7 +388,8 @@ architecture similar to T5 (Raffel et al., 2019).
 We train models in three standard setups  base,
 base   , and large   . Our base/base   model
 has an architecture similar to T5 BASE. Our large  
-model has an architecture similar to T5 4.
+model has an architecture similar to T5 LARGE except
+ for some differences mentioned in Section 4.
 The auxiliary model for generating training signals
 is a Transformer encoder of the same hidden size
 as the main model but is shallower  it consists of 4
@@ -388,7 +402,8 @@ texts) for 131 billion tokens (512 tokens per sequence,
  2,048 sequences per batch, and 125k steps).
 Base   /Large   is the training configuration first
 used in RoBERTa (Liu et al., 2019)  pretraining
-on a mixed corpus of 160 2.1 trillion tokens (512 tokens per sequence, 2,048
+on a mixed corpus of 160GB texts for a maximum
+2.1 trillion tokens (512 tokens per sequence, 2,048
 sequences per batch, and at most 2M steps).Prompt-Finetuning. We finetune each of our pretrained
  METRO-T5 models on three multi-task
 mixtures  T0/T0 /T0   Train , using the same
@@ -402,7 +417,8 @@ for evaluation.
 Evaluation. We evaluate zero-shot generalization
 on the T0 Eval benchmark (Sanh et al., 2022) and
 theMassive Multi-task Language Understanding
-(MMLU ) benchmark (Hendrycks et al., 2020). T0 11 datasets in natural language
+(MMLU ) benchmark (Hendrycks et al., 2020). T0
+Eval consists of 11 datasets in natural language
 inference, coreference, word sense disambiguation,
 and sentence completion. MMLU includes exam
 questions from 57 tasks such as maths, history, law,
@@ -413,7 +429,8 @@ classification for inference.
 ForT0 Eval , we use the same prompt templates
 as T0. For MMLU, we use prompt templates from
 theAI2 Reasoning Challenge (AI2-ARC ) (Clark
-et al., 2018), concatenated with 5 5-ANCE (Ge et al., 2023  Ni et al., 2021)
+et al., 2018), concatenated with 5 passages retrieved
+using T5-ANCE (Ge et al., 2023  Ni et al., 2021)
 (See Appendix A.8 for details). When there are
 multiple prompts for a dataset, we do not perform
 prompt selection based on the validation split, because
@@ -433,45 +450,67 @@ prompting, including pretraining-only models such
 as GPT-3 (Brown et al., 2020) and T5 (Raffel et al.,
 2019), as well as prompt-finetuned models such as
 T0 (Sanh et al., 2022) and Flan-T5 (Wei et al., 2021 
-Chung et al., 2022). T0/T0 /T0 4 (Raffel et al., 2019) corpus of 800 1 trillion tokens and then prompt-finetuned
+Chung et al., 2022). T0/T0 /T0   is pretrained on
+the the C4 (Raffel et al., 2019) corpus of 800GB of
+texts for 1 trillion tokens and then prompt-finetuned
 on the T0/T0 /T0   Train multitask mixture af-12937Model ParamsNLI Coref. Compl. WSD
 RTE CB ANLI r1/r2/r3 WSC Wino. COPA SC. HS. WiC A VG
 Pretraining only
-GPT-3 13B(Brown et al., 2020) 13 62.80 19.60 33.20/33.50/34.40 64.40 67.90 84.00 79.50 70.90 0.00 50.02
-GPT-3 175B(Brown et al., 2020) 175 63.50 46.40 34.60/35.40/34.50 65.40 70.20 91.00 83.20 78.90 0.00 54.83 5 LM (Lester et al., 2021) 11 53.03 34.34 32.89/33.76/33.82 54.09 50.65 54.88 27.00 48.16 50.30 42.99 0 226 62.85 45.30 30.82/32.37/32.14 62.16 50.77 70.63 81.03 24.86 50.78 49.43
-METRO-T0 226 65.18 45.60 31.64 /32.98 /33.81 55.77 51.07 70.81 80.97 25.28 50.69 49.44 256 62.24 53.45 31.68/32.94/34.88 61.73 51.65 70.63 87.62 25.88 51.21 51.26
-METRO-T0 256 68.16 63.21 34.92 /33.81 /36.82 60.48 52.03 78.50 89.23 27.68 50.88 54.15
-T B(Sanh et al., 2022) 3 64.55 45.36 33.84/33.11/33.33 65.10 50.97 72.40 84.03 27.29 50.69 50.97
-METRO-T0 775 76.75 65.48 41.49 /36.29 /40.18 60.58 54.51 88.00 94.07 29.31 50.97 57.97
-T B(Sanh et al., 2022) 11 80.83 70.12 43.56/38.68/41.26 61.45 59.94 90.02 92.40 33.58 56.58 60.77 0 0 226 63.57 48.93 31.76/32.92/33.02 60.96 51.93 72.38 81.71 40.11 51.32 51.69
-METRO-T0 226 70.56 47.08 33.05 /34.53 /34.37 57.98 51.75 69.13 83.08 49.00 50.78 52.85 0 256 68.30 60.24 33.77/34.31/35.00 60.96 51.59 70.00 89.29 56.10 51.39 55.54
-METRO-T0 256 71.44 60.71 36.91 /35.24 /36.46 62.21 54.08 78.88 90.29 67.57 51.60 58.67
-METRO-T0 775 81.26 70.00 45.06/38.59/42.35 60.67 57.52 90.50 95.41 83.82 52.32 65.23 0 11B(Sanh et al., 2022) 11 67.47 59.20 43.45/39.77/40.76 62.24 59.94 92.24 96.43 86.13 55.02 63.88 0 0 226 69.06 48.39 31.90/33.61/33.94 55.72 51.15 76.06 82.55 39.62 63.18 53.20
-METRO-T0 226 72.04 58.63 33.85 /35.29 /36.57 56.11 52.15 74.06 83.65 48.66 64.29 55.94 0 256 77.87 63.10 36.15/34.61/38.18 56.44 51.78 75.38 89.33 55.95 65.53 58.57
-METRO-T0 256 77.80 69.52 39.69 /36.61 /40.08 61.44 54.55 83.88 90.88 68.54 67.59 62.78
-METRO-T0 775 83.68 74.88 46.84/40.37/44.95 71.83 62.75 92.63 95.65 83.74 70.49 69.80 0 11B(Sanh et al., 2022) 11 85.31 75.69 47.07/42.18/44.09 70.29 66.42 93.71 96.49 86.11 70.02 70.67 2 0 Eval dataset.  Wino. ,  SC. , and  HS  refer to Winogrande, StoryCloze,
+GPT-3 13B(Brown et al., 2020) 13B 62.80 19.60 33.20/33.50/34.40 64.40 67.90 84.00 79.50 70.90 0.00 50.02
+GPT-3 175B(Brown et al., 2020) 175B 63.50 46.40 34.60/35.40/34.50 65.40 70.20 91.00 83.20 78.90 0.00 54.83
+T5 LM (Lester et al., 2021) 11B 53.03 34.34 32.89/33.76/33.82 54.09 50.65 54.88 27.00 48.16 50.30 42.99
+Prompt Finetune on T0 Train
+T0BASE 226M 62.85 45.30 30.82/32.37/32.14 62.16 50.77 70.63 81.03 24.86 50.78 49.43
+METRO-T0 BASE 226M 65.18 45.60 31.64 /32.98 /33.81 55.77 51.07 70.81 80.97 25.28 50.69 49.44
+T0BASE   256M 62.24 53.45 31.68/32.94/34.88 61.73 51.65 70.63 87.62 25.88 51.21 51.26
+METRO-T0 BASE   256M 68.16 63.21 34.92 /33.81 /36.82 60.48 52.03 78.50 89.23 27.68 50.88 54.15
+T03B(Sanh et al., 2022) 3B 64.55 45.36 33.84/33.11/33.33 65.10 50.97 72.40 84.03 27.29 50.69 50.97
+METRO-T0 LARGE   775M 76.75 65.48 41.49 /36.29 /40.18 60.58 54.51 88.00 94.07 29.31 50.97 57.97
+T011B(Sanh et al., 2022) 11B 80.83 70.12 43.56/38.68/41.26 61.45 59.94 90.02 92.40 33.58 56.58 60.77
+Prompt Finetune on T0  Train
+T0  BASE 226M 63.57 48.93 31.76/32.92/33.02 60.96 51.93 72.38 81.71 40.11 51.32 51.69
+METRO-T0  BASE 226M 70.56 47.08 33.05 /34.53 /34.37 57.98 51.75 69.13 83.08 49.00 50.78 52.85
+T0  BASE   256M 68.30 60.24 33.77/34.31/35.00 60.96 51.59 70.00 89.29 56.10 51.39 55.54
+METRO-T0  BASE   256M 71.44 60.71 36.91 /35.24 /36.46 62.21 54.08 78.88 90.29 67.57 51.60 58.67
+METRO-T0  LARGE   775M 81.26 70.00 45.06/38.59/42.35 60.67 57.52 90.50 95.41 83.82 52.32 65.23
+T0  11B(Sanh et al., 2022) 11B 67.47 59.20 43.45/39.77/40.76 62.24 59.94 92.24 96.43 86.13 55.02 63.88
+Prompt Finetune on T0   Train
+T0   BASE 226M 69.06 48.39 31.90/33.61/33.94 55.72 51.15 76.06 82.55 39.62 63.18 53.20
+METRO-T0   BASE 226M 72.04 58.63 33.85 /35.29 /36.57 56.11 52.15 74.06 83.65 48.66 64.29 55.94
+T0   BASE   256M 77.87 63.10 36.15/34.61/38.18 56.44 51.78 75.38 89.33 55.95 65.53 58.57
+METRO-T0   BASE   256M 77.80 69.52 39.69 /36.61 /40.08 61.44 54.55 83.88 90.88 68.54 67.59 62.78
+METRO-T0   LARGE   775M 83.68 74.88 46.84/40.37/44.95 71.83 62.75 92.63 95.65 83.74 70.49 69.80
+T0   11B(Sanh et al., 2022) 11B 85.31 75.69 47.07/42.18/44.09 70.29 66.42 93.71 96.49 86.11 70.02 70.67
+Table 2  Prompt learning results on the T0 Eval dataset.  Wino. ,  SC. , and  HS  refer to Winogrande, StoryCloze,
 and HellaSwag, respectively. All reported datasets use accuracy as their metric. Italic results are produced under the
 supervised setting. Others are under the zero-shot setting. Each row without a citation contains experimental results
 from models trained by us (our T0 baseline and METRO-T0), while each row with a citation contains experimental
 results from the cited paper (GPT-3, Google T5, and the original T0).
 Model Params MMLU
-T0 226 37.5
-METRO-T0 226 38.3
-Flan-T5 BASE(Wei et al., 2022) 223 35.9 0 256 41.7
-METRO-T0 256 42.7
-GPT-3 175B(Brown et al., 2020) 175 43.9
-Flan-T5 LARGE (Wei et al., 2022) 750 45.1 0 11B(Sanh et al., 2022) 11 35.6
-METRO-T0 775 48.0 3  Prompt learning results on the MMLU dataset.
+T0   BASE 226M 37.5
+METRO-T0   BASE 226M 38.3
+Flan-T5 BASE(Wei et al., 2022) 223M 35.9
+T0   BASE    256M 41.7
+METRO-T0   BASE    256M 42.7
+GPT-3 175B(Brown et al., 2020) 175B 43.9
+Flan-T5 LARGE (Wei et al., 2022) 750M 45.1
+T0   11B(Sanh et al., 2022) 11B 35.6
+METRO-T0   LARGE    775M 48.0
+Table 3  Prompt learning results on the MMLU dataset.
 All reported results use accuracy averaged over 57 subtasks
  as their metric.
-ter LM adaptation for 100 billion tokens. Flan-T5 4 corpus, but finetuned
+ter LM adaptation for 100 billion tokens. Flan-T5
+is also pretrained on the C4 corpus, but finetuned
 on a much larger dataset of prompted multi-task
 mixtures, dialog, and chain-of-thoughts.
-6 0 0 Eval andMMLUto demonstrate the effectiveness and efficiency of
+6 Evaluation Results
+This section compares the performance of METROT0
+ and baseline models on T0 Eval andMMLUto demonstrate the effectiveness and efficiency of
 our method. We also explore the reason behind
 METRO-T0 s effectiveness through detailed model
 analysis.
-6.1 2 0
+6.1 Main Results
+Table 2 presents the experimental results on T0
 Eval, and Table 3 presents the experimental results
 onMMLU . These results show that 
 METRO-T0 is highly parameter efficient,
@@ -480,13 +519,21 @@ models in zero-shot generalization. METROT0
  BASE   , having only 256M parameters, outperforms
  T0 3B(Sanh et al., 2022) with only 7%of its
 parameters. Also, METRO-T0 LARGE   , having only
-775M parameters, outperforms T0 3 7 2.8 0 11B, a 14x larger model.
+775M parameters, outperforms T0 3Bby 7pts and
+is only 2.8pts behind T0 11B, a 14x larger model.
 METRO-T0 often outperforms GPT-3 (175B),
 a state-of-the-art Transformer decoder LM, on
 both T0 Eval and MMLU . Compared to the
-11B-parameter T0/T0 /T0   model, a family of Model/Finetuning Data T0 0 0  
-METRO-T0/T0 /T0 49.44 54.15 57.97 49.24 51.05 53.97 49.46 50.70 54.06 46.75 48.47 49.20 48.85 50.10 52.82 49.04 50.37 53.42 0/T0 /T0 49.43 51.69 53.20
-  All-token LM loss 48.13 49.43 50.76 4  Performance of METRO-T0 0
+11B-parameter T0/T0 /T0   model, a family of12938Model/Finetuning Data T0 T0  T0  
+METRO-T0/T0 /T0   49.44 54.15 57.97
+  CLM Loss on All Position 49.24 51.05 53.97
+  CLM with Copy Mechanism 49.46 50.70 54.06
+  RTD on Decoder 46.75 48.47 49.20
+  Projection Layer on CLM 48.85 50.10 52.82
+  Continuous Span Mask 49.04 50.37 53.42
+T0/T0 /T0   49.43 51.69 53.20
+  All-token LM loss 48.13 49.43 50.76
+Table 4  Performance of METRO-T0 variations on T0
 Eval. All ablations are done in the base pretraining setting
  using exactly the same prompt-finetuning pipeline.
 state-of-the-art prompt-finetuned text-to-text LM,
@@ -502,13 +549,14 @@ improvement is not due to better hyperparameters
 or data engineering, but a result of using METROstyle
  pretraining. Further confirmation of this argument
  will be provided through model analysis in
-Section 6.4 6.5.
-6.2 4, we discuss the choices we made to
+Section 6.4 and Section 6.5.
+6.2 Ablation Studies
+In Section 4, we discuss the choices we made to
 redesign the pretraining method for METRO-T0.
 In this subsection, we compare the empirical results
 of different variants of METRO-T0. Table 4 shows
 the performance of each variant prompt-finetuned
-onT0/T0 /T0 0 Eval .
+onT0/T0 /T0   Train and evaluated on T0 Eval .
  All tokens, masked loss  is the best decoding
 target. Table 1 presents three possible choices for
 the decoding target, in which  masked tokens only 
@@ -525,11 +573,13 @@ Encoder RTD makes pretraining more stable.
 Figure 3a demonstrates this by comparing the loss
 on the CLM task during pretraining with RTD applied
  to the encoder ( redline) versus the decoder
-0 20 40 2.55.07.510.012.515.0CLM LossDecRTD
+0 20k 40k
+Pretrain Step2.55.07.510.012.515.0CLM LossDecRTD
 DecRTD Clip
 DecRTD Clip Projection
 EncRTD(a) RTD Position
-0 20 40 0204060 RTD Recalli.i.d. Mask
+0 20k 40k
+Pretrain Step0204060 RTD Recalli.i.d. Mask
 Span Mask (b) Masking Strategy
 Figure 3  Pretraining behaviors of different designs.
 (blue line). Decoder RTD caused pretraining to
@@ -551,23 +601,31 @@ Mask . As expected, this label leakage hurts the
 model s generalization ability as shown in Table 4.
 6.3 Pretraining Efficiency
 In this experiment, we study the pretraining efficiency
- of METRO-T5 500k/1M/2 5 BASE   and METRO-T5 BASE   . We assess
+ of METRO-T5 by comparing the intermediate
+ checkpoints pretrained for 500k/1M/2M steps
+of T5 BASE   and METRO-T5 BASE   . We assess
 each checkpoint s prompt-based learning performance
- by finetuning on the T0 0 Eval .
-Figure 4 shows that METRO-T5 5 . METRO-T0  
+ by finetuning on the T0   Train dataset
+and recording the average performance on T0 Eval .
+Figure 4 shows that METRO-T5 is more compute
+ efficient than vanilla T5 . METRO-T0  
 achieves better downstream performance at every
-point . In particular, METRO-T0 500 0 2M steps, showing a 165% efficiency
+point . In particular, METRO-T0   pretrained for
+500k steps has a similar performance to T0   pretrained
+ for 2M steps, showing a 165% efficiency
 increase.
 An interesting research question is  does modelgenerated
  signals simply make pretraining faster or
-do METRO-T5 5 learn different representations 
+do METRO-T5 and T5 learn different representations 
 
 To answer this question, we compare the following
  two models by showing their performance on1293925 50 75 100 125 150
-Pretraining Time (Hours)56586062Avg. Accuracy 500 500 0  
-Metro-T0 4 5
+Pretraining Time (Hours)56586062Avg. Accuracy 500k1M2M 500k1M2M
+T0  
+Metro-T0  Figure 4  Comparison of the pretraining efficiency of T5
 and METRO-T5. Each point shows the performance of
-a T0  /METRO-T0 500k/1M/2M pretraining steps. The x-axis displays
+a T0  /METRO-T0   model finetuned from a checkpoint
+ at 500k/1M/2M pretraining steps. The x-axis displays
  the pretraining wall time, reflecting computational
 cost, as all models were pretrained in the identical environment.
 
@@ -577,10 +635,12 @@ Figure 5  Per-task performance of T0   (pretrained for
 2M steps) and METRO-T0   (pretrained for only 500k
 steps) on T0 Eval . The error bars are calculated using
 the model s performance across prompt templates.
-each task in the T0 5 
-(a)T0 5 2M steps, indicated by the last blue
+each task in the T0 Eval benchmark in Figure 5 
+(a)T0   finetuned from the T5 checkpoint pretrained
+ for 2M steps, indicated by the last blue
 datapoint in Figure 4  (b)METRO-T0   finetuned
-from the METRO-T5 500k steps, indicated by the first orange datapoint.
+from the METRO-T5 checkpoint pretrained for
+500k steps, indicated by the first orange datapoint.
 Although these two models have similar average
 accuracies (58.57 vs. 58.68), they have different
 strengths, as shown in Figure 5. T0   (2M steps)
@@ -594,23 +654,25 @@ This phenomenon implies that model-generated signals
 of texts, which finally result in a significant performance
  gap between the fully pretrained T0   and
 METRO-T0  , as shown in Table 2.
-0 500 1 1.5 2M
-Pretraining Steps Under-activated Neuron %T5
-Metro-T Figure 6 5 and METRO-T5 0   train
+0 500k 1M 1.5M 2M
+Pretraining Steps102030Under-activated Neuron %T5
+Metro-T5Figure 6  Comparison of the percentage of underactivated
+ neurons in T5 and METRO-T5 on T0   train
 dataset. The first point of both models (0 steps) overlap
 because they are the same initial model.
 6.4 Neural Activation
 In this subsection, and the following one, explore
 the extent to which the internal statistics of the
 neural networks quantify the differences between
-METRO-T5 5.
+METRO-T5 and T5.
 The first aspect we explore is neural activation.
 Specifically, we examine the feedforward module
-in each Transformer layer of METRO-T5 5 BASE  , counting neurons that are underactivated
+in each Transformer layer of METRO-T5 BASE  
+and T5 BASE  , counting neurons that are underactivated
  . A neuron is considered under-activated
 if it is inactive (exhibits zero ReLU activations) for
 99.5% of tokens within the T0   Train dataset.
-Figure 6 5 2xas many underactivated
+Figure 6 shows that T5 has  2xas many underactivated
  neurons as METRO-T5 at every checkpoint.
  Studies suggest that such neurons can typically
  be pruned without substantially affecting neural
@@ -621,7 +683,8 @@ model capacity and computing cost. Therefore,
 our findings suggest that METRO-style modelgenerated
  training signals enhance neuron utilization
  in METRO-T5.
-6.5 5
+6.5 Parameter Sensitivity
+In addition to analyzing the neural activation of T5
 and METRO-T5, we also examine their parameter
  sensitivity, which serves as another means to
 quantify the underlying differences between T5 and
@@ -633,9 +696,18 @@ Thesensitivity of a parameter, defined in Equation
 the loss function. θ jdenotes the parameter vector
 θwith its j-th entry set to zero. The approximation
 is derived from the first-order Taylor expansion of
-Latθ. Therefore, the sensitivity of the j-th param-129401e-07 1e-05 0.001 5
-Metro-T5 1750 1500 1250 1000 750 500 250 7 5 and METRO-T5. Each row shows the
-parameter sensitivity distributions of T5 5
+Latθ. Therefore, the sensitivity of the j-th param-129401e-07 1e-05 0.001
+Param SensitivityPretrain Steps2000kT5
+Metro-T5
+1750k
+1500k
+1250k
+1000k
+750k
+500k
+250kFigure 7  Comparison of the parameter sensitivity distributions
+ of T5 and METRO-T5. Each row shows the
+parameter sensitivity distributions of T5 and METROT5
  at the same pretraining step, indicated by the corresponding
  label on the y-axis.
 eter, denoted by Ij, approximates the change in the
@@ -652,7 +724,7 @@ marginal impact on the LM s downstream performance,
 sensitivity is more sufficiently trained and generalizes
  better.
 We compare parameter sensitivity distributions
-of each checkpoint of METRO-T5 5, using
+of each checkpoint of METRO-T5 and T5, using
 gradients calculated on the T0   Train dataset.
 The result is shown in Figure 7, from which we
 observe that the sensitivity distribution exhibits a
@@ -685,7 +757,7 @@ specifically GPU resources. The GPU resources
 used and training time are detailed in Appendix A.6.
 Our study is also limited by the computational budget,
  preventing us from training models as large
-as GPT-3 0 11B. However, our large   model
+as GPT-3 or T0 11B. However, our large   model
 (775M parameters) already rivals or outperforms
 previous state-of-the-art models.
 Ethics Statement
@@ -705,7 +777,7 @@ Acknowledgement
 Linyuan Gong and Alvin Cheung are partially supported
  by the National Science Foundation through
 grants IIS-1955488, IIS-2027575, CCF-1723352,
-ARO W NF2110339. We thank Mingrui Shen
+ARO W911NF2110339. We thank Mingrui Shen
 for his support providing computing infrastructure
 support on the finetuning work flow, Guolin Ke
 for his support in establishing the data processing
@@ -718,7 +790,7 @@ Sharma, Taewoon Kim, M Saiful Bari, Thibault
 Fevry, Zaid Alyafeai, Manan Dey, Andrea Santilli,
  Zhiqing Sun, Srulik Ben-David, Canwen Xu,
 Gunjan Chhablani, Han Wang, Jason Alan Fries,
-Maged S. Al-shaibani, Shanya Sharma, Urmish Thakker, Khalid Almubarak, Xiangru Tang, Xiangru
+Maged S. Al-shaibani, Shanya Sharma, Urmish12941Thakker, Khalid Almubarak, Xiangru Tang, Xiangru
  Tang, Mike Tian-Jian Jiang, and Alexander M.
 Rush. 2022. Promptsource  An integrated development
  environment and repository for natural language
@@ -890,14 +962,26 @@ original T5 model by Raffel et al. (2019). The pretraining corpus is the C4 corp
 800GB of texts based on CommonCrawl. They encode the corpus with a cased vocabulary of 32k BPE
 tokens.
 A.2 Pretraining Hyperparameters
-The hyperparameters we used to pretrain METRO-T0 0 5.
+The hyperparameters we used to pretrain METRO-T0 and our T0 baseline are listed in Table 5.
 Hyperparameters Base Base   Large  
-Encoder Layers 12 12 24 12 12 24 4 4 6 768 768 1,024 4e-4 2e-4 2e-4 2,048 2,048 2,048
-Warm-Up Steps 10,000 10,000 10,000 125,000 2,000,000 1,335,000 512 512 512 32 32 64 128 128 128
+Encoder Layers 12 12 24
+Decoder Layers 12 12 24
+Auxiliary Layers 4 4 6
+Hidden Dimension 768 768 1,024
+Peak Learning Rate 4e-4 2e-4 2e-4
+Batch Size 2,048 2,048 2,048
+Warm-Up Steps 10,000 10,000 10,000
+Total Steps 125,000 2,000,000 1,335,000
+Sequence Length 512 512 512
+Relative Position Encoding Buckets 32 32 64
+Relative Position Encoding Max Distance 128 128 128
 Loss multipliers ( λMLM,λRTD,λCLM) (1, 50, 1) (1, 50, 1) (1, 50, 1)
 Adam ϵ 1e-6 1e-6 1e-6
 Adam ( β1,β2) (0.9, 0.98) (0.9, 0.98) (0.9, 0.98)
-Clip Norm - 2.0 2.0 0.1 0.1 0.1 0.01 0.01 0.01 5  Pretraining hyperparameters for METRO-T0 0 baselines. Rows with an     are specific to
+Clip Norm - 2.0 2.0
+Dropout 0.1 0.1 0.1
+Weight Decay 0.01 0.01 0.01
+Table 5  Pretraining hyperparameters for METRO-T0 and our T0 baselines. Rows with an     are specific to
 METRO-style pretraining and not applicable to our T0 baselines. We only train our large   model for 1.3M steps
 (instead of 2M steps) due to limitations of computational budgets but it still yields impressive performance.
 In pretraining, we use 15% masking ratio for the auxiliary MLM pretraining task. We create a [MASK]
@@ -908,7 +992,7 @@ transformer, we use shared token embeddings in the embedding layer and the langu
 We have three projection heads in our model  MLM head on the auxiliary transformer, RTD head on
 the main transformer s encoder, and CLM head on the main transformer s decoder. Both the MLM and
 CLM head are a single linear transformation. We use RoBERTa-style projection head for the RTD head,
-which contains a linear projection, a ReLU activation, a layer norm and another linear projection. For the RTD on decoder (complex CLM head) ablation, we use a RoBERTa-style head as the architecture of the
+which contains a linear projection, a ReLU activation, a layer norm and another linear projection. For the12944RTD on decoder (complex CLM head) ablation, we use a RoBERTa-style head as the architecture of the
 CLM head.
 A.3 Data for Prompt-Finetuning
 Following Sanh et al. (2022), we finetune our models on three training mixtures, T0 Train (39 datasets),
@@ -923,52 +1007,80 @@ are initialized with pretrained METRO-T5, the finetuning procedure is standard s
 learning  the input sequence is fed to the encoder, and the target sequence serves as the ground truth to
 compute the cross-entropy loss of the decoder output. Each model is finetuned using hyperparameters
 listed in Table 6. Basically, we use the same hyperparameters as pretraining, except the peak learning rate
-is reduced to 0.1 256. We do not perform any
+is reduced to 0.1x and each target sequence is truncated to a max length of 256. We do not perform any
 checkpoint selection or hyperparameter selection, and simply use the last checkpoint at 125k steps of this
 single run for evaluation.
 Hyperparameters Base Base   Large  
-Peak Learning Rate 4e-5 2e-5 2e-5 125,000 125,000 125,000 512 512 512 256 256 256
+Peak Learning Rate 4e-5 2e-5 2e-5
+Total Steps 125,000 125,000 125,000
+Source Sequence Length 512 512 512
+Target Sequence Length 256 256 256
 Clip Norm - - Table
- 6  Hyperparameters for prompt-finetuning METRO-T5 5 baseline. All hyperparameters
+ 6  Hyperparameters for prompt-finetuning METRO-T5 and our pretrained T5 baseline. All hyperparameters
 not mentioned in this table is the same as in the pretraining procedure.
 A.5 Evaluation
 We evaluate zero-shot generalization on the T0 Eval benchmark (Sanh et al., 2022) and the Massive
-Multi-task Language Understanding (MMLU ) benchmark (Hendrycks et al., 2020). T0 11
+Multi-task Language Understanding (MMLU ) benchmark (Hendrycks et al., 2020). T0 Eval consists of 11
 held-out datasets in natural language inference, coreference, word sense disambiguation, and sentence
-completion, and details are shown in Table 7 57 tasks such as
+completion, and details are shown in Table 7 MMLU includes example questions from 57 tasks such as
 maths, history, law, and medicine. Please refer to Hendrycks et al. (2020) for more details about MMLU.
 Size Task Metric
-RTE 277 56 3,200 104 1,267 100 2016 1,871 10,042 638 7 0 Eval benchmark for prompt learning.12945 0 Eval orMMLU is formulated as multiple-choice questions. We compute the log
+RTE 277 Natural language inference Accuracy
+CB 56 Natural language inference Accuracy
+ANLI 3,200 Natural language inference Accuracy
+WSC 104 Coreference resolution Accuracy
+Winogrande XL 1,267 Coreference resolution Accuracy
+COPA 100 Sentence completion Accuracy
+StoryCloze 2016 1,871 Sentence completion Accuracy
+HellaSwag 10,042 Sentence completion Accuracy
+WiC 638 Word Sense Disambiguation Accuracy
+Table 7  The overview of the T0 Eval benchmark for prompt learning.12945Each task in T0 Eval orMMLU is formulated as multiple-choice questions. We compute the log
 probability of each choice under the finetuned model and select the choice with the highest log probability
 as the prediction.
-A.6 0 baseline and METRO-T0 1. The prompt
-templates to format the finetuing data are from the promptsource library (Bach et al., 2022). We
-evaluate pretrained models on the T0 Eval benchmark using transformers andt-zero4.
-Pretraining and Finetuning Costs. Pretraining METRO-T5 20.8 64 100 (40GB) GPUs. The pretraining cost of METRO-T5 5 (our implementation) plus
+A.6 Implementation Details
+Implementation We implement our T0 baseline and METRO-T0 based on fairseq1. The prompt
+templates to format the finetuing data are from the promptsource2library (Bach et al., 2022). We
+evaluate pretrained models on the T0 Eval benchmark using transformers3andt-zero4.
+Pretraining and Finetuning Costs. Pretraining METRO-T5 in the base setting takes 20.8 hours on
+64x NVIDIA A100 (40GB) GPUs. The pretraining cost of METRO-T5 is T5 (our implementation) plus
 the auxiliary transformer, whose number of layers is 1/3 of the main transformer s encoder. Pretraining
-METRO-T5 159 128 100 (40GB) GPUs. Pretraining
-METRO-T5 289 256 100 (40GB) GPUs. In finetuning,
-we remove the auxiliary transformer and the RTD and CLM heads, so the finetuning cost of METRO-T5 5 are the same. Prompt-finetuning each base/base   model takes about 22 64 100 (16GB) GPUs. Prompt-finetuning each large   model takes about 70 64 100
+METRO-T5 in the base   setting takes 159 hours on 128x NVIDIA A100 (40GB) GPUs. Pretraining
+METRO-T5 in the large   setting takes 289 hours on 256x NVIDIA A100 (40GB) GPUs. In finetuning,
+we remove the auxiliary transformer and the RTD and CLM heads, so the finetuning cost of METRO-T5
+and T5 are the same. Prompt-finetuning each base/base   model takes about 22 hours on 64x NVIDIA
+V100 (16GB) GPUs. Prompt-finetuning each large   model takes about 70 hours on 64x NVIDIA V100
 (16GB) GPUs.
-A.7 0 607080 20406080 303540 1 32.535.037.5 2 3540 3 40506070 50525456 60708090 859095StoryCloze
-T B(Sanh et al., 2022)
-T base   (256M)Metro-T0 base   (256M)
+A.7 Full Results on T0 Eval
+607080RTE
+20406080CB
+303540ANLI r1
+32.535.037.5ANLI r2
+3540ANLI r3
+40506070WSC
+50525456Winogrande
+60708090COPA
+859095StoryCloze
+T03B(Sanh et al., 2022)
+T0base   (256M)Metro-T0 base   (256M)
 Metro-T0 large   (775M)
-Figure 8  Prompt-based learning results of METRO-T0 0 0 3Bby Sanh et al. (2022) on
-all 9 0 Eval benchmark. Each point denotes the accuracy using one prompt template, except that the
+Figure 8  Prompt-based learning results of METRO-T0 versus our T0 baseline and T0 3Bby Sanh et al. (2022) on
+all 9 tasks in the T0 Eval benchmark. Each point denotes the accuracy using one prompt template, except that the
 median accuracy over all templates of T0 3Bis indicated by the blue point.
-Figure 8 results of METRO-T0 0 0 3Bby Sanh et al. (2022) on all 9 0 Eval benchmark. The results shows that METRO-T0 LARGE   , having only 775M parameters,
+Figure 8 results of METRO-T0 versus our T0 baseline and T0 3Bby Sanh et al. (2022) on all 9 tasks
+in the T0 Eval benchmark. The results shows that METRO-T0 LARGE   , having only 775M parameters,
 1https //github.com/facebookresearch/fairseq
 2https //github.com/bigscience-workshop/promptsource
 3https //huggingface.co/docs/transformers/index
-4https //github.com/bigscience-workshop/t-zero consistently outperforms T0 3 0 Eval benchmark.
-A.8 2 Reasoning
-Challenge (AI2-ARC) concatenated with 5 passages in MS MARCO (Nguyen et al., 2016). These 5 5-ANCE (Ge et al., 2023  Ni et al., 2021), which maps a
+4https //github.com/bigscience-workshop/t-zero12946consistently outperforms T0 3Bover all tasks on the T0 Eval benchmark.
+A.8 Evaluation on MMLU
+The prompt template used to evaluate our models MMLU is the prompt template from the AI2 Reasoning
+Challenge (AI2-ARC) concatenated with 5 passages in MS MARCO (Nguyen et al., 2016). These 5
+passages are selected via dense retrival using T5-ANCE (Ge et al., 2023  Ni et al., 2021), which maps a
 query to a single vector to retrieve similar passage from the corpus. Adding densely-retrieved passages to
 prompts is a standard approach to enhance LM s performance on zero-shot prompting. This approach is
-named retrieval augmentation . All T0 and METRO-T0 3 are evaluated using this
+named retrieval augmentation . All T0 and METRO-T0 results reported in Table 3 are evaluated using this
 prompt template with retrieval augmentation.
-On the other hand, all Flan-T5 3 are numbers reported in their paper. For each
+On the other hand, all Flan-T5 results reported in Table 3 are numbers reported in their paper. For each
 model, we take the maximum score of the reported  direct  prompting performance and the  chain-ofthought
  (CoT)  prompting performance. Both prompt templates are not publicly available as of the time
 this paper is written.
@@ -977,38 +1089,56 @@ the performance of each model using the plain AI2-ARC prompt template without re
 or CoT.
 Model Params MMLU
 AI2-ARC Prompt Template
-T0 226 31.5
-METRO-T0 226 31.9
-Flan-T5 BASE(Wei et al., 2022) 223 33.8 0 256 37.8
-METRO-T0 256 38.9
-Flan-T5 LARGE (Wei et al., 2022) 750 39.0 0 11B(Sanh et al., 2022) 11 30.9
-METRO-T0 775 43.4 2-ARC Prompt Template   Retrieval Augmentation
-T0 226 37.5
-METRO-T0 226 38.3
-Flan-T5 BASE(Wei et al., 2022) 223 40.4 0 256 41.7
-METRO-T0 256 42.7
-Flan-T5 LARGE (Wei et al., 2022) 750 41.4 0 11B(Sanh et al., 2022) 11 35.6
-METRO-T0 775 48.0
+T0   BASE 226M 31.5
+METRO-T0   BASE 226M 31.9
+Flan-T5 BASE(Wei et al., 2022) 223M 33.8
+T0   BASE    256M 37.8
+METRO-T0   BASE    256M 38.9
+Flan-T5 LARGE (Wei et al., 2022) 750M 39.0
+T0   11B(Sanh et al., 2022) 11B 30.9
+METRO-T0   LARGE    775M 43.4
+AI2-ARC Prompt Template   Retrieval Augmentation
+T0   BASE 226M 37.5
+METRO-T0   BASE 226M 38.3
+Flan-T5 BASE(Wei et al., 2022) 223M 40.4
+T0   BASE    256M 41.7
+METRO-T0   BASE    256M 42.7
+Flan-T5 LARGE (Wei et al., 2022) 750M 41.4
+T0   11B(Sanh et al., 2022) 11B 35.6
+METRO-T0   LARGE    775M 48.0
 Reported numbers by Chung et al. (2022)
-Flan-T5 BASE(Wei et al., 2022) 223 35.9
-GPT-3 175B(Brown et al., 2020) 175 43.9
-Flan-T5 LARGE (Wei et al., 2022) 750 45.1 8  Full prompt learning results on the MMLU dataset in three setups. All reported results use accuracy
+Flan-T5 BASE(Wei et al., 2022) 223M 35.9
+GPT-3 175B(Brown et al., 2020) 175B 43.9
+Flan-T5 LARGE (Wei et al., 2022) 750M 45.1
+Table 8  Full prompt learning results on the MMLU dataset in three setups. All reported results use accuracy
 averaged over 57 subtasks as their metric.
-The result in Table 8 shows that METRO-T0 0 baseline and
+The result in Table 8 shows that METRO-T0   still consistently outperforms the T0 baseline and
 similar-sized Flan-T5 models when they are evaluated using the same prompt template.
 A.9 Example of the Challenge of Ill-Formed Target
 In our discussion about  decoding target  inSection 4, we claim that  masked tokens only  is an ill-formed
 target for the CLM objective in METRO-style pretraining of T5. This section shows a concrete example
 where such ill-formed target leads to ambiguities.
 In Table 9, the original sentence is   1 2 3 4 5  . Using different random samples of masked positions,
-we can derive two masked sequences as the input of the auxiliary model    1 5 1 2 5  .12947 9  An example where ill-formed target leads to ambiguities. Each number denotes a distinct subword token.
+we can derive two masked sequences as the input of the auxiliary model    1 M M M 5   and   1 2 M M 5  .12947Table 9  An example where ill-formed target leads to ambiguities. Each number denotes a distinct subword token.
 Mdenotes the special token [MASK] . In  Auxiliary Model Prediction , a token shown in green denotes a correct
 prediction, where a token shown in red denotes a wrong prediction.
-Sentence 1 2 3 4 5 1 1 5 2 6 4 1 2 6 4 5 2 3 4 2 1 2 5 6 4 1 2 6 4 5 3 4 2  is masked or not. So the target for the decoder corrective LM objective
-will be   2 3 4 3 4  respectively. After we have the masked input, the auxiliary model, which is a
-masked language model (MLM) , tries to fill masked positions with predicted tokens   2 6 4 6 4 
-respectively. The resulting main model input is   1 2 6 4 5   for both cases, but the target is   2 3 4 1 3 4 2. This is an ambiguity where the main model is unsure where it should begin
-to generate predictions    2 3 .12948 2023 1. Did you describe the limitations of your work 
+Sentence 1 2 3 4 5
+Auxiliary Model Input 1 1 M M M 5
+Auxiliary Model Prediction 2 6 4
+Main Model Input 1 2 6 4 5
+Main Model Target 2 3 4
+Auxiliary Model Input 2 1 2 M M 5
+Auxiliary Model Prediction 6 4
+Main Model Input 1 2 6 4 5
+Main Model Target 3 4
+The difference is whether   2  is masked or not. So the target for the decoder corrective LM objective
+will be   2 3 4   and   3 4  respectively. After we have the masked input, the auxiliary model, which is a
+masked language model (MLM) , tries to fill masked positions with predicted tokens   2 6 4   and   6 4 
+respectively. The resulting main model input is   1 2 6 4 5   for both cases, but the target is   2 3 4   for
+case 1 and   3 4  for case 2. This is an ambiguity where the main model is unsure where it should begin
+to generate predictions    2  or   3 .12948ACL 2023 Responsible NLP Checklist
+A For every submission 
+  A1. Did you describe the limitations of your work 
 We discussed the limitation of our work in a separate section after the main paper
   A2. Did you discuss any potential risks of your work 
 We discussed the limitation of our work in a separate section after the main paper
@@ -1043,7 +1173,7 @@ number of examples in train / validation / test splits, as these provide necessa
 to understand experimental results. For example, small differences in accuracy on large test sets may
 be signiﬁcant, while on small test sets they may not be.
 The statistics can be found in Appendix A, Appendix C, and Appendix E
-The Responsible NLP Checklist used at ACL 2023 2022, with the addition of a question on AI writing
+The Responsible NLP Checklist used at ACL 2023 is adopted from NAACL 2022, with the addition of a question on AI writing
 assistance.12949C  Did you run computational experiments 
 Left blank.
   C1. Did you report the number of parameters in the models used, the total computational budget
@@ -1055,7 +1185,9 @@ In Appendix B, Appendix D, and Appendix F
   C3. Did you report descriptive statistics about your results (e.g., error bars around results, summary
 statistics from sets of experiments), and is it transparent whether you are reporting the max, mean,
 etc. or just a single run 
-Figure 1 8 4. If you used existing packages (e.g., for preprocessing, for normalization, or for evaluation), did
+Figure 1 and Figure 8 shows the boxplot of results as well as one point for each run to describe the
+distribution of accuracies over multiple runs
+  C4. If you used existing packages (e.g., for preprocessing, for normalization, or for evaluation), did
 you report the implementation, model, and parameter settings used (e.g., NLTK, Spacy, ROUGE,
 etc.) 
 In Appendix A and Appendix F

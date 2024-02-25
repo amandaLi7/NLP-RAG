@@ -1,4 +1,4 @@
-arXiv 2302.06448 1  [cs.CL]  13 2023Joint Span Segmentation and Rhetorical Role
+arXiv 2302.06448v1  [cs.CL]  13 Feb 2023Joint Span Segmentation and Rhetorical Role
 Labeling with Data Augmentation for Legal
 Documents
 Santosh T.Y.S.S, Philipp Bock, and Matthias Grabmair
@@ -81,7 +81,8 @@ casting RRL of legal judgments as a sequential span classiﬁcation t ask and as
 explore three data augmentation strategies to assess their impac t on the task.
 Our experiments demonstrate that our semi-Markov CRF model pe rforms bet-Rhetorical Role Labeling for Legal Documents 3
 ter compared to a CRF baseline on documents characterized by mult i-sentence
-spans.1 2 Method
+spans.1
+2 Method
 Our hierarchical semi-Markov CRF model takes the judgement doc umentx 
 {x1,x2,...,x m}as input, where xi {xi1,xi2,...,x in}and outputs the rhetorical
  role label sequence l {l1,l2,...,lm}withli L.xiandxjpdenoteith
@@ -172,10 +173,10 @@ transition between same spans as described in the previous sub-se ction.
 Datasets   We experiment on two datasets - (i) BUILDNyAI dataset [12] consisting
  of judgement documents from the Indian supreme court, h igh court and
 district courts. It consists of publicly available train and validation sp lits with
-184 30 documents, respectively, annotated with 12 diﬀerent r hetorical role
+184 and 30 documents, respectively, annotated with 12 diﬀerent r hetorical role
 labels along with  None . As test dataset is not publicly available, we split a nd
 use training dataset for both training and validation and test it on th e validation
-partition  (ii) the BVA PTSD dataset [25] consists of 25 decisions by the U.S.
+partition  (ii) the BVA PTSD dataset [25] consists of 25 decisions2by the U.S.
 Board of Veterans  Appeals (BVA) from appealed disability claims by v eterans
 for service-related post-traumatic stress disorder (PTSD). We use 19 documents
 for training and validation, and 6 as test. They are annotated with 5 rhetorical
@@ -191,19 +192,25 @@ evaluate at the sentence level using micro-F1 and macro-F1 followin g previous
 works [12].
 Implementation Details   We use the hyperparameters of [12] for the HSLN
 model. For the semi-Markov CRF, we obtain the the maximum segment length
-using validation set and set it to 30 4 for BUILDNyAI and BVA data sets
+using validation set and set it to 30 and 4 for BUILDNyAI and BVA data sets
 respectively. We used a batch size of 1 and trained our model end-t o-end using
 Adam [15] optimizer with a learning rate of 1e-5. For data augmentat ion, we
 employed a maximum word deletion rate of 20%. For back-translation , we used
 English, German and Spanish as the sequence of languages. We augm ented the
 datasetonce using eachDAtechnique and thus models with DAcompo nent were
 trained with four times the size of training dataset.
-2 75 decisions, out of which onl y 25 3We post-process and merge the same consecutive labels to obt ain the span labels.6 Santosh et al.
+2The dataset actually contains 75 decisions, out of which onl y 25 documents have
+annotation label for every sentence
+3We post-process and merge the same consecutive labels to obt ain the span labels.6 Santosh et al.
 Table 1  Model performance on BUILDNyAI and BVA datasets
 BUILDNyAI BVA PTSD
 Span Sentence Span Sentence
 Model s-mic.s-mac.s-segmic.mac.s-mic.s-mac.s-segmic.mac.
-CRF 0.310.280.330.800.600.670.580.710.810.74 0.380.350.390.760.560.670.560.690.780.72 0.320.320.340.820.630.720.640.750.850.81 0.400.360.410.810.580.730.650.750.830.80 1 reports the performance of our model and
+CRF 0.310.280.330.800.600.670.580.710.810.74
+spanCRF 0.380.350.390.760.560.670.560.690.780.72
+CRF   DA 0.320.320.340.820.630.720.640.750.850.81
+spanCRF   DA 0.400.360.410.810.580.730.650.750.830.80
+Performance Evaluation   Table 1 reports the performance of our model and
 its variants on the two datasets. On BUILDNyAI, we observe that spanCRF
 performs better compared to a normal CRF in span-level metrics ( statistically
 signiﬁcant (p  0.05) using McNemar Test), with a drop at the sentence-level.
@@ -214,7 +221,8 @@ attributed to spanCRF having to compute the optimal segmentatio n path over
 all the possible paths, which requires enough data to learn and gene ralize better.
  On the other hand, on the BVA PTSD dataset, spanCRF did not show a
 signiﬁcant impromavement compared to normal CRF. This is because 73.8% of
-the spans in BVA dataset (BUILDNyAI  31%) have length 1 1.85 (BUILDNyAI  6.81) which does not allow spanCRF to show its
+the spans in BVA dataset (BUILDNyAI  31%) have length 1 and the m ean span
+length is 1.85 (BUILDNyAI  6.81) which does not allow spanCRF to show its
 potential. However, the trend towards a beneﬁcial eﬀect of data augmentation
 persists.
 Eﬀect of Maximum Span Length   We create variants of spanCRF by varying
@@ -232,7 +240,8 @@ indicating the importance of capturing context speciﬁcally at the sp an level 
 obtain good representations. We notice less improvement with grConv, which
 can also be attributed to its high number of parameters for our low d ata condition.
  Though simpleachieves an improvement in span-level metrics, it shows a
-huge drop in sentence-level performance.Rhetorical Role Labeling for Legal Documents 7 2  First and second section indicates the eﬀect of max span len gth (w/o
+huge drop in sentence-level performance.Rhetorical Role Labeling for Legal Documents 7
+Table 2  First and second section indicates the eﬀect of max span len gth (w/o
 DA) and diﬀerent span feature representations (w/o DA) on BUIL DNyAI
 Span Sentence
 Model s-mic.s-mac.s-segmic.mac.
@@ -258,7 +267,12 @@ Table 3  Diﬀerent data augmentations on CRF and spanCRF on BUILD NyAI
 Span Sentence
 s-mic. s-mac. s-seg mic. mac.
 Model CRFsp.CRF CRFsp.CRF CRFsp.CRF CRFsp.CRF CRFsp.CRF
-No Augmentation 0.310.380.280.350.330.390.800.760.600.56 0.320.390.300.360.340.400.820.800.620.58 0.320.390.300.360.340.400.810.780.610.58 0.320.400.310.360.340.400.810.770.620.57 0.320.400.320.360.340.410.820.810.630.58 4 Conclusion
+No Augmentation 0.310.380.280.350.330.390.800.760.600.56
+  Swapping 0.320.390.300.360.340.400.820.800.620.58
+  Deletion 0.320.390.300.360.340.400.810.780.610.58
+  Back translation 0.320.400.310.360.340.400.810.770.620.57
+  All three DA 0.320.400.320.360.340.410.820.810.630.58
+4 Conclusion
 Our experiments demonstrate that while semi-Markov CRFs help to b oost the
 predictions at the span level, data augmentation strategies can mit igate data
 scarcity and improve the performance both at sentence- and spa n-levels, albeit
@@ -271,7 +285,7 @@ data annotation, especially in these specialized domains.8 Santosh et al.
 References
 1. Ahmad, S.R., Harris, D., Sahibzada, I.  Understanding le gal documents  classiﬁcation
  of rhetorical role of sentences using deep learning and natural language
-processing. In  2020 14th International Conference on Semantic Computing
+processing. In  2020 IEEE 14th International Conference on Semantic Computing
 (ICSC). pp. 464 467. IEEE (2020)
 2. Arora, R., Tsai, C.T., Tsereteli, K., Kambadur, P., Yang, Y.  A semi-markov structured
  support vector machine model for high-precision name d entity recognition.
@@ -300,11 +314,12 @@ Thirty-second Annual Conference. vol. 322, p. 3. IOS Press ( 2019)
 9(8), 1735 1780 (1997)
 11. Jin, D., Szolovits, P.  Hierarchical neural networks fo r sequential sentence classiﬁcation
  in medical scientiﬁc abstracts. In  Proceedings of the 2018 Conference on
-Empirical Methods in Natural Language Processing. pp. 3100 3109 (2018)
+Empirical Methods in Natural Language Processing. pp. 3100  3109 (2018)
 12. Kalamkar, P., Tiwari, A., Agarwal, A., Karn, S.M., Gupta , S., Raghavan, V., Modi,
 A.  Corpus for automatic structuring of legal documents. In   LREC (2022)
 13. Kemos, A., Adel, H.  Neural semi-markov conditional ran dom ﬁelds for robust
-character-based part-of-speech tagging. In Proceedings ofNAACL-HLT.pp.2736 2743 (2019)
+character-based part-of-speech tagging. In Proceedings ofNAACL-HLT.pp.2736 
+2743 (2019)
 14. Kenton, J.D.M.W.C., Toutanova, L.K.  Bert  Pre-traini ng of deep bidirectional
 transformers for language understanding. In  Proceedings of NAACL-HLT. pp.
 4171 4186 (2019)
@@ -315,7 +330,8 @@ ICLR 2015, San Diego, CA, USA, May 7-9, 2015, Conference Trac k Proceedings
 16. Kong, L., Dyer, C., Smith, N.A.  Segmental recurrent neu ral networks. In  Bengio,
 Y., LeCun, Y. (eds.) 4th International Conference on Learni ng Representations,
 ICLR 2016, San Juan, Puerto Rico, May 2-4, 2016, Conference T rack Proceedings
-(2016)Rhetorical Role Labeling for Legal Documents 9 17. Liu, Y., Che, W., Guo, J., Qin, B., Liu, T.  Exploring segm ent representations
+(2016)Rhetorical Role Labeling for Legal Documents 9
+17. Liu, Y., Che, W., Guo, J., Qin, B., Liu, T.  Exploring segm ent representations
 for neural segmentation models. In  Proceedings of the Twen ty-Fifth International
 Joint Conference on Artiﬁcial Intelligence. pp. 2880 2886 (2016)
 18. Lowell, D., Howard, B., Lipton, Z.C., Wallace, B.C.  Uns upervised data augmentation
@@ -341,7 +357,8 @@ speciﬁc parts. In  JURIX. pp. 111 120 (2018)
 Automatic classiﬁcation of rhetorical roles for sentences   Comparing rule-based
 scripts with machine learning. In  ASAIL@ ICAIL (2019)
 26. Wei,J., Zou,K. Eda Easydataaugmentationtechniques forboostingperformance
-on text classiﬁcation tasks. In  Proceedings of the 2019 9th Internat ional Joint Conference
+on text classiﬁcation tasks. In  Proceedings of the 2019 Con ference on Empirical
+Methods in Natural Language Processing and the 9th Internat ional Joint Conference
  on Natural Language Processing (EMNLP-IJCNLP). pp. 63 82 6388 (2019)
 27. Yamada, H., Teufel, S., Tokunaga, T.  Neural network bas ed rhetorical status classiﬁcation
  for japanese judgment documents. In  Legal Knowl edge and Information

@@ -22,7 +22,9 @@ Fang, Xiongfeng  Li, Gen  Wang, Cheng  Li, Lei
 Published in 
 IEEE Transactions on Power Electronics
 Link to article, DOI 
-10.1109/TPEL.2023.3317263 2023
+10.1109/TPEL.2023.3317263
+Publication date 
+2023
 Document Version
 Peer reviewed version
 Link back to DTU Orbit
@@ -122,22 +124,25 @@ iac
 vdciarmidc
 iac
 ua
-ubi iap ibp
+ubi1iap ibp
 ua
-ubi iap(c)
+ubi1iap(c)
 (d) (e)ua
 ucidcLdc
 Larm
 LarmLac
-LacVarm1 2 1 6
+LacVarm1 Varm2
+Varm1 Varm2Varm1ian ibn icniap ibp icp
+ibp Varm6
 
 Fig. 1. The HMMC. (a) Topology of an HMMC  (b) equivalent circuit after SM
 blocking (when ua   ub   uc)  (c) one general ac current path  (d) one ac current
 path when one arm current decreases to zero  (e) one dc fault current path.
 The FB -SM overvoltage is caused by the large arm current ,
 which  will also threat en the converter s safety while  rarely  This article has been accepted for publication in IEEE Transactions on Power Electronics. This is the author's version which has not been fully edited and
-content may change prior to final publication. Citation information  DOI 10.1109/TPEL.2023.3317263 2023 IEEE. Personal use is permitted, but republication/redistribution requires IEEE permission.
-See https //www.ieee.org/publications/rights/index.html for more information.Authorized licensed use limited to  Danmarks Tekniske Informationscenter. Downloaded on September 25,2023 08 46 47 UTC from IEEE Xplore.  Restrictions apply. noted . After blocking all SMs , an ac short circuit will occur
+content may change prior to final publication. Citation information  DOI 10.1109/TPEL.2023.3317263
+  2023 IEEE. Personal use is permitted, but republication/redistribution requires IEEE permission.
+See https //www.ieee.org/publications/rights/index.html for more information.Authorized licensed use limited to  Danmarks Tekniske Informationscenter. Downloaded on September 25,2023 at 08 46 47 UTC from IEEE Xplore.  Restrictions apply. noted . After blocking all SMs , an ac short circuit will occur
 temporarily . The fast rise of ac current will affect arm currents.
 After a short  current commutation process, the dc fault current
 will concentrate in  one upper arm and one lower arm , which
@@ -169,7 +174,8 @@ lower arm current  is iin. They can be described as
 dc i
 ip
 dc i
-in32 32i ii
+in32
+32i ii
 i ii      
       , (1)
 where idc is the dc current,  ii is the ac current.  When a dc short
@@ -189,15 +195,21 @@ in Fig.1 (b) . Since arm currents are in the same direction as the
 dc fault current, the RBV of each arm is in the same direction.
 Each ac current circuit contains two opposite arm voltages , as
 shown in Fig. 1( c). The changing rate of the circulating current
-i1 1 2 1 2 2u u V Vi
+i1 is
+
+a b arm1 arm2 1
+arm acd
+d 2 2u u V Vi
 t L L        . (3)
 Besides, since the number of blocked FB-SMs in each arm is
 the same, the value of the RBV in each arm is about  the same
-as well , which means Varm1 2. Thus , the changing rate of
+as well , which means Varm1   Varm2. Thus , the changing rate of
 i1 becomes (4),  which means arm voltages will not limit the changing  of i1 at this s tage. i1 will change  quickly , which is
 equivalent to a n ac short -circuit.
 
-ab 1 2 2uu i
+ab 1
+arm acd
+d 2 2uu i
 t L L    . (4)
 Accor ding to (1), some arm currents will rise, and others will
 decrease due  to the rise of ac currents . The ac current will flow
@@ -246,7 +258,7 @@ and dc side inductor Ldc).
 
 dc L
 arm dcd
-d i V
+d2i V
 t L L    . (7)
 The dc fault current will mainly pass through two arms , as
 shown in Fig. 1(e) . VL is decided by the ac voltage and RBVs
@@ -254,18 +266,21 @@ of the two arms . For example,  if va   vb   vc, the dc fault current
 will be transferred to the upper arm of phase a and the lower
 arm of phase  c. The lowe st voltage of inductors VL is
 
-L arm1 6 a cV V V u u        . (8) This article has been accepted for publication in IEEE Transactions on Power Electronics. This is the author's version which has not been fully edited and
-content may change prior to final publication. Citation information  DOI 10.1109/TPEL.2023.3317263 2023 IEEE. Personal use is permitted, but republication/redistribution requires IEEE permission.
-See https //www.ieee.org/publications/rights/index.html for more information.Authorized licensed use limited to  Danmarks Tekniske Informationscenter. Downloaded on September 25,2023 08 46 47 UTC from IEEE Xplore.  Restrictions apply. The voltage of inductors  in one of the other dc fault current
+L arm1 arm6 a cV V V u u        . (8) This article has been accepted for publication in IEEE Transactions on Power Electronics. This is the author's version which has not been fully edited and
+content may change prior to final publication. Citation information  DOI 10.1109/TPEL.2023.3317263
+  2023 IEEE. Personal use is permitted, but republication/redistribution requires IEEE permission.
+See https //www.ieee.org/publications/rights/index.html for more information.Authorized licensed use limited to  Danmarks Tekniske Informationscenter. Downloaded on September 25,2023 at 08 46 47 UTC from IEEE Xplore.  Restrictions apply. The voltage of inductors  in one of the other dc fault current
 paths (pass ing through the upper arm of phase b and the lower
 arm of phase c) is
 
-L arm2 6 b cV ' V V u u        . (9)
+L arm2 arm6 b cV ' V V u u        . (9)
 To not slow down the dc fault clearing,  the lowest voltage of
 inductors should not be decreased , as shown in (10) 
 
 LLV ' V  . (10)
-Thus , the rang e of Varm2 2 1 0.5 V V u u V u          , (11)
+Thus , the rang e of Varm2 is
+
+arm2 arm1 a b dc ab 0.5 V V u u V u          , (11)
 where Vdc is the rated dc voltage  of the converter . According to
 (3), a small Varm2 can lead to  a slow change  of ac currents. Thus,
 the upper arm voltage  vip of phase i will be
@@ -284,7 +299,9 @@ C.  Operation Sequence  of the Proposed RBV Control
 DC fault detected  
 Sorting  the three phase ac voltages
 Is it an upper arm  
-vip   0.5Vdc-uji vip   0.5 0.5Vdc-uik vin   0.5 0 0
+vip   0.5Vdc-uji vip   0.5Vdc vin   0.5Vdc-uik vin   0.5VdcYes No
+Yes No Yes Noui   umin or iin   0
+or idc   IIGBT  ui   umax or iip    0
 or idc   IIGBT  Yes No
 DC fault cleared  
 YesNonblock   vip/ VFB nblock   vin/ VFB
@@ -348,7 +365,7 @@ the dc fault current . The range of the maximum arm current with
 the proposed method is
 
 ac dcf
-arm dcf iiii      . (15)
+arm dcf23iiii      . (15)
 By increasing the ratio of FB -SMs, the range of RBV can
 be extended. When the maximum RBV of each arm is larger
 than the amplitude of ac line voltages, the proposed method can
@@ -366,8 +383,9 @@ Maximum FB-SM voltage  Reduced significantly
 DC fault clearing time  Increased slightly
 
  This article has been accepted for publication in IEEE Transactions on Power Electronics. This is the author's version which has not been fully edited and
-content may change prior to final publication. Citation information  DOI 10.1109/TPEL.2023.3317263 2023 IEEE. Personal use is permitted, but republication/redistribution requires IEEE permission.
-See https //www.ieee.org/publications/rights/index.html for more information.Authorized licensed use limited to  Danmarks Tekniske Informationscenter. Downloaded on September 25,2023 08 46 47 UTC from IEEE Xplore.  Restrictions apply. III. SIMULATION RESULTS
+content may change prior to final publication. Citation information  DOI 10.1109/TPEL.2023.3317263
+  2023 IEEE. Personal use is permitted, but republication/redistribution requires IEEE permission.
+See https //www.ieee.org/publications/rights/index.html for more information.Authorized licensed use limited to  Danmarks Tekniske Informationscenter. Downloaded on September 25,2023 at 08 46 47 UTC from IEEE Xplore.  Restrictions apply. III. SIMULATION RESULTS
 A symmetrical monopole hybrid MMC -HVDC link is built
 in Matlab/Simulink to verify the proposed method. Parameters
 are given in Table II. The dc fault detection time is selected as
@@ -383,10 +401,22 @@ SM blocking.
 TABLE  II
 SETUP OF THE HYBRID MMC
 Parameters  Simulation  Experiment
-Dc voltage   320 200 1.56 5 333 120 V
+Dc voltage   320 kV 200 V
+Rated dc current  1.56 kA  5 A
+AC line voltage 333 kV  120 V
 Number of HB -SMs per arm  178 1
-Number of FB -SMs per arm 178 1 1.8 100 17 560 μF
-Arm inductance  52.94 4.62 3.385 2.275 2.615 kADC
+Number of FB -SMs per arm 178 1
+SM voltage  1.8 kV  100 V
+SM capacitance  17 mF  560 μF
+Arm inductance  52.94 mH  4.62 mH
+Fault
+occursSMs
+blockedFault
+clearedFault
+occursSMs
+blockedFault
+cleared
+3.385 kA2.275 kV2.615 kADC
 current
 (kA)DC
 voltage
@@ -452,7 +482,7 @@ Times (5 ms/div)AC currents
 (5 A/div)Six arm currents
 (5 A/div)FBSM voltages
 (20 V/div)HBSM voltages
-(20 V/div)134 160 14 11 12.5 10 A
+(20 V/div)134 V160 V14 A 11 A12.5 A 10 A
 (a) (b) Times (5 ms/div)DC voltage
 (50 V/div)DC current
 (2 A/div)AC currents
@@ -469,8 +499,9 @@ method.  Compared with Fig. 5(a), it can be seen that the
 negative dc voltage is slightly reduced after SM blocking. The
 dc fault clearing time is slightly longer. The  increase  of ac
 This article has been accepted for publication in IEEE Transactions on Power Electronics. This is the author's version which has not been fully edited and
-content may change prior to final publication. Citation information  DOI 10.1109/TPEL.2023.3317263 2023 IEEE. Personal use is permitted, but republication/redistribution requires IEEE permission.
-See https //www.ieee.org/publications/rights/index.html for more information.Authorized licensed use limited to  Danmarks Tekniske Informationscenter. Downloaded on September 25,2023 08 46 47 UTC from IEEE Xplore.  Restrictions apply. current is limited after S M blocking.  The maximum arm current
+content may change prior to final publication. Citation information  DOI 10.1109/TPEL.2023.3317263
+  2023 IEEE. Personal use is permitted, but republication/redistribution requires IEEE permission.
+See https //www.ieee.org/publications/rights/index.html for more information.Authorized licensed use limited to  Danmarks Tekniske Informationscenter. Downloaded on September 25,2023 at 08 46 47 UTC from IEEE Xplore.  Restrictions apply. current is limited after S M blocking.  The maximum arm current
 stress is 11 A , and the maximum FB -SM voltage is 134 V, all
 lower than  the conventional method.  HB-SM voltage s are not
 changed in both situations. Experiment results are consistent
@@ -530,5 +561,6 @@ pp. 11491 -11496, Oct. 2022.
 [12] J. Qin, M. Saeedifard, A. Rockhill, and R. Zhou,  Hybrid design of
 modular multilevel converters for HVDC systems based on various
 submodule circuits,  IEEE Trans. Power Del ., vol. 30, pp. 385 -394, 2015.  This article has been accepted for publication in IEEE Transactions on Power Electronics. This is the author's version which has not been fully edited and
-content may change prior to final publication. Citation information  DOI 10.1109/TPEL.2023.3317263 2023 IEEE. Personal use is permitted, but republication/redistribution requires IEEE permission.
-See https //www.ieee.org/publications/rights/index.html for more information.Authorized licensed use limited to  Danmarks Tekniske Informationscenter. Downloaded on September 25,2023 08 46 47 UTC from IEEE Xplore.  Restrictions apply.
+content may change prior to final publication. Citation information  DOI 10.1109/TPEL.2023.3317263
+  2023 IEEE. Personal use is permitted, but republication/redistribution requires IEEE permission.
+See https //www.ieee.org/publications/rights/index.html for more information.Authorized licensed use limited to  Danmarks Tekniske Informationscenter. Downloaded on September 25,2023 at 08 46 47 UTC from IEEE Xplore.  Restrictions apply.

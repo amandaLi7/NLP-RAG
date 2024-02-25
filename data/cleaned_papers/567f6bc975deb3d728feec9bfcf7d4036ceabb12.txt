@@ -99,7 +99,7 @@ of its learned representation. This suggests that duplicating the feature
 using these duplicate features, and randomly placing it once at the
 edge of a graph, will significantly impact its learned representation,
 even if everything about the song remains exactly the same . As we
-show in our experimentation, one solution to this disparity lies inarXiv 2308.14601 1  [cs.CY]  28 2023 17, July 2017, Washington, DC, USA Rebecca Salganik, Fernando Diaz, and Golnoosh Farnadi
+show in our experimentation, one solution to this disparity lies inarXiv 2308.14601v1  [cs.CY]  28 Aug 2023Conference 17, July 2017, Washington, DC, USA Rebecca Salganik, Fernando Diaz, and Golnoosh Farnadi
 a debiasing method that is aware of similarities between musical
 items and is, thus, grounded in the musical domain.
 However, current approaches for mitigating popularity bias in
@@ -291,7 +291,8 @@ nodes,𝑃(or𝑈). The edge set 𝐸are defined between a playlist 𝑝𝑘
 𝑢𝑘). Following this setting, our goal (link prediction) is to predict
 whether any two song nodes 𝑡𝑖,𝑡𝑗 𝑇share a common parent
 playlist𝑝.
-3.3 3.3.1 2.1, there is no
+3.3 Reformulating Popularity Bias
+3.3.1 Defining Popularity As mentioned in Section 2.1, there is no
 true consensus within the community on how to define popularity.
 Here, we present a methodology which we believe allows for both
 the granularity and expressiveness necessary to highlight differences
@@ -320,7 +321,8 @@ playlist (or user) training interactions such that for each 𝑡𝑖,𝑎𝑡�
  {𝑝𝑖 𝑡𝑖 𝑝𝑖} . Then, we apply the base 10logarithmic smoothing
 to these values such that for each 𝑡𝑖,pop𝑡𝑖 log10(𝑎𝑡𝑖). Finally,
 we apply binning onto these values to split them into 10 groups
-such that for each 𝑡𝑖,pop_bin(𝑡𝑖) {0,..., 9}where bin 9 0. The visualization of this binning
+such that for each 𝑡𝑖,pop_bin(𝑡𝑖) {0,..., 9}where bin 9has a
+higher popularity value than bin 0. The visualization of this binning
 procedure and its comparison with the long tail method can be seen
 in Figure 2. As demonstrated by our visualizations, transforming
 the raw values into the logarithmic space shows that the bins are
@@ -329,7 +331,7 @@ so does the number of songs included in a bin.
 We showcase the gains that our method has over the canonical
 long tail model in Figure 2 where we compare the positioning of our
 binning methodology with the classic long tail model. Furthermore,
-as we later show Figures 5 6 our formulation of popularity is
+as we later show Figures 5 and 6 our formulation of popularity is
 able to elucidate crucial differences among both the datasets and
 baseline model performances on these datasets.
 3.3.2 Popularity Bias and Music Discovery In addition we formalize
@@ -464,7 +466,8 @@ As user consumption habits have shifted away from albums and
 towards playlists, streaming companies have invested significant
 energy into the task of Automatic Playlist Continuation andWeeklyTable 1  Dataset statistics
 Dataset Recommendation Setting Feedback Type #Users/Playlists #Songs #Artists
-MPD Automatic Playlist Continuation Explicit 11,100 183,408 37,509 10,267 890,568 100,638
+MPD Automatic Playlist Continuation Explicit 11,100 183,408 37,509
+LFM Weekly Discovery Implicit 10,267 890,568 100,638
 Discovery [57,59]. In the first task, Automatic Playlist Continuation
 requires the recommender system to perform next𝑘recommendationon
  a user generated playlist. Meanwhile, in Weekly Discovery ,
@@ -488,7 +491,8 @@ junction, before a user s musical preference solidifies, that the need
 to mitigate popularity bias is most acute because once a majoritarian
 pattern has been installed in a user s embedding, it will continue
 to influence all further music discovery.
-4.2 3.1, we extensively augment two publicly
+4.2 Datasets
+As introduced in Section 3.1, we extensively augment two publicly
  available datasets, LastFM (LFM) [ 46] and the Million Playlist
 Dataset (MPD) [ 16], with rich multi-modal track-level feature sets.
 Table 1 presents the graph statistics of both datasets.
@@ -520,10 +524,10 @@ define the set of unique artists in a playlist as 𝐴(.)and the
 𝑑-dimensional musical feature matrix associated with the
 tracks of a playlist as 𝐹(.) R .  𝑑.
 Metric Category Formulation
-Artist Recall@100 1
+Artist Recall@100 Music1
  𝑃𝑡𝑒𝑠𝑡  𝑝 𝑃𝑡𝑒𝑠𝑡1
  𝐴(𝐺𝑝)  𝐴(𝐺𝑝) 𝐴(𝑅𝑝) 
-Sound Homogeneity@100 1
+Sound Homogeneity@100 Music1
  𝑃𝑡𝑒𝑠𝑡  𝑝 𝑃𝑡𝑒𝑠𝑡cos(𝐹(𝑡𝑖),𝐹(𝑡𝑖)) (𝑡𝑖,𝑡𝑗) 𝑅𝑝
 Artist Diversity (per playlist) Fairness1
  𝑃𝑡𝑒𝑠𝑡  𝑝 𝑃𝑡𝑒𝑠𝑡1
@@ -563,9 +567,15 @@ In this section we present the results of our experimentation. First,
 we show the connections between individual fairness, popularity
 bias, and music discovery in the graph domain. Then, we evaluate
 our method, comparing with a series of the debiasing benchmarks.
-5.1 1 1preliminary version  https //anonymous.4open.science/r/RecSys B F/README.md
+5.1 RQ1  How does incorporating individual
+fairness improve the mitigation of
+popularity bias and facilitate music
+discovery 
+To showcase the performance of our algorithm in the discovery setting
+ and motivate the need for individual fairness in the mitigation
+1preliminary version  https //anonymous.4open.science/r/RecSys239B7F/README.md
 
-Figure 3 100of the
+Figure 3  Simulating Popularity Bias  We select 100of the
 most popular songs in MPD [ 57], duplicate their node level
 features, add them with new song track ids, and connecting
 them to one randomly selected playlist. Then, we analyze the
@@ -618,7 +628,10 @@ it is able to uncover proximity between items which are musically
 coherent even if they are not necessarily of similar popularity status.
  And, in doing so, we build representations that are complex,
 expressive, and effective for music recommendation.
-5.2 2 3 we show a side by side comparison of the various recommendation
+5.2 RQ2  How does our individual fairness
+approach compare to existing methods for
+mitigating popularity bias 
+In Table 3 we show a side by side comparison of the various recommendation
  and debiasing methods. We apply the Wilcoxon signedrank
  test [ 53] to the BOOST, PinSage results to assess the statistical
 significance of our method s performance. In Table 3, we select
@@ -664,7 +677,7 @@ this trade-off, though present in offline testing, doesn t necessarily
 carry over into online testing [ 12,35]. Thus, to provide a deeper
 analysis of our debiasing methodology, we present two musically
 relevant metrics, Artist Recall and Flow . As explained in Section
-4.3 2, the Artist Recall metric evaluates the
+4.3 and detailed in Table 2, the Artist Recall metric evaluates the
 recommender systems ability to identify correct artist-level recommendations
  and the Flow evaluates the overall homogeneity of
 the selected music. In particular, Flow plays an important role in
@@ -706,8 +719,26 @@ between PinSage and BOOST. As you can see, the BOOST method achieves the best pe
 when compared with the other debiasing benchmarks.
 Classic Music Fairness
 Data Model Recall@100 NDCG@100 Artist Recall@100 Flow Diversity %LT LT Cvg Artist Cvg
-MPDFeatures 0.041 0.073 0.073 0.900 0.841 0.588 0.022 0.073 0.044 0.048 0.141 0.908 0.680 0.0 0.0 0.001 0.106 0.004 0.119 0.004 0.272 0.011 0.905 0.000 0.672 0.025 0.002 0.000 0.000 0.000 0.025 0.001 0.068 0.002 0.144 0.003 0.139 0.003 0.931 0.001 0.707 0.003 0.476 0.002 0.032 0.000 0.105 0.000 0.044 0.002 0.043 0.002 0.220 0.008 0.904 0.001 0.765 0.013 0.000 0.003 0.000 0.000 0.048 0.002 0.064 0.005 0.104 0.006 0.135 0.013 0.927 0.004 0.703 0.059 0.226 0.001 0.017 0.000 0.098 0.004 0.028 0.014 0.030 0.015 0.149 0.022 0.902 0.002 0.831 0.034 0.019 0.006 0.000 0.001 0.011 0.003 0.045 0.002 0.100 0.003 0.162 0.004 0.969 0.032 0.829 0.001 0.504 0.003 0.036 0.004 0.117 0.000 0.020 0.004 0.047 0.003 0.137 0.002 0.979 0.000 0.899 0.002 0.522 0.001 0.037 0.003 0.125 0.000 4.408083e-16 1.768725e-19 0.727897 3.751961e-61 1.168816e-29 0.000596 - LFMFeatures
- 0.033 0.037 0.041 0.996 0.919 0.486 0.005 0.034 0.015 0.011 0.046 0.926 0.600 0.000 0.000 0.001 0.026 0.001 0.023 0.001 0.068 0.001 0.998 0.000 0.505 0.012 0.000 0.000 0.000 0.000 0.003 0.001 0.064 0.001 0.095 0.002 0.077 0.002 0.969 0.000 0.775 0.003 0.437 0.001 0.008 0.000 0.053 0.001 0.001 0.003 0.001 0.001 0.045 0.004 0.996 0.008 0.866 0.000 0.007 0.000 0.000 0.000 0.032 0.001 0.055 0.001 0.064 0.001 0.068 0.002 0.998 0.000 0.801 0.008 0.212 0.000 0.004 0.000 0.053 0.001 0.014 0.001 0.014 0.001 0.049 0.007 0.996 0.003 0.777 0.050 0.002 0.004 0.000 0.000 0.001 0.000 0.038 0.002 0.053 0.004 0.057 0.001 0.998 0.002 0.862 0.004 0.451 0.000 0.008 0.002 0.056 0.000 0.005 0.001 0.007 0.001 0.029 0.002 0.999 0.000 0.941 0.003 0.498 0.006 0.010 0.000 0.068 0.001 5.696989e-08 1.179627e-15 1.914129e-07 0.001408 1.112495e-34 2.477700e-11 - Figure
+MPDFeatures 0.041 0.073 0.073 0.900 0.841 0.588 0.022 0.073
+MostPop 0.044 0.048 0.141 0.908 0.680 0.0 0.0 0.001
+LightGCN 0.106 0.004 0.119 0.004 0.272 0.011 0.905 0.000 0.672 0.025 0.002  0.000 0.000  0.000 0.025  0.001
+PinSage 0.068 0.002 0.144 0.003 0.139 0.003 0.931  0.001 0.707 0.003 0.476  0.002 0.032  0.000 0.105  0.000
+ZeroSum 0.044 0.002 0.043  0.002 0.220 0.008 0.904  0.001 0.765 0.013 0.000  0.003 0.000  0.000 0.048  0.002
+xQuAD 0.064 0.005 0.104  0.006 0.135 0.013 0.927  0.004 0.703 0.059 0.226  0.001 0.017  0.000 0.098  0.004
+MACR 0.028 0.014 0.030  0.015 0.149 0.022 0.902  0.002 0.831 0.034 0.019  0.006 0.000  0.001 0.011  0.003
+REDRESS 0.045 0.002 0.100  0.003 0.162 0.004 0.969  0.032 0.829 0.001 0.504  0.003 0.036  0.004 0.117  0.000
+BOOST 0.020 0.004 0.047  0.003 0.137 0.002 0.979 0.000 0.899 0.002 0.522  0.001 0.037  0.003 0.125  0.000
+p values 4.408083e-16 1.768725e-19 0.727897 3.751961e-61 1.168816e-29 0.000596 - LFMFeatures
+ 0.033 0.037 0.041 0.996 0.919 0.486 0.005 0.034
+MostPop 0.015 0.011 0.046 0.926 0.600 0.000 0.000 0.001
+LightGCN 0.026 0.001 0.023  0.001 0.068 0.001 0.998  0.000 0.505 0.012 0.000  0.000 0.000  0.000 0.003  0.001
+PinSage 0.064 0.001 0.095  0.002 0.077 0.002 0.969 0.000 0.775 0.003 0.437  0.001 0.008  0.000 0.053  0.001
+ZeroSum 0.001 0.003 0.001  0.001 0.045 0.004 0.996  0.008 0.866 0.000 0.007  0.000 0.000  0.000 0.032  0.001
+xQuAD 0.055 0.001 0.064  0.001 0.068 0.002 0.998  0.000 0.801 0.008 0.212  0.000 0.004  0.000 0.053  0.001
+MACR 0.014 0.001 0.014  0.001 0.049 0.007 0.996  0.003 0.777 0.050 0.002  0.004 0.000  0.000 0.001  0.000
+REDRESS 0.038 0.002 0.053  0.004 0.057 0.001 0.998  0.002 0.862 0.004 0.451  0.000 0.008  0.002 0.056  0.000
+BOOST 0.005 0.001 0.007  0.001 0.029 0.002 0.999 0.000 0.941 0.003 0.498  0.006 0.010  0.000 0.068  0.001
+p values 5.696989e-08 1.179627e-15 1.914129e-07 0.001408 1.112495e-34 2.477700e-11 - Figure
  5  Dataset Breakdown by Long Tail Definition  We
 show visualizations of the user preferences indicated in
 the training set for each of the datasets used in evaluation.
@@ -742,11 +773,11 @@ dataset. We define visibility as the number of times an item
 from this group appears in the recommendations normalized
 by the total number of items in the recommendation lists.
 Bins are defined using the methodology of Section 3.3 where
-bin has the lowest popularity.
+bin0has the lowest popularity.
 definition for popularity bins can synthetically inflate the performance
  of %𝐿𝑇and𝐿𝑇𝐶𝑣𝑔 . For example, we can see that methods
 like xQuAD and ZeroSum are selecting a majority of their items
-from bins 1,2 3. Using a classical long tail methodology, these
+from bins 1,2 or 3. Using a classical long tail methodology, these
 differences would not be as visible, masking distinctions among the
 baselines  fairness.
 6 Conclusion
@@ -840,7 +871,7 @@ Scarcity. Twentieth-Century Music (2018).
 Konstan. 2014. User Perception of Differences in Recommender Algorithms. In
 Proceedings of the 8th ACM Conference on Recommender Systems (Foster City, Silicon
  Valley, California, USA) (RecSys  14) . Association for Computing Machinery,
-New York, NY, USA, 161 168. https //doi.org/10.1145/2645710.2645737 17, July 2017, Washington, DC, USA Rebecca Salganik, Fernando Diaz, and Golnoosh Farnadi
+New York, NY, USA, 161 168. https //doi.org/10.1145/2645710.2645737Conference 17, July 2017, Washington, DC, USA Rebecca Salganik, Fernando Diaz, and Golnoosh Farnadi
 [27] Jonathan Foote. 1997. Content-based retrieval of music and audio.
 [28] Chen Gao, Yu Zheng, Nian Li, Yinfeng Li, Yingrong Qin, Jinghua Piao, Yuhan
 Quan, Jianxin Chang, Depeng Jin, Xiangnan He, and Yong Li. 2023. A Survey of
@@ -892,7 +923,7 @@ InWWW  22 .
 with Graph Neural Networks. In ISMIR  21 .
 [42] Charilaos Lavranos, Petros Kostagiolas, and Konstantina Martzoukou. 2016. Theoretical
  and Applied Issues on the Impact of Information on Musical Creativity  An
-Information Seeking Behavior Perspective . 1 16. https //doi.org/10.4018/978-15225-0270-8.ch001
+Information Seeking Behavior Perspective . 1   16. https //doi.org/10.4018/978-15225-0270-8.ch001
 
 [43] Tsung-Yi Lin, Priya Goyal, Ross Girshick, Kaiming He, and Piotr Dollár. 2020.
 Focal Loss for Dense Object Detection. IEEE Transactions on Pattern Analysis and
@@ -990,7 +1021,7 @@ Embedding. In Proceedings of the Web Conference 2021 . 2980 2991.
 2021. Popularity-Opportunity Bias in Collaborative Filtering. In Proceedings of
 the 14th ACM International Conference on Web Search and Data Mining (Virtual
 Event, Israel) (WSDM  21) . Association for Computing Machinery, New York, NY,
-USA, 85 93. https //doi.org/10.1145/3437963.3441820 17, July 2017, Washington, DC, USA
+USA, 85 93. https //doi.org/10.1145/3437963.3441820Fairness Through Domain Awareness  Mitigating Popularity Bias For Music Discovery Conference 17, July 2017, Washington, DC, USA
 7 Ethical Considerations
 In this work we attempt to promote ethical recommendation by addressing
  the problem of popularity bias in music recommendation.

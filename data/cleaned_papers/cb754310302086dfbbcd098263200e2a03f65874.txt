@@ -1,7 +1,9 @@
 Membership Inference Attacks against Language Models
 via Neighbourhood Comparison
 Justus Mattern1, Fatemehsadat Mireshghallah2, Zhijing Jin3,4,
-Bernhard Schölkopf3,Mrinmaya Sachan4,Taylor Berg-Kirkpatrick2 1, UC San Diego2, MPI for Intelligent Systems3, ETH Zürich4 27@gmail.com
+Bernhard Schölkopf3,Mrinmaya Sachan4,Taylor Berg-Kirkpatrick2
+RWTH Aachen1, UC San Diego2, MPI for Intelligent Systems3, ETH Zürich4
+Correspondence  justusmattern27@gmail.com
 Abstract
 Membership Inference attacks (MIAs) aim to
 predict whether a data sample was present in
@@ -41,7 +43,10 @@ perfect knowledge about the training data distribution,
  attacks with imperfect knowledge, which
 demonstrates the need for a reevaluation of the
 threat model of adversarial attacks1.
-1 1Code is available here  https //github.com/
+1 Introduction
+The public release and deployment of machine
+learning models trained on potentially sensitive
+1Code is available here  https //github.com/
 mireshghallah/neighborhood-curvature-miauser data introduces a variety of privacy risks 
 While embedding models have been shown to
 leak personal attributes of their data (Song and
@@ -82,19 +87,24 @@ or very simple short sentences are naturally assigned
 2018  Holtzman et al., 2020), and the influence
 of this aspect on the obtained model score largely
 outweighs the influence of a model s tendency to
-overfit its training samples (Carlini et al., 2021a).arXiv 2305.18462 2  [cs.CL]  7 2023 2008, S&P
-500 2022 20%
+overfit its training samples (Carlini et al., 2021a).arXiv 2305.18462v2  [cs.CL]  7 Aug 2023Stocks fall to end
+Wall Street s worst
+year since 2008, S&P
+500 finishes 2022
+down nearly 20%
 
 
 Securities fall to end
 Wall Street s worst
 year after 2008, S&P
-500 2022 20%
+500 finishes 2022 down
+almost 20%
 
 Stocks fall to end
 Wall Street s worst
 year since 2009 , S&P
-500 2022 20% Proposal Model
+500 ends 2022 down
+nearly 20% Proposal Model
 Member Non-member
  Neighborhood
 Comparison Target Model Figure 1  Overview of our attack  Given a target sample x, we use a pretrained masked language model to generate
@@ -309,7 +319,7 @@ with the classical language modeling objective. Particularly,
 3.1 Datasets
 We perform experiments on three datasets, particularly
  news article summaries obtained from a
-subset of the AG News corpus containing four
+subset of the AG News corpus2containing four
 2http //groups.di.unipi.it/~gulli/AG_corpus_
 of_news_articles.htmlAlgorithm 1  Neighbourhood Generation
 Input   Textx  (w(1), ..., w(L)),n,m
@@ -336,9 +346,9 @@ therefore consists of positive examples for the membership
  classification task. Subset two is not used
 for training, but its samples are used as negative
 examples for the classification task. The subsets
-contain 60,000, 150,000 100,000 samples for
+contain 60,000, 150,000 and 100,000 samples for
 AG News, Twitter and Wikitext, respectively, leading
- to a total size of 120,000, 300,000 200,000
+ to a total size of 120,000, 300,000 and 200,000
 samples. For all corpora, we also keep an additional
  third subset that we can use to train reference
 models for reference-based attacks.
@@ -385,13 +395,13 @@ For the former, we use article summaries from remaining
  news categories present in the AG News
 corpus ("U.S.", "Europe", "Music Feeds", "Health",
 "Software and Development", "Entertainment") as
-well as the NewsCatcher dataset containing article
+well as the NewsCatcher dataset3containing article
 summaries for eight categories that highly overlap
  with AG News ("Business", "Entertainment",
 "Health", "Nation", "Science", "Sports", "Technology",
  "World"). For Twitter, we use a depression
 detection dataset for mental health support from
-tweets as well as tweet data annotated for offensive
+tweets4as well as tweet data annotated for offensive
  language5. As it was highly difficult to find
 data for reference models, it was not always possible
  to match the amount of training samples of
@@ -409,9 +419,16 @@ topic-labeled-news-dataset
 infamouscoder/mental-health-social-media
 5https //www.kaggle.com/datasets/mrmorj/
 hate-speech-and-offensive-language-datasetDataset #Samples
-AG News (Other Categories) 60,000 60,000 60,000 20,000 25,000 150,000 100,000 1  Number of samples in the reference model
+AG News (Other Categories) 60,000
+NewsCatcher 60,000
+AG News Oracle Data 60,000
+Twitter Mental Health 20,000
+Twitter Offensive Language 25,000
+Twitter Oracle Data 150,000
+Wikipedia Oracle Data 100,000
+Table 1  Number of samples in the reference model
 training data. Target models for News, Twitter and
-Wikipedia were trained on 60,000, 150,000 100,000
+Wikipedia were trained on 60,000, 150,000 and 100,000
 samples, respectively.
 and high quality samples.
 3.3 Implementation Details
@@ -420,11 +437,12 @@ the Huggingface transformers library (Wolf et al.,
 2020) and PyTorch (Paszke et al., 2019). As target
 models, we fine-tune the pretrained 117M parameter
  version of GPT-2, which originally has a validation
- perplexity of 56.8 200.3 on AG News
+ perplexity of 56.8 and 200.3 on AG News
 and Twitter data, respectively, up to validation set
-perplexities of 30.0 84.7. In our initial implementation
+perplexities of 30.0 and 84.7. In our initial implementation
  of our neighbourhood attack, we obtain
-the 100 110M
+the 100 most likely neighbour samples using one
+word replacement only from the pretrained 110M
 parameter version of BERT. We apply a dropout
 ofp  0.7to the embedding of the token we
 want to replace. For evaluating LiRA baselines,
@@ -438,7 +456,7 @@ We implement this evaluation scheme by adjusting
  our threshold γto meet this requirement and
 subsequently measure the attack s precision for the
 corresponding γ. All models have been deployed
-on single GeForce RTX 2080 40 GPUs.
+on single GeForce RTX 2080 and Tesla K40 GPUs.
 4 Results
 In this section, we report our main results and perform
  additional experiments investigating the impact
@@ -457,7 +475,7 @@ Oracle Reference Model* 18.90% 3.76% 0.16% 13.90% 1.59% 0.28% 11.70% 3.70% 0.12%
 Reference-Free Attacks 
 LOSS Attack 3.50% 0.10% 0.01% 2.08% 0.11% 0.02% 1.06% 0.11% 0.01%
 Neighbour Attack (Ours) 8.29% 1.73% 0.29% 7.35% 1.43% 0.28% 2.32% 0.27% 0.10%
-Table 2 1%,0.1%, and 0.01%. Candidate
+Table 2  True positive rates of various attacks for low false positive rates of 1%,0.1%, and 0.01%. Candidate
 Reference Model 1 refers to reference models trained on data from other AG News categories and our Twitter
 mental health dataset, Candidate Reference Model 2 refers to reference models trained on NewsCatcher and the
 offensive tweet classification dataset. *As reference attacks trained on oracle datasets represent a rather unrealistic
@@ -465,7 +483,8 @@ scenario with perfect assumptions, we compare our results with other baselines w
 when highlighting best results as bold.
 Concretely, we choose 1%, 0.1% and 0.01% as our
 target FPR values.
-4.1 2 3, with the
+4.1 Main Results
+Our results can be found in Table 2 and 3, with the
 former showing our attack performance in terms of
 true positive rates under low false positive rates and
 the latter showing AUC values. As previously discovered,
@@ -486,8 +505,14 @@ Ratio Attacks with an Oracle Reference Model,
 without relying on access to any additional data.
 News Twitter Wiki
 LiRA 
-Base Reference Model 0.76 0.75 0.54 1 0.78 0.81 2 0.75 0.77
-Oracle Reference* 0.94 0.89 0.90 0.64 0.60 0.52 0.79 0.77 0.62 3  AUC values of various attacks.4.2 Measuring the Dependence of Attack
+Base Reference Model 0.76 0.75 0.54
+Candidate Reference 1 0.78 0.81
+Candidate Reference 2 0.75 0.77
+Oracle Reference* 0.94 0.89 0.90
+Other Attacks 
+LOSS Attack 0.64 0.60 0.52
+Neighbour Attack 0.79 0.77 0.62
+Table 3  AUC values of various attacks.4.2 Measuring the Dependence of Attack
 Success on Reference Model Quality
 Motivated by the comparably poor performance of
 Likelihood Ratio Attacks with reference models
@@ -513,7 +538,8 @@ performance when the validation PPL does not exactly
 attackers will not always be able to train perfectly
 performing reference models.
 The results of this experiment can be found in
-Figure 2 3 for Wikitext. As can be seen, the performance
+Figure 2 for our News and Twitter dataset and in
+Figure 3 for Wikitext. As can be seen, the performance
  of reference-based attacks does indeed
 peak when reference models perform roughly the
 same as the target model. A further very interesting
@@ -531,7 +557,7 @@ Validation PPL (News)1.01.52.02.53.03.5TPR @ 0.1% FPR80 100 120 140 160 180 200V
 Validation PPL (News)0.160.180.200.220.240.260.28TPR @ 0.01% FPR80 100 120 140 160 180 200Validation PPL (Twitter)Figure 2  Attack Performance of reference attacks w.r.t
 validation PPL of reference models, compared to the
 performance of neighborhood attacks. The perplexities
-of the target models were 30.0 84.7 for AG News
+of the target models were 30.0 and 84.7 for AG News
 and Twitter, respectively
 rate of neighbourhood attacks when the reference
 model s performance is almost the same as that
@@ -546,7 +572,9 @@ of various components of our proposed neighbourhood
  attack.
 Number of Generated Neighbours For our
 main results in Table 2, we report the performance
-of neighbour attacks for the 100 most likely gen-#Neighbours 5 10 25 50 100 1% FPR 2.98% 4.57% 6.65% 8.19% 8.29%
+of neighbour attacks for the 100 most likely gen-#Neighbours 5 10 25 50 100
+News 
+1% FPR 2.98% 4.57% 6.65% 8.19% 8.29%
 0.1% FPR 0.53% 0.79% 1.43% 1.50% 1.73%
 0.01% FPR 0.05% 0.07% 0.18% 0.23% 0.29%
 Twitter 
@@ -589,11 +617,14 @@ the target model to assign the original sample and
 its neighbours almost exactly the same score, and
 therefore make it hard to observe high differences
 in loss scores for training members. Our results
-of generating 100 5. We find that
+of generating 100 neighbours with multiple word
+replacements are reported in Table 5. We find that
 replacing only one word clearly outperforms multiple
  replacements. Beyond this, we do not find
 highly meaningful differences between two and
-three word replacements.#Word Replacements 1 2 3 1% FPR 8.29% 4.09% 4.18%
+three word replacements.#Word Replacements 1 2 3
+News 
+1% FPR 8.29% 4.09% 4.18%
 0.1% FPR 1.73% 0.85% 0.94%
 0.01% FPR 0.29% 0.23% 0.21%
 Twitter 
@@ -778,7 +809,8 @@ Conference on Computer and Communications Security,
 Association for Computing Machinery.
 Raef Bassily, Adam Smith, and Abhradeep Thakurta.
 2014. Private empirical risk minimization  Efficient
-algorithms and tight error bounds. In 2014 55th Annual Symposium on Foundations of Computer
+algorithms and tight error bounds. In 2014 IEEE
+55th Annual Symposium on Foundations of Computer
 Science , pages 464 473.Nicholas Carlini, Steve Chien, Milad Nasr, Shuang
 Song, A. Terzis, and Florian Tramèr. 2021a. Membership
  inference attacks from first principles. 2022
@@ -798,7 +830,7 @@ Matthew Jagielski, Ariel Herbert-V oss, Katherine
 Lee, Adam Roberts, Tom Brown, Dawn Song, Úlfar
 Erlingsson, Alina Oprea, and Colin Raffel. 2021b.
 Extracting training data from large language models.
-In th USENIX Security Symposium (USENIX Security
+In30th USENIX Security Symposium (USENIX Security
  21) , pages 2633 2650. USENIX Association.
 Souradip Chakraborty, Amrit Singh Bedi, Sicheng Zhu,
 Bang An, Dinesh Manocha, and Furong Huang. 2023.
@@ -834,7 +866,7 @@ Computational Linguistics (Volume 1  Long Papers) ,
 pages 889 898, Melbourne, Australia. Association
 for Computational Linguistics.Alec Go, Richa Bhayani, and Lei Huang. 2009. Twitter
  sentiment classification using distant supervision.
-CS N project report, Stanford , 1(12) 2009.
+CS224N project report, Stanford , 1(12) 2009.
 Sorami Hisamoto, Matt Post, and Kevin Duh. 2020.
 Membership inference attacks on sequence-tosequence
  models  Is my data in your machine translation
@@ -847,7 +879,7 @@ Representations .
 Bargav Jayaraman, Lingxiao Wang, David E. Evans,
 and Quanquan Gu. 2020. Revisiting membership
 inference under realistic assumptions. Proceedings
-on Privacy Enhancing Technologies , 2021 348 368.
+on Privacy Enhancing Technologies , 2021 348   368.
 Jinyuan Jia, Ahmed Salem, Michael Backes, Yang
 Zhang, and Neil Zhenqiang Gong. 2019. Memguard 
 Defending against black-box membership inference
@@ -993,11 +1025,14 @@ York, NY , USA. Association for Computing Machinery.
 
 Samuel Yeom, Irene Giacomelli, Matt Fredrikson, and
 Somesh Jha. 2018. Privacy risk in machine learning 
- Analyzing the connection to overfitting. In 2018 31st Computer Security Foundations Symposium
+ Analyzing the connection to overfitting. In 2018
+IEEE 31st Computer Security Foundations Symposium
  (CSF) , pages 268 282.60 70 80 90 100 110 120 130
-Validation PPL (Wiki)24681012TPR @ 1% FPR0.0 0.2 0.4 0.6 0.8 1.0 60 70 80 90 100 110 120 130
-Validation PPL (Wiki)0.00.51.01.52.02.53.03.5TPR @ 0.1% FPR0.0 0.2 0.4 0.6 0.8 1.0 60 70 80 90 100 110 120 130
-Validation PPL (Wiki)0.020.040.060.080.100.12TPR @ 0.01% FPR0.0 0.2 0.4 0.6 0.8 1.0 3  Attack Performance of reference attacks w.r.t
+Validation PPL (Wiki)24681012TPR @ 1% FPR0.0 0.2 0.4 0.6 0.8 1.0
+60 70 80 90 100 110 120 130
+Validation PPL (Wiki)0.00.51.01.52.02.53.03.5TPR @ 0.1% FPR0.0 0.2 0.4 0.6 0.8 1.0
+60 70 80 90 100 110 120 130
+Validation PPL (Wiki)0.020.040.060.080.100.12TPR @ 0.01% FPR0.0 0.2 0.4 0.6 0.8 1.0Figure 3  Attack Performance of reference attacks w.r.t
 validation PPL of reference models, compared to the
 performance of neighborhood attacks. The perplexity
 of the target model was 55.6 for Wikipedia
@@ -1015,5 +1050,6 @@ language models.
 Wangchunshu Zhou, Tao Ge, Ke Xu, Furu Wei, and
 Ming Zhou. 2019. BERT-based lexical substitution.
 InProceedings of the 57th Annual Meeting of the Association
- for Computational Linguistics , pages 3368 3373, Florence, Italy. Association for Computational
+ for Computational Linguistics , pages 3368 
+3373, Florence, Italy. Association for Computational
 Linguistics.

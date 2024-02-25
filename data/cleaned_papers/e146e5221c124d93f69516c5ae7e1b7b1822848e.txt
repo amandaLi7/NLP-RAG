@@ -1,6 +1,7 @@
 TAPLOSS  A TEMPORAL ACOUSTIC PARAMETER LOSS FOR SPEECH ENHANCEMENT
 Yunyang Zeng1 , Joseph Konan1 , Shuo Han1 , David Bick1 , Muqiao Yang1 ,
-Anurag Kumar2, Shinji Watanabe1, Bhiksha Raj1 1Carnegie Mellon University,2Meta Reality Labs Research
+Anurag Kumar2, Shinji Watanabe1, Bhiksha Raj1
+1Carnegie Mellon University,2Meta Reality Labs Research
 ABSTRACT
 Speech enhancement models have greatly progressed in recent years,
 but still show limits in perceptual quality of their speech outputs. We
@@ -91,8 +92,11 @@ observing improvement in relative and absolute enhancement metrics
 2. METHODS
 2.1. Background
 In the time domain, let ydenote a signal with discrete duration M
-such that y RM. We deﬁne clean speech signal s, noise signal n,arXiv 2302.08088 1  [cs.CL]  16 2023Demucs LTAPλ1Ablation ( λ2 0) Demucs LTAPλ2Ablation ( λ1 1) FullSubNet LTAPγAblation
-Weight 0.01 0.03 0.1 0.3 1 0.01 0.03 0.1 0.3 1 0.01 0.03 0.1 0.3 1 2.788 2.841 2.824 2.834 2.859 2.899 2.903 2.926 2.958 2.958 2.979 2.981 2.979 2.969 2.965 0.9697 0.9698 0.9689 0.9689 0.9694 0.9707 0.9712 0.9714 0.9722 0.9720 0.9654 0.9654 0.9654 0.9648 0.9654 1  LTAPablation study of Demucs hyperparameters, λ1andλ2, and FullSubNet hyperparamter γ.
+such that y RM. We deﬁne clean speech signal s, noise signal n,arXiv 2302.08088v1  [cs.CL]  16 Feb 2023Demucs LTAPλ1Ablation ( λ2  0) Demucs LTAPλ2Ablation ( λ1  1) FullSubNet LTAPγAblation
+Weight 0.01 0.03 0.1 0.3 1 0.01 0.03 0.1 0.3 1 0.01 0.03 0.1 0.3 1
+PESQ 2.788 2.841 2.824 2.834 2.859 2.899 2.903 2.926 2.958 2.958 2.979 2.981 2.979 2.969 2.965
+STOI 0.9697 0.9698 0.9689 0.9689 0.9694 0.9707 0.9712 0.9714 0.9722 0.9720 0.9654 0.9654 0.9654 0.9648 0.9654
+Table 1  LTAPablation study of Demucs hyperparameters, λ1andλ2, and FullSubNet hyperparamter γ.
 Fig. 1   Percent Acoustic Improvement PAI on DNS-2020 Synthetic Test (No Reverb). Compared are baseline improvement over noisy (blue)
 PAI(s1,x), our improvement over noisy (red) PAI(s2,x), our improvement over baseline (green) PAI(s2,s1). Sorted by PAI(s2,s1).
 and noisy speech signal xwith the following additive relation 
@@ -113,10 +117,10 @@ A speech enhancement model Goutputs enhanced signal ˆ ssuch that
 During optimization, Gminimizes the divergence between sandˆ s.
 We denote ˆSto be enhanced complex spectrogram derived from ˆ s.
 2.2. Temporal Acoustic Parameter Estimator
-LetAy RT 25 25 temporal acoustic parameters of
+LetAy RT 25represent the 25 temporal acoustic parameters of
 signal ywithTdiscrete time frames. We represent Ay(t,p)as the
 acoustic parameter pat discrete time frame t. We standardize the
-acoustic parameters to have mean 0 1 across the time
+acoustic parameters to have mean 0 and variance 1 across the time
 dimension. Standardization helps optimization and analysis through
 consistent units across features. To predict Ay, we deﬁne estimator 
 ˆAy TAP (y) (4)TAP takes a signal input y, derives complex spectrogram Ywith
@@ -124,7 +128,10 @@ F  257 frequency bins, and then passes the complex spectrogram
 to a recurrent neural network to output the temporal acoustic parameter
  estimates ˆAy.
 For loss calculation, we deﬁne total mean absolute error as 
-MAE(Ay,ˆAy)  1 1 0 1 0 Ay(t,p) Aˆ y(t,p)  R(5)
+MAE(Ay,ˆAy)  1
+TPT 1 
+t 0P 1 
+p 0 Ay(t,p) Aˆ y(t,p)  R(5)
 During training,TAP parameters learn to minimize the divergence
 of MAE (As,Aˆ s)using Adam optimization.
 2.3. Temporal Acoustic Parameter Loss
@@ -135,7 +142,9 @@ Let magnitude spectrogram   ˆS(t,f)  represent the magnitude
 of complex spectrogram ˆS. Using Parseval s Theorem, the frame
 energy weights, ω, is derived from the magnitude spectrogram mean
 across the frequency axis 
-ω 1 1 0  ˆS(t,f)  2 RT(6)
+ω 1
+FF 1 
+f 0  ˆS(t,f)  2 RT(6)
 Because high energies are perceived more noticeably, we apply sigmoid,σ,
  to emulate human hearing with bounded scales, resulting
 in smoothed energy weights σ(ω).
@@ -173,7 +182,7 @@ loss functions. FullSubNet uses mean squared error (MSE) between
 the estimated cIRM and the true cIRM as loss ( LcIRM). Demucs has
 two loss functions, L1 waveform loss ( Lwave) and multi-resolution
 STFT loss (LSTFT). The baseline Demucs model pre-trained on the
-DNS 2020 1 waveform loss. In order for a fair
+DNS 2020 dataset only uses L1 waveform loss. In order for a fair
 comparison, we ﬁrst ﬁne-tune Demucs using L1 waveform loss and
 LTAP. However, previous works have shown that Demucs model is
 prone to generating tonal artifacts [27] and we have observed this
@@ -194,20 +203,20 @@ and only enhancement model parameters are optimized.
 This study uses 2020 Deep Noise Suppression Challenge (DNS) data
 [28], which includes clean speech (from Librivox corpus), noise(from Freesound and AudioSet [29]), and noisy speech synthesis
 methods. We synthesize thirty-second clean-noisy pairs, including
-50,000 10,000 samples for development. In
+50,000 samples for training and 10,000 samples for development. In
 our experiments, we use the ofﬁcial synthetic test set with no reverberation,
  which has 150 ten-second samples.
 3.3. Experiment Details And Ablation
-We ﬁne-tune ofﬁcial pre-trained checkpoints of Demucs and FullSubNet2.
+We ﬁne-tune ofﬁcial pre-trained checkpoints of Demucs1and FullSubNet2.
  We ﬁne-tune Demucs for 40 epochs with acoustic weight
-λ1 10 epochs with spectrogram weight λ2. We ﬁne-tune
+λ1and another 10 epochs with spectrogram weight λ2. We ﬁne-tune
 FullSubNet for 100 epochs with acoustic weight γ. TAP and TAPLoss
  source code will be available at https //github.com/
 YunyangZeng/TAPLoss . In our experiments, the estimator architecture
  is a 3-layer bidirectional recurrent neural network with
 long short-term memory (LSTM), with 256 hidden units. After 200
 epochs, the acoustic parameter estimator converges to a training error
- of 0.15 0.15.
+ of 0.15 and a validation error of 0.15.
 As an auxiliary loss, LTAPrequires ablation to determine an optimal
  hyperparameter speciﬁcation. We observe that Demucs beneﬁts
 from high acoustic weights in the time-domain model. However,
@@ -219,7 +228,7 @@ transpose convolution speciﬁcations. To address tone issues, we performed
 weight. We observed that high spectrogram weights help, but it is
 not as important as optimizing the acoustics. In the time-frequency
 domain, 0.03 as an acoustic weight gave the best result on FullSubNet.
- Notably, a weight of 1 0.03 for
+ Notably, a weight of 1 for Demucs and a weight of 0.03 for
 FullSubNet account for respective scale differences.
 3.4. Acoustic Evaluation
 Consider a clean speech target s, noisy speech input x, baseline enhanced
@@ -246,10 +255,14 @@ well enhancement ﬁne-tuning yields a more clean-sounding output.
 acoustics sound identical to clean acoustics.
 1https //github.com/facebookresearch/denoiser
 2https //github.com/haoxiangsnr/FullSubNetMetric Loss(es) used NB PESQ WB PESQ STOI ESTOI CD LLR WSS OVRL BAK SIG NORESQA
-Clean                 3.28 4.04 3.56 4.61 2.454 1.582 0.915 0.810 12.623 0.577 35.546 2.48 2.62 3.39 2.99 3.272 2.652 0.965 0.921 17.138 0.443 18.239 3.31 4.15 3.54 3.95
-Demucs Lwave λ1 3.356 2.859 0.969 0.930 17.803 0.334 23.442 3.15 3.78 3.58 4.12
-Demucs Lwave λ1LTAP λ2 3.409 2.958 0.972 0.934 18.298 0.312 14.392 3.34 4.14 3.57 4.08 3.386 2.889 0.964 0.920 16.962 0.399 20.887 3.21 4.02 3.51 4.09
-FullSubNet LcIRM γLTAP 3.417 2.981 0.965 0.922 17.677 0.310 18.946 3.25 4.05 3.53 4.14 2   Relative and absolute measures of speech enhancement quality, comparing LTAPwith the baseline on DNS-2020 Test (No Reverb).
+Clean                 3.28 4.04 3.56 4.61
+Noisy   2.454 1.582 0.915 0.810 12.623 0.577 35.546 2.48 2.62 3.39 2.99
+Demucs Lwave 3.272 2.652 0.965 0.921 17.138 0.443 18.239 3.31 4.15 3.54 3.95
+Demucs Lwave λ1LTAP 3.356 2.859 0.969 0.930 17.803 0.334 23.442 3.15 3.78 3.58 4.12
+Demucs Lwave λ1LTAP λ2LSTFT 3.409 2.958 0.972 0.934 18.298 0.312 14.392 3.34 4.14 3.57 4.08
+FullSubNet LcIRM 3.386 2.889 0.964 0.920 16.962 0.399 20.887 3.21 4.02 3.51 4.09
+FullSubNet LcIRM γLTAP 3.417 2.981 0.965 0.922 17.677 0.310 18.946 3.25 4.05 3.53 4.14
+Table 2   Relative and absolute measures of speech enhancement quality, comparing LTAPwith the baseline on DNS-2020 Test (No Reverb).
 Fig. 2   Pairwise comparison of selected relative and absolute metrics with ﬁnal LTAPDemucs with baseline on DNS-2020 Test (No Reverb).
 Figure 1 presents percentage acoustic improvement for Demucs
 and FullSubNet. On average, Demucs with Lwave,LTAPandLSTFT
@@ -294,7 +307,7 @@ on this empirical analysis, we recommend TAPLoss in situations
 with perceptual quality improvement objectives. Future works may
 signiﬁcantly beneﬁt perceptual quality by weighing acoustics given
 a speciﬁc metric optimization objective.
-Figure 2 150 tensecond
+Figure 2 presents more details that help us analyze the 150 tensecond
  samples. In order to facilitate pairwise comparison, we rank
 order by the baseline enhanced speech evaluation. By comparison,
 our enhanced speech outperforms the baseline enhanced speech on
@@ -358,7 +371,8 @@ evaluation of the speech quality,  IEEE Signal Processing Letters ,
 vol. 25, no. 11, pp. 1680 1684, 2018.
 [13] Y . Koizumi, K. Niwa, Y . Hioka, K. Kobayashi, and Y . Haneda,  Dnnbased
  source enhancement self-optimized by reinforcement learning
-using sound quality measurements,  in Proc. ICASSP , 2017, pp. 81 85.
+using sound quality measurements,  in Proc. ICASSP , 2017, pp. 81 
+85.
 [14] S. Kataria, J. Villalba, and N. Dehak,  Perceptual loss based speech
 denoising with an ensemble of audio pattern recognition and selfsupervised
  models,  in Proc. ICASSP , IEEE, 2021, pp. 7118 7122.
@@ -377,7 +391,8 @@ Zafeiriou,  End-to-end multimodal emotion recognition using deep
 neural networks,  IEEE Journal of selected topics in signal processing,
  vol. 11, no. 8, pp. 1301 1309, 2017.[19] G. d. Krom,  Some spectral correlates of pathological breathy and
 rough voice quality for different types of vowel fragments,  Journal
-of Speech, Language, and Hearing Research , vol. 38, no. 4, pp. 794 811, 1995.
+of Speech, Language, and Hearing Research , vol. 38, no. 4, pp. 794 
+811, 1995.
 [20] J. Hillenbrand, R. Cleveland, and R. Erickson,  Acoustic correlates
 of breathy vocal quality,  Journal of speech and hearing research ,
 vol. 37, pp. 769 78, Sep. 1994.
@@ -427,4 +442,5 @@ Sep. 2014.
 [34] N. A. Nystrom, M. J. Levine, R. Z. Roskies, and J. R. Scott,  Bridges 
 A uniquely ﬂexible hpc resource for new communities and data analytics, 
  in Proceedings of the 2015 XSEDE Conference  Scientiﬁc Advancements
- Enabled by Enhanced Cyberinfrastructure , 2015, pp. 1 8.
+ Enabled by Enhanced Cyberinfrastructure , 2015, pp. 1 
+8.

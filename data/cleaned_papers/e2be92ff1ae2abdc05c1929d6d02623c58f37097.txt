@@ -110,7 +110,7 @@ contributionstoonlinediscourse.
 Coherence theory originates in the detailed analysis of the
 inferences needed to support text interpretation in knowledgebased
  approaches to natural language processing. For example,
-this discourse from Hobbs(1985 3) depends on common-sense
+this discourse from Hobbs(1985ex 3) depends on common-sense
 knowledgeaboutbooksareformedandhandled 
 (1) Johntookabookfromtheshelf.Heturnedtotheindex.
 Coherence here consists of the fact that the ﬁrst event brings
@@ -182,7 +182,7 @@ audience discoursecontributionsbuildononeanother.Coherence
 relationsspecifyhowtheydothis.(OurdiscussionofExamples2 4
 followsKehler, 2002  Asher and Lascarides, 2003 ). We counsel AI
 researchers also to take a relational approach to discourse actions.
-One lesson ofourexperiments in Section isthat AIarchitectures
+One lesson ofourexperiments in Section4isthat AIarchitectures
 should not assume that discourse actions stand on their own.
 Instead, AI architectures should learn about discourse actions via
 theirlatentrelationtootherdiscourseactionsinthecontext.
@@ -204,7 +204,8 @@ of human thought. At the same time, AI research is increasingly
 successful at standardizingguidelines for annotators to classify the
 relationsfoundinspeciﬁcexamples.
 Strikingly, these diﬀerent relations are not encoded directly in
-the linguistic forms and structures that make up Examples (2 4). Of course, the forms of referring expressions in 3 are thepronouns that you d expect if this was a straightforward extended
+the linguistic forms and structures that make up Examples (2 
+4). Of course, the forms of referring expressions in 3 are thepronouns that you d expect if this was a straightforward extended
 description of a single scene  the structure of Example (4) also
 exhibits the syntactic and semantic parallels you d expect if the
 author wanted to facilitate a comparison. In that sense, linguistic
@@ -267,7 +268,7 @@ establish what imagery depicts  perhaps a representative moment
 during the event described by the text, or perhaps a telling
 moment as the event got underway, or achieved its results.
 Such interpretations attest to the importance of the cross-modal
-coherence relations which we illustrated already with Figure in
+coherence relations which we illustrated already with Figure1in
 the introduction. Coherence relations can provide a framework
 for ways that we pose questions about commonsense inferences in
 image textpresentations.
@@ -283,7 +284,7 @@ used a taxonomy of cross-modal coherence relations to inform
 the automated synthesis of multimodal documents, is a prescient
 exception), but it provides new illustrations of the key principles
 ofcoherence.
-Considertheimagesof Figure forexample.
+Considertheimagesof Figure2forexample.
 Both images are associated with the summary  looking out the
 window butthetextgetstwoqualitativelydiﬀerentinterpretations.
 Atleftwehaveviewofacatthroughglass.It sthecatthat slooking
@@ -559,7 +560,7 @@ happyorgreen bananas are on the table .Alikhani and Stone
 theillustration orvisiblerelation. They study the following
 datasets with diﬀerent types of textual descriptions with images 
 (1) Google s Conceptual Captions (CC) ( Sharma et al., 2018 ) (2)
-Flickr K (Flickr) ( Young et al., 2014 ) (3) Visual Storytelling
+Flickr30K (Flickr) ( Young et al., 2014 ) (3) Visual Storytelling
 (VIST) (Huang et al., 2016 ) (4) the Recipe dataset ( Yagcioglu
 etal.,2018 ).WhileFlickrandCOCOarecaptainingcorpora,VIST
 includes story-like descriptions for connecting ﬁve images and CC
@@ -580,7 +581,7 @@ information in generated text that may not necessarily be true.
 Information about the background or context of the image that is
 not depicted in the image. The coherence framework can help us
 identify,characterizeandaddresstheseissues.
-Coherence relations indicate discourse goals. Figure shows
+Coherence relations indicate discourse goals. Figure5shows
 that the labels that our dataset presents correlate with the genre
 under which the captions have been produced, which means that
 text and images from diﬀerent types of publications have diﬀerent
@@ -636,7 +637,7 @@ crossentropyobjective.
 /four.tnum./one.tnum./one.tnum. Problem formulation
 The problem is structured in the form of a classiﬁcation task
 where goal of the model is to classify the representation hias a
-coherence relation. We measure the model performance using theF metricasitisawell-knownmetricformeasuringaclassiﬁcation
+coherence relation. We measure the model performance using theF1metricasitisawell-knownmetricformeasuringaclassiﬁcation
 modelperformance.
 Formally, speaking, we deﬁne a function fθpas a pre-trained
 model which maps an input pair ( xi,vi) to a vector hiin
@@ -671,8 +672,9 @@ performance when compared to the models obtained using ﬁnetunedrepresentations
 /four.tnum./one.tnum./two.tnum. Experiment parameters
 AsdescribedintheSection4.2,weﬁne-tunethemodelsintwo
 ways. When the pre-trained weights are frozen and only the probe
-weights are trained, we rely on a batch size of 64 5 10 3. However, when the we run the experiments to
-ﬁne-tunethepre-trainedweightswerelyonabatchsizeof anda
+weights are trained, we rely on a batch size of 64 and a learning
+rate of 5  10 3. However, when the we run the experiments to
+ﬁne-tunethepre-trainedweightswerelyonabatchsizeof8anda
 learningrateof10 5.Inbothcases,theweightsareoptimizedusing
 the Adam optimizer and a small regularization weight of 10 5is
 utilizedtopreventmodelfromoverﬁttingthedata.
@@ -690,7 +692,12 @@ TABLE/one.tnum ThistableshowstheF/one.tnumscoreaveragesandtheirbreakdownsob tain
 Metrics
 Macro average Micro average
 Model F/one.tnum Precision Recall F/one.tnum Precision Recall
-CLIP 0.466 0.468 0.571 0.762 0.744 0.781 0.582 0.545 0.712 0.780 0.758 0.804 0.635 0.601 0.713 0.808 0.796 0.820 0.333 0.337 0.345 0.682 0.617 0.763 0.623 0.590 0.776 0.798 0.791 0.804 0.637 0.614 0.712 0.794 0.798 0.789
+CLIP 0.466 0.468 0.571 0.762 0.744 0.781
+VilBERTVil 0.582 0.545 0.712 0.780 0.758 0.804
+VilBERTLinguistic 0.635 0.601 0.713 0.808 0.796 0.820
+Resnet 0.333 0.337 0.345 0.682 0.617 0.763
+BERT 0.623 0.590 0.776 0.798 0.791 0.804
+BERT Resnet 0.637 0.614 0.712 0.794 0.798 0.789
 Macro average gives equal weights to the model performance in eac h class and hence represents the eﬀect of imbalance while micro ave rage represents the overall average performance.
 The diﬀerence in performance highlights that representations lear ned by some model architecture are better suited for the purpose of ide ntifying discourse relations  VilBERTLinguistic
 representationsinthiscase.
@@ -723,12 +730,13 @@ relations between image-text pairs are more suited to learning
 discourserelations.
 When compared with the baseline probes, speciﬁcally BERT
 probe, the performance of the best pre-trained visual-linguisitic
-probes is similar in terms of the F1 1. This highlights that pre-trained models are unable to
+probes is similar in terms of the F1 score achieved as shown in
+theTable1. This highlights that pre-trained models are unable to
 make use of the visual information in a meaningful manner to
 successfully encode the relations between the image-text pairs in
 thehigherdimensionalembeddingspace.
 When the pre-trained model weights are ﬁne-tuned we see a
-signiﬁcantincreaseinthemacroF scoreasshowninthe Figure6.
+signiﬁcantincreaseinthemacroF1scoreasshowninthe Figure6.
 Even though the best performance after ﬁne-tuning is achieved
 by the VilBERTLinguistic model, it only lags behind the BERT
   Resnet performance by a slight margin of 3%. This provides
@@ -794,7 +802,7 @@ The proposed approach has two versions a baseline Vanilla
 version and a ViLBERT-based model. Both are trained on
 RaCCoon training data with normalized human annotated rating
 toobtainthemodel stargetscore.Detailsofthedatasetandablation
-studies are available here ( Inan et al., 2021 ).Table presents the
+studies are available here ( Inan et al., 2021 ).Table2presents the
 results of the COIN-based study. The last row shows the Kendall
 correlation coeﬃcient between the scores assigned by users and
 the metric. The N-gram based metrics cannot adapt to the outof-domainground-truthcaptionsfromCOINwhichresultsinlow
@@ -844,15 +852,24 @@ coherence than models that allow for more ﬂexibility. Research
 Frontiersin ArtiﬁcialIntelligence /one.tnum/zero.tnum frontiersin.orgAlikhani et al. /one.tnum/zero.tnum./three.tnum/three.tnum/eight.tnum/nine.tnum/frai./two.tnum/zero.tnum/two.tnum/three.tnum./one.tnum/zero.tnum/four.tnum/eight.tnum/eight.tnum/seven.tnum/four.tnumTABLE/two.tnum Scoresfordiﬀerentimagecaptioningmodelsasevaluated byusersanddiﬀerentcaptioningmetrics (Inanetal.,/two.tnum/zero.tnum/two.tnum/one.tnum ).
 System Metrics
 Model Coh. Label Avg.Hum.
-RatingB B MRLCSBR BS-F COSMic
+RatingB1B2MRLCSBR BS-F COSMic
 VanillaCOSMic
 VBERTCOSMic
 Vanilla COSMic
 VBERT 
-BUTD Visible 2.191 0.163 0.077 0.049 0.160 0.092 0.030 0.877 0.863 0.706 0.796 0.522 0.641 30.532 0.050 0.025 0.019 0.066 0.020 0.002 1.114 0.862 0.696 0.777 0.516 0.614 3.213 0.041 0.000 0.012 0.063 0.012 0.000 1.059 0.863 0.548 0.727 0.505 0.602
-Subj. 2.830 0.033 0.012 0.011 0.057 0.017 0.000 1.197 0.849 0.323 0.421 0.358 0.403 2.915 0.029 0.000 0.017 0.058 0.013 0.000 1.304 0.842 0.533 0.629 0.482 0.527 3.298 0.028 0.011 0.013 0.053 0.011 0.000 1.101 0.863 0.684 0.784 0.515 0.604 2.830 0.026 0.010 0.008 0.055 0.015 0.000 1.084 0.859 0.548 0.748 0.511 0.565
-Subj. 2.298 0.039 0.012 0.019 0.066 0.024 0.003 1.217 0.849 0.364 0.451 0.379 0.419 2.426 0.036 0.000 0.018 0.062 0.021 0.000 1.362 0.842 0.568 0.666 0.499 0.519
-Kendall s Correlation( τ) 1.000 0.071 0.154 0.036 0.036 0.571 0.0520.286 0.445 0.571 0.546 0.667 0.764
+BUTD Visible 2.191 0.163 0.077 0.049 0.160 0.092 0.030  0.877 0.863 0.706 0.796 0.522 0.641
+BaseVisible 30.532 0.050 0.025 0.019 0.066 0.020 0.002  1.114 0.862 0.696 0.777 0.516 0.614
+Meta 3.213 0.041 0.000 0.012 0.063 0.012 0.000  1.059 0.863 0.548 0.727 0.505 0.602
+Subj. 2.830 0.033 0.012 0.011 0.057 0.017 0.000  1.197 0.849 0.323 0.421 0.358 0.403
+Story 2.915 0.029 0.000 0.017 0.058 0.013 0.000  1.304 0.842 0.533 0.629 0.482 0.527
+LiteVisible 3.298 0.028 0.011 0.013 0.053 0.011 0.000  1.101 0.863 0.684 0.784 0.515 0.604
+Meta 2.830 0.026 0.010 0.008 0.055 0.015 0.000  1.084 0.859 0.548 0.748 0.511 0.565
+Subj. 2.298 0.039 0.012 0.019 0.066 0.024 0.003  1.217 0.849 0.364 0.451 0.379 0.419
+Story 2.426 0.036 0.000 0.018 0.062 0.021 0.000  1.362 0.842 0.568 0.666 0.499 0.519
+Kendall s Correlation( τ) 1.000 0.071 0.154 0.036  
+0.036 
+0.571 
+0.0520.286 0.445 0.571 0.546 0.667 0.764
 TheCOSMicViLBERT modelhasthehighestcorrelationscoreswithhu manjudgments.in large vision language models, however, has overwhelmingly
 designed around capturing the relationships between image
 content and Visibletext. Relaxing this assumption oﬀers exciting
@@ -888,7 +905,8 @@ Funding
 The research presented in this paper has been supported
 by NSF awards IIS-1526723, IIS-1703883, CCF-1934924, IIS1955404,
  IIS-1955365, DGE-2021628, RETTL-2119265, and
-EAGER-2122119 8650-22-P-6415.
+EAGER-2122119 and by Air Force Research Lab Contract
+FA8650-22-P-6415.
 Acknowledgments
 Thanks to Mert Inan, Piyush Sharma, Radu Soricut,
 Shengjie Li, Gerard de Melo, Sreyasi Nag Chowdhury,
@@ -922,7 +940,7 @@ Alikhani, M., Han, F., Ravi, H., Kapadia, M., Pavlovic, V., and S tone, M. (2022
  Cross-modal coherence for text-to-image retrieval,  in Proceedings of the 36th AAAI
 ConferenceonArtiﬁcialIntelligence,Vol.10 ,10427 10435.
 Alikhani, M., Sharma, P., Li, S., Soricut, R., and Stone, M. (2 020).  Cross-modal
-coherencemodelingforcaptiongeneration, in Proceedingsofthe thAnnualMeeting
+coherencemodelingforcaptiongeneration, in Proceedingsofthe58thAnnualMeeting
 of the Association for Computational Linguistics (Association for Computational
 Linguistics),6525 6535.
 Alikhani, M., and Stone, M. (2018).  Exploring coherence in vis ual explanations, 
@@ -935,10 +953,10 @@ Asher,N.,andLascarides,A.(2003). LogicsofConversation .Cambridge Cambridge
 UniversityPress.
 Bavelas, J. B., and Chovil, N. (2000). Visible acts of meaning  a n integrated
 messagemodeloflanguageinface-to-facedialogue. J.Lang.Soc.Psychol .19,163 194.
-doi 10.1177/0261927 00019002001
+doi 10.1177/0261927X00019002001
 Bolinger, D. (1972). Accent is predictable (if you re a mind-re ader).Language . 48,
 633 644.doi 10.2307/412039
-Chowdhury, S. N., Tandon, N., and Weikum, G. (2019). Know look  
+Chowdhury, S. N., Tandon, N., and Weikum, G. (2019). Know2look  
 commonsense knowledge for visual search. arXiv preprint arXiv 1909.00749.
 doi 10.48550/arXiv.1909.00749
 Cohn, N. (2013). Visual narrative structure. Cogn. Sci . 37, 413 452.
@@ -959,10 +977,10 @@ image captioning with unpaired stylized text,  in Proceedings of the IEEE
 Conference on Computer Vision and Pattern Recognition (Long Beach, CA  IEEE),
 4204 4213.
 Hiippala, T., Alikhani, M., Haverinen, J., Kalliokoski, T., Logac heva, E., Orekhova,
-S.,etal.(2021).Ai d-rst amultimodalcorpusof primarys choolsciencediagrams.
+S.,etal.(2021).Ai2d-rst amultimodalcorpusof1000primarys choolsciencediagrams.
 Lang.Resour.Evaluat .55,661 688.doi 10.1007/s10579-020-09517-1
 Hobbs, J. R. (1979). Coherence and coreference. Cogn. Sci . 3, 67 90.
-doi 10.1207/s cog0301_4
+doi 10.1207/s15516709cog0301_4
 Hobbs, J. R. (1985). On the coherence and structure of discourse . Technical report,
 CenterfortheStudyofLanguageandInformation,StanfordU niversity.Huang, T.-H. K., Ferraro, F., Mostafazadeh, N., Misra, I., A grawal, A., Devlin, J.,
 et al. (2016).  Visual storytelling,  in Proceedings of the 2016 Conference of the North
@@ -984,7 +1002,8 @@ Kendon, A. (2004). Gesture  Visible Action as Utterance . Cambridge  Cambridge
 UniversityPress.
 Kruk, J., Lubin, J., Sikka, K., Lin, X., Jurafsky, D., and Div akaran, A. (2019).
  Integrating text and image  Determining multimodal docume nt intent in Instagram
-posts,  in Proceedings of the 2019 9th International Joint Conference on Nat ural Language
+posts,  in Proceedings of the 2019 Conference on Empirical Methods in Natural
+Language Processing and the 9th International Joint Conference on Nat ural Language
 Processing(EMNLP-IJCNLP) (HongKong AssociationforComputationalLinguistics),
 4622 4632.
 Kuznetsova, A., Rom, H., Alldrin, N., Uijlings, J., Krasin, I., Pont-Tuset, J.,
@@ -998,7 +1017,7 @@ Lin, T.-Y., Maire, M., Belongie, S., Hays, J., Perona, P., Ram anan, D., et al. 
  Microsoft coco  common objects in context,  in European Conference on Computer
 Vision(Springer),740 755.
 Lu, J., Batra, D., Parikh, D., and Lee, S. (2019).  Vilbert  pre training task-agnostic
-visiolinguisticrepresentationsforvision-and-languageta sks, inProceedingsofthe rd
+visiolinguisticrepresentationsforvision-and-languageta sks, inProceedingsofthe33rd
 InternationalConferenceonNeuralInformationProcessingSystems ,13 23.
 McCloud,S.(1993). UnderstandingComics TheInvisibleArt .WilliamMorrow.
 McNeill,D.(1992). HandandMind WhatGesturesRevealAboutThought .Chicago 
@@ -1020,11 +1039,12 @@ ResourcesAssociation,ELRA).
 Frontiersin ArtiﬁcialIntelligence /one.tnum/two.tnum frontiersin.orgAlikhani et al. /one.tnum/zero.tnum./three.tnum/three.tnum/eight.tnum/nine.tnum/frai./two.tnum/zero.tnum/two.tnum/three.tnum./one.tnum/zero.tnum/four.tnum/eight.tnum/eight.tnum/seven.tnum/four.tnum
 Radford, A., Kim, J. W., Hallacy, C., Ramesh, A., Goh, G., Agarwal, S., et al.
 (2021).  Learning transferable visual models from natural lan guage supervision,  in
-Proceedingsofthe thInternationalConferenceonMachineLearning, ICML2021,1824 2021, Virtual Event, volume 139 of Proceedings of Machine Lea rning Research ,
+Proceedingsofthe38thInternationalConferenceonMachineLearning, ICML2021,1824
+ July 2021, Virtual Event, volume 139 of Proceedings of Machine Lea rning Research ,
 edsM.MeilaandT.Zhang(PMLR),8748 8763.
 Ramesh,A.,Pavlov,M.,Goh,G.,Gray,S.,Voss,C.,Radford,A.,e tal.(2021). Zeroshot
  text-to-image generation,  in Proceedings of the 38th International Conference
-on Machine Learning, ICML 2021, 18-24 2021, Virtual Event, v olume 139 of
+on Machine Learning, ICML 2021, 18-24 July 2021, Virtual Event, v olume 139 of
 Proceedings of Machine Learning Research , eds M. Meila and T. Zhang (PMLR),
 8821 8831.
 Roberts, C. (2012). Information structure  towards an inte grated formal theory of
@@ -1041,7 +1061,7 @@ assistant by using inter-utterance context,  in Proceedings of The 3rd Workshop 
 e-CommerceandNLP (Seattle,WA AssociationforComputationalLinguistics),4 0 45.
 Sharma, P., Ding, N., Goodman, S., and Soricut, R. (2018).  Co nceptual captions 
 a cleaned, hypernymed, image alt-text dataset for automatic im age captioning,  in
-Proceedingsofthe thAnnualMeetingoftheAssociationforComputati onalLinguistics
+Proceedingsofthe56thAnnualMeetingoftheAssociationforComputati onalLinguistics
 (Volume1 LongPapers) (Melbourne,VIC AssociationforComputationalLinguistics ),
 2556 2565.
 Shuster, K., Humeau, S., Hu, H., Bordes, A., and Weston, J. (2 019).  Engaging
@@ -1051,7 +1071,7 @@ Psycholinguist.Res .23,197 229.doi 10.1007/BF02139085
 Stone,M.,andStojnic,U.(2015).Meaninganddemonstratio n.Rev.Philos.Psychol .
 6,69 97.doi 10.1007/s13164-014-0213-4
 vanKuppevelt,J.(1995).Discoursestructure,topicalityandque stioning.J.Linguist .
-31,109 147.doi 10.1017/S X
+31,109 147.doi 10.1017/S002222670000058X
 Vaswani, A., Shazeer, N., Parmar, N., Uszkoreit, J., Jones, L., Gomez, A. N., et al.
 (2017).  Attention is all you need,  in Advances in Neural Information Processing
 Systems,5998 6008.
@@ -1062,9 +1082,10 @@ forComputationalLinguistics),2830 2840.
 Webber,B.,Prasad,R.,Lee,A.,andJoshi,A.(2019). Thepenndiscoursetreebank3.0
 annotationmanual .Technicalreport,LinguisticDataConsortium.
 Webber, B., Stone, M., Joshi, A., and Knott, A. (2003). Anapho ra and
-discourse structure. Comput. Linguist . 29, 545 588. doi  10.1162/0891201033227 53347
+discourse structure. Comput. Linguist . 29, 545 588. doi  10.1162/0891201033227
+53347
 Webber, B. L. (1987).  The interpretation of tense in discour se,  inProceedings of
-the thAnnualMeetingonAssociationforComputationalLinguisti cs(Associationfor
+the25thAnnualMeetingonAssociationforComputationalLinguisti cs(Associationfor
 ComputationalLinguistics),147 154.
 Yagcioglu, S., Erdem, A., Erdem, E., and Ikizler-Cinbis, N. (2 018). Recipeqa  a
 challenge dataset for multimodal comprehension of cooking reci pes.arXiv preprint

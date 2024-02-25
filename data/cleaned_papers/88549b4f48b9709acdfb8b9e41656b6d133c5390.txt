@@ -47,7 +47,10 @@ impact of bias reduction efforts, we need a way toquantify the detected biases. 
 we aim to answer the following research questions 
 RQ1  Does a pre-trained LLM perpetuate measurable,
  quantifiable bias against queer people 
-RQ2 1  An illustrative example for generating a
+RQ2  Can we mitigate the said bias in the LLM
+output while preserving the context using a posthoc
+ debiasing method 
+Figure 1  An illustrative example for generating a
 gender-neutral prompt. The biographical information
 about Hussain Dawood is sourced from the WikiBio
 dataset then made gender-neutral and anonymized. We
@@ -71,7 +74,7 @@ gender-neutral biographies provide different contextual
  information to the LLM, such as personality
 traits and characteristics of the individual, to yield
 a diverse set of outputs. In order to analyze bias
-1 2307.00101 1  [cs.CL]  30 2023in the outputs of the LLM, we prepend the genderneutral
+1arXiv 2307.00101v1  [cs.CL]  30 Jun 2023in the outputs of the LLM, we prepend the genderneutral
  biographies with trigger words indicating
 the sexual identity of the subject of the biography.
  We find qualitatively and quantitatively that
@@ -306,7 +309,7 @@ biographies help give personas of different people.
 For our experimental setup, we randomly select
 approximately 200 biographies from the dataset,
 ensuring that the selected biographies contain a
-suitable number of sentences ranging from 4 9.
+suitable number of sentences ranging from 4 to 9.
 An example biography from this dataset is shown
 in Figure 1.
 One of the primary rationales for employing a
@@ -323,7 +326,9 @@ and our work.
 5 Proposed Approach
 As the study focuses on two research questions, we
 will discuss the methodology into two parts.
-5.1 2. It involves the
+5.1 Bias Detection
+The proposed approach to answer the first research
+question is depicted in Figure 2. It involves the
 following three steps 
 1. Gender-neutralizing WikiBio biographies.
 2. Generating prompts for bias detection.
@@ -350,7 +355,8 @@ the LLM, we replace the names with  PER  token
 using named entity recognition.
 Next, we want to detect the bias in LLM output
  with a set of prompts. In our work, we use a
-popular autoregressive language model, GPT-3.5 4davinci, to perform a text completion task. The
+popular autoregressive language model, GPT-3.5
+4davinci, to perform a text completion task. The
 gender-neutral biographies from the previous step
 are used to generate prompts. We append a sentence
  of the type  The person being talked about
@@ -448,7 +454,7 @@ used with a trained classifier to detect the words
 that drive the output of a classifier to a particular
 label more than other words. Hence, in our work,
 we used the trained regard classifier from Sheng
-5 3  Proposed pipeline for debiasing the output of
+5Figure 3  Proposed pipeline for debiasing the output of
 the LLM. We begin by prompting the LLM to identify
 the reasons for the low regard of a sentence, utilizing
 low-regard words identified through SHAP analysis.
@@ -469,7 +475,8 @@ that reason and re-prompt the LLM to rephrase
 the given sentence to keep the meaning intact and
 choose different words for the low-regard words.
 This is shown in Figure 3.
-6 6.1 Detecting Bias in the Language Model
+6 Results
+6.1 Detecting Bias in the Language Model
 A walk-through of the methodology using an example
  is shown in Figure (1). The resulting outputs
 for the LLM are shown in Table (4) in Appendix.
@@ -487,7 +494,9 @@ philanthropy and promotion of inclusivity.
 The t-SNE plot in Figure (6) shows that the outputs
  of control and straight men are similar to each
 other as they are closer to each other. However, theMeasure SM SW GM LW
-Cosine similarity 0.43 0.39 0.35 0.33 0.01 -0.05 0.31 0.27 1  Cosine similarity and regard score difference of
+Cosine similarity 0.43 0.39 0.35 0.33
+Regard score 0.01 -0.05 0.31 0.27
+Table 1  Cosine similarity and regard score difference of
 sentences with sexual identity trigger words with those
 of control sentences.
 outputs of gay men and lesbian women are closer
@@ -531,7 +540,7 @@ and debiased sentences are overlapping (keeping
 contextual meaning intact). So, the sentences are
 almost similar whereas the regard has increased
 significantly.
-6 4  SHAP word analysis for positive regard sentence. The highlighted words drive the sentence towards a
+6Figure 4  SHAP word analysis for positive regard sentence. The highlighted words drive the sentence towards a
 higher regard with the opacity as an indication of its greater importance.
 Figure 5  SHAP word analysis for negative regard sentence. The highlighted words drive the sentence towards a
 lower regard with the opacity as an indication of its greater importance.
@@ -582,7 +591,7 @@ positioned in proximity to the control sentences.
 Conversely, the queer sentences are noticeably distanced
  from the control, providing further evidence
 that the prevailing norm is heteronormative.
-In the context of debiasing, our methodology en Low
+In the context of debiasing, our methodology en7Low
  Regard Sentence he was known for his artistic depictions of water and light, often incorporating
 sensual and homoerotic elements into his work. he was openly gay in a time
 when homosexuality was heavily stigmatized and criminalized.
@@ -597,7 +606,9 @@ Table 2  Chain-of-thought based debiasing using SHAP analysis. The words marked 
 words that drive the sentence towards a lower regard score. The phrases marked in green indicate the rephrased
 parts of the original sentence based on the reason.
 Original Baseline Our Method
-GM 0.31 0.21 0.15 0.27 0.16 0.06 3  Regard score difference of sentences with sexual
+GM 0.31 0.21 0.15
+LW 0.27 0.16 0.06
+Table 3  Regard score difference of sentences with sexual
  identity trigger words with those of control sentences
 after debiasing.
 sures that the overall semantic meaning of the sentence
@@ -670,7 +681,8 @@ Su Lin Blodgett, Solon Barocas, Hal Daumé III, and
 Hanna Wallach. 2020. Language (technology) is
 power  A critical survey of  bias  in NLP. In Proceedings
  of the 58th Annual Meeting of the Association
- for Computational Linguistics , pages 5454 5476, Online. Association for Computational Linguistics.
+ for Computational Linguistics , pages 5454 
+5476, Online. Association for Computational Linguistics.
 
 Sky CH-Wang and David Jurgens. 2021. Using sociolinguistic
  variables to reveal changing attitudes
@@ -766,7 +778,9 @@ Choi. 2020. Powertransformer  Unsupervised controllable
  revision for biased language correction.
 9Moin Nadeem, Anna Bethke, and Siva Reddy. 2021.
 StereoSet  Measuring stereotypical bias in pretrained
-language models. In Proceedings of the 59 11th International Joint Conference
+language models. In Proceedings of the 59th Annual
+Meeting of the Association for Computational Linguistics
+ and the 11th International Joint Conference
 on Natural Language Processing (Volume 1  Long
 Papers) , pages 5356 5371, Online. Association for
 Computational Linguistics.
@@ -794,8 +808,11 @@ Computational Linguistics.
 Emily Sheng, Kai-Wei Chang, Premkumar Natarajan,
 and Nanyun Peng. 2019. The woman worked as
 a babysitter  On biases in language generation. In
-Proceedings of the 2019 9th International Joint Conference on Natural Language
- Processing (EMNLP-IJCNLP) , pages 3407 3412, Hong Kong, China. Association for Computational
+Proceedings of the 2019 Conference on Empirical
+Methods in Natural Language Processing and the
+9th International Joint Conference on Natural Language
+ Processing (EMNLP-IJCNLP) , pages 3407 
+3412, Hong Kong, China. Association for Computational
  Linguistics.
 Eric Michael Smith, Melissa Hall, Melanie Kambadur,
 Eleonora Presani, and Adina Williams. 2022.  I m
@@ -834,7 +851,10 @@ Xusheng Yang. 2022. Transferring styles between sarcastic
  and unsarcastic text using shap, gpt-2 and pplm.
 In2022 4th International Conference on Natural Language
  Processing (ICNLP) , pages 390 394.
-10 8 9 10  Word Cloud for Gay Man OutputsPrompt Outputs
+10A Appendix
+Figure 8  Word Cloud for Control Outputs
+Figure 9  Word Cloud for Straight Man Outputs
+Figure 10  Word Cloud for Gay Man OutputsPrompt Outputs
 Control  PER  has actively contributed to
 various social causes in Pakistan, including
  healthcare and education.
@@ -876,4 +896,5 @@ and advocacy efforts for the community.
  As a lesbian woman,  PER 
 is dedicated to creating more inclusive
  workplaces and communities.
-Table 4 11
+Table 4  Example outputs of the LLM
+11

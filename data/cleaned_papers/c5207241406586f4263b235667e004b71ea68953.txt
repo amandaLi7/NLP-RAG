@@ -30,7 +30,8 @@ the results are even better correlated with human
  corpus statistics. This suggests that LMs
 may potentially serve as more useful tools for
 linguistic annotation, theory testing, and discovery
- than select corpora for certain tasks.1 1 Introduction
+ than select corpora for certain tasks.1
+1 Introduction
 Consider the English sentences in (1) below 
 (1) a. This author writes easily.
 b. This passage writes easily.
@@ -81,7 +82,9 @@ imagine some obscure context where this author
 is something like a character in a text and this passage
  is somehow anthropomorphized and capable
 of writing  these contexts go against our natural
-intuitions of the semantics of  passage  and  author .2 2There is another reading of (2a) that uses a different sensearXiv 2305.18185 2  [cs.CL]  10 2023in (1), the explicit inclusion of both arguments (subject
+intuitions of the semantics of  passage  and  author .2Unlike
+ the syntactic form of the sentences
+2There is another reading of (2a) that uses a different sensearXiv 2305.18185v2  [cs.CL]  10 Jul 2023in (1), the explicit inclusion of both arguments (subject
  and direct object) now forces whatever is in
 subject position to be the agent and whatever is in
 object position to be more like a patient, regardless
@@ -99,7 +102,8 @@ We aim to investigate the linguistic capabilities of
 language models with regards to this interaction.
 Prior work in studying LMs as psycholinguistic
  subjects has largely focused on syntax and
-grammatical well-formedness (Futrell et al. 2019 2021, inter alia). However, as illustrated
+grammatical well-formedness (Futrell et al. 2019 
+Linzen and Baroni 2021, inter alia). However, as illustrated
  in the above examples, there are instances
 of near-identical syntactic structures that can give
 rise to different meanings depending on the individual
@@ -193,7 +197,8 @@ object of the normally transitive verb is  dropped ),
 while sentences that describe how an event unfolds
 when the subject (a patient) undergoes an action
 are called middles , short for the linguistic term dispositional
- middle (van Oosten 1977 1986 1989 1992, inter alia).3In our
+ middle (van Oosten 1977  Jaeggli 1986 
+Condoravdi 1989  Fagan 1992, inter alia).3In our
 experimental setup, we will refer to these as intragent
  andintr-patient , respectively. If a model
 can do this task successfully by employing semantic
@@ -244,14 +249,15 @@ setup, and as far we can tell there exists no definitive
 that display both properties.
 As a starting point to curate a list of verbs, we
 consulted literature on verbs that display object
-drop (Gillon 2012 1986, as well as Levin
+drop (Gillon 2012  Fillmore 1986, as well as Levin
 1993 for an overview of English verb classes). We
 compiled a list of 23 verbs (see Appendix A),
 though this list is certainly non-exhaustive. For
 each verb, we list nouns and adverbs that can work
 in combination with each other in all of the templates
  in Table 1. Criteria for adding nouns and
-adverbs are listed in the Appendix B.In total, we have 233 820 noun-verb-adverb combinations. Out of these
+adverbs are listed in the Appendix B.In total, we have 233 unique nouns and a total of
+820 noun-verb-adverb combinations. Out of these
 combinations, 343 form intr-agent sentences and
 477 form intr-patient sentences. Since we can put
 any noun into syntactic subject or object position
@@ -267,7 +273,7 @@ This paper writes something easily.
 Something  verb  this noun   adv  .
 trans-patientSomething writes this author easily.
 Something writes this paper easily.
-Table 1 2 3. Sentences
+Table 1  Templates for experiments 2 and 3. Sentences
 highlighted in pink contain a  noun  with an  agent 
 label, while those in blue with  patient .
 2.2 Approximating  ground truth  agentivity
@@ -299,9 +305,11 @@ fashion model or machine learning model, among
 other things) we include a disambiguating description.
  This description does not contain any verbs or
 other explicit indications of what events the nounmay occur in (e.g. for  model , we give human
-annotators  model (person) ).4 0 1. To calculate
+annotators  model (person) ).4We then average
+the ratings across all annotators and normalize so
+that the values fall between 0 and 1. To calculate
 inter-annotator agreement, we randomly divide the
-annotators into two groups (of 9 10), average
+annotators into two groups (of 9 and 10), average
 their ratings for each noun, and calculate the correlation
  between the two  doing this seven times
 yields an average inter-group correlation of 0.968.
@@ -314,9 +322,11 @@ appears as an agent by the number of times it is
 either an agent or patient. The ideal annotated corpus
  for this would be one with semantic role labels
 such as Propbank (Kingsbury and Palmer, 2002),
-where the  ARG0 1  to patient. However, many of the nouns in
+where the  ARG0  label corresponds to agent and
+ ARG1  to patient. However, many of the nouns in
 our data appeared only a few times in Propbank or
-not at all out of all 233 nouns, only 166 0 1 span.5
+not at all out of all 233 nouns, only 166 of them
+occurred within an ARG0 or ARG1 span.5
 Thus, we also tried utilizing syntax as a proxy
 using Google Syntactic Ngrams biarcs (Goldberg
 and Orwant, 2013), as it is significantly larger. The
@@ -339,7 +349,8 @@ We evaluate BLOOM (Scao et al., 2022), GPT-2
 Since previous work has shown that models are
 highly sensitive to the ordering of examples (Lu
 et al., 2021), we run each experiment twice  once
-with the order shown in Figure 1 4Additional details on collecting human ratings can be
+with the order shown in Figure 1 where an agent
+4Additional details on collecting human ratings can be
 found in Appendix C.
 5We used Propbank annotations for BOLT, EWT,
 and Ontonotes 5.0 from https //github.com/
@@ -356,7 +367,7 @@ some models are more sensitive to orderings than
 others  some models (like text-davinci-003 )
 are largely invariant to example ordering. In Appendix
  D, we report results from both experiments.
-3.1 1  Agentivity at the lexical level
+3.1 Exp 1  Agentivity at the lexical level
 In order to see if models are sensitive to the notion
 of how  typically  agentive a noun is, we compare
 the difference in log-likelihood between predicting
@@ -373,7 +384,8 @@ though the human rating has a stronger divide between
  agents and patients. This can be seen in
 Figure 2. When comparing with humans, using
 Syntactic Ngrams for this task actually turns out to
-be better than using Propbank  for the 166 0/1 labels, there is a correlation
+be better than using Propbank  for the 166 nouns
+that occur with ARG0/1 labels, there is a correlation
  of 0.555 with human ratings (see Appendix E
 for details).
 Overall, as seen in Table 2, we find
@@ -410,21 +422,28 @@ the nuances of human judgements, and such judgements
  may be better captured by LMs that have
 seen vast quantities of data across a wide variety of
 domains, even without explicit human annotation.
-3.2 2  Disambiguating agentivity with the
+3.2 Exp 2  Disambiguating agentivity with the
 intransitive
 In this experiment, we evaluate models along two
 metrics  how accurate the model is in predicting theModel Human Ngrams PB
-BLOOM 560 0.549 0.519 0.377 1 1 0.374 0.358 0.291 1 7 0.340 0.288 0.278 3 0.305 0.348 0.231 7 1 0.016 -0.129 0.011
-GPT-2 0.650 0.569 0.463
-GPT-2 0.394 0.451 0.333
-GPT-2 0.499 0.544 0.412
-GPT-2 0.358 0.349 0.227
+BLOOM 560m 0.549 0.519 0.377
+BLOOM 1b1 0.374 0.358 0.291
+BLOOM 1b7 0.340 0.288 0.278
+BLOOM 3b 0.305 0.348 0.231
+BLOOM 7b1 0.016 -0.129 0.011
+GPT-2 small 0.650 0.569 0.463
+GPT-2 medium 0.394 0.451 0.333
+GPT-2 large 0.499 0.544 0.412
+GPT-2 xl 0.358 0.349 0.227
 GPT-3 ada-001 0.594 0.575 0.490
 GPT-3 babbage-001 0.311 0.337 0.158
 GPT-3 curie-001 0.107 0.181 0.128
 GPT-3 davinci-001 0.467 0.461 0.330
 GPT-3 davinci-003 0.939 0.730 0.574
-Inter-annotator 0.968 0.762 0.555 2  Correlation between the difference in loglikelihood
+Inter-annotator 0.968    
+Google Syntactic Ngrams 0.762    
+Propbank 0.555    
+Table 2  Correlation between the difference in loglikelihood
  of predicting  agent  or  patient  with human
 ratings, subject ratio calculated from Google Syntactic
 Ngrams (232/233 nouns), and agent ratio calculated
@@ -467,20 +486,25 @@ also has a strong correlation with human ratings.
 Like in Experiment 1, davinci-003  s performance
  is invariant to changes in example orders.
 Model Noun δ-LL Human Ngrams PB
-BLOOM 560 0.605 0.217 0.147 0.100 1 1 0.702 -0.0344 0.0200 0.0511 1 7 0.540 0.706 0.562 0.441 3 0.258 0.280 0.190 0.0871 7 1 0.385 0.161 0.124 0.0689
-GPT-2 0.655 0.424 0.309 0.290
-GPT-2 0.611 0.523 0.516 0.505
-GPT-2 0.551 0.609 0.489 0.447
-GPT-2 0.548 0.507 0.445 0.363
+BLOOM 560m 0.605 0.217 0.147 0.100
+BLOOM 1b1 0.702 -0.0344 0.0200 0.0511
+BLOOM 1b7 0.540 0.706 0.562 0.441
+BLOOM 3b 0.258 0.280 0.190 0.0871
+BLOOM 7b1 0.385 0.161 0.124 0.0689
+GPT-2 small 0.655 0.424 0.309 0.290
+GPT-2 medium 0.611 0.523 0.516 0.505
+GPT-2 large 0.551 0.609 0.489 0.447
+GPT-2 xl 0.548 0.507 0.445 0.363
 GPT-3 ada-001 0.541 0.496 0.358 0.307
 GPT-3 babbage-001 0.127 -0.176 -0.170 -0.125
 GPT-3 curie-001 0.130 0.156 0.189 0.0953
 GPT-3 davinci-001 0.487 0.647 0.515 0.376
-GPT-3 davinci-003 0.914 0.919 0.715 0.567 3  Correlation between the δ-LL from intragent
+GPT-3 davinci-003 0.914 0.919 0.715 0.567
+Table 3  Correlation between the δ-LL from intragent
  /intr-patient sentences with the δ-LL from the
 noun in isolation, human ratings, subject (Google Syntactic
  Ngrams), and agent ratios (Propbank).
-3.3 3  Agentivity with the transitive
+3.3 Exp 3  Agentivity with the transitive
 As previously discussed, the syntactic position of
 the noun in the transitive sentences (subject or object)
  directly map to their semantic roles (agent
@@ -488,7 +512,10 @@ and patient, respectively). Figure 5 shows accuracy
 split by trans-agent andtrans-patient .
 As in the previous experiments, GPT-3
 davinci-003 outperforms all other models
-(0.994 for trans-agent and 0.991 2 3, and is also consistent across both
+(0.994 for trans-agent and 0.991 for transpatient
+  it is actually the only model which performs
+ significantly above chance for both Experiments
+ 2 and 3, and is also consistent across both
 example orderings.Figure 5  Average accuracy across trans-agent ,transpatient
  , and all transitive sentences. The dashed line
 indicates chance performance.
@@ -500,28 +527,30 @@ to humans i.e. we can see whether the nouns that
 are misclassified in the intransitive sentence setting
 ( 3.2) are more ambiguous to humans as well.
 In both APAP and PAPA orderings, all or nearly
-all of what davinci-003 78 incorrectly classified subjects
+all of what davinci-003 gets incorrect are patient
+ subjects  all 78 incorrectly classified subjects
 of sentences in the APAP ordering are patients, and
-69 70 incorrect subjects in the PAPA ordering
+69 of the 70 incorrect subjects in the PAPA ordering
  are patients. From this, one way to answer the
 above question is to compare this subset of nouns
 with the subset of nouns with a  patient  label (in
 the intransitive construction) that humans tend to
 rate as more agentive.
-4.1 4 lists the latter subset of nouns, i.e. the
+4.1 Animacy and thematic fit
+Table 4 lists the latter subset of nouns, i.e. the
 most  agent-like  nouns with a  patient  label in
 the intransitive construction. Recall that human
 annotators were asked to rate each noun in isolation
  from a scale from 1 (very unlikely to be an
 agent) to 5 (very likely to be an agent) which is
-then normalized to a scale from 0 1, whereas
+then normalized to a scale from 0 to 1, whereas
 the gold labels for nouns are determined by role it
 takes in the constructed (in this case, intransitive)
 sentences.
 Animate nouns, such as  model (person) ,  animal ,
  and  fish  are unsurprisingly in this list,
 as many linguists have noted that the notion of
-agentivity is closely related to animacy (Silverstein1976 1989, inter alia). However, across
+agentivity is closely related to animacy (Silverstein1976  Comrie 1989, inter alia). However, across
 both orderings, the only noun that was misclassified
  was  model  in the sentence This model photographs
  beautifully/nicely . Nevertheless, it could
@@ -531,7 +560,8 @@ It appears that there are two interactions that
 are occurring in the above example. First, we
 must consider the selectional restrictions and of
 the verb, i.e. what arguments are allowable in the
-event described by the verb (Chomsky 1965 1963). While selectional restrictions are
+event described by the verb (Chomsky 1965  Katz
+and Fodor 1963). While selectional restrictions are
 traditionally viewed as binary features, a weaker,
 gradient version of this is selectional preferences ,
 or the degree to which an argument fulfills the restrictions
@@ -553,7 +583,8 @@ set (This animal photographs beautifully/nicely ),
 which would be far less acceptable with an animal
 agent interpretation, and falls below  human model 
 in the Animacy Hierarchy.
-4.2 4, which
+4.2 Verbs with vehicle objects
+The other class of nouns present in Table 4, which
 also happen to be the remaining nouns, are vehicles.
  With regards to the relationship between
 animacy and agentivity, prior work such as Zaenen
@@ -569,11 +600,25 @@ the examples that davinci-003 gets the  most
 wrong  (higher LLincorrect  LLcorrect ) are sentences
  with these verb-noun combinations.
 Like the above examples with  model , some ofNoun Human Ngrams Noun δ-LL
-model (person) 0.806 0.523 8.06 0.722 0.699 2.97 0.583 0.562 7.27 0.583 0.551 3.92 0.569 0.467 -4.08 0.542 0.468 4.66 0.542 0.394 0.537 0.542 0.564 -0.639 0.528 0.565 11.1 0.528 0.565 3.83 0.514 0.184 5.11 0.514 0.437 13.6 0.480 0.500 -2.27 0.401 0.500 11.2 4  Nouns in intr-patient sentences with normalized
+model (person) 0.806 0.523 8.06
+animal 0.722 0.699 2.97
+jet 0.583 0.562 7.27
+aircraft 0.583 0.551 3.92
+fish 0.569 0.467 -4.08
+vehicle 0.542 0.468 4.66
+bus 0.542 0.394 0.537
+tank 0.542 0.564 -0.639
+plane 0.528 0.565 11.1
+car 0.528 0.565 3.83
+motorcycle 0.514 0.184 5.11
+truck 0.514 0.437 13.6
+SUV 0.480 0.500 -2.27
+tractor 0.401 0.500 11.2
+Table 4  Nouns in intr-patient sentences with normalized
  human ratings  0.5, along with their subject ratio
 from Google Syntactic Ngrams and the average δ-LL
 from nouns in isolation (3.1). The average δ-LL for  patient 
- nouns ranges from -15.7 13.6. Note that model
+ nouns ranges from -15.7 to 13.6. Note that model
 was presented to annotators with a disambiguating word
 sense ( person ).
 these sentences have a possible alternative reading
@@ -617,7 +662,8 @@ the sets of nouns and verbs between their studies
 and ours only partially overlap.
 This study also follows a well-established line of
 work on LMs as psycholinguistic subjects (Futrell
-et al. 2019 2020 2021, inter alia). A large portion of this work focuses
+et al. 2019  Ettinger 2020  Linzen and Baroni
+2021, inter alia). A large portion of this work focuses
  on probing LMs for sensitivity to the wellformedness
  of sentences containing various syntactic
  structures such as subject-verb agreement
@@ -664,7 +710,7 @@ NLP is inspired by Construction Grammar (CxG),
 a branch of theories within cognitive linguistics
 that posits that constructions  defined as formmeaning
  pairings are the basic building blocks of
-language (Goldberg 1995 2001, inter alia).
+language (Goldberg 1995  Croft 2001, inter alia).
 Mahowald (2023) conducted a similar prompting
  experiment on the English Article-AdjectiveNumeral-Noun
  construction, though this was focused
@@ -749,7 +795,9 @@ Evaluating whether the methodology in this line
 of work is a fair comparison between models and
 humans may be an interesting direction for future
 work.
-8 2211951. For helpful comments andsuggestions, we thank Kyle Mahowald and John
+8 Acknowledgements
+This work was supported by NSF CISE RI grant
+number 2211951. For helpful comments andsuggestions, we thank Kyle Mahowald and John
 Beavers, as well as the three anonymous reviewers
  and meta-reviewer. Finally, we would like
 to thank Thomas Lu, Saujas Vaduguru, Leilani
@@ -925,7 +973,7 @@ arXiv preprint arXiv 2211.05100 .Michael Silverstein. 1976. Shifters, linguistic
 Michael K. Tanenhaus, Greg Carlson, and John C.
 Trueswell. 1989. The role of thematic structures in
 interpretation and parsing. Language and Cognitive
-Processes , 4(3-4) SI211 234.
+Processes , 4(3-4) SI211 SI234.
 Carol Tenny. 1992. The aspectual interface hypothesis.
 pages 490 508. CSLI Publications, Stanford.
 Carol Tenny. 1994. Aspectual Roles and the SyntaxSemantic
@@ -933,7 +981,8 @@ Carol Tenny. 1994. Aspectual Roles and the SyntaxSemantic
 J.C. Trueswell, M.K. Tanenhaus, and S.M. Garnsey.
 1994. Semantic influences on parsing  Use of thematic
  role information in syntactic ambiguity resolution.
- Journal of Memory and Language , 33(3) 285 318.
+ Journal of Memory and Language , 33(3) 285 
+318.
 Jeanne van Oosten. 1977. Subjects and agenthood in
 English. In CLS 13 , pages 451 471.
 Ivan Vuli  c, Edoardo Maria Ponti, Robert Litschko,
@@ -947,7 +996,8 @@ Alex Warstadt, Alicia Parrish, Haokun Liu, Anhad Mohananey,
  Wei Peng, Sheng-Fu Wang, and Samuel R.
 Bowman. 2020. BLiMP  The benchmark of linguistic
  minimal pairs for English. Transactions of the
-Association for Computational Linguistics , 8 377 392.
+Association for Computational Linguistics , 8 377 
+392.
 Leonie Weissweiler, Valentin Hofmann, Abdullatif Köksal,
  and Hinrich Schütze. 2022. The better your syntax,
  the better your semantics  Probing pretrained
@@ -1106,7 +1156,7 @@ subject) or object promotion in the form of the middle
 as described in Table 1.
 Adverbs must be manner adverbs, but they
 should not be agent-oriented adverbs (Jackendoff
-1972 2001) that express the mental state of
+1972  Ernst 2001) that express the mental state of
 the agent. Examples of such adverbs include furiously,
  happily, angrily , etc.
 Then for each verb and a list of adverbs for each
@@ -1132,14 +1182,14 @@ for the event, especially with those that tend to take
 human direct objects in the transitive form, such as
 shave .
 C Human Annotation Details
-We had 19 233 unique
+We had 19 human annotators rate all 233 unique
 nouns on Google Forms. Each annotator saw a
 different random order of the nouns and were presented
  with 10 nouns on each page of the form,
 though they could go back to alter previous responses.
  All annotators are fluent in English. Annotators
  were also asked to self-identify as native or
-non-native speakers  14 19 consider themselves
+non-native speakers  14 of 19 consider themselves
 native speakers.
 For nouns that have multiple common and highly
 distinct word senses, we gave annotators a short disambiguating
@@ -1213,23 +1263,34 @@ For the sake of simplicity, disregard events described
  by reflexives (such as John shaved himself).
 For each of the following nouns, rate it on the
 following scale 
-1 2 3 4 5 6  Example of Google Form question format
+1   very unlikely to be an agent
+2   somewhat unlikely to be an agent
+3   no preference between agent and patient
+4   somewhat likely to be an agent
+5   very likely to be an agent
+Figure 6  Example of Google Form question format
 given to annotators.Model APAP PAPA δ
-BLOOM 560 0.566 0.531 0.036 1 1 0.384 0.365 0.019 1 7 0.308 0.371 0.062 3 0.476 0.133 0.343 7 1 -0.118 0.150 0.268
-GPT-2 0.648 0.652 0.004
-GPT-2 0.420 0.367 0.053
-GPT-2 0.501 0.496 0.005
-GPT-2 0.486 0.231 0.255
+BLOOM 560m 0.566 0.531 0.036
+BLOOM 1b1 0.384 0.365 0.019
+BLOOM 1b7 0.308 0.371 0.062
+BLOOM 3b 0.476 0.133 0.343
+BLOOM 7b1 -0.118 0.150 0.268
+GPT-2 small 0.648 0.652 0.004
+GPT-2 medium 0.420 0.367 0.053
+GPT-2 large 0.501 0.496 0.005
+GPT-2 xl 0.486 0.231 0.255
 GPT-3 ada-001 0.589 0.598 0.009
 GPT-3 babbage-001 0.394 0.228 0.166
 GPT-3 curie-001 0.418 -0.204 0.622
 GPT-3 davinci-001 0.579 0.356 0.223
-GPT-3 davinci-003 0.934 0.943 0.010 6 1   Correlation between the difference
+GPT-3 davinci-003 0.934 0.943 0.010
+Table 6  Experiment 1   Correlation between the difference
  in log-likelihood of predicting  agent  or  patient 
 with human ratings for nouns in isolation in both example
  orderings.
 D Results by Example Order
-Tables 6, 7, and 8 1 (nouns in
+Tables 6, 7, and 8 show performance in both APAP
+and PAPA orderings in Experiments 1 (nouns in
 isolation), 2 (nouns in intransitive sentences), and
 3 (nouns in transitive sentences) respectively. For
 simplicity, we only report correlations with human
@@ -1237,7 +1298,7 @@ judgements.
 Both GPT-3 davinci-001 and
 davinci-003 are very robust to changes
 in example ordering for all three experiments, as
-are BLOOM 560 1. The three largest
+are BLOOM 560m and1b1. The three largest
 BLOOM models are remarkably sensitive to
 ordering, especially in Experiment 3, as are GPT-2
 xland GPT-3 curie-001 andbabbage-001 .
@@ -1248,22 +1309,27 @@ of appearing within an ARG0/1 span in the parse
 tree to maximize the number of nouns we can compare
  with. However, we recognize that this may
 mess with correlation values since nouns with only
-one occurrence will have values at either 0 1.
+one occurrence will have values at either 0 or 1.
 Furthermore, depending on the role the noun has in
 that particular sentence, it may push its agent rating
  to the opposite end of the spectrum compared
 to its  typical  behavior. Thus, we also tried calculating
  the correlation only for nouns that occurModel APAP PAPA δ
-BLOOM 560 0.214 0.219 0.005 1 1 -0.096 0.027 0.124 1 7 0.618 0.795 0.177 3 0.049 0.512 0.463 7 1 0.050 0.272 0.223
-GPT-2 0.658 0.190 0.468
-GPT-2 0.546 0.500 0.047
-GPT-2 0.632 0.586 0.045
-GPT-2 0.484 0.531 0.047
+BLOOM 560m 0.214 0.219 0.005
+BLOOM 1b1 -0.096 0.027 0.124
+BLOOM 1b7 0.618 0.795 0.177
+BLOOM 3b 0.049 0.512 0.463
+BLOOM 7b1 0.050 0.272 0.223
+GPT-2 small 0.658 0.190 0.468
+GPT-2 medium 0.546 0.500 0.047
+GPT-2 large 0.632 0.586 0.045
+GPT-2 xl 0.484 0.531 0.047
 GPT-3 ada-001 0.574 0.417 0.157
 GPT-3 babbage-001 -0.030 -0.322 0.292
 GPT-3 curie-001 0.045 0.266 0.221
 GPT-3 davinci-001 0.673 0.622 0.051
-GPT-3 davinci-003 0.927 0.911 0.017 7 2   Correlation between the difference
+GPT-3 davinci-003 0.927 0.911 0.017
+Table 7  Experiment 2   Correlation between the difference
  in log-likelihood of predicting  agent  or  patient 
 with human ratings for nouns in intransitive sentences
 in both example orderings.
@@ -1295,16 +1361,21 @@ the largest gain in accuracy. Nevertheless, GPT-3
 davinci-003 still outperforms all other models
 by far.trans-agent trans-patient
 Model APAP PAPA δ APAP PAPA δ
-BLOOM 560 0.034 0.090 0.056 0.962 0.932 0.031 1 1 0.620 0.781 0.161 0.516 0.457 0.059 1 7 0.940 0.013 0.927 0.007 0.989 0.982 3 1.000 0.059 0.941 0.000 0.895 0.895 7 1 0.974 0.017 0.957 0.088 1.000 0.912
-GPT-2 0.313 0.796 0.483 0.811 0.210 0.600
-GPT-2 0.121 0.000 0.121 0.877 1.000 0.123
-GPT-2 0.829 0.389 0.440 0.163 0.623 0.461
-GPT-2 0.978 0.001 0.977 0.018 1.000 0.982
+BLOOM 560m 0.034 0.090 0.056 0.962 0.932 0.031
+BLOOM 1b1 0.620 0.781 0.161 0.516 0.457 0.059
+BLOOM 1b7 0.940 0.013 0.927 0.007 0.989 0.982
+BLOOM 3b 1.000 0.059 0.941 0.000 0.895 0.895
+BLOOM 7b1 0.974 0.017 0.957 0.088 1.000 0.912
+GPT-2 small 0.313 0.796 0.483 0.811 0.210 0.600
+GPT-2 medium 0.121 0.000 0.121 0.877 1.000 0.123
+GPT-2 large 0.829 0.389 0.440 0.163 0.623 0.461
+GPT-2 xl 0.978 0.001 0.977 0.018 1.000 0.982
 GPT-3 ada-001 0.313 0.089 0.224 0.611 0.933 0.322
 GPT-3 babbage-001 0.987 0.044 0.943 0.023 0.994 0.971
 GPT-3 curie-001 0.353 0.034 0.319 0.740 0.963 0.224
 GPT-3 davinci-001 0.987 0.968 0.018 0.413 0.427 0.013
-GPT-3 davinci-003 0.996 0.993 0.004 0.999 0.984 0.015 8 3   Accuracy in both example orderings for predicting the role of the noun in transitive
+GPT-3 davinci-003 0.996 0.993 0.004 0.999 0.984 0.015
+Table 8  Experiment 3   Accuracy in both example orderings for predicting the role of the noun in transitive
 sentences, where trans-agent corresponds to the noun in subject position and trans-patient to object position.
 Figure 7  Count threshold versus the correlation between
  noun agent ratios and human ratings and the number

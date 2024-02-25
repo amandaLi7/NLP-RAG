@@ -1,4 +1,6 @@
-Proceedings of the 61 3  System Demonstrations , pages 377 388 10-12, 2023 2023 Association for Computational Linguistics
+Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics
+Volume 3  System Demonstrations , pages 377 388
+July 10-12, 2023  2023 Association for Computational Linguistics
 RIVETER
 Measuring Power and Social Dynamics Between Entities
 Maria Antoniak Anjalie Field Jimin Mun Melanie Walsh 
@@ -85,7 +87,7 @@ coding verbs with directional scores. For example,
  these frames might label verbs with who holds
 power and who lacks power, or who is portrayed
 with positive or negative sentiment. In the Sherlock
-Holmes scene description,  Another man steps in behind her, trapping her ,  the verb to trap implies
+Holmes scene description,  Another man steps in377behind her, trapping her ,  the verb to trap implies
 that  the man  has more power over  her  (Figure
 1  Sap et al., 2017). These verb lexica have been
 used successfully to study portrayals in many diverse
@@ -165,7 +167,7 @@ Understanding the events and states described in
 sentences, i.e., who does what towhom , has been
 a central question of linguistics since first conceptualized
  by Indian grammarian P  an.ini between the
-4 6th century BCE. Today, verb predicates
+4th and 6th century BCE. Today, verb predicates
 and their relation to other words in a sentence are
 still a key focus of linguistic analyses, e.g., dependency
  parsing (Tesnière, 2015  Nivre, 2010) and
@@ -231,7 +233,7 @@ of choice  frequently occurring verbs from a corpus
 for sentiment connotation frames, and frequently
 occurring verbs in a movie script corpus (Gorinski
  and Lapata, 2015) for the power and agency
-frames. Each verb was annotated for each dimen While
+frames. Each verb was annotated for each dimen2While
  the value, sentiment, effects, and power relations
 require a verb to be transitive, the agency dimension is present
 with intransitive verbs as well.sion by crowdworkers with AGENT andTHEME
@@ -343,7 +345,8 @@ NLP methods, but even so, validating and exploring
 enabling users to quickly produce plots, calculate
 aggregate scores, identify contributing verbs and
 documents, and measure their results  stability.
-3.2 3, RIVETER takes in a set of
+3.2 System Description
+Illustrated in Figure 3, RIVETER takes in a set of
 documents as input, and returns a set of scores for
 each entity appearing as an AGENT orTHEME in
 the target dataset. Under the hood, RIVETER parses
@@ -384,7 +387,7 @@ tem, as well as a list of general people referents
 of an entity are then passed to the verb and relation
 identification module.
 In our implementation, we currently use spaCy
-for NER, and the spaCy add-on neuralcoref library
+for NER, and the spaCy add-on neuralcoref3library
  for coreference resolution. These libraries
 are well-supported, have fast run-times relative to
 similar systems, and do not require GPU access,
@@ -399,7 +402,7 @@ and their dimensions (see  2.3 for dimension descriptions),
  as well as use their own custom lexica.
 For the verb lexicon from Rashkin et al. (2016)
 and for custom lexicons, each verb has a numerical
-score (ranging from  1 1) for each of AGENT
+score (ranging from  1to1) for each of AGENT
 and THEME . If a lexicon only has scores for
 AGENT orTHEME , the other scores are set to 0.
 For the verb lexicon from Sap et al. (2017), we
@@ -411,10 +414,12 @@ For example, in the verb lexicon from Sap et al.
  agency ( Agency (a)    ) and power for the
 THEME (Power (a)     ,Power (t)    ). In this
 lexicon, agency was coded only for the AGENT , so
-we convert the categorical label to a score of  1 0for the THEME . For power, we
-convert the categorical label to  1 1for the T HEME .
+we convert the categorical label to a score of  1for
+theAGENT and 0for the THEME . For power, we
+convert the categorical label to  1for the AGENT
+and 1for the T HEME .
 RIVETER also allows the use of custom lexica.
-We include a loading function for any verb lexi https //github.com/huggingface/neuralcorefcon
+We include a loading function for any verb lexi3https //github.com/huggingface/neuralcorefcon
  formatted in the style of Rashkin et al. (2016).
 This requires a file listing verbs and their agent and
 theme scores, which should be positive and negative
@@ -450,7 +455,9 @@ entities) ( plot_scores ) or in a specific document
 We additionally provide functionality to reduce
 the opacity of lexicon scores and allow users to
 examine specific findings in more depth or conduct
-error checking. These functions include 381 4 85 short stories sampled from GPT-3.5.
+error checking. These functions include 381Figure 4  Number of roles with corresponding power
+scores color coded by assignment of higher and lower
+power roles over 85 short stories sampled from GPT-3.5.
  generating heat map plots for the verbs most
 frequently used with a user-specified entity
 (plot_verbs_for_persona ),
@@ -465,7 +472,8 @@ identified entities, etc.
  or verb ( get_documents_for_verb ),
  bootstrapping the dataset to examine stability
 across samples ( plot_verbs_for_persona ).
-4 4.1 Machine Stories with Power Dyads
+4 Case Studies Across Cultural Settings
+4.1 Machine Stories with Power Dyads
 As our first case study, we examine lexicon-based
 power differentials in machine-generated stories
 about two characters with a predetermined power
@@ -490,7 +498,8 @@ high and low power roles (e.g., [ doctor    patient ]).
 Results As seen in Figure 4, higher power roles
 have a distribution shifted toward greater power
 scores than lower power roles. The mean score
-of the higher power roles was 0.265 0.0364 . A t-test also shows
+of the higher power roles was 0.265and that of
+lower power roles was 0.0364 . A t-test also shows
 statistical significance ( p   0.05). From these results
  we can conclude that the stories generated by
 GPT-3.5 reflect the power dynamics in the relations
@@ -500,7 +509,7 @@ The differences in power scores show similar
 results in Figure 5. These differences were calculated
  only for the stories where both higher and
 lower power figures had been scored. The mean
-and median were both positive, 0.26 0.24.
+and median were both positive, 0.26and0.24.
 Analyzing the stories with both positive and
 negative score differences (see Table 3 in the Appendix)
  further confirms the results of our framework.
@@ -515,7 +524,10 @@ wish from our lexicon give Emily greater power
 than Paul. Thus we can analyze the power dynamics
  between characters more accurately, taking into
 account more context than just assigned roles.
-4.2 1813 19th century England. Using the entity miss lucasmr. gardinermrs. hurstmrs. collinsmrs. long
+4.2 Gender Differences in Pride and Prejudice
+Jane Austen s 1813 novel Pride and Prejudice is
+famous for its depiction of gender and class relations
+ in 19th century England. Using the entity382miss lucasmr. gardinermrs. hurstmrs. collinsmrs. long
 miss bingleyhis friendmy brother your sistersir
 persona0.000.250.50score
 Personas by Score
@@ -523,7 +535,11 @@ elizabethmr. bingley
 the housekeepermrs. bennetmary
 her mother
 colonel forsterbingley my aunt her eyes
-persona1.0 0.5 0.0 6 20 bootstrapped samples of Pride and
+persona1.0
+0.5
+0.0score
+Personas by ScoreFigure 6  Means and standard deviations of power
+scores across 20 bootstrapped samples of Pride and
 Prejudice , using RIVETER  s sampling and visualization
 functions. Results are shown for three custom pronoun
 groups captured using RIVETER  s entity discovery and
@@ -576,7 +592,16 @@ believe_nsubj
 receive_nsubj
 wish_nsubj
 assure_dobj
-hear_nsubj33 24 23 15 13 12 11 10 9 9
+hear_nsubj33
+24
+23
+15
+13
+12
+11
+10
+9
+9
 -9
 -9
 -9
@@ -606,7 +631,16 @@ assure_dobj
 hear_nsubj
 know_dobj
 like_nsubj
-wish_nsubj35 20 15 13 12 11 10 9 9 9
+wish_nsubj35
+20
+15
+13
+12
+11
+10
+9
+9
+9
 -6
 -7
 -7
@@ -636,7 +670,16 @@ wait_nsubj
 reach_nsubj
 wish_nsubj
 inform_dobj
-leave_dobj13 12 11 10 10 8 7 6 6 5
+leave_dobj13
+12
+11
+10
+10
+8
+7
+6
+6
+5
 -3
 -3
 -3
@@ -646,7 +689,7 @@ leave_dobj13 12 11 10 10 8 7 6 6 5
 -5
 -5
 -6
--8 7  Verb counts for pronoun groups in Pride
+-8third pluralFigure 7  Verb counts for pronoun groups in Pride
 and Prejudice , using RIVETER  s visualization functions.
 Green cells indicate verbs where the pronoun group has
 power, while pink cells indicate verbs where the pronoun
@@ -719,14 +762,18 @@ Accountability, and Transparency , FAT*  20, page
  Machinery.
 Maria Antoniak and David Mimno. 2021. Bad seeds 
 Evaluating lexical methods for bias measurement.
-InProceedings of the 59 11th International Joint Conference on Natural Language
+InProceedings of the 59th Annual Meeting of the
+Association for Computational Linguistics and the
+11th International Joint Conference on Natural Language
  Processing (Volume 1  Long Papers) , pages
 1889 1904, Online. Association for Computational
 Linguistics.
 Maria Antoniak, David Mimno, and Karen Levy. 2019.
 Narrative paths and negotiation of power in birth stories.
  Proc. ACM Hum.-Comput. Interact. , 3(CSCW).Collin F. Baker, Charles J. Fillmore, and John B. Lowe.
-1998. The Berkeley FrameNet project. In 36 17th International Conference on
+1998. The Berkeley FrameNet project. In 36th Annual
+ Meeting of the Association for Computational
+Linguistics and 17th International Conference on
 Computational Linguistics, Volume 1 , pages 86 90,
 Montreal, Quebec, Canada. Association for Computational
  Linguistics.
@@ -757,7 +804,7 @@ of a fractured paradigm. Journal of Communication ,
 43(4) 51 58.
 Gail T. Fairhurst. 2005. Reframing the art of framing 
 Problems and prospects for leadership. Leadership ,
-1 165 185.
+1 165   185.
 Anjalie Field, Gayatri Bhat, and Yulia Tsvetkov. 2019.
 Contextual affective analysis  A case study of people
 portrayals in online metoo stories. Proceedings of the
@@ -838,7 +885,8 @@ Processing Systems , volume 35, pages 27730 27744.
 Curran Associates, Inc.
 Martha Palmer, Daniel Gildea, and Paul Kingsbury.
 2005. The Proposition Bank  An annotated corpus of
-semantic roles. Computational Linguistics , 31(1) 71 106.
+semantic roles. Computational Linguistics , 31(1) 71 
+106.
 Chan Young Park, Xinru Yan, Anjalie Field, and Yulia
 Tsvetkov. 2021. Multilingual contextual affective
 analysis of lgbt people portrayals in wikipedia. Proceedings
@@ -903,7 +951,9 @@ approach. In Proceedings of the 2022 Conference of
 the North American Chapter of the Association for
 Computational Linguistics  Human Language Technologies
  , pages 5600 5612, Seattle, United States.
-Association for Computational Linguistics.386A Appendix  GPT-3.5 4.1. To generate
+Association for Computational Linguistics.386A Appendix  GPT-3.5 Generation Setup
+Here we further detail our steps to evaluate our
+framework as discussed in Section 4.1. To generate
  characters with clear roles, names, and power
 differences, we used 32 dyadic relation pairs with
 explicit power asymmetry in our prompt. The full
@@ -913,7 +963,9 @@ such stories
 Tell me a short story about a doctor and
 a patient, and give them names.
 doctor s name 
-Using text-davinci-003 model, we generated 3 0.7 256. After cleaning ill-formatted results,
+Using text-davinci-003 model, we generated 3 stories
+ per pair with temperature set to 0.7 and max
+tokens set to 256. After cleaning ill-formatted results,
  we analyzed a total of 85 stories. A few
 examples of the generated stories along with the
 power scores of the characters are shown in Table 3.
@@ -933,7 +985,7 @@ power scores of the characters are shown in Table 3.
 (printer, writer) (sponsor, sponsored)
 (producer, actor) (legislator, citizen)
 (commander, soldier) (executor, beneficiary)
-Table 2 3.5 Generated Story
+Table 2  Full list of dyadic roles387GPT3.5 Generated Story
 Dyadic Roles Power Scores Power Score Difference
 Alan was a successful CEO of a large company. He had a sharp eye for detail and was known
 for his strict yet fair leadership style. One day, Alan noticed that one of his subordinates,
@@ -975,4 +1027,5 @@ she would be a great addition to the company. Emily left the interview feeling p
 how it went. She was confident she had done her best and was sure she had impressed Paul.
 The next day, Paul gave Emily an offer for the job. She happily accepted and started a few
 weeks later. Paul and Emily had a successful working
-(interviewer, interviewee) Paul  0.07, Emily  0.25 -0.17 3 3.5 388
+(interviewer, interviewee) Paul  0.07, Emily  0.25 -0.17
+Table 3  Examples of GPT3.5 generated stories and the power scores of the characters388

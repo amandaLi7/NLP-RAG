@@ -1,6 +1,7 @@
 Correcting for heterogeneity in real-time epidemiological
 indicators
-Aaron Rumack1*, Roni Rosenfeld1, F. William Townes2 1Machine Learning Department, Carnegie Mellon University, Pittsburgh, Pennsylvania,
+Aaron Rumack1*, Roni Rosenfeld1, F. William Townes2
+1Machine Learning Department, Carnegie Mellon University, Pittsburgh, Pennsylvania,
 United States of America
 2Department of Statistics & Data Science, Carnegie Mellon University, Pittsburgh,
 Pennsylvania, United States of America
@@ -35,9 +36,9 @@ relationship between the indicator and unobserved ground truth changes over spac
 time. To define heterogeneity, let X RN Tbe the matrix containing the indicator
 values for Nlocations and Ttime values, and Z RN Tbe the matrix containing the
 corresponding ground truth values. We say that spatial heterogeneity is present when
-E[Xi t] Zi t  E[Xi t] Zi tfor some i1 2, t.
-September 29, 2023 1/17 2309.16546 1  [cs.LG]  28 2023Likewise, temporal heterogeneity is present when
-E[Xit1] Zit1  E[Xit2] Zit for some i, t1 2.
+E[Xi1t] Zi1t  E[Xi2t] Zi2tfor some i1  i2, t.
+September 29, 2023 1/17arXiv 2309.16546v1  [cs.LG]  28 Sep 2023Likewise, temporal heterogeneity is present when
+E[Xit1] Zit1  E[Xit2] Zit2for some i, t1  t2.
 Note that we define heterogeneity not simply as a bias in the indicator, but rather
 that the bias is dependent on location or time. The causes of heterogeneity vary
 depending on the indicator, but we can consider as an example an indicator based on
@@ -148,14 +149,16 @@ We solve this optimization using penalized matrix decomposition algorithms
 described in [8]. We reproduce the algorithm as applicable to our case here 
 1. Let Z1 Y X.
 2. For k  1, . . . , K  
-(a) Initialize vkto have L norm 1.
+(a) Initialize vkto have L2norm 1.
 (b) Iterate until convergence 
 i. Ifvk  0, then uk  0. Otherwise, let uk Zkvk
  Zkvk 2.
 ii. Let vkbe the solution to
 min
-v1 2 2 2 λTX
-j 2 1 1.
+v1
+2 ZkTuk v 2
+2 λTX
+j 2 vj vj 1 1.
 (c) Let dk uT
 kZkvk.
 (d) Let Zk 1 Zk dkukvT
@@ -177,7 +180,8 @@ transform the temporal corrections by using B-spline basis functions. These func
 are determined by setting the polynomial degree dand a set of knots {t1, . . . , t m}[10] 
 Si,0(x)   1 ,ifti x   t i 1,otherwise 0 ,
 Si,k(x)  x ti
-ti k tiSi,k 1(x)  ti k 1 1 1 1,k 1(x),
+ti k tiSi,k 1(x)  ti k 1 x
+ti k 1 ti 1Si 1,k 1(x),
 fori  {1, . . . , m }andk  {1, . . . d}. We can use these basis functions to create a fixed
 spline transformation matrix C RL T, where Ci,t Si,d(t) and Lis a function of d
 andm.
@@ -231,7 +235,9 @@ option, as an alternative to manual selection.
 In our setting, several factors complicate the usually straightforward application of
 cross validation. First, the data is structured in a two dimensional matrix. Our
 optimization method does not allow missingness in the matrices, so we cannot simply
-September 29, 2023 5/170 20 40 60 80 100 120 140 0 20 40 1. We use cross-validation for hyperparameter selection. The red blocks (ten days each)
+September 29, 2023 5/170 20 40 60 80 100 120 140 0 20 40
+Time
+Fig 1. We use cross-validation for hyperparameter selection. The red blocks (ten days each)
 are held out for testing, and the yellow blocks (five days each) are held out to reduce
 dependencies between the training data and the test data. We repeat for 6 folds.
 Fig 2. We need to interpolate the test indices of the temporal adjustment matrix Bin order
@@ -283,7 +289,8 @@ parsimonious model, they could use a two standard error rule or a three standard
 rule. In some cases, the cross validation error may have a clear elbow, which could
 suggest an ideal rank. The  one standard error rule  is used simply as a baseline when
 no obvious choice exists.
-3 3.1 Simulation Experiments
+3 Results
+3.1 Simulation Experiments
 We first performed experiments on simulated data, where the true rank of the difference
 matrix Y Xwas known. We fit each of the three models to the difference matrix and
 evaluate performance through cross validation. The simulation setup is as follows 
@@ -291,20 +298,21 @@ evaluate performance through cross validation. The simulation setup is as follow
 2. Generate Bas aT Kmatrix. For each column k, select nine random
 breakpoints ( bk
 1, ..., bk
-9) between 1 1. Set bk
-0 0 10  T. Set
+9) between 1 and T 1. Set bk
+0  0 and bk
+10  T. Set
 Bbk
 i bk
-i 1,kto be a random constant between 0 1. Thus each column of Bis
+i 1,kto be a random constant between 0 and 1. Thus each column of Bis
 piecewise constant with 10 pieces.
 3. Let C ABT, then normalize to have standard deviation 1 across all elements.
 4. Let the simulated difference matrix Y XbeD, where Dij Cij ϵijand
 ϵijiid N(0, σ  0.1). Note that we do not have to simulate XorYindividually,
 only the difference.
-In our simulations, we used N  51 699 as in our real-world analysis. We
+In our simulations, we used N  51 and T  699 as in our real-world analysis. We
 experimented with K  {5,10,40}. For the simulations, we will discuss the Fused Lasso
 Model (including λ  0, which is equivalent to the Bounded Rank Model). The Basis
-September 29, 2023 7/17 3. Although the true rank of the correction matrix is 5, the optimal rank selected is 4 and
+September 29, 2023 7/17Fig 3. Although the true rank of the correction matrix is 5, the optimal rank selected is 4 and
 λ  1. For the Bounded Rank Model (BR) and small values of λfor the Fused Lasso Model
 (FL), a clear overfitting curve appears. Even when applying the one standard error rule (1se),
 the same model is selected (as denoted by the square and triangle).
@@ -319,12 +327,12 @@ those of the noise matrix ϵ, but the remainder are smaller. We do not see a str
 signal in all 5 singular values partially because the rows of ABTwere not constructed to
 be orthogonal. This supports the hypothesis that the optimal rank was not found due
 to the low signal-to-noise ratio. We see a similar pattern for K  10 (Fig 4), where the
-rank selected by cross validation is 8 8 singular values of Care larger than
+rank selected by cross validation is 8 and the first 8 singular values of Care larger than
 those of ϵ. Once Kexceeds the optimal rank, the cross validation error slowly increases,
 just as would be expected if the model were overfitting.
-Fig 5 40, the rank with the minimum cross validation error is
+Fig 5 shows that for K  40, the rank with the minimum cross validation error is
 indeed 40, using the Fused Lasso Model with λ  1. Even though the signal-to-noise
-ratio is higher than 1 11 singular values, the correct rank is selected.
+ratio is higher than 1 for only the first 11 singular values, the correct rank is selected.
 This is a somewhat surprising result, and might be attributable to the penalty
 encouraging the rows of Bto be piecewise constant. This may allow the model to detect
 even parts of the signal that are weaker than the noise.
@@ -337,7 +345,7 @@ resolution, as well as cover a large proportion of the total population. In this
 will use a dataset of aggregated insurance claims provided by Optum. The signal is the
 fraction of all outpatient claims with a confirmed COVID-19 diagnosis code, followed by
 smoothing and removal of day-of-week effects [15]. Despite the advantages of claims
-September 29, 2023 8/17 4. Although the true rank of the correction matrix is 10, the optimal rank selected is 8
+September 29, 2023 8/17Fig 4. Although the true rank of the correction matrix is 10, the optimal rank selected is 8
 andλ  0.1 (denoted by the square). For the Bounded Rank Model (BR) and small values of λ
 for the Fused Lasso Model (FL), a clear overfitting curve appears. When applying the one
 standard error rule (1se), the model selected has rank 7 and λ  1 (denoted by the triangle).
@@ -346,7 +354,7 @@ Fig 5. The true rank of the correction matrix is 40, and the optimal rank select
 the Fused Lasso Model (FL), a clear overfitting curve appears with the minimum significantly
 lower than the optimal rank. When applying the one standard error rule (1se), the rank
 selected is 13 with λ  1 (denoted by the triangle).
-September 29, 2023 9/17 6. Cross validation error is optimized at K  50 using the Bounded Rank Model (BR),
+September 29, 2023 9/17Fig 6. Cross validation error is optimized at K  50 using the Bounded Rank Model (BR),
 i.e.λ  0, indicated by the square. However, when applying the one standard error rule, we
 select the Fused Lasso Model (FL) with K  12 and λ  1, indicated by the triangle. This
 results in a great reduction in parameters with a small decrease in cross validation accuracy.
@@ -364,7 +372,7 @@ shown in Fig 6, the cross validation error decreases as Kincreases and λdecreas
 the model s complexity increases) and then flattens. The model with the best cross
 validation error has K  50, where the rank of the difference matrix is 51. Clearly, we
 do not want to use this model, since we do not believe that the heterogeneity present in
-the claims signal has rank 50 51. This is where the  one standard error
+the claims signal has rank 50 out of a possible 51. This is where the  one standard error
 rule  is useful. It selects the Fused Lasso Model with rank K  12 and λ  1. Although
 this model still has a higher rank than we may have thought appropriate, it is much
 simpler than the model which minimizes cross validation error.
@@ -380,7 +388,7 @@ conclude that the assumption of cubic splines is too rigid in this case. The spl
 simply cannot fit well to the data, likely due to abrupt changepoints that the Fused
 Lasso Models are able to handle better.
 In Fig 9, we illustrate the benefit of applying heterogeneity corrections. The raw
-September 29, 2023 10/17 7. We plot the performance of the Basis Spline Model (BS) for different knot intervals.
+September 29, 2023 10/17Fig 7. We plot the performance of the Basis Spline Model (BS) for different knot intervals.
 These models have a lower accuracy than the other models, but for some hyperparameters, the
 Basis Spline Model comes within one standard error of the best Bounded Rank or Fused Lasso
 Model. Note that the higher the knot interval, the lower the rank of the spline transformation
@@ -392,8 +400,9 @@ be interpolated for the Fused Lasso Model. The Basis Spline Model with a knot in
 tracks very closely to the Fused Lasso Model in training data but diverges wildly in held-out
 data. The Basis Spline Model with a knot interval of 50 is smooth but does not have the
 flexibility to closely match the Fused Lasso Model.
-September 29, 2023 11/17 9. Applying a rank-2 correction improves similarity between reported COVID-19 cases
-and the insurance claims signal. On the left, the average daily confirmed COVID-19 15 15, 2020 are displayed in a choropleth map. On the right,
+September 29, 2023 11/17Fig 9. Applying a rank-2 correction improves similarity between reported COVID-19 cases
+and the insurance claims signal. On the left, the average daily confirmed COVID-19 cases
+between August 15 and September 15, 2020 are displayed in a choropleth map. On the right,
 we display the value of the insurance claims signal for the same time period before (top) and
 after (bottom) applying a rank-2 heterogeneity correction using the Bounded Rank Model. The
 pre-correction %CLI map is not similar to the cases map, but the post-correction %CLI map is.
@@ -409,13 +418,20 @@ assumption by comparing the following three models.
 1. Bounded Rank Model with rank k  1 (BR-1) 
 min
 a,bNX
-i 1 1(logXit ai bt logYit)2 2. Additive Model in log space (AL) 
+i 1TX
+t 1(logXit ai bt logYit)2
+2. Additive Model in log space (AL) 
 min
 a,bNX
-i 1 1(logXit ai bt logYit)2 29, 2023 12/173. Additive Model in count space (AC) 
+i 1TX
+t 1(logXit ai bt logYit)2
+September 29, 2023 12/173. Additive Model in count space (AC) 
 min
 a,bNX
-i 1 1 1 2 1 degrees of
+i 1TX
+t 1 Xit ai bt
+Yit 1 2
+All of these models have N Tparameters and a total of N T 1 degrees of
 freedom, with a single parameter for each location and a single parameter for each day,
 with no regularization. In the first two models, the heterogeneity is assumed to be
 additive in the log space, or multiplicative in the count space. In the AC model, the
@@ -434,7 +450,8 @@ together. However, the AL model cannot be generalized to higher rank corrections
 Therefore, we cannot use this model in practice, as we believe that the effects of
 heterogeneity are too complex to be modeled solely by a single parameter for each
 location and for each time point.
-Model BR-1 0.2205 (0.00220) 0.2138 (0.00235) 0.7611 (0.00919)
+Model BR-1 AL AC
+MSE 0.2205 (0.00220) 0.2138 (0.00235) 0.7611 (0.00919)
 3.4 Google Trends and CTIS Survey
 Google has made public an aggregated and anonymized dataset of Google search queries
 related to COVID-19 [17]. An indicator derived from this dataset roughly measures the
@@ -458,7 +475,7 @@ experiment as well.
 We examine the temporal components of the optimal model in Fig 11. As expected,
 the components are piecewise constant across time. The first (most important)
 component is mostly negative in the beginning of the pandemic and spikes during the
-September 29, 2023 13/17 10. When correcting the Google Trends signal, cross validation error is optimized at
+September 29, 2023 13/17Fig 10. When correcting the Google Trends signal, cross validation error is optimized at
 K  7 using the Fused Lasso Model (FL) with λ  0.1, indicated by the square. However, when
 applying the one standard error rule, we select K  4 and λ  1, indicated by the triangle.
 Omicron wave. By using the CTIS survey as a guide, we correct the Google Trends
@@ -490,7 +507,7 @@ and present a method that can use the guide strongly or weakly.
 Our method appears to be useful on several pairs of COVID-19 indicators. As Fig 9
 shows, the raw COVID-19 insurance claims signal gives a very different picture than
 reported cases. If we were to use the insurance claims signal to understand the current
-September 29, 2023 14/17 11. We plot the temporal components of the heterogeneity correction between the
+September 29, 2023 14/17Fig 11. We plot the temporal components of the heterogeneity correction between the
 CTIS and Google Trends signal, using the Fused Lasso model with K  4 and λ  1.
 The most prominent corrections occur around January 2022, corresponding with the
 Omicron wave.
@@ -521,7 +538,7 @@ An important extension to this approach would be modifying the hyperparameter
 selection scheme. A better scheme would not default to overadjustment so strongly and
 would not use an error metric that is optimized when fit exactly to the guide signal.
 Another extension would be the use of multiple guide signals Y1, . . . , Y m. A simple start
-would be to set Y α1 1     αmYmand then apply the heterogeneity correction
+would be to set Y α1Y1     αmYmand then apply the heterogeneity correction
 using Yas the guide signal. Intuitively, if the sources of heterogeneity in the various
 guides are uncorrelated, then they will tend to cancel out as a result of this averaging,
 September 29, 2023 15/17resulting in a spatially and temporally more homogeneous guide. Alternatively, we
@@ -577,12 +594,12 @@ Stat Anal Data Min. 2011 4(6) 612 622. doi 10.1002/sam.10138.
 mining, inference and prediction. 2nd ed. Springer  2009. Available from 
 http //www-stat.stanford.edu/ ~tibs/ElemStatLearn/ .
 14. Tibshirani RJ, Taylor J. Degrees of freedom in lasso problems. The Annals of
-Statistics. 2012 40(2) 1198 1232. doi 10.1214/12-AOS1003.
+Statistics. 2012 40(2) 1198   1232. doi 10.1214/12-AOS1003.
 15. Doctor Visits   Delphi Epidata API  2020. Available from 
 https //cmu-delphi.github.io/delphi-epidata/api/covidcast-signals/
 doctor-visits.html .
 16. Dong E, Du H, Gardner L. An interactive web-based dashboard to track
 COVID-19 in real time. The Lancet infectious diseases. 2020 20(5) 533 534.
 17. LLC G. Google COVID-19 Search Trends symptoms dataset . Available from 
-http //goo.gle/covid symptomdataset .
+http //goo.gle/covid19symptomdataset .
 September 29, 2023 17/17

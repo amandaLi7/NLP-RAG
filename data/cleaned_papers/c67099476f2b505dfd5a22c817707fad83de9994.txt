@@ -82,7 +82,7 @@ Moreover, GLIMMER strongly improves over both
 multi-task trained LUMEN and FiD in both quality
 and speed. In general, GLIMMER successfully unifies
  reranking and memory into a single efficient,
-high-quality model.arXiv 2306.10231 1  [cs.CL]  17 2023 1  Overview of GLIMMER architecture.
+high-quality model.arXiv 2306.10231v1  [cs.CL]  17 Jun 2023Figure 1  Overview of GLIMMER architecture.
 Memory  The memory encoder is updated during multi-task training, unlike LUMEN , before being applied to the
 corpus to generate partially pre-computed memory representations. The memory encoder is also applied during
 inference to generate partial question representations that are compatible with the memory.
@@ -119,13 +119,13 @@ of tokens per passage, ntthe number of target tokens,
 of the model. Following analysis from de Jong
 et al. (2022a, 2023), the FLOPs for a single inference
  sample of FiD (ignoring attention scorecomputation) is given by
-FFiD  knp L 14 2
+FFiD  knp L 14d2
  {z}
-Encoder and cross-attention nt L 14 2
+Encoder and cross-attention nt L 14d2
  {z}
 Decoder
-with factors 8d per token from feedforward layers,
-4d from self-attention projection layers, and 2 2
+with factors 8d2per token from feedforward layers,
+4d2from self-attention projection layers, and 2d2
 from cross-attention projection layers. de Jong
 et al. (2023) contains a derivation of FiD model
 complexity in greater detail.
@@ -141,14 +141,15 @@ layer representations rather than the text.
 More precisely, LUMEN is initialized from a pretrained
  T5 encoder-decoder model. The decoder
 functions the same as the standard FiD decoder, but
-the T5 1 αproportion of
+the T5 encoder is divided into a large memory encoder
+ which contains the first 1 αproportion of
 layers, and a smaller live encoder with the remainingαproportion
  of layers. The memory encoder
 is applied offline to passages in the corpus to precompute
  memory representations, which are later
 updated conditioned on input and task on the fly bythe fine-tuned live encoder. In order to ensure that
 memory representations and input are compatible,
-LUMEN applies the memory encoder to the input
+LUMEN applies the memory encoder1to the input
 before prepending the question representation to
 the memory representation.
 Hi h
@@ -160,12 +161,12 @@ while α  0 is a full memory model. During
 inference LUMEN applies only a proportion αof
 the layers, leading to a fraction αof FiD reader
 FLOPs for any given model size.
-FLUMEN  knp αL 12 2
+FLUMEN  knp αL 12d2
  {z}
 Encoder
- knp L 2 2
+ knp L 2d2
  {z}
-Cross-attention nt L 14 2
+Cross-attention nt L 14d2
  {z}
 Decoder
 3 GLIMMER
@@ -248,17 +249,28 @@ Lpdist KL(prank, pLM)
 The difference in computational complexity between
  GLIMMER and LUMEN lies in reranking. The
 mselected passages are processed by the entire live
-encoder and then fed through the decoder, yielding68 69 70 71 72 73 0.08 0.1 0.12 0.14 0.08 0.1 0.12 0.1468697071727374 2  GLIMMER is faster and higher quality than LUMEN which in turn is faster and higher quality than
+encoder and then fed through the decoder, yielding68 69 70 71 72 73FiD
+LUMEN
+GLIMMER
+Performance
+0.08 0.1 0.12 0.14FiD
+LUMEN
+GLIMMER
+Samples per TFLOP0.08 0.1 0.12 0.1468697071727374
+FiDLUMENGLIMMER
+Samples per TFLOPPerformance
+Figure 2  GLIMMER is faster and higher quality than LUMEN which in turn is faster and higher quality than
 FiD. Comparison of GLIMMER ,LUMEN and FiD XXL model average performance on KILT dev set, and inference
 speed. FiD uses 5 retrieved passages, LUMEN uses 10 retrieved passages, and GLIMMER uses 25 retrieved passages,
-reranked to 5 final passages. LUMEN and GLIMMER have live proportion α 1 3.
+reranked to 5 final passages. LUMEN and GLIMMER have live proportion α 1
+3.
 computational cost equal to applying LUMEN with
 mpassages (less than the full number of retrieved
 passages k). However, for the passages that were
 not selected, GLIMMER still applied the first live
 encoder component, leading to a reranking cost 
 FGLIMMER  Fm
-LUMEN   (k m)np βαL 12 2
+LUMEN   (k m)np βαL 12d2
   {z }
 Reranking
 If we use a small number of selected passages
@@ -284,7 +296,10 @@ are a binding constraint. For the rest of this paper,
 FLOPs and latency interact for LUMEN .
 As we will show, GLIMMER represents a better
 quality-compute trade-off than LUMEN and FiD.
-4 4.1 5.1.1 architecture (Raffel et al., 2020) like LUMEN
+4 Experiments
+4.1 Experimental setup
+Model configuration GLIMMER is based on the
+T5.1.1 architecture (Raffel et al., 2020) like LUMEN
  , implemented in JAX (Heek et al., 2020),
 Flax (Heek et al., 2020) and Flaxformer. All models
  are initialized from public T5.1.1 checkpoints.
@@ -295,20 +310,26 @@ original paper (Izacard and Grave, 2021). For LUMEN
 -αproportion of layers of the T5 encoder, and the
 live encoder is initialized with the last αproportion
 of layers of the T5 encoder. Main experiments use
-α 1 3.
+α 1
+3.
 Fine-tuning For fine-tuning we use the Adafactor
  optimizer (Shazeer and Stern, 2018) with constant
  learning rate of 0.0001, batch size 128, and
 dropout rate 0.1 for all tasks. For multi-task training
  we sample uniformly from tasks. We allocate
-48 304 tokens for each
+48 tokens for the question and 304 tokens for each
 passage. In addition to the standard language modeling
  loss, reranking experiments use an auxiliary10 20 30 40666870
 Retrieved passagesPerformanceLUMEN -40
 GLIMMER
-LUMEN -5 0 5 10 15 20 2567686970
+LUMEN -5
+0 5 10 15 20 2567686970
 Selected passagesGLIMMER
-LUMEN -25 3  Average dev performance on KILT for GLIMMER -Large with live proportion1 3 1 4 5 selected passages (left) and number of selected passages with 25 retrievals
+LUMEN -25
+Figure 3  Average dev performance on KILT for GLIMMER -Large with live proportion1
+3and rerank proportion1
+4as
+a function of number of retrievals with 5 selected passages (left) and number of selected passages with 25 retrievals
 (right).
 perplexity distillation loss with weight and temperature
  1.0. We train until convergence and select
@@ -362,9 +383,13 @@ such that the bottleneck is whether or not the relevant
 passages.
 0 0.2 0.4 0.6 0.8 164666870
 Rerank proportion βPerformanceGLIMMER
-LUMEN -25 4  Average dev performance on KILT for GLIM MER-Large
- with live proportion1 3, 25 5 selected passages as a function of rerank proportionβ.
- Baseline βis 0.25, equivalent to 2 8 total live layers.
+LUMEN -25
+Figure 4  Average dev performance on KILT for GLIM MER-Large
+ with live proportion1
+3, 25 retrieved passages
+and 5 selected passages as a function of rerank proportionβ.
+ Baseline βis 0.25, equivalent to 2 reranking
+layers out of 8 total live layers.
 The former intuition is further supported by Figure
  4, as applying sufficient reranking layers almostrecovers the performance of using all 25 retrievals.
 On the other hand, some neural reranking with full
@@ -378,14 +403,19 @@ number of retrievals, selection is sufficiently accurate
 The optimal number of selected passages is lower
 with more reranking layers, as the top ranked passages
  better capture all useful information.
-10 20 30 4070.670.871 2 4 5  Average dev performance on KILT for GLIM MER-Large
- with live proportion1 3 40 retrievals as
+10 20 30 4070.670.871
+Selected passagesPerformance2 rerank layers
+4 rerank layers
+Figure 5  Average dev performance on KILT for GLIM MER-Large
+ with live proportion1
+3with 40 retrievals as
 a function of number of selected passages.
 Reranker Performance
 GLIMMER (shared) 69.8
 Separate (from T5) 70.0
-Separate (from scratch) 68.7 1  Average performance on KILT dev sets for
-GLIMMER -Large with 25 5 selected passages
+Separate (from scratch) 68.7
+Table 1  Average performance on KILT dev sets for
+GLIMMER -Large with 25 retrieved and 5 selected passages
  for different configurations of the reranker  shared,
 separately initialized from T5, and separately initialized
 from scratch.
@@ -429,13 +459,15 @@ Multi-task training also enables learning a memory
  encoder is important for performance, which is
 expected as the pre-trained encoder is not designed
 to function as a memory encoder out of the box.
-45 50 55 60 1/8 1/3FiD
+45 50 55 60L1/8L1/3FiD
 Exact matchNQ only Multi-task
 Figure 6  Multi-task training disproportionately benefits
  LUMEN relative to FiD. Exact match on Natural
 Questions dev set when trained only on Natural Questions
- vs on set of KILT tasks for FiD, GLIMMER -1 3and
-GLIMMER -1 8Large models.
+ vs on set of KILT tasks for FiD, GLIMMER -1
+3and
+GLIMMER -1
+8Large models.
 4.5 Other ablations
 There are a number of other interesting decisions
 in the GLIMMER architecture and training proce-0 0.2 0.4 0.6 0.8 1455055
@@ -445,9 +477,12 @@ Figure 7  Performance on Natural Questions dev set
 for LUMEN -Large trained on KILT vs NQ-only as a
 function of live proportion.
 Model Performance
-GLIMMER 69.8 69.0 2  Training memory is a significant factor in
+GLIMMER 69.8
+Frozen memory 69.0
+Table 2  Training memory is a significant factor in
 strong GLIMMER performance. Average performance
-on KILT dev sets for GLIMMER -Large with 25 5 selected passages, with and without training memory.
+on KILT dev sets for GLIMMER -Large with 25 retrieved
+and 5 selected passages, with and without training memory.
 
 dure. Table 3 presents ablations of some of these
 decisions.
@@ -474,14 +509,17 @@ perplexity distributions does help - Izacard et al.
 it appears that using the first token of each passage
  performs similarly to generating a score from
 mean-pooled representations.Model Performance
-GLIMMER 69.8 70.0
+GLIMMER 69.8
+Separate Qenc 70.0
 PDist λ  0.1 69.5
 PDist λ  10 69.5
 PDist τ  0.1 70.1
-PDist τ  5 69.4 69.8 3  GLIMMER ablations  separate question encoder,
+PDist τ  5 69.4
+Mean pool 69.8
+Table 3  GLIMMER ablations  separate question encoder,
 different perplexity distillation loss weight, perplexity
 distillation temperature, and mean pool scoring method.
-Each model is Large size with 25 5 selected
+Each model is Large size with 25 retrievals and 5 selected
  passages, evaluated on the KILT dev set.
 5 Related Work
 Retrieval augmentation (Izacard and Grave, 2021 
@@ -598,7 +636,7 @@ Irving, Oriol Vinyals, Simon Osindero, Karen Simonyan,
  Jack W. Rae, Erich Elsen, and Laurent Sifre.
 2022. Improving language models by retrieving from
 trillions of tokens. In International Conference on
-Machine Learning, ICML 2022, 17-23 2022, Baltimore,
+Machine Learning, ICML 2022, 17-23 July 2022, Baltimore,
  Maryland, USA , volume 162 of Proceedings
 of Machine Learning Research , pages 2206 2240.
 PMLR.
@@ -677,7 +715,8 @@ passage retrieval with generative models for open domain
  question answering. In Proceedings of the 16th
 Conference of the European Chapter of the Association
  for Computational Linguistics  Main Volume,
-EACL 2021, Online, April 19 - 23, 2021 , pages 874 880. Association for Computational Linguistics.
+EACL 2021, Online, April 19 - 23, 2021 , pages 874 
+880. Association for Computational Linguistics.
 Gautier Izacard, Patrick Lewis, Maria Lomeli, Lucas
 Hosseini, Fabio Petroni, Timo Schick, Jane DwivediYu,
  Armand Joulin, Sebastian Riedel, and Edouard
@@ -728,7 +767,8 @@ Danielle Epstein, Illia Polosukhin, Jacob Devlin, Kenton
 Kelcey, Ming-Wei Chang, Andrew M. Dai, Jakob
 Uszkoreit, Quoc Le, and Slav Petrov. 2019. Natural
  questions  a benchmark for question answering
-research. Trans. Assoc. Comput. Linguistics , 7 452 466.Yaniv Leviathan, Matan Kalman, and Yossi Matias.
+research. Trans. Assoc. Comput. Linguistics , 7 452 
+466.Yaniv Leviathan, Matan Kalman, and Yossi Matias.
 2022. Fast inference from transformers via speculative
  decoding. CoRR , abs/2211.17192.
 Omer Levy, Minjoon Seo, Eunsol Choi, and Luke Zettlemoyer.
@@ -744,7 +784,9 @@ Goyal, Heinrich Küttler, Mike Lewis, Wen-tau Yih,
 Tim Rocktäschel, Sebastian Riedel, and Douwe
 Kiela. 2020. Retrieval-augmented generation for
 knowledge-intensive NLP tasks. In Advances in Neural
- Information Processing Systems 33 2020, NeurIPS 2020, December 6-12, 2020, virtual .
+ Information Processing Systems 33  Annual Conference
+ on Neural Information Processing Systems
+2020, NeurIPS 2020, December 6-12, 2020, virtual .
 Zonglin Li, Ruiqi Guo, and Sanjiv Kumar. 2022. Decoupled
  context processing for context augmented
 language modeling. CoRR , abs/2210.05758.
@@ -762,7 +804,8 @@ Shen, Jianfeng Gao, Jiawei Han, and Weizhu Chen.
  question answering. In Findings of the Association
  for Computational Linguistics  ACL/IJCNLP
 2021, Online Event, August 1-6, 2021 , volume
-ACL/IJCNLP 2021 of Findings of ACL , pages 344 350. Association for Computational Linguistics.
+ACL/IJCNLP 2021 of Findings of ACL , pages 344 
+350. Association for Computational Linguistics.
 Jeremiah Lev Milbauer, Annie Louis, Javad Hosseini,
 Alex Fabrikant, Don Metzler, and Tal Schuster. 2023.
 Lait  Efficient multi-segment encoding in transformers
@@ -798,7 +841,9 @@ Devendra Singh Sachan, Siva Reddy, William L. Hamilton,
  Chris Dyer, and Dani Yogatama. 2021. End-toend
  training of multi-document reader and retriever
 for open-domain question answering. In Advances
-in Neural Information Processing Systems 34 2021, NeurIPS 2021, December 6-14, 2021,
+in Neural Information Processing Systems 34  Annual
+ Conference on Neural Information Processing
+Systems 2021, NeurIPS 2021, December 6-14, 2021,
 virtual , pages 25968 25981.
 Keshav Santhanam, Omar Khattab, Jon Saad-Falcon,
 Christopher Potts, and Matei Zaharia. 2022. Colbertv2 
@@ -807,7 +852,8 @@ lightweight late interaction. In Proceedings of the
 2022 Conference of the North American Chapter of
 the Association for Computational Linguistics  Human
  Language Technologies, NAACL 2022, Seattle,
-WA, United States, July 10-15, 2022 , pages 3715 3734. Association for Computational Linguistics.
+WA, United States, July 10-15, 2022 , pages 3715 
+3734. Association for Computational Linguistics.
 Tal Schuster, Adam Fisch, Jai Gupta, Mostafa Dehghani,
 Dara Bahri, Vinh Q Tran, Yi Tay, and Donald Metzler.
 2022. Confident adaptive language modeling. arXiv
@@ -875,7 +921,8 @@ Yu, Shuohang Wang, Yichong Xu, Xiang Ren, Yiming
  question answering. In Proceedings of the
 60th Annual Meeting of the Association for Computational
  Linguistics (Volume 1  Long Papers), ACL
-2022, Dublin, Ireland, May 22-27, 2022 , pages 4961 4974. Association for Computational Linguistics.
+2022, Dublin, Ireland, May 22-27, 2022 , pages 4961 
+4974. Association for Computational Linguistics.
 Zexuan Zhong, Tao Lei, and Danqi Chen. 2022. Training
  language models with memory augmentation.
 CoRR , abs/2205.12674.

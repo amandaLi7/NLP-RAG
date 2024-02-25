@@ -45,9 +45,9 @@ introducing biases toward some word choices. For example,
 large language models, is repeatedly passed a prompt
 asking it to report the outcome of rolling a twenty Google
  Deepmind,  University of Toronto
-1E.g., see https //gpt demo.com/ for a list of such
+1E.g., see https //gpt3demo.com/ for a list of such
 apps.
-2https //openai.com/blog/chatgpt/sided die, we found that it only returns 14 20
+2https //openai.com/blog/chatgpt/sided die, we found that it only returns 14 of the 20
 options, even though all should be equally likely.
 Prior work has shown that knowing the decoding
 method makes it easier to detect whether a writing
@@ -86,7 +86,7 @@ likely next token is outputted. Argmax is rarely used
 in practice because (1) only one generation can be
 produced for any given prompt, and (2) generations
 with argmax tend to be repetitive and low-quality.
-Most commonly used decoding algorithms arearXiv 2309.04858 1  [cs.LG]  9 2023based on random sampling  a token is chosen with
+Most commonly used decoding algorithms arearXiv 2309.04858v1  [cs.LG]  9 Sep 2023based on random sampling  a token is chosen with
 probability proportional to the likelihood assigned
 to it by the model. Whereas argmax sampling has
 too little randomness, purely random sampling over
@@ -126,7 +126,8 @@ tokens  instead, multiple candidate token paths are
 retained. As such, it would be necessary to generate
 more than a single word for each prompt, which is
 the primary interrogative tool we use here.
-3 3.1 Threat Model
+3 Method
+3.1 Threat Model
 We assume black-box, query-only access to the system
 Gen m7 rwhich takes as input a prompt string m
 and outputs a textual response r  without loss of generality,
@@ -183,7 +184,7 @@ small as possible. Appendix A gives theoretical accuracy/runtime
 it as the coupon collector problem (Pólya, 1930).
 In practice, we use Algorithm 1 (see Appendix),
 which repeatedly estimates a lower bound for kusing
-two different prompts m andm for increasing
+two different prompts m1andm2for increasing
 numbers of trials until (1) the two estimates matchand (2) the x(k)token appears at least twice in both
 generations (to prevent spurious matching).
 3.4 Estimating p
@@ -240,18 +241,25 @@ Name Prompt  Vm
 NOUNS List of nouns chosen completely
 randomly  dog, slash, altar8,432
 ADVERBS List of adverbs chosen completely
-randomly  formally, blatantly, sadly504 13 31 0 100 200 300 400 500
-True k Error (true k - predicted k)
+randomly  formally, blatantly, sadly504
+MONTHS She came to visit in the month of 13
+DATES The accident occurred on March 31
+0 100 200 300 400 500
+True k02468101214161820222426Error (true k - predicted k)
  Blackbox model
 gpt2-xl
-bloom-3 1  Error in top- kestimation for 500 GPT-2 500 bloom-3b-based systems. Error for both models
+bloom-3b
+Figure 1  Error in top- kestimation for 500 GPT-2 XLand
+ 500 bloom-3b-based systems. Error for both models
 is very low in common settings ( k  100).
-Table 2 100 1 500.
+Table 2  Performance at kestimation over 100 systems
+withkvalues randomly chosen between 1 to 500.
 Model Acc Acc  5Avg Error
-GPT-2 28% 76% 1.3
-GPT-2 44% 80% 0.9
-BLOOM-3 0% 71% 2.3
-pythia-2.7 22% 81% 1.1 4. Table 1 shows all the prompts used in all
+GPT-2 Base 28% 76% 1.3
+GPT-2 XL 44% 80% 0.9
+BLOOM-3B 0% 71% 2.3
+pythia-2.7b 22% 81% 1.1
+webtext4. Table 1 shows all the prompts used in all
 experiments except for those we used on ChatGPT
 (which had to be longer), and Appendix C gives more
 details on prompt selection (including for ChatGPT).
@@ -266,9 +274,12 @@ We used two prompt templates for estimating top- k
 NOUNS andADVERBS (see Table 1), each with 16
 randomly selected exemplars. We build an evaluation
 set of 100 systems, each with a kselected uniform
-4Other prompts may be needed for attacking code models.pythia-2.7bbloom-3 2 2-xl
-text-davinci-0010.00.20.40.60.81.0 0.05 2-base
-text-davinci-001 2 100 0.0 1.0, when the known
+4Other prompts may be needed for attacking code models.pythia-2.7bbloom-3bgpt2
+gpt2-xl
+text-davinci-0010.00.20.40.60.81.0Acc 0.05Known Dist
+gpt2-base
+text-davinci-001Figure 2  Performance at pestimation over 100 systems
+withpvalues ranging from 0.0 to 1.0, when the known
 distributions are computed using GPT-2 base (orange), and
 GPT-3 Davinci likelihoods (blue). Using Davinci as the
 known model leads to a better attack on GPT-3 models,
@@ -278,10 +289,11 @@ the distributions of the language model underlying the
 blackbox system lead to increased error. The matched
 estimates still have a slight systematic upward bias because
 we use the upper bounds for pin our algorithm.
-randomly to be between 1 500. Table 2 shows the
+randomly to be between 1 and 500. Table 2 shows the
 accuracy of our approach on this evaluation set.5We
 see that while our method is not so great at guessing
-kperfectly, on average its guesses are between 0.9 2.3 off (depending on the underlying model).
+kperfectly, on average its guesses are between 0.9
+and 2.3 off (depending on the underlying model).
 In Figure 1, we plot accuracy as a function of true
 kfor GPT-2 XL. This plot reveals that our method
 is especially effective at predicting kfork 300, and
@@ -289,21 +301,24 @@ accuracy deteriorates for higher k. The vast majority
 of applications use kwell within this range, and it is
 simple to adjust for larger kby increasing the max
 number of iterations parameter.
-4.2 100 systems, each with a
-randomly assigned pbetween 0 1. Table 1 shows
+4.2 Predicting p
+We build an evaluation set of 100 systems, each with a
+randomly assigned pbetween 0 and 1. Table 1 shows
 the prompts used for top- pestimation  MONTHS
 andDATES . For each prompt, we need to compute
 a known distribution over the next word. We experiment
- with using both GPT-2 Base and GPT-3 5GPT-3 is omitted because the API does not expose top- k.
+ with using both GPT-2 Base and GPT-3 Davinci
+5GPT-3 is omitted because the API does not expose top- k.
 0.0 0.2 0.4 0.6 0.8 1.0
-Blackbox system's p value Ratio of predicted ks
-Blackbox system  bloom-3 4  We plot the ratio between the kestimated using
+Blackbox system's p value0204060Ratio of predicted ks
+Blackbox system  bloom-3bFigure 4  We plot the ratio between the kestimated using
 ADVERBS and using MONTHS , for systems actually
 using top- p. Except when pis near its extreme values, the
 prompt with larger Vmresults in more generated words.
 for this. For GPT-2, we compute the distribution
 directly  for GPT-3, we estimate it by running 1,000
-trials with full random sampling. Figure 2 0.05 of
+trials with full random sampling. Figure 2 shows
+our method s accuracy at predicting within 0.05 of
 the true pvalue. Figure 3 shows two limitations  (1)
 our estimates are worse when there is significant mismatch
  between Gen s distributions and our known
@@ -319,7 +334,8 @@ distributions over many families of language models.
 4.3 Distinguishing Top- kand Top- p
 To evaluate our ability to distinguish between top- k
 and top- p, we conduct the following experiment. We
-take 10 0.0 1.0 and find the chance we misclassify each system
+take 10 systems with pvalues ranging from 0.0 to
+1.0 and find the chance we misclassify each system
 as using top- k. Figure 4 reports the results of this
 experiment. We see that it would be fairly easy to distinguish
  the two methods by thresholding the ratio of
@@ -338,7 +354,11 @@ easily conducting many trials. We instead employ
 four conversational-format prompts (see Table A5).
 For the known distribution, we try out empirical
 distributions from five different versions of GPT-3,Prompt nEst.p
-MONTHS CHAT 200 0.84 125 0.74 115 0.79 500 0.86 3  The values of pestimated for ChatGPT using
+MONTHS CHAT 200 0.84
+DATES CHAT 125 0.74
+D20C HAT 115 0.79
+D100C HAT 500 0.86
+Table 3  The values of pestimated for ChatGPT using
 different prompts, where nis the number of samples taken.
 and take the one with lowest total variation distance
 from ChatGPT s output distribution. Table 3 shows
@@ -386,7 +406,8 @@ ChatGPT results were computed by two different authors
  on separate OpenAI accounts. Also, we have no
 guarantees that the decoding strategy is not changed
 over time. Some of our ChatGPT results were computed
- using the December 15, 2022 9, 2023 release.
+ using the December 15, 2022 release while others
+ were computed using the January 9, 2023 release.
 Additionally, the biases in distributions that we
 see here could have other underlying reasons  for
 example, changes in the data can result in very
@@ -488,22 +509,25 @@ should not be seen as secrets  Systematically measuring
 prompt extraction attack success. arXiv preprint
 arXiv 2307.06865 .A Algorithm for Estimating k
 Algorithm 1 Algorithm for estimating k.
-Given a system Gen m7 rthat takes an input prompt mand outputs a single response token r, letm andm be two prompts
-that with high probability return responses from large (  k) sets of different sizes e.g. m returns random nouns and m returns
+Given a system Gen m7 rthat takes an input prompt mand outputs a single response token r, letm1andm2be two prompts
+that with high probability return responses from large (  k) sets of different sizes e.g. m1returns random nouns and m2returns
 random adverbs.
-function ESTIMATE K(Prompts m1,m2 7 r)
+function ESTIMATE K(Prompts m1,m2 Gen m7 r)
 samples1   [[],samples2   [[]
 while max number iterations not reached do // we set max iterations 32
-for{1..100}do // at most 3200 1.insert (Gen(m1))
+for{1..100}do // at most 3200 samples generated
+samples1.insert (Gen(m1))
 samples2.insert (Gen(m2))
 end for
-k1  [# unique items in samples1 2  [# unique items in samples2
-minSamples   [(samples1(k1) 1 2(k2) 1) // Boolean testing all items appear twice
-ifk1 k and minSamples then
+k1  [# unique items in samples1
+k2  [# unique items in samples2
+minSamples   [(samples1(k1) 1and
+samples2(k2) 1) // Boolean testing all items appear twice
+ifk1 k2and minSamples then
 break
 end if
 end while
-return  (k1 2)/2  // guesses average if convergence not reached
+return  (k1 k2)/2  // guesses average if convergence not reached
 end function
 As we mentioned in the main paper text, suppose, for a given prompt m, we call Gen(m),nnumber of
 times, each time keeping just the first token of the output. We can trivially lower bound kby observing the
@@ -511,7 +535,8 @@ number of unique items in a set of responses. As napproaches  , allkallowed resp
 Since this is infeasible, the adversary s goal is to estimate kwhile keeping nas small as possible.
 It is easy to see that the ideal prompt mis one that gives responses that are perfectly uniform over the entire
 vocabulary V. In the uniform case, we are left with the standard coupon collector problem (Pólya, 1930). We
-would recover the exact value of kwith probability at least 1 1 2klogk. Unfortunately, such
+would recover the exact value of kwith probability at least 1 1
+kby setting n 2klogk. Unfortunately, such
 a prompt is exceedingly difficult to engineer (see Appendix D).
 It turns out we can do almost as well without needing full uniformity. The key building block for our attack
 is the construction of an mthat distributes substantial probability mass onto a subset Vm Vof the token space.
@@ -525,7 +550,7 @@ truly uniform. If n 2cklog(ck), then with probability at least 1 1
 ck, our prediction is exactly correct. This
 result is far from tight, but follows easily from coupon collector on a uniformly random set of size ck.
 In practice, we use Algorithm 1, which repeatedly estimates a lower bound for kusing two different prompts
-m andm for increasing numbers of trials until (1) the two estimates match and (2) the x(k)token appears
+m1andm2for increasing numbers of trials until (1) the two estimates match and (2) the x(k)token appears
 at least twice in both generations (to prevent spurious matching). In such a case, the expected number of trials
 nis approximately bounded above by 2cklog(ck)via coupon collector6.
 B Algorithm for Estimating p
@@ -537,18 +562,18 @@ top-kfork p
 It is impossible to design a prompt which yields a perfectly uniform distribution. However, although
 uniformity is desirable, for top- pestimation, it is more important that the distribution of Gen(m)is known, i.e.,
 we have access to the underlying language model fθ. Ifkdistinct tokens appear in the p-truncated distribution,
-6 2 that appears in the expected number of trials is due to requiring that the kth most likely token appears at
+6Aside  the constant 2 that appears in the expected number of trials is due to requiring that the kth most likely token appears at
 least twice. However, it is unrelated to the constant 2that appears in the bound in the previous paragraph, which is chosen to ensure
 the1
 ckfailure probability.Algorithm 2 Algorithm for estimating p.
 Consider a language model fθ (m,r) Rthat scores a prompt/response pair and a system Gen m7 rthat takes an input prompt
-mand outputs a single response token rusingfθand top- psampling. Let m andm be two prompts that return responses from
-known distributions over relatively small sets (  Vm around 10-40) e.g. m returns random months and m returns random dates
+mand outputs a single response token rusingfθand top- psampling. Let m1andm2be two prompts that return responses from
+known distributions over relatively small sets (  Vm around 10-40) e.g. m1returns random months and m2returns random dates
 within the month of March.
-function ESTIMATE P(Prompts m1,m2 7 r,fθ)
+function ESTIMATE P(Prompts m1,m2 Gen m7 r,fθ)
 p1  [HELPER (m1,Gen,fθ)
 p2  [HELPER (m2,Gen,fθ)
-return (p1 2)/2
+return (p1 p2)/2
 end function
 function HELPER (Prompt m Gen,known LM fθ)
 baseProbs   [[] // Will store known probability distribution
@@ -568,7 +593,8 @@ i 1baseProbs [i]
 return p
 end function
 then (using the same notation as above), we can bound pas 
-k 1 1Prob fθ(x(l)) p kX
+k 1X
+l 1Prob fθ(x(l)) p kX
 l 1Prob fθ(x(l)).
 Thus, given a known distribution, the top- preverse engineering problem reduces to top- k.
 Even if we do not know exactly the underlying model for a blackbox system, we can construct prompts
@@ -580,12 +606,15 @@ This turns out to be important when prompts including exemplars are used, as the
 bias in the tokens returned, but the overall drop-off in probabilities of most to least likely tokens tends to be
 more consistent. However, for distribution matching, we use the actual distributions over tokens.
 In this paper, we set a goal of determining pto within ϵ 0.05and construct two prompts with almost-known
-distributions over k 13 31. Because our guessed distributions are not perfect, instead of relying on
+distributions over k 13 andk 31. Because our guessed distributions are not perfect, instead of relying on
 a single distribution to bound our estimate, we instead average over the two upper bounds of pderived from
 the different prompts and return that as our guess. Additionally, as kis small for both prompts, instead of using
 the stopping criterion of Algorithm 1, for each prompt, we always generate 3000 samples. This means that
 with very high likelihood, we correctly return all possible items from the prompt s vocabulary. Algorithm 2
-gives our implementation.RS  1 2 4 8 16 32 26 0.00.51.01.52.02.5 1 2 4 8 16 32 26 5  For each prompt style ( DIGITS orABC ), we prompted with either [1, 2, 4, 8, 16, 32] exemplars selected
+gives our implementation.RS  1 RS  2 RS  4 RS  8 RS  16 RS  32 P  26
+Exemplars0.00.51.01.52.02.5entropyDigits
+RS  1 RS  2 RS  4 RS  8 RS  16 RS  32 P  26
+Exemplars0123ABCFigure 5  For each prompt style ( DIGITS orABC ), we prompted with either [1, 2, 4, 8, 16, 32] exemplars selected
 randomly (RS), or with a random permutation of all expected outcomes (P). We ran three trials for each number of
 exemplars and generated the next word 5,000 times per trial. The majority of next-word generated were within the
 vocabulary, however, sometimes they were not, in those cases, we discarded that output. Missing bars indicate that there
@@ -607,8 +636,10 @@ here conforms with prior work that has shown that language models have significa
 numbers and words, even in settings where there should not be such bias.
 Table 4  Prompts showcasing the sensitivity of models to different exemplar choices. The exemplars, shown in blue,
 can be varied in order and count.
-Name Prompt v2 4, 3, 2 10
-ABC Letters  E, F, P 26 5 shows the variance in output distributions for two exemplar-based prompts, DIGITS andABC (Table
+Name Prompt v2  Vp 
+DIGITS Digits  4, 3, 2 10
+ABC Letters  E, F, P 26
+Figure 5 shows the variance in output distributions for two exemplar-based prompts, DIGITS andABC (Table
 4), across different numbers of exemplars and different random selection of exemplars. The DIGITS prompt is expected
  to output digits [0-9] with equal likelihood, and the random letters prompt is expected to output the letters
 [A-Z] with equal likelihood. While with enough exemplars, the DIGITS prompt yielded consistently high entropy
@@ -617,14 +648,21 @@ In the end, we decided to avoid these prompts, and others which were too depende
 For prompts to be used in top- pestimation, one additional challenge is that ideally the prompt should yield
 a similar distribution when inputted to all popular language models. As discussed in the paper, our estimates
 forpare worse when there is a greater mismatch between the known distribution used for top- pestimation
-and the true distribution of the language model underlying the blackbox system being attacked. Figure 6 2 2-xl bloom-3b pythia-2.7b text-davinci-002 0.000.010.020.030.040.05"The accident occurred on March"
-gpt2 2-xl bloom-3b pythia-2.7b text-davinci-002 0.00.10.20.30.4"She came to visit in the month of"Figure 6  The likelihoods for the digits {1-31} given the prompt  The accident occurred on March" (left) and for {January
+and the true distribution of the language model underlying the blackbox system being attacked. Figure 6 showsgpt2 gpt2-xl bloom-3b pythia-2.7b text-davinci-002
+Likelihood0.000.010.020.030.040.05"The accident occurred on March"
+gpt2 gpt2-xl bloom-3b pythia-2.7b text-davinci-002
+Likelihood0.00.10.20.30.4"She came to visit in the month of"Figure 6  The likelihoods for the digits {1-31} given the prompt  The accident occurred on March" (left) and for {January
 thru December   Ramadan} given the prompt  She arrived in the month of  (right), ordered from most to least likely.
 The sum probability of the remaining items in Vis shown in red.
 Table 5  Prompts uses to estimate the pvalue for ChatGPT.
 Name Prompt  Vm 
 MONTHS CHAT write one word for the rest of this sentence 
- She came to visit in the month of 13 31 20 20 100  We re playing
+ She came to visit in the month of 13
+DATES CHAT write one word for the rest of this sentence 
+ The accident occured on March 31
+D20C HAT write one number for the rest of this sentence 
+ I rolled a D20 and the outcome was 20
+D100C HAT Could you roll me a D100  We re playing
 D&D. Answer with just the roll value and
 nothing else.100
 the known distributions for the two prompts we used in top- pestimation, across several different models. We
@@ -649,7 +687,7 @@ control over the number of words generated (without careful prompt design, it te
 of words). Table 5 gives the prompts used to attack ChatGPT.
 E Scientific Artifacts
 We use the following language models in our research 
- BLOOM 3 1.0 with the goal
+ BLOOM 3B   This model was released by BigScience under the RAIL License v1.0 with the goal
 to  to enable public research on large language models  (Scao et al., 2022). It can be downloaded at
 https //huggingface.co/bigscience/bloom .
  Pythia 2.7B   This model was released by EleutherAI under the MIT License with the goal of enablingresearch on  interpretability analysis and scaling laws  (Biderman et al., 2023). It can be downloaded
@@ -667,16 +705,17 @@ multilingual data, in that for the MONTHS prompt, BLOOM puts significant probabi
 month names, which could affect our pestimates for BLOOM models.
 F Computational Resources
 Preliminary experiments were run in Google Colab using a Pro membership, which gave access to one Tesla
-T4. Subsequent experiments were running on a Google Cloud machine with 8 Tesla V s. No more than
+T4. Subsequent experiments were running on a Google Cloud machine with 8 Tesla V100s. No more than
 100 hours were spent running computation on this machine, which has a cost of $17 per hour.
 G Additional Results
-Table 6 2 in the main paper, as well as the root mean-square error between
+Table 6 gives the numbers used in Figure 2 in the main paper, as well as the root mean-square error between
 the true and estimated pvalues.
-Table 6 100 0 1. On the left, GPT-2 Base
+Table 6  Performance at pestimation across 100 estimations with pvalues random from 0 to 1. On the left, GPT-2 Base
 was used to compute known distributions, and on the right GPT-3 was used to compute the known distributions.
-GPT-2 Base GPT-3 1
+GPT-2 Base GPT-3 Davinci v1
 Model Acc .05 RMSE Acc .05 RMSE
-GPT-2 0.93 0.03 0.08 0.19
-GPT-2 0.82 0.04 0.07 0.21 1 0.23 0.14 0.51 0.06
-BLOOM-3 0.77 0.04 0.07 0.22
-pythia-2.7 0.88 0.03 0.07 0.20
+GPT-2 Base 0.93 0.03 0.08 0.19
+GPT-2 XL 0.82 0.04 0.07 0.21
+Davinci v1 0.23 0.14 0.51 0.06
+BLOOM-3B 0.77 0.04 0.07 0.22
+pythia-2.7b 0.88 0.03 0.07 0.20

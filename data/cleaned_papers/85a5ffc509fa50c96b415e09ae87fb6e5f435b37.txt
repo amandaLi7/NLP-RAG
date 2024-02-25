@@ -41,7 +41,7 @@ about minorities and, as a result, can substantially
 hinder equitable experiences in online platforms.1
 (Sap et al., 2019  Gillespie et al., 2020).
 To mitigate such shortcuts, we introduce BIASX,
-a framework to enhance content moderators  deci Here,
+a framework to enhance content moderators  deci1Here,
  we define  minority  as social and demographic
 groups that historically have been and often still are targets
 of oppression and discrimination in the U.S. sociocultural
@@ -81,9 +81,10 @@ We evaluate the usefulness of BIASXexplanations
  for helping content moderators think thoroughly
  through biased implications of statements,
 via a large-scale crowdsourcing user study with
-over 450 2Note,  thinking slow  refers a deeper and more thoughtful
+over 450 participants on a curated set of examples
+2Note,  thinking slow  refers a deeper and more thoughtful
  reasoning about statements and their implications, not
-necessarily slower in terms of reading or decision time.arXiv 2305.13589 1  [cs.CL]  23 2023of varying difficulties. We explore three primary
+necessarily slower in terms of reading or decision time.arXiv 2305.13589v1  [cs.CL]  23 May 2023of varying difficulties. We explore three primary
 research questions  (1) When do free-text explanations
  help improve the content moderation quality,
 and how  (2) Is the explanation format in BIASX
@@ -163,7 +164,8 @@ of the statement while noting the lack of prejudice
 against minority groups  given the statement   This
 is fucking annoying because it keeps raining in
 my country  ,BIASXcould provide an explanation
- Uses profanity without prejudice or hate  .3 3 Experiment Design
+ Uses profanity without prejudice or hate  .3
+3 Experiment Design
 We conduct a user study to measure the effectiveness
  of B IASX. We are interested in exploring 
 Q.1 Does BIASXimprove the content moderation
@@ -184,7 +186,11 @@ minority group, and we use  N/A  as a filler.
 Light-Expl
 Model-Expl
 Human-Exploverall hard-toxic set hard-non-toxic set easy set
-40 60 80 40 60 80 40 60 80 40 60 8061.861.761.8 66.546.545.944.1 51.353.957.756.0 63.785.181.585.4 84.4(a) Average annotator (4-way) accuracy (%).
+40 60 80 40 60 80 40 60 80 40 60 8061.861.761.8
+66.546.545.944.1
+51.353.957.756.0
+63.785.181.585.4
+84.4(a) Average annotator (4-way) accuracy (%).
 0 5 10 1514.915.014.610.6 (b) Median labeling time (s).
 Figure 2  Accuracy and efficiency results for the user study across evaluation sets and conditions. Error bars
 represent 95% confidence intervals.
@@ -228,14 +234,14 @@ and Tsvetkov (2020), we identify hard examples by
 using a fine-tuned DeBERTa toxicity classifier (He
 et al., 2021) to find misclassified instances from
 the test set, which are likely to be harder than those
-4 3.correctly classified.5Among these, we further removed
+4The full list of examples can be found in Table 3.correctly classified.5Among these, we further removed
  mislabeled examples, and selected 20 examples
  that at least two authors agreed were hard but
 could be unambiguously labeled.
 Explanation generation. To generate explanations
  for MODEL -EXPL, the authors manually
 wrote explanations for a prompt of 6 training examples
- from SBIC (3 3 non-toxic), and
+ from SBIC (3 toxic and 3 non-toxic), and
 prompted GPT-3.5 (Ouyang et al., 2022) for explanation
  generation.6We report additional details on
 explanation generation in Appendix A.1. For the
@@ -264,9 +270,10 @@ post). Appendix B shows the label definitions provided
 Our study consists of a qualification stage and a
 taskstage. During qualification , we deployed Human
  Intelligence Tasks (HITs) on Amazon Mechanical
- Turk (MTurk) in which workers go through 4 5We use HuggingFace (Wolf et al., 2020) to fine-tune a pretrained
+ Turk (MTurk) in which workers go through 4
+5We use HuggingFace (Wolf et al., 2020) to fine-tune a pretrained
  deberta-v3-large model. The model achieves
-an F1 87.5% on the SBIC test set.
+an F1 score of 87.5% on the SBIC test set.
 6We use text-davinci-003 in our experiments.
 3 100% 0% 100%
 Percentage of participantsNo-Expl
@@ -352,7 +359,7 @@ LIGHT -EXPL has brief explanations (1-2 words),
 this increase is unlikely to be due to reading, but
 rather points to additional mental processing. This
 extra mental processing is further evident from
-users  subjective evaluation in Figure 3 56% participants
+users  subjective evaluation in Figure 3  56% participants
  agreed orstrongly agreed that the task
 was mentally demanding in the LIGHT -EXPL condition,
  compared to 41% in MODEL -EXPL and in
@@ -360,11 +367,14 @@ HUMAN -EXPL. This result suggests that providing
 the targeted group exclusively could mislead moderators
  without improving accuracy or efficiency.
 Explanation quality matters. Compared to
-expert-written explanations, the effect of model MODEL
+expert-written explanations, the effect of model4MODEL
  -EXPL HUMAN -EXPL
 Evaluation set E U E U
 hard toxic 60.0 56.4 100.0 64.1
-hard non-toxic 90.0 77.7 100.0 80.1 100.0 98.0 100.0 97.0 83.3 77.4 100.0 80.4 1  Binary accuracy of explanations ( E) and users
+hard non-toxic 90.0 77.7 100.0 80.1
+easy 100.0 98.0 100.0 97.0
+overall 83.3 77.4 100.0 80.4
+Table 1  Binary accuracy of explanations ( E) and users
 (U) in M ODEL -EXPL and H UMAN -EXPL conditions.
 generated explanations on moderator performance
 is mixed. A key reason behind this mixed result is
@@ -404,7 +414,7 @@ collaborative decision making.
 Our work serves as a proof-of-concept for future
 investigation in human-AI content moderation, under
  more descriptive paradigms. Most importantly,
-our research highlights the importance of explain Binarizing
+our research highlights the importance of explain7Binarizing
  instances with moderation labels Allow and
 Lenient as non-toxic, and Moderate andBlock as toxic.ing task-specific difficulty (subtle biases) in free
 text. Subsequent studies could investigate various
@@ -523,7 +533,8 @@ Technical report, Brennan Center for Justice.
 Franz Faul, Edgar Erdfelder, Axel Buchner, and AlbertGeorg
  Lang. 2009. Statistical power analyses using
 G*Power 3.1  Tests for correlation and regression
-analyses. Behavior Research Methods , 41(4) 1149 1160.
+analyses. Behavior Research Methods , 41(4) 1149 
+1160.
 Saadia Gabriel, Skyler Hallinan, Maarten Sap, Pemi
 Nguyen, Franziska Roesner, Eunsol Choi, and Yejin
 Choi. 2022. Misinfo reaction frames  Reasoning
@@ -660,7 +671,8 @@ of explanation to assist humans, we nevertheless
 include it inside the prompt, so that the generation
 of group and explanation is conditioned on whether
 the given statement is offensive.
-The prompt consists of 6 examples (3 3 non-toxic) from SBIC with manually written explanations.
+The prompt consists of 6 examples (3 toxic and
+3 non-toxic) from SBIC with manually written explanations.
  During evaluation, we feed the prompt
 to GPT-3.5 (Ouyang et al., 2022) and extract the
 targeted group and explanation from its completion.
@@ -670,7 +682,11 @@ and sample the targeted group egroup and explanationefullwith
 A.2 Hyperparameters for fine-tuning
 DeBERTa
 Hyperparameter value
-Batch size 16 10 5 8000 2  DeBERTa fine-tuning hyperparameters.
+Batch size 16
+Learning rate 10 5
+Training steps 8000
+Optimizer AdamW
+Table 2  DeBERTa fine-tuning hyperparameters.
 For the fine-tuning of the DeBERTa classifier,
 we used the hyperparameters reported in Table 2.
 No hyperparameter search was performed, and we
@@ -703,7 +719,7 @@ C.1 Power Analysis
 We used G*Power (Faul et al., 2009) to conduct an
 a priori power analysis for one-way ANOV A. With
 the goal of having 80% power to detect a moderate
-effect size of 0.15 0.05,
+effect size of 0.15 at a significance level of 0.05,
 we yield a target number of 492 participants.
 C.2 MTurk Setup and Participant
 Compensation
@@ -722,7 +738,7 @@ our user study has 454 remaining participants.
 C.3 Human Evaluation User Interface
 We provide comprehensive instructions for users
 to complete the task, as demonstrated in Figure 6.
-Figure 7 4 rounds
+Figure 7 shows the interface for one of 4 rounds
 of user training, and Figure 8 shows the labeling
 interface, both under the MODEL -EXPL condition.
 8C.4 Participant Demographics
@@ -737,12 +753,22 @@ Mixed/Other, 0.4% as Native Hawaiian/Pacific Islander,
  0.2% as Middle Eastern and 0.2% as South
 Asian/Indian American. Most participants were
 aged 25-50 (72.6%).
-9 5  The consent page available to participants.
-10 6  The instructions page available to participants.
-11 7  Example of a training round under the M ODEL -EXPL condition.
+9Figure 5  The consent page available to participants.
+10Figure 6  The instructions page available to participants.
+11Figure 7  Example of a training round under the M ODEL -EXPL condition.
 Figure 8  Example of a labeling round under the M ODEL -EXPL condition.
 30405060708090Accuracy (%)overall hard-toxic set hard-non-toxic set easy set
-67.3 64.962.159.554.953.5 50.1 43.441.5 39.560.5 58.8 57.356.550.887.785.8 85.6 80.574.3 9  Average human performance grouped by political orientation, with 95% confidence intervals reported as
+67.3
+64.962.159.554.953.5
+50.1
+43.441.5 39.560.5
+58.8 57.356.550.887.785.8 85.6
+80.574.3Strongly conservative
+Conservative
+Neutral
+Liberal
+Strongly liberalpolitical orientation
+Figure 9  Average human performance grouped by political orientation, with 95% confidence intervals reported as
 error bars.
 12Warning  the table contains content that may be upsetting or offensive.
 Post Classification
@@ -761,7 +787,7 @@ while in reality they can t see what their drawinghard toxic
 You mean your boyfriend coded it up in a week  hard toxic
 YALL MOTHERFUCKER NORMIES WILL GET SPOILERS ON SEASON 8 OF GAME OF
 THRONES IF YOU DONT LEA VE NOWhard non-toxic
-RT @n iratre  hookup culture can suck my fucking toe hard non-toxic
+RT @n0iratre  hookup culture can suck my fucking toe hard non-toxic
 DO NOT GO AROUND MY FUCKING CHILD IF YOU DONT EXPECT TO HA VE FUCKING
 WORDS WITH ME. That is MY son MINNNE.hard non-toxic
 The reason people become homebodies ... they are tired of being surrounded by idiots hard non-toxic
@@ -788,5 +814,5 @@ that moment when you silence a mage and they start backpedalling and you just KN
 go downeasy
 I still have one or two hunting knives from when I used to fish and shoot in case of self defence at
 home.easy
-Table 3 30 posts used in the online user study.
+Table 3  30 posts used in the online user study.
 13

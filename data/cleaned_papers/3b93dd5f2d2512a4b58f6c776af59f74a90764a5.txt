@@ -1,8 +1,15 @@
-arXiv 2301.09099 2  [cs.CL]  26 2023 1, Tomoki Hayashi2,3, Hamdy Mubarak3, Soumi Maiti4,
-Shinji Watanabe4, Wassim El-Hajj5, Ahmed Ali3 1KANARI AI , California, USA,4Carnegie Mellon University, Pittsburgh, USA
+arXiv 2301.09099v2  [cs.CL]  26 Jan 2023
+## Title
+UNSUPERVISED DATA SELECTION FOR TTS USING ARABIC BROADCAST NEWS AS A CASE STUDY
+## Authors
+Massa Baali1, Tomoki Hayashi2,3, Hamdy Mubarak3, Soumi Maiti4,
+Shinji Watanabe4, Wassim El-Hajj5, Ahmed Ali3
+1KANARI AI , California, USA,
+4Carnegie Mellon University, Pittsburgh, USA
 3Qatar Computing Research Institute, HBKU, Doha, Qatar
 2Nagoya University, Japan,3Human Dataware Lab. Co., Ltd., Japan
 5American University of Beirut, Computer Science Departmen t, Beirut, Lebanon
+## Context
 ABSTRACT
 Several high-resource Text to Speech (TTS) systems current ly produce
  natural, well-established human-like speech. In cont rast,
@@ -22,8 +29,9 @@ one hour broadcast recording then we used this model to guide a
 FastSpeech2-based Conformer model for duration. Our objec tive
 evaluation shows 3.9% character error rate (CER), while the ground
 truth has 1.3% CER. As for the subjective evaluation, where 1is
-bad and is excellent, our FastSpeech2-based Conformer model
-achieved a mean opinion score (MOS) of 4.4 4.2for naturalness, where many annotators recognized the voic e
+bad and5is excellent, our FastSpeech2-based Conformer model
+achieved a mean opinion score (MOS) of 4.4for intelligibility and
+4.2for naturalness, where many annotators recognized the voic e
 of the broadcaster, which proves the effectiveness of our pr oposed
 unsupervised method.
 Index Terms  Text-to-Speech, TTS, low resources, speech recognition
@@ -35,7 +43,7 @@ However, training end-to-end TTS systems requires a large a mount
 of high-quality paired text and audio, which are expensive a nd time
 consuming to build. Most of the recent TTS systems require si zable
 amounts of data  More than 260hours by professional voice actors
-[4],25hours [5], 585 2,456speakers [1] and
+[4],25hours [5], 585hours constructed from 2,456speakers [1] and
 24hours [2, 6]. Unlike the data collection in building ASR syst ems,
 TTS needs careful recording control, since the TTS performa nce
 is tied to professional speaker and high-quality sizable re cordings.
@@ -81,14 +89,15 @@ to 3.9%. Finally, in speech synthesis we show that using tran sfer
 learning from high-resource language in TTS model and using this
 autoregressive (AR) TTS model to guide a non-autoregressiv e (nonAR)
  TTS model for duration, we can achieve naturalness score of
-4.2 4.4 1 hour data. T he reproducible
+4.2 and intelligibility score of 4.4 using only 1 hour data. T he reproducible
  recipe have been shared with the community throu gh the
 ESPnet-TTS project1.
 1https //github.com/espnet/espnet/tree/master/egs2/q asr_tts/tts12. BUILDING TTS CORPUS FROM NEWS RECORDING
 As per our knowledge there is no standard TTS corpus for our lo wresource
  language Arabic. Hence, we use the MGB-2 corpus [16 ]
 obtained from the Aljazeera Broadcast news channel, this da ta was
-initially optimized for ASR. Collected data spans over 11 2004 2015. It contains more than 4,000 19 different
+initially optimized for ASR. Collected data spans over 11 ye ars from
+2004 until 2015. It contains more than 4,000 episodes from 19 different
  programs covering different domains like politics, soc iety, economy,
  sports, science, etc. For each episode, Aljazeera prov ided the
 following  ( i) audio sampled at 16KHz  ( ii) manual transcription 
@@ -154,7 +163,7 @@ convolutional and recurrent neural network models to build a
 mean opinion score (MOS) predictor.
  wv-MOS [19] Due to the limitations of MOSNet s ability to
 detect obvious distortions they trained a modern neural net work
- model wav vec2.0 on the same data as MOSNet. They
+ model wav2vec2.0 on the same data as MOSNet. They
 found that the wv-MOS was an effective predictor of subjective
  speech quality.
  DNSMOS [17] is a Convolutional Neural Network (CNN)
@@ -163,8 +172,10 @@ based model that is trained using the ground truth human ratings
 stack rank various Deep Noise Suppression (DNS) methods
 based on MOS estimates with great accuracy.
 Our input to the proposed methods are the wav ﬁles and the outp ut
-is MOS score ranging from 1 5, with lowest score of 1 5. We considered all the MOS scores that are above
-4 as excellent samples. In Table 1 10 hours for the selected two anchor speakers with man ual
+is MOS score ranging from 1 to 5, with lowest score of 1 and high est
+ score of 5. We considered all the MOS scores that are above
+4 as excellent samples. In Table 1 we shows various challenge s in
+random 10 hours for the selected two anchor speakers with man ual
  selection. Additionally, we present the labeled good se gments
 from the automatic selection. We investigated the MOS score prediction
  for each approach by analyzing the common good sampl es
@@ -179,8 +190,16 @@ Table 1 .Details of the TTS. Segments(Seg.) and Duration (Dur.) in mi nutes
 for each class
 Male Female
 Class # Seg. Dur. # Seg. Dur.
-Background music 631 70 1,586 131 134 15 930 62 1,860 200 4,028 260 22 3 292 12 2,200 240 1,312 105 1,200 60 1,094 70 687 53 1,241 97 1209 70 1334 87
-wv-MOS 1315 63 933 44 2.2.3. Vowelized Text
+Background music 631 70 1,586 131
+Wrong transcription 134 15 930 62
+Overlapped speech 1,860 200 4,028 260
+Wrong speaker 22 3 292 12
+Bad recordings 2,200 240 1,312 105
+Good Segments 1,200 60 1,094 70
+DNSMOS 687 53 1,241 97
+MOSNet 1209 70 1334 87
+wv-MOS 1315 63 933 44
+2.2.3. Vowelized Text
 Our text was without vowelization (aka diacritization) whi ch makes
 the problem very challenging. In order to diacritize a text, a complex
 system that considers linguistic rules and statistics is ne eded [23].Furthermore, there are differences between diacritizing a transcribed
@@ -252,7 +271,7 @@ predicted one in inference.
 We conducted experiments to test our proposed methodologie s with
 LJSpeech English 24-hours of speech from single speaker, th en ﬁnetuned
  with one hour in Arabic. The audio quality is evaluated by
-human testers. One of the common problems of E E-TTS is that t he
+human testers. One of the common problems of E2E-TTS is that t he
 generated speech sometimes includes the deletion and/or re petition
 of words in the input text due to alignment errors. To address this
 issue, we evaluated the word error rate (WER) and CER of gener ated
@@ -268,10 +287,11 @@ the outputs generated by the ﬁrst network. We investigated t he performance
 Model architecture   To check the difference among the
 model architectures, we compared three architectures  Tac otron2,
 Transformer-TTS, and Fastspeech2, as described in Section 3. The
-AR models were pre-trained as the character-based model with the
-LJSpeech dataset. We used 12,600 250 utterances for the validation in pre-training. After pr e-training,
+AR models were pre-trained3as the character-based model with the
+LJSpeech dataset. We used 12,600 utterances for the trainin g and
+250 utterances for the validation in pre-training. After pr e-training,
 we ﬁne-tuned the model using Arabic corpus as describe in Sec tion
-2. We used 25 25 for testing an d
+2. We used 25 utterances for development and 25 for testing an d
 the rest for training. For non-AR models, we extracted the gr oundtruth
  duration of each input token from the attention weight s of the
 teacher model with teacher forced prediction [2]. We employ ed both
@@ -287,32 +307,50 @@ Reduction factor   The reduction factor [5] is a common parameter
  of text-to-mel models to decide the number of output frames
 at each time step. This plays an important role in achieving s table
 training, especially when using a limited amount of trainin g data.
-We compared the reduction factor 1and for each condition.
-3https //zenodo.org/record/4925105 2 .Objective evaluation results for the male speaker, where  R   represents
+We compared the reduction factor 1and3for each condition.
+3https //zenodo.org/record/4925105Table 2 .Objective evaluation results for the male speaker, where  R   represents
  the reduction factor,  Vowel.   represents whether to vowelize the input
 text, and the name in paraphrases ( ) represents the teacher model used for
 the extraction of ground-truth durations.
 ID Model R Vowel. WER [%] CER [%] MCD [dB]
-1 2 1 34.0 14.0 10.1 2.4 1 2 1 54.4 29.8 8.5 1.4 2 2 3 35.3 14.1 10.5 2.9 2 2 3 51.1 27.2 8.9 1.6 3V Transformer-TTS 1 20.4 9.7 8.6 1.7 3 Transformer-TTS 1 45.2 21.6 9.0 1.9 4V Transformer-TTS 3 15.4 5.5 8.8 0.9 4 Transformer-TTS 3 19.9 9.6 8.6 1.7 5 2 (Taco2) 1 9.5 4.4 8.3 1.6 5 2 (Taco2) 1 22.8 7.0 8.5 1.4 6 2 (Taco2) 3 10.8 4.4 8.3 1.1 6 2 (Taco2) 3 26.1 9.6 8.9 1.6 7 2 (Trans.) 1 9.1 3.9 8.8 0.9 7 2 (Trans.) 1 53.9 32.3 9.6 1.5 8 2 (Trans.) 3 14.1 5.7 9.0 1.0 8 2 (Trans.) 3 34.0 14.7 9.2 1.1
+1V Tacotron2 1  34.0 14.0 10.1   2.4
+1 Tacotron2 1 54.4 29.8 8.5   1.4
+2V Tacotron2 3  35.3 14.1 10.5   2.9
+2 Tacotron2 3 51.1 27.2 8.9   1.6
+3V Transformer-TTS 1  20.4 9.7 8.6   1.7
+3 Transformer-TTS 1 45.2 21.6 9.0   1.9
+4V Transformer-TTS 3  15.4 5.5 8.8   0.9
+4 Transformer-TTS 3 19.9 9.6 8.6   1.7
+5V FastSpeech2 (Taco2) 1  9.5 4.4 8.3   1.6
+5 FastSpeech2 (Taco2) 1 22.8 7.0 8.5   1.4
+6V FastSpeech2 (Taco2) 3  10.8 4.4 8.3   1.1
+6 FastSpeech2 (Taco2) 3 26.1 9.6 8.9   1.6
+7V FastSpeech2 (Trans.) 1  9.1 3.9 8.8   0.9
+7 FastSpeech2 (Trans.) 1 53.9 32.3 9.6   1.5
+8V FastSpeech2 (Trans.) 3  14.1 5.7 9.0   1.0
+8 FastSpeech2 (Trans.) 3 34.0 14.7 9.2   1.1
 - Ground-truth N/A N/A 3.0 1.3 N/A
 Table 3 .The comparison of detailed CER for the male speaker between w /
 or w/o vowelization. The model was FastSpeech2 with the Tran sformer-TTS
 as the teacher model and the reduction factor was set to 1.
 ID Model Sub. Ins. Del. CER [%]
-7V w/ vowelization 11 2 32 3.9 7 w/o vowelization 160 45 170 32.3 4.2. Results and Analysis
+7V w/ vowelization 11 2 32 3.9
+7 w/o vowelization 160 45 170 32.3
+4.2. Results and Analysis
 4.2.1. Objective Evaluation
 For objective evaluation, we reported the Mel-Cepstral Dis tortion
 (MCD) [dB]. We also reported Word Error Rate (WER) and CER
 on a single speaker using the large vocabulary speech recogn ition
 Arabic end-to-end transformer system in [22].
 The objective evaluation in Table 2 shows that vowelization improved
- results considerably. Table 3 2 models. The generated speech in the unvowelized
+ results considerably. Table 3 shows the impact of vow elization
+ for the FastSpeech2 models. The generated speech in the unvowelized
  text compared to the vowelized text includes a lot of deletion
  of characters in the input text. Usually, the model with a larger
 reduction factor achieves faster training convergence and easier attention
  alignment. However, as we can see from the results pr oduced
-that it reduces the quality of the predicted frames. 1 3V showed
-reasonable performance in this particular task, but the 5 7V
+that it reduces the quality of the predicted frames. 1V and 3V showed
+reasonable performance in this particular task, but the 5V a nd 7V
 outperformed the two models even without the pre-training. This result
  indicated that the amount of training data required for non-AR
 models is much smaller than AR models.
@@ -337,15 +375,25 @@ male speaker dataset has higher quality.Table 4 .Comparison between the manual a
 as the teacher model. The reduction factor was set to 1 and vow elization was
 performed.
 ID Model WER [%] CER [%] MCD [dB]
-10 22.0 10.0 12.6 1.1 10V wv-MOS 18.0 7.0 10.9 1.0 11 11.0 4.0 11.2 0.65 7V w/ manual labels 9.13 3.9 8.8 0.9 5 .Objective evlaution using FastSpeech2 2 a s the
+10 MOSNet 22.0 10.0 12.6   1.1
+10V wv-MOS 18.0 7.0 10.9   1.0
+11 DNSMOS 11.0 4.0 11.2   0.65
+7V w/ manual labels 9.13 3.9 8.8   0.9
+Table 5 .Objective evlaution using FastSpeech2 with the Tacotron2 a s the
 teacher model with vowelization.
 ID Dataset WER [%] CER [%] MCD [dB]
-5 9.5 4.4 8.3 1.6 11 13.0 7.0 7.9 1.3 6 .Subjective evaluation results with 95% conﬁdence interval ,
+5V Male 9.5 4.4 8.3   1.6
+11V Female 13.0 7.0 7.9   1.3
+Table 6 .Subjective evaluation results with 95% conﬁdence interval ,
 where reduction factor  R , intelligibility  Int.   and nat uralness
  Nat.  .
 ID Model R Vowel. Int. Nat.
-7 2 (Trans.) 1 4.1 0.06 4.0 0.06 7 2 (Trans.) 1 3.5 0.08 3.2 0.08 8 2 (Trans.) 3 3.9 0.07 3.8 0.07 12 2 (Trans.) w/ PWG 1 4.4 0.06 4.2 0.06
-- Ground-truth N/A N/A 4.9 0.05 4.9 0.05 4.2.2. Subjective Evaluation
+7V FastSpeech2 (Trans.) 1  4.1   0.06 4.0   0.06
+7 FastSpeech2 (Trans.) 1 3.5   0.08 3.2   0.08
+8V FastSpeech2 (Trans.) 3  3.9   0.07 3.8   0.07
+12 FastSpeech2 (Trans.) w/ PWG 1  4.4   0.06 4.2   0.06
+- Ground-truth N/A N/A 4.9   0.05 4.9   0.05
+4.2.2. Subjective Evaluation
 Finally, we conducted the subjective evaluation using MOS o n naturalness
  and intelligibility. We compared the following fo ur models
 trained on the male dataset  7V , 7, 8V , and 7V with PWG. For a
@@ -355,7 +403,7 @@ Each subject evaluated 100 samples of each model (in total 40 0 samples)
  and rated the intelligibility and naturalness of each sample on
 a 5-point scale  5 for excellent, 4 for good, 3 for fair, 2 for p oor, and
 1 for bad. The number of subjects was ten.
-Table 6 1, vowelization sig nificantly
+Table 6 shows that with reduction factor 1, vowelization sig nificantly
  improved both intelligibility and naturalness, re vealing the
 effectiveness of vowelization. We can conﬁrm that a larger r eduction
  factor did not improve the performance, although it acc elerated

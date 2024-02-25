@@ -1,6 +1,7 @@
 FACTKB  Generalizable Factuality Evaluation using Language Models
 Enhanced with Factual Knowledge
-Shangbin Feng Vidhisha Balachandran Yuyang Bai Yulia Tsvetkov1 1University of Washington Carnegie Mellon University Xi an Jiaotong University
+Shangbin Feng1Vidhisha Balachandran2Yuyang Bai3Yulia Tsvetkov1
+1University of Washington2Carnegie Mellon University3Xi an Jiaotong University
 {shangbin, yuliats}@cs.washington.edu vbalacha@cs.cmu.edu 1206944633@stu.xjtu.edu.cn
 Abstract
 Evaluating the factual consistency of automatically
@@ -100,7 +101,7 @@ can aid factuality evaluation in better detecting semantic
  frame errors in generated summaries.
 We propose FACTKB, a novel factuality evaluation
  model built upon language models (LMs)
-augmented with factual knowledge ( 2). The LMsarXiv 2305.08281 2  [cs.CL]  18 2023...... Language Model
+augmented with factual knowledge ( 2). The LMsarXiv 2305.08281v2  [cs.CL]  18 Oct 2023...... Language Model
 ...... Language Model Fact-Enhanced LM Fact-Enhanced LM...
 ...Fact-Enhanced LM...
 ...FactKBFactKB...
@@ -317,7 +318,7 @@ entities to the first paragraph of their Wikipedia description.
  selected triples, we obtain a corpus of triples
 paired with auxiliary knowledge {di}N
 i 1. The corpus
- size is bounded by all KB triples represented astheL norm of the adjacency matrix   A  0. We use
+ size is bounded by all KB triples represented astheL0norm of the adjacency matrix   A  0. We use
 this corpus for the evidence extraction factuality
 pretraining and train the LM to predict the mask by
 using relevant evidence in the auxiliary paragraph.
@@ -343,7 +344,8 @@ e(1), we randomly select an entity from it s direct
  random walk of triples beginning at e(0) 
 {e(0), r(0,1), e(1),   , r(K 1,K), e(K)}. We then
 produce a sentence based on the K-hop walk 
-di ϵ(e(0)) concatK 1 0 
+di ϵ(e(0)) concatK 1
+i 0 
 φ(r(i,i 1))ϵ(e(i 1)) 
 Repeating this K-hop walk Ntimes with different
  randomly selected starting entities, we obtain
@@ -358,7 +360,15 @@ train an LM to predict the masked element using
 the compositional facts around it using the masked
 language model objective. Through this pretraining,
 we expect FACTKBto improve in compositionalModelAll Data CNN/DM XSUM
-BACC F1 1 1 79.8 79 .7 64 .2 76 .2 59 .3 85 .2 78.3 78 .5 60 .8 76 .2 57 .5 82 .2 76.1 76 .5 62 .5 76 .2 62 .1 78 .3 78.9 78 .2 53 .7 34 .6 61 .1 64 .3 84.2 83 .7 64 .2 77 .1 67 .4 82 .1 86.6 86 .2 75 .4 83 .5 71 .9 90 .4 76.0 76 .3 69 .0 77 .8 55 .9 73 .9 83.9( 0.4)84.2( 0.4)68.0( 1.0)83.7( 0.5)58.3( 2.2)84.0( 1.0)
+BACC F1 BACC F1 BACC F1
+QAGS 79.8 79 .7 64 .2 76 .2 59 .3 85 .2
+QUALS 78.3 78 .5 60 .8 76 .2 57 .5 82 .2
+ROBERT A 76.1 76 .5 62 .5 76 .2 62 .1 78 .3
+FALSE SUM 78.9 78 .2 53 .7 34 .6 61 .1 64 .3
+FALSE SUM  84.2 83 .7 64 .2 77 .1 67 .4 82 .1
+SUMMA C 86.6 86 .2 75 .4 83 .5 71 .9 90 .4
+FACTCC 76.0 76 .3 69 .0 77 .8 55 .9 73 .9
+FACTCC  83.9( 0.4)84.2( 0.4)68.0( 1.0)83.7( 0.5)58.3( 2.2)84.0( 1.0)
 FACTGRAPH 86.3( 1.3)86.7( 1.1)73.0( 2.3)86.8( 0.8)68.6( 2.3)86.6( 2.0)
 FACTGRAPH -ADAPTERS 87.6( 0.7)87.8( 0.7)76.0( 2.8)87.5( 0.4)69.9( 2.3)88.4( 1.2)
 FACTKB- WIKI 89.3( 0.4) 89.5 ( 0.5) 77.3( 0.3) 88.2 ( 0.6) 77.3 ( 1.3) 91.8 ( 1.2) 
@@ -387,7 +397,8 @@ The [ CLS ] token is adopted for classification. As a
 result, we obtain FACTKB, our entailment-based
 factuality evaluation model that classifies machinegenerated
  summaries as factual or non-factual.
-3 3.1 Training
+3 Data and Experiment Settings
+3.1 Training
 Data We use YAGO (Pellissier Tanon et al.,
 2020), an encyclopedic knowledge base based on
 Wikidata (Vrande ˇci c and Krötzsch, 2014), to construct
@@ -410,12 +421,12 @@ Settings We use a ROBERT A-BASE (Liu et al.,
  on each of the three factuality pretraining
 corpora. We discuss FACTKB s compatibility with
 different LM initializations in Section  5.2. We
-assign corpus size parameter N  1 5, masking
+assign corpus size parameter N  1e5, masking
 probability p  0.15, and knowledge walk length
 K  5 in the experiments, while we discuss the
 effect of corpus size and knowledge walk length
-in Appendix 5.4. We use a learning rate of 2 5
-for pretraining, 1 4for fine-tuning, a batch size
+in Appendix 5.4. We use a learning rate of 2e 5
+for pretraining, 1e 4for fine-tuning, a batch size
 of 32, and the RAdam optimizer. Pretraining is
 conducted for 5 epochs and fine-tuning has 50 maximum
  epochs with early stopping. More hyperparameter
@@ -442,11 +453,23 @@ FACTCC  .32 .00 .38 .00 .40 .00 .28 .00 .24 .00 .16 .00
 FACTGRAPH .35 .00 .42 .00 .45 .00 .34 .00 .30 .00 .49 .00
 FACTKB- WIKI .46 .00 .52 .00 .57 .00 .49 .00 .29 .00 .39 .00
 FACTKB- EVIDENCE .43 .00 .49 .00 .53 .00 .45 .00 .31 .00 .37 .00
-FACTKB- WALK .47 .00 .52 .00 .57 .00 .45 .00 .35 .00 .36 .00 3  Correlation of FACTKBwith human judgments of factuality on the FRANK benchmark. Best performance
+FACTKB- WALK .47 .00 .52 .00 .57 .00 .45 .00 .35 .00 .36 .00
+Table 3  Correlation of FACTKBwith human judgments of factuality on the FRANK benchmark. Best performance
 is shown in bold . FACTKB has the highest correlation with human judgments across five of the six settings.
 Pretraining Stage Fine-Tuning Stage
 Hyperparameter Value Hyperparameter Value
-LEARNING RATE 2e-5 1e-4 1e-5 1e-5 5 50 32 32 1e-6 0.9,0.98 0.06 1 5 1 5 5 4  Hyperparameter settings of F ACTKB.
+LEARNING RATE 2e-5 LEARNING RATE 1e-4
+WEIGHT DECAY 1e-5 WEIGHT DECAY 1e-5
+MAX EPOCHS 5 MAX EPOCHS 50
+BATCH SIZE 32 BATCH SIZE 32
+OPTIMIZER ADAM OPTIMIZER RADAM
+ADAM EPSILON 1e-6
+ADAM BETA 0.9,0.98
+WARMUP RATIO 0.06
+EVIDENCE  N 1e5
+WALK  N 1e5
+WALK  K 5
+Table 4  Hyperparameter settings of F ACTKB.
 3.2 Evaluation
 To study the robustness of FACTKB, we perform
 both in-domain and out-of-domain evaluation.
@@ -498,8 +521,16 @@ originally follows a three-way classification setting
 ENOUGH INFORMATION " category to evaluate
 models as they are trained on the binary classification
  setting (factual, non-factual).ModelCovidFact HealthVer SciFact
-BACC F1 1 1 52.7 41 .3 46 .8 53 .0 49 .0 57 .5 52.3 49 .2 51 .8 51 .9 42 .7 45 .9 51.1 50 .5 49 .5 51 .6 48 .6 55 .2 57.6 53 .5 55 .1 24 .3 61 .0 42 .2
-FACTGRAPH -EDGE 50.6 48 .4 50 .6 53 .5 56 .7 68 .2 50.6 41 .6 56 .8 51 .2 45 .7 65 .3 50.1 41 .2 57 .3 51 .6 51 .9 65 .4 57.6 53 .4 52 .5 41 .2 59 .8 46 .9 59.0( 3.2)46.4( 4.3)55.0( 2.2)50.0( 3.9)58.1( 4.0)71.3( 3.5)
+BACC F1 BACC F1 BACC F1
+RANDOM 52.7 41 .3 46 .8 53 .0 49 .0 57 .5
+FACTCC 52.3 49 .2 51 .8 51 .9 42 .7 45 .9
+FACTCC  51.1 50 .5 49 .5 51 .6 48 .6 55 .2
+FACTGRAPH 57.6 53 .5 55 .1 24 .3 61 .0 42 .2
+FACTGRAPH -EDGE 50.6 48 .4 50 .6 53 .5 56 .7 68 .2
+FALSE SUM 50.6 41 .6 56 .8 51 .2 45 .7 65 .3
+FALSE SUM  50.1 41 .2 57 .3 51 .6 51 .9 65 .4
+SUMMA C 57.6 53 .4 52 .5 41 .2 59 .8 46 .9
+ROBERT A 59.0( 3.2)46.4( 4.3)55.0( 2.2)50.0( 3.9)58.1( 4.0)71.3( 3.5)
 FACTKB- WIKI 64.8 ( 0.3) 54.4 ( 0.7) 60.1 ( 0.4) 71.6 ( 2.9) 62.9( 0.4) 72.3( 1.1) 
 FACTKB- EVIDENCE 63.9( 0.6) 53.3( 1.7)59.0( 1.0) 70.8( 0.9) 61.4( 0.5) 74.1 ( 1.6) 
 FACTKB- WALK 63.7( 1.0) 53.1( 1.6)58.5( 0.5) 68.7( 1.7) 63.1 ( 1.1) 67.6( 4.1)
@@ -536,7 +567,7 @@ results are directly comparable. We present more
 details about the baselines in Appendix D.
 4 Results
 In-Domain Results We evaluate FACTKBand
-baselines on the FactCollect dataset using the en Dataset
+baselines on the FactCollect dataset using the en1Dataset
  statistics are presented in Table 8.tire held-out test data, the CNN/DM subset and
 the XSUM (BBC) subset, and report balanced accuracy
  scores and micro F1 scores. We run each
@@ -555,7 +586,7 @@ with different types of KB utilization.
 Human Correlation We evaluate FACTKBand
 baselines on the FRANK benchmark to study how
 well FACTKBcorrelates with human judgments.
-We use the official script to report the Pearson ( ρ)
+We use the official script2to report the Pearson ( ρ)
 and Spearman ( r) correlation and p-values. Results
 in Table 3 show that classification-based metrics
 (FactCC, FactGraph, and FACTKB) generally outperform
@@ -568,47 +599,48 @@ highly correlated with human judgments, making
 it a practical approach for evaluating the factual
 consistency of generated news summaries.
 Out-of-Domain Results We evaluate FACTKB
-and existing factuality evaluation models on out-of https //github.com/artidoro/frank/uni00000051/uni00000052/uni00000003/uni e/uni00000025/uni00000035/uni00000052/uni00000025/uni00000028/uni00000035/uni00000037/uni00000044
+and existing factuality evaluation models on out-of2https //github.com/artidoro/frank/uni00000051/uni00000052/uni00000003/uni0000002e/uni00000025/uni00000035/uni00000052/uni00000025/uni00000028/uni00000035/uni00000037/uni00000044
 
-/uni00000028/uni f/uni00000048/uni00000046/uni00000057/uni00000055/uni00000044
+/uni00000028/uni0000004f/uni00000048/uni00000046/uni00000057/uni00000055/uni00000044
 /uni00000025/uni00000024/uni00000035/uni00000037
 /uni00000027/uni00000048/uni00000025/uni00000028/uni00000035/uni00000037/uni00000044
-/uni00000024/uni f/uni00000025/uni00000028/uni00000035/uni00000037
-/uni00000047/uni c/uni00000056/uni00000057/uni c/uni f/uni00000035/uni00000052/uni00000025/uni00000028/uni00000035/uni00000037/uni00000044/uni b/uni00000018/uni00000011/uni00000016
-/uni b/uni00000018/uni00000011/uni b
-/uni b/uni00000017/uni00000011/uni00000013
-/uni b/uni a/uni00000011/uni00000018
-/uni b/uni00000018/uni00000011/uni00000018
-/uni b/uni00000018/uni00000011/uni00000013/uni00000059/uni00000044/uni00000051/uni c/uni f/uni f/uni00000044
-/uni c/uni00000024/uni a/uni00000032 /uni a/uni c/uni e/uni c /uni00000026/uni00000033/uni00000031/uni00000048/uni00000057 /uni00000024/uni00000057/uni00000052/uni00000050/uni c/uni00000046 /uni e/uni a/uni00000024/uni00000033 /uni00000038/uni00000030/uni f/uni00000036/uni b/uni c/uni00000011/uni00000017 /uni b/uni a/uni00000011/uni00000019 /uni b/uni00000019/uni00000011/uni a /uni b/uni a/uni00000011/uni00000018 /uni b/uni c/uni00000011/uni00000014 /uni b/uni a/uni00000011/uni a
-/uni b/uni a/uni00000011/uni00000013 /uni b/uni00000019/uni00000011/uni b /uni b/uni00000017/uni00000011/uni00000017 /uni b/uni00000019/uni00000011/uni00000014 /uni b/uni a/uni00000011/uni b /uni b/uni a/uni00000011/uni00000016
-/uni b/uni00000017/uni00000011/uni00000018 /uni b/uni00000018/uni00000011/uni00000017 /uni b/uni00000016/uni00000011/uni b /uni b/uni00000018/uni00000011/uni00000014 /uni b/uni00000017/uni00000011/uni c /uni b/uni00000018/uni00000011/uni c
-/uni b/uni a/uni00000011/uni c /uni b/uni a/uni00000011/uni c /uni b/uni00000019/uni00000011/uni00000019 /uni b/uni00000018/uni00000011/uni b /uni c/uni00000013/uni00000011/uni00000014 /uni c/uni00000013/uni00000011/uni00000014
-/uni b/uni b/uni00000011/uni00000019 /uni b/uni a/uni00000011/uni00000014 /uni b/uni00000019/uni00000011/uni00000015 /uni b/uni00000018/uni00000011/uni b /uni b/uni b/uni00000011/uni00000013 /uni b/uni a/uni00000011/uni00000017
-/uni b/uni a/uni00000011/uni00000015 /uni b/uni00000019/uni00000011/uni a /uni b/uni00000018/uni00000011/uni00000019 /uni b/uni00000018/uni00000011/uni00000016 /uni b/uni a/uni00000011/uni00000017 /uni b/uni00000019/uni00000011/uni b/uni00000029/uni00000044/uni00000046/uni00000057/uni e/uni00000025/uni00000010/uni a/uni c/uni e/uni c
-/uni c/uni00000024/uni a/uni00000032 /uni a/uni c/uni e/uni c /uni00000026/uni00000033/uni00000031/uni00000048/uni00000057 /uni00000024/uni00000057/uni00000052/uni00000050/uni c/uni00000046 /uni e/uni a/uni00000024/uni00000033 /uni00000038/uni00000030/uni f/uni00000036/uni b/uni c/uni00000011/uni00000017 /uni b/uni b/uni00000011/uni00000016 /uni b/uni a/uni00000011/uni00000019 /uni b/uni b/uni00000011/uni00000013 /uni b/uni b/uni00000011/uni a /uni b/uni a/uni00000011/uni00000019
-/uni b/uni a/uni00000011/uni00000014 /uni b/uni a/uni00000011/uni00000014 /uni b/uni00000019/uni00000011/uni00000015 /uni b/uni00000019/uni00000011/uni00000014 /uni b/uni00000019/uni00000011/uni00000015 /uni b/uni00000019/uni00000011/uni c
-/uni b/uni00000018/uni00000011/uni c /uni b/uni00000017/uni00000011/uni00000014 /uni b/uni00000017/uni00000011/uni c /uni b/uni00000018/uni00000011/uni00000019 /uni b/uni00000016/uni00000011/uni00000016 /uni b/uni00000017/uni00000011/uni c
-/uni b/uni c/uni00000011/uni00000013 /uni b/uni c/uni00000011/uni00000013 /uni b/uni c/uni00000011/uni00000013 /uni b/uni a/uni00000011/uni00000018 /uni b/uni b/uni00000011/uni00000017 /uni b/uni b/uni00000011/uni00000013
-/uni b/uni a/uni00000011/uni00000018 /uni b/uni c/uni00000011/uni00000014 /uni b/uni a/uni00000011/uni c /uni b/uni b/uni00000011/uni00000019 /uni b/uni a/uni00000011/uni a /uni b/uni a/uni00000011/uni a
-/uni b/uni00000019/uni00000011/uni a /uni b/uni a/uni00000011/uni00000014 /uni b/uni a/uni00000011/uni00000019 /uni b/uni00000019/uni00000011/uni00000015 /uni b/uni a/uni00000011/uni00000014 /uni b/uni00000019/uni00000011/uni c/uni00000029/uni00000044/uni00000046/uni00000057/uni e/uni00000025/uni00000010/uni00000048/uni00000059/uni c/uni00000047/uni00000048/uni00000051/uni00000046/uni00000048
-/uni c/uni00000024/uni a/uni00000032 /uni a/uni c/uni e/uni c /uni00000026/uni00000033/uni00000031/uni00000048/uni00000057 /uni00000024/uni00000057/uni00000052/uni00000050/uni c/uni00000046 /uni e/uni a/uni00000024/uni00000033 /uni00000038/uni00000030/uni f/uni00000036/uni b/uni c/uni00000011/uni00000014 /uni b/uni a/uni00000011/uni b /uni b/uni a/uni00000011/uni00000017 /uni b/uni a/uni00000011/uni00000017 /uni b/uni00000019/uni00000011/uni00000019 /uni b/uni b/uni00000011/uni00000017
-/uni b/uni00000018/uni00000011/uni00000018 /uni b/uni a/uni00000011/uni00000013 /uni b/uni00000019/uni00000011/uni00000016 /uni b/uni00000019/uni00000011/uni00000016 /uni b/uni00000019/uni00000011/uni00000014 /uni b/uni00000019/uni00000011/uni00000015
-/uni b/uni00000016/uni00000011/uni c /uni b/uni00000017/uni00000011/uni00000016 /uni b/uni00000018/uni00000011/uni00000013 /uni b/uni00000018/uni00000011/uni00000014 /uni b/uni00000017/uni00000011/uni c /uni b/uni00000017/uni00000011/uni c
-/uni b/uni a/uni00000011/uni a /uni b/uni a/uni00000011/uni a /uni b/uni b/uni00000011/uni00000015 /uni b/uni a/uni00000011/uni00000013 /uni b/uni c/uni00000011/uni00000014 /uni b/uni c/uni00000011/uni00000015
-/uni b/uni a/uni00000011/uni a /uni b/uni a/uni00000011/uni00000013 /uni b/uni00000019/uni00000011/uni00000015 /uni b/uni a/uni00000011/uni00000019 /uni b/uni00000019/uni00000011/uni00000015 /uni b/uni a/uni00000011/uni00000014
-/uni b/uni00000019/uni00000011/uni00000015 /uni b/uni00000019/uni00000011/uni00000014 /uni b/uni00000019/uni00000011/uni00000017 /uni b/uni00000019/uni00000011/uni00000016 /uni b/uni00000019/uni00000011/uni00000019 /uni b/uni00000019/uni00000011/uni a/uni00000029/uni00000044/uni00000046/uni00000057/uni e/uni00000025/uni00000010/uni a/uni00000044/uni f/uni e
+/uni00000024/uni0000002f/uni00000025/uni00000028/uni00000035/uni00000037
+/uni00000047/uni0000004c/uni00000056/uni00000057/uni0000004c/uni0000004f/uni00000035/uni00000052/uni00000025/uni00000028/uni00000035/uni00000037/uni00000044/uni0000001b/uni00000018/uni00000011/uni00000016
+/uni0000001b/uni00000018/uni00000011/uni0000001b
+/uni0000001b/uni00000017/uni00000011/uni00000013
+/uni0000001b/uni0000001a/uni00000011/uni00000018
+/uni0000001b/uni00000018/uni00000011/uni00000018
+/uni0000001b/uni00000018/uni00000011/uni00000013/uni00000059/uni00000044/uni00000051/uni0000004c/uni0000004f/uni0000004f/uni00000044
+/uni0000003c/uni00000024/uni0000002a/uni00000032 /uni0000003a/uni0000002c/uni0000002e/uni0000002c /uni00000026/uni00000033/uni00000031/uni00000048/uni00000057 /uni00000024/uni00000057/uni00000052/uni00000050/uni0000004c/uni00000046 /uni0000002e/uni0000002a/uni00000024/uni00000033 /uni00000038/uni00000030/uni0000002f/uni00000036/uni0000001b/uni0000001c/uni00000011/uni00000017 /uni0000001b/uni0000001a/uni00000011/uni00000019 /uni0000001b/uni00000019/uni00000011/uni0000001a /uni0000001b/uni0000001a/uni00000011/uni00000018 /uni0000001b/uni0000001c/uni00000011/uni00000014 /uni0000001b/uni0000001a/uni00000011/uni0000001a
+/uni0000001b/uni0000001a/uni00000011/uni00000013 /uni0000001b/uni00000019/uni00000011/uni0000001b /uni0000001b/uni00000017/uni00000011/uni00000017 /uni0000001b/uni00000019/uni00000011/uni00000014 /uni0000001b/uni0000001a/uni00000011/uni0000001b /uni0000001b/uni0000001a/uni00000011/uni00000016
+/uni0000001b/uni00000017/uni00000011/uni00000018 /uni0000001b/uni00000018/uni00000011/uni00000017 /uni0000001b/uni00000016/uni00000011/uni0000001b /uni0000001b/uni00000018/uni00000011/uni00000014 /uni0000001b/uni00000017/uni00000011/uni0000001c /uni0000001b/uni00000018/uni00000011/uni0000001c
+/uni0000001b/uni0000001a/uni00000011/uni0000001c /uni0000001b/uni0000001a/uni00000011/uni0000001c /uni0000001b/uni00000019/uni00000011/uni00000019 /uni0000001b/uni00000018/uni00000011/uni0000001b /uni0000001c/uni00000013/uni00000011/uni00000014 /uni0000001c/uni00000013/uni00000011/uni00000014
+/uni0000001b/uni0000001b/uni00000011/uni00000019 /uni0000001b/uni0000001a/uni00000011/uni00000014 /uni0000001b/uni00000019/uni00000011/uni00000015 /uni0000001b/uni00000018/uni00000011/uni0000001b /uni0000001b/uni0000001b/uni00000011/uni00000013 /uni0000001b/uni0000001a/uni00000011/uni00000017
+/uni0000001b/uni0000001a/uni00000011/uni00000015 /uni0000001b/uni00000019/uni00000011/uni0000001a /uni0000001b/uni00000018/uni00000011/uni00000019 /uni0000001b/uni00000018/uni00000011/uni00000016 /uni0000001b/uni0000001a/uni00000011/uni00000017 /uni0000001b/uni00000019/uni00000011/uni0000001b/uni00000029/uni00000044/uni00000046/uni00000057/uni0000002e/uni00000025/uni00000010/uni0000005a/uni0000004c/uni0000004e/uni0000004c
+/uni0000003c/uni00000024/uni0000002a/uni00000032 /uni0000003a/uni0000002c/uni0000002e/uni0000002c /uni00000026/uni00000033/uni00000031/uni00000048/uni00000057 /uni00000024/uni00000057/uni00000052/uni00000050/uni0000004c/uni00000046 /uni0000002e/uni0000002a/uni00000024/uni00000033 /uni00000038/uni00000030/uni0000002f/uni00000036/uni0000001b/uni0000001c/uni00000011/uni00000017 /uni0000001b/uni0000001b/uni00000011/uni00000016 /uni0000001b/uni0000001a/uni00000011/uni00000019 /uni0000001b/uni0000001b/uni00000011/uni00000013 /uni0000001b/uni0000001b/uni00000011/uni0000001a /uni0000001b/uni0000001a/uni00000011/uni00000019
+/uni0000001b/uni0000001a/uni00000011/uni00000014 /uni0000001b/uni0000001a/uni00000011/uni00000014 /uni0000001b/uni00000019/uni00000011/uni00000015 /uni0000001b/uni00000019/uni00000011/uni00000014 /uni0000001b/uni00000019/uni00000011/uni00000015 /uni0000001b/uni00000019/uni00000011/uni0000001c
+/uni0000001b/uni00000018/uni00000011/uni0000001c /uni0000001b/uni00000017/uni00000011/uni00000014 /uni0000001b/uni00000017/uni00000011/uni0000001c /uni0000001b/uni00000018/uni00000011/uni00000019 /uni0000001b/uni00000016/uni00000011/uni00000016 /uni0000001b/uni00000017/uni00000011/uni0000001c
+/uni0000001b/uni0000001c/uni00000011/uni00000013 /uni0000001b/uni0000001c/uni00000011/uni00000013 /uni0000001b/uni0000001c/uni00000011/uni00000013 /uni0000001b/uni0000001a/uni00000011/uni00000018 /uni0000001b/uni0000001b/uni00000011/uni00000017 /uni0000001b/uni0000001b/uni00000011/uni00000013
+/uni0000001b/uni0000001a/uni00000011/uni00000018 /uni0000001b/uni0000001c/uni00000011/uni00000014 /uni0000001b/uni0000001a/uni00000011/uni0000001c /uni0000001b/uni0000001b/uni00000011/uni00000019 /uni0000001b/uni0000001a/uni00000011/uni0000001a /uni0000001b/uni0000001a/uni00000011/uni0000001a
+/uni0000001b/uni00000019/uni00000011/uni0000001a /uni0000001b/uni0000001a/uni00000011/uni00000014 /uni0000001b/uni0000001a/uni00000011/uni00000019 /uni0000001b/uni00000019/uni00000011/uni00000015 /uni0000001b/uni0000001a/uni00000011/uni00000014 /uni0000001b/uni00000019/uni00000011/uni0000001c/uni00000029/uni00000044/uni00000046/uni00000057/uni0000002e/uni00000025/uni00000010/uni00000048/uni00000059/uni0000004c/uni00000047/uni00000048/uni00000051/uni00000046/uni00000048
+/uni0000003c/uni00000024/uni0000002a/uni00000032 /uni0000003a/uni0000002c/uni0000002e/uni0000002c /uni00000026/uni00000033/uni00000031/uni00000048/uni00000057 /uni00000024/uni00000057/uni00000052/uni00000050/uni0000004c/uni00000046 /uni0000002e/uni0000002a/uni00000024/uni00000033 /uni00000038/uni00000030/uni0000002f/uni00000036/uni0000001b/uni0000001c/uni00000011/uni00000014 /uni0000001b/uni0000001a/uni00000011/uni0000001b /uni0000001b/uni0000001a/uni00000011/uni00000017 /uni0000001b/uni0000001a/uni00000011/uni00000017 /uni0000001b/uni00000019/uni00000011/uni00000019 /uni0000001b/uni0000001b/uni00000011/uni00000017
+/uni0000001b/uni00000018/uni00000011/uni00000018 /uni0000001b/uni0000001a/uni00000011/uni00000013 /uni0000001b/uni00000019/uni00000011/uni00000016 /uni0000001b/uni00000019/uni00000011/uni00000016 /uni0000001b/uni00000019/uni00000011/uni00000014 /uni0000001b/uni00000019/uni00000011/uni00000015
+/uni0000001b/uni00000016/uni00000011/uni0000001c /uni0000001b/uni00000017/uni00000011/uni00000016 /uni0000001b/uni00000018/uni00000011/uni00000013 /uni0000001b/uni00000018/uni00000011/uni00000014 /uni0000001b/uni00000017/uni00000011/uni0000001c /uni0000001b/uni00000017/uni00000011/uni0000001c
+/uni0000001b/uni0000001a/uni00000011/uni0000001a /uni0000001b/uni0000001a/uni00000011/uni0000001a /uni0000001b/uni0000001b/uni00000011/uni00000015 /uni0000001b/uni0000001a/uni00000011/uni00000013 /uni0000001b/uni0000001c/uni00000011/uni00000014 /uni0000001b/uni0000001c/uni00000011/uni00000015
+/uni0000001b/uni0000001a/uni00000011/uni0000001a /uni0000001b/uni0000001a/uni00000011/uni00000013 /uni0000001b/uni00000019/uni00000011/uni00000015 /uni0000001b/uni0000001a/uni00000011/uni00000019 /uni0000001b/uni00000019/uni00000011/uni00000015 /uni0000001b/uni0000001a/uni00000011/uni00000014
+/uni0000001b/uni00000019/uni00000011/uni00000015 /uni0000001b/uni00000019/uni00000011/uni00000014 /uni0000001b/uni00000019/uni00000011/uni00000017 /uni0000001b/uni00000019/uni00000011/uni00000016 /uni0000001b/uni00000019/uni00000011/uni00000019 /uni0000001b/uni00000019/uni00000011/uni0000001a/uni00000029/uni00000044/uni00000046/uni00000057/uni0000002e/uni00000025/uni00000010/uni0000005a/uni00000044/uni0000004f/uni0000004e
 /uni00000017
 /uni00000016
 /uni00000015
 /uni00000014
-/uni00000013/uni00000014/uni00000015/uni00000016/uni Figure 3  Compatibility of FACTKBacross various LMs and KBs. We report BACC scores of different setups on
+/uni00000013/uni00000014/uni00000015/uni00000016/uni00000017Figure 3  Compatibility of FACTKBacross various LMs and KBs. We report BACC scores of different setups on
 the FactCollect dataset. F ACTKB is a general method compatible with various LM and KB settings.
-/uni00000056/uni00000048/uni00000050/uni00000044/uni00000051/uni00000057/uni c/uni00000046/uni00000003/uni00000049/uni00000055/uni00000044/uni00000050/uni00000048 /uni00000047/uni c/uni00000056/uni00000046/uni00000052/uni00000058/uni00000055/uni00000056/uni00000048 /uni00000046/uni00000052/uni00000051/uni00000057/uni00000048/uni00000051/uni00000057/uni00000003/uni00000059/uni00000048/uni00000055/uni c/uni00000049/uni c/uni00000044/uni00000045/uni c/uni f/uni c/uni00000057/uni c/uni00000013/uni00000011/uni00000013/uni00000013/uni00000011/uni00000014/uni00000013/uni00000011/uni00000015/uni00000013/uni00000011/uni00000016/uni00000013/uni00000011/uni00000017/uni00000033/uni00000048/uni00000044/uni00000055/uni00000056/uni00000052/uni00000051/uni00000003/uni00000026/uni00000052/uni00000055/uni00000055/uni00000048/uni f/uni00000044/uni00000057/uni c/uni00000052/uni00000051/uni00000025/uni00000028/uni00000035/uni00000037/uni00000036/uni00000046/uni00000052/uni00000055/uni00000048
-/uni00000029/uni00000044/uni00000046/uni00000057/uni a/uni00000055/uni00000044/uni00000053/uni b/uni00000034/uni00000024/uni a/uni00000036
-/uni00000029/uni00000044/uni00000046/uni00000057/uni e/uni00000025/uni00000010/uni a/uni00000044/uni f/uni e/uni00000027/uni00000024/uni00000028
-/uni00000029/uni00000044/uni00000046/uni00000057/uni e/uni00000025/uni00000010/uni a/uni c/uni e/uni c/uni00000029/uni00000044/uni00000046/uni00000057/uni00000026/uni00000026
-/uni00000029/uni00000044/uni00000046/uni00000057/uni e/uni00000025/uni00000010/uni00000048/uni00000059/uni c/uni00000047/uni00000048/uni00000051/uni00000046/uni00000048 4  Correlation of FACTKBand baselines with human
+/uni00000056/uni00000048/uni00000050/uni00000044/uni00000051/uni00000057/uni0000004c/uni00000046/uni00000003/uni00000049/uni00000055/uni00000044/uni00000050/uni00000048 /uni00000047/uni0000004c/uni00000056/uni00000046/uni00000052/uni00000058/uni00000055/uni00000056/uni00000048 /uni00000046/uni00000052/uni00000051/uni00000057/uni00000048/uni00000051/uni00000057/uni00000003/uni00000059/uni00000048/uni00000055/uni0000004c/uni00000049/uni0000004c/uni00000044/uni00000045/uni0000004c/uni0000004f/uni0000004c/uni00000057/uni0000005c/uni00000013/uni00000011/uni00000013/uni00000013/uni00000011/uni00000014/uni00000013/uni00000011/uni00000015/uni00000013/uni00000011/uni00000016/uni00000013/uni00000011/uni00000017/uni00000033/uni00000048/uni00000044/uni00000055/uni00000056/uni00000052/uni00000051/uni00000003/uni00000026/uni00000052/uni00000055/uni00000055/uni00000048/uni0000004f/uni00000044/uni00000057/uni0000004c/uni00000052/uni00000051/uni00000025/uni00000028/uni00000035/uni00000037/uni00000036/uni00000046/uni00000052/uni00000055/uni00000048
+/uni00000029/uni00000044/uni00000046/uni00000057/uni0000002a/uni00000055/uni00000044/uni00000053/uni0000004b/uni00000034/uni00000024/uni0000002a/uni00000036
+/uni00000029/uni00000044/uni00000046/uni00000057/uni0000002e/uni00000025/uni00000010/uni0000005a/uni00000044/uni0000004f/uni0000004e/uni00000027/uni00000024/uni00000028
+/uni00000029/uni00000044/uni00000046/uni00000057/uni0000002e/uni00000025/uni00000010/uni0000005a/uni0000004c/uni0000004e/uni0000004c/uni00000029/uni00000044/uni00000046/uni00000057/uni00000026/uni00000026
+/uni00000029/uni00000044/uni00000046/uni00000057/uni0000002e/uni00000025/uni00000010/uni00000048/uni00000059/uni0000004c/uni00000047/uni00000048/uni00000051/uni00000046/uni00000048
+Figure 4  Correlation of FACTKBand baselines with human
  judgments across error categories. FACTKBshows
 significant improvement in capturing semantic frame
 errors and has slightly better or on-par performance on
@@ -630,7 +662,8 @@ the three out-of-domain datasets. Our results suggest
 FACTKBto better represent facts (entities and relations)
  in a new domain, making the factuality
 evaluation model more robust to shifting domains.
-5 5.1 Where did F ACTKB Improve 
+5 Analysis and Discussion
+5.1 Where did F ACTKB Improve 
 To better understand FACTKB s improvement over
 existing approaches, we leverage the factual error
 typology in the FRANK benchmark (Pagnoni et al.,2021) and examine FACTKB s performance on the
@@ -719,9 +752,9 @@ Corpus size. For evidence extraction and knowledge
  and governs the amount of information
 towards augmenting FACTKB s ability towards factual
  errors regarding entities and relations. While
-we adopted N  1e in the main experiments,we further explore the effect of factuality pretraining
+we adopted N  1e5in the main experiments,we further explore the effect of factuality pretraining
  corpus size in Figure 5. It is illustrated that
-N  1 1e are generally desirable settings,
+N  1e4orN  1e5are generally desirable settings,
  while factuality pretraining with too large
 Ns might be counterproductive. This could in part
 be attributed to catastrophic forgetting (Ramasesh
@@ -732,7 +765,7 @@ LM checkpoints on the three factuality pretraining
 intensity of such exercises. We adopted 5 epochs
 of continued pretraining in the main experiments,
 while we further explore the effect of pretraining
-epochs in Figure 5. it is demonstrated that 1 10
+epochs in Figure 5. it is demonstrated that 1 to 10
 epochs are generally desirable while exercising too
 much might be counterproductive.
 Knowledge walk length. An important aspect
@@ -802,9 +835,30 @@ knowledge and augment LMs, where different approaches
 et al., 2020  Agarwal et al., 2021  Rosset et al.,
 2020  Li et al., 2022), document graphs (Hu et al.,
 2021  Zhang et al., 2022a), KB structure (Yasunaga
-1 10 100 1 10 0.800.850.900.95 1 10 100 1 10 0.800.850.900.95 1 1 5 10 50 100
-pre-training epoch0.800.850.900.95 1 5 10 50 100
-pre-training epoch0.800.850.900.95 1 1 2 5 10 50 0.800.850.900.95 1 2 5 10 50 0.800.850.900.95 1 5  Parameter analysis of pretraining corpus size,
+1k 10k 100k 1m 10m
+corpus size0.800.850.900.95BACC
+walk
+evidence
+1k 10k 100k 1m 10m
+corpus size0.800.850.900.95F1
+walk
+evidence
+1 5 10 50 100
+pre-training epoch0.800.850.900.95BACC
+walk
+evidence
+wiki
+1 5 10 50 100
+pre-training epoch0.800.850.900.95F1
+walk
+evidence
+wiki
+1 2 5 10 50
+walk length0.800.850.900.95BACC
+walk
+1 2 5 10 50
+walk length0.800.850.900.95F1
+walkFigure 5  Parameter analysis of pretraining corpus size,
 epoch, and knowledge walk length.
 et al., 2021  Zhang et al., 2022b), and long documents
  (Feng et al., 2023). KB-enhanced approaches
@@ -836,7 +890,9 @@ human factuality annotations, and better detects semantic
  frame errors. FACTKBpresents an easy-touse
  and generalizable factuality metric, facilitating
 research on factually-consistent summarization.Limitations
-LM and KB Selection While Section 5.2 6 6 external knowledge
+LM and KB Selection While Section 5.2 offers
+empirical evidence that FACTKBis compatible
+with 6 language models and 6 external knowledge
 bases, it remains unclear upfront which LM and
 KB combination would be most desirable. While
 empirical performance could be a good guide, there
@@ -939,7 +995,7 @@ of National Intelligence (ODNI), Intelligence Advanced
  Research Projects Activity (IARPA), via the
 HIATUS Program contract #2022-22072200004.
 This material is also funded by the DARPA Grant
-under Contract No. HR C0124. We also
+under Contract No. HR001120C0124. We also
 gratefully acknowledge support from NSF CAREER
  Grant No. IIS2142739 and the Alfred
 P. Sloan Foundation Fellowship. The views and
@@ -1019,7 +1075,8 @@ Wenhu Chen, Yu Su, Xifeng Yan, and William Yang
 Wang. 2020. Kgpt  Knowledge-grounded pretraining
  for data-to-text generation. In Proceedings
 of the 2020 Conference on Empirical Methods in
-Natural Language Processing (EMNLP) , pages 8635 8648.
+Natural Language Processing (EMNLP) , pages 8635 
+8648.
 Xiuying Chen, Guodong Long, Chongyang Tao,
 Mingzhe Li, Xin Gao, Chengqi Zhang, and Xiangliang
  Zhang. 2023a. Improving the robustness of
@@ -1039,7 +1096,8 @@ bidirectional transformers for language understanding.
  In Proceedings of the 2019 Conference of the
 North American Chapter of the Association for Computational
  Linguistics  Human Language Technologies,
- Volume 1 (Long and Short Papers) , pages 4171 4186.
+ Volume 1 (Long and Short Papers) , pages 4171 
+4186.
 Pierre Dognin, Inkit Padhi, Igor Melnyk, and Payel Das.
 2021. ReGen  Reinforcement learning for text and
 knowledge base generation using pretrained language
@@ -1048,7 +1106,8 @@ Empirical Methods in Natural Language Processing ,
 pages 1084 1099.
 Hady Elsahar and Matthias Gallé. 2019. To annotate or
 not  predicting performance drop under domain shift.
-InProceedings of the 2019 9th
+InProceedings of the 2019 Conference on Empirical
+Methods in Natural Language Processing and the 9th
 International Joint Conference on Natural Language
 Processing (EMNLP-IJCNLP) , pages 2163 2173.
 Matan Eyal, Tal Baumel, and Michael Elhadad. 2019.
@@ -1070,7 +1129,8 @@ PyTorch Lightning.
 Yair Feldman and Ran El-Yaniv. 2019. Multi-hop paragraph
  retrieval for open-domain question answering.
 InProceedings of the 57th Annual Meeting of the Association
- for Computational Linguistics , pages 2296 2309.
+ for Computational Linguistics , pages 2296 
+2309.
 Shangbin Feng, Zilong Chen, Wenqian Zhang, Qingyao
 Li, Qinghua Zheng, Xiaojun Chang, and Minnan Luo.
 2021. Kgap  Knowledge graph augmented political
@@ -1144,7 +1204,8 @@ Papers) , pages 373 390.Linmei Hu, Tianchi Yang, Luhao Zhang, Wanjun Zhong,
 Duyu Tang, Chuan Shi, Nan Duan, and Ming Zhou.
 2021. Compare to the knowledge  Graph neural fake
 news detection with external knowledge. In Proceedings
- of the 59 11th International
+ of the 59th Annual Meeting of the Association for
+Computational Linguistics and the 11th International
 Joint Conference on Natural Language Processing
 (Volume 1  Long Papers) , pages 754 763.
 Yong-Ho Jung, Jun-Hyung Park, Joon-Young Choi,
@@ -1231,7 +1292,8 @@ InProceedings of the 28th ACM SIGKDD Conference
 pages 1120 1130.
 Yang Liu and Mirella Lapata. 2019. Text summarization
  with pretrained encoders. In Proceedings of
-the 2019 9th International
+the 2019 Conference on Empirical Methods in Natural
+ Language Processing and the 9th International
 Joint Conference on Natural Language Processing
 (EMNLP-IJCNLP) , pages 3730 3740.
 Yang Liu, Chenguang Zhu, and Michael Zeng. 2022c.
@@ -1299,16 +1361,20 @@ Leann Myers and Maria J Sirois. 2004. Spearman correlation
  of statistical sciences , 12.
 Moin Nadeem, Anna Bethke, and Siva Reddy. 2021.
 Stereoset  Measuring stereotypical bias in pretrained
-language models. In Proceedings of the 59 11th International Joint Conference
+language models. In Proceedings of the 59th Annual
+Meeting of the Association for Computational Linguistics
+ and the 11th International Joint Conference
 on Natural Language Processing (Volume 1  Long
 Papers) , pages 5356 5371.Feng Nan, Cicero dos Santos, Henghui Zhu, Patrick
 Ng, Kathleen Mckeown, Ramesh Nallapati, Dejiao
 Zhang, Zhiguo Wang, Andrew O Arnold, and Bing
 Xiang. 2021. Improving factual consistency of abstractive
  summarization via question answering. In
-Proceedings of the 59 11th
+Proceedings of the 59th Annual Meeting of the Association
+ for Computational Linguistics and the 11th
 International Joint Conference on Natural Language
-Processing (Volume 1  Long Papers) , pages 6881 6894.
+Processing (Volume 1  Long Papers) , pages 6881 
+6894.
 Shashi Narayan, Shay Cohen, and Maria Lapata. 2018.
 Don t give me the details, just the summary  topicaware
  convolutional neural networks for extreme
@@ -1397,7 +1463,9 @@ Language Processing , pages 140 145.
 Arkadiy Saakyan, Tuhin Chakrabarty, and Smaranda
 Muresan. 2021. Covid-fact  Fact extraction and verification
  of real-world claims on covid-19 pandemic.
-InProceedings of the 59 11th International Joint Conference on Natural Language
+InProceedings of the 59th Annual Meeting of the
+Association for Computational Linguistics and the
+11th International Joint Conference on Natural Language
  Processing (Volume 1  Long Papers) , pages
 2116 2129.
 Mourad Sarrouti, Asma Ben Abacha, Yassine M rabet,
@@ -1500,7 +1568,7 @@ Lucy Lu Wang, Kyle Lo, Yoganand Chandrasekhar, Russell
 Eide, Kathryn Funk, Yannis Katsis, Rodney Michael
 Kinney, et al. 2020b. Cord-19  The covid-19 open
 research dataset. In Proceedings of the 1st Workshop
-on NLP for COVID-19 2020 .
+on NLP for COVID-19 at ACL 2020 .
 Wenya Wang and Sinno Pan. 2022. Deep inductive
 logic reasoning for multi-hop reading comprehension.
 InProceedings of the 60th Annual Meeting of the
@@ -1540,7 +1608,8 @@ Michihiro Yasunaga, Antoine Bosselut, Hongyu Ren,
 Xikun Zhang, Christopher D Manning, Percy S
 Liang, and Jure Leskovec. 2022. Deep bidirectional
 language-knowledge graph pretraining. Advances in
-Neural Information Processing Systems , 35 37309 37323.
+Neural Information Processing Systems , 35 37309 
+37323.
 Michihiro Yasunaga, Hongyu Ren, Antoine Bosselut,
 Percy Liang, and Jure Leskovec. 2021. Qa-gnn  Reasoning
  with language models and knowledge graphs
@@ -1578,7 +1647,7 @@ while we will make all versions of FACTKBpublicly
  available.
 B Qualitative Analysis
 We present examples of (summary, article) pairs
-and their factuality scores in Table 9 10, where
+and their factuality scores in Table 9 and 10, where
 FACTKBis significantly closer to human judgment
 than existing factuality metrics. It is demonstrated
 that while existing factuality metrics are insensitive
@@ -1638,36 +1707,37 @@ is compatible with different language models
 and knowledge bases. For LMs, we used the
 ROBERTA -BASE , GOOGLE /ELECTRA -BASE DISCRIMINATOR
  , FACEBOOK /BART -BASE ,
-ALBERT -BASE -V2,MICROSOFT /DEBERTA -V BASE
+ALBERT -BASE -V2,MICROSOFT /DEBERTA -V3BASE
  ,DISTILROBERTA -BASE LM checkpoints
 on Huggingface Transformers. For the six KBs,
-we used their organized versions  YAGO k at
-Lacroix et al. (2019), Wikidata M at Wang et al.
+we used their organized versions  YAGO15k at
+Lacroix et al. (2019), Wikidata5M at Wang et al.
 (2021), Atomic at West et al. (2022), ConceptNet
 at Zhang et al. (2022b), KGAP at Feng et al.
 (2021), and UMLS at Zhang et al. (2022b).
 F Statistical Significance Test Details
 We use the student t-test for statistical significance
 analysis throughout the paper. Specifically, the
-t-test calculator for 2 independent means was
+t-test calculator for 2 independent means3was
 adopted for the calculations. We use (*) to denote
-statistical significance in Tables 2 5.
+statistical significance in Tables 2 and 5.
 3https //www.socscistatistics.com/tests/
 studentttest/default2.aspxModelAll Data CNN/DM XSUM
-BACC F1 1 1
+BACC F1 BACC F1 BACC F1
 FACTKB- WIKI 89.3( 0.4)89.5( 0.5)77.3( 0.3)88.2( 0.6)77.3( 1.3)91.8( 1.2)
 FACTKB- EVIDENCE 89.4( 0.2)89.5( 0.3)77.7( 1.4)87.9( 0.7)76.8( 1.9)90.8( 0.8)
 FACTKB- WALK 89.1( 0.4)89.3( 0.5)78.3( 1.2)87.7( 0.4)76.4( 0.3)90.4( 1.4)
-FACTKB- COMBINED 89.0 89 .7 76 .0 88 .1 74 .2 89 .1 7  Performance of various F ACTKB settings on the FactCollect dataset.
+FACTKB- COMBINED 89.0 89 .7 76 .0 88 .1 74 .2 89 .1
+Table 7  Performance of various F ACTKB settings on the FactCollect dataset.
 Dataset # Datapoint # Class Class Distribution Train/Dev/Test Split Proposed In
 FACTCOLLECT 9,567 2 4994 / 4573 8667 / 300 / 600 Ribeiro et al. (2022)
 FRANK 2,246 / / 0 / 671 / 1575 Pagnoni et al. (2021)
 COVID FACT 1,257 2 401 / 856 846 / 94 / 317 Saakyan et al. (2021)
-HEALTH VER 4,447 3 2 2,758 / 1,689 3,340 / 508 / 599 Sarrouti et al. (2021)
-SCIFACT 773 3 2 508 / 265 508 / 56 / 209 Wadden et al. (2020)
+HEALTH VER 4,447 3  2 2,758 / 1,689 3,340 / 508 / 599 Sarrouti et al. (2021)
+SCIFACT 773 3  2 508 / 265 508 / 56 / 209 Wadden et al. (2020)
 Table 8  Statistics of the datasets and benchmarks adopted in this work.
 G Computational Resources
-We used a GPU cluster with 16 40
+We used a GPU cluster with 16 NVIDIA A40
 GPUs, 1988G memory, and 104 CPU cores for the
 experiments. Factuality pretraining with the default
 hyperparameters takes around 1.5 hours, while finetuning
@@ -1791,7 +1861,7 @@ by the city
 council.Oxford City Council said the money had mostly been used for "ground investigations
  of possible sites" but nowhere suitable had been found.Two cemeteries
 still have space, in Wolvercote and Botley, but they are expected to be full by
-2018 2021.The council said it had not given up and was "still exploring options".Linda
+2018 and 2021.The council said it had not given up and was "still exploring options".Linda
  Smith, board member for leisure, parks and sport, said the council
 has been "searching for a suitable new burial site for many years".She added  "But
 ultimately, as with new housing sites, we have run out of suitable land within
@@ -1802,7 +1872,14 @@ of the site."After the two remaining cemeteries are full the council said only t
 reopening of family plots, the use of a few reserved plots, and the interment of
 ashes would be possible.The last increase in burial space in Oxford was in 1932.
 Table 9  Qualitative analysis of F ACTKB and existing factuality metrics, part 1.QAGS DAE FactCC FactKB Gold Summary Article
-0.6000 0 .9886 1 .0000 0 .0037 0 1, 000 old
+0.6000 0 .9886 1 .0000 0 .0037 0 plans to
+demolish and
+demolish
+parts of a
+seaside resort
+and build
+more than
+1, 000 old
 buildings
 have been
 approved.Three Victorian hotels will go to make way for a six-storey, four star hotel and
@@ -1861,7 +1938,7 @@ for issuing Russian passports was announced in Sevastopol on Thursday by A Just
 Russia leader Sergei Mironov.Several Russian MPs have also gone to Crimea, including
  Russian celebrities - former Olympic ice skating champion Irina Rodnina,
 former cosmonaut Valentina Tereshkova and heavyweight boxer Nikolai Valuev.
-0.7000 0 .9984 1 .0000 0 .0047 0 19-year-old
+0.7000 0 .9984 1 .0000 0 .0047 0 a 19-year-old
 man has been
 arrested in
 connection
@@ -1907,7 +1984,7 @@ carrier bags
 in england
 has reached a
 record high.The Department for Environment, Food and Rural Affairs found the number had
-gone up by 200 2013.There has been a big problem with plastic
+gone up by 200 million since 2013.There has been a big problem with plastic
 carrier bags in the last few years, many of them can t be recycled and are often
 thrown away after they have been used.The bags end up in rubbish dumps and even
 rivers causing big problems for the environment.From October people in England

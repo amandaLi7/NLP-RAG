@@ -87,7 +87,7 @@ diversity. On the other hand, non-autoregressive model excels
  in robustness and computation speed. Additionally, with
 clean silence prompt, MQTTS can achieve a much lower
 signal-to-noise ratio (SNR). We make our code public1.
-1https //github.com/b04901014/MQTTSarXiv 2302.04215 1  [eess.AS]  8 20232 Related Work
+1https //github.com/b04901014/MQTTSarXiv 2302.04215v1  [eess.AS]  8 Feb 20232 Related Work
 Autoregressive TTS. Typical autoregressive TTS systems
 use a mel-spectrogram vocoder pipeline (Shen et al. 2018 
 Li et al. 2019). An autoregressive model is trained to synthesize
@@ -143,9 +143,9 @@ adopts a similar framework for TTS, discretizing speech using
  Unit-based language models (Lakhotia et al. 2021)
 (uLMs) train the transformer on discrete tokens derived from
 representations of self-supervised (SSL) models, and a unitto-speech
- (u s) vocoder is separately trained to map the tokens
+ (u2s) vocoder is separately trained to map the tokens
  to speech. VQTTS (Du et al. 2022) further leverages
-the u s vocoder for TTS by training a non-autoregressivemodel mapping text to discrete tokens. MQTTS differs from
+the u2s vocoder for TTS by training a non-autoregressivemodel mapping text to discrete tokens. MQTTS differs from
 these works in the use of multi-code, and the architecture designed
  for multi-code generation and monotonic alignment.
 MQTTS also learns codebooks specialized for speech synthesis
@@ -199,7 +199,7 @@ input to the decoder QD.
 Multiple Codebook Learning. In Section 5.1, we will
 show empirically that a single codebook results in poor reconstruction
  of the input signal for real-world speech. We
-thus leverage the concept in vq-wav vec (Baevski, Schneider,
+thus leverage the concept in vq-wav2vec (Baevski, Schneider,
  and Auli 2020) to realize quantization with multipleFigure 1  Overview of MQTTS. We use different colors to represent the 4 codes from distinct codebooks Gi.
 codebooks. As shown in Figure 1, each ctis now represented
 byN  4codes, and the ﬁnal embedding is the concatenation
@@ -229,12 +229,17 @@ embedding of the given code, and the concat[  ] operator concatenates
 lossLFis a combination of the HiFi-GAN loss term LGAN
 and an additional quantization loss LV Q 
 LF λLV Q(QE,QD,G)  LGAN(QE,QD,G,D )(3)
-LV Q(QE,QD,G)  Ex[1 1 1(  sg[zc
+LV Q(QE,QD,G)  Ex[1
+TN 
+i 1T 
+t 1(  sg[zc
 t,i] zq
-t,i  2 2
+t,i  2
+2
  γ  zc
 t,i sg[zq
-t,i]  2 2)](4)
+t,i]  2
+2)](4)
 whereγandλare hyper-parameters for the commitment
 loss weight and quantization loss weight. We leave the detailed
  deﬁnition of LGAN in the HiFi-GAN paper. Note that
@@ -246,8 +251,8 @@ In the second stage, we train a transformer to autoregressively
  generate ctgiven the past sequence c t. As presented
 in Figure 2, the transformer is additionally conditioned on a
 global speaker embedding s ESPK(x)and the phoneme
-sequence h. We use a pretrained speaker embedding extractor followed
- by two linear layers with ReLU activa https //huggingface.co/pyannote/embedding
+sequence h. We use a pretrained speaker embedding extractor2followed
+ by two linear layers with ReLU activa2https //huggingface.co/pyannote/embedding
 
 Figure 2  Detailed view of the multi-output transformer during
  training. [R] refers to the repetition token. [S] and [E]
@@ -318,7 +323,7 @@ a new decoder state at time t, we only calculate its cross
 attention with Nwencoder states at [bk,bk  1,   ,bk 
 Nw]instead of the entire encoder state sequence, and bkis
 deﬁned recursively by 
-b0 0,bk 1 {
+b0  0,bk 1 {
 bk  1,ifexp{A(bk,k)} Nw
 i 0exp{A(bk,k i)} 1
 Nw
@@ -330,7 +335,8 @@ context window steps forward only if the Softmax attention
 weight of the ﬁrst encoder state (at bk) is lower than a given
 threshold (here we set it to Nw 1). In general, smaller Nw
 leads to stricter monotonic alignment at the cost of a smaller
-phonetic context. Practically, we found Nwranging from 3 6 works well judging from qualitative listening. Such construction
+phonetic context. Practically, we found Nwranging from 3
+to 6 works well judging from qualitative listening. Such construction
  also enables us to use the alignment progress as a
 stopping criterion instead of predicting the stop token which
 is vulnerable to overﬁtting on the training utterance duration.
@@ -341,13 +347,16 @@ codes that are encoded by QEfrom a silence clip before the
 actual synthesis. Clean speech is often preceded by clean
 silence, we expect it to encourage the model to continue the
 synthesis without background noise.
-4 4.1 Datasets
+4 Experimental Setup
+4.1 Datasets
 We train our model on GigaSpeech (Chen et al. 2021), an
 ASR corpus containing transcribed audio from audiobooks,
 Podcasts, and YouTube with a 16 kHz sampling rate. We
 use only the Podcast and YouTube speech and apply a datacleaning
  pipeline detailed in Appendix D to remove illconditioned
- speech. The resulting dataset contains 896 2.4 5 15 seconds. For human evaluation,
+ speech. The resulting dataset contains 896 hours
+for training and 2.4 hours for validation with an utterance
+duration ranging from 5 to 15 seconds. For human evaluation,
  to ensure speaker diversity, we select 40 utterances
 from different speakers using the test set of V oxCeleb (Nagrani
  et al. 2019) as the speaker reference audios, which
@@ -355,28 +364,30 @@ are also noisy spontaneous speech. We randomly select the
 corresponding text from GigaSpeech and remove those transcriptions
  from training and validation sets.
 4.2 Training and Model Conﬁguration
-We useγ  0.25 4 and λ  10 3
+We useγ  0.25in Equation 4 and λ  10 in Equation 3
 to balance the relative high LGAN . For training the quantizer,
  Adam optimizer (Kingma and Ba 2015) is used with
-β1 0.5,β2 0.9. For the transformer, we use Adam optimizer
- with β1 0.9,β2 0.98 200
+β1  0.5,β2  0.9. For the transformer, we use Adam optimizer
+ with β1  0.9,β2  0.98with a batch size of 200
 input frames per GPU. The learning rate is linearly decayed
-from 2 10 4 0. All models are trained using 4 6000 GPUs in bﬂoat16 precision. We trained the quantizer
-for 600 800k steps. We leave
+from 2 10 4to0. All models are trained using 4 RTX
+A6000 GPUs in bﬂoat16 precision. We trained the quantizer
+for 600k steps and the transformer for 800k steps. We leave
 optimization details in the released code. For inference, we
 use nucleus sampling with p  0.8.
 Baseline Models. We use 6 layers for both encoder and
 decoder for Transformer TTS (Li et al. 2019) and add the
 speaker embedding with the same approach as our MQTTS.
 We train a HiFi-GAN vocoder on GigaSpeech with the
-ofﬁcial implementation as its vocoder. We also trained
+ofﬁcial implementation3as its vocoder. We also trained
 Tacotron 2 (Shen et al. 2018) using the implementation
 from NVIDIA4, and broadcast-added the speaker embedding
  to the encoder state following GST Tacotron (Wang
 et al. 2018). For VITS, we modiﬁed from the ofﬁcial implementation
  and changed their ﬁxed speaker embedding into
 our own speaker embedding module, and trained it for 800k
-steps. We follow the original paper to use 0.8 0.667for the
+steps. We follow the original paper to use 0.8for the noise
+scaling of the stochastic duration predictor and 0.667for the
 prior distribution.
 Model Variants. To test the efﬁcacy of the components in
 MQTTS, we evaluate two ablated versions of the model  one
@@ -388,8 +399,8 @@ without monotonic alignment, and the other with the subdecoder
 scalability of model parameters with performance. We report
 three versions of models  40M, 100M, and 200M, which differ
  in the size of transformers while using the same quantizer.
- The context window Nwis set to 4 40M, 100M,
-and 3 200M version due to the clearer alignment. The
+ The context window Nwis set to 4 for 40M, 100M,
+and 3 for 200M version due to the clearer alignment. The
 detailed architecture of each version is in Appendix A. To
 better compare with MQTTS, we also trained a single crossattention
  version of Transformer TTS with unique alignment.
@@ -406,7 +417,7 @@ character error rate (RCER) to evaluate our quantizer model.
 By relative, we mean using the transcription of the input utterance
  by the ASR model as the ground truth. We believe
 that this better reﬂects how the reconstruction affects intelligibility.
- We adopt ASR model pretrained on GigaSpeech
+ We adopt ASR model5pretrained on GigaSpeech
 from ESPNet (Watanabe et al. 2018) for this purpose. We
 also report the typical word error rate (WER) for the whole
 TTS system as an objective metric of intelligibility. We use
@@ -434,12 +445,13 @@ afford the sampling complexity of FID. We use the dimensional
  emotion classiﬁer released by (Wagner et al. 2022)
 pretrained on MSP-Podcast (Lotﬁan and Busso 2019). We
 use the input before the ﬁnal decision layer and scale it by
-10 to calculate the FID score. We randomly sample 50 50k syntheses
+10 to calculate the FID score. We randomly sample 50k utterances
+ from the training set and generate 50k syntheses
 using the same set of text but shufﬂed speaker references.
 Speaker Similarity Score (SSS). In multi-speaker TTS,
 it is also important to evaluate how well the synthesizer
 transfers speaker characteristics. Here we use the cosine
-5https //zenodo.org/record/4630406#.YoT Ji-B QITable 1  Comparison of quantizer and vocoder reconstruction
+5https //zenodo.org/record/4630406#.YoT0Ji-B1QITable 1  Comparison of quantizer and vocoder reconstruction
  quality on V oxCeleb test set. HF-GAN is HiFi-GAN.
 MethodCode size
 (#groups)RCER
@@ -464,7 +476,9 @@ given the same text and speaker reference speech. We extract
 distance as the metric. Dynamic Time Wraping (Giorgino
 2009) is applied for the alignment. We calculate MCD using
 the ground truth utterances from the validation split.
-5 5.1 1 shows the reconstruction quality of the quantizer.
+5 Results
+5.1 Quantizer Analysis
+Table 1 shows the reconstruction quality of the quantizer.
 From RCER, it is clear that using a single codebook ( N  1)
 drastically distorts the input phone sequence. Their distinctive
  low MOS-Q and MOS-N scores also suggest that N  1
@@ -481,10 +495,12 @@ of multi-speaker real-world speech. When compared to the
 mel-spectrogram based HiFi-GAN (HF-GAN in Table 1),
 our quantizer is slightly higher in terms of RCER but distinctively
  better in speech quality (MOS-Q). For the remainder
- of our experiments, we use N  4 160 code size,
+ of our experiments, we use N  4with a 160 code size,
 as we observe little perceptible quality and intelligibility difference
- when we increase from N  4 8.
-5.2 2.
+ when we increase from N  4to8.
+5.2 Performance
+The performance of TTS system training on the given realworld
+ speech corpus are presented in Table 2.
 Autoregressive Models. Before comparing systems
 quantitatively, we showcase some qualitative properties of
 Tacotron 2 and Transformer TTS. Figure 3 compares autoregressive
@@ -493,13 +509,20 @@ Tacotron 2 and Transformer TTS. Figure 3 compares autoregressive
 cross-attentions which learn alignment. See Appendix C for the cross-attentions of all heads and layers.
 Table 2  Comparison of TTS models. MOS is with 95% conﬁdence interval. MCD is with one standard deviation.
 Method #Params. WER (%) SSS P-FID  MCD  MOS-N 
-GT n/a 14.9 n/a 0.11 n/a 4.01 0.06 40 28.4 0.718 15.48 8.94 1.16 3.84 0.06 100 24.8 0.734 12.04 8.73 1.19 3.84 0.06 100 82.6 0.434 442.29 12.49 2.77 2.34 0.09
-Transformer TTS (w. single-attention) 90.2 0.331 491.49 12.79 4.35 2.23 0.10
-Transformer TTS (w. duration predictor) 74.3 0.451 196.09 11.70 2.12 2.75 0.09 40 24.9 0.727 11.67 10.67 1.78 3.79 0.06 100 22.3 0.751 8.58 10.22 1.68 3.87 0.06 200 22.2 0.762 6.21 10.17 1.70 3.89 0.06
+GT n/a 14.9 n/a 0.11 n/a 4.01 0.06
+VITS 40M 28.4 0.718 15.48 8.94  1.16 3.84 0.06
+ 100M 24.8 0.734 12.04 8.73 1.19 3.84 0.06
+Transformer TTS
+ 100M82.6 0.434 442.29 12.49  2.77 2.34 0.09
+Transformer TTS (w. single-attention) 90.2 0.331 491.49 12.79  4.35 2.23 0.10
+Transformer TTS (w. duration predictor) 74.3 0.451 196.09 11.70  2.12 2.75 0.09
+MQTTS 40M 24.9 0.727 11.67 10.67  1.78 3.79 0.06
+ 100M 22.3 0.751 8.58 10.22  1.68 3.87 0.06
+ 200M 22.2 0.762 6.21 10.17 1.70 3.89 0.06
 MQTTS (w.o. monotonic alignment)
- 100 34.3 0.740 10.20 10.86 2.00 3.76 0.06
-MQTTS (w.o. sub-decoder) 27.0 0.740 12.12 10.47 1.81 3.75 0.07
-MQTTS (w. duration predictor) 53.2 0.725 16.65 10.88 1.62 3.67 0.06
+ 100M34.3 0.740 10.20 10.86  2.00 3.76 0.06
+MQTTS (w.o. sub-decoder) 27.0 0.740 12.12 10.47  1.81 3.75 0.07
+MQTTS (w. duration predictor) 53.2 0.725 16.65 10.88  1.62 3.67 0.06
 hand, Transformer TTS can produce clear alignment during
  training. For inference, however, only a sub-sequence
 of alignment is formed. Perceptually, only several words at
@@ -549,7 +572,8 @@ VITS, suggesting that MQTTS generates more diverse samples.
  is a much harder task compared to autoregressive modeling.
  Therefore, non-autoregressive models tend to focus on
 a smaller set of common speaking styles across the corpus
-due to insufﬁcient capacity. If we scale VITS from 40 100M, we see a decrease in P-FID with the same MOS-N,
+due to insufﬁcient capacity. If we scale VITS from 40M to
+100M, we see a decrease in P-FID with the same MOS-N,
 suggesting that bigger model capacity enables modeling of
 higher diversity, but without improvements in naturalness.
 We did not include a 200M version of VITS as we failed to
@@ -574,9 +598,9 @@ for both VITS and MQTTS, MQTTS wins out in all metrics
  except MCD, which we explained earlier. This suggests
  MQTTS is generally better than VITS, given enough
 resources. Additionally, we observed overﬁtting for both
-100 200M of MQTTS, but with a higher severity for
+100M and 200M of MQTTS, but with a higher severity for
 the 200M version. This explains the little improvement from
-100 200M and suggests that a larger training corpus is
+100M to 200M and suggests that a larger training corpus is
 needed for further improvement.
 Error Analysis. Despite the better average performance
 of MQTTS in Table 2, we ﬁnd that it suffers from lower sampling
@@ -589,15 +613,15 @@ reference speech of a slower speaking style, which is seldom
 a poor recording environment often result in bad syntheses.
  Deletion errors, which we consider more undesirable
 than substitution, are also more prevalent in MQTTS  it contributes
- for 8.4 22.3% WER in MQTTS-100M, but
-only 6.8 24.8% for VITS-100M. We conjecture that
+ for 8.4 out of 22.3% WER in MQTTS-100M, but
+only 6.8 out of 24.8% for VITS-100M. We conjecture that
 as intermittent pauses are not annotated explicitly, and thus
 it encourages MQTTS to produce silence even if attending
 to a certain phoneme. However, if the phones are successfully
  produced, they often sound more natural and intelligible
  than those in the syntheses of VITS. We observe these
 errors gradually rectiﬁed as the model capacity increases
-(from 40 200M), suggesting that more data and larger
+(from 40M to 200M), suggesting that more data and larger
 models can eventually resolve these issues.
 5.3 Audio Prompt and SNR
 To better understand the effect of the audio prompts on
@@ -645,7 +669,7 @@ We are grateful to Amazon Alexa for the support of this research.
  We thank Sid Dalmia and Soumi Maiti for the discussions
  and feedback.
 References
-Baevski, A.  Schneider, S.  and Auli, M. 2020. vq-wav vec 
+Baevski, A.  Schneider, S.  and Auli, M. 2020. vq-wav2vec 
 Self-Supervised Learning of Discrete Speech Representations.
  In 8th International Conference on Learning Representations,
  ICLR 2020, Addis Ababa, Ethiopia, April 26-30,
@@ -704,7 +728,7 @@ He, M.  Deng, Y .  and He, L. 2019. Robust Sequence-toSequence
  for Neural TTS. In Kubin, G.  and Kacic, Z., eds.,
 Interspeech 2019, 20th Annual Conference of the International
  Speech Communication Association, Graz, Austria,
-15-19 2019 , 1293 1297. ISCA.
+15-19 September 2019 , 1293 1297. ISCA.
 Heusel, M.  Ramsauer, H.  Unterthiner, T.  Nessler, B.  and
 Hochreiter, S. 2017. GANs Trained by a Two Time-Scale
 Update Rule Converge to a Local Nash Equilibrium. In
@@ -745,7 +769,7 @@ Lakhotia, K.  Kharitonov, E.  Hsu, W.-N.  Adi, Y .  Polyak,
 A.  Bolte, B.  Nguyen, T.-A.  Copet, J.  Baevski, A.  Mohamed,
  A.  and Dupoux, E. 2021. On Generative Spoken
 Language Modeling from Raw Audio. Transactions of the
-Association for Computational Linguistics , 9 1336 1354.
+Association for Computational Linguistics , 9  1336 1354.
 Li, N.  Liu, S.  Liu, Y .  Zhao, S.  and Liu, M. 2019. Neural
 Speech Synthesis with Transformer Network. Proceedings
 of the AAAI Conference on Artiﬁcial Intelligence , 33(01) 

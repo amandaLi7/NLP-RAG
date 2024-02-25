@@ -41,7 +41,7 @@ datastore is created by encoding all contexts from any text collection, includin
 One of the most surprising results from Khandelwal et al. (2020b) is that kNN-LM reduces the perplexity of
 the base LM even when the kNN component is retrieving examples from the same training set that the LM
 was originally trained on , indicating that the kNN-LM improves the ability to model the training data and is
-Preprint. Under review.arXiv 2301.02828 2  [cs.CL]  17 2023Multi Headed
+Preprint. Under review.arXiv 2301.02828v2  [cs.CL]  17 Jan 2023Multi Headed
 AttentionFeed Forward
 Network
 Layer Normℎ𝑠𝑚𝑊𝑠𝑚𝐷
@@ -102,7 +102,7 @@ itsk-nearest neighbors Naccording to a distance function d( , ). Next, thekNN-LM
 distribution over these neighbors using the softmax of their negative distances, and aggregates the probability
 mass for each vocabulary item across all of its occurrences in the retrieved targets 
 pkNN(wt ct)  
-(ki,vi) N wt viexp( d(ki,f(ct))) (2)
+(ki,vi) N1wt viexp( d(ki,f(ct))) (2)
 Finally, this distribution is interpolated with the parametric LM distribution pLMto produce the ﬁnal kNN-LM
 distribution 
 p(wt ct θ)   (1 λ)pLM(wt ct θ)  λpkNN(wt ct) (3)
@@ -120,7 +120,7 @@ the datastore, and aggregate by vocabulary items, making it more closely resembl
 the size of the entire datastore, and Equation 2 becomes the following, based on the distances to every context
 in the datastoreDinstead of a subset of nearest neighbors N.
 pD(wt ct)  
-(ki,vi) D wt viexp( d(ki,f(ct))) (4)
+(ki,vi) D1wt viexp( d(ki,f(ct))) (4)
 In practice, we use kNN search as a way of approximation, by limiting the calculation to only knearest
 neighbors to avoid the computational cost of calculating the distribution over the entire datastore.
 If we re-write and generalize Equation 2, both the kNN-LM of Khandelwal et al. (2020b) and a large number
@@ -128,7 +128,7 @@ of related models can be expressed through the following equation
 Pinterp  (1 λ)softmax (Wsm hsm)      
 PLM parametric component λMsoftmax (mask-to-k (Wds hds)/τ)      
 PkNN non-parametric component. (5)
-Figure 1 5. The ﬁrst term of the equation is the standard parametric
+Figure 1 provides an illustration of Equation 5. The ﬁrst term of the equation is the standard parametric
 language model, whereas the second represents a generalized version of utilizing an external datastore. The
 ﬁrst component, the output layer of a common parametric language model, is relatively straightforward. Wsm
 of sizeV Dis the embedding matrix of the output token, and hsmis the context vector used to calculate the
@@ -181,7 +181,8 @@ et al., 2015) to train a smaller vocabulary (33K) than the original (260K) on th
 as subword tokenization is ubiquitous in many state-of-the-art language models (Radford et al., 2019  Devlin
 et al., 2018  Liu et al., 2019  Brown et al., 2020). Using subword tokenization also eliminates the need for
 adaptive softmax (Joulin et al., 2017). It makes the output layer more generalized, sharing more resemblance
-to thekNN component as described in Section 2, and facilitates the ablation studies in this paper.1 268M parameters. To get a perspective on how large the datastore is, it is built on the training data
+to thekNN component as described in Section 2, and facilitates the ablation studies in this paper.1This base
+LM has 268M parameters. To get a perspective on how large the datastore is, it is built on the training data
 that contains nearly 150M BPE tokens, each paired with a context vector of size 1024. This datastore has a
 total memory consumption of about 300GB. At every retrieval step, we take the top 1024 nearest neighbors,
 i.e.,k  1024 , following Khandelwal et al. (2020b). The interpolated perplexity is computed with optimal
@@ -192,10 +193,12 @@ our LM s perplexity is worse than that used in the original kNN-LM paper. Howeve
 from the additional kNN component. We argue that the base LM s performance is orthogonal to the study of the factors
 behindkNN-LM s improvements.
 4hds   #params PPL Interp. PPL Oracle
-Base LM - - 0 21.750 - kNN-LM-L2 2 19.174 14.230
+Base LM - - 0 21.750 - kNN-LM-L2
+ att L2 Nds D  19.174 14.230
 kNN-LM-IP att IP Nds D  19.095 14.077
-kNN-LM-L2 2 20.734 15.594
-kNN-LM-IP ffn IP Nds D  21.101 16.254 1  Performance of the parametric language model and several kNN-LM variants.
+kNN-LM-L2 ffn L2 Nds D  20.734 15.594
+kNN-LM-IP ffn IP Nds D  21.101 16.254
+Table 1  Performance of the parametric language model and several kNN-LM variants.
 Results comparing multiple kNN-LM variants are shown in Table 1. The ﬁrst row represents the base
 parametric language model s perplexity. The second is a formulation analogous to that of Khandelwal et al.
 (2020b), and in the remaining rows, we vary the input representation hdsand distance function  from
@@ -218,14 +221,16 @@ when using the  att  inputs, and slightly worse when using  ffn  inputs.
 model, the results are the worst, indicating that the kNN-LM is particularly beneﬁting when the
 kNN-LM achieves a different view of the data from the parametric model.
 We found in preliminary experiments that kNN-LM is generalizable to other base language models as well,
-ranging from small models with 82 774M parameters. The gain from
+ranging from small models with 82M parameters to larger models with 774M parameters. The gain from
 kNN-LM is more signiﬁcant when used with a smaller, less capable base language model, as expected. The
 details are shown in Appendix A. In this paper, we are mainly focused on the factors contributing to the
 relative improvements from kNN-LM, instead of the absolute performance, so we use the 268M model for the
 remainder of the paper.
 In the next sections, we perform further experiments with ablations on the general formulation Equation 5 to
 elucidate the key elements contributing to the performance improvements in kNN-LM.
-4 4.1 3, we see that the choice of hdshas a large impact on the performance of
+4 Effect of Different WdsFormulations
+4.1 Replacing the Datastore with Trainable Embeddings
+From the observation in Section 3, we see that the choice of hdshas a large impact on the performance of
 kNN-LM. This intrigues us to explore if one key to the improvements afforded by kNN-LM lies in the use
 of different input representations together, namely the attention output ( hds att) and feedforward output
 (hds ffn). However, from only the experiments above, it is not possible to disentangle the effect of the
@@ -254,9 +259,10 @@ by other more efﬁcient means as well.
 hdsNds   #params PPL Interp. Oracle
 Base LM - - - 0 21.750 - kNN-LM
  w/ ATT att Big IP Nds D  19.095 14.077
-LearnedWdsw/ ATT att 1 22.584 20.353 16.954
+LearnedWdsw/ ATT att 1x IP V D 22.584 20.353 16.954
 kNN-LM w/ FFN ffn Big IP Nds D  21.101 16.254
-LearnedWdsw/ FFN ffn 1 20.920 20.694 18.772 2  Performance comparison how the choice of hds, input representation, affects kNN baselines and
+LearnedWdsw/ FFN ffn 1x IP V D 20.920 20.694 18.772
+Table 2  Performance comparison how the choice of hds, input representation, affects kNN baselines and
 models with learnable embeddings as datastore alternative. hdsis the attention layer output.
 4.2 Increasing the Softmax Capacity
 One premise behind kNN-LM is that the large datastore is the key reason for the model working well  the
@@ -265,7 +271,7 @@ such a big datastore is warranted and whether the high rank of Wdsleads to bette
 the effect of the datastore size for kNN retrieval on kNN-LM interpolated perplexity. If a bigger datastore
 (a high rank Wds) is better in kNN-LM than a smaller datastore, then the hypothesis of softmax capacity is
 more probable. We randomly subsample the full datastore in varying percentages and the results are shown
-in Figure 2. The full datastore contains more than 150 293GB when using
+in Figure 2. The full datastore contains more than 150M entries and storing them takes 293GB when using
 half-precision ﬂoating points (fp16). We can see that whether or not approximate kNN is used, the ﬁnal
 perplexity decreases almost linearly with more percentage of the original datastore. Even with just 5% of
 the datastore size (15G), kNN-LM still provides a beneﬁt over just using the base LM. However, even when
@@ -275,15 +281,18 @@ One possible reason why a larger datastore is helpful is that words can be dif�
 reasons  (1) They are rare, or (2) they are frequent, but they have multiple meanings and appear in different
 contexts. The softmax bottleneck (Yang et al., 2017) suggests that the ﬁnal dot product of language model
 Wsm hsmlimits the expressivity of the output probability distributions given the context  that is, a single
-output vector of a ﬁxed (1024) size cannot express all the possible mappings between 100 33K vocabulary outputs. We hypothesize that kNN-LM improves performance by alleviating the problem,
+output vector of a ﬁxed (1024) size cannot express all the possible mappings between 100M training examples
+and 33K vocabulary outputs. We hypothesize that kNN-LM improves performance by alleviating the problem,
 sinceWds hdshas a higher rank and is more expressive than just Wsm hsm. In other words, kNN is a
 sparse approximation of the full softmax over all the embeddings in the datastore Wds. To test this hypothesis,
-2 2 as similarity functions, we use IP in the experiments.
+2Because we previously found little difference between IP and L2 as similarity functions, we use IP in the experiments.
 For simplicity, we set temperature τ  1.
 6we disentangle the effect of the high rank in Wdsfrom the actual saved context embeddings in Wds, by training
 an embedding matrix of the same desired size to test from scratch.
 Ratio to Full Datastore SizeInterpolated Perplexity
-19.00020.00021.00022.000 0.00 0.25 0.50 0.75 1.00 2  The effect of the size of the datastore used for kNN retrieval on ﬁnal interpolated perplexity.
+19.00020.00021.00022.000
+0.00 0.25 0.50 0.75 1.00
+Figure 2  The effect of the size of the datastore used for kNN retrieval on ﬁnal interpolated perplexity.
 We explore several potential solutions for increasing the capacity of softmax, and examine if they can achieve
 a similar effect of kNN-LM. The ﬁrst and easiest solution is to increase the embedding matrix size by adding
 more embedding vectors for each word type in the vocabulary. To test this, we replace Wdswith a much
@@ -325,7 +334,8 @@ further ﬁnetuning of the embedding matrix consisting of cluster centroids. How
 methods provided additional beneﬁts over the simple multi-embedding approach. More details on these
 attempts can be found in Appendix C.
 7Number of Trained Embeddings (nV)Interpolated Perplexity
-19202122 2 4 6 8 3  The number of embeddings per word type ( nVtotal embeddings in Wds) versus interpolated
+19202122
+2 4 6 8att    ffn  Figure 3  The number of embeddings per word type ( nVtotal embeddings in Wds) versus interpolated
 perplexity. The horizontal line at the top (black) represents the perplexity of the base LM. The horizontal line
 at the bottom (red) represents the interpolated perplexity using a full datastore with kNN-LM.
 5 Approximate kNN Search & Softmax Temperature
@@ -349,9 +359,10 @@ respect to the mask and the score calculation. Intrigued by this counter-intuiti
 kNN search approximation.
 hds   #params PPL λ Interp. PPL Oracle
 Base LM - - 0 21.750 - - kNN-LM
- w/ FAISS mask, FAISS score att L2 0.271 19.174 14.230
-kNN-LM w/ FAISS mask, real score att L2 0.176 19.672 14.393
-kNN-LM w/ real mask, real score att L2 0.172 19.735 14.480 3  Performance of the parametric language model and comparison of kNN-LMs using the approximate
+ w/ FAISS mask, FAISS score att L2 Nds D  0.271 19.174 14.230
+kNN-LM w/ FAISS mask, real score att L2 Nds D  0.176 19.672 14.393
+kNN-LM w/ real mask, real score att L2 Nds D  0.172 19.735 14.480
+Table 3  Performance of the parametric language model and comparison of kNN-LMs using the approximate
 versus ground truth kNN.
 First, we plot the subsampled size of the datastore with the interpolated perplexity Figure 4, a similar plot
 to Figure 2, but showcasing the comparison between approximate and real masks, between approximate and
@@ -366,12 +377,13 @@ neighbors ( FAISS mask, FAISS score  vs.  FAISS mask, real score ) is larger tha
 approximate or real nearest neighbors given the same ground truth method of calculating the distance ( real
 mask, real score  vs.  FAISS mask, real score ), for reasons we will elucidate in the next section.
 Ratio to Full Datastore SizeInterpolated Perplexity
-19.00020.00021.00022.000 0.00 0.25 0.50 0.75 1.00FAISS mask, FAISS score FAISS mask, real score real mask, real score
+19.00020.00021.00022.000
+0.00 0.25 0.50 0.75 1.00FAISS mask, FAISS score FAISS mask, real score real mask, real score
 Figure 4  The differences between using approximate and accurate kNN search on varying size of the datastore.
 5.2 Adding Softmax Temperature to kNN Distribution
 Because the number of retrieved nearest neighbors, kis usually much smaller than the vocabulary size V,
 intuitively, the kNN distribution PkNN used for interpolation tends to be more peaky than the standard LM
-output distribution. When k  1024 33000 , as in our experiments, PkNN will only have a few
+output distribution. When k  1024 andV  33000 , as in our experiments, PkNN will only have a few
 vocabulary items with a non-zero probability. Furthermore, many of the retrieved neighbors share the same
 target token and thus make the kNN distribution even peakier. One way to control the entropy, or peakiness of
 the distribution is to add temperature to the logits that go into the softmax function (Holtzman et al., 2019).
@@ -379,8 +391,8 @@ We calculate the probability of non-parametric component PkNN with the following
 softmax temperature 
 PkNN  Msoftmax (mask-to-k (Wds hds)/t) (6)
 In general, the higher the temperature, the less  peaky  the distribution would become. We experiment with
-both the 5% as well as the full datastore using different temperatures ranging from 0 3 0.1 intervals. The
-results are shown in Figure 5 5b respectively.
+both the 5% as well as the full datastore using different temperatures ranging from 0 to 3 at 0.1 intervals. The
+results are shown in Figure 5a and Figure 5b respectively.
 (a) On 5% subsampled datastore.
  (b) On full datastore.
 Figure 5  The interpolated perplexity varies with different softmax temperature values.
@@ -412,7 +424,7 @@ prevents overﬁtting to the datastore created from the same training set. We fu
 result in Appendix D, where we ﬁnd that longer words and words that appear in many different contexts have
 slightly better results with approximate nearest neighbors.
 Coincidentally, He et al. (2021) ﬁnd that dimensionality reduction using PCA on datastore vectors (from
-1024 512 dimensions) improves the perplexity of the original kNN-LM from 16.46 16.25, which can
+1024 to 512 dimensions) improves the perplexity of the original kNN-LM from 16.46 to 16.25, which can
 be explained by our ﬁndings as PCA may provide another source of  approximation  that contributes to
 regularization.
 Notably, similar effects, where an approximation component lead to better generalization, have been reported in
@@ -436,7 +448,8 @@ for ensembling. The improvement from kNN-LM is purely due to the ensembling effe
 However, we found that kNN-LM s improvement is orthogonal to ensembling with a different base LM. More
 details can be found in Appendix E.5.
 Sparsiﬁcation Themask-to-k ( )used bykNN retrieval induces sparsity in the distribution over the vocabulary,
- due to a small k(typically 1024) compared to the size of the vocabulary V(33 10 260K in the original settings of Khandelwal et al. (2020b)). We hypothesized that kNN-LM increases
+ due to a small k(typically 1024) compared to the size of the vocabulary V(33K in our experiments
+10and 260K in the original settings of Khandelwal et al. (2020b)). We hypothesized that kNN-LM increases
 the probability of the top- kentries while taking  probability mass  from the long tail of unlikely word types.
 However, we could not gain any beneﬁts solely from sparsifying the output probability of a standard LM and
 interpolating it with the original LM. More details can be found in Appendix E.2.
@@ -567,8 +580,12 @@ July 2022. Association for Computational Linguistics. doi  10.18653/v1/2022.naac
 https //aclanthology.org/2022.naacl-main.406 .
 13AkNN-LM Generalization to Other LMs
 #params Base LM PPL kNN-LM PPL Absolute PPL Gain
-Ours 268 21.75 19.17 2.58
-Distilled-GPT2 82 18.25 14.84 3.41 2-small 117 14.84 12.55 2.29 2-medium 345 11.55 10.37 1.18 2-large 774 10.56 9.76 0.80 4  Performance of kNN-LM applied to other pretrained language models of different sizes.
+Ours 268M 21.75 19.17 2.58
+Distilled-GPT2 82M 18.25 14.84 3.41
+GPT2-small 117M 14.84 12.55 2.29
+GPT2-medium 345M 11.55 10.37 1.18
+GPT2-large 774M 10.56 9.76 0.80
+Table 4  Performance of kNN-LM applied to other pretrained language models of different sizes.
 To test the generalizability of kNN-LM, we follow the same experimental setup as used in Section 3. We
 select several pretrained models from the GPT2 family (Radford et al., 2019) of various parameter counts,
 plus a distilled version of GPT2, DistillGPT2. (Sanh et al., 2019) We take the pretrained model checkpoint,
@@ -582,7 +599,23 @@ the base LM in the following sections for ablation study.
 B Detailed Results for Increasing the Softmax Capacity
 hdsNds   #params PPL Interp. Oracle
 - - - 0 21.750 - att
- Big IP Nds D  19.095 14.077 1 22.584 20.353 16.954 2 2 21.903 20.529 17.432 3 3 22.434 20.395 17.132 4 4 21.936 20.521 17.423 5 5 22.025 20.643 17.560 6 6 21.972 20.519 17.422 9 9 22.084 20.696 17.631 21.101 16.254 1 20.920 20.694 18.772 2 2 20.889 20.646 18.701 3 3 20.829 20.603 18.717 4 4 20.769 20.629 18.876 5 5 20.720 20.594 18.878 6 6 20.726 20.599 18.902 9 9 20.687 20.567 18.887 5  Performance comparison of kNN baselines and models with learnable embeddings as datastore
+ Big IP Nds D  19.095 14.077
+att 1x IP V D 22.584 20.353 16.954
+att 2x IP 2V D 21.903 20.529 17.432
+att 3x IP 3V D 22.434 20.395 17.132
+att 4x IP 4V D 21.936 20.521 17.423
+att 5x IP 5V D 22.025 20.643 17.560
+att 6x IP 6V D 21.972 20.519 17.422
+att 9x IP 9V D 22.084 20.696 17.631
+ffn Big IP Nds D  21.101 16.254
+ffn 1x IP V D 20.920 20.694 18.772
+ffn 2x IP 2V D 20.889 20.646 18.701
+ffn 3x IP 3V D 20.829 20.603 18.717
+ffn 4x IP 4V D 20.769 20.629 18.876
+ffn 5x IP 5V D 20.720 20.594 18.878
+ffn 6x IP 6V D 20.726 20.599 18.902
+ffn 9x IP 9V D 20.687 20.567 18.887
+Table 5  Performance comparison of kNN baselines and models with learnable embeddings as datastore
 alternative.hdsis either attention layer output (att) or feedforward layer output (ffn).
 C Alternative Methods for Increasing Softmax Capacity
 C.1 Adaptive Increasing Embedding Size
@@ -599,9 +632,17 @@ type does not make a signiﬁcant difference in the ﬁnal perplexity, when comp
 equal number of embeddings for each word type.
 hdsNds   #params PPL λ Interp. PPL Oracle
 Base LM - - - 0 21.750 - - KNN
- att Big L2 0.271 19.174 14.230 0.266 19.095 14.077 3 3 22.434 0.417 20.395 17.132 3 3 21.948 0.437 20.440 17.303
-Freq. Weighted att 3 3 22.507 0.412 20.387 17.105 2 0.065 20.734 15.594 0.050 21.101 16.254 3 3 20.829 0.622 20.603 18.717 3 3 20.764 0.713 20.659 18.978
-Freq. Weighted ffn 3 3 20.757 0.658 20.572 18.782 6  Performance comparison of kNN baselines and several conﬁgurations that adaptively increase the
+ att Big L2 Nds D  0.271 19.174 14.230
+KNN att Big IP Nds D  0.266 19.095 14.077
+Equal Per Word att 3x IP 3V D 22.434 0.417 20.395 17.132
+Loss Weighted att 3x IP 3V D 21.948 0.437 20.440 17.303
+Freq. Weighted att 3x IP 3V D 22.507 0.412 20.387 17.105
+KNN ffn Big L2 Nds D  0.065 20.734 15.594
+KNN ffn Big IP Nds D  0.050 21.101 16.254
+Equal Per Word ffn 3x IP 3V D 20.829 0.622 20.603 18.717
+Loss Weighted ffn 3x IP 3V D 20.764 0.713 20.659 18.978
+Freq. Weighted ffn 3x IP 3V D 20.757 0.658 20.572 18.782
+Table 6  Performance comparison of kNN baselines and several conﬁgurations that adaptively increase the
 embedding size with training loss or word frequency.
 C.2 Mixture of Softmaxes
 Yang et al. (2017) proposes a solution to the problem using a Mixture of Softmax (MoS) to produce more
@@ -636,18 +677,19 @@ Opposite to training the word embeddings of an increased size, we also consider 
 down to a similar-sized embedding matrix for softmax computation. The intuition is that the datastore contains
 15hdsR   #params PPL λ Interp. PPL Oracle
 Base LM - - - 0 21.750 - - KNN
- att - L2 0.271 19.174 14.230
+ att - L2 Nds D  0.271 19.174 14.230
 KNN att - IP Nds D  0.266 19.095 14.077
-KNN ffn - L2 0.065 20.734 15.594
+KNN ffn - L2 Nds D  0.065 20.734 15.594
 KNN ffn - IP Nds D  0.050 21.101 16.254
-Ft. MoS embed att 2 2 2 2 21.986 0.437 20.720 17.573
-Ft. MoS embed att 3 3 2 3 22.106 0.422 20.779 17.609
-Ft. MoS Only att 2 2 2 2 22.552 0.371 21.011 17.796
-Ft. MoS Only att 3 3 2 3 22.573 0.371 21.024 17.812
-Ft. MoS Only ffn 2 2 2 2 21.351 0.843 21.338 20.258
-Ft. MoS Only ffn 3 3 2 3 21.495 0.733 21.460 20.322
-Ft. MoS Only ffn 4 4 2 4 21.321 0.994 21.321 20.396
-Ft. MoS Only ffn 5 5 2 5 21.371 0.909 21.367 20.406 7  Performance comparison of kNN baselines and several MoS conﬁgurations. Ris the number of
+Ft. MoS embed att 2 IP VD   2D2  2D 21.986 0.437 20.720 17.573
+Ft. MoS embed att 3 IP VD   3D2  3D 22.106 0.422 20.779 17.609
+Ft. MoS Only att 2 IP 2D2  2D 22.552 0.371 21.011 17.796
+Ft. MoS Only att 3 IP 3D2  3D 22.573 0.371 21.024 17.812
+Ft. MoS Only ffn 2 IP 2D2  2D 21.351 0.843 21.338 20.258
+Ft. MoS Only ffn 3 IP 3D2  3D 21.495 0.733 21.460 20.322
+Ft. MoS Only ffn 4 IP 4D2  4D 21.321 0.994 21.321 20.396
+Ft. MoS Only ffn 5 IP 5D2  5D 21.371 0.909 21.367 20.406
+Table 7  Performance comparison of kNN baselines and several MoS conﬁgurations. Ris the number of
 mixtures.
 redundant context vectors, and thus compression could make the datastore smaller without sacriﬁcing too
 much performance gain. He et al. (2021) shows that we can safely compress the datastore by clustering to 50%
@@ -662,7 +704,7 @@ because of the high compression loss after clustering and the imbalanced distrib
 each cluster.
 D Which Words Beneﬁt from Approximation 
 To further understand the unexpected results when using the different kNN approximate retrieval settings
-in Section 5.1 5.2, we analyze on a token level, based on how many times each ground truth
+in Section 5.1 and Section 5.2, we analyze on a token level, based on how many times each ground truth
 token s probability in the evaluation set are helped by each kNN setting. It means that for each ground truth
 token in the evaluation, we count the times when the kNN distribution is higher than the base LM distribution
 PLM, i.e.,PkNN PLM.
@@ -682,7 +724,7 @@ contexts. To measure how diverse the contexts of each word in the vocabulary is,
 and backward bigram entropy for each word in the evaluation set that has more than 10 occurrences. The
 bigram entropy is a simple yet good indicator of context diversity for a given word, as used in Kneser Ney
 smoothing (Ney et al., 1994). We calculate both the forward and backward bigram entropy for each word was
-16 6  The effect of the token character length on how much accurate nearest neighbors are better than
+16Figure 6  The effect of the token character length on how much accurate nearest neighbors are better than
 approximate FAISS neighbors. Negative values mean worse. The trend line of the scatter points is shown.
 follows, where wafterandwbefore represent the word after and before the given word w.
 Hforward (w)    
@@ -761,7 +803,14 @@ just ensembling the base LM with another identical model, but trained with a dif
 a huge performance boost, both on interpreted perplexity and on oracle perplexity.
 Prev. Layers hdsNds   #params PPL Interp. Oracle
 same - - - 0 21.750 - same
- att Big L2 19.174 14.230 19.095 14.077 2 20.734 15.594 21.101 16.254 1 21.569 18.941 14.980 2 2 21.914 18.948 14.885 3 3 22.206 18.981 14.853 8  Performance comparison of kNN baselines and models with different size output embeddings
+ att Big L2 Nds D  19.174 14.230
+same att Big IP Nds D  19.095 14.077
+same ffn Big L2 Nds D  20.734 15.594
+same ffn Big IP Nds D  21.101 16.254
+diff ffn 1x IP F V D 21.569 18.941 14.980
+diff ffn 2x IP F 2V D 21.914 18.948 14.885
+diff ffn 3x IP F 3V D 22.206 18.981 14.853
+Table 8  Performance comparison of kNN baselines and models with different size output embeddings
 re-trained from scratch.
 However, just because ensembling two LMs of the same architecture provides better performance than
 interpolating the base LM with kNN does not necessarily suggest that kNN s performance improvement can
@@ -773,7 +822,9 @@ whether the kNN component is included. The results are shown in Figure 8. For th
 isKLMs ensemble, and for the   kNN  series, each point is K 1LMs pluskNN. We can see that even at
 4-ensemble, the ensemble that contain kNN as a component still have a considerable edge over the 4-ensemble
 that contain just LMs.
-Ensemble Components16182022 1 2 3 4 8  Ensembling effect comparison, between multiple base LMs and multiple base LMs plus kNN
+Ensemble Components16182022
+1 2 3 4LM KNNLM and KNN
+Figure 8  Ensembling effect comparison, between multiple base LMs and multiple base LMs plus kNN
 component.
 E.6 ArekNN-LM Just Alternative Training Methods 
 E.6.1 Overﬁtting
@@ -781,9 +832,13 @@ SincekNN-LM improves perplexity even with the same training dataset as datastore
 kNN-LM works by only  memorizing  the training data. The hypothesis is that the datastore and the kNN
 19Prev. Layers hdsNds   #params PPL Interp. Oracle
 Base LM same - - - 0 21.750 - KNN
- same att Big L2 19.174 14.230 19.095 14.077 2 20.734 15.594 21.101 16.254
-Overﬁt@92 1702.806 21.732 17.764
-Overﬁt@129 8966.508 21.733 17.814 9  Performance comparison of several baselines with two overﬁtted models, at 92 129 additional
+ same att Big L2 Nds D  19.174 14.230
+KNN same att Big IP Nds D  19.095 14.077
+KNN same ffn Big L2 Nds D  20.734 15.594
+KNN same ffn Big IP Nds D  21.101 16.254
+Overﬁt@92 diff ffn V IPF V D 1702.806 21.732 17.764
+Overﬁt@129 diff ffn V IPF V D 8966.508 21.733 17.814
+Table 9  Performance comparison of several baselines with two overﬁtted models, at 92 and 129 additional
 epochs.
 search are trying to memorize the training data. In other words, the parametric LM is under-ﬁtting some
 tokens. The intuition behind this is that the kNN component retrieves examples directly from the training set.
@@ -809,7 +864,8 @@ is to distill the knowledge from the base LM (Hinton et al., 2015). We ﬁnd tha
 labels  from the base LM to alleviate the alleged  over-correction  problem is not the key, as this does not help
 with the interpolated perplexity at all. This suggests that even with the same training data, kNN still provides
 valuable additional guidance.
-E.6.3 4.2, we discover that using over-parameterization with standard LM training loss does not further
+E.6.3 Training to Optimize Interpolated Loss
+In Section 4.2, we discover that using over-parameterization with standard LM training loss does not further
 close the gap towards kNN-LM. This suggests that some regularization term may be needed during training to
 make the multiple embeddings not converge to the same vector, rendering over-parameterization useless.
 From Table 2, we see that a better interpolated perplexity may not require a very low perplexity when measured
@@ -826,6 +882,6 @@ other parameters, similar to all other experiments. We choose λ  0.25as it is t
 kNN-LM experiments and our goal for this training is to mimic the loss of kNN-LM after interpolation. This
 training loss effectively assigns a higher value to the training examples where the base LM s loss is high,
 20suggesting the need for the extra Wdsto help with these hard cases. However, for either  att  for  ffn  for hds,
-eitherVor Vfor the number of embeddings in Wds, we are unable to achieve a better perplexity than just
+eitherVor3Vfor the number of embeddings in Wds, we are unable to achieve a better perplexity than just
 the base LM. This suggests that, while nice on paper, the interpolated loss optimization process is not trivial.
 21

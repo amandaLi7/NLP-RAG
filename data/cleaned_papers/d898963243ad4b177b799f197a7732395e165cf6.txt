@@ -49,7 +49,9 @@ CCS CONCEPTS
 KEYWORDS
 Image-text matching, Multimodal Model, Few-shot, Dementia Detection
 
-1 6 million older adults in the United States [ 1]. The speechbased
+1 INTRODUCTION
+Dementia is a common and irreversible disease that affects more
+than 6 million older adults in the United States [ 1]. The speechbased
  analysis enables the detection of dementia in the early stage
 at a lower cost and lower effort compared to other alternative detection
  methods. Researchers have explored speech-based dementia
@@ -86,7 +88,7 @@ areas. The lack of the picture as an input to the model prevents
 the model from accessing the full and original knowledge of the
 picture. While deep learning models rapidly advance beyond human
 capability, we envision that dementia detection models using the
-original picture as an input can understand the picture descriptionarXiv 2308.07933 1  [cs.CL]  11 2023Youxiang Zhu et al.
+original picture as an input can understand the picture descriptionarXiv 2308.07933v1  [cs.CL]  11 Aug 2023Youxiang Zhu et al.
 task deeply and, as a result, outperform previous models that do
 not use the picture as a direct input.
 The image-text alignment models are advanced recently [ 25,31,
@@ -195,7 +197,8 @@ images and texts, quantity and quality of samples, and focused areas
 of the picture, and preliminary results of our approaches.Evaluating Picture Description Speech for Dementia Detection using Image-text Alignment
 Relevance sentence num/sample word num/sample
 HC𝑐𝐻𝐶 19.66 16.52 144.28
-AD𝑐𝐴𝐷 14.57 17.70 158.35 1  Preliminary results. Relevance scores are scaled by
+AD𝑐𝐴𝐷 14.57 17.70 158.35
+Table 1  Preliminary results. Relevance scores are scaled by
 the total number of sentences in all samples.
 3.1 Problem formation
 A picture description dataset for dementia detection 𝑆𝑥,𝑦 
@@ -360,14 +363,16 @@ ADReSS [ 29] is a cookie theft picture description dataset in English.
 It was processed based on the Pitt Corpus dataset [ 4] with the
 balanced label, age, and gender. All samples are human-transcribed
 description texts. Each sample has a label, either HC or AD. ADReSS
-has 108 48 samples for testing.Evaluating Picture Description Speech for Dementia Detection using Image-text Alignment
+has 108 samples for training and 48 samples for testing.Evaluating Picture Description Speech for Dementia Detection using Image-text Alignment
 0 20 40 60
-k-shot0.50.60.70.80.91.0 75.81%
+k-shot0.50.60.70.80.91.0Accuracy75.81%
 10-shots79.06%
 40-shots79.59%
 50-shots79.91%
 60-shots
-Figure 3 5.2 1, CLIP and scikit-learn3
+Figure 3  The accuracy result of baseline model
+5.2 Implementation detail
+We used publicly available codes of BERT1, CLIP2and scikit-learn3
 to implement our dementia detection models. We use the default
 hyperparameters for the baseline model. We run all the experiments
 with a single V100 GPU.
@@ -390,13 +395,17 @@ testing. The different results on one sample can lead to around
 2%accuracy difference. Thus, such evaluation produces unstable
 results. Our proposed evaluation protocol achieves 79.67% accuracy
  in a 54-shots setting, while in the original ADReSS evaluation
-protocol, the number of training samples for each class is 54 83.33%. We consider the original
+protocol, the number of training samples for each class is 54 and
+the accuracy on the testing set is 83.33%. We consider the original
 ADReSS evaluation protocol overestimates the performance, and
 our proposed evaluation protocol provides a more representative
 result.
-5.4 1-60 3. We observe that the accuracy increases rapidly
+5.4 Results of baseline model
+We report the 1-60 shots results of the baseline model on ADReSS
+dataset in Figure 3. We observe that the accuracy increases rapidly
 1https //huggingface.co/bert-base-uncased
-2https //huggingface.co/openai/clip-vit-base-patch32 3https //scikit-learn.org/from 1-10 shots (60.82% to 75.81%), the accuracy increases slowly
+2https //huggingface.co/openai/clip-vit-base-patch32
+3https //scikit-learn.org/from 1-10 shots (60.82% to 75.81%), the accuracy increases slowly
 from 10-40 shots (75.81% to 79.06%), and the accuracy saturates after
 40-shots. The accuracy of 40-shots, 50-shots, 55-shots and 60-shots
 are 79.06%, 79.58%, 80.23%, and 79.91%, respectively. The results
@@ -408,7 +417,7 @@ We evaluate our picture relevance model with parameters 𝑘𝑡
 accuracy results are shown in Figure 4a where the position (0,0)is
 the result of the baseline model using all the sentences. We observe
 that  i) The best accuracy is achieved with (𝑘𝑡,𝑘𝑏) (6,9)(80.63%)
-statistical significant with t-test p 0.008 0.01 compared to the
+statistical significant with t-test p 0.008   0.01 compared to the
 baseline model. ii) Using only bottom- 𝑘𝑏sentences but not using
 top-𝑘𝑡sentences resulted in the best accuracy of 76.78%, worse
 than the baseline 79.91%, which implies the highly picture-relevant
@@ -451,12 +460,14 @@ located on the left part of the picture, as shown in Figure 5a. In
 addition, other results close to the best accuracy use (4,2),(4,4),Youxiang Zhu et al.
 0 1 2 3 4 5 6 7 8 9 10
 Bottom-k0 1 2 3 4 5 6 7 8 9 10T op-k
-79.91 64.39 67.06 69.57 73.23 75.07 76.78 76.51 75.75 74.84 74.7069.18 69.25 69.40 73.28 75.37 75.63 78.44 78.33 78.27 78.37 79.1471.19 71.39 74.76 72.97 74.73 74.84 75.28 75.76 76.21 76.71 76.8973.97 75.28 77.73 75.39 77.19 77.35 78.39 78.48 77.77 75.68 75.6176.37 76.63 78.55 77.38 77.61 78.77 79.07 77.89 78.48 77.43 78.6677.89 78.18 79.26 79.13 79.61 80.21 79.31 79.27 78.11 78.24 78.6677.12 78.46 79.31 79.07 78.58 79.29 79.85 78.53 80.62 80.63 80.3078.39 77.85 78.66 78.13 78.62 80.02 78.28 78.47 80.22 80.57 79.1576.32 76.00 75.99 76.03 77.38 77.90 77.10 77.43 78.91 78.22 77.6077.76 77.57 77.32 77.26 77.24 77.43 78.42 77.72 77.13 77.59 78.2376.54 77.41 78.87 77.89 78.50 78.25 78.12 78.82 78.43 77.94 79.28 6668707274767880
+79.91 64.39 67.06 69.57 73.23 75.07 76.78 76.51 75.75 74.84 74.7069.18 69.25 69.40 73.28 75.37 75.63 78.44 78.33 78.27 78.37 79.1471.19 71.39 74.76 72.97 74.73 74.84 75.28 75.76 76.21 76.71 76.8973.97 75.28 77.73 75.39 77.19 77.35 78.39 78.48 77.77 75.68 75.6176.37 76.63 78.55 77.38 77.61 78.77 79.07 77.89 78.48 77.43 78.6677.89 78.18 79.26 79.13 79.61 80.21 79.31 79.27 78.11 78.24 78.6677.12 78.46 79.31 79.07 78.58 79.29 79.85 78.53 80.62 80.63 80.3078.39 77.85 78.66 78.13 78.62 80.02 78.28 78.47 80.22 80.57 79.1576.32 76.00 75.99 76.03 77.38 77.90 77.10 77.43 78.91 78.22 77.6077.76 77.57 77.32 77.26 77.24 77.43 78.42 77.72 77.13 77.59 78.2376.54 77.41 78.87 77.89 78.50 78.25 78.12 78.82 78.43 77.94 79.28
+6668707274767880
 (a) Picture relevance model
 0 1 2 3 4 5 6 7 8 9 10
 Bottom-k0 1 2 3 4 5 6 7 8 9 10T op-k
-79.91 65.89 73.33 78.14 75.77 76.81 78.78 80.09 79.53 78.80 78.4269.33 76.28 75.23 75.71 78.64 78.82 79.52 80.41 80.14 81.24 78.8776.24 76.08 79.16 79.81 81.07 80.81 80.58 82.52 78.02 80.74 78.7878.06 77.87 78.93 77.58 81.19 82.29 79.93 77.84 78.74 77.53 79.7878.61 82.46 81.89 81.03 83.12 78.82 81.38 80.78 78.34 79.78 80.3777.18 77.81 79.80 83.44 79.61 81.21 79.93 79.67 79.04 80.21 79.1076.96 77.92 80.18 80.44 78.48 79.85 79.55 78.53 79.79 80.33 79.6875.83 77.02 78.66 79.78 79.46 80.22 79.61 79.44 78.23 79.53 80.3478.63 77.82 79.59 80.54 79.59 78.97 79.43 78.80 79.62 79.47 80.2678.01 78.14 80.78 80.96 79.68 78.09 79.66 79.59 79.99 78.58 80.0978.21 80.21 80.70 79.64 80.36 80.63 80.75 81.32 80.33 80.66 78.96 666870727476788082 (b) Sub-image relevance model
-Figure 4 60-shots evaluation
+79.91 65.89 73.33 78.14 75.77 76.81 78.78 80.09 79.53 78.80 78.4269.33 76.28 75.23 75.71 78.64 78.82 79.52 80.41 80.14 81.24 78.8776.24 76.08 79.16 79.81 81.07 80.81 80.58 82.52 78.02 80.74 78.7878.06 77.87 78.93 77.58 81.19 82.29 79.93 77.84 78.74 77.53 79.7878.61 82.46 81.89 81.03 83.12 78.82 81.38 80.78 78.34 79.78 80.3777.18 77.81 79.80 83.44 79.61 81.21 79.93 79.67 79.04 80.21 79.1076.96 77.92 80.18 80.44 78.48 79.85 79.55 78.53 79.79 80.33 79.6875.83 77.02 78.66 79.78 79.46 80.22 79.61 79.44 78.23 79.53 80.3478.63 77.82 79.59 80.54 79.59 78.97 79.43 78.80 79.62 79.47 80.2678.01 78.14 80.78 80.96 79.68 78.09 79.66 79.59 79.99 78.58 80.0978.21 80.21 80.70 79.64 80.36 80.63 80.75 81.32 80.33 80.66 78.96
+666870727476788082 (b) Sub-image relevance model
+Figure 4  Results of 60-shots evaluation
 ID Processed samples of the picture relevance model.
 Red  top-5 sentences. Blue  bottom-5 sentences.Processed samples of the sub-image relevance
 model. Red  top-5 sentences. Blue  bottom-3 sentences.Processed
@@ -515,9 +526,11 @@ uh kid falling off the stool. the girl laughing at him.
 cookies in the cookie jar with the lid off. he has a
 cookie in his hand. and that s it. okay good.
 Table 2  Sample visualization
-Top-k-bottom-k 1 5 10 20 30 40 50 60 60.8212.10 72.988.71 75.817.63 77.787.14 78.826.92 79.066.32 79.596.47 79.917.05
+Top-k-bottom-k 1 5 10 20 30 40 50 60
+Baseline 60.8212.10 72.988.71 75.817.63 77.787.14 78.826.92 79.066.32 79.596.47 79.917.05
 (6, 9)-picture 60.7610.99 72.468.36 75.397.49 77.897.33 79.386.71 79.387.18 80.386.80 80.636.56
-(5, 3)-sub-image 63.0812.66 75.078.46 78.866.86 81.376.51 81.646.38 82.226.06 82.986.26 83.446.36 3  Comparison between baseline model, picture relevance model, and sub-image relevance model
+(5, 3)-sub-image 63.0812.66 75.078.46 78.866.86 81.376.51 81.646.38 82.226.06 82.986.26 83.446.36
+Table 3  Comparison between baseline model, picture relevance model, and sub-image relevance model
 (4,6),(4,7), use this same sub-image, which reveals that the left
 part of the picture is the most dementia-sensitive.
 Sample visualization. Table 2 shows the processed samples. As
@@ -526,7 +539,9 @@ sentences "and that s it" and "okay good" no longer appear in the
 bottom-𝑘𝑏sentences  instead, the sentences relevant to the right
 part of the picture are considered as the bottom- 𝑘𝑏sentences, e.g.,Evaluating Picture Description Speech for Dementia Detection using Image-text Alignment
 (a) Sub-image of(5,3)
- (b) Top-5 5 60-shots accuracy Areas 60-shots accuracy
+ (b) Top-5 focused areas
+Figure 5  Picture visualization
+Areas 60-shots accuracy Areas 60-shots accuracy
 Baseline 79.917.05
 (1, 2) 80.836.62 (1, 2, 3) 82.245.93
 (1, 3) 82.496.34 (1, 2, 4) 74.287.53
@@ -537,9 +552,10 @@ Baseline 79.917.05
 (2, 5) 76.806.96 (2, 3, 4) 80.156.59
 (3, 4) 79.636.76 (2, 3, 5) 79.336.58
 (3, 5) 77.557.21 (2, 4, 5) 76.567.30
-(4, 5) 77.787.12 (3, 4, 5) 77.526.92 4  Results of the focused area model using different
+(4, 5) 77.787.12 (3, 4, 5) 77.526.92
+Table 4  Results of the focused area model using different
 topics. We report the mean accuracy and the standard deviation.
- (1, 2) means focused areas 1 2.
+ (1, 2) means focused areas 1 and 2.
 "the water is running overflowing the sink" and "water running".
 Note that, our model takes both top- 𝑘𝑡and bottom- 𝑘𝑏sentences as
 inputs, and using the sub-image relevance may improve the quality
@@ -549,7 +565,7 @@ We evaluate the focused area model using top-5 focused areas.
 (Picture visualization ) In Figure 5b, we visualize the top-5 focused
 areas that have the highest relevance scores. The 1st-rank focused
 area corresponds to the bottom right area, including the flowing
-water, sink, and counter. The 2 1st area
+water, sink, and counter. The 2nd focused area covers the 1st area
 and additionally includes the woman, dish, and window. The 3rd
 focused area includes the boy and the cookie jar. The 4th focused
 area is the entire picture. The 5th focused area is the floor area with
@@ -564,28 +580,28 @@ number of samples is large (  20), the focused area model (e.g., (1,2),
 (1,3), (1,2,3)) outperforms the baseline model, which confirms that
 the area-based structure of sentences enhances the dementia detection.
  iii) The focused areas should avoid overlapping. For example,ID IU Focused areas Frequencies
-S1 3,4 5.09%
-S2 4 4.41%
-S3 2,4 0.47%
-S4 2,4 3.65%
-P1 1,2,3,4,5 1.29%
-P2 2, 4 0.00%
-O1 3,4 8.42%
-O2 3,4 5.69%
-O3 4 5.16%
-O4 1,2,4 6.12%
-O5 2,4 1.25%
-O6 1,2,4 0.00%
-O7 1,2,4,5 5.44%
-O8 3,4 0.61%
-O9 2,4 3.04%
-O10 3,4 0.39%
-O11 2,4 6.12%
-O12 2,4 1.33%
-O13 1,2,4 0.36%
-O14 1,2,4,5 3.01%
-O15 1,2,4 0.47%
-O16 1,2,4 0.36%
+S1 boy 3,4 5.09%
+S2 girl 4 4.41%
+S3 woman 2,4 0.47%
+S4 mother 2,4 3.65%
+P1 kitchen 1,2,3,4,5 1.29%
+P2 exterior 2, 4 0.00%
+O1 cookie 3,4 8.42%
+O2 jar 3,4 5.69%
+O3 stool 4 5.16%
+O4 sink 1,2,4 6.12%
+O5 plate 2,4 1.25%
+O6 dishcloth 1,2,4 0.00%
+O7 water 1,2,4,5 5.44%
+O8 cupboard 3,4 0.61%
+O9 window 2,4 3.04%
+O10 cabinet 3,4 0.39%
+O11 dishes 2,4 6.12%
+O12 curtains 2,4 1.33%
+O13 faucet 1,2,4 0.36%
+O14 floor 1,2,4,5 3.01%
+O15 counter 1,2,4 0.47%
+O16 apron 1,2,4 0.36%
 Table 5  Information units (IU) and focused areas 1-5. S  Subject 
  P  Place  O  Object.
 using focused areas (1,2) is supposed to achieve higher accuracy
@@ -595,13 +611,13 @@ according to the overlapped focused areas is not effective. iv) Using
 focused area 4 results in worse performance than the baseline. For
 example, (1, 4)  76.33%, (4, 5)  77.78%, (1, 2, 4)  74.28%, (1, 3, 4)  75.94%,
 and (1, 4, 5)  73.86%. We consider the worse performance is due to
-the entire picture as focused area 4 4 does not
+the entire picture as focused area 4  this focused area 4 does not
 help organize the sentences in a meaningful way.
 We investigate the matching of the focused areas with information
  units of subjects, places, and objects defined in [ 39], as shown
 in Table 5. Focused area 4 covers the whole picture, which includes
 all information units. Then, we checked the focused areas (1,2,3,5)
-and found that 20 22 information units are covered by at least
+and found that 20 of all 22 information units are covered by at least
 one of the focused areas (1,2,3,5). This confirms the consistency
 between human-defined information units and identified focused
 areas. In addition, the two information units not covered by the
@@ -615,7 +631,7 @@ by focused areas (1,2,3,5), and thus lower-ranked units "girl" and
 Model Best accuracy
 BERT-based classifier [18] 82.1%
 Fine-tuned BERT-based classifier (Transfer learning) [2] 83.3%
-ERNIE p [40] 89.6%
+ERNIE3p [40] 89.6%
 GPT-D [25] 85%
 Picture relevance (1,6) 89.58%
 Sub-image relevance (10,9) 87.50%
@@ -712,7 +728,7 @@ future work is to develop end-to-end training using the picture as
 input.
 ACKNOWLEDGMENTS
 This research is funded by the US National Institutes of Health
-National Institute on Aging, under grant No. R AG067416. We
+National Institute on Aging, under grant No. R01AG067416. We
 thank Professor David Kotz for the feedback about this work.
 REFERENCES
 [1]Alzheimer s Association. 2022. 2022 Alzheimer s disease facts and figures.
@@ -834,7 +850,7 @@ American Chapter of the Association for Computational Linguistics  Human Languag
  Technologies . Association for Computational Linguistics, Online, 982 997.
 https //doi.org/10.18653/v1/2021.naacl-main.77
 [33] Jan Švec, Filip Polák, Aleš Bartoš, Michaela Zapletalová, and Martin Víta. 2022.
-Evaluation of Wav Vec Speech Recognition for Speakers with Cognitive Disorders.
+Evaluation of Wav2Vec Speech Recognition for Speakers with Cognitive Disorders.
  In International Conference on Text, Speech, and Dialogue . Springer, 501 512.
 [34] Ioannis Tsamardinos, Amin Rakhshani, and Vincenzo Lagani. 2015. Performanceestimation
  properties of cross-validation-based protocols with simultaneous
@@ -875,7 +891,8 @@ in computer science (2021), 22.
 [44] Youxiang Zhu, Xiaohui Liang, John A Batsis, and Robert M Roth. 2022. Domainaware
  Intermediate Pretraining for Dementia Detection with Limited Data. Proc.
 Interspeech 2022 (2022), 2183 2187.A APPENDIXEvaluating Picture Description Speech for Dementia Detection using Image-text Alignment
-Topic 1 5 10 20 30 40 50 60 60.8212.10 72.988.71 75.817.63 77.787.14 78.826.92 79.066.32 79.596.47 79.917.05
+Topic 1 5 10 20 30 40 50 60
+Baseline 60.8212.10 72.988.71 75.817.63 77.787.14 78.826.92 79.066.32 79.596.47 79.917.05
 (1, 2) 56.879.72 67.3410.19 71.519.48 76.727.57 78.616.70 79.946.75 81.156.33 80.836.62
 (1, 3) 58.7410.98 67.879.79 72.939.02 77.487.19 80.466.43 81.386.57 82.456.35 82.496.34
 (1, 4) 57.7310.92 65.1610.34 69.169.06 73.487.56 74.827.36 75.537.25 75.737.03 76.337.13
@@ -895,5 +912,6 @@ Topic 1 5 10 20 30 40 50 60 60.8212.10 72.988.71 75.817.63 77.787.14 78.826.92 7
 (2, 3, 4) 57.039.86 64.2610.24 69.629.16 75.497.55 77.527.31 78.816.92 79.706.42 80.156.59
 (2, 3, 5) 57.479.64 65.7510.30 70.379.07 74.987.62 77.077.04 77.426.80 78.566.31 79.336.58
 (2, 4, 5) 55.589.58 62.699.83 67.569.47 72.437.89 74.367.69 75.237.27 76.186.95 76.567.30
-(3, 4, 5) 56.769.86 64.6410.70 69.979.17 74.387.63 76.426.85 76.987.34 78.167.04 77.526.92 7  Results of the focused area model of different shots. We report the mean accuracy and the standard deviation. (1, 2)
-means using focused areas 1 2.
+(3, 4, 5) 56.769.86 64.6410.70 69.979.17 74.387.63 76.426.85 76.987.34 78.167.04 77.526.92
+Table 7  Results of the focused area model of different shots. We report the mean accuracy and the standard deviation. (1, 2)
+means using focused areas 1 and 2.

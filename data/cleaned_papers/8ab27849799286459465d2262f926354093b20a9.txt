@@ -37,7 +37,8 @@ On some tasks, the amount of training data matters
  more than the domain where it comes from,
 while for other tasks training specifically on
 data from the target domain, even if limited, is
-more beneficial.1 1 Introduction
+more beneficial.1
+1 Introduction
 Automatic text summarization has been an important,
  active research sub-area in NLP for over two
 decades (Radev et al., 2002  Nenkova et al., 2011 
@@ -87,7 +88,7 @@ summary and the remaining content as the source
 text, resulting in imperfect source-"summary" pairs.
 Human annotators then searched for evidence to
 support each summary sentence. If evidence was
-lacking, corresponding spans or entire sentencesarXiv 2305.14296 2  [cs.CL]  4 2023 1  A schematic of our dataset, annotations, and the supported tasks. The example shown (abridged) displays
+lacking, corresponding spans or entire sentencesarXiv 2305.14296v2  [cs.CL]  4 Dec 2023Figure 1  A schematic of our dataset, annotations, and the supported tasks. The example shown (abridged) displays
 the edits made by a human annotator on the initial candidate summary (deletions in red with strike-through  additions
 in green). Every summary sentence is supported by one or more evidence sentences highlighted in blue.
 were removed. Whenever conflicting evidence was
@@ -182,7 +183,7 @@ We provide a detailed description of our data creation
  process below.
 Retrieval of Wikipedia articles We downloaded
  the Wikipedia English articles dump from
-1 2022. We extracted the articles from this
+1 July 2022. We extracted the articles from this
 corpus using the Wikiextractor tool.2We dropped
 tables and lists during extraction, but retained section
  headers. We used a set of category filters to
@@ -198,7 +199,7 @@ Selecting documents for annotation Our
 heuristic is to assume that the overview section
 of a Wikipedia article will feature a significant
 amount of overlap with the remaining part which
-would be retained after the annotators remove non https //github.com/attardi/wikiextractoroverlapping
+would be retained after the annotators remove non2https //github.com/attardi/wikiextractoroverlapping
  parts. To derive a good documentsummary
  pair from an article, there should ideally
 be a large amount of overlap between the overview
@@ -209,7 +210,7 @@ be left with little text in the summary.
 Given an article, with the overview section
 represented by Sand the remaining part represented
  by D, we broke the summary into sentences
-s s s3...snusing Spacy3. We calculated how many
+s1s2s3...snusing Spacy3. We calculated how many
 of the summary sentences have at least one entity
 which is also present in D. For this step, we automatically
  marked entities in SandDby considering
@@ -220,7 +221,8 @@ words pointed to the same page, they were considered
 retained articles that have more than 75% of sentences
  in Swith at least one entity overlapping
 withD. We also controlled for summary length by
-discarding any article where Shas fewer than 4 12 sentences.
+discarding any article where Shas fewer than 4 or
+more than 12 sentences.
 Flagging entity overlaps to help annotators find
 evidence To help annotators find evidence supporting
  any given summary sentence, our interface
@@ -344,7 +346,13 @@ a summary sentence and a set of sentences from
 the source providing evidence, predict spans in the
 summary which are not supported by the evidence.
 To create labeled data, we select those summaryDomain Count
-Biographies 1514 150 145 97 50 32 1  Number of annotated documents in various
+Biographies 1514
+Schools 150
+Disasters 145Domain Count
+Companies 97
+Landmarks 50
+Newspapers 32
+Table 1  Number of annotated documents in various
 domain splits of our benchmark. Total 1988 documents
 across all domains.
 sentences where annotators only made deletions
@@ -352,7 +360,8 @@ sentences where annotators only made deletions
  summary sentence and the marked evidence,
 and the gold target is the set of spans that were
 deleted from the summary by annotators.
-4 6 different
+4 Dataset Overview and Statistics
+The USB is a benchmark comprising 6 different
 domains with a varying number of instances in
 each (Table 1). We use a 40 20 40 split for train,
 validation and test set size for each domain, except
@@ -363,7 +372,8 @@ kept as challenging test sets to measure the outof-domain
 source documents and their summaries are shown
 in Figure 3 in the Appendix. Both exhibit long-tail
 distributions with lengthy sequences   about 32%
-of source documents have more than 2000 10% of summaries have more than 200 words.
+of source documents have more than 2000 words
+and10% of summaries have more than 200 words.
 We also find that 27% of summary sentences correspond
  to 4or more marked evidence sentences
 (Figure 3 in the Appendix). This suggests a high degree
@@ -373,7 +383,9 @@ expressed in a single sentence. Annotators deleted
 about 22% of the words on average from the initial
 summary presented to them, while adding about
 2%new words.
-5 2. For this set
+5 Benchmarking Different Models
+We run a suite of models on all tasks in our benchmark
+ and present the results in Table 2. For this set
 of experiments, we use the consolidated train, validation
  and test splits, which are a union of the corresponding
  splits from all domains. For tasks that
@@ -387,11 +399,13 @@ F1 score based on BIO tagging format (Sang andBuchholz, 2000). For the remaining
 standard binary classification metrics.
 For the classification/span prediction tasks in our
 benchmark, we fine-tune Roberta-Large (Liu et al.
-2019 2). We recast these as seq seq tasks
-and fine-tune variants of T5 8 tasks. We include the original (Raffel et al., 2020)
+2019  Table 2). We recast these as seq2seq tasks
+and fine-tune variants of T5 models on each of the
+8 tasks. We include the original (Raffel et al., 2020)
 and the instruction-tuned Flan version (Chung
 et al., 2022). T5 Large outperforms Roberta-Large
-on all the classification/span prediction tasks. FlanT5 5 Large, though
+on all the classification/span prediction tasks. FlanT5
+ Large performs similarly to T5 Large, though
 achieves notable gains on Unsupported Span Prediction.
  Flan-T5 XL consistently improves performance
  over larger models on almost all tasks, suggesting
@@ -428,19 +442,22 @@ quality like ROUGE (Lin, 2004) do not necessarily
 2016), we conducted human evaluation of the generated
  summaries in the COMP, ABS and TOPIC
 tasks. We collect ratings for summaries generated
-by Flan-T5 50 randomly selected
+by Flan-T5 and ChatGPT for 50 randomly selected
 documents from the test set, using a questionnaire
 (see the Appendix for more details). We found that
-5We used the frozen version codenamed gpt-3.5-turbo-0301 1 1
+5We used the frozen version codenamed gpt-3.5-turbo-0301Model COMP EVEXT EXT FAC FIX ABS TOPIC UNSUP
+Metric  Rouge F1 AUC AUC ExactMatch Rouge Rouge F1
 Fine-tuned models
-RoBERTa-Large - 71.01 84.06 92.69 - - - 49.21 5-Large 41.97 77.22 87.00 94.89 31.26 33.44 23.81 51.71
+RoBERTa-Large - 71.01 84.06 92.69 - - - 49.21
+T5-Large 41.97 77.22 87.00 94.89 31.26 33.44 23.81 51.71
 Flan-T5-Large 43.23 77.71 87.99 95.15 32.94 32.05 23.62 58.57
 Flan-T5-XL 44.87 79.23 87.81 95.30 35.10 32.69 24.26 64.94
 Flan-T5-XL (multitask) 44.32 76.64 86.44 95.38 36.71 31.83 23.46 58.51
 Few-shot prompted LLMs
-Llama-13 28.12 5.56 52.90 49.34 8.20 5.51 2.47 0.63
-Vicuna-13 31.35 6.65 52.76 55.28 4.28 5.56 2.84 1.47
-GPT-3.5-turbo 33.21 26.78 61.63 60.81 3.29 29.77 14.59 7.80 2  Performance of models on different tasks evaluated on the full test dataset. Tasks  COMP   Multi-sentence
+Llama-13B 28.12 5.56 52.90 49.34 8.20 5.51 2.47 0.63
+Vicuna-13B 31.35 6.65 52.76 55.28 4.28 5.56 2.84 1.47
+GPT-3.5-turbo 33.21 26.78 61.63 60.81 3.29 29.77 14.59 7.80
+Table 2  Performance of models on different tasks evaluated on the full test dataset. Tasks  COMP   Multi-sentence
 Compression EVEXT   Evidence Extraction FAC   Factuality Classification FIX  Fixing Factuality ABS   Abstractive
 Summarization (of full document) EXT   Extractive Summarization TOPIC   Topic-based Summarization UNSUP  
 Unsupported Span Prediction
@@ -452,7 +469,7 @@ fine-tuned models produce summaries closer to the
 ground truth in the dataset (thus achieving high
 ROUGE), humans may find the summaries of fewshot
  prompted LLMs better. For example, in the
-Topic-based summarization task, while Flan-T XL
+Topic-based summarization task, while Flan-T5XL
  produces summaries with an average length of
 46.3 words, ChatGPT generates summaries with an
 average length of 110.2 words. The ground truth
@@ -483,7 +500,9 @@ for each domain to isolate 40, 19, and 38 documents
  for train, validation and test splits. These
 sizes of the splits were chosen to match the smallest
 of the 4 domains i.e. companies (Table 1).
-We train and evaluate Flan-T5 2.
+We train and evaluate Flan-T5 Large models
+on different domains and plot average scores for
+all tasks training and test domain pair in Figure 2.
 Models trained on the same domain as the test domain
  perform best or negligibly close to it. But
 across test domains, the best out-of-domain trained
@@ -526,13 +545,22 @@ incorrect summary, in reference to the context 18.0% 38.0%
 Which of the two summaries removes more correct information (which is actually wellsupported
  by the context) from the incorrect summary 3.0% 24.0%
 Which of the two summaries adds more new facts compared to the incorrect summary  2.0% 67.0%
-Table 3 1 1 30.02 61.61 66.36 90.10 11.76 19.30 18.51 7.41
-Biographies -1.83 2.07 2.22 -2.80 -5.88 -3.19 -3.62 -7.41
-Biographies (full)  0.67 6.42 16.57 3.84 20.59 0.40 -2.92 46.85 31.69 52.89 77.89 77.67 3.03 21.68 16.95 5.80
-Biographies -2.75 7.15 -9.84 6.91 -1.01 -5.31 -1.54 -5.80
-Biographies (full) -2.09 12.52 6.36 12.55 15.15 0.45 0.78 40.22 38.63 62.72 73.92 88.89 3.19 28.89 25.04 2.70
-Biographies -2.09 -0.24 -0.72 -1.84 2.13 -8.45 -5.67 0.12
-Biographies (full)  0.69 5.20 10.60 3.44 26.60 -4.88 -4.51 37.98 4  Out-Of-Domain evaluation of fine-tuned Flan-T5-Large models. In each section of the table, we evaluate
+Table 3  Win rate for model outputs along different aspects as indicated in human evaluation for different tasks
+Training Domain COMP EVEXT EXT FAC FIX ABS TOPIC UNSUP
+Metric  Rouge F1 AUC AUC ExactMatch Rouge Rouge F1
+Companies
+Companies 30.02 61.61 66.36 90.10 11.76 19.30 18.51 7.41
+Biographies -1.83  2.07  2.22 -2.80 -5.88 -3.19 -3.62 -7.41
+Biographies (full)  0.67  6.42  16.57  3.84  20.59  0.40 -2.92  46.85
+Disasters
+Disasters 31.69 52.89 77.89 77.67 3.03 21.68 16.95 5.80
+Biographies -2.75  7.15 -9.84  6.91 -1.01 -5.31 -1.54 -5.80
+Biographies (full) -2.09  12.52  6.36  12.55  15.15  0.45  0.78  40.22
+Schools
+Schools 38.63 62.72 73.92 88.89 3.19 28.89 25.04 2.70
+Biographies -2.09 -0.24 -0.72 -1.84  2.13 -8.45 -5.67  0.12
+Biographies (full)  0.69  5.20  10.60  3.44  26.60 -4.88 -4.51  37.98
+Table 4  Out-Of-Domain evaluation of fine-tuned Flan-T5-Large models. In each section of the table, we evaluate
 3 variants - A) Model trained on the test domain (Companies, Disasters & Schools), B) Model trained on the
 Biographies domain (training sets of A and B are subsampled to have equal number of datapoints  train-40,
 validation-19, test-38), and C) Model variant trained on the full biographies dataset with 607 datapoints for training.
@@ -582,15 +610,23 @@ Chen and Bansal (2018). We also create a training
 set variant where entity overlap is used instead ofEvidence Extraction
 F1
 SuperPAL (Ernst et al., 2021) 53.8
-ROUGE (Chen and Bansal, 2018) 40.9 47.0 100% (N 765) 77.7 5% 70.9
+ROUGE (Chen and Bansal, 2018) 40.9
+Entity overlap 47.0
+Human annotations 100% (N 765) 77.7
+Human annotations 5% 70.9
 Factuality Classification
 AUC
 FactEdit (Balachandran et al., 2022) 74.6
-FactCC (Kry  sci nski et al., 2020) 68.9 100% 95.1 5% 90.4
+FactCC (Kry  sci nski et al., 2020) 68.9
+Human annotations 100% 95.1
+Human annotations 5% 90.4
 Fix factuality
 Exact Match
 FactEdit (Balachandran et al., 2022) 1.0
-FactCC (Kry  sci nski et al., 2020) 0.8 100% 32.9 5% 11.2 5  Comparing use of human annotations vs heuristic
+FactCC (Kry  sci nski et al., 2020) 0.8
+Human annotations 100% 32.9
+Human annotations 5% 11.2
+Table 5  Comparing use of human annotations vs heuristic
  annotations for finetuning Flan-T5 Large models.
 We also report performance when finetuning on 5%of
 the training set with human annotations.
@@ -758,12 +794,13 @@ them, they may not make a similar inference.
 Compensation for annotators  For the initial
 qualification task, workers were paid 2 USD. After
 selecting the qualified workers, for the main annotation
- task workers were paid 2 3 USD per
+ task workers were paid 2 to 3 USD per
 document-summary pair, depending on the number
  of sentences in the summary and the domain
 where it came from (we observed that some domains
  were more difficult). For the second round
-for verification, we paid annotators between 0.3 1.0 USD depending on the number of sentences inthe summary which were flagged for verification,
+for verification, we paid annotators between 0.3 to
+1.0 USD depending on the number of sentences inthe summary which were flagged for verification,
 which can be as low as 1 sentence. The creation of
 the entire dataset costed about 6000 USD including
  platform fees paid to AMT and server hosting
@@ -804,7 +841,7 @@ Wei-Lin Chiang, Zhuohan Li, Zi Lin, Ying Sheng,
 Zhanghao Wu, Hao Zhang, Lianmin Zheng, Siyuan
 Zhuang, Yonghao Zhuang, Joseph E. Gonzalez, Ion
 Stoica, and Eric P. Xing. 2023. Vicuna  An opensource
- chatbot impressing gpt-4 90%* chatgpt
+ chatbot impressing gpt-4 with 90%* chatgpt
 quality.
 Hyung Won Chung, Le Hou, Shayne Longpre, Barret
  Zoph, Yi Tay, William Fedus, Eric Li, Xuezhi
@@ -836,7 +873,8 @@ Sebastian Gehrmann, Hendrik Strobelt, Robert Krüger,
 Hanspeter Pfister, and Alexander M Rush. 2019. Visual
  interaction with deep learning models through
 collaborative semantic inference. IEEE transactions
-on visualization and computer graphics , 26(1) 884 894.
+on visualization and computer graphics , 26(1) 884 
+894.
 Bogdan Gliwa, Iwona Mochol, Maciej Biesek, and Aleksander
  Wawer. 2019. Samsum corpus  A humanannotated
  dialogue dataset for abstractive summarization.
@@ -872,7 +910,9 @@ multi-level memory networks. In Proceedings of
 NAACL-HLT , pages 2519 2531.Kundan Krishna, Sopan Khosla, Jeffrey P Bigham, and
 Zachary C Lipton. 2021. Generating soap notes from
 doctor-patient conversations using modular summarization
- techniques. In Proceedings of the 59 11th International Joint Conference
+ techniques. In Proceedings of the 59th Annual
+ Meeting of the Association for Computational
+Linguistics and the 11th International Joint Conference
  on Natural Language Processing (Volume 1 
 Long Papers) , pages 4958 4972.
 Kundan Krishna and Balaji Vasan Srinivasan. 2018.
@@ -948,12 +988,14 @@ Ani Nenkova, Kathleen McKeown, et al. 2011. Automatic
 Information Retrieval , 5(2 3) 103 233.
 Dragomir Radev, Eduard Hovy, and Kathleen McKeown.
  2002. Introduction to the special issue on summarization.
- Computational linguistics , 28(4) 399 408.
+ Computational linguistics , 28(4) 399 
+408.
 Colin Raffel, Noam Shazeer, Adam Roberts, Katherine
 Lee, Sharan Narang, Michael Matena, Yanqi Zhou,
 Wei Li, and Peter J Liu. 2020. Exploring the limits
 of transfer learning with a unified text-to-text transformer.
- Journal of Machine Learning Research , 21 1 67.
+ Journal of Machine Learning Research , 21 1 
+67.
 Erik Tjong Kim Sang and Sabine Buchholz. 2000. Introduction
  to the conll-2000 shared task chunking. In
 Fourth Conference on Computational Natural Language
@@ -969,11 +1011,13 @@ Abigail See, Peter J Liu, and Christopher D Manning.
 2017. Get to the point  Summarization with pointergenerator
  networks. In Proceedings of the 55th Annual
  Meeting of the Association for Computational
-Linguistics (Volume 1  Long Papers) , pages 1073 1083.
+Linguistics (Volume 1  Long Papers) , pages 1073 
+1083.
 Aviv Slobodkin, Paul Roit, Eran Hirsch, Ori Ernst, and
 Ido Dagan. 2022. Controlled text reduction. In Proceedings
  of the 2022 Conference on Empirical Methods
- in Natural Language Processing , pages 5699 5715, Abu Dhabi, United Arab Emirates. Association
+ in Natural Language Processing , pages 5699 
+5715, Abu Dhabi, United Arab Emirates. Association
 for Computational Linguistics.Hugo Touvron, Thibaut Lavril, Gautier Izacard, Xavier
 Martinet, Marie-Anne Lachaux, Timothée Lacroix,
 Baptiste Rozière, Naman Goyal, Eric Hambro,
@@ -1001,9 +1045,13 @@ Yong Zhang, Joo Er Meng, and Mahardhika Pratama.
 convolutional neural networks. In IECON 2016-42nd
 Annual Conference of the IEEE Industrial Electronics
 Society , pages 918 922. IEEE.A Appendix
-A.1 5 6.
+A.1 Sample datapoints for different tasks
+We show a sample labeled datapoint for each task
+from the validation set of USB in Figure 5 and
+Figure 6.
 A.2 Instructions used in model inputs
-We list the instructions used in the inputs to Flan-T5 6, Llama-13 7, Vicuna B
+We list the instructions used in the inputs to Flan-T5
+models in Table 6, Llama-13B in Table 7, Vicuna13B
  in Table 8, and GPT-3.5-turbo in Table 9.
 A.3 Implementation details for models
 In this section we outline the architectures, and
@@ -1040,7 +1088,8 @@ sentence in the input is prefixed by an enumerated
  sentence id (e.g. SENT34), and the ground
 truth target is the sequence of all sentence ids, with
 a Yes/No following each according to it s positive/negative
- label (e.g.  SENT0 1 2 No... ). Similarly, for Factuality Classifi-cation, the target is a single Yes/No based on the
+ label (e.g.  SENT0 Yes SENT1 No
+SENT2 No... ). Similarly, for Factuality Classifi-cation, the target is a single Yes/No based on the
 label. During inference, we measure the probabilities
  of generated Yes/No tokens which allows us to
 measure AUC scores too. For Unsupported Span
@@ -1060,8 +1109,10 @@ by sampling from the training set without replacement.
 only use a maximum of 2048 tokens for the fewshot
  examples. For the tasks which require the full
 document in the input (i.e. ABS, EXT, EVEXT,
-TOPIC), we use 4 512 tokens. For the remaining tasks,
-we use 16 128 tokens. The few-shot examples are sampled
+TOPIC), we use 4 examples with each having a
+maximum of 512 tokens. For the remaining tasks,
+we use 16 examples each with a maximum length
+of 128 tokens. The few-shot examples are sampled
 (without replacement) from the training set while
 creating the prompt for each datapoint in the test
 set. Since these are decoder-only models which
@@ -1128,7 +1179,8 @@ content
 Extractive Summarization (EXT) For each sentence, predict if it is important.
 Evidence Extraction (EVEXT) For each sentence in the content, predict if it provides
 any evidence for the claim.
-Table 6  Instructions used in inputs to Flan-T5 4  Screenshot of the interface used for collecting annotations. The summary is shown on the left and the
+Table 6  Instructions used in inputs to Flan-T5 models
+Figure 4  Screenshot of the interface used for collecting annotations. The summary is shown on the left and the
 source on the right. Entities in the active summary line are highlighted to help find evidence quickly. A scratchpad
 is provided where users can keep track of the parts of the summary for which evidence has been marked.Task Instruction
 Multi-sentence Compression (COMP) Write a one-line summary of the content shown below.
@@ -1194,25 +1246,44 @@ it while surrounding any parts which are not supported
 Table 9  Instructions used in inputs to the GPT-3.5-turbo model
 Model Task Learning rate Batch Size Max input length Max output length
 Roberta-Large FAC 1e-5 32 512 Roberta-Large
- EXT 1e-5 32 128 128ψRoberta-Large
+ EXT 1e-5 32 128  128ψRoberta-Large
  EVEXT 2e-5 2048 128 Roberta-Large
- UNSUP 2e-5 32 512 5-Large
- (All) 5e-5 32 8192 768 5-Large (All) 5e-5 32 8192 768 5-XL (All) 5e-5 64 1536 512
+ UNSUP 2e-5 32 512 T5-Large
+ (All) 5e-5 32 8192 768
+FlanT5-Large (All) 5e-5 32 8192 768
+FlanT5-XL (All) 5e-5 64 1536 512
 Llama-13B (All) - - 6144 512
 Vicuna-13B (All) - - 6144 512
 GPT-3.5-turbo (All) - - VariableϕVariableϕ
-Table 10  Hyperparameters used for training and inference with different models. ψ  128 128 tokens fed into a hierarchical model. ϕ  GPT-3.5-turbo has a relatively small limit of 4096 tokens
+Table 10  Hyperparameters used for training and inference with different models. ψ  128 sentences each with
+maximum of 128 tokens fed into a hierarchical model. ϕ  GPT-3.5-turbo has a relatively small limit of 4096 tokens
 including both the input (with few-shot examples) and the output, and so we truncate the input on a per-task basis to
 leave token budget equal to the maximum output length in the train split for that task.Evidence Extraction
 Accuracy AUC F1 Precision Recall
 SuperPAL (Ernst et al., 2021) 98.1 95.8 53.8 82.1 40.0
-ROUGE (Chen and Bansal, 2018) 95.9 88.5 40.9 33.7 52.1 95.7 92.5 47.0 35.6 69.4 100% (N 765) 98.8 99.0 77.7 77.0 78.4 20% 98.7 98.4 74.7 78.9 70.8 10% 98.5 98.1 72.4 73.0 71.8 5% 98.4 97.7 70.9 70.8 70.9 1 Precision Recall
+ROUGE (Chen and Bansal, 2018) 95.9 88.5 40.9 33.7 52.1
+Entity overlap 95.7 92.5 47.0 35.6 69.4
+Human annotations 100% (N 765) 98.8 99.0 77.7 77.0 78.4
+Human annotations 20% 98.7 98.4 74.7 78.9 70.8
+Human annotations 10% 98.5 98.1 72.4 73.0 71.8
+Human annotations 5% 98.4 97.7 70.9 70.8 70.9
+Factuality Classification
+Accuracy AUC F1 Precision Recall
 FactEdit (Balachandran et al., 2022) 55.7 74.6 29.4 72.6 18.4
-FactCC (Kry  sci nski et al., 2020) 52.9 68.9 20.1 66.3 11.8 100% 88.1 95.1 87.5 92.3 83.2 20% 86.7 93.9 86.1 90.6 82.0 10% 83.4 91.8 81.6 91.7 73.5 5% 82.6 90.4 82.5 83.2 81.7
+FactCC (Kry  sci nski et al., 2020) 52.9 68.9 20.1 66.3 11.8
+Human annotations 100% 88.1 95.1 87.5 92.3 83.2
+Human annotations 20% 86.7 93.9 86.1 90.6 82.0
+Human annotations 10% 83.4 91.8 81.6 91.7 73.5
+Human annotations 5% 82.6 90.4 82.5 83.2 81.7
 Fix factuality
 Exact Match Rouge-1 Rouge-2 Rouge-L
 FactEdit (Balachandran et al., 2022) 1.0 81.6 73.0 81.0
-FactCC (Kry  sci nski et al., 2020) 0.8 81.9 73.6 81.4 100% 32.9 91.9 86.5 91.4 20% 28.8 90.3 84.3 89.8 10% 15.3 85.7 78.5 85.1 5% 11.2 83.9 76.1 83.3 11  Comparision between using human annotations vs heuristic annotations for training models Flan-T Large.
+FactCC (Kry  sci nski et al., 2020) 0.8 81.9 73.6 81.4
+Human annotations 100% 32.9 91.9 86.5 91.4
+Human annotations 20% 28.8 90.3 84.3 89.8
+Human annotations 10% 15.3 85.7 78.5 85.1
+Human annotations 5% 11.2 83.9 76.1 83.3
+Table 11  Comparision between using human annotations vs heuristic annotations for training models Flan-T5Large.
  We also report performance when finetuning on smaller fractions of the training set with human annotations.AbstracƟve
 Summariza Ɵon
 (ABS) INPUT DOCUMENT 
@@ -1233,20 +1304,22 @@ Hill Academy in Virginia.
 MulƟ-sentence
 Compression
 (COMP) INPUT SOURCE SENTENCES 
-Odenkirk was hired as a writer at "Saturday Night Live" in 1987 1991.
+Odenkirk was hired as a writer at "Saturday Night Live" in 1987 and worked
+there through 1991.
 Odenkirk's friendship with Ben S Ɵller, with whom he brieﬂy shared an oﬃce
 at "SNL", would lead to his being hired for the cast of "The Ben S Ɵller Show"
 in 1992.
 Working as both a writer and actor on the show, he created and starred in
 the memorable sketch "Manson Lassie", and helped the show win an Emmy
 Award for wri Ɵng.
-TARGET From the late 1980 1990s, Odenkirk wrote for television shows "Saturday
+TARGET From the late 1980s to 1990s, Odenkirk wrote for television shows "Saturday
 Night Live" and "The Ben S Ɵller Show ", winning an Emmy Award for wri Ɵng.
 ExtracƟve
 Summariza Ɵon
 (EXT) INPUT DOCUMENT 
 SENT0  D'Vauntes Smith-Rivera
-SENT1 2  Smith-Rivera started high school at North Central High School in
+SENT1  High school career
+SENT2  Smith-Rivera started high school at North Central High School in
 Indianapolis, and led his team to a state championship in his sophomore year.
 SENT3  He transferred to the basketball specialty Oak Hill Academy in Virginia
 for his senior year, and he helpe d lead the team to the 2012 na Ɵonal
@@ -1254,7 +1327,7 @@ championship.
 SENT4  He was recruited by Xavier, UCLA, Louisville, Memphis, NC State, and
 Georgetown.
  
-TARGET SENT0 2 4 
+TARGET SENT0 SENT2 SENT4 
 Topic-based
 Summariza Ɵon
 (TOPIC) INPUT DOCUMENT 
@@ -1293,24 +1366,29 @@ candidate ﬁeld.
 In the general elec Ɵon, he defeated Democra Ɵc Secretary of State of Indiana Joe Hogse Ʃ
 54%-46%.
 SUMMARY   David Mar Ɵn McIntosh (born June 8, 1958) is an American a Ʃorney and
-Republican Party poli Ɵcian who served as the U.S. representa Ɵve for Indiana's 2 1995 2001.
+Republican Party poli Ɵcian who served as the U.S. representa Ɵve for Indiana's 2nd
+congressional district from 1995 to 2001.
 TARGET David Mar Ɵn McIntosh  ( born June 8 , 1958 ) is an American a Ʃorney and Republican Party
-poliƟcian who served as the U.S. representa Ɵve for Indiana 's 2 1995 2001 .
+poliƟcian who served as the U.S. representa Ɵve for Indiana 's 2nd congressional district  from
+1995 to 2001 .
 Fixing Factuality
 (FIX) INPUT EVIDENCE 
-In 2009, Jordan returned to the F1 1 coverage alongside
+In 2009, Jordan returned to the F1 scene as a pundit for BBC Sport F1 coverage alongside
 Jake Humphrey (who was later replaced by Suzi Perry) and David Coulthard.
-In March 2016 4's lead analyst for C F1.
+In March 2016 he was announced as Channel 4's lead analyst for C4F1.
 SUMMARY 
-He was the chief analyst for Formula One coverage on the BBC from 2009 2015 4 a Ōer BBC pulle d out in 2016.
-TARGET He was the a pundit for Formula One coverage on the BBC from 2009 4 2016.
+He was the chief analyst for Formula One coverage on the BBC from 2009 to 2015 before
+joining Channel 4 a Ōer BBC pulle d out in 2016.
+TARGET He was the a pundit for Formula One coverage on the BBC from 2009 before joining Channel
+4 in 2016.
 Evidence Extrac Ɵon
 (EVEXT) INPUT DOCUMENT 
-SENT0 2012 1   "JusƟce for Khojaly" campaign.
+SENT0  2012 Istanbul rally to commemorate the Khojaly massacre
+SENT1   "JusƟce for Khojaly" campaign.
 SENT2  "JusƟce for Khojaly ", or "JFK" for short, is an Interna Ɵonal Awareness Campaign,
-iniƟated on 8 2008 under the mo Ʃo of "JusƟce for Khojaly, Freedom for Karabakh ".
+iniƟated on 8 May 2008 under the mo Ʃo of "JusƟce for Khojaly, Freedom for Karabakh ".
  
-SENT6 200,000 par Ɵcipants for the 20th anniversary remembrance of the Khojaly
+SENT6  Around 200,000 par Ɵcipants for the 20th anniversary remembrance of the Khojaly
 Massacre vic Ɵms, dozens of youth and student organiza Ɵons, public unions, Turkish
 organizaƟons and movements par Ɵcipated in the rally.
  
@@ -1321,4 +1399,4 @@ naƟon, two countries, Jus Ɵce for Khojaly  ", and "Stop Armenian lies".
 
 SUMMARY 
 The demonstra Ɵon with slogan "We are all from Khojaly " had around 200,000 par Ɵcipants.
-TARGET SENT6 17 6  Sample input-output pairs for different tasks from the validation set of USB
+TARGET SENT6 SENT17 Figure 6  Sample input-output pairs for different tasks from the validation set of USB

@@ -2,7 +2,10 @@ GlobalBench  A Benchmark for Global Progress
 in Natural Language Processing
 Yueqi Song1, Catherine Cui2, Simran Khanuja1, Pengfei Liu3, Fahim Faisal4,
 Alissa Ostapenko1, Genta Indra Winata5, Alham Fikri Aji6, Samuel Cahyawijaya5,
-Yulia Tsvetkov1,7, Antonios Anastasopoulos4, Graham Neubig1 1 4 6MBZUAI University of Washington
+Yulia Tsvetkov1,7, Antonios Anastasopoulos4, Graham Neubig1
+1Carnegie Mellon University2Harvard University3Shanghai Jiaotong University
+4George Mason University5The Hong Kong University of Science and Technology
+6MBZUAI7University of Washington
 Abstract
 Despite the major advances in NLP, significant
 disparities in NLP system performance across languages
@@ -29,8 +32,10 @@ languages. At present, the most under-served languages
  but nonetheless overlooked by composite
  multilingual benchmarks (like Punjabi, Portuguese,
  and Wu Chinese). Currently, GlobalBench
- covers 966 190 languages, and
-has 1,128 62 1 1 Introduction
+ covers 966 datasets in 190 languages, and
+has 1,128 system submissions spanning 62 languages1
+
+1 Introduction
 Advances in multilingual natural language processing
  (NLP) technologies (Dabre et al., 2020  Hedderich
  et al., 2021) have raised the enticing possibilities
@@ -92,26 +97,53 @@ goal to be an all-inclusive, ever-expanding collection
  of datasets. Additionally, they mainly focus on
 average accuracy over all languages in the dataset,
 and thus say little about the downstream utility and
-equity of submitted systems, across languages.arXiv 2305.14716 1  [cs.CL]  24 2023 2  Multi-faceted Evaluation
-of 1,128 1 1, L2 2,  L System1 1, L2 2, L3 3 2 1 1 3
+equity of submitted systems, across languages.arXiv 2305.14716v1  [cs.CL]  24 May 2023 Pillar 2  Multi-faceted Evaluation
+of 1,128 system submissions
+M
+TDataset1
+Dataset2L1, L2
+L2,  L3System1
+System2L1, L2
+L2, L3
+ L3
+L2
+L1
+MT L1
+L3
 Most Under-Served
-Languages L2 1 2 1 3 4. . . . . . . . . .
+Languages L2
+N
+E
+RDataset1
+Dataset2
+Dataset3L1
+L3
+L4. . . . . . . . . .
 . . . . . . . . . .  Accuracy /
 F1/BLEU/
 chrf  
 Utility
 Equity
-System1 1, L3 3, L Accuracy /
+System1
+System2L1, L3
+L3, L4Accuracy /
 F1/BLEU/
 chrf  
 Utility
 Equity . . . . . . . . . .
-. . . . . . . . . . L4 1 3 1 1 960 190 3 2  GlobalBench s Philosophy   First, we aim to inclusively gather datasets for all tasks and languages. Second,
+. . . . . . . . . . L4
+L1
+L3
+L4L1
+NER Pillar 1  Dataset Inclusivity
+960 datasets in 190 languages   Pillar 3  Reward Impr ovement
+Dataset and model contributions
+L3Figure 2  GlobalBench s Philosophy   First, we aim to inclusively gather datasets for all tasks and languages. Second,
 we present a multi-faceted evaluation of systems, going beyond average accuracies across languages, to keep track
 of the utility and equity of these systems. Third, the leaderboard maintains a list of the most under-served languages,
 and rewards improvement in utility, which is achieved through both dataset and model contributions. Above, we see
-that the addition of System 2improves the measured utility of L andL for the MT leaderboard, and the addition
-ofDataset 3, improves the measured utility of L in the NER leaderboard.
+that the addition of System 2improves the measured utility of L2andL3for the MT leaderboard, and the addition
+ofDataset 3, improves the measured utility of L4in the NER leaderboard.
 Hence, in designing GlobalBench, we make a
 number of intentional design decisions to explicitly
 promote the improvement of language technology
@@ -145,28 +177,31 @@ and equity of language technologies for all speakers
 of NLP today, and in the famous mantra from Peter
 Drucker, what you cannot measure, you cannot improve
  . GlobalBench is a first step in this direction.
-2 2. Our unique reward
+2 GlobalBench Design Principles
+Philosophy   A working example of our guiding
+philosophy is shown in Figure 2. Our unique reward
  system incentivizes model builders to not
 only improve system performance, but also build
 datasets for new languages. To illustrate the former,
 let s assume that researchers build a new system
 for MT ( System 2) which is state-of-the-art for
-languages L andL3. This increases utility for
+languages L2andL3. This increases utility for
 both languages (Equation 3), which is attributed to
 System 2on our MT leaderboard. For the latter,
 let s assume that there was no NER dataset for L4,
 but pre-trained models ( System 2) supports this
-language. Hence, the introduction of Dataset 3 4,
+language. Hence, the introduction of Dataset 3
+helps realize a sharp improvement in utility for L4,
 which was previously immeasurable (hence, for all
 practical purposes, zero). Thus, the increase in utility
- for L on the NER leaderboard is attributed to
+ for L4on the NER leaderboard is attributed to
 Dataset 3. Additionally, we rank the most to leastunder-served languages. To illustrate how this ranking
  helps, let s consider the case for NER in Figure
-2. Before the introduction of Dataset 3,L was
+2. Before the introduction of Dataset 3,L4was
 most under-served, followed by L1. After its inclusion
  in the leaderboard, the measured utility for L4
 increases. Now, even though the utility value of L1
-andL remains unchanged, L becomes the most
+andL3remains unchanged, L1becomes the most
 under-served language. This would act as positive
 feedback for the community to direct their efforts
 towards languages needing most work (here, L1),
@@ -176,7 +211,8 @@ Design   GlobalBench maintains a separate leaderboard
  for each of the covered tasks, as shown
 in Figure 1. Each leaderboard details the constituent
  datasets, system submissions and the following
- evaluation metrics (further details in  2.2 2.3)  a) Performance (F1, accuracy, BLEU,
+ evaluation metrics (further details in  2.2
+and  2.3)  a) Performance (F1, accuracy, BLEU,
 etc.)  b) System-by-System Utility (linguistic and
 demographic)  c) Global Average Utility (linguistic
 and demographic)  d) Equity   e)Most under-served
@@ -186,13 +222,14 @@ about GlobalBench UI, please refer to  A.3.
 The first pillar of GlobalBench s approach is that
 we attempt to be all-inclusive with respect to languages,
  tasks, and datasets. On the dataset front,
-GlobalBench has 966 190 languages.
- On the modeling front, it has 1,128 6 62 languages
+GlobalBench has 966 datasets spanning 190 languages.
+ On the modeling front, it has 1,128 system
+outputs spanning 6 NLP tasks and 62 languages
 (note that not every dataset integrated within GlobalBench
  has system outputs submitted to the leaderboard
  at present). Overall, GlobalBench has support
  to accept dataset and system submissions for
-17 NLP tasks, in 6671 2, where there
+17 NLP tasks, in 6671 languages2, where there
 are about 7000 spoken languages around the world
 (Austin and Sallabank, 2011). At present, named
 entity recognition is the task with the highest coverage
@@ -262,7 +299,7 @@ W ord Segmentation 今夜月色很美     今夜    月色    很    美
 Chunking Amy will close the window     [NP  Amy] [ VP  will close] [ NP  the window]
 Cloze Multiple Choice The capital of France is _____.     a) Paris , b) London, c) Rome, d) Madrid
 Generative The capital of France is _____.     The capital of France is  Paris.
-T ext Pair Classification T ext Pair Classification S1 2  Amy lives close to me     Entailment
+T ext Pair Classification T ext Pair Classification S1  Amy doesn t live far away from me  S2  Amy lives close to me     Entailment
 Span T ext Classification Aspect-based Sentiment I was happy with the delivery, dissatisﬁed with the product     delivery (  )  product ( -)
 T ext Editing Grammatical Error Corr. There is a apple.     There is  an  apple.
 Question Answering Extractive QA T ext    Amy and Bob formed a group   Q  How many people are in the group      A  T wo .
@@ -283,7 +320,10 @@ of a language for a task is yi, (i   1 ...nwhere n
 is the total number of languages), and is indexed
 in non-decreasing order ( yi yi 1), then the Gini
 coefficient ( G) can be calculated as 
-G  1 1 2 1(n   1 i)yiPn
+G  1
+n 
+n   1 2Pn
+i 1(n   1 i)yiPn
 i 1yi 
 (4)
 For each task, we obtain equity values, calculated
@@ -329,7 +369,9 @@ previously immeasurable (hence, for all practical
 purposes, zero), sees a sharp rise  ii) Improved
 Systems   By submitting new systems which improve
  upon the state-of-the-art, we improve utility
-by definition (Equation 3).3 3
+by definition (Equation 3).3 Implementation and Participation
+Details for GlobalBench
+GlobalBench was built on top of ExplainaBoard3
 (Liu et al., 2021), a benchmarking platform that
 reveals strengths and weaknesses of submitted
 systems, and interprets relationships between
@@ -349,7 +391,8 @@ submission process on ExplainaBoard4. After doing
  so, corresponding system results can be submitted
  as per the above instructions.
 4 Datasets and Tasks
-In GlobalBench, we currently support 17 10 distinct categories. These tasks represent
+In GlobalBench, we currently support 17 tasks that
+fall into 10 distinct categories. These tasks represent
  a diverse set of NLP technologies, ranging
 from those that are highly applicative and userfacing
  (question answering, machine translation
@@ -359,7 +402,7 @@ nonetheless fundamental to NLP (language modeling,
 provide one example for each task in Figure 3, and
 we provide a list of all datasets that GlobalBench
 sees system submissions in  A.1. While we support
- 17 966 datasets, we don t have
+ 17 tasks covering 966 datasets, we don t have
 system outputs for all as of now. We make a note
 of system outputs available for each task in Table
 1, to inform our results and analyses.
@@ -374,12 +417,14 @@ how GlobalBench can guide and incentivize future
 3https //explainaboard.inspiredco.ai/ .
 4https //github.com/ExpressAI/DataLab .participation and improvement in language technology.
 
-5.1 2 means that it can support any NLP task
+5.1 How inclusive is GlobalBench 
+The inclusive design of GlobalBench elucidated in
+Section 2 means that it can support any NLP task
 and dataset integrated within the ExplainaBoard
 software. ExplainaBoard, and subsequently GlobalBench,
  currently supports dataset submissions of
-6671 17 tasks. GlobalBench now
-covers 966 190 languages. We have
+6671 languages and 17 tasks. GlobalBench now
+covers 966 datasets in 190 languages. We have
 1,128 system outputs at the time of writing, spanning
  6 NLP tasks  named entity recognition (NER),
 text pair classification, text classification, extractive
@@ -420,17 +465,25 @@ Linguistic vs. demographic utility   In addition,
 we observe that overall linguistic utility scores
 across all tasks is very low, and is substantiallyCategory TaskNumber ofMetric
 Datasets Languages System Outputs
-Text Classification Text Classification 127 12 199 78 60 450 1 1 1 - F1 2 1 - F1 10 1 - CorrectCount
+Text Classification Text Classification 127 12 199 Accuracy
+Sequence LabelingNamed Entity Recognition 78 60 450 F1
+Word Segmentation 1 1 - F1
+Chunking 2 1 - F1
+ClozeGenerative 10 1 - CorrectCount
 Multiple Choice 21 2 - Accuracy
-Text Pair Classification Text Pair Classification 57 30 96 4 1 - Accuracy
+Text Pair Classification Text Pair Classification 57 30 96 Accuracy
+Span Text Classification Span Text Classification 4 1 - Accuracy
 Text Editing Grammatical Error Correction 10 1 - SeqCorrectCount
-Question AnsweringExtractive 80 18 185 1 72 2 - Acc.
+Question AnsweringExtractive 80 18 185 F1
+Multiple Choice 72 2 - Acc.
 Open Domain 4 2 - ExactMatch
-Conditional GenerationMachine Translation 242 60 170 251 55 - Bleu
+Conditional GenerationMachine Translation 242 60 170 Bleu
+Summarization 251 55 - Bleu
 Code Generation 4 5 - Bleu
 KG Prediction KG Prediction 3 1 28 Hits
 Language Modeling Language Modeling - - - Perplexity
-Table 1  Overall Statistics of supported tasks, datasets and system outputs. We currently have 1128 6 62 languages. Refer to  5 for a detailed analysis.
+Table 1  Overall Statistics of supported tasks, datasets and system outputs. We currently have 1128 system outputs
+across 6 tasks and 62 languages. Refer to  5 for a detailed analysis.
 lower than the corresponding demographic utility
 scores. For instance, the demographic utility score
 for NER is 0.4489, while the linguistic utility score
@@ -467,17 +520,18 @@ take the highest performance amongst all systems,
 to represent the performance for a ( task, language )
 pair. Next, we rank all system performances across
 languages for each task. For example, suppose we
-have 4 1, P2, P3, and
-P for task T 1, where P 1 2 1,
-and P 3 4 2. IfP1 2, then
-P is used to represent the performance of T 1 1 
-similarly, if P3 4, then P 3 1 2. We then rank the
-system performances of L 1 2 1,
-i.e., we compare P 1 3to see which language
+have 4 systems with performances P 1, P2, P3, and
+P4for task T 1, where P 1and P 2are in language L 1,
+and P 3and P 4are in language L 2. IfP1  P 2, then
+P1is used to represent the performance of T 1in L1 
+similarly, if P3  P 4, then P 3is used to represent
+the performance of T 1in L 2. We then rank the
+system performances of L 1and L 2under task T 1,
+i.e., we compare P 1and P 3to see which language
 sees higher system performance. Figure 4a shows
 a chromatic visualization of system analysis across
 language populations for NER. GlobalBench supports
- 78 60 languages for this task, and
+ 78 datasets and 60 languages for this task, and
 sees 450 system submissions of this task. Therefore,
  we can see high system performances for
 many languages. However, KG Link Tail Prediction
@@ -529,7 +583,14 @@ scores for each of the tasks. To display in GlobalBench,
 allows us to moderate between considerations of
 serving all speakers in the world and serving all
 languages in the world.
-Task Lang 1 2 3 3  Most under-served languages for each task (by
+Task Lang 1 Lang 2 Lang 3
+Named Entity Recognition cmn pnb wuu
+Extractive QA por jpn urd
+Text Pair Classification ben por ind
+Machine Translation cmn spa ara
+Text Classification cmn spa ara
+KG Prediction cmn spa ara
+Table 3  Most under-served languages for each task (by
 ISO 639-3 language code).
 We show the three most under-served languages
 for each task in Table 35. From these statistics we
@@ -588,8 +649,9 @@ made towards other languages as well. Multilingual
  composite benchmarks such as XTREME (Hu
 et al., 2020), XTREME-R (Ruder et al., 2021),
 and XGLUE (Liang et al., 2020) are a collection
-of datasets in a variety of tasks and languages.XTREME includes 9 40 languages,
-XTREME-R includes 10 50 198 datasets, and X-GLUE improves GLUE
+of datasets in a variety of tasks and languages.XTREME includes 9 tasks across 40 languages,
+XTREME-R includes 10 tasks across 50 languages
+with 198 datasets, and X-GLUE improves GLUE
 (Wang et al., 2018) by including 11 cross-lingual
 tasks. However, all of these are static and lack the
 goal to be an all-inclusive, ever-expanding collection
@@ -769,7 +831,8 @@ and Veselin Stoyanov. 2018. Xnli  Evaluating crosslingual
 arXiv 1809.05053 .
 Raj Dabre, Chenhui Chu, and Anoop Kunchukuttan.
 2020. A survey of multilingual neural machine translation.
- ACM Computing Surveys (CSUR) , 53(5) 1 38.
+ ACM Computing Surveys (CSUR) , 53(5) 1 
+38.
 Robert Dorfman. 1979. A formula for the gini coefficient.
  The review of economics and statistics , pages
 146 149.
@@ -838,7 +901,7 @@ Riedel, and Holger Schwenk. 2019. Mlqa  Evaluating
  cross-lingual extractive question answering.
 arXiv preprint arXiv 1910.07475 .
 Xin Li and Dan Roth. 2002. Learning question classifiers.
- In COLING 2002 19th International
+ In COLING 2002  The 19th International
 Conference on Computational Linguistics .Yaobo Liang, Nan Duan, Yeyun Gong, Ning Wu, Fenfei
 Guo, Weizhen Qi, Ming Gong, Linjun Shou, Daxin
 Jiang, Guihong Cao, Xiaodong Fan, Ruofei Zhang,
@@ -855,7 +918,8 @@ Pengfei Liu, Jinlan Fu, Yang Xiao, Weizhe Yuan,
 Shuaichen Chang, Junqi Dai, Yixin Liu, Zihuiwen Ye,
 and Graham Neubig. 2021. ExplainaBoard  An explainable
  leaderboard for NLP. In Proceedings of the
-59 11th International Joint
+59th Annual Meeting of the Association for Computational
+ Linguistics and the 11th International Joint
 Conference on Natural Language Processing  System
 Demonstrations , pages 280 289, Online. Association
 for Computational Linguistics.
@@ -900,7 +964,8 @@ evaluation. arXiv preprint arXiv 2104.07412 .Chao Shang, Yun Tang, Jing Huang, J
 He, and Bowen Zhou. 2019. End-to-end structureaware
  convolutional networks for knowledge base
 completion. In Proceedings of the AAAI conference
-on artificial intelligence , volume 33, pages 3060 3067.
+on artificial intelligence , volume 33, pages 3060 
+3067.
 Richard Socher, Alex Perelygin, Jean Wu, Jason
 Chuang, Christopher D Manning, Andrew Y Ng, and
 Christopher Potts. 2013. Recursive deep models for
@@ -919,7 +984,8 @@ Erik F. Tjong Kim Sang and Fien De Meulder.
 2003. Introduction to the CoNLL-2003 shared task 
 Language-independent named entity recognition. In
 Proceedings of the Seventh Conference on Natural
-Language Learning at HLT-NAACL 2003 , pages 142 147.
+Language Learning at HLT-NAACL 2003 , pages 142 
+147.
 Alex Wang, Yada Pruksachatkun, Nikita Nangia, Amanpreet
  Singh, Julian Michael, Felix Hill, Omer Levy,
 and Samuel Bowman. 2019. Superglue  A stickier
@@ -987,17 +1053,18 @@ et al., 2019), TyDiQA (Clark et al., 2020), SDQA
 Conditional Generation GlobalBench covers
 the following datasets for this task  datasets
 from the Fifth Conference on Machine Translation
- (WMT20) shared tasks and datasets from the
+ (WMT20) shared tasks6and datasets from the
 Gaokao benchmark (Yuan and Liu, 2022).
 KG Prediction GlobalBench covers the following
- datasets for this task  WordNet RR (Shang
-et al., 2019), FB K-237 (Bordes et al., 2013).
+ datasets for this task  WordNet18RR (Shang
+et al., 2019), FB15K-237 (Bordes et al., 2013).
 6https //www.statmt.org/wmt20/A.2 Visualization of System Performance
 across Language populations
 We visualize system performances across language
 populations for each task with at least one system
 output, as shown in Figure 6.
-A.3 7 shows the User Interface of GlobalBench
+A.3 GlobalBench UI
+Figure 7 shows the User Interface of GlobalBench
 Text Pair Classification task. On the top left of the
 webpage, there is a brief description of the task.
 Participants will be able to see the statistics of all
@@ -1012,4 +1079,5 @@ over time.(a) KG Link Tail Prediction
  (d) Text Pair Classification
 (e) Extractive QA
  (f) Named Entity Recognition
-Figure 6 7  GlobalBench Text Pair Classification task UI
+Figure 6  Visualization of System Performance across Language Population
+Figure 7  GlobalBench Text Pair Classification task UI

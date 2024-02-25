@@ -1,4 +1,5 @@
-Proceedings of the 1st Workshop on Natural Language Reasoning and Structured Explanations (@ACL 2023) , pages 128 138 13, 2023 2023 Association for Computational Linguistics
+Proceedings of the 1st Workshop on Natural Language Reasoning and Structured Explanations (@ACL 2023) , pages 128 138
+June 13, 2023  2023 Association for Computational Linguistics
 OPT-R  Exploring the Role of Explanations in Finetuning and Prompting
 for Reasoning Skills of Large Language Models
 Badr AlKhamissi Siddharth Verma Ping Yu Zhijing Jin
@@ -17,10 +18,10 @@ Language Models (LLMs), focusing specifically
  and OPT- RE, finetuned with explanations.
  We then evaluate all models on 57
 out-of-domain tasks drawn from the S UPER NATURAL
- INSTRUCTIONS benchmark, covering distinct
+ INSTRUCTIONS benchmark, covering26distinct
  reasoning skills, utilizing three
 prompting techniques. Through a comprehensive
- grid of 27 6,156 test
+ grid of 27 configurations and 6,156 test
 evaluations, we investigate the dimensions of
 finetuning, prompting, and scale to understand
 the role of explanations on different reasoning
@@ -50,7 +51,7 @@ researchers have developed models that are finetuned
  on top of these foundational models to better
 Scale
 Finetuning
-Prompting1.3 6.7B B
+Prompting1.3B6.7B13B
 OPT OPT -R OPT -RE
 Zeroshot
 Fewshot
@@ -79,7 +80,7 @@ answers into step-by-step reasoning chains using incontext
 2022) or during finetuning (Chung et al., 2022 
 Wei et al., 2021a). While these approaches have
 shown some improvement on benchmarks such as
-GSM K (Cobbe et al., 2021), it is not clear how
+GSM8K (Cobbe et al., 2021), it is not clear how
 those explanations affect finetuning, prompting, or128{Task Definition}
 Provide your answer followed by a brief reasoning.
 {In-Context Examples}
@@ -150,7 +151,8 @@ during either finetuning or prompting, which skills
 show a negative effect, and which skills have negligible
  effects regarding explanations.
 2OPT-R  Finetuning on Reasoning Skills
-2.1 3  Number of samples in each dataset of the
+2.1 Reasoning Datasets with Explanations
+Figure 3  Number of samples in each dataset of the
 training corpus. Y-axis in log scale.
 The finetuning corpus utilized to refine OPT is
 composed of various reasoning datasets, each of
@@ -159,7 +161,7 @@ which includes a corresponding explanation or rationale
  of a sequence of smaller steps (i.e. chain-ofthought)
  or a free-form text that elucidates the reasoning
  behind the answer. As shown in Figure 2,
-we employ a uniform template for all tasks during the training process. The input to the model begins
+we employ a uniform template for all tasks during129the training process. The input to the model begins
 with a task definition, followed by an instruction to
 provide an answer followed by a brief reasoning.
 Next, we extract two random in-context examples
@@ -218,7 +220,7 @@ task, the model is given a premise and hypothesis
 and the task is to determine whether the hypothesis
  sentence entails, contradicts, or is neutral with
 respect to the given premise.
-GSM K The Grade School Math dataset Cobbe
+GSM8K The Grade School Math dataset Cobbe
 et al. (2021) to train models to better perform multistep
  mathematical reasoning. It consists of 8.5k
 linguistically diverse grade school math word problems.
@@ -248,16 +250,42 @@ steps.
 2.2 Finetuning Procedures
 OPT The Open Pretrained Transformers (OPT)
 models are a suite of decoder-only pre-trained transformers
- ranging from 125 175B parameters
+ ranging from 125M to 175B parameters
 released by Zhang et al. (2022). In this work, we
 use three OPT models with sizes of 1.3B,6.7B
-and B. The details of each model architecture,
+and13B. The details of each model architecture,
 pre-training corpus and training configuration (e.g.
 weight initialization, optimizer, tokenizer, hyperparameters,
- etc.) can be found in Zhang et al. (2022).130 854 1287, task1288 514 1393 279, task156, task295
-Commonsense Reasoning  Numerical Commonsense ... task1403 084 580, task937, task1606 082, task083 221, task1568, task220 667, task724, task723 1712, task052, task1559 717, task211, task268 923, task935 523, task155 1297, task056 621, task1333 1583, task1584 609, task881, task875 1189 1380, task472, task1505 1431, task228, task714 018, task1549, task383 738, task890, task463 1347 1612, task534, task1366 1  Evaluation tasks from S UP-NATINST (Wang et al., 2022) used for each reasoning skill.
+ etc.) can be found in Zhang et al. (2022).130Reasoning Skill Task IDs
+Abductive Reasoning task854
+Analogical Reasoning task1287, task1288
+Argument Reasoning task514
+Causal Reasoning task1393
+Commonsense Reasoning task279, task156, task295
+Commonsense Reasoning  Numerical Commonsense ... task1403
+Commonsense Reasoning  Physical Reasoning task084
+Commonsense Reasoning  Social Situations task580, task937, task1606
+Commonsense Reasoning  Spatial Reasoning task082, task083
+Deductive Reasoning task221, task1568, task220
+Ethics task667, task724, task723
+Grammatical Reasoning task1712, task052, task1559
+Logical Reasoning task717, task211, task268
+Logical Reasoning  Reasoning with Symbols task923, task935
+Mathematics  Counting task523, task155
+Multihop Reasoning task1297, task056
+Numerical Reasoning task621, task1333
+Reasoning on Objects task1583, task1584
+Reasoning on Social Interactions task609, task881, task875
+Reasoning on Strings task1189
+Relational Reasoning task1380, task472, task1505
+Scientific Reasoning task1431, task228, task714
+Temporal Reasoning task018, task1549, task383
+Textual Entailment task738, task890, task463
+Textual Entailment  Analogical Reasoning task1347
+Textual Entailment  Deductive Reasoning task1612, task534, task1366
+Table 1  Evaluation tasks from S UP-NATINST (Wang et al., 2022) used for each reasoning skill.
 Implementation Details To finetune the selected
-models, we utilized the metaseq implementation
+models, we utilized the metaseq1implementation
 since it enables higher training efficiency compared
 to other codebases (Zhang et al., 2022). Each
 model is finetuned twice for 10epochs, once with
@@ -275,7 +303,8 @@ training. Further, the model is provided with two
 in-context examples during finetuning in addition
 to the task definition to match inference time following
  (Wang et al., 2022).
-1https //github.com/facebookresearch/metaseq3 3.1 S UPER -NATURAL INSTRUCTIONS Tasks
+1https //github.com/facebookresearch/metaseq3 Evaluating the Models
+3.1 S UPER -NATURAL INSTRUCTIONS Tasks
 In this study, we focus on a subset of the S UPER NATURAL
  INSTRUCTIONS benchmark version 2.62
 (SUP-NATINSTfor short) proposed by Wang et al.
@@ -291,7 +320,7 @@ mode, as detailed in Section 3.2. Note that there is
 no data contamination between finetuning data and
 the evaluation benchmark.
 2We downloaded the data from https //github.com/
-allenai/natural-instructions/tree/v2.6 .131 4  Results achieved across all tasks as a function of the three primary dimensions analyzed in this study 
+allenai/natural-instructions/tree/v2.6 .131Figure 4  Results achieved across all tasks as a function of the three primary dimensions analyzed in this study 
 Finetuning, Prompting and Scale.
 Benchmark Splits Following the task selection
 process, we apply a random sampling technique to
@@ -306,7 +335,8 @@ a particular subset of tasks. Table 1 shows the complete
  list of tasks used for evaluating our finetuned
 models for each reasoning skill.
 3.2 Evaluation Setup
-Earlier, we mentioned that we selected 57 26reasoning skills from S UP-NATINSTto
+Earlier, we mentioned that we selected 57tasks
+spanning 26reasoning skills from S UP-NATINSTto
 evaluate our finetuned models. To meet our criteria,
 as detailed in Section 3.1, each task had to fulfill
 two conditions. The second condition required
@@ -356,7 +386,7 @@ of our experiments. First, we illustrate in Figure
  of finetuned models as compared to the vanilla
 OPT model, across three different scales when using
  both fewshot prompting with and without explanations.
- Furthermore, we observe a monotonic increase in the performance of each model as we
+ Furthermore, we observe a monotonic132increase in the performance of each model as we
 increase the scale under those two prompting condition,
  which indicates a positive correlation between
 the model s capacity and its overall performance.
@@ -390,7 +420,8 @@ Analogical 49.0 62.9* 60.8*
 Counting 19.8 13.1 31.3*
 Physical 38.2 37.8 49.1*
 Entailment 42.6 47.2 51.6*
-Social Int 34.1 43.0* 40.1 54.3 62.6* 59.9*
+Social Int 34.1 43.0* 40.1
+Objects 54.3 62.6* 59.9*
 Table 2  Performance as a function of the reasoning
 skills where OPT- REor OPT- Rperforms significantly
 better than the OPT model as measured by Welch s t-test
@@ -404,7 +435,9 @@ the OPT model demonstrate a significant improvement
  emphasis on the Numerical andAnalogical
 reasoning tasks. Specifically, for the MathematicalSkill OPT OPT- ROPT-RE
 Argument 57.9 46.1 48.7 
-TE - Deductive 36.0 29.0 29.4 33.4 29.7 28.8 3  Performance as a function of the reasoning
+TE - Deductive 36.0 29.0 29.4 
+Commonsense 33.4 29.7 28.8 
+Table 3  Performance as a function of the reasoning
 skill where OPT performs significantly better than either
 OPT- Ror OPT- REas measured by Welch s t-test ( p  
 0.05) denoted by the symbol. The performance is
@@ -448,9 +481,33 @@ the fourth block identifies skills where the choice
 of model or prompting method has little impact on
 the overall performance.133OPT OPT- R OPT-RE
 Skill Fewshot Fewshot-E Fewshot Fewshot-E Fewshot Fewshot-E
-Numerical 39.9 49.7 65.1 65.3 64.7 64.8 51.9 46.2 63.3 62.5 60.7 60.9 53.5 55.1 61.4 63.8 60.0 59.7 33.6 34.7 43.8 42.3 40.2 40.0 43.3 42.0 47.1 47.3 51.9 51.2 54.4 55.1 61.2 60.0 62.0 63.1 36.6 31.7 38.9 39.9 39.5 37.0 44.2 47.2 51.7 51.8 51.9 52.4 44.1 47.1 49.8 51.8 49.6 49.2 46.3 46.6 53.2 53.2 51.9 52.3 19.6 20.0 13.5 12.7 29.8 32.9 35.8 40.6 36.9 38.8 48.1 50.0 31.7 33.4 33.7 34.1 36.9 38.4 50.7 49.7 43.4 46.5 48.5 38.5 55.8 60.1 46.3 45.9 48.6 48.8
-TE - Deductive 33.7 38.3 27.9 30.1 29.0 29.9 47.4 51.1 47.6 47.9 44.8 44.6 35.0 31.8 29.8 29.5 28.5 29.2
-TE - Analogical 16.3 18.7 18.6 20.7 18.7 18.1 33.9 36.1 36.9 34.4 34.2 35.3 26.8 25.8 26.5 25.9 26.2 27.6 39.4 40.4 39.4 40.4 40.0 41.1 50.2 50.6 49.1 48.9 50.1 50.5 23.4 23.3 24.3 24.5 25.0 24.5 59.5 59.2 59.0 59.0 59.2 59.4 60.7 60.7 61.1 61.2 60.7 60.7 4  Classification accuracy results achieved by different models as a function of the reasoning skill and few-shot
+Numerical 39.9 49.7 65.1 65.3 64.7 64.8
+Analogical 51.9 46.2 63.3 62.5 60.7 60.9
+Objects 53.5 55.1 61.4 63.8 60.0 59.7
+Social Interactions 33.6 34.7 43.8 42.3 40.2 40.0
+Textual Entailment 43.3 42.0 47.1 47.3 51.9 51.2
+Grammatical 54.4 55.1 61.2 60.0 62.0 63.1
+Multihop 36.6 31.7 38.9 39.9 39.5 37.0
+Symbols 44.2 47.2 51.7 51.8 51.9 52.4
+Spatial 44.1 47.1 49.8 51.8 49.6 49.2
+Social Situations 46.3 46.6 53.2 53.2 51.9 52.3
+Counting 19.6 20.0 13.5 12.7 29.8 32.9
+Physical 35.8 40.6 36.9 38.8 48.1 50.0
+Logical 31.7 33.4 33.7 34.1 36.9 38.4
+Temporal 50.7 49.7 43.4 46.5 48.5 38.5
+Argument 55.8 60.1 46.3 45.9 48.6 48.8
+TE - Deductive 33.7 38.3 27.9 30.1 29.0 29.9
+Relational 47.4 51.1 47.6 47.9 44.8 44.6
+Commonsense 35.0 31.8 29.8 29.5 28.5 29.2
+TE - Analogical 16.3 18.7 18.6 20.7 18.7 18.1
+Abductive 33.9 36.1 36.9 34.4 34.2 35.3
+Ethics 26.8 25.8 26.5 25.9 26.2 27.6
+Deductive 39.4 40.4 39.4 40.4 40.0 41.1
+Causal 50.2 50.6 49.1 48.9 50.1 50.5
+Scientific 23.4 23.3 24.3 24.5 25.0 24.5
+Numerical Commonsense 59.5 59.2 59.0 59.0 59.2 59.4
+Strings 60.7 60.7 61.1 61.2 60.7 60.7
+Table 4  Classification accuracy results achieved by different models as a function of the reasoning skill and few-shot
 prompting method employed. The best accuracy obtained for each reasoning skill is highlighted in bold. The cells
 are shaded with colors ranging from green to white to indicate their position in the accuracy spectrum. Reasoning
 skills with smaller variance in achieved results are assigned a lighter shade of green to convey the extent of similarity
@@ -492,7 +549,8 @@ that explanations do have a small effect on performance
 Model Std( F-FE ) Avg(F) Avg(FE)
 OPT 2.31 40.68 41.82
 OPT-R 0.84 43.44 43.68
-OPT-RE 0.78 44.49 44.86 5  The first column shows the variance of the
+OPT-RE 0.78 44.49 44.86
+Table 5  The first column shows the variance of the
 absolute difference in accuracy for each model across
 different reasoning skills, when using Fewshot (F) and
 Fewshot-E (FE) prompting methods. The second and
@@ -622,7 +680,7 @@ Shourya Aggarwal, Divyanshu Mandowara, Vishwajeet
  Agrawal, Dinesh Khandelwal, Parag Singla, and
 Dinesh Garg. 2021. Explanations for CommonsenseQA 
  New Dataset and Models. In Proceedings
-of the 59 11th International
+of the 59th Annual Meeting of the Association forComputational Linguistics and the 11th International
 Joint Conference on Natural Language Processing
 (Volume 1  Long Papers) , pages 3050 3065, Online.
 Association for Computational Linguistics.
@@ -672,7 +730,8 @@ Mor Geva, Daniel Khashabi, Elad Segal, Tushar Khot,
 Dan Roth, and Jonathan Berant. 2021. Did aristotle
 use a laptop  a question answering benchmark with
 implicit reasoning strategies. Transactions of the
-Association for Computational Linguistics , 9 346 361.
+Association for Computational Linguistics , 9 346 
+361.
 Dan Hendrycks, Collin Burns, Saurav Kadavath, Akul
 Arora, Steven Basart, Eric Tang, Dawn Song, and
 Jacob Steinhardt. 2021. Measuring mathematical
@@ -700,7 +759,7 @@ Pengfei Liu, Weizhe Yuan, Jinlan Fu, Zhengbao Jiang,
 Hiroaki Hayashi, and Graham Neubig. 2021. Pretrain,
  prompt, and predict  A systematic survey of
 prompting methods in natural language processing.
-ACM Computing Surveys , 55 1 35.
+ACM Computing Surveys , 55 1   35.
 Nazneen Rajani, Bryan McCann, Caiming Xiong, and
 Richard Socher. 2019. Explain yourself  leveraging
 language models for commonsense reasoning. In
@@ -804,7 +863,7 @@ contradicts (opposes), or is neutral with respect to the given premise
 sentence. Please answer with "Contradiction", "Neutral",or "Entailment".-Contradiction
 -Neutral
 -Entailment
-GSM K You will be presented with a passage that contains a grade school math
+GSM8K You will be presented with a passage that contains a grade school math
 word problem. The task is to answer the question by performing a series
 of arithmetic operations to obtain a final answer.Number
 ProofWriterYou are given a sequence of facts and rules followed by a question. The
@@ -818,6 +877,7 @@ into a number of steps.-Yes
 -No
 Table 6  Task definition and options used for each of the finetuning reasoning datasets.
 AFinetuning Task Definition and Options
-Table 6 2
+Table 6 shows the task definition and options provided
+ as input to the template shown in Figure 2
 during finetuning the OPT models on the reasoning
 datasets.138

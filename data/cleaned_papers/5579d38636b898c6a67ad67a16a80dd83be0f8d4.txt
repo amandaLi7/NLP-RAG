@@ -1,5 +1,6 @@
 Towards Multilingual Automatic Open-Domain Dialogue Evaluation
-John Mendonça1,2, , Alon Lavie3,4 1,2 1INESC-ID, Lisbon
+John Mendonça1,2, , Alon Lavie3,4and Isabel Trancoso1,2
+1INESC-ID, Lisbon
 2Instituto Superior Técnico, University of Lisbon
 3Carnegie Mellon University, Pittsburgh
 4Phrase, Pittsburgh
@@ -75,7 +76,7 @@ One solution to the issues previously mentioned
 is to leverage MT (Machine Translation). With MT
 services becoming more affordable and consistent,
 some authors resort to translation when developing
-their multilingual dialogue systems (Schuster et al.,arXiv 2308.16795 1  [cs.CL]  31 20232019  Anastasiou et al., 2022). This can either
+their multilingual dialogue systems (Schuster et al.,arXiv 2308.16795v1  [cs.CL]  31 Aug 20232019  Anastasiou et al., 2022). This can either
 be included as a module in the system s pipeline
   allowing the use of proven English generation
 models for other languages  or as a cross-lingual
@@ -132,8 +133,11 @@ amount of translated data can be as low as 5%
 and as high as 75%.
  We translate and release DailyDialog and a
 corresponding test set of human quality annotations
- in 6 1.
-2 2.1 Open-Domain Dialogue Evaluation
+ in 6 languages to facilitate future
+benchmarking of multilingual dialogue evaluation
+ metrics1.
+2 Background
+2.1 Open-Domain Dialogue Evaluation
 Metrics
 The recent trend in open-domain dialogue evaluation
  is to train dialogue submetrics using welldefined
@@ -269,12 +273,14 @@ leveraged Machine Translation (MT) by fully translating
  an English source dialogue dataset and then
 finetuning monolingual and multilingual models
 using these translations.
-4.1 4.1.1 Dataset
+4.1 Experimental Setup
+4.1.1 Dataset
 All experiments in this paper were based on the DailyDialog
  (Li et al., 2017) dataset, a high-quality
 human-human open-domain dialogue dataset focused
  on day-to-day conversations. After processing,
- we obtained train/dev splits of 58,515/25,078 89,707/38,449 per language for the VSP and
+ we obtained train/dev splits of 58,515/25,078
+and 89,707/38,449 per language for the VSP and
 NSP models, respectively. For training and evaluation,
  the post-processed dataset was translated into
 the target languages using MBART50 (Liu et al.,
@@ -289,7 +295,8 @@ response for 50 contexts. These responses were
 annotated in terms of Understandability andSensibleness2.
  We translated this set using Unbabel s3
 translation service. A total of 300 sentences were
-translated, corresponding to the 50 250 responses. The translations were then
+translated, corresponding to the 50 shared contexts
+and 250 responses. The translations were then
 split into smaller tasks and were corrected by editors
  from a commercial provider. Editors were
 specifically asked to retain any source disfluencies
@@ -353,7 +360,9 @@ with a temperature setting of 0.0 attempted to minimises
 we report a standard deviation of (.003, .003) and
 (.001, .001) for Understandability and Sensibleness
 correlations, respectively, across 3 runs.
-4.2 1.EN PT DE FR ZH ES JA A VG
+4.2 Results
+The correlation results for all subqualities and the
+overall quality are presented in Table 1.EN PT DE FR ZH ES JA A VG
 Pr. Sp. Pr. Sp. Pr. Sp. Pr. Sp. Pr. Sp. Pr. Sp. Pr. Sp. Pr. Sp.
 Understandability
 EN .376 .187 .366 .167 .328 .172 .351 .120 .318 .202 .342 .204 .204 .176 .327 .194
@@ -366,7 +375,8 @@ EN .658 .676 .636 .651 .657 .655 .646 .656 .640 .656 .646 .657 .590 .599 .639 .6
 LANG - - .649 .661 .669 .699 .635 .655 .634 .671 .629 .669 .617 .640 .642 .664
 ML .651 .691 .606 .675 .634 .680 .605 .669 .642 .667 .596 .676 .599 .637 .619 .664
 MAD-X .660 .681 .614 .604 .664 .652 .624 .624 .608 .647 .688 .661 .558 .595 .631 .638
-ChatGPT .746 .724 .636 .626 .683 .675 .695 .666 .655 .645 .680 .677 .625 .610 .674 .662 1 3 runs with different seeds. Pr.denotes Pearson and Sp. denotes
+ChatGPT .746 .724 .636 .626 .683 .675 .695 .666 .655 .645 .680 .677 .625 .610 .674 .662
+Table 1  Average correlation results across 3 runs with different seeds. Pr.denotes Pearson and Sp. denotes
 Spearman. Bold denotes best performance, Italic p  0.05.
 Understandability The results show that, on average,
  the best performing encoder approach is
@@ -414,7 +424,8 @@ ES
 QE score  -1.481
 EN  Eight tens , six ones and large silver for others.
 ZH 八个十个,六个十个,其他十个十个十个十个十...
-QE Score  -1.312 2  Examples of low quality translations with corresponding
+QE Score  -1.312
+Table 2  Examples of low quality translations with corresponding
  QE score. Red denotes MT error, with
 underline in the source sentence indicating the closest
 alignment of the error. Blue denotes keywords that refer
@@ -442,21 +453,24 @@ for this purpose. Formally, an MT QE model is a
 scoring function that assigns a score given a source
 sentence and hypothesis translation. The unboundedness
  and uncalibrated nature of this score across
-languages results in the need for a cumbersome0.05 0.10 0.20 0.50 0.751.00 0.00.20.40.60.81.0Normalised CorrelationPearson Correlation for Understandability
+languages results in the need for a cumbersome0.05 0.10 0.20 0.50 0.751.00
+Amount of Translations0.00.20.40.60.81.0Normalised CorrelationPearson Correlation for Understandability
 PT
 DE
 FR
 ZH
 ES
 JA(a) Pearson Correlation, Understandability.
-0.05 0.10 0.20 0.50 0.751.00 0.00.20.40.60.81.0Normalised CorrelationSpearman Correlation for Understandability
+0.05 0.10 0.20 0.50 0.751.00
+Amount of Translations0.00.20.40.60.81.0Normalised CorrelationSpearman Correlation for Understandability
 PT
 DE
 FR
 ZH
 ES
 JA (b) Spearman Correlation, Understandability.
-0.05 0.10 0.20 0.50 0.751.00 0.800.850.900.951.001.051.10Normalised CorrelationPearson Correlation for Sensibleness
+0.05 0.10 0.20 0.50 0.751.00
+Amount of Translations0.800.850.900.951.001.051.10Normalised CorrelationPearson Correlation for Sensibleness
 PT
 DE
 FR
@@ -464,7 +478,8 @@ ZH
 ES
 JA
 (c) Pearson Correlation, Sensibleness.
-0.05 0.10 0.20 0.50 0.751.00 0.800.850.900.951.001.051.10Normalised CorrelationSpearman Correlation for Sensibleness
+0.05 0.10 0.20 0.50 0.751.00
+Amount of Translations0.800.850.900.951.001.051.10Normalised CorrelationSpearman Correlation for Sensibleness
 PT
 DE
 FR
@@ -479,11 +494,24 @@ determine a threshold for filtering. Instead, we propose
 each target language. This ensures a standardised
 method for filtering, improving the scalability of
 this method to new languages.
-5.1 2.5 2.0 1.5 1.0 0.5 0.0 0.5 1.0 3  MT QE unnormalised score boxplot per language.
+5.1 Experimental setup
+2.5
+ 2.0
+ 1.5
+ 1.0
+ 0.5
+ 0.0 0.5 1.0
+MT QEPT
+DE
+FR
+ZH
+ES
+JALanguageMT QE score distributions
+Figure 3  MT QE unnormalised score boxplot per language.
 
 In order to confirm our hypothesis, we retrained
 all models using different amounts of translated
-data (100, 75, 50, 20, 10 5%). The ranking of
+data (100, 75, 50, 20, 10 and 5%). The ranking of
 the translations was conducted by scoring them using
  the WMT20 COMET-QE-DA model (Rei et al.,2020). For the VSP model, we ranked the individual
  sentences, and then applied negative sampling.
@@ -513,9 +541,24 @@ optimal amount of translated data is language dependent,
  but with a clear indication that the inclu-EN PT DE FR ZH ES JA A VG
 Pr. Sp. Pr. Sp. Pr. Sp. Pr. Sp. Pr. Sp. Pr. Sp. Pr. Sp. Pr. Sp.
 Understandability
-0 (EN) .376 .187 .366 .167 .328 .172 .351 .120 .318 .202 .342 .204 .204 .176 .327 .194 5 .403 .182 .490 .219 .344 .172 .385 .091 .320 .235 .429 .236 .230 .179 .372 .211 10 .377 .180 .514 .227 .381 .193 .294 .091 .338 .214 .385 .212 .216 .175 .358 .206 20 .384 .177 .478 .236 .333 .203 .153 .087 .318 .219 .315 .214 .174 .168 .308 .202 50 .413 .201 .481 .242 .381 .213 .103 .053 .310 .200 .315 .221 .219 .149 .317 .200 75 .311 .145 .247 .211 .320 .195 .047 .048 .163 .149 .111 .198 .108 .127 .187 .158 100 .336 .117 .176 .167 .262 .150 .012 .015 .225 .138 .117 .158 .091 .092 .174 .126
-ChatGPT .397 .334 .365 .230 .332 .263 .369 .273 .276 .182 .394 .263 .228 .223 .337 .263 0 (EN) .658 .676 .636 .651 .657 .655 .646 .656 .640 .656 .646 .657 .590 .599 .639 .649 5 .637 .674 .629 .632 .627 .648 .637 .656 .629 .646 .626 .647 .567 .596 .621 .640 10 .642 .675 .639 .664 .661 .669 .636 .661 .637 .656 .635 .668 .575 .604 .632 .654 20 .650 .689 .627 .670 .649 .681 .627 .666 .621 .661 .637 .673 .568 .614 .626 .660 50 .667 .691 .642 .687 .650 .672 .621 .662 .652 .664 .629 .673 .600 .642 .637 .666 75 .677 .712 .629 .694 .679 .702 .633 .679 .661 .673 .643 .695 .593 .635 .645 .679 100 .651 .691 .606 .675 .634 .680 .605 .669 .642 .667 .596 .676 .599 .637 .619 .664
-ChatGPT .746 .724 .636 .626 .683 .675 .695 .666 .655 .645 .680 .677 .625 .610 .674 .662 3 3 runs with different seeds for multilingual models when varying the
+0 (EN) .376 .187 .366 .167 .328 .172 .351 .120 .318 .202 .342 .204 .204 .176 .327 .194
+5 .403 .182 .490 .219 .344 .172 .385 .091 .320 .235 .429 .236 .230 .179 .372 .211
+10 .377 .180 .514 .227 .381 .193 .294 .091 .338 .214 .385 .212 .216 .175 .358 .206
+20 .384 .177 .478 .236 .333 .203 .153 .087 .318 .219 .315 .214 .174 .168 .308 .202
+50 .413 .201 .481 .242 .381 .213 .103 .053 .310 .200 .315 .221 .219 .149 .317 .200
+75 .311 .145 .247 .211 .320 .195 .047 .048 .163 .149 .111 .198 .108 .127 .187 .158
+100 .336 .117 .176 .167 .262 .150 .012 .015 .225 .138 .117 .158 .091 .092 .174 .126
+ChatGPT .397 .334 .365 .230 .332 .263 .369 .273 .276 .182 .394 .263 .228 .223 .337 .263
+Sensibleness
+0 (EN) .658 .676 .636 .651 .657 .655 .646 .656 .640 .656 .646 .657 .590 .599 .639 .649
+5 .637 .674 .629 .632 .627 .648 .637 .656 .629 .646 .626 .647 .567 .596 .621 .640
+10 .642 .675 .639 .664 .661 .669 .636 .661 .637 .656 .635 .668 .575 .604 .632 .654
+20 .650 .689 .627 .670 .649 .681 .627 .666 .621 .661 .637 .673 .568 .614 .626 .660
+50 .667 .691 .642 .687 .650 .672 .621 .662 .652 .664 .629 .673 .600 .642 .637 .666
+75 .677 .712 .629 .694 .679 .702 .633 .679 .661 .673 .643 .695 .593 .635 .645 .679
+100 .651 .691 .606 .675 .634 .680 .605 .669 .642 .667 .596 .676 .599 .637 .619 .664
+ChatGPT .746 .724 .636 .626 .683 .675 .695 .666 .655 .645 .680 .677 .625 .610 .674 .662
+Table 3  Average correlation results across 3 runs with different seeds for multilingual models when varying the
 amount of translated data.
 sion of more translations decreases performance
 significantly. Instead, a lower amount of translations
@@ -581,7 +624,14 @@ also confirmed by a calculated Pearson Correlation
  value of -0.245. For the Sensibleness subquality,
  the relationship between these two measures
  is less obvious. For instance, we note that,
-unlike for Understandability, maximum deviations1.5 1.0 0.5 0.0 0.5 103 102 101 100Absolute ErrorQE Score vs Understandability Absolute Error
+unlike for Understandability, maximum deviations1.5
+ 1.0
+ 0.5
+ 0.0 0.5
+MT QE103
+102
+101
+100Absolute ErrorQE Score vs Understandability Absolute Error
 Language
 pt
 de
@@ -589,7 +639,15 @@ fr
 zh
 es
 ja(a) Understandability scatter plot.
-1.5 1.0 0.5 0.0 0.5 104 103 102 101 100Absolute ErrorQE Score vs Sensibleness Absolute Error
+1.5
+ 1.0
+ 0.5
+ 0.0 0.5
+MT QE104
+103
+102
+101
+100Absolute ErrorQE Score vs Sensibleness Absolute Error
 Language
 pt
 de
@@ -597,7 +655,7 @@ fr
 zh
 es
 ja (b) Sensibleness scatter plot.
-Figure 4 50 per-language QE z-scores (x-axis) versus the per sample
+Figure 4  Scatter plot comparing the test set MBART50 per-language QE z-scores (x-axis) versus the per sample
 Absolute Prediction Error (y-axis in log scale) for Understandability and Sensibleness subqualities.
 are spread evenly across the QE scale, which points
 to the model erroneously predicting Sensibleness
@@ -612,13 +670,14 @@ automatização dos processos do escritório é essencial.
 RES  Sim, fazer tudo manualmente demora demasiado.
 EN-VSP  .394 EN-NSP  .824
 ML-VSP  1.00 ML-NSP  1.00
-Unders.  1.00 0.00
+Unders.  1.00 Sensibl  0.00
 CTX  Ja, ich leite die Jungs am Kai.
 RES  Wow, das klingt nach einem fantastischen Job, de
 du da bekommen hast.
 EN-VSP  .963 EN-NSP  .315
 ML-VSP  .941 ML-NSP  .981
-Unders.  1.00 1.00 4  Examples of subquality predictions from the
+Unders.  1.00 Sensibl  1.00
+Table 4  Examples of subquality predictions from the
 test set.
 5.4 Example test predictions
 We present representative examples of our best ML
@@ -736,7 +795,8 @@ Guzmán, Edouard Grave, Myle Ott, Luke Zettlemoyer,
  and Veselin Stoyanov. 2020. Unsupervised
 cross-lingual representation learning at scale. In Proceedings
  of the 58th Annual Meeting of the Association
- for Computational Linguistics , pages 8440 8451, Online. Association for Computational Linguistics.
+ for Computational Linguistics , pages 8440 
+8451, Online. Association for Computational Linguistics.
 
 Wei Hu, Zhiyuan Li, and Dingli Yu. 2020. Simple and
 effective regularization methods for training on noisily
@@ -906,7 +966,7 @@ the Association for Computational Linguistics , pages
 
 A Training setup and Hyperparamters
 We used the XLM-R Large encoder model downloaded
- from HuggingFace for all experiments. A
+ from HuggingFace4for all experiments. A
 token representing the speaker was added for each
 turn, and a history length of 3 turns was used. We
 applied a regression head consisting of a 2-layer
@@ -916,17 +976,19 @@ parameters were trained/finetuned using Adam optimizer
  (Kingma and Ba, 2015).
 The task adapters were trained using the recipe
 from Mendonca et al. (2022), using a learning rate
-of 1e-4 10 epochs, with a batch
+of 1e-4 and training for 10 epochs, with a batch
 size of 32. We used the existing language adapters
 from AdapterHub whenever possible (EN, ZH, JA)
 4huggingface.co/xlm-roberta-largeand trained the remaining using the AdapterHub s
-MLM recipe on Wikipedia data6. The fully finetuned
- models used a learning rate of 3e-6 3 16. Evaluation
- was conducted every 1,000 10,000 steps for the larger
+MLM recipe5on Wikipedia data6. The fully finetuned
+ models used a learning rate of 3e-6 and were
+trained for 3 epochs using a batch size of 16. Evaluation
+ was conducted every 1,000 steps for the
+smaller training sets and 10,000 steps for the larger
 ones (75% and 100 %). The best performing model
 on the evaluation set was selected for testing.
 For the dialogue data preprocessing we
-used spaCy and the corresponding core language
+used spaCy7and the corresponding core language
  models. For the translations we used
 facebook/mbart-large-50-one-to-many-mmt
 from HuggingFace. Batch size was set to 16 and
@@ -935,7 +997,8 @@ the number of beams set to 4.
 We used a single Quadro RTX 6000 24GB GPU
 for all experiments.
 B Additional Results
-Table 5 5. Due to time and
+Table 5 presents the monolingual model results for
+the experiments of Section 5. Due to time and
 computational constraints, we only conduct these
 experiments using a single seed.
 5github.com/adapter-hub
@@ -943,4 +1006,19 @@ experiments using a single seed.
 7spacy.ioEN PT DE FR ZH ES JA A VG
 Pr. Sp. Pr. Sp. Pr. Sp. Pr. Sp. Pr. Sp. Pr. Sp. Pr. Sp. Pr. Sp.
 Understandability
-0 .347 .192 .381 .176 .353 .184 .349 .106 .406 .251 .372 .210 .268 .223 .354 .212 5 .534 .259 .469 .223 .347 .095 .318 .263 .459 .223 .236 .208 .387 .231 10 .563 .236 .489 .227 .199 .102 .300 .233 .300 .191 .303 .206 .357 .218 20 .499 .233 .356 .211 .153 .082 .323 .223 .257 .163 .251 .191 .312 .201 50 .433 .214 .418 .185 .117 .017 .250 .198 .233 .140 .225 .163 .289 .175 75 .186 .189 .306 .158 .089 .026 .319 .198 .243 .156 .226 .185 .245 .169 100 .240 .165 .347 .144 .082 .043 .248 .206 .191 .109 .216 .146 .239 .155 0 .621 .654 .618 .627 .667 .668 .621 .644 .605 .647 .628 .628 .577 .592 .620 .635 5 .615 .636 .687 .657 .632 .628 .618 .629 .599 .631 .538 .553 .616 .626 10 .647 .646 .672 .655 .562 .596 .607 .626 .635 .637 .587 .606 .619 .630 20 .639 .644 .680 .679 .627 .640 .620 .633 .615 .634 .582 .595 .626 .638 50 .651 .680 .654 .671 .601 .631 .637 .665 .613 .639 .603 .609 .626 .647 75 .634 .670 .640 .681 .643 .664 .629 .673 .615 .639 .608 .635 .627 .656 100 .671 .693 .681 .698 .631 .666 .650 .688 .589 .659 .617 .633 .637 .666 5  Average correlation results for the monolingual models when varying the amount of translated data.
+0 .347 .192 .381 .176 .353 .184 .349 .106 .406 .251 .372 .210 .268 .223 .354 .212
+5 .534 .259 .469 .223 .347 .095 .318 .263 .459 .223 .236 .208 .387 .231
+10 .563 .236 .489 .227 .199 .102 .300 .233 .300 .191 .303 .206 .357 .218
+20 .499 .233 .356 .211 .153 .082 .323 .223 .257 .163 .251 .191 .312 .201
+50 .433 .214 .418 .185 .117 .017 .250 .198 .233 .140 .225 .163 .289 .175
+75 .186 .189 .306 .158 .089 .026 .319 .198 .243 .156 .226 .185 .245 .169
+100 .240 .165 .347 .144 .082 .043 .248 .206 .191 .109 .216 .146 .239 .155
+Sensibleness
+0 .621 .654 .618 .627 .667 .668 .621 .644 .605 .647 .628 .628 .577 .592 .620 .635
+5 .615 .636 .687 .657 .632 .628 .618 .629 .599 .631 .538 .553 .616 .626
+10 .647 .646 .672 .655 .562 .596 .607 .626 .635 .637 .587 .606 .619 .630
+20 .639 .644 .680 .679 .627 .640 .620 .633 .615 .634 .582 .595 .626 .638
+50 .651 .680 .654 .671 .601 .631 .637 .665 .613 .639 .603 .609 .626 .647
+75 .634 .670 .640 .681 .643 .664 .629 .673 .615 .639 .608 .635 .627 .656
+100 .671 .693 .681 .698 .631 .666 .650 .688 .589 .659 .617 .633 .637 .666
+Table 5  Average correlation results for the monolingual models when varying the amount of translated data.

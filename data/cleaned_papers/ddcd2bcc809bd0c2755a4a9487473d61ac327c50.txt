@@ -1,7 +1,11 @@
 Clever Hans or Neural Theory of Mind 
 Stress Testing Social Reasoning in Large Language Models
-Natalie Shapira Mosh Levy*1Seyed Hossein Alavi*2,3Xuhui Zhou*4 5,6 1,5 4,5 2,3 1Bar-Ilan University University of British Columbia
-3 5 1234@gmail.com
+Natalie Shapira1Mosh Levy*1Seyed Hossein Alavi*2,3Xuhui Zhou*4
+Yejin Choi5,6Yoav Goldberg1,5Maarten Sap4,5Vered Shwartz2,3
+1Bar-Ilan University2University of British Columbia
+3Vector Institute for AI4Carnegie Mellon University
+5Allen Institute for Artificial Intelligence6University of Washington
+nd1234@gmail.com
 Abstract
 The escalating debate on AI s capabilities warrants
  developing reliable metrics to assess machine
@@ -83,7 +87,8 @@ rather rely on shallow heuristics ( 5).
 We summarize these findings and additional insights
  in  6. In particular, we warn against drawing
 conclusions from anecdotal examples, testing on
-a few benchmarks, and using psychological testsarXiv 2305.14763 1  [cs.CL]  24 2023designed for humans to test models.2 2 Background  ToM and Clinical Tests
+a few benchmarks, and using psychological testsarXiv 2305.14763v1  [cs.CL]  24 May 2023designed for humans to test models.2
+2 Background  ToM and Clinical Tests
 ToM has a long history starting in philosophy
 (Lewis, 1966) and later in psychology and cognitive
  science (Premack and Woodruff, 1978). ToM
@@ -91,7 +96,8 @@ involves understanding mental states, beliefs, desires,
  intentions, and emotions of the self and of
 others. Clinical psychology tests were developed
 to test ToM abilities in humans, such as the false
-belief and faux pas tests detailed here.3 2.1 False Belief Test
+belief and faux pas tests detailed here.3
+2.1 False Belief Test
 In a false belief test (Wimmer and Perner, 1983)
 the examinee is told a story in which a character
 in the story is exposed to partial information and
@@ -123,7 +129,10 @@ as the Smarties Test (Perner et al., 1987), the protagonist
  is dealing with unexpected content , i.e.,
 unaware of the actual contents of a container because
  of false labeling.
-2.2 2The code and data is available at  https //github.com/
+2.2 Faux Pas Test
+Faux Pas occurs when  a speaker says something
+ without considering if it is something that
+2The code and data is available at  https //github.com/
 salavi/Clever_Hans_or_N-ToM
 3For a detailed review see (Osterhaus and Bosacki, 2022).the listener might not want to hear or know, and
 which typically has negative consequences that
@@ -163,7 +172,8 @@ and to what extent models have ToM (see  3). It is
 important to note that the consequences of the
 success of these tests do not straightforwardly
 transfer from humans to models (see  6).
-3 1 in our experiments.
+3 Data
+We used all datasets listed in Table 1 in our experiments.
  Below is a brief description of each dataset.
 The creation of ToMi  which is based on ToMi
 is described immediately after the description of
@@ -188,7 +198,11 @@ SocialIQa
 Sap et al.
 (2019)Reasoning about motivations,
  what happens next
-and emotional reaction400 37,588CrowdsourcingIn
+and emotional reaction400
+random
+sample
+out of
+37,588CrowdsourcingIn
  the school play, Robin played a hero in the struggle to the death with the angry villain.
 How would others feel afterwards 
 (a) sorry for the villain
@@ -199,7 +213,12 @@ Le et al.
 (2019)Unexpected transfer task,
 first and second order false
 belief  (Baron-Cohen et al.,
-1985)400 1000Synthetic Jackson entered the hall. Chloe entered the hall. The boots is in the bathtub. Jackson exited
+1985)400
+random
+sample
+out of
+above
+1000Synthetic Jackson entered the hall. Chloe entered the hall. The boots is in the bathtub. Jackson exited
 the hall. Jackson entered the dining_room. Chloe moved the boots to the pantry.
 (Memory) Where was the boots at the beginning  (bathtub)
 (Reality) Where is the boots really  (pantry)
@@ -208,7 +227,10 @@ the hall. Jackson entered the dining_room. Chloe moved the boots to the pantry.
 ToMi 
 This paper,
 based on
-ToMi adjustments180 30
+ToMi adjustments180
+
+questions
+30
 storiesExperts  Same story as in ToMi 
 (Memory) At the beginning, the boots were in the (bathtub)
 (Reality) The boots are really in the (pantry)
@@ -223,7 +245,8 @@ Cohen
  inter-personal and
 inference reasoning  (Wimmer
  and Perner, 1983  Hintikka,
- 1962)2000 10
+ 1962)2000 Experts
+with 10
 templatesPremise  John knows that Ann thinks that there is milk in the kitchen.
 Hypothesis  Ann thinks that there is milk in the kitchen. (Entailment   1)
 Hypothesis  John thinks that there is milk in the kitchen. (Entailment   0)
@@ -240,7 +263,9 @@ transfer task, integrate
 commonsense reasoning,
 first-order false belief 
 (Baron-Cohen et al., 1985 
-Perner et al., 1987)183 40
+Perner et al., 1987)183
+questions
+40
 storiesExperts On the shelf, there is a bottle. It is full of beer and the label on this bottle says  beer . Mark
 walks into the room looking for beer and notices the bottle. He has never seen it before. He
 reads the label.
@@ -252,7 +277,9 @@ FauxPas
 Shapira
 et al.
 (2023b)Recognition of faux pas
-(Baron-Cohen et al., 1999)176 44
+(Baron-Cohen et al., 1999)176
+questions
+44
 storiesExperts
 __and
 AI ExpertsJeff was in an interview. When he finished the interview he sank into a couch in the lobby.
@@ -297,7 +324,7 @@ with the same meaning.5For example the question
 the grapes   . Was adjusted to the following sentence
  completion task   Oliver thinks that Emma
 searches for the grapes in the  .
-4 8.1 for an example.
+4See Appendix 8.1 for an example.
 5This was done manually by one of the authors.
 3On the shelf, there is a bottle. On the shelf in the company s headquarters, there is a hard drive
 It is full of beer   there is no wine in it. that contains only audio files and no video files.
@@ -326,7 +353,7 @@ entails Y , and Bob believes that X, then, it is reasonable
  to conclude that Bob believes Y).
 FauxPas-EAI (Shapira et al., 2023b). Based on
 the clinical faux pas test (Baron-Cohen et al., 1999),
-the set contains 44 stories (22 22
+the set contains 44 stories (22 faux pas and 22
 equivalent control) with 4 corresponding questions.
 The stories require both social reasoning skills and
 detecting false belief. The stories were created by
@@ -336,12 +363,13 @@ by ChatGPT with rephrasing and fixes by experts.
 Inspired by the disagreeing conclusions reached by
 prior work, we introduce the ADVersarial CommonSense
  with False-Belief (Adv-CSFB) dataset. AdvCSFB
- contains 110 73 examples of the unexpected
+ contains 110 examples of the unexpected
+contents task and 73 examples of the unexpected
 transfer task ( 2.1). Each manually-created example
  in the dataset consists of a short paragraph
-describing two objects O andO2, and is followed
+describing two objects O1andO2, and is followed
 by questions pertaining to reality , i.e. whether a
-certain container contains O orO2, and the protagonist s
+certain container contains O1orO2, and the protagonist s
  belief regarding the content.
 The examples in Adv-CSFB are categorized to
 false belief , i.e. the original examples from ToMk
@@ -361,9 +389,10 @@ belief about the content of the container is the same
 as its actual contents. We do so by modifying each
 of the false belief examples such that the label now
 indicates the true content of the container, O1. We
-mention the alternative content O in a way that
+mention the alternative content O2in a way that
 doesn t change the answer, e.g. Mark walks into
-the room looking for O but finds a bag with O1 1 . One author of this paper created
+the room looking for O2but finds a bag with O1
+labelled as   O1 . One author of this paper created
 a variation for each applicable example, which was
 then verified by another author.
 Adversarial Examples. Ullman (2023) showed
@@ -387,7 +416,7 @@ access, uninformative label, trustworthy testimony,
 and late labels for the unexpected contents task,
 and transparent access, in  on, trustworthy testimony,
  and other person for the unexpected transfer
-4 1  Accuracies of top-performing models on each
+4Figure 1  Accuracies of top-performing models on each
 of the ToM tasks, compared to a most frequent class
 (MFC) baseline. For several datasets, the best model
 achieves performance comparable to the MFC baseline,
@@ -403,13 +432,17 @@ of 15 LLMs evaluated on multiple ToM-related
 datasets in a zero-shot manner ( 4.1). We then investigate
  to what extent LLMs are sensitive to the
 probing method ( 4.2).
-LLMs We examine the performance of 15 5 
+LLMs We examine the performance of 15
+different LLMs of different sizes  FlanT5 
 flan-t5-{small, base, large, xl, xxl} (Chung
 et al., 2022), FlanUl2 (Tay et al., 2022), GPT3
  (text-davinci-002, text-davinci-003 ), GPT-3.5 /
 ChatGPT ( gpt-3.5-turbo-0301 ), GPT-4 ( gpt-4-0314 )
-(Brown et al., 2020  Ouyang et al., 2022), and Jurassic2 2-{jumbo-instruct, grande-instruct, jumbo,
-grande, large} .6 8.3.
+(Brown et al., 2020  Ouyang et al., 2022), and Jurassic2 
+ j2-{jumbo-instruct, grande-instruct, jumbo,
+grande, large} .6We provide technical details regarding
+ prompting and decoding parameters in Appendix
+ 8.3.
 4.1 How well do LLMs perform on ToM
 tasks  Meta-Evaluation
 We conducted an evaluation of the performance of
@@ -419,11 +452,13 @@ all ToM-related datasets considered ( 3), and compare
 always predicts the most frequent answer in each
 dataset. The summary of the results is presented in
 Figure 1, and the complete results in Appendix 8.4.
-6https //www.ai21.com/blog/introducing-j LM MC CoTSiqadavinci-003 55 60 68
+6https //www.ai21.com/blog/introducing-j2LM MC CoTSiqadavinci-003 55 60 68
 GPT-3.5 - 67 69
 GPT-4 - 79 72ToMidavinci-003 67 67 71
 GPT-3.5 - 70 73
-GPT-4 - 70 73 3 400 instances from SocialIQa (Siqa) and
+GPT-4 - 70 73
+Table 3  Accuracy of the recent GPT models on a random
+ sample of 400 instances from SocialIQa (Siqa) and
 ToMi. The probing method affects the performance. For
 example, in Siqa there is a 7% difference in the accuracy
 of GPT-4 between MC-probing and CoT-probing.
@@ -468,7 +503,8 @@ Subset All questionNo second
 orderAll questions
 text-davinci-003 10 21 87
 GPT-3.5 27 48 65
-GPT-4 20 52 87 4  Comparison of LLMs  accuracy on ToM-k,
+GPT-4 20 52 87
+Table 4  Comparison of LLMs  accuracy on ToM-k,
 which contains positive examples only, and on ToMi ,
 which contains both positive and negative examples
 (manually adjusted from ToMi to be of the same probing
@@ -487,7 +523,8 @@ that don t produce probabilities (Hu et al., 2022).
 CoT-probing asks the model to first  reason 
 about the question step-by-step and then give a
 final answer, which generally contributes to better
-performance (Wei et al., 2023).7 3 shows that the probing techniques influence
+performance (Wei et al., 2023).7
+Table 3 shows that the probing techniques influence
  the LLM performance on both datasets. CoT
 generally demonstrates enhanced performance, as
 supported by prior research (Camburu et al., 2018 
@@ -542,7 +579,8 @@ ensure correct formatting and prevent unintended
 outputs (e.g., explanation of why the answer is correct),
  we prepend to the prompt oneout-of-domain
 example from ToMi, which has a similar format.
-We report the average accuracy of questions 2 3, both focusing on an agent s belief rather than
+We report the average accuracy of questions 2 and
+3, both focusing on an agent s belief rather than
 objective truth. Finally, to ensure maximum reproducibility
  of the results, we set the temperature to 0.
 Our main finding is that LLMs don t exhibit robust
@@ -556,25 +594,25 @@ unexpected transfer segment of Adv-CSFB. It is
 evident that both false belief (i.e. the original examples
  from ToM-k) and trusted testimony (i.e.,
 someone tells the protagonist that the object has
-been moved) have improved in newer models. GPT Figure
+been moved) have improved in newer models. GPT6Figure
  2  Performance of a range of GPT models on various categories within the unexpected transfer segment of
 Adv-CSFB. The results are the average accuracy of question 2 (e.g. Maria thinks that the bananas are in the _ ) and
 question 3 (e.g. When Maria comes back, she will first look for the bananas in the _ ), which specifically focus on an
-agent s beliefs rather than objective truth. Notably, GPT-4 97% on the subset of false belief
+agent s beliefs rather than objective truth. Notably, GPT-4 achieves an accuracy of 97% on the subset of false belief
 samples (the original examples from ToM-k), while failing on adversarial samples that involve transparent access or
 relationship change (in  on).
 Figure 3  Performance of a range of GPT models on various categories within the unexpected content segment of
 Adv-CSFB. The results are the average accuracy of question 2 (e.g. He believes that it is full of _ ) and question 3
 (e.g. He calls his friend to tell them that he has just found a bottle full of _ ), which specifically focus on an agent s
 beliefs rather than objective truth.
-4 97.5% and 83.3% on the two categories
+4 achieves 97.5% and 83.3% on the two categories
  respectively. Nevertheless, there has been a
 gradual decline in the performance of subsequent
 models on other categories, such as other person
-(from 93.8% by davinci-002 68.8% by GPT4),in on(from
- 71.4% by davinci-002 0% by
+(from 93.8% by davinci-002 to 68.8% by GPT4),in on(from
+ 71.4% by davinci-002 to 0% by
 GPT-4), and transparent access (from 66.7% by
-davinci-002 0% by GPT-4).
+davinci-002 to 0% by GPT-4).
 Figure 3 showcases the performance of the GPT
 family on various categories within the unexpected
 contents segment. It becomes apparent that, akin
@@ -606,9 +644,10 @@ and, as a result, generate longer phrases. With that
 said, as we argue in  4.2, a LLM exhibiting robust
 N-ToM ability should be able to answer questions
 correctly regardless of the probing method.
-5.3 5.2, we saw that the
+5.3 Are Spurious Correlations a Trend 
+In the previous experiment  5.2, we saw that the
 datasets contain both difficult and easy questions.
-7 4  ToMi s accuracies with different splits of the
+7Figure 4  ToMi s accuracies with different splits of the
 dataset. While GPT-3.5 (the best-performing model)
 achieves a total of 0.7 accuracy score (see Figure 1), it
 achieves only 0.46 on the subset questions  false belief .
@@ -836,7 +875,7 @@ and size  ToM is required in most human interaction,
  and thus unbounded in scope. In addition,
 9OpenAI acknowledged that GPT-4 was trained on test
 data from BIGBench (OpenAI, 2023, footnote 5).
-10 8.5 for an attempt to quantify such data
+10See Appendix 8.5 for an attempt to quantify such data
 leakage.parts of the datasets could be ambiguous, either
 due to lack of context or inherent ambiguity (Plank,
 2022). Due to this potential ambiguity, some LLMs
@@ -1002,7 +1041,8 @@ preprint arXiv 2302.02083 .
 Matthew Le, Y-Lan Boureau, and Maximilian Nickel.
 2019. Revisiting the evaluation of theory of mind
 through question answering. In Proceedings of the
-2019 9th International
+2019 Conference on Empirical Methods in Natural
+ Language Processing and the 9th International
 Joint Conference on Natural Language Processing
 (EMNLP-IJCNLP) , pages 5872 5877.
 David K Lewis. 1966. An argument for the identity
@@ -1027,7 +1067,9 @@ arXiv 1808.09352 .
 Yilin Niu, Fei Huang, Jiaming Liang, Wenkai Chen,
 Xiaoyan Zhu, and Minlie Huang. 2021. A semanticbased
  method for unsupervised commonsense question
- answering. In Proceedings of the 59 11th International Joint Conference
+ answering. In Proceedings of the 59th Annual
+Meeting of the Association for Computational Linguistics
+ and the 11th International Joint Conference
 on Natural Language Processing (Volume 1  Long
 Papers) , pages 3037 3049, Online. Association for
 Computational Linguistics.
@@ -1065,7 +1107,7 @@ Knight, and Yejin Choi. 2018a. Modeling naive psychology
  of characters in simple commonsense stories.
 InACL.
 Hannah Rashkin, Maarten Sap, Emily Allaway, Noah A.
-Smith, and Yejin Choi. 2018b. Event mind  Commonsense
+Smith, and Yejin Choi. 2018b. Event2mind  Commonsense
  inference on events, intents, and reactions.
 InACL.
 Anna Rodgers. 2023. Closed ai models make bad baselines.
@@ -1171,13 +1213,16 @@ Ruiyang Ren, Yifan Li, Xinyu Tang, Zikang Liu,
 Peiyu Liu, Jian-Yun Nie, and Ji-Rong Wen. 2023.
 A survey of large language models. arXiv preprint
 arXiv 2303.18223 .
-8 8.1 5 shows an example from the Tomi dataset.
+8 Appendices
+8.1 Example of ChatGPT Failure
+Table 5 shows an example from the Tomi dataset.
 The unexpected transfer test discusses an unexpected
  (false belief) rather than trivial (true belief)
 case. ChatGPT solves the more complex task (false
 belief) while failing on the trivial task, likely due
 to its exposure to the Salley-Anne task.
-8.2 6 7 illustrate the variations proposed
+8.2 Ullman s Variations
+Figures 6 and 7 illustrate the variations proposed
 by Ullman for the examples in ToM-k.
 8.3 Generative LLMs
 We provide the technical details regarding the
@@ -1217,7 +1262,7 @@ epistemic
 reasoningPremise  Olivia suspects that Evelyn understands that a man plays a piano painted with an
 image of a woman on it.
 Hypothesis  Evelyn understands that a man plays a piano painted with an image of a woman on it.
-Is entailment  answer with  0 1 .
+Is entailment  answer with  0  or  1 .
 Answer 
 FauxPas
 EAIAbby s father publishes short stories in the newspaper every week.
@@ -1241,32 +1286,37 @@ the most probable answer (i.e., low temperature,
 sampling method), and allow for sufficient number
 of tokens.
 FlanT5 (Chung et al., 2022). Python package
- transformers implementation (AutoModelForSeq SeqLM,
+ transformers implementation (AutoModelForSeq2SeqLM,
  AutoTokenizer)  torch  Generation
  by generate function  do_sample True 
-max_length 50, from_pretrained google/flan-t small,
- google/flan-t5-base, google/flan-t5-large,google/flan-t5-xl, google/flan-t5-xxl  temperature 0.0001 2 (Tay et al., 2022). Python
+max_length 50, from_pretrained google/flan-t5small,
+ google/flan-t5-base, google/flan-t5-large,google/flan-t5-xl, google/flan-t5-xxl  temperature 0.0001
+
+FlanUl2 (Tay et al., 2022). Python
 package transformers implementation
-(T ForConditionalGeneration, AutoTokenizer) 
+(T5ForConditionalGeneration, AutoTokenizer) 
  torch  Generation by generate function 
-do_sample True  max_length 50 0.0001
+do_sample True  max_length 50  temperature 0.0001
 
 GPT (Brown et al., 2020). Python package
 openai model text-davinci-002, text-davinci-003 
 Generation by Completion.create function  temperature 0,
- max_tokens 50 14 6  An illustration of Ullman s Variations for the
+ max_tokens 50
+14Figure 6  An illustration of Ullman s Variations for the
 unexpected contents task. Image taken from Ullman
 (2023).
 Figure 7  An illustration of Ullman s Variations for the
 unexpected transfer task. Image taken from Ullman
-(2023).ChatGPT.11 3.5-turbo-0301,
+(2023).ChatGPT.11Python package openai model gpt3.5-turbo-0301,
  gpt-4-0314  Generation by ChatCompletion.create
- function  temperature 0 21.12 21 2-jumboinstruct,
+ function  temperature 0
+AI21.12Python package ai21 model j2-jumboinstruct,
  j2-grande-instruct, j2-jumbo, j2-grande,
 j2-large  Generation by Completion.execute function 
  temperature 0, max_tokens 50, topKReturn 0,
  topP 1, without any panalty
-8.4 7 contains the exhaustive accuracy results for
+8.4 Complete Results
+Table 7 contains the exhaustive accuracy results for
 all LLMs on all datasets.
 Running the well-organized code provided by
 Kosinski (2023) we found that task 2 (Unexpected
@@ -1276,7 +1326,7 @@ mispredictions and one sample had borderline predictions
  that provided the correct answer but in a
 format that differed from the expected answer (i.e.,
 the first word was not the expected answer). As
-a result, the score for task 2 85% or
+a result, the score for task 2 was either 85% or
 90%, and the average score across the two tasks
 was either 85% or 87.5%, which is lower than the
 reported average of 93%.
@@ -1291,7 +1341,8 @@ purposefully kept hidden to avoid data contamination
  and is only available to the original SocialIQa
 authors as well as through the AI2 leaderboard.13
 For each test set (i.e., the standard and secret test
-sets) we randomly sample 11 100 3.5-turbo-0301
+sets) we randomly sample 11 subsets of 100 questions
+ on which we evaluate gpt3.5-turbo-0301
 andgpt-4-0314 . Comparing the performance of
 both models on both test sets samples with a T-test,
 we found no significant differences, making it inconclusive
@@ -1301,21 +1352,29 @@ doesn t mean that ToM has  emerged  in LLMs,
 since they may have been exposed to training data
 or similar examples.
 11https //chat.openai.com/chat
-12https //www.ai21.com/blog/introducing-j2 13https //leaderboard.allenai.org/socialiqa/
+12https //www.ai21.com/blog/introducing-j2
+13https //leaderboard.allenai.org/socialiqa/
 submissions/public
 15Theory of Mind Datasets
 Model Triangle SocialIQa ToMi Epistemic Adv-CSFB FauxPas
 COPA Reasoning EAI
-MFC 52 36 56 63 55, 30
-Flan-ul2 95 60 60, 07
-Flan-T5-xxl 96 57 68, 18
-Flan-T5-xl 92 61 68, 14
-Flan-T5-large 92 44 53, 07
-Flan-T5-base 84 52 52, 07
-Flan-T5-small 58 54 58, 07 4-0314 94 79 70 43 75, 57 74,27
+MFC 52 36 56 63   55, 30
+Flan-ul2 95     60   60, 07
+Flan-T5-xxl 96     57   68, 18
+Flan-T5-xl 92     61   68, 14
+Flan-T5-large 92     44   53, 07
+Flan-T5-base 84     52   52, 07
+Flan-T5-small 58     54   58, 07
+gpt4-0314 94 79 70 43 75, 57 74,27
 gpt-3.5-turbo-0301 84 67 70 45 70, 42 73, 25
 text-davinci-003 95 60 67 59 79, 61 67, 07
-text-davinci-002 92 19 39 58 76, 53 63, 14 2-grande-instruct 06 37 58, 0 2-jumbo-instruct 48 47 45, 0 2-grande 75 63 45, 0 2-jumbo 68 63 38, 0 2-large 58 63 31, 0 7  Accuracy of LLMs on different datasets compared to a most frequent class baseline. For Adv-CSFB and
+text-davinci-002 92 19 39 58 76, 53 63, 14
+j2-grande-instruct 06     37   58, 0
+j2-jumbo-instruct 48     47   45, 0
+j2-grande 75     63   45, 0
+j2-jumbo 68     63   38, 0
+j2-large 58     63   31, 0
+Table 7  Accuracy of LLMs on different datasets compared to a most frequent class baseline. For Adv-CSFB and
 FauxPas-EAI we report two metrics  question level and story level.
 Average score Joint score
 Reality MemoryFirst
@@ -1324,9 +1383,11 @@ orderw.o
 Second
 orderAll
 Devinci003 100 96.6 61.6 25.0 20.6 10.3
-Turbo-0301 100 90.0 73.3 40.0 41.3 17.2 8  ToMi  zero-shot subsets comparison. All numbers
+Turbo-0301 100 90.0 73.3 40.0 41.3 17.2
+Table 8  ToMi  zero-shot subsets comparison. All numbers
  are percentages.
-8.6 8 provides the complete results from the evaluation
+8.6 ToMi  subsets analysis
+Table 8 provides the complete results from the evaluation
  of GPT-3.5 on the ToMi  dataset. The same
 overall conclusion can be drawn from this table
 as well  although the model can correctly answer

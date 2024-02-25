@@ -1,7 +1,10 @@
-Findings of the Association for Computational Linguistics  ACL 2023 , pages 8487 8495 9-14, 2023 2023 Association for Computational Linguistics
+Findings of the Association for Computational Linguistics  ACL 2023 , pages 8487 8495
+July 9-14, 2023  2023 Association for Computational Linguistics
 Multi-Dimensional Evaluation of Text Summarization with
 In-Context Learning
-Sameer Jain Vaishakh Keshava Swarnashree Mysore Sathyendra1 1,2 3 1Carnegie Mellon University Instituto Superior Técnico Facebook AI Research
+Sameer Jain1Vaishakh Keshava1Swarnashree Mysore Sathyendra1
+Patrick Fernandes1,2Pengfei Liu1Graham Neubig1Chunting Zhou3
+1Carnegie Mellon University2Instituto Superior Técnico3Facebook AI Research
 {sameerj, vkeshava, smysores}@cs.cmu.edu
 Abstract
 Evaluation of natural language generation
@@ -107,7 +110,8 @@ metrics with human preference in evaluating zeroshot
 ofICEin evaluating zero-shot summaries generated
  by GPT-3. We find that ICEevaluations agree
 closely with human judgments on such summaries.
-2 2.1 Problem Statement
+2 Methodology
+2.1 Problem Statement
 Given a sequence xthat is input to an NLG system
  and a system-generated output sequence y, an
 evaluation framework outputs a score sthat captures
@@ -150,7 +154,7 @@ consistency andrelevance , we use the source
 text and a reference summary respectively, in addition
  to the generated summary. We pass this prompt
 to a GPT-3 model, with sampling temperature set
-to to elicit deterministic responses. We parse
+to0to elicit deterministic responses. We parse
 the model response decoded numeric string as the
 dimension score.
 2.3 Selection of In-context Examples
@@ -158,7 +162,8 @@ By default, we use 4 in-context examples in our
 prompts, as this is the largest number that fits
 within the context window of GPT-3. We experiment
  with two sampling procedures (Appendix B)
-to obtain 4 1.Uniform Random Sampling . We randomly
+to obtain 4 examples from a pool of examples 
+1.Uniform Random Sampling . We randomly
 select 4 summaries from the pool of examples.
 This causes the examples to follow the same
 distribution as the example pool.
@@ -180,14 +185,18 @@ this by splitting the meta-evaluation dataset and
 using a partition as an in-context example pool, as
 described in Section 3.1.8488Metric Coherence Consistency Fluency Relevance
 ρ τ ρ τ ρ τ ρ τ
-CTC - - 0.425 0.340 - - 0.495 0.364 0.445 0.340 0.380 0.314 0.345 0.283 0.357 0.274 0.591 0.424 0.433 0.348 0.445 0.349 0.473 0.343
+CTC - - 0.425 0.340 - - 0.495 0.364
+BARTScore 0.445 0.340 0.380 0.314 0.345 0.283 0.357 0.274
+UniEval 0.591 0.424 0.433 0.348 0.445 0.349 0.473 0.343
 ICE(Uniform Sampling) 0.476 0.388 0.486 0.466 0.366 0.328 0.467 0.384
-ICE(Stratified Sampling) 0.497 0.387 0.298 0.263 0.397 0.348 0.485 0.396 1  Summary-level Spearman and Kendall-Tau correlations of different metrics on the SummEval benchmark
-3 3.1 Datasets & Baselines
+ICE(Stratified Sampling) 0.497 0.387 0.298 0.263 0.397 0.348 0.485 0.396
+Table 1  Summary-level Spearman and Kendall-Tau correlations of different metrics on the SummEval benchmark
+3 Experiments
+3.1 Datasets & Baselines
 We use the SummEval dataset (Fabbri et al., 2020)2
 to meta-evaluate our evaluation framework. SummEval
  collects human evaluation annotations for
-16 100 articles sampled
+16 summarization systems on 100 articles sampled
 from the CNN/DailyMail corpus, for a total of 1600
 summary-level annotations. Each summary is evaluated
  on four dimensions described in Section 2.2.
@@ -210,7 +219,8 @@ Following Liu et al. (2021)  Zhong et al. (2022),
 we assess performance by computing summarylevel
  Spearman and Kendall-Tau correlations between
  predicted scores and human judgements.
-3.2 1, ICEis competitive
+3.2 Results
+As illustrated in Table 1, ICEis competitive
 with fine-tuned baselines despite not requiring
 any finetuning. It achieves state-of-the-art correlation
  with human judgments for relevance
@@ -249,12 +259,37 @@ sampling return similar in-context examples.
 4 Analysis
 In this section, we analyse the effects of our prompt
 engineering choices. The comparison between sampling
- procedures in Section 4.1 4.2 4.3 200 to control costs. The analyses in Sections 4.1 4.2 use four in-context examples.
-4.1 2 illustrates that the prediction distributions
+ procedures in Section 4.1 is performed on the
+entire test set but the experiments in Sections 4.2
+and 4.3 are performed on a test set sample of size
+200 to control costs. The analyses in Sections 4.1
+and 4.2 use four in-context examples.
+4.1 Analyzing the Sampling Procedures
+Figure 2 illustrates that the prediction distributions
 from uniform and stratified sampling differ the
 most when the true distribution is skewed, such
 as for consistency . In such a case, stratified sampling
- selects in-context examples from the entire84890.0 0.5 1.0050010001500 0.0 0.5 1.0 0.0 0.5 1.0 0.0 0.5 1.0050010001500 0.0 0.5 1.0 0.0 0.5 1.0 0.0 0.5 1.0050010001500 0.0 0.5 1.0 0.0 0.5 1.0 0.0 0.5 1.0050010001500 0.0 0.5 1.0 0.0 0.5 1.0 2  Distributions of human scores and predicted
+ selects in-context examples from the entire84890.0 0.5 1.0050010001500Consistency Human
+0.0 0.5 1.0Consistency
+ Uniform Sampling
+0.0 0.5 1.0Consistency
+ Stratified Sampling
+0.0 0.5 1.0050010001500Relevance Human
+0.0 0.5 1.0Relevance
+ Uniform Sampling
+0.0 0.5 1.0Relevance
+ Stratified Sampling
+0.0 0.5 1.0050010001500Fluency Human
+0.0 0.5 1.0Fluency
+ Uniform Sampling
+0.0 0.5 1.0Fluency
+ Stratified Sampling
+0.0 0.5 1.0050010001500Coherence Human
+0.0 0.5 1.0Coherence
+ Uniform Sampling
+0.0 0.5 1.0Coherence
+ Stratified Sampling
+ScoresNumber of ExamplesFigure 2  Distributions of human scores and predicted
 scores using ICE with uniform and stratified sampling
 on the SummEval benchmark
 domain regardless of the true distribution. This
@@ -281,16 +316,21 @@ sampling) scores are calibrated differently from
 human scores, they still rank summary-quality correctly,
  insofar as our main results (Table 1) show
 Coherence Consistency Fluency Relevance
-Aspect0.00.20.40.6 1 2 3 3  Effect of sampling different in-context examples.
+Aspect0.00.20.40.6Spearman CorrelationSeed 1 Seed 2 Seed 3Figure 3  Effect of sampling different in-context examples.
  The performance over the same test set is observed
 to be robust to the choice of in-context examples.
 1.0 1.5 2.0 2.5 3.0 3.5 4.0
-Number of In-context Examples0.40.50.6 4  Effect of varying the number of in-context
+Number of In-context Examples0.40.50.6Spearman Correlation
+Coherence
+Consistency
+Fluency
+Relevance
+Figure 4  Effect of varying the number of in-context
 examples.
 that they compete with state-of-the-art on rankingbased
  metrics like Kendall-Tau and Spearman correlation.
  We use uniform sampling to select incontext
- examples in Sections 4.2 4.3.
+ examples in Sections 4.2 and 4.3.
 4.2 Effect of Selection of In-context Examples
 In order to determine whether performance is robust
  to the choice of in-context examples, we evaluate
@@ -309,13 +349,21 @@ only for relevance andcoherence does performance
 distribution of scores for a given dimension in the
 test set (Figure 2). Concretely, consistency and
 fluency mostly have near-perfect scores and therefore
- do not benefit from more samples while the Metric Model Coh. Con. Flu. Rel. Overall
-HumanGPT-3 4.85 4.73 4.97 4.65 4.80 4.57 4.65 4.88 4.48 4.65 0 4.15 4.47 4.78 3.68 4.27
+ do not benefit from more samples while the8490Metric Model Coh. Con. Flu. Rel. Overall
+HumanGPT-3 4.85 4.73 4.97 4.65 4.80
+BRIO 4.57 4.65 4.88 4.48 4.65
+T0 4.15 4.47 4.78 3.68 4.27
 ROUGE-LGPT-3
--22.09 28.20 0 26.63
+-22.09
+BRIO 28.20
+T0 26.63
 BARTSc.GPT-3 -1.25 -1.25 -1.25 -1.25 -1.25
-BRIO -0.71 -0.71 -0.71 -0.71 -0.71 0 -0.96 -0.96 -0.96 -0.96 -0.96
-ICEGPT-3 0.908 0.996 0.994 0.849 0.937 0.896 0.993 0.993 0.834 0.929 0 0.890 0.981 0.985 0.761 0.904 2  System-level scores from human annotations
+BRIO -0.71 -0.71 -0.71 -0.71 -0.71
+T0 -0.96 -0.96 -0.96 -0.96 -0.96
+ICEGPT-3 0.908 0.996 0.994 0.849 0.937
+BRIO 0.896 0.993 0.993 0.834 0.929
+T0 0.890 0.981 0.985 0.761 0.904
+Table 2  System-level scores from human annotations
 and automatic metrics. For each aspect, we color a given
 metric s highest/lowest rated system with orange/purple.
 scores for coherence andrelevance are spread
@@ -334,7 +382,8 @@ Finally, we note that calibration can potentially
 be improved by increasing the number of examples.
  For instance, we observed that the four incontext
  examples that the uniform sampling procedure
- chose for coherence in Figure 2 0.7 1.0. This concentrates the
+ chose for coherence in Figure 2 had scores
+that fall between 0.7 and 1.0. This concentrates the
 prediction distribution in that range. The probability
  of such an event will reduce as the number of
 examples is increased further.
@@ -352,14 +401,17 @@ lower than summaries from other models.
 We study the efficacy of ICEin evaluating zeroshot
  summaries written by GPT-3 at a dimension
 level. We use the set of 500 CNN articles fromGoyal et al. (2022), with summaries from GPT-3,
-BRIO, and T0 for each article. We sample 100 2.2 on a scale of {1,2,3,4,5}. We use
+BRIO, and T0 for each article. We sample 100
+of these articles and have three annotators rate
+summaries for each of the dimensions defined in
+Section 2.2 on a scale of {1,2,3,4,5}. We use
 ICE, ROUGE, and BARTScore (all of which do not
 require training data) to evaluate the summaries
 and present system-level results in Table 2.
 We observe that ICEagrees with human judgments
  for each dimension and overall preferences
 while existing reference-based and reference-free
-metrics such as ROUGE and BARTScore consistently
+metrics such as ROUGE and BARTScore3consistently
  rate GPT-3 summaries low. Goyal
 et al. (2022) suggest that most existing evaluation
  metrics reward summaries that imitate references,
@@ -384,7 +436,8 @@ when evaluating summaries written by GPT-3.
 Limitations
 While ICEdoes not require fine-tuning on large
 amounts of data, it requires querying a powerful
-LLM at inference time (we use GPT-3 175 billion parameters). This can
+LLM at inference time (we use GPT-3 for our experiments
+ which has 175 billion parameters). This can
 be a pay-per-use model or an open-source model
 such as BLOOM. This makes a downstream system
  that uses ICEreliant on an external dependency,
@@ -466,7 +519,8 @@ Pengfei Liu, Jinlan Fu, Yang Xiao, Weizhe Yuan,
 Shuaichen Chang, Junqi Dai, Yixin Liu, Zihuiwen Ye,
 and Graham Neubig. 2021. ExplainaBoard  An explainable
  leaderboard for NLP. In Proceedings of the
-59 11th International Joint
+59th Annual Meeting of the Association for Computational
+ Linguistics and the 11th International Joint
 Conference on Natural Language Processing  System
 Demonstrations , pages 280 289, Online. Association
 for Computational Linguistics.
@@ -507,7 +561,8 @@ Conference on Learning Representations .8492Wei Zhao, Maxime Peyrard, Fei Liu, Y
  M. Meyer, and Steffen Eger. 2019. MoverScore 
 Text generation evaluating with contextualized embeddings
  and earth mover distance. In Proceedings
-of the 2019 9th International
+of the 2019 Conference on Empirical Methods in
+Natural Language Processing and the 9th International
  Joint Conference on Natural Language Processing
  (EMNLP-IJCNLP) , pages 563 578, Hong
 Kong, China. Association for Computational Linguistics.
@@ -522,7 +577,7 @@ We randomly select 4 articles from the SummEval
 dataset and pick one system-generated summary
 from each article as an in-context example using the
 procedures outlined in Section 2.3. In other words,
-we pick n  4 1. For a given value
+we pick n  4 in Figure 1. For a given value
 ofn, prompts for evaluating consistency are the
 longest since they contain entire source articles. We
 picknsuch that consistency prompts fit within
@@ -531,11 +586,14 @@ effect of the choice of nin Section 4.3.
 To ensure that there is no overlap in the source
 article of any in-context example with the source article
  of any test example, we remove all summaries
-corresponding to the 4 1536 examples from SummEval
+corresponding to the 4 selected source texts and
+use the remaining 1536 examples from SummEval
 as our test set. We ensure the absence of overlap
 throughout all experiments in Sections 3, 4, and 5.
 B Sampling Procedures
-B.0.1 16 summaries for a given source text.
+B.0.1 Uniform Random Sampling
+One summary is picked uniformly at random from
+the set of 16 summaries for a given source text.
 We do this for each of the 4 source texts selected
 to pick in-context examples from. Each of the 4
 sampled in-context examples then consists of the
@@ -549,7 +607,7 @@ we are evaluating for  then A [0,1]. In stratified
 {[0,0.25],(0.25,0.5],(0.5,0.75],(0.75,1.0]}. We
 assign summary sto one of the buckets depending
  on the value of As. We do this for each of the64 in-context example candidate summaries. Finally,
- we pick 4 64 candidates
+ we pick 4 summaries from the 64 candidates
 such that each summary falls into a different bucket
 and also comes from a different source text. We
 perform an exhaustive search for such an assignment,
@@ -578,26 +636,30 @@ hypothesis setting across all dimensions, as that
 gives the best correlations with human judgments
 across dimensions. For UniEval, we use pre-trained
 model released by the authors to obtain results in
-Table 1 1536.
+Table 1 on the test set of size 1536.
 E Significance Tests
 Since ICEscores for some dimensions are close
 to UniEval scores, we perform pairwise tests to
 determine when one method is better than the other.
-Concretely, we compare performance on 1000 80% of the test
+Concretely, we compare performance on 1000 bootstrap
+ samples by randomly selecting 80% of the test
 set for each sample. We observe that when using
 Kendall s Tau, ICEwith uniform sampling outperforms
  UniEval with a significance level of 0.05 on
 both consistency andrelevance . When using
 Spearman s rank correlation, Iceagain outperforms
 UniEval on consistency , but the test is inconclusive
- at that significance level for relevance .8493 2023 1. Did you describe the limitations of your work 
+ at that significance level for relevance .8493ACL 2023 Responsible NLP Checklist
+A For every submission 
+  A1. Did you describe the limitations of your work 
 Limitations section at the end
   A2. Did you discuss any potential risks of your work 
 In the limitations section, we discuss the risks associated with relying on external dependencies in
 deploying a framework such as the one studied in our work, if one intends to build a real-world
 application around it.
   A3. Do the abstract and introduction summarize the paper s main claims 
-Abstract and Section 1 4. Have you used AI writing assistants when working on this paper 
+Abstract and Section 1
+  A4. Have you used AI writing assistants when working on this paper 
 Left blank.
 B  Did you use or create scientiﬁc artifacts 
 We generate ratings of system-generated summaries on the basis of quality
@@ -626,16 +688,19 @@ number of examples in train / validation / test splits, as these provide necessa
 to understand experimental results. For example, small differences in accuracy on large test sets may
 be signiﬁcant, while on small test sets they may not be.
 We mention these statistics for all our experiments in Sections 3, 4, and 5.
-The Responsible NLP Checklist used at ACL 2023 2022, with the addition of a question on AI writing
-assistance.8494 1. Did you report the number of parameters in the models used, the total computational budget
+The Responsible NLP Checklist used at ACL 2023 is adopted from NAACL 2022, with the addition of a question on AI writing
+assistance.8494C  Did you run computational experiments 
+Almost all sections other than Introduction describe computational experiments
+  C1. Did you report the number of parameters in the models used, the total computational budget
 (e.g., GPU hours), and computing infrastructure used 
 We mention in the paper that our backbone is GPT-3. We mention its number of parameters in the
 limitations section.
   C2. Did you discuss the experimental setup, including hyperparameter search and best-found
 hyperparameter values 
 Most of the "hyperparamters" for our framework are prompt engineering choices, which we discuss
-extensively in Sections 4 5. We mention relevant parameters of our GPT backbone (such as
-sampling temperature) in Section 3 3. Did you report descriptive statistics about your results (e.g., error bars around results, summary
+extensively in Sections 4 and 5. We mention relevant parameters of our GPT backbone (such as
+sampling temperature) in Section 3
+  C3. Did you report descriptive statistics about your results (e.g., error bars around results, summary
 statistics from sets of experiments), and is it transparent whether you are reporting the max, mean,
 etc. or just a single run 
 A number of our analyses are done on samples of the benchmark datasets, and we have described
@@ -646,7 +711,8 @@ you report the implementation, model, and parameter settings used (e.g., NLTK, S
 etc.) 
 Appendix D
 D  Did you use human annotators (e.g., crowdworkers) or research with human participants 
-Section 5 1. Did you report the full text of instructions given to participants, including e.g., screenshots,
+Section 5
+ D1. Did you report the full text of instructions given to participants, including e.g., screenshots,
 disclaimers of any risks to participants or annotators, etc. 
 Not applicable. We use precisely the same instructions as used to annotate SummEval, our benchmark
 meta-evaluation dataset. We highlight the main points of the instructions in our paper but redirect

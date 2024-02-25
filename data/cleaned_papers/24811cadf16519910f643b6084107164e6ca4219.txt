@@ -1,6 +1,7 @@
 Augmentation-Adapted Retriever Improves Generalization of Language
 Models as Generic Plug-In
-Zichun Yu Chenyan Xiong Shi Yu Zhiyuan Liu13 1Dept. of Comp. Sci. & Tech., Institute for AI, Tsinghua University, Beijing, China
+Zichun Yu1Chenyan Xiong2Shi Yu1Zhiyuan Liu13
+1Dept. of Comp. Sci. & Tech., Institute for AI, Tsinghua University, Beijing, China
 2Microsoft Research, Redmond, USA
 3Beijing National Research Center for Information Science and Technology, Beijing, China
 {yuzc19, yus21}@mails.tsinghua.edu.cn  chenyan.xiong@microsoft.com
@@ -23,7 +24,8 @@ known source LM. Experiments on the MMLU
 and PopQA datasets demonstrate that our AAR
 trained with a small source LM is able to significantly
  improve the zero-shot generalization of
-larger target LMs ranging from 250M Flan-T5 175B InstructGPT. Further analysis indicates
+larger target LMs ranging from 250M Flan-T5
+to 175B InstructGPT. Further analysis indicates
 that the preferences of different LMs overlap,
 enabling AAR trained with a single source
 LM to serve as a generic plug-in for various
@@ -46,12 +48,12 @@ can be inaccurate and intractable sometimes, hindering
  their applications on knowledge-intensive
 tasks (Guu et al., 2020  Lewis et al., 2020  Mallen
 et al., 2022  Wei et al., 2022).
-Flan-T Base
-(250M)Flan-T Large
-(780M)Flan-T XL
+Flan-T5Base
+(250M)Flan-T5Large
+(780M)Flan-T5XL
 (3B)InstructGPT
 (175B)
-# Parameters MMLU AccuracyStandalone LM
+# Parameters35404550556065MMLU AccuracyStandalone LM
 LM w/ Few-Shot Prompting
 LM w/ Adaptive Retrieval
 LM w/ AAR (Ours)Figure 1  Performance of LM w/ AAR (Ours).
@@ -82,7 +84,7 @@ The retriever after training (i.e., AAR) can be directly
  utilized to assist a large target LM by plugging
  in the retrieved documents.
 Specifically, we choose a small encoder-decoder
-LM as the source LM and utilize its fusion-arXiv 2305.17331 1  [cs.CL]  27 2023in-decoder attention scores (Izacard and Grave,
+LM as the source LM and utilize its fusion-arXiv 2305.17331v1  [cs.CL]  27 May 2023in-decoder attention scores (Izacard and Grave,
 2021a) to annotate LM-preferred documents. The
 LM-preferred documents are then combined with
 human-preferred documents to form the positive
@@ -104,7 +106,7 @@ and architectures can consistently outperform the
 standalone LMs  the performance of smaller LMs
 can sometimes surpass the standalone counterparts
 of significantly larger sizes (e.g., Flan-T5 Large w/
-AAR outperforms standalone Flan-T5 0.6%).
+AAR outperforms standalone Flan-T5 XLby 0.6%).
 AAR also demonstrates advantages over other augmentation
  approaches such as few-shot prompting
 and adaptive retrieval (Mallen et al., 2022).
@@ -338,7 +340,7 @@ main experiments.
 4.2 Our Method
 Retrievers. We adopt two widely used retrievers
  to initialize AAR  ANCE initialized from
-T Base(Raffel et al., 2020  Ge et al., 2023) and
+T5Base(Raffel et al., 2020  Ge et al., 2023) and
 Contriever (Izacard et al., 2021) initialized from
 BERT Base(Devlin et al., 2019). Both of them have
 been fine-tuned on MS MARCO (Bajaj et al., 2016)
@@ -392,48 +394,53 @@ task examples. This enables the models to generalize
 responses (Gao et al., 2021). Atlas (Izacard et al.,
 2022) is a state-of-the-art retrieval-augmented LM,
 which jointly pre-trains the retriever with the LM
-1We use the GPT-3 text-davinci-002 2022 version.Settings Methods # ParametersMMLU PopQA
+1We use the GPT-3 text-davinci-002 December 2022 version.Settings Methods # ParametersMMLU PopQA
 All Hum. Soc. Sci. STEM Other All
 Base Setting  T5 Base Size
-Few-shot Flan-T5 Base(Chung et al., 2022) 250 35.8 39.6 39.8 26.3 41.2 8.0
-Zero-shotFlan-T5 250 36.1 40.4 39.8 27.0 40.6 8.8
-Flan-T5 Basew/ AR (Mallen et al., 2022) 250 42.8 43.5 44.0 35.8 50.0 29.4
-Flan-T5 Basew/ AAR Contriever (Ours) 250 44.4 44.7 47.7 35.8 52.2 31.9
-Flan-T5 Basew/ AAR ANCE (Ours) 250 44.8 42.2 46.4 39.0 53.2 37.7 5 Large Size
-Few-shotAtlas Large FT (Izacard et al., 2022) 770 38.9 37.3 41.7 32.3 44.9 n.a.
-Flan-T5 780 45.1 47.7 53.5 34.4 49.2 9.3
-Zero-shotFlan-T5 780 44.8 46.3 51.4 34.8 50.6 7.2
-Flan-T5 Large w/ AR 780 49.8 50.0 55.6 38.4 59.5 29.6
-Flan-T5 Large w/ AAR Contriever (Ours) 780 51.8 50.8 59.7 39.4 61.8 33.4
-Flan-T5 Large w/ AAR ANCE (Ours) 780 50.4 48.0 58.1 39.3 60.2 39.3 5 XL Size
-Few-shotAtlas XLFT 3 42.3 40.0 46.8 35.0 48.1 n.a.
-Flan-T5 3 51.6 55.0 61.1 36.8 59.5 11.1
-Zero-shotFlan-T5 3 51.2 55.5 57.4 38.1 58.7 11.3
-Flan-T5 XLw/ AR 3 55.5 56.7 64.5 43.0 62.6 33.7
-Flan-T5 XLw/ AAR Contriever (Ours) 3 56.7 57.7 65.4 43.6 65.1 31.5
-Flan-T5 XLw/ AAR ANCE (Ours) 3 56.2 59.4 64.8 41.5 64.9 38.0 70B Size
-Few-shotChinchilla (Hoffmann et al., 2022) 70 67.5 63.6 79.3 55.0 73.9 n.a.
-OPT-IML-Max (Iyer et al., 2022) 175 47.1 n.a. n.a. n.a. n.a. n.a.
-InstructGPT (Ouyang et al., 2022) 175 60.5 62.0 71.8 44.3 70.1 35.2
-Zero-shotGAL (Taylor et al., 2022) 120 52.6 n.a. n.a. n.a. n.a. n.a.
-OPT-IML-Max 175 49.1 n.a. n.a. n.a. n.a. n.a.
-InstructGPT 175 60.2 65.7 68.0 46.1 66.5 34.7
-InstructGPT w/ AR 175 60.5 62.2 71.3 44.7 69.7 43.3
-InstructGPT w/ AAR Contriever (Ours) 175 61.5 64.5 73.1 45.0 69.9 43.9
-InstructGPT w/ AAR ANCE (Ours) 175 62.2 62.0 72.0 49.2 70.7 52.0 1  Our main results on MMLU and PopQA dataset. We group the methods mainly by the parameters. Our
+Few-shot Flan-T5 Base(Chung et al., 2022) 250M 35.8 39.6 39.8 26.3 41.2 8.0
+Zero-shotFlan-T5 Base 250M 36.1 40.4 39.8 27.0 40.6 8.8
+Flan-T5 Basew/ AR (Mallen et al., 2022) 250M 42.8 43.5 44.0 35.8 50.0 29.4
+Flan-T5 Basew/ AAR Contriever (Ours) 250M 44.4 44.7 47.7 35.8 52.2 31.9
+Flan-T5 Basew/ AAR ANCE (Ours) 250M 44.8 42.2 46.4 39.0 53.2 37.7
+Large Setting  T5 Large Size
+Few-shotAtlas Large FT (Izacard et al., 2022) 770M 38.9 37.3 41.7 32.3 44.9 n.a.
+Flan-T5 Large 780M 45.1 47.7 53.5 34.4 49.2 9.3
+Zero-shotFlan-T5 Large 780M 44.8 46.3 51.4 34.8 50.6 7.2
+Flan-T5 Large w/ AR 780M 49.8 50.0 55.6 38.4 59.5 29.6
+Flan-T5 Large w/ AAR Contriever (Ours) 780M 51.8 50.8 59.7 39.4 61.8 33.4
+Flan-T5 Large w/ AAR ANCE (Ours) 780M 50.4 48.0 58.1 39.3 60.2 39.3
+XL Setting  T5 XL Size
+Few-shotAtlas XLFT 3B 42.3 40.0 46.8 35.0 48.1 n.a.
+Flan-T5 XL 3B 51.6 55.0 61.1 36.8 59.5 11.1
+Zero-shotFlan-T5 XL 3B 51.2 55.5 57.4 38.1 58.7 11.3
+Flan-T5 XLw/ AR 3B 55.5 56.7 64.5 43.0 62.6 33.7
+Flan-T5 XLw/ AAR Contriever (Ours) 3B 56.7 57.7 65.4 43.6 65.1 31.5
+Flan-T5 XLw/ AAR ANCE (Ours) 3B 56.2 59.4 64.8 41.5 64.9 38.0
+Giant Setting  Over 70B Size
+Few-shotChinchilla (Hoffmann et al., 2022) 70B 67.5 63.6 79.3 55.0 73.9 n.a.
+OPT-IML-Max (Iyer et al., 2022) 175B 47.1 n.a. n.a. n.a. n.a. n.a.
+InstructGPT (Ouyang et al., 2022) 175B 60.5 62.0 71.8 44.3 70.1 35.2
+Zero-shotGAL (Taylor et al., 2022) 120B 52.6 n.a. n.a. n.a. n.a. n.a.
+OPT-IML-Max 175B 49.1 n.a. n.a. n.a. n.a. n.a.
+InstructGPT 175B 60.2 65.7 68.0 46.1 66.5 34.7
+InstructGPT w/ AR 175B 60.5 62.2 71.3 44.7 69.7 43.3
+InstructGPT w/ AAR Contriever (Ours) 175B 61.5 64.5 73.1 45.0 69.9 43.9
+InstructGPT w/ AAR ANCE (Ours) 175B 62.2 62.0 72.0 49.2 70.7 52.0
+Table 1  Our main results on MMLU and PopQA dataset. We group the methods mainly by the parameters. Our
 Lsis Flan-T5 Base. AAR Contriever   AAR initialized from Contriever  AAR ANCE   AAR initialized from ANCE  FT 
 fine-tuning  AR  adaptive retrieval. Unspecified methods represent direct prompting. The score marked as bold
 means the best performance among the models in the zero-shot setting.
-2.5 5.0 7.5 1e MMLU AccuracyAARANCE
-Ls Flan-T Base, Lt Flan-T Base
+2.5 5.0 7.5
+Training FLOPs 1e2130354045505560MMLU AccuracyAARANCE
+Ls Flan-T5Base, Lt Flan-T5Base
 AARANCE
-Ls Flan-T Base, Lt Flan-T Large
+Ls Flan-T5Base, Lt Flan-T5Large
 AARANCE
-Ls Flan-T Base, Lt Flan-T XL
+Ls Flan-T5Base, Lt Flan-T5XL
 AARANCE
-Ls Lt Flan-T Large
+Ls Lt Flan-T5Large
 AARANCE
-Ls Lt Flan-T XL
+Ls Lt Flan-T5XL
 AtlasLarge
 AtlasXL
 Figure 3  Training FLOPs of retrieval augmentation
@@ -444,7 +451,8 @@ via the attention distillation on few-shot data.
 In this section, we discuss our main results on
 MMLU and PopQA datasets (  5.1) and conductcomprehensive studies about how (  5.2,   5.3,
   5.4) and when (  5.5,   5.6) AAR helps.
-5.1 1 demonstrates that, with the assistance of a
+5.1 Overall Performance
+Table 1 demonstrates that, with the assistance of a
 generic AAR, target LMs of different sizes and
 architectures can significantly outperform their
 standalone baselines in the zero-shot setting. Notably,
@@ -458,19 +466,19 @@ more augmentation information to attain high accuracy.
 as they may not offer as extensive evidence text as
 AAR does.
 Meanwhile, AAR is a highly efficient augmentation
- approach since it only relies on a small source M 780 3 175B
-# Parameters MMLU AccuracyANCE
+ approach since it only relies on a small source250M 780M 3B 175B
+# Parameters4045505560657075MMLU AccuracyANCE
 AARANCE
 Contriever
 AARContriever(a) Pre-trained Retrievers.
-250 780 3 175B
-# Parameters MMLU AccuracyHuman
-Ls Flan-T Base LM
-Ls Flan-T Base
-Ls Flan-T Large (b) Positive docs selection.
+250M 780M 3B 175B
+# Parameters4045505560657075MMLU AccuracyHuman
+Ls Flan-T5Base LM
+Ls Flan-T5Base
+Ls Flan-T5Large (b) Positive docs selection.
 Figure 4  AAR s performance when (a) using different
  pre-trained retrievers and (b) trained with different
-positive documents, using Flan-T5 Base(250M), FlanT Large
+positive documents, using Flan-T5 Base(250M), FlanT5Large
  (780M), Flan-T5 XL(3B), InstructGPT (175B)
 asLt. The retriever in (b) is initialized from ANCE.
 LM Flan-T5 Base(250M) to provide training signals
@@ -494,7 +502,8 @@ training than Contriever. This may be due to the
 fact that Contriever has been already intensively
 pre-trained on massive data augmentations as well
 as MS MARCO whereas ANCE is trained only on
-MS MARCO. We provide exact numbers in Table 7 8, which yield similar
+MS MARCO. We provide exact numbers in Table 7
+and PopQA results in Figure 8, which yield similar
 observations as MMLU.
 In Figure 4b, we compare retrievers trained with
 different positive documents, including humanpreferred
@@ -507,13 +516,18 @@ MS MARCO, simply using human-preferred documents
  to train it may be meaningless and therefore
 performs the worst among all approaches. Only
 using LM-preferred documents demonstrates notable
- gains over only using human-preferred doc K
- 30 50 70 1.01.11.21.31.4 2830323436
+ gains over only using human-preferred doc010K
+ 30K 50K 70K
+Training step1.01.11.21.31.4Loss
+2830323436
 MS MARCO MRR@10
 Train Loss
 Eval Loss
 MS MARCO(a) Retriever s performance.
-010 30 50 70 28.028.428.829.229.630.0
+010K 30K 50K 70K
+Training step424344454647MMLU Accuracy
+MMLU
+28.028.428.829.229.630.0
 MSMARCO QA Rouge-L
 MSMARCO QA (b)Lt s performance.
 Figure 5  AAR s training process. (a) exhibits the retriever s
@@ -530,7 +544,7 @@ LM s size increases, both approaches achieve comparable
  performance. Hence, our choice to utilize
 a small source LM in the augmentation-adapted
 training is reasonable and effective.
-Figure 5 5b plot the retriever s and
+Figure 5a and Figure 5b plot the retriever s and
 LM s performance during augmentation-adapted
 training, respectively. At the beginning of the training,
  the retriever s MRR@10 on the MS MARCO
@@ -552,7 +566,14 @@ we discover that LM-preferred documents can assist
 the full information favored by search users.
 First, we define the set overlap Obetween two
 positive documents set D 
-1 2 1 2 1 2. (8)
+1andD 
+2as 
+O D 
+1 D 
+2
+D 
+1 D 
+2. (8)
 As illustrated in Figure 6a, the set overlaps of the
 positive document sets annotated by human usersQuestion Human-preferred Document LM-preferred Document
 what happens if you miss
@@ -631,8 +652,8 @@ human-preferred document can always present the
 gold answer at the beginning of the text, while the
 LM-preferred document may not contain the exact
  answer. However, an LM-preferred document
-250 780 3 175B
-# Parameters MMLU AccuracyTART
+250M 780M 3B 175B
+# Parameters4045505560657075MMLU AccuracyTART
 AARContriever (MSMARCO QA)
 AARContriever (KILT)
 AARANCE (MSMARCO QA)
@@ -664,7 +685,9 @@ more significantly than with the LM-preferred retriever.
 (0.6% for LM-preferred documents vs. 13.0% forCorporaMMLU PopQA
 All Hum. Soc. Sci. STEM Other All
 MS MARCO 44.8 42.2 46.4 39.0 53.2 13.6
-KILT-Wikipedia 42.6 42.5 45.9 34.3 50.5 37.7 36.1 40.4 39.8 27.0 40.6 8.8 3  Ablation of the retrieval corpus, with FlanT Baseas
+KILT-Wikipedia 42.6 42.5 45.9 34.3 50.5 37.7
+Standalone LM 36.1 40.4 39.8 27.0 40.6 8.8
+Table 3  Ablation of the retrieval corpus, with FlanT5Baseas
  LM and AAR ANCE as retriever.
 human-preferred documents), LM-preferred documents
  provide helpful information from alternative
@@ -699,7 +722,8 @@ TART (Asai et al., 2022) has an overall worse performance
  of having LM-preferred documents during the
 multi-task training. A more detailed analysis about
 the selection of source tasks is in Appendix B.
-5.5 3 demonstrates that regardless of the retrieval
+5.5 Effect of Retrieval Corpus
+Table 3 demonstrates that regardless of the retrieval
 corpus, AAR results in consistent and substantial
 performance gains over the standalone LM.
 On MMLU, using MS MARCO as the retrieval
@@ -711,12 +735,14 @@ All All
 Few-shotOPT (Zhang et al., 2022) 26.0 12.3
 GPT-neo (Black et al., 2021) 28.7 11.3
 Zero-shotOPT 22.7 12.0
-GPT-neo 25.3 9.9 22.3 12.2
+GPT-neo 25.3 9.9
+OPT GenRead 22.3 12.2
 GPT-neo GenRead 24.4 11.9
 OPT w/ AAR Contriever (Ours) 23.2 29.1
 GPT-neo w/ AAR Contriever (Ours) 25.2 27.8
 OPT w/ AAR ANCE (Ours) 23.7 32.9
-GPT-neo w/ AAR ANCE (Ours) 26.6 30.1 4  Results of OPT and GPT-neo. We use their
+GPT-neo w/ AAR ANCE (Ours) 26.6 30.1
+Table 4  Results of OPT and GPT-neo. We use their
 1.3B version. The score marked as bold means the best
 performance in the zero-shot setting.
 On PopQA, model performance will drop by
@@ -784,7 +810,7 @@ reinforcement learning could serve as an alternative
  method to train the retriever, as it optimizes
 the retriever by directly leveraging LM s signals
 without relying on the devised rule.
-Generic Retrieval Plug-in. Chatgpt-retrievalplugin has
+Generic Retrieval Plug-in. Chatgpt-retrievalplugin2has
  recently gained attention in the NLP
 community as a generic retrieval plug-in. It retrieves
  the most relevant document from users  data
@@ -822,7 +848,8 @@ large LMs as black boxes and adapting retrievers
 to augment them.
 Limitations
 Due to the limitation of computational resources,
-we have not evaluated the Flan-T5 11B, and the OPT whose number
+we have not evaluated the Flan-T5 XXLwhose number
+ of parameters is 11B, and the OPT whose number
  of parameters is greater than 1.3B.
 Since OPT and GPT-neo perform poorly in the
 zero-shot setting and separating attention scores of
@@ -902,7 +929,8 @@ Roberts, Denny Zhou, Quoc V . Le, and Jason Wei.
 arXiv preprint arXiv 2210.11416 .Jacob Devlin, Ming-Wei Chang, Kenton Lee, and
 Kristina Toutanova. 2019. BERT  Pre-training of
 deep bidirectional transformers for language understanding.
- In Proceedings of NAACL , pages 4171 4186.
+ In Proceedings of NAACL , pages 4171 
+4186.
 Tianyu Gao, Adam Fisch, and Danqi Chen. 2021.
 Making pre-trained language models better few-shot
 learners. In Proceedings of ACL , pages 3816 3830.
@@ -1024,7 +1052,8 @@ How much knowledge can you pack into the parameters
 pages 5418 5426.
 Ohad Rubin, Jonathan Herzig, and Jonathan Berant.
 2022. Learning to retrieve prompts for in-context
-learning. In Proceedings of NAACL , pages 2655 2671.
+learning. In Proceedings of NAACL , pages 2655 
+2671.
 Victor Sanh, Albert Webson, Colin Raffel, Stephen
 Bach, Lintang Sutawika, Zaid Alyafeai, Antoine
 Chaffin, Arnaud Stiegler, Arun Raja, and et al. 2022.
@@ -1088,12 +1117,13 @@ Pengtao Xie, Caiming Xiong, Jian Pei, Philip S. Yu,
 and Lichao Sun. 2023. A comprehensive survey on
 pretrained foundation models  A history from bert to
 chatgpt. arXiv preprint arXiv 2302.09419 .A Experimental Settings
-A.1 5 3(Xiong
+A.1 Training Hyperparameters
+We take the ANCE initialized from T5 Base3(Xiong
 et al., 2021  Ge et al., 2023) and Contriever4(Izacard
  et al., 2021) s hyperparameters in the
 augmentation-adapted training. Specifically, we fix
 batch size as 8, learning rate as 5e-6, and epochs as
-6 8, learning
+6 for ANCE while taking batch size as 8, learning
 rate as 1e-5, and epochs as 3 for Contriever. We
 choose their best checkpoints based on the performance
  of the development set. The information
@@ -1135,7 +1165,8 @@ to Multi-task Language Understanding, which is
 4https //huggingface.co/facebook/contriever-msmarcoTsTtMMLU NQ zsRE
 MSMARCO QA 44.8 46.7 75.1
 KILT-TriviaQA 43.6 46.4 74.9
-KILT-T-REx 44.1 45.9 77.2 5  Relationship between the selection of source
+KILT-T-REx 44.1 45.9 77.2
+Table 5  Relationship between the selection of source
 taskTsand the performance of target task Tt. The
 model is Flan-T5 Basew/ AAR ANCE . As NQ and zsRE
 are included in the Flan-T5 training data, we only report
@@ -1152,16 +1183,16 @@ the source task performs the best on MMLU. This
 validates the rationality to set Tsas MSMARCO
 QA in our main experimental settings.
 C AAR s Improvements on PopQA
-250 780 3 175B
-# Parameters PopQA AccuracyANCE
+250M 780M 3B 175B
+# Parameters25303540455055PopQA AccuracyANCE
 AARANCE
 Contriever
 AARContriever
-Figure 8  AAR s improvements on PopQA, using FlanT Base(250M),
+Figure 8  AAR s improvements on PopQA, using FlanT5Base(250M),
  Flan-T5 Large (780M), Flan-T5 XL(3B),
 InstructGPT (175B) as target LMs.
 D Fine-tuning Results
-We also report the fine-tuning results of FlanT Baseand
+We also report the fine-tuning results of FlanT5Baseand
  Flan-T5 Large on MMLU auxiliary training
  data (Hendrycks et al., 2021) in Table 7. Due to
 the limitation of the computational resources, we
@@ -1173,17 +1204,17 @@ has already been massively multi-task instructionfinetuned,
 fine-tuning on extra tasks but benefits greatly from
 our AAR. The results further validate the power of
 zero-shot retrieval augmentation.12345678910
-Number of documents MMLU Accuracy
+Number of documents3638404244MMLU Accuracy
 Standalone LM
-Lt Flan-T Base(a) Flan-T5 Basew/ AAR ANCE.
+Lt Flan-T5Base(a) Flan-T5 Basew/ AAR ANCE.
 12345678910
-Number of documents MMLU Accuracy
+Number of documents4446485052MMLU Accuracy
 Standalone LM
-Lt Flan-T Large (b) Flan-T5 Largew/ AAR ANCE.
+Lt Flan-T5Large (b) Flan-T5 Largew/ AAR ANCE.
 12345678910
-Number of documents MMLU Accuracy
+Number of documents5052545658MMLU Accuracy
 Standalone LM
-Lt Flan-T XL (c) Flan-T5 XLw/ AAR ANCE.
+Lt Flan-T5XL (c) Flan-T5 XLw/ AAR ANCE.
 Figure 9  Relationship between LM s performance and the number of augmentation documents.
 Category Number
 TsMSMARCO QA Open Domain QA 148122
@@ -1192,27 +1223,31 @@ KILT-WNED Entity Linking 3396
 KILT-T-REx Slot Filling 5000
 KILT-TriviaQA Open Domain QA 5359
 KILT-Wizard of Wikipedia Dialogue 3054
-TtMMLU Multi-task Language Understanding 1531 14267 6  Configurations of our source tasks and target tasks.
+TtMMLU Multi-task Language Understanding 1531
+PopQA Open Domain QA 14267
+Table 6  Configurations of our source tasks and target tasks.
 MethodsMMLU
 All Hum. Soc. Sci. STEM Other
-Flan-T5 36.1 40.4 39.8 27.0 40.6
+Flan-T5 Base 36.1 40.4 39.8 27.0 40.6
 Flan-T5 BaseFine-tuning 36.1 38.9 41.2 27.9 39.9
 Flan-T5 Basew/ Contriever 43.7 44.4 45.0 36.4 51.1
 Flan-T5 Basew/ ANCE 43.0 44.2 44.3 34.5 51.9
 Flan-T5 Basew/ AAR Contriever (Ours) 44.4 44.7 47.7 35.8 52.2
 Flan-T5 Basew/ AAR ANCE (Ours) 44.8 42.2 46.4 39.0 53.2
-Flan-T5 45.1 47.7 53.5 34.4 49.2
+Flan-T5 Large 45.1 47.7 53.5 34.4 49.2
 Flan-T5 Large Fine-tuning 45.3 47.6 54.1 35.2 48.7
 Flan-T5 Large w/ Contriever 50.7 50.5 56.4 38.9 61.1
 Flan-T5 Large w/ ANCE 49.2 49.3 56.7 38.1 57.2
 Flan-T5 Large w/ AAR Contriever (Ours) 51.8 50.8 59.7 39.4 61.8
 Flan-T5 Large w/ AAR ANCE (Ours) 50.4 48.0 58.1 39.3 60.2
-Flan-T5 51.2 55.5 57.4 38.1 58.7
+Flan-T5 XL 51.2 55.5 57.4 38.1 58.7
 Flan-T5 XLw/ Contriever 56.4 57.3 66.1 43.9 63.2
 Flan-T5 XLw/ ANCE 55.3 55.9 64.0 41.5 64.9
 Flan-T5 XLw/ AAR Contriever (Ours) 56.7 57.7 65.4 43.6 65.1
-Flan-T5 XLw/ AAR ANCE (Ours) 56.2 59.4 64.8 41.5 64.9 60.2 65.7 68.0 46.1 66.5
+Flan-T5 XLw/ AAR ANCE (Ours) 56.2 59.4 64.8 41.5 64.9
+InstructGPT 60.2 65.7 68.0 46.1 66.5
 InstructGPT w/ Contriever 60.5 62.0 71.8 44.3 70.1
 InstructGPT w/ ANCE 61.6 62.4 73.4 47.6 68.6
 InstructGPT w/ AAR Contriever (Ours) 61.5 64.5 73.1 45.0 69.9
-InstructGPT w/ AAR ANCE (Ours) 62.2 62.0 72.0 49.2 70.7 7  Fine-tuning results on MMLU. We use the official auxiliary training data of MMLU to fine-tune the LM.
+InstructGPT w/ AAR ANCE (Ours) 62.2 62.0 72.0 49.2 70.7
+Table 7  Fine-tuning results on MMLU. We use the official auxiliary training data of MMLU to fine-tune the LM.

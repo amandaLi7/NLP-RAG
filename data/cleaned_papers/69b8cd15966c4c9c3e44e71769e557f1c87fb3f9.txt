@@ -1,6 +1,6 @@
 MOSAIC  Learning Unified Multi-Sensory Object Property
 Representations for Robot Perception
-Gyan Tatiya1 Jonathan Francis Ho-Hsiang Wu Yonatan Bisk Jivko Sinapov1
+Gyan Tatiya1 Jonathan Francis2Ho-Hsiang Wu2Yonatan Bisk3Jivko Sinapov1
 Abstract   A holistic understanding of object properties
 across diverse sensory modalities (e.g., visual, audio, and
 haptic) is essential for tasks ranging from object categorization
@@ -20,7 +20,8 @@ distilling knowledge from the extensive pre-trained Contrastive
 Language-Image Pre-training (CLIP) model, aligning these representations
  not only across vision but also haptic and auditory
 sensory modalities. Through extensive experiments on a dataset
-where a humanoid robot interacts with 100 10 exploratory behaviors, we demonstrate the versatility of
+where a humanoid robot interacts with 100 objects across
+10 exploratory behaviors, we demonstrate the versatility of
 MOSAIC in two task families  object categorization and objectfetching
  tasks. Our results underscore the efficacy of MOSAIC s
 unified representations, showing competitive performance in
@@ -99,7 +100,7 @@ in executing natural language instructions in the fetch object
 task under a zero-shot condition. In summary, MOSAIC
 offers a versatile framework for multi-modal object property
 learning, bridging the gap between different sensory inputs
-and facilitating a wide range of downstream robot tasks.arXiv 2309.08508 1  [cs.RO]  15 2023Fig. 1  Overview of the MOSAIC Framework   Initially, the robot collects sensory data through object exploration, which is then used
+and facilitating a wide range of downstream robot tasks.arXiv 2309.08508v1  [cs.RO]  15 Sep 2023Fig. 1  Overview of the MOSAIC Framework   Initially, the robot collects sensory data through object exploration, which is then used
 to train models for distilling unified multimodal representations guided by a pre-trained text encoder. These acquired representations are
 subsequently applied to a variety of downstream tasks.
 II. R ELATED WORK
@@ -202,18 +203,22 @@ n  Size of minibatch
 MOSAIC θ  Learnable parameters of MOSAIC framework
 // Extract feature vector for each modality
 1Vf vision encoder( V) // Vision Transformer
-2Af audio encoder( A) // Wav CLIP model
-3Hf haptic encoder( H) // ResNet18 4Sf textencoder( S) // Text Transformer
+2Af audio encoder( A) // Wav2CLIP model
+3Hf haptic encoder( H) // ResNet18 model
+4Sf textencoder( S) // Text Transformer
 // Compute unified representation
 5Uf concatenation( Vf, Af, Hf)
 6Uf multihead attention( Uf)
 7Uf MLP encoder( Uf) // MLP model
 // Scaled pairwise cosine similarities
-8 9// Symmetric loss function
+8logits  Uf S 
+f
+9// Symmetric loss function
 10labels  range( n) // returns 1, 2, ..., n
 11lossu cross entropy loss(labels, logits )
 12losss cross entropy loss(labels, logits )
-13loss  (lossu losss)/2 14Update MOSAIC θto minimize loss
+13loss  (lossu losss)/2
+14Update MOSAIC θto minimize loss
 forming zero-shot transfers, thereby circumventing the need
 to train complex models dedicated to individual tasks.
 Unified Multimodal Object Property Model. Our approach,
@@ -234,7 +239,7 @@ contrastive loss. For each interaction s video, the image encoder
  extracts image embeddings, and these embeddings are
 then aggregated using adaptive average pooling to generate
 a feature vector of size DZ. For the Audio Encoder ,
-we leverage the Wav CLIP model [19], which is trained to
+we leverage the Wav2CLIP model [19], which is trained to
 project audio data into the shared vision-language embedding
 space of CLIP  this approach enables the extraction of audio
 embeddings of size DZ. For the Haptics Encoder , we
@@ -277,18 +282,21 @@ effective transferability across diverse downstream tasks.
 IV. E XPERIMENTAL DESIGN
 Sensory Dataset. We used the publicly accessible dataset
 collected by Sinapov et al. [12]. In this experiment, a
-humanoid robot (depicted in Fig. 1) explored 100 20 different categories (shown in Fig. 2A),
+humanoid robot (depicted in Fig. 1) explored 100 household
+objects from 20 different categories (shown in Fig. 2A),
 using 10 exploratory behaviors. These behaviors included
 Look ,Press ,Grasp ,Hold ,Lift,Drop ,Poke ,Push ,Shake ,
 and Tap (shown in Fig. 2B). Look is a non-interactive
 behavior, only capturing visual data. For every interactive
 behavior, the robot collected sensory data including visual,
 audio, and haptic, acquired through three sensors  (1) A
-Logitech webcam capturing 320 240 10
-frames per second  (2) An Audio-Technica U AW cardioid
+Logitech webcam capturing 320 x 240 RGB images at 10
+frames per second  (2) An Audio-Technica U853AW cardioid
 microphone capturing audio sampled at 44.1 KHz  (3) Jointtorque
- sensors capturing torques from all 7 500 Hz.
-The robot repeated each behavior 5 100 objects, resulting in a total of 5,000 interactions (10 5 100 objects).
+ sensors capturing torques from all 7 joints at 500 Hz.
+The robot repeated each behavior 5 times for each of the
+100 objects, resulting in a total of 5,000 interactions (10
+behaviors x 5 trials x 100 objects).
 Text Dataset. The objects in our dataset were annotated
 with properties, shown in Table I, each with corresponding
 values. While not all properties were applicable to every
@@ -322,9 +330,9 @@ frames for each modality during the interaction recording.
 For images and text, we employed the pre-processing provided
  by CLIP [16]. Audio data was transformed from
 raw waveforms (1D) to spectrograms (2D) using the audio
-preprocessor from Wav CLIP [19]. For haptic signals, we
+preprocessor from Wav2CLIP [19]. For haptic signals, we
 applied dimensionality reduction by interpolating the original
-500 50Hz, drawing inspiration from
+500Hz sampling rate down to 50Hz, drawing inspiration from
 a similar technique used in a prior study [13] conducted with
 the same dataset we used in our experiments.
 Model Implementation. We standardized the size of the
@@ -333,28 +341,35 @@ in PyTorch [29], which includes the multi-sensory selfattention
  model and MLP encoder. We fine-tuned the model
 parameters over 50 epochs, using the Adam optimizer [30]
 with a learning rate of 10 4.
-Validation Procedure. Each of the 20 5 unique objects. To train our framework, we
+Validation Procedure. Each of the 20 object categories
+consists of 5 unique objects. To train our framework, we
 selected 4 objects from each category for the training set
 while reserving one object for testing, resulting in a training
-set with 80 20 objects. We
+set with 80 objects and a testing set with 20 objects. We
 employed a 5-fold object-based cross-validation strategy to
 ensure that each object appeared four times in the training set
 and once in the test set. Given that the robot interacted with
 each object 5 times, our training set contained 400 examples
-(80 5 trials)  the test set comprised 100 examples
-(20 5 trials) for each exploratory behavior.
+(80 objects  5 trials)  the test set comprised 100 examples
+(20 objects  5 trials) for each exploratory behavior.
 Evaluation Tasks. After training our framework, we extracted
  the unified representations by freezing learned
 weights for all downstream tasks. We evaluated the acquired
 representations through two distinct tasks. The following
 subsections elaborate on these tasks, outlining our approach
 to tackling them with unified representations and discussingAlgorithm 2  Fetch object( c, O, B, θ )
-MOSAIC θ  Learned parameters in Algorithm 1 1tc textencoder( c)  // Command to fetch target
+MOSAIC θ  Learned parameters in Algorithm 1
+1tc textencoder( c)  // Command to fetch target
 2foro O Set of objects (target and distractor(s)) do
-3 0 4 5 sensory data  perform behavior( o, b)
+3 similarity  0
+4 forb B Set of Behaviors do
+5 sensory data  perform behavior( o, b)
 6 ub getunified repr(sensory data, MOSAIC θ)
 7 similarity   cosine similarity( tc, ub)
-8 9 10 11return Target Object owith highest similarity
+8 end
+9 Savesimilarity foro
+10end
+11return Target Object owith highest similarity
 TABLE I  Property categories and associated descriptive words.
 Properties Values
 Color brown, blue, pink, red, white, orange, yellow, green, purple, multicolored
@@ -376,7 +391,8 @@ a set of 20 categories. We use a standard multi-class linear
 classifier for supervised classification. Specifically, we use
 a Multi-Layer Perceptron (MLP) architecture that takes the
 unified representation as input, passes it through a hidden
-layer and a ReLU activation function, and produces 20 20 categories. We train this classifier using the crossentropy
+layer and a ReLU activation function, and produces 20 logits
+for 20 categories. We train this classifier using the crossentropy
  loss function for 50 epochs, using the Adam optimization
  with a learning rate of 10 4. The trained classifier
 is then used to recognize the category of test objects, and
@@ -414,12 +430,15 @@ small and hard  ). The distractor object, on the other hand,
 possesses different properties. For Level 4 , like Level 3, the
 command includes two target object properties. However,
 this time, two distractor objects are introduced, each with
-differing properties. Level 5 2, where the commands only contain a property from a
+differing properties. Level 5 represents a variation of Level
+2, where the commands only contain a property from a
 specific category, as illustrated in Table I. For instance, in
 the Material  category, the command might read,  get an
 object that is plastic.   Level 5 was introduced to assess the
 robot s performance across various property categories. For
-each level, we created 20 5 previously explained folds. For each object (target and
+each level, we created 20 commands for target objects and
+carefully selected corresponding distractor objects for each of
+the 5 previously explained folds. For each object (target and
 distractor(s)), we calculated its selection percentage, defined
 asS number of times the object is selected
 total number of commands(%). Our results are
@@ -458,7 +477,7 @@ recognition task, we report recognition accuracy separately
 for the Look behavior, each of the 9 interactive behaviors
  individually, and the combination of all 9 interactive
 behaviors. The combined accuracy is calculated through a
-Fig. 3 2D unified representations derived from autoencoder trained
+Fig. 3  2D unified representations derived from autoencoder trained
 onPush behavior s data  (A) Object categories, (B) Material, (C)
 Deformability, and (D) Hardness properties.
 weighted combination of each behavior s performance on
@@ -473,9 +492,10 @@ Look behavior for the non-interactive condition and all 9
 interactive behaviors for the interactive condition.
 V. R ESULTS
 An Illustrative Example. Let s consider a scenario where
-the robot performs the Push behavior on 80 objects (4 20 categories), recording visual, acoustic, and haptic data.
+the robot performs the Push behavior on 80 objects (4 objects
+x 20 categories), recording visual, acoustic, and haptic data.
 With each object undergoing 5 trials, this yields a dataset of
-400 examples (80 5 trials). Using our MOSAIC
+400 examples (80 objects   5 trials). Using our MOSAIC
 framework, we use this data to learn unified representations.
 For visualization, we subjected these representations to dimensionality
  reduction using a linear autoencoder, resulting
@@ -504,7 +524,17 @@ aspect of its performance across diverse tasks.
 Object Category Recognition Results. Object category
 recognition results are presented in Table II. Note that theTABLE II  Category recognition accuracy (%) for each behavior.
 Behavior Sinapov et al. [12] Tatiya et al. [13] MOSAIC -w/o-SA MOSAIC (ours)
-Look 67.7 86.4 1.2 87.4 2.0 65.2 71.4 72.2 6.7 74.0 5.8 67.0 76.8 68.0 5.3 69.6 5.2 79.0 77.8 72.8 4.2 77.8 5.7 71.0 78.0 73.2 3.8 77.2 5.9 85.4 73.8 81.6 2.2 86.4 1.0 88.8 67.4 85.6 3.5 89.4 4.4 76.8 83.6 81.2 6.2 84.0 5.6 82.4 81.6 81.2 5.7 84.4 1.8 77.4 58.8 71.6 8.7 77.8 6.4 95.2 3.6 95.6 3.9
+Look 67.7   86.4  1.2 87.4 2.0
+Grasp 65.2 71.4 72.2  6.7 74.0 5.8
+Hold 67.0 76.8 68.0 5.3 69.6  5.2
+Lift 79.0 77.8 72.8  4.2 77.8  5.7
+Drop 71.0 78.0 73.2 3.8 77.2  5.9
+Poke 85.4 73.8 81.6  2.2 86.4 1.0
+Push 88.8 67.4 85.6  3.5 89.4 4.4
+Shake 76.8 83.6 81.2  6.2 84.0 5.6
+Tap 82.4 81.6 81.2  5.7 84.4 1.8
+Press 77.4 58.8 71.6  8.7 77.8 6.4
+All behaviors     95.2  3.6 95.6 3.9
 Look behavior only relies on visual modality, and the  All
 behaviors  row at the bottom refers to all 9 interactive behaviors
  combined. Our approach, using unified representations,
@@ -530,13 +560,14 @@ InLevel 1 , the command specified the object category name.
 Our complete MOSAIC framework excelled in interactive
 behavior conditions, achieving an impressive target object
 selection rate of 99.0%, outperforming all baseline models.
-Level 2 5   These levels introduced object properties
+Level 2 to Level 5   These levels introduced object properties
  into the command instead of specifying the object
 category name. Generally, the interactive behaviors condition
 outperformed the non-interactive one, with our full MOSAIC
 model excelling in most cases. Interestingly, providing more
 object properties in the command led to better performance,
-exemplified by a higher target object selection rate in Level 3 2, across all conditions, except for  Look 
+exemplified by a higher target object selection rate in Level 3
+compared to Level 2, across all conditions, except for  Look 
 without self-attention. This suggests that learning unified representations
  with self-attention prioritizes the most relevant
 object properties. Level 4 presented greater challenges due to
@@ -554,7 +585,16 @@ deformability and weight, the interactive behaviors condition
 levels of the fetch object task, with and without Self-Attention.
 Look (non-interactive) Interactive
 -w/o-SA MOSAIC -w/o-SA MOSAIC
-LEVEL 1 74 82 97 99 2 61 65 84 81 3 60 74 86 83 4 54 70 72 77 5 45 48 71 74 85 80 97 95 62 74 72 75 62 62 51 63 52 63 85 85
+LEVEL 1 74 82 97 99
+LEVEL 2 61 65 84 81
+LEVEL 3 60 74 86 83
+LEVEL 4 54 70 72 77
+LEVEL 5
+DEFORMATION 45 48 71 74
+SHAPE 85 80 97 95
+SIZE 62 74 72 75
+TRASPARENCY 62 62 51 63
+WEIGHT 52 63 85 85
 This aligns with intuition, as visual observation alone may
 not suffice to determine these properties. Transparency and
 Size  For visual properties like transparency and size, the
@@ -637,7 +677,7 @@ no. 4, pp. 7525 7532, 2021.
  Grounding semantic categories in behavioral interactions 
 Experiments with 100 objects,  Robotics and Autonomous Systems ,
 vol. 62, no. 5, pp. 632 645, may 2014. [Online]. Available  https 
-//www.sciencedirect.com/science/article/pii/S X
+//www.sciencedirect.com/science/article/pii/S092188901200190X
 [13] G. Tatiya and J. Sinapov,  Deep multi-sensory object category
 recognition using interactive behavioral exploration,  in International
 Conference on Robotics and Automation (ICRA), Montreal, QC,
@@ -652,13 +692,13 @@ L. Fei-Fei, R. Gao, and J. Wu,  See, hear, and feel  Smart sensory
 fusion for robotic manipulation,  in Conference on Robot Learning
 (CoRL) , vol. 205. Auckland, New Zealand  Proceedings of Machine
 Learning Research (PMLR), dec 2022, pp. 1368 1378. [Online].
-Available  https //proceedings.mlr.press/v205/li c.html
+Available  https //proceedings.mlr.press/v205/li23c.html
 [16] A. Radford, J. W. Kim, C. Hallacy, A. Ramesh, G. Goh, S. Agarwal,
 G. Sastry, A. Askell, P. Mishkin, J. Clark, G. Krueger, andI. Sutskever,  Learning transferable visual models from natural
 language supervision,  in International Conference on Machine
 Learning (ICML) , vol. 139. Proceedings of Machine Learning
 Research (PMLR), 2021, pp. 8748 8763. [Online]. Available 
-http //proceedings.mlr.press/v139/radford a.html
+http //proceedings.mlr.press/v139/radford21a.html
 [17] Y . Zhang, H. Jiang, Y . Miura, C. D. Manning, and C. P. Langlotz,
  Contrastive learning of medical visual representations from paired
 images and text,  in Machine Learning for Healthcare Conference .
@@ -667,7 +707,7 @@ PMLR, 2022, pp. 2 25.
 K. Lenc, A. Mensch, K. Millican, M. Reynolds et al. ,  Flamingo 
 a visual language model for few-shot learning,  Advances in Neural
 Information Processing Systems , vol. 35, pp. 23 716 23 736, 2022.
-[19] H.-H. Wu, P. Seetharaman, K. Kumar, and J. P. Bello,  Wav clip 
+[19] H.-H. Wu, P. Seetharaman, K. Kumar, and J. P. Bello,  Wav2clip 
 Learning robust audio representations from clip,  in International
 Conference on Acoustics, Speech and Signal Processing (ICASSP) .
 Virtual and Singapore  IEEE, May 2022, pp. 4563 4567. [Online].

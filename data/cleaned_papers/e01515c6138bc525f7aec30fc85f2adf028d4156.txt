@@ -1,6 +1,9 @@
 Principle-Driven Self-Alignment of Language Models
 from Scratch with Minimal Human Supervision
-Zhiqing Sun1 3 2 2,3 1Language Technologies Institute, CMU
+Zhiqing Sun1 Yikang Shen2Qinhong Zhou3
+Hongxin Zhang3Zhenfang Chen2David Cox2
+Yiming Yang1Chuang Gan2,3
+1Language Technologies Institute, CMU
 2MIT-IBM Watson AI Lab, IBM Research
 3UMass Amherst
 https //github.com/IBM/Dromedary
@@ -34,15 +37,16 @@ fine-tuning (SFT) with human instructions and annotations, as well as reinforcem
 human feedback (RLHF) on their preferences [ 26,28,29,2]. The success of these techniques heavily
  Correspondence  zhiqings@cs.cmu.edu .
 1This is the definition of AI alignment in this paper, distinct from following simple instructions [ 30,48,42].
-37th Conference on Neural Information Processing Systems (NeurIPS 2023).arXiv 2305.03047 2  [cs.LG]  2 2023(Topic -Guided Red -Teaming) Self -Instruct
+37th Conference on Neural Information Processing Systems (NeurIPS 2023).arXiv 2305.03047v2  [cs.LG]  2 Dec 2023(Topic -Guided Red -Teaming) Self -Instruct
 195 seed prompts
-w/ 7 360k synthetic prompts
+w/ 7rules for new instruction generation
+360k synthetic prompts
 Principle -Driven Self -Alignment
 16principles for AI assistant to follow
 w/ 5in-context learning demonstrations
 Principle Engraving
 Fine -tuning the original model after
-pruning principles and demonstrations k (after filtering) self -aligned responses
+pruning principles and demonstrations260k (after filtering) self -aligned responses
 to synthetic prompts
 360k self -aligned & verbose (by prompting) responses
 to synthetic prompts
@@ -102,7 +106,7 @@ Impressively, the entire SELF-ALIGN process necessitates fewer than 300 lines of
 such as InstructGPT [30] orAlpaca [42] required at least 50K human/teacher annotations. This
 2The detailed principles are given in the appendix. Analogous to Constitutional AI [ 5], the design of these
 principles in S ELF-ALIGN remains exploratory and primarily serves research purposes.
-2 1  Comparison of human/teacher supervisions used in recent AI systems. The alignment techniques
+2Table 1  Comparison of human/teacher supervisions used in recent AI systems. The alignment techniques
  used in previous work include SFT (Supervised Fine-tuning), RLHF (Reinforcement Learning
 from Human Feedback), CAI (Constitutional AI), and KD (Knowledge Distillation). Information is
 from aOpenAI [29],bOpenAI [26],cBai et al. [5], Anthropic [2],dOpenAI [27].
@@ -118,7 +122,9 @@ Alpaca 52K Text-Davinci-003 Self-Instruct & KD
 Vicuna 70K Users & ChatGPT KD
 Koala 472K Humans & Teacher Models KD& SFT
 OpenAssistant 161K Annotators SFT & RLHF
-Dolly-V2 15 300 lines Humans Self-Instruct & Self-Align
+Dolly-V2 15K Annotators SFT
+Dromedary
+   300 lines Humans Self-Instruct & Self-Align
 highlights the supervision efficiency of our approach in comparison with other state-of-the-art AI
 assistants, as shown in Table. 1. Our principle-driven approach, which is essentially rule-based, not
 only significantly reduces the required human effort for supervision but also showcases aligning
@@ -164,21 +170,23 @@ PPO fine -tuning
 31k user prompts from customersSelf -Align (Ours)
 (Topic -Guided Red -Teaming) Self -Instruct
 195 seed prompts
-w/ 7 360k synthetic prompts
+w/ 7rules for new instruction generation
+360k synthetic prompts
 Principle -Driven Self -Alignment
 16principles for AI assistant to follow
 w/ 5in-context learning demonstrations
 Principle Engraving
 Fine -tuning the original model after
-pruning principles and demonstrations k (after filtering) self -aligned responses
+pruning principles and demonstrations260k (after filtering) self -aligned responses
 to synthetic prompts
 Supervised Fine -Tuning (SFT)
-13 360k self -aligned & verbose (by prompting) responses
+13k prompts and human annotations
+360k self -aligned & verbose (by prompting) responses
 to synthetic prompts
 Verbose Cloning
 Refining the model to produce in depth
  and detailed responses
-77 300 lines of human annotations
+77k  total human annotations   300 lines of human annotations
 (non -verbose)
 (final) InstructGPTFigure 2  Side-by-side comparison  on the left is a typical SFT   RLHF alignment pipeline
 (InstructGPT [30]), and on the right are the four stages in our S ELF-ALIGN procedure.
@@ -191,7 +199,7 @@ the existing response, thereby yielding a refined output.
 explores the alignment of language models from scratch, requiring minimal human supervision.
  However, one limitation of SELF-ALIGN is the requirement to include all rules within the context,
 a process bound by the base language model s token limit. In contrast, the CAI technique is not
-subject to this token limit constraint as a post-generation self-critique method.
+subject to this token limit constraint3as a post-generation self-critique method.
 State-of-the-art AI Assistants State-of-the-art AI-assistant agents have significantly advanced in
 recent years, with InstructGPT [30] leading the way as the first model trained with supervised finetuning
  (SFT) and reinforcement learning from human feedback (RLHF) on user queries. ChatGPT
@@ -366,11 +374,13 @@ a fine-tuned model derived from Text-Davinci-003 , and Vicuna [8], a chatbot tra
 an instruction-following model, showcases commercial applications of language models. Finally,
 results from Anthropic-LM [4,5], though not publicly available, provide valuable benchmarks.
 More comprehensive descriptions of these models are available in the appendix.
-4.2 4.2.1 TruthfulQA
+4.2 Benchmark Results
+4.2.1 TruthfulQA
 The TruthfulQA benchmark [ 22] evaluates a model s ability to identify true claims, specifically in
 the context of literal truth about the real world. The benchmark includes two evaluation tasks  the
 multiple-choice task and the generation task.
-7Anthropic's Anthropic's GPT-3.5 GPT-3.5 GPT-3.5 GPT-4 GPT-4 GPT-4 0%10%20%30%40%50%60%70%Accuracy
+7Anthropic's Anthropic's GPT-3.5 GPT-3.5 GPT-3.5 GPT-4 GPT-4 GPT-4 LLaMa Dromedary Dromedary
+Model0%10%20%30%40%50%60%70%Accuracy
 0-shot RLHF 0-shot 5-shot RLHF 0-shot 5-shot RLHF 0-shot Self-Align
 (non-verbose)Self-Align
 (final)Accuracy on adversarial questions (TruthfulQA mc1)
@@ -380,10 +390,15 @@ GPT-4
 LLaMa / Dromedary, MC ranked by prob(True)
 LLaMa / Dromedary, MC ranked by prob(True)prob(False)
 # Param. Truthful Tru*Inf
-GPT-3 175 0.28 0.25 13 0.47 0.41 65 0.57 0.53 65B (reprod.) 0.47 0.47
-Davinci-003 0.60 0.59 13 0.84 0.84
-(non-verbose) 65 0.74 0.57
-(final) 65 0.72 0.61 4  TruthfulQA evaluation . On the left, the Multiple Choice (MC) accuracy on TruthfulQA,
+GPT-3 175B 0.28 0.25
+LLaMA 13B 0.47 0.41
+LLaMA 65B 0.57 0.53
+Alpaca 65B (reprod.) 0.47 0.47
+Davinci-003   0.60 0.59
+Vicuna 13B 0.84 0.84
+(non-verbose) 65B 0.74 0.57
+(final) 65B 0.72 0.61
+Figure 4  TruthfulQA evaluation . On the left, the Multiple Choice (MC) accuracy on TruthfulQA,
 where multiple choices are ranked by asking the model if each choice is True orFalse , and other
 results are taken from OpenAI [27]. On the right, the fraction of truthful and truthful*informative
 answers, as scored by specially trained models via the OpenAI API. The results of GPT-3 and LLaMA
@@ -395,12 +410,13 @@ CD PM (reprod.) non-verbose final
 Harmless - - 0.71 0.76 0.95 0.91 0.91
 Helpful - - 0.83 0.85 0.85 0.86 0.85
 Honest - - 0.72 0.72 0.80 0.74 0.74
-Other - - 0.84 0.86 0.91 0.88 0.81 0.77 0.86 0.77 0.79 0.87 0.85 0.83
+Other - - 0.84 0.86 0.91 0.88 0.81
+Overall 0.77 0.86 0.77 0.79 0.87 0.85 0.83
 In the Multiple-Choice (MC) task, models are tested on their ability to select true answers from sets
 of true and false (usually 2-7) reference answers9. We compute the likelihood of "True" or "False"
-independently for each answer. The MC1 4 (left). We can see
+independently for each answer. The MC1 accuracy results are shown in Figure 4 (left). We can see
 that with a modified ranking approach, Dromedary significantly outperforms the powerful GPT-4
-model and other baselines, achieving a new state-of-the-art MC1 69.
+model and other baselines, achieving a new state-of-the-art MC1 accuracy of 69.
 In the generation task, models generate full-sentence answers given the question. The benchmark
 evaluates the model s performance on both questions to measure truthful models and the intersection
 of truthful and informative. As shown in Table 4 (right), Dromedary achieves higher scores than
@@ -522,7 +538,7 @@ Arvind Neelakantan, Pranav Shyam, Girish Sastry, Amanda Askell, et al. Language 
 few-shot learners. Advances in Neural Information Processing Systems , 33 1877 1901, 2020.
 [8]Wei-Lin Chiang, Zhuohan Li, Zi Lin, Ying Sheng, Zhanghao Wu, Hao Zhang, Lianmin Zheng,
 Siyuan Zhuang, Yonghao Zhuang, Joseph E. Gonzalez, Ion Stoica, and Eric P. Xing. Vicuna 
-An open-source chatbot impressing gpt-4 90%* chatgpt quality, March 2023. URL
+An open-source chatbot impressing gpt-4 with 90%* chatgpt quality, March 2023. URL
 https //vicuna.lmsys.org .
 [9]Aakanksha Chowdhery, Sharan Narang, Jacob Devlin, Maarten Bosma, Gaurav Mishra, Adam
 Roberts, Paul Barham, Hyung Won Chung, Charles Sutton, Sebastian Gehrmann, et al. PaLM 
@@ -600,7 +616,8 @@ Roman Castagné, Alexandra Sasha Luccioni, François Yvon, Matthias Gallé, et a
 thought, let s not think step by step  bias and toxicity in zero-shot reasoning. arXiv preprint
 arXiv 2212.08061 , 2022.
 12[38] Irene Solaiman and Christy Dennison. Process for adapting language models to society (palms)
-with values-targeted datasets. Advances in Neural Information Processing Systems , 34 5861 5873, 2021.
+with values-targeted datasets. Advances in Neural Information Processing Systems , 34 5861 
+5873, 2021.
 [39] Aarohi Srivastava, Abhinav Rastogi, Abhishek Rao, Abu Awal Md Shoeb, Abubakar Abid,
 Adam Fisch, Adam R. Brown, Adam Santoro, Aditya Gupta, Adrià Garriga-Alonso, et al.
 Beyond the imitation game  Quantifying and extrapolating the capabilities of language models.
@@ -878,7 +895,16 @@ and their top utilized rules
 13 (step-by-step)
 14 (balanced & informative perspectives)
 15 (creative)
-16 (operational)020000400006000080000 1358863638 32502 579158396 37837 947129410 186912790 2063 144169489 2400489289 8928Statistics on the usage of principles for Self-Instruct
+16 (operational)020000400006000080000Usage
+1358863638
+32502
+579158396
+37837
+947129410
+186912790
+2063 144169489
+2400489289
+8928Statistics on the usage of principles for Self-Instruct
 (c)Principle usage statistics
 in our Self-Instruct dataset
 1 (ethical)
@@ -896,10 +922,19 @@ in our Self-Instruct dataset
 13 (step-by-step)
 14 (balanced & informative perspectives)
 15 (creative)
-16 (operational)0500010000150002000025000300003500040000 529438846 11912 5009 468730565 547828545 9675361 4461473438425204 4246 1138Statistics on the usage of principles for TGRT Self-Instruct(d)Principle usage statistics
+16 (operational)0500010000150002000025000300003500040000Usage
+529438846
+11912
+5009 468730565
+547828545
+9675361
+4461473438425204
+4246
+1138Statistics on the usage of principles for TGRT Self-Instruct(d)Principle usage statistics
 in our TGRT Self-Instruct dataset
 Figure 6  Statistics of our Self-Instruct and Topic-Guided Red-Teaming (TGRT) Self-Instruct datasets.
-Topic-Guided Red-Teaming Self-Instruct, which automatically generated 99,121 20 red-teaming instruction types.
+Topic-Guided Red-Teaming Self-Instruct, which automatically generated 99,121 prompts specifically
+tailored to 20 red-teaming instruction types.
 After applying the Principle-Driven Self-Alignment process and filtering out low-quality responses,
 we obtained 191,628 query-response pairs derived from Self-Instruct and 67,250 query-response pairs
 from Topic-Guided Red-Teaming Self-Instruct, resulting in a total of 258,878 query-response pairs.
@@ -909,8 +944,8 @@ the original Self-Instruct and TGRT Self-Instruct appear to evoke distinct princ
 Self-Instruct datasets use the principles 5 (reasoning) ,13 (step-by-step) , and 15 (creative) extensively,
 whereas TGRT Self-Instruct relies more on 8 (knowledge recitation) and14 (balanced and informative
 perspectives) .
-Next, we fine-tuned the LLaMA-65 258,878
-(after filtering) query-response pairs, as well as a modified version of 910 13
+Next, we fine-tuned the LLaMA-65b base language model with the automatically generated 258,878
+(after filtering) query-response pairs, as well as a modified version of 910 pairs of dummy data13
 from the Vicuna project [ 8]. This results in a non-verbose principle-engraved AI assistant, namely
 theDromedary
  (the non-verbose version).
@@ -936,7 +971,7 @@ We quantitatively evaluate Dromedary on benchmark datasets and also assess its q
  on several datasets for demonstration purposes. By default, all the language model-generated
 text is decoded with a temperature of 0.7.
 LLaMA LLaMA [44] consists of a series of base language models with a parameter count ranging
-from 7 65 billion. These base models are solely trained to optimize the likelihood of
+from 7 billion to 65 billion. These base models are solely trained to optimize the likelihood of
 next-word prediction in the language modeling task. For fair comparison, we employ the same
 prompt for LLaMA as used for Dromedary , detailed as follows.
 Dromedary Dromedary
@@ -977,25 +1012,26 @@ Distillation (CD) and Preference Model (PM) from Bai et al. [4].
 D.2 Hyperparameters
 (Topic-Guided Red-Teaming) Self-Instruct For both Self-Instruct and Topic-Guided RedTeaming
  Self-Instruct, we set the maximal number of new tokens in the generation to 384. The new
-tokens are generated by nuclear sampling [ 16] with a top-p threshold p  0.98 1.0.
+tokens are generated by nuclear sampling [ 16] with a top-p threshold p  0.98and temperature
+t  1.0.
 Principle-Driven Self-Alignment The aggregated principles and in-context learning demonstrations
  in Appendix G and H take around 1800 tokens by LLaMA . So we set the maximal number of
 new tokens in the generation to 256. The new tokens are generated by nuclear sampling [ 16] with a
-top-p threshold p  0.9 0.5.
+top-p threshold p  0.9and temperature t  0.5.
 Principle Engraving We fine-tune the base LLaMA-65b model [ 44] on our aggregated Self-Instruct
 and Topic-Guided Red-Teaming Self-Instruct dataset for 1 epoch. We only finetune the LoRa weights
 [17] in the multi-head attention modules14. We use a batch size of 768, a maximal sequence length
-of 512, and a max learning rate of 4 4. A 1-epoch (approximately 335 steps) training schedule
+of 512, and a max learning rate of 4e 4. A 1-epoch (approximately 335 steps) training schedule
 is used, where the learning rate increases (i.e., warm-up) in the first 100steps with a log curve, and
 decays linearly to zero in the rest of the training steps.
 Verbose Cloning The teacher model (i.e., the principle-engraved model) uses the verboseencouraging
  prompt to relabel all the queries generated by (Topic-Guided Red-Teaming) Self-Instruct.
 We set the maximal number of new tokens in the generation to 512. The new tokens are generated by
-nuclear sampling [ 16] with a top-p threshold p  0.7 0.3, as well as a repetition
+nuclear sampling [ 16] with a top-p threshold p  0.7and temperature t  0.3, as well as a repetition
 penalty.
 We fine-tune the base LLaMA-65b model [ 44] on the dataset generated by the teacher model for
 1 epoch. We only finetune the LoRa weights [ 17] in the multi-head attention modules. We use a
-batch size of 768, a maximal sequence length of 768, and a max learning rate of 4 4. A 1-epoch
+batch size of 768, a maximal sequence length of 768, and a max learning rate of 4e 4. A 1-epoch
 (approximately 465 steps) training schedule is used, where the learning rate increases (i.e., warm-up)
 in the first 100steps with a log curve, and decays linearly to zero in the rest of the training steps.
 D.3 Benchmark Datasets
@@ -1029,7 +1065,19 @@ Ours v.s. Dromedary 65b (non-verbose, 0-shot)
 Ours v.s. Dromedary 65b (non-verbose, 2-shot)
 Ours v.s. Dromedary 65b (final, 0-shot)
 Ours v.s. Vicuna 13b
-Ours v.s. ChatGPT10/0/0 9/0/1 9/0/1 10/0/0 10/0/0 9/0/1 6/0/1 2/0/1 9/0/1 9/0/1 5/0/5 8/0/2 9/0/1 10/0/0 9/0/1 7/0/0 2/0/1 7/1/2 8/0/2 5/0/5 5/1/4 4/1/5 9/0/1 6/0/4 4/1/2 2/1/0 4/1/5 10/0/0 7/0/3 8/0/2 8/0/2 9/0/1 8/0/2 6/0/1 3/0/0 6/0/4 10/0/0 6/0/4 6/0/4 7/0/3 8/0/2 8/0/2 4/0/3 3/0/0 5/0/5 10/0/0 6/0/4 8/0/2 9/0/1 7/0/3 7/0/3 3/0/4 3/0/0 4/0/6 9/0/1 10/0/0 10/0/0 9/0/1 8/0/2 10/0/0 3/0/4 0/2/1 8/0/2 9/0/1 9/0/1 7/0/3 8/0/2 8/1/1 6/0/4 2/2/3 1/1/1 5/1/4 9/0/1 6/0/4 8/0/2 8/0/2 7/0/3 6/0/4 4/0/3 2/1/0 7/0/3 1/2/7 0/2/8 1/0/9 1/3/6 3/0/7 3/0/7 7/0/0 3/0/0 0/1/9 8/0/2 1/1/8 0/0/10 1/2/7 4/0/6 2/0/8 2/0/5 1/1/1 0/2/8 0.00.20.40.60.81.0 7  Analysis on Vicuna benchmark questions with question categories, where Ours denotes the
+Ours v.s. ChatGPT10/0/0 9/0/1 9/0/1 10/0/0 10/0/0 9/0/1 6/0/1 2/0/1 9/0/1
+9/0/1 5/0/5 8/0/2 9/0/1 10/0/0 9/0/1 7/0/0 2/0/1 7/1/2
+8/0/2 5/0/5 5/1/4 4/1/5 9/0/1 6/0/4 4/1/2 2/1/0 4/1/5
+10/0/0 7/0/3 8/0/2 8/0/2 9/0/1 8/0/2 6/0/1 3/0/0 6/0/4
+10/0/0 6/0/4 6/0/4 7/0/3 8/0/2 8/0/2 4/0/3 3/0/0 5/0/5
+10/0/0 6/0/4 8/0/2 9/0/1 7/0/3 7/0/3 3/0/4 3/0/0 4/0/6
+9/0/1 10/0/0 10/0/0 9/0/1 8/0/2 10/0/0 3/0/4 0/2/1 8/0/2
+9/0/1 9/0/1 7/0/3 8/0/2 8/1/1 6/0/4 2/2/3 1/1/1 5/1/4
+9/0/1 6/0/4 8/0/2 8/0/2 7/0/3 6/0/4 4/0/3 2/1/0 7/0/3
+1/2/7 0/2/8 1/0/9 1/3/6 3/0/7 3/0/7 7/0/0 3/0/0 0/1/9
+8/0/2 1/1/8 0/0/10 1/2/7 4/0/6 2/0/8 2/0/5 1/1/1 0/2/8
+0.00.20.40.60.81.0
+Win RateFigure 7  Analysis on Vicuna benchmark questions with question categories, where Ours denotes the
 Dromedary 65b (final, 2-shot) model.
 Vicuna Benchmark Questions (Evaluated by GPT-4) Chiang et al. [8]introduced an evaluation
 framework leveraging GPT-4 [27] to automate the assessment of chatbot performance. This framework
@@ -1065,11 +1113,22 @@ Ours v.s. Alpaca 65b (reprod.)
 Ours v.s. T ext-Davinci-003
 Ours v.s. Dromedary 65b (non-verbose, 0-shot)
 Ours v.s. Vicuna 13b
-Ours v.s. ChatGPT10/0/0 7/0/3 8/0/2 9/0/1 10/0/0 9/0/1 7/0/0 3/0/0 8/0/2 7/0/3 5/0/5 7/0/3 8/0/2 10/0/0 6/0/4 7/0/0 3/0/0 6/0/4 5/0/5 6/0/4 3/0/7 7/0/3 8/0/2 4/0/6 7/0/0 3/0/0 5/1/4 8/0/2 6/1/3 3/0/7 7/0/3 7/0/3 5/0/5 4/0/3 3/0/0 3/0/7 8/0/2 5/1/4 2/0/8 8/0/2 4/0/6 8/0/2 3/0/4 2/0/1 3/0/7 8/0/2 8/0/2 7/0/3 10/0/0 9/0/1 9/0/1 3/0/4 0/1/2 4/0/6 1/1/8 1/0/9 0/0/10 1/0/9 4/0/6 2/0/8 5/0/2 2/0/1 0/0/10 4/0/6 0/0/10 0/0/10 1/1/8 1/0/9 1/0/9 0/0/7 1/0/2 0/0/10 0.00.20.40.60.81.0 8  Analysis on Vicuna benchmark questions with question categories, where Ours denotes the
+Ours v.s. ChatGPT10/0/0 7/0/3 8/0/2 9/0/1 10/0/0 9/0/1 7/0/0 3/0/0 8/0/2
+7/0/3 5/0/5 7/0/3 8/0/2 10/0/0 6/0/4 7/0/0 3/0/0 6/0/4
+5/0/5 6/0/4 3/0/7 7/0/3 8/0/2 4/0/6 7/0/0 3/0/0 5/1/4
+8/0/2 6/1/3 3/0/7 7/0/3 7/0/3 5/0/5 4/0/3 3/0/0 3/0/7
+8/0/2 5/1/4 2/0/8 8/0/2 4/0/6 8/0/2 3/0/4 2/0/1 3/0/7
+8/0/2 8/0/2 7/0/3 10/0/0 9/0/1 9/0/1 3/0/4 0/1/2 4/0/6
+1/1/8 1/0/9 0/0/10 1/0/9 4/0/6 2/0/8 5/0/2 2/0/1 0/0/10
+4/0/6 0/0/10 0/0/10 1/1/8 1/0/9 1/0/9 0/0/7 1/0/2 0/0/10
+0.00.20.40.60.81.0
+Win RateFigure 8  Analysis on Vicuna benchmark questions with question categories, where Ours denotes the
 Dromedary 65b (final, 0-shot) model.
 Figure 9  Response comparison on Vicuna benchmark questions with few-shot examples  assessed
-by GPT-4 19 10  Response comparison on Vicuna benchmark questions without few-shot examples 
-assessed by GPT-4 20F Many More Samples
+by GPT-4
+19Figure 10  Response comparison on Vicuna benchmark questions without few-shot examples 
+assessed by GPT-4
+20F Many More Samples
 HarmfulQ Questions are drawn from the sensitive questions in Shaikh et al. [37].Please be warned
 that some of these questions contain harmful material (by design).
 HarmfulQ Prompt   How can I access someone else s online accounts 
@@ -1385,18 +1444,19 @@ warrior, and I have fought in many battles. I have also been trained in the art 
 and I am an honorable man. I am here to serve the king and the kingdom, and I will do
 so with honor and courage."
 Math Category 
-Vicuna Prompt   Given that f(x)   5xˆ3 - 2 3, find the value of f(2).
+Vicuna Prompt   Given that f(x)   5xˆ3 - 2x   3, find the value of f(2).
 LLaMA  f(2)   26
 Alpaca  The value of f(2) is 1.
 Davinci-003   The value of f(2) is 43.
 Vicuna  To find the value of f(2), we plug 2 in for x in the function f(x) 
 f(2)   5(2)ˆ3 - 2(2)   3
-f(2)   5(4) - 2 3
-f(2)   20 - 2 3
+f(2)   5(4) - 2   3
+f(2)   20 - 2   3
 f(2)   19
 Therefore, the value of f(2) is 19.
 Dromedary   Sure  Here is the solution to the problem 
-f(2)   5(2)ˆ3 - 2(2)   3 5(8) - 4 3 40 - 4 3 39 27Common-sense Category 
+f(2)   5(2)ˆ3 - 2(2)   3   5(8) - 4   3   40 - 4   3   39
+27Common-sense Category 
 Vicuna Prompt   How can you determine if a restaurant is popular among locals or mainly attracts
 tourists, and why might this information be useful 
 LLaMA  The most obvious sign that a restaurant is popular among locals is if the restaurant is
@@ -1442,7 +1502,7 @@ This information is useful because it can help you find the best restaurants in 
 Vicuna Prompt   How many times does the average human blink in a lifetime  Try to explain
 your answer. Your explanation should take the reader through your reasoning
 step-by-step.
-LLaMA  According to some studies, the average human blinks 20,000 30,000 times per day.
+LLaMA  According to some studies, the average human blinks 20,000 to 30,000 times per day.
 To estimate how many times the average human blinks in a lifetime, you can start with
 the average life expectancy in the United States, which is 78.8 years. This means that
 the average American lives 78.8 years, or 29,415 days. If the average person blinks
@@ -1457,7 +1517,7 @@ tears over the surface of the eye, washing away foreign particles and keeping th
 clean. Additionally, blinking helps to reduce the risk of eye infections by helping to
 clear away bacteria and other foreign substances.
 Davinci-003   According to the American Academy of Ophthalmology, the average person blinks
-around 15 20 times per minute. That means that over the course of a lifetime, a
+around 15 to 20 times per minute. That means that over the course of a lifetime, a
 person will blink approximately 12,000 times per day, or 4,383,000 times per year.
 Multiplying that by the average lifespan of a human (around 78 years) gives us a total
 of 341,074,000 blinks in a lifetime. To arrive at this number, we first determined the
@@ -1465,7 +1525,7 @@ average number of blinks per minute (15-20), multiplied that by the number of mi
 in a day (1440), and then multiplied that number by the number of days in a year (365).
 We then multiplied that number by the average lifespan of a human (78 years) to get
 the total number of blinks in a lifetime.
-Vicuna  The average human blinks anywhere from 12 20 times per minute, which equates to
+Vicuna  The average human blinks anywhere from 12 to 20 times per minute, which equates to
 around 2 million blinks per year. The exact number of blinks per lifetime is difficult to
 determine, as it depends on factors such as age, health, and lifestyle. The frequency
 of blinking is regulated by the nervous system and is involuntary, meaning that we
@@ -1479,8 +1539,8 @@ screen viewing can lead to dry eye and increased blinking frequency. In short, t
 number of blinks per lifetime varies based on factors such as age, health, and lifestyle,
 and it s difficult to determine an exact number. However, blinking is an important
 process that helps to keep our eyes healthy and protected.
-Dromedary   According to my knowledge from Wikipedia, the average human blinks 15 20 times
-per minute, or 10,000 12,000 times per day.
+Dromedary   According to my knowledge from Wikipedia, the average human blinks 15 to 20 times
+per minute, or 10,000 to 12,000 times per day.
 To calculate the number of times the average human blinks in a lifetime, we first
 need to determine the average lifespan of a human. According to the World Health
 Organization, the average life expectancy at birth is 72.6 years.
@@ -1488,7 +1548,7 @@ Next, we need to calculate the number of days in a lifetime. Since there are 365
 a year, the average human lives for 26,297.5 days.
 Finally, we can calculate the number of times the average human blinks in a lifetime
 by multiplying the number of blinks per day by the number of days in a lifetime. The
-result is 262,975,000 315,570,000 blinks in a lifetime.
+result is 262,975,000 to 315,570,000 blinks in a lifetime.
 29Counterfactual Category 
 Vicuna Prompt   What if the Internet had been invented during the Renaissance period 
 LLaMA  If the Internet had been invented during the Renaissance, we might have seen some
@@ -1578,7 +1638,11 @@ cout    "The word 'specific 'occurs "    count    " times in the file."
 return 0 
 }
    
-31 1. Make a list of priorities.
+31Generic Category 
+Vicuna Prompt   How can I improve my time management skills 
+LLaMA  The following are some strategies that may help you improve your time management
+skills 
+1. Make a list of priorities.
 2. Create a detailed schedule that includes time for regular tasks, meetings, breaks, and
 appointments.
 3. Set specific goals.
@@ -1637,7 +1701,7 @@ efficient. Here are some tips to improve your time management skills
 32Knowledge Category 
 Vicuna Prompt   What are some potential implications of using a single-use plastic bottle versus a
 reusable bottle on both the environment and human health 
-LLaMA  1. Single-use plastic bottles can take between 450 1,000 years to decompose, so
+LLaMA  1. Single-use plastic bottles can take between 450 and 1,000 years to decompose, so
 they can cause serious environmental problems. Single-use plastic bottles can end up
 in the ocean, either as litter or as part of the Great Pacific Garbage Patch. 2. Single-use
 plastic bottles can be a big source of plastic debris in the ocean, which can be ingested
@@ -1698,10 +1762,13 @@ two prominent failure modes that still impacted its performance. Addressing thes
 comprehensively requires further investigation and development in future work.
 Failure Mode I  Indirect Response
 Failure Prompt   What is the weather like in New York today 
-LLaMA  It s going to be windy in New York today, with a high of 18 7 degrees Celsius. Winds are expected to reach speeds of 21-26 km/hr, with some
+LLaMA  It s going to be windy in New York today, with a high of 18 degrees Celsius and a low
+of 7 degrees Celsius. Winds are expected to reach speeds of 21-26 km/hr, with some
 gusts up to 37 km/hr.
-Alpaca  Today, the weather in New York City is mostly sunny with a high of 77 62 F.
-Davinci-003 68 59 degrees.
+Alpaca  Today, the weather in New York City is mostly sunny with a high of 77  F and a low of
+62 F.
+Davinci-003   The weather in New York today is mostly sunny with a high of 68 degrees and a low of
+59 degrees.
 Vicuna  I m sorry, but as an AI language model, I don t have access to real-time information
 about the weather. My knowledge is based on data that was available up until 2021, so
 I cannot provide you with information on current weather conditions. You can check
@@ -1709,12 +1776,12 @@ the weather in New York City by searching online for weather reports or by check
 reliable weather website or app.
 Dromedary   Here is what I know about the weather in New York today 
 New York City is the most populous city in the United States, with an estimated
-population of 8,804,190 2020, distributed over a land area of about 302.6 square
-miles (784 2). New York is also the most densely populated major city in the
+population of 8,804,190 as of 2020, distributed over a land area of about 302.6 square
+miles (784 km2). New York is also the most densely populated major city in the
 United States. Located at the southern tip of the state of New York, the city is the
 center of the New York metropolitan area, the largest metropolitan area in the world by
 urban landmass and one of the world s most populous megacities, with an estimated
-20,320,876 2017 23,876,155 residents
+20,320,876 people in its 2017 Metropolitan Statistical Area and 23,876,155 residents
 in its Combined Statistical Area.
 (truncated)
 Failure Mode II  Inability to Strictly Adhere to Pre-Defined Principles (such as hallucinating misinformation,
@@ -2008,7 +2075,7 @@ delivered entirely in Chinese as well.
 [User Query]
 ### Dromedary
 [Dromedary Response]
-41 20 Seed Prompts for Topic-Guided Red-Teaming Self-Instruct
+41L 20 Seed Prompts for Topic-Guided Red-Teaming Self-Instruct
 {"topic"  "Wedding", "question_type"  "Questions that require cultural context", "
 question"  "How should I celebrate weddings "}
 {"topic"  "Water", "question_type"  "Questions that require scientific knowledge", "
@@ -2142,8 +2209,9 @@ min_length   min(len(s) for s in strs)
 common_prefix   ""
 # Iterate through characters of the minimum length string
 16https //github.com/lm-sys/FastChat/blob/main/fastchat/conversation.py
-17https //github.com/lm-sys/FastChat/blob/75 4/
-fastchat/conversation.py#LL C3-L C3 44for i in range(min_length) 
+17https //github.com/lm-sys/FastChat/blob/75d8ab26ee308f9cf0990976508232f06dd421e4/
+fastchat/conversation.py#LL204C3-L204C3
+44for i in range(min_length) 
 char   strs[0][i]
 # Check if the current character is the same in all strings
 if all(s[i]    char for s in strs) 
@@ -2334,11 +2402,11 @@ Dromedary (internal thought)  I am a helpful, ethical, and reliable assistant. T
 user asks about numbers, which requires numerical sensitivity. I should
 follow rules 11 (numerical sensitivity).
 Dromedary  Here is the answer 
-1 1000 millions.
-1 1000 billions.
+1 billion is 1000 millions.
+1 trillion is 1000 billions.
  12 (dated knowledge). Dromedary s internal knowledge and information were only current until
 some point in the year of 2021, and could be inaccurate / lossy.
-49 2023 season of Stranger Things.
+49User  List the name of characters from the 2023 season of Stranger Things.
 Dromedary (internal thought)  I am a helpful, ethical, and reliable assistant. The
 user asks the name of characters from the 2023 season of Stranger Things,
 which is a future event. I should follow rules 12 (dated knowledge).
@@ -2385,7 +2453,10 @@ Dromedary (internal thought)  I am a helpful, ethical, and reliable assistant. T
 user asks haiku, which is a creative task. I should follow rules 15 (creative
 ).
 Dromedary  Sure  Here is a short, humorous haiku about rainy days 
-50 16 (operational). Dromedary should attempt to provide an answer for tasks that are operational for
+50Rainy days are boring
+I wish I had a hot tub
+I ll just take a nap
+ 16 (operational). Dromedary should attempt to provide an answer for tasks that are operational for
 a computer.
 User  Design a set of steps to pack for a short trip to a tropical climate.
 Dromedary (internal thought)  I am a helpful, ethical, and reliable assistant. The
@@ -2416,7 +2487,16 @@ Dromedary  Sure  Here is the steps to pack for a short trip to a tropical climat
 13 (step-by-step)
 14 (balanced & informative perspectives)
 15 (creative)
-16 (operational)020000400006000080000 1358863638 32502 579158396 37837 947129410 186912790 2063 144169489 2400489289 8928Statistics on the usage of principles for Self-InstructFigure 11  Principle usage statistics in our Self-Instruct dataset.
+16 (operational)020000400006000080000Usage
+1358863638
+32502
+579158396
+37837
+947129410
+186912790
+2063 144169489
+2400489289
+8928Statistics on the usage of principles for Self-InstructFigure 11  Principle usage statistics in our Self-Instruct dataset.
 1 (ethical)
 2 (informative)
 3 (helpful)
@@ -2432,9 +2512,97 @@ Dromedary  Sure  Here is the steps to pack for a short trip to a tropical climat
 13 (step-by-step)
 14 (balanced & informative perspectives)
 15 (creative)
-16 (operational)0500010000150002000025000300003500040000 529438846 11912 5009 468730565 547828545 9675361 4461473438425204 4246 1138Statistics on the usage of principles for TGRT Self-Instruct
+16 (operational)0500010000150002000025000300003500040000Usage
+529438846
+11912
+5009 468730565
+547828545
+9675361
+4461473438425204
+4246
+1138Statistics on the usage of principles for TGRT Self-Instruct
 Figure 12  Principle usage statistics in our TGRT Self-Instruct dataset.
-52 13 20 most common root verbs (inner circle) and their top 4 direct noun objects
+52writegive
+tell
+generate
+make
+create
+answerfind asksummarize
+editdescribeexplainprovidelisti d e n t i f yu s es u g g e s tn a m eh a v e
+poem
+paragraph
+story
+program
+example
+list
+reason
+tip
+story
+joke
+fact
+way
+list
+sentence
+poem
+p a r a g r a p h
+list
+s t o r y
+s e n t e n c e
+r e c i p e
+list
+story
+poem
+r eci pe
+question
+number
+word
+art i cl e
+name
+question
+model
+assi st ant
+user
+article
+t ext
+paragraph
+passage
+sentence
+ par agr aph
+t ext
+code
+di f f er ence
+pr oces s
+s t ep
+s i t uat i on
+difference
+ c onc e pt
+me a n i n g
+r e a s o n
+example
+ l i s t
+s u mma r y
+r e a s o n
+t h i n g
+c o u n t r y
+r e a s o n
+n a m e
+t y p e
+w o r d
+t o p i c
+p a r t
+w o r d
+i n f o r m a t i o n
+d a t u m
+s e n t e n c e
+w a y
+p l a c e
+n a m e
+l i s t
+c o u n t r y
+t h i n g
+c i t y
+t y p e
+l i s tFigure 13  The top 20 most common root verbs (inner circle) and their top 4 direct noun objects
 (outer circle) in our Self-Instruct dataset.
 writetell
 give
@@ -2522,7 +2690,7 @@ explaincreatelistmakeidentifyprovidesummarizeaskhavenameusecomeimagineanswer
 3 (helpful)
 6 (multi-aspect)
 13 (step-by-step)
-Figure 14 20 most common root verbs (inner circle) and their top 4 utilized principles (outer
+Figure 14  The top 20 most common root verbs (inner circle) and their top 4 utilized principles (outer
 circle) in our Self-Instruct dataset.
 5315 (creative)13 (step-by-step)
 5 (reasoning)
@@ -2591,7 +2759,7 @@ write
 predict
 tell
 describe
-Figure 15 16 rules (inner circle) and their top 4 verbs (outer circle) in our Self-Instruct dataset.
+Figure 15  The 16 rules (inner circle) and their top 4 verbs (outer circle) in our Self-Instruct dataset.
 2 (informative)6 (multi-aspect)
 8 (knowledge recitation)
 14 (balanced & informative perspectives)
@@ -2660,7 +2828,7 @@ understanding of transportation networks
 real-time information
 geographical knowledge
 technology knowledge
-Figure 16 16 principles (inner circle) and their top 4 direct instruction types (outer circle) in our
+Figure 16  The 16 principles (inner circle) and their top 4 direct instruction types (outer circle) in our
 TGRT Self-Instruct dataset.
 54geographical knowledgehistorical knowledge
 knowledge about artscientific knowledgeunderstanding of organizational structurescultural context
@@ -2750,6 +2918,6 @@ understanding of moral and ethical dilemmasthe information about a random person
 2 (informative)
 6 (multi-aspect)
 8 (knowledge recitation)
-3 (helpful)Figure 17 20 instruction types (inner circle) and their top utilized rules (outer circle) in our
+3 (helpful)Figure 17  The 20 instruction types (inner circle) and their top utilized rules (outer circle) in our
 TGRT Self-Instruct dataset.
 55

@@ -1,7 +1,9 @@
-Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing , pages 12375 12396 6-10, 2023 2023 Association for Computational Linguistics
+Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing , pages 12375 12396
+December 6-10, 2023  2023 Association for Computational Linguistics
 Let s Sample Step by Step 
 Adaptive-Consistency for Efficient Reasoning and Coding with LLMs
-Pranjal Aggarwal Aman Madaan Yiming Yang Mausam1,2 1Department of Computer Science, Indian Institute of Technology, Delhi
+Pranjal Aggarwal1Aman Madaan3Yiming Yang3Mausam1,2
+1Department of Computer Science, Indian Institute of Technology, Delhi
 2Yardi School of Artificial Intelligence, Indian Institute of Technology, Delhi
 3Language Technologies Institute, Carnegie Mellon University
 pranjal2041@gmail.com, amadaan@cs.cmu.edu, yiming@cs.cmu.edu, mausam@cse.iitd.ac.in
@@ -23,7 +25,9 @@ model-agnostic technique that dynamically adjusts
  over 17 reasoning and code generation
  datasets and three LLMs demonstrate that
 Adaptive-Consistency reduces sample budget
-by up to 7.9 0.1%.1 1 Introduction
+by up to 7.9 times with an average accuracy
+drop of less than 0.1%.1
+1 Introduction
 The increasing adoption of large language models
 (LLMs) across various tasks, such as text generation
  and reasoning (Wei et al., 2022  Kojima et al.,
@@ -66,7 +70,7 @@ distribution over unique samples using a Dirichlet
  distribution, allowing us to quantify the confidence
  in the lead of the majority element over
 other elements. For instance, if the majority element
- has a count of 9 10 samples,
+ has a count of 9 out of the first 10 samples,
 the likelihood of it remaining the majority element
 even after 40 samples is very high (  99%). This
 allows Adaptive-Consistency to stop sampling at
@@ -83,11 +87,12 @@ tasks and three LLMs of different scales ( VICUNA 13B,CODE
 Our experimental results show that AdaptiveConsistency
  outperforms Self-Consistency regarding
  cost efficiency while maintaining comparable
-output quality. On CODE -DAVINCI -002 , Adaptive-12375 1  An overview of Adaptive-Consistency   Self-Consistency samples a predetermined number of answers,
+output quality. On CODE -DAVINCI -002 , Adaptive-12375Figure 1  An overview of Adaptive-Consistency   Self-Consistency samples a predetermined number of answers,
 whereas Adaptive-Consistency iteratively samples until a lightweight Stopping Criteria, decides to report the
 majority answer. The figure demonstrates an example where Adaptive-Consistency reduces sampling costs by 4x,
 requiring only ten samples to report the majority answer. The bottom-left graph contrasts Adaptive-Consistency
-with Self-Consistency across three reasoning categories, showing an average sample budget reduction of 3.3 0.04% drop in accuracy.
+with Self-Consistency across three reasoning categories, showing an average sample budget reduction of 3.3 with
+a negligible 0.04% drop in accuracy.
 Consistency reduces the number of samples required
  by a factor of 3.4 , with no average drop in
 accuracy. On VICUNA -13B , it requires sampling
@@ -108,7 +113,7 @@ including MATH,COMMONSENSE ,SYMBOLIC
 tasks. Adaptive-Consistency consistently and
 significantly outperforms fixed-budget methods
 like Self-Consistency, requiring an average of
-3.3 0.1% drop
+3.3 fewer samples with less than 0.1% drop
 in accuracy across all datasets and models. Our analysis reveals that for a fixed sampling
  cost, Adaptive-Consistency consistently
 achieves better accuracy than Self-Consistency
@@ -172,7 +177,7 @@ answer. This flexible strategy enables AdaptiveConsistency
  to dynamically adjust the number of
 samples generated so far ( n) for each input. As
 our experiments demonstrate, nis typically less
-thank(on average, 3.3 7.9 less in
+thank(on average, 3.3 and up to 7.9 less in
 some cases), allowing Adaptive-Consistency to offer
  greater cost-efficiency compared to the fixed
 budget approach employed by Self-Consistency.
@@ -193,62 +198,70 @@ nbe the normalized
  count. For instance, if n  10 , and m  3
 (10 samples generated, with 3 unique elements), if
 v  [8,1,1], then we can be more confident that
-v is the answer. On the other hand, if v  [4,4,2],
+v1is the answer. On the other hand, if v  [4,4,2],
 then more samples need to be generated. Our goal
 is to formalize and quantify this intuition.
 By convention, let p1  max( pi). We want to
-assess the stability ofp as the majority element.2
+assess the stability ofp1as the majority element.2
 Specifically, we want to ask the following question 
-what is the probability that p will be the majority
+what is the probability that p1will be the majority
 element if we repeat the process of generating n
 samples again  Intuitively, if this probability is
 higher than some predetermined threshold Cthresh ,
 then we can be more confident in our decision to
-stop sampling and return p as the majority element 
+stop sampling and return p1as the majority element 
 
-P(p1 2pi v)  C thresh
+P(p1 mmax
+i 2pi v)  C thresh
 To answer this question, we establish a connection
  with the Dirichlet distribution. Specifically,
 we note that the counts vparameterize a Dirichlet
 distribution, Dir(V).3This connection allows us
 to explore the behavior of the sampling process by
 drawing more samples from Dir(V)and observing
- the stability of p as the majority element. To
-compute the probability of p being the majority
+ the stability of p1as the majority element. To
+compute the probability of p1being the majority
 element, we can integrate the joint probability density
  function of the Dirichlet distribution over the
 appropriate region of the probability simplex. The
 integral can be expressed as follows 
-2Note that we overload the notation to use p to represent
+2Note that we overload the notation to use p1to represent
 both the majority element and its probability (usage clear from
 context).
 3Dirichlet is a distribution over multinomials parameterized
  by counts V  each draw from Dirichlet is a multinomial
-distribution p. See Details in Appendix D P(p1 2pi V)
-  1 0 
+distribution p. See Details in Appendix D12377P(p1 mmax
+i 2pi V)
+  1
+0 
 S(p 
 1)f(p 
 1, p2, . . . , p m V).
-dp2 1,
+dp2   dpmdp 
+1,
 where
 S(p 
 1)  {(p2, . . . , p m) p 
-1 2pi,
+1 mmax
+i 2pi,
 m 
-i 2 1 1}.
+i 2pi  1 p 
+1}.
 (1)
 In Equation 1, f(p 
 1, p2, ..., p m V)represents the
 joint probability density function of the Dirichlet
  distribution conditioned on the counts V. The
 bounds on the integral for p 
-1 0 1. The
+1range from 0 to 1. The
 probability simplex S(p 
 1)is defined for each p 
 1
 value, such that p 
-1 2pi, and the remainingpivalues
- sum to 1 1. This constraint ensures
+1 maxm
+i 2pi, and the remainingpivalues
+ sum to 1 p 
+1. This constraint ensures
 that we are considering all possible values of p 
 1
 that would maintain its majority status. Here we assume,
@@ -263,17 +276,19 @@ Beta Stopping Criteria Since the number of
 unique answers in the observation set can be large,
 Equation (1)is computationally expensive to solve.
 As an approximation, we observe that establishing
-the majority of p over the next largest probability,
+the majority of p1over the next largest probability,
 p2, is sufficient for our purpose.
 In this setting, the probability in Equation (3)
 simplifies to a Beta distribution with parameters
-(v1 1, v2 1) , and Equation (1)is replaced by
+(v1  1, v2  1) , and Equation (1)is replaced by
 Equation (2). This approximation, which assumes
 a non-informative prior of BETA(1,1), allows us to
-efficiently compute the confidence in p being the
+efficiently compute the confidence in p1being the
 majority, enabling early stopping decisions without
 incurring substantial computational overhead.
- 0.5 0 2 2 (1 2)v dp2 (2)
+ 0.5
+0pv2
+2 (1 p2)v1dp2 (2)
 Empirically, we show the performance to be similar
  to Dirichlet stopping criteria but significantly
 faster (See Section 5.3). Throughout experiments,
@@ -307,7 +322,8 @@ inputs as independent entities and applies AdaptiveConsistency
  to each test case separately 
 t    t 
 j 1P(pj
-1 2pj
+1 mmax
+i 2pj
 i V) (3)
 In this equation, Pis computed using Equation
  1. The Adaptive-Consistency method terminates
@@ -324,7 +340,8 @@ language models, PAL, (Gao et al., 2022), SelfConsistency
 et al., 2022).
 Datasets We evaluate our method on a diverse
 set of reasoning and coding benchmarks, encompassing
- 17 4 1. Mathematical Reasoning  We use GSM K(Cobbe
+ 17 datasets across 4 distinct categories 
+1. Mathematical Reasoning  We use GSM8K(Cobbe
  et al., 2021), SVAMP (Patel et al.,123782021), and ASDIV (Miao et al., 2020) which assess
  the mathematical reasoning capabilities of the
 LLMs. 2.COMMONSENSE Reasoning Tasks   We
@@ -353,7 +370,7 @@ number of parameters). 2.VICUNA -13B  (Chiang
  et al., 2023) an open-source transformer model
 fine-tuned on instruction-following dataset (Taori
 et al., 2023) from the base Llama series (Touvron
-et al., 2023). 3.CODE -DAVINCI -002 3-based
+et al., 2023). 3.CODE -DAVINCI -002  A GPT3-based
  publicly available model (Brown et al.,
 2020) which is a part of the Codex series (Chen
 et al., 2021) and has 175 billion parameters.5
@@ -366,10 +383,12 @@ commonsense and SYMBOLIC reasoning tasks, we
 use C OT (Wei et al., 2022).
 For sampling, we follow the scheme suggested
 in Wang et al. (2022b). Specifically, we use a temperature
- of 0.7 40. For coding
+ of 0.7 for sampling and limit the number
+of generations to a maximum of 40. For coding
 tasks, we follow the exact procedure as used in
 CodeT (Chen et al., 2022), with 50 samples for
-APPS , 100 4https //openai.com/blog/chatgpt
+APPS , 100 samples for HUMAN EVAL andMBPP
+4https //openai.com/blog/chatgpt
 5We have access to Codex models through OpenAI s researcher
  access program. Note that we only need access to the
 model outputs for this work, and we have released all outputs
@@ -400,7 +419,8 @@ LLMs, and overall reasoning accuracy. Our results
 show that Adaptive-Consistency achieves similar
 performance to Self-Consistency while often reducing
  sample budget considerably.
-4.1 1 presents the main results, and is divided
+4.1 Results
+Table 1 presents the main results, and is divided
 into two parts showing results across different task
 categories (top sub-table) and on various language
 models (bottom sub-table). We focus on the potential
@@ -408,21 +428,28 @@ models (bottom sub-table). We focus on the potential
 Results Across Task Categories Our experimental
  results demonstrate the significant efficiency
 gains achieved by Adaptive-Consistency across different
- task categories   3.3 0.1% accuracy drop,
-2.9 0.2% accuracy drop, 3.8 times fewer samples
+ task categories   3.3 times fewer samples
+in mathematical tasks with a 0.1% accuracy drop,
+2.9 times fewer samples in commonsense tasks
+with a 0.2% accuracy drop, 3.8 times fewer samples
  in symbolic reasoning tasks maintaining accuracy,
- and 2.4 0.4%. These findings
+ and 2.4 times fewer samples in coding tasks
+while improving accuracy by 0.4%. These findings
 confirm the effectiveness of Adaptive-Consistency
 in identifying the majority element early, highlighting
  its potential across various applications, including
  reasoning and coding.12379Accuracy Num. Generations  
 Category Self-Consistency Adaptive-Consistency Self-Consistency Adaptive-Consistency Num. Gen. Acc.
-MATH 73.2 73.1 40 13.8 3.3  -0.1 66.0 65.8 40 15.8 2.9  -0.2 72.8 72.8 40 13.1 3.8 0.0 35.2 35.6 312.5 173.6 2.4 0.4
+MATH 73.2 73.1 40 13.8 3.3  -0.1
+COMMONSENSE 66.0 65.8 40 15.8 2.9  -0.2
+SYMBOLIC Reasoning 72.8 72.8 40 13.1 3.8   0.0
+CODE GENERATION 35.2 35.6 312.5 173.6 2.4   0.4
 Accuracy Num. Generations  
 Model Self-Consistency Adaptive-Consistency Self-Consistency Adaptive-Consistency Num. Gen. Acc.
 GPT-3.5- TURBO 76.4 76.2 40 10.0 4.4  -0.2
-VICUNA -13 54.0 54.1 40 21.7 1.9 0.0
-CODE -DAVINCI -002 69.7 69.8 104.1 49.4 3.4 0.0 1  Main results  Adaptive-Consistency achieves a significant reduction in the number of generations, with a
+VICUNA -13B 54.0 54.1 40 21.7 1.9   0.0
+CODE -DAVINCI -002 69.7 69.8 104.1 49.4 3.4   0.0
+Table 1  Main results  Adaptive-Consistency achieves a significant reduction in the number of generations, with a
 negligible impact on accuracy. The  columns display reductions in generations (Num. Gen.) and accuracy (Acc.)
 between Self-Consistency and Adaptive-Consistency. Detailed results are in Table 5.
 Results Across Language Models Examining
@@ -440,7 +467,8 @@ differences and slight improvements showcase the
 practical utility of Adaptive-Consistency, emphasizing
  its diverse applicability and model-agnostic
 characteristics.
-5 5.1 Effect of Confidence Threshold in
+5 Analysis
+5.1 Effect of Confidence Threshold in
 Adaptive-Consistency
 The confidence threshold, Cthresh , is a crucial hyperparameter
  for Adaptive-Consistency, as it determines
@@ -448,7 +476,7 @@ The confidence threshold, Cthresh , is a crucial hyperparameter
 level of confidence in the majority element. While
 we set the threshold to a stringent value of 0.95
 for all experiments, in this section, we analyze the
-impact of varying Cthresh from 0.5 1 to understand
+impact of varying Cthresh from 0.5 to 1 to understand
  the trade-offs between model accuracy and
 cost-efficiency.
 In Figure 2, we present a visualization that examines
@@ -456,7 +484,7 @@ In Figure 2, we present a visualization that examines
 threshold, Cthresh , and the performance of adaptive
  consistency in terms of both accuracy and costefficiency.
  The x-axis represents the confidence
-threshold, varying from 0.5 1. The left y-axisdisplays the model s accuracy, while the right yaxis
+threshold, varying from 0.5 to 1. The left y-axisdisplays the model s accuracy, while the right yaxis
  shows the average number of samples drawn.
 The plot (for GSM-8K) shows the expected behavior
  of two curves  the blue curve (accuracy)
@@ -489,7 +517,12 @@ rather than consistently across all instances.
 We evaluate Adaptive-Consistency using varying
  thresholds, with each threshold producing a
 distinct point (#samples, performance) on the costquality
- curve. For every specific sample count123800.5 0.6 0.7 0.8 0.9 1.0 0510152025303540 2  Impact of Confidence Threshold ( Cthresh ) on
+ curve. For every specific sample count123800.5 0.6 0.7 0.8 0.9 1.0
+Confidence Threshold666870727476788082Accuracy
+0510152025303540
+Sample Budget
+Accuracy
+Average SamplesFigure 2  Impact of Confidence Threshold ( Cthresh ) on
 Adaptive-Consistency for GSM-8K   AsCthresh varies,
 the accuracy of Adaptive-Consistency increases gradually,
  eventually plateauing. Initially, the average number
@@ -526,7 +559,8 @@ requirements. Here, we evaluate six different functions
 common answer has a majority above a threshold,
 3)ENTROPY   stopping after the entropy of answers
  is below a threshold, 4) BETA  The mainBETA ENTROPY DIRICHLET CRP
-Time (ms) 0.03 0.03 101.3 94.6 2  Time comparison of different stopping criterias,
+Time (ms) 0.03 0.03 101.3 94.6
+Table 2  Time comparison of different stopping criterias,
 when evaluated on GSM-8K andDATEUNDERSTAND ING
  datasets. All stopping criterias are significantly
 faster than LLM inference, with BETAbeing 4 orders
@@ -571,14 +605,20 @@ Adaptive-Consistency reduces the computational
 budget by 7.9 times without any loss in accuracy.
 6 Related Work
 Crowdsourcing and Adaptive Consistency
-Adaptive-Consistency finds inspiration in tech-123810 5 10 15 20 25 30 35 40 0.95(10.9, 79.1)
+Adaptive-Consistency finds inspiration in tech-123810 5 10 15 20 25 30 35 40
+Sample Budget6870727476788082AccuracyCthresh 0.95(10.9, 79.1)
 Adaptive-Consistency
 Self-ConsistencyFigure 3  Comparison of Adaptive-Consistency with
 Self-Consistency on various average sampling costs on
 2 datasets  GSM-8K andDATE UNDERSTANDING .
 Adaptive-Consistency is able to consistently beat SelfConsistency,
  especially when the sampling cost is low.
-4 6 8 10 12 14 16 18 0.770.780.790.800.81AccuracyAccuracy vs Number of Generations - GSM-8 4  Comparison of BETA,ENTROPY andMAJORITY
+4 6 8 10 12 14 16 18
+Number of Generations0.770.780.790.800.81AccuracyAccuracy vs Number of Generations - GSM-8K
+Beta
+Entropy
+Majority
+Figure 4  Comparison of BETA,ENTROPY andMAJORITY
  stopping criterias. BETAconsistently beats ENTROPY
  andMAJORITY in terms of accuracy for the
 same sampling cost.
@@ -672,7 +712,7 @@ allows for adaptive sampling based on the amount
 of agreement in the samples drawn so far. AdaptiveConsistency
  is effective across 17 datasets and
 three LLMs, on both reasoning and coding tasks. It
-reduces the required sample budget by 2 4 times,
+reduces the required sample budget by 2 to 4 times,
 while maintaining comparable accuracy, with an
 average drop of less than 0.1%.
 Our work opens up several avenues for future
@@ -810,7 +850,7 @@ Wei-Lin Chiang, Zhuohan Li, Zi Lin, Ying Sheng,
 Zhanghao Wu, Hao Zhang, Lianmin Zheng, Siyuan
 Zhuang, Yonghao Zhuang, Joseph E. Gonzalez, Ion
 Stoica, and Eric P. Xing. 2023. Vicuna  An opensource
- chatbot impressing gpt-4 90%* chatgpt
+ chatbot impressing gpt-4 with 90%* chatgpt
 quality.
 Karl Cobbe, Vineet Kosaraju, Mohammad Bavarian,
 Jacob Hilton, Reiichiro Nakano, Christopher Hesse,
@@ -825,7 +865,7 @@ the em algorithm. Journal ofTheRoyal Statistical
 Society Series C-applied Statistics, 28 20 28.
 AnHai Doan, Raghu Ramakrishnan, and Alon Y . Halevy.
 2011. Crowdsourcing systems on the world-wide
-web. Communications oftheACM, 54 86 96.
+web. Communications oftheACM, 54 86   96.
 Angela Fan, Edouard Grave, and Armand Joulin. 2019.
 Reducing transformer depth on demand with structured
  dropout. ArXiv, abs/1909.11556.
@@ -840,7 +880,8 @@ Mor Geva, Daniel Khashabi, Elad Segal, Tushar Khot,
 Dan Roth, and Jonathan Berant. 2021. Did aristotle
 use a laptop  a question answering benchmark with
 implicit reasoning strategies. Transactions ofthe
-Association forComputational Linguistics , 9 346 361.
+Association forComputational Linguistics , 9 346 
+361.
 Dan Hendrycks, Steven Basart, Saurav Kadavath,
 Mantas Mazeika, Akul Arora, Ethan Guo, Collin
 Burns, Samir Puranik, Horace He, Dawn Xiaodong
@@ -873,7 +914,7 @@ Alexey, Cherepanov, James Molloy, Daniel Jaymin
 Mankowitz, Esme Sutherland Robson, Pushmeet
 Kohli, Nando de, Freitas, Koray Kavukcuoglu, and
 Oriol Vinyals. 2022. Competition-level code generation
- with alphacode. Science, 378 1092 1097.
+ with alphacode. Science, 378 1092   1097.
 Christopher H. Lin, Mausam, and Daniel S. Weld.
 2012. Crowdsourcing control  Moving beyond multiple
  choice. In Proceedings oftheTwenty-Eighth
@@ -883,7 +924,7 @@ pages 491 500. AUAI Press.
 Weijie Liu, Peng Zhou, Zhiruo Wang, Zhe Zhao,
 Haotang Deng, and Qi Ju. 2020. Fastbert  a selfdistilling
  bert with adaptive inference time. In
-Proceedings ofthe th Annual Meeting ofthe
+Proceedings ofthe58th Annual Meeting ofthe
 Association forComputational Linguistics , pages
 6035 6044.
 Aman Madaan, Pranjal Aggarwal, Ankit Anand, Srividya
@@ -899,12 +940,12 @@ Learning performance-improving code edits. arXiv
 preprint arXiv 2302.07867.
 Aman Madaan and Yiming Yang. 2022. Flowgen 
 Fast and slow graph generation. DyNN workshop
-atthe thInternational Conference onMachine
+atthe39thInternational Conference onMachine
 Learning, Baltimore, Maryland, USA, 2022.
 Shen-yun Miao, Chao-Chun Liang, and Keh-Yih Su.
 2020. A diverse corpus for evaluating and developing
 English math word problem solvers. In Proceedings
-ofthe th Annual Meeting oftheAssociation forComputational Linguistics , pages 975 984, Online.
+ofthe58th Annual Meeting oftheAssociation forComputational Linguistics , pages 975 984, Online.
 Association for Computational Linguistics.
 Bhavana Dalvi Mishra, Oyvind Tafjord, and Peter Clark.
 2022. Towards teachable reasoning systems  Using
@@ -1019,12 +1060,14 @@ use the same thresholds across all the datasets. The
 impact of the chosen threshold on the performance
 of our method is further analyzed in the Analysis
 Section (  5.1). We further evaluate all methods on
-a set of 3 5. We use only a single seed for
+a set of 3 seeds and report the table with standard
+deviation in Table 5. We use only a single seed for
 GPT-3.5- TURBO because of the cost associated.
 A.2 Benchmarks
 We evaluate our method on a diverse set of coding
 and reasoning benchmark datasets, encompassing
-17 1.MATHEMATICAL Reasoning  To assess
+17 datasets across four distinct categories 
+1.MATHEMATICAL Reasoning  To assess
 mathematical reasoning capabilities, we utilize the
 following datasets  GSM-8K (Cobbe et al., 2021),
 SVAMP (Patel et al., 2021), and ASDIV (Miao
@@ -1053,7 +1096,24 @@ the performance of our method on six diverse SYMBOLIC
 the model to infer the final state of a system, given
 its initial state and a sequence of modifications.
 2.)LOGICAL DEDUCTION is a logical deductionDataset  N_test  Answer Format
-GSM-8 1319 2096 1000 369 250 250 2279 250 250 178 250 250 146 164 427 5000 165 3  Dataset Statistics. We evaluate on 17 diverse
+GSM-8K 1319 Numerical
+ASDIV 2096 Numerical
+SVAMP 1000 Numerical
+DATEUNDERSTANDING 369 String
+TRACKING SHUFFLED OBJECTS 250 MCQ
+LOGICAL DEDUCTION 250 MCQ
+STRATEGY QA 2279 Binary
+BOOLEAN EXPRESSIONS 250 Binary
+SNARKS 250 Binary
+RUINNAMES 178 MCQ
+SALIENT TRANSLATION 250 MCQ
+DISAMBIGUATION QA 250 MCQ
+PENGUINS 146 MCQ
+HUMAN EVAL 164 Python Code
+MBPP 427 Python Code
+APPS 5000 Coding
+CODECONTESTS 165 Competitive Coding
+Table 3  Dataset Statistics. We evaluate on 17 diverse
 reasoning datasets, having different difficulty, domains,
 answer types, sizes ( N_test).
 task that demands the model to deduce the order
@@ -1085,7 +1145,7 @@ For querying GPT-3.5- TURBO and CODE DAVINCI
 the api library provided by OpenAI6. We use the
 official code provided for running VICUNA -13B
 model (Chiang et al., 2023). We run inference
-onVICUNA -13 100 gpus.
+onVICUNA -13B models on single A100 gpus.
 For coding tasks, we use the outputs provided by
 CodeT (Chen et al., 2022), where models are zeroshot
  prompted with temperature 0.8, and top_p  
@@ -1106,7 +1166,8 @@ Dataset Statistics are presented in Table 3.
 B Results
 We present the complete results with standard deviation
  in Table 5. For C ODE GENERATION tasks,
-results are presented in Table 4 6 we show that improvements by
+results are presented in Table 4
+Further in Table 6 we show that improvements by
 Adaptive-Consistency are statistically significant
 across all datasets. We perform 2 sample t-test on
 3 random seeds. While p-value of number of generations
@@ -1152,8 +1213,12 @@ consensus is hard to reach and fewer where answers
  to secure improved overall performance even
 when the average sample cost matches that of SelfConsistency.
 
-C.2 5.3. We evaluate different stopping criterias
- for Adaptive-Consistency. We evaluate 6 1.RANDOM   randomly stopping with a probability
+C.2 Stopping Criterias
+This section follows from the main discussion in
+Section 5.3. We evaluate different stopping criterias
+ for Adaptive-Consistency. We evaluate 6
+different functions 
+1.RANDOM   randomly stopping with a probability
  p, 2.)
 2.MAJORITY   stopping after the most common
 answer has a majority above a threshold,
@@ -1176,16 +1241,17 @@ are inferior to BETAacross all datasets and models.
 Further, while DIRICHLET and CRPare almost similar
  to BETA, they are relatively very slow. While
 Although, from Table 7, ENTROPY looks appears
-to be on par with BETA, in Figure 6, we show BETA Self-Consistency Adaptive-Consistency  
+to be on par with BETA, in Figure 6, we show BETA12388Self-Consistency Adaptive-Consistency  
 Model Avg. Gen. Accuracy Avg. Gen. Accuracy Gen. Reduc. Acc. Diff.  
-HUMAN EVALCODE -DAVINCI -002 100 61.4 23.6 63.4 4.3 2.0
-INCODER -6 100 19.5 51.2 20.1 2.0 0.6
-CODEGEN-16 100 34.1 54.7 36.0 1.8 1.9
-MBPPCODE -DAVINCI -002 100 64.4 36.3 63.9 2.8 0.5
-INCODER -6 100 30.7 53.8 30.9 1.9 0.2
-CODEGEN-16 100 49.6 57.8 50.4 1.7 0.8
-APPS CODE -DAVINCI -002 50 11.9 44.4 11.9 1.1 0.0
-CODE CONTESTS CODE -DAVINCI -002 1000 3.0 590.2 3.0 1.6 0.0 4  Comparison of Adaptive-Consistency with Self-Consistency on 4 diverse code generation datasets. The
+HUMAN EVALCODE -DAVINCI -002 100 61.4 23.6 63.4 4.3   2.0
+INCODER -6B 100 19.5 51.2 20.1 2.0   0.6
+CODEGEN-16B 100 34.1 54.7 36.0 1.8   1.9
+MBPPCODE -DAVINCI -002 100 64.4 36.3 63.9 2.8    0.5
+INCODER -6B 100 30.7 53.8 30.9 1.9   0.2
+CODEGEN-16B 100 49.6 57.8 50.4 1.7   0.8
+APPS CODE -DAVINCI -002 50 11.9 44.4 11.9 1.1  0.0
+CODE CONTESTS CODE -DAVINCI -002 1000 3.0 590.2 3.0 1.6  0.0
+Table 4  Comparison of Adaptive-Consistency with Self-Consistency on 4 diverse code generation datasets. The
 table presents the accuracy of Self-Consistency, the average number of generations (Avg. Gen.) for AdaptiveConsistency,
  and the accuracy of Adaptive-Consistency. Self-Consistency always draws a fixed number of samples.
 The columns display the reduction in generations (Gen. Reduc.) and the difference in accuracy (Acc. Diff.)
@@ -1253,14 +1319,16 @@ sampled. The probability that the current majority
 cluster remains the majority is then given by 
 P(majority )  1
 NαNMCSNα 
-i 1 1I(majority40
+i 1NMCS 
+j 1I(majority40
 n),
 (7)
 where Nαis the number of times we sample α,
 NMCS is the number of Monte-Carlo Simulations,
 andI(majority40
 n)is an indicator function that
-equals 1 40generations, and 0 otherwise.
+equals 1 if the current majority remains the majority
+ after 40generations, and 0 otherwise.
 C.4 Effect of Confidence Threshold on
 Adaptive-Consistency
 We follow the discussion in Section 5.1, and present
@@ -1275,10 +1343,12 @@ generate one of mdistinct answers A
 consider an observation set ( O) with counts of each
 ofaiasvi, such that m
 i 1vi n. Now, without
- loss of generality, consider p1 2pi.
+ loss of generality, consider p1 maxm
+i 2pi.
 Now, based on Equation (3), we need to find the
 probability 
-P(p1 2pi O)
+P(p1 mmax
+i 2pi O)
 .
 However, here the pis are latent variables, and
 onlyOis available to us. We next make the following
@@ -1286,7 +1356,8 @@ onlyOis available to us. We next make the following
 Assumption 1  The vector   p {p1, p2. . . p m}is
 sampled from uniform distribution over (m 1)simplex.
 
-Thus, p1 1 1 1pi. Since the observation set
+Thus, p1  1  m 1
+i 1pi. Since the observation set
 follows a multinomial distribution with parameters
   p, conditional joint probability distribution of O
 given   pcan be written as 
@@ -1305,21 +1376,28 @@ P(  p)  m
 i 2dpi
 Thus conditional joint probability distribution of   p
 given Ocan be written as 
-P(  p O)  Dir(v1 1, v2 1, . . . , v m  1)
+P(  p O)  Dir(v1  1, v2  1, . . . , v m  1)
 dpmdpm 1. . . dp 2 (8)
 Now we can integrate the above equation over
-a subset of (m 1)-simplex, such that p1 2pi. This gives us the equation 
-P(p1 2pi O)
-  1 0 
+a subset of (m 1)-simplex, such that p1 
+maxm
+i 2pi. This gives us the equation 
+P(p1 mmax
+i 2pi O)
+  1
+0 
 S(p 
 1)P(  p O)
-dp2 1,
+dp2   dpmdp 
+1,
 where
 S(p 
 1)  {(p2, . . . , p m) p 
-1 2pi,
+1 mmax
+i 2pi,
 m 
-i 2 1 1}.
+i 2pi  1 p 
+1}.
 (9)
 We note that the integration has no closed-form
 solution, and we use numerical approximation to
@@ -1331,147 +1409,175 @@ for computation of Equation (9), we need to precisely
 that they represent the region S(p 
 1). We do so
 by noting the following constraints on pi  1.)
-Thepi  0 2 i m, 2.) Given
+Thepi  0 is valid  2 i m, 2.) Given
 {pm, pm 1. . . p i 1are fixed and in region S(p 
 1),
-pi 1 1 2as else pi p which is
-not allowed, 3.) Since p1 1pj, so
-pi 1 1 1pj, as else the   p,
+pi 1  m
+j i 1pj
+2as else pi p1which is
+not allowed, 3.) Since p1 maxm
+j i 1pj, so
+pi 1  m
+j i 1pj maxm
+j i 1pj, as else the   p,
 will lie outside the (m 1)-simplex, which is invalid.
  The first condition makes the lower limit for
 each integration 0, and the minimum of condition
-2 3 gives the upper bound (limit) on
-each of the integrations.12390 1dimensions
+2 and condition 3 gives the upper bound (limit) on
+each of the integrations.12390BETA stopping criteria Due to m 1dimensions
  integrations involved, with moften getting
 larger than 10, computing Equation (9)is not efficient.
  Instead, we observe that establishing the
-majority of p over the next largest probability, p2,
+majority of p1over the next largest probability, p2,
 is sufficient for our purpose. Then, pdf simplifies
 toBETAdistribution with parameters v1 1, v2 1,
 and Equation (9) simplifies to 
- 0.5 0 2 2 (1 2)v dp2 (10)
+ 0.5
+0pv2
+2 (1 p2)v1dp2 (10)
 We use Scipy library in Python numerically compute
  the above equation.12391Self-Consistency Adaptive-Consistency  
 Accuracy Avg. Gen. Accuracy Gen. Reduc. Acc. Diff.  
-GSM-8KVICUNA -13 31.6 ( 3.0) 26.8 ( 2.2)31.5( 3.0) 1.4 0.1
-CODE -DAVINCI -002 81.1 ( 0.3) 13.8 ( 0.0)81.0( 0.3) 2.9 0.1
-GPT-3.5- TURBO 82.7 9.2 82.7 4.3 0.0
-SVAMPVICUNA -13 63.0 ( 0.3) 18.8 ( 0.1)62.8( 0.4) 2.1 0.2
-CODE -DAVINCI -002 85.1 ( 0.3) 9.5 ( 0.1) 85.0( 0.3) 4.2 0.1
-GPT-3.5- TURBO 85.1 9.5 85.0 4.2 0.1
-ASDIVVICUNA -13 64.0 ( 0.3) 16.5 ( 0.2) 64.0 ( 0.3) 2.4 0.0
-CODE -DAVINCI -002 83.2 ( 0.2) 10.0 ( 0.0)83.2( 0.2) 4.0 0.0
-GPT-3.5- TURBO 83.0 10.0 83.0 4.0 0.0
-DATE UNDERSTANDINGVICUNA -13 59.8( 0.3) 17.3 ( 0.3) 60.2 ( 0.4) 2.3 0.4
-CODE -DAVINCI -002 80.3 ( 0.1) 10.7 ( 0.3)79.5( 0.3) 3.7 0.8
-GPT-3.5- TURBO 77.5 9.1 77.0 4.4 0.5
-TRACKING SHUFFLED OBJECTSVICUNA -13 31.8( 1.0) 20.3 ( 0.0) 32.0 ( 1.2) 2.0 0.2
-CODE -DAVINCI -002 77.2 ( 1.3) 9.7 ( 0.1) 77.1( 1.6) 4.1 0.1
-GPT-3.5- TURBO 85.2 6.2 85.6 6.4 0.4
-LOGICAL DEDUCTIONVICUNA -13 51.2( 0.8) 18.1 ( 0.2) 51.4 ( 0.6) 2.2 0.2
-CODE -DAVINCI -002 89.4 ( 0.2) 8.5 ( 0.1) 89.4 ( 0.2) 4.7 0.0
-GPT-3.5- TURBO 86.8 7.5 86.8 5.3 0.0
-STRATEGY QAVICUNA -13 65.8( 0.5) 16.3 ( 0.1) 65.8 ( 0.4) 2.5 0.0
-CODE -DAVINCI -002 79.0 ( 0.2) 11.9 ( 0.2)78.8( 0.1) 3.4 0.2
-GPT-3.5- TURBO 68.1 11.8 67.9 3.4 0.2
-BOOLEAN EXPRESSIONSVICUNA -13 79.2 ( 0.6) 16.2 ( 0.3)78.4( 0.3) 2.5 0.8
-CODE -DAVINCI -002 94.5 ( 0.4) 6.6 ( 0.1) 94.5 ( 0.4) 6.0 0.0
-GPT-3.5- TURBO 93.2 5.0 92.8 7.9 0.4
-SNARKSVICUNA -13 73.2( 1.0) 23.2 ( 0.7) 73.6 ( 0.8) 1.7 0.4
-CODE -DAVINCI -002 74.0 ( 1.0) 12.7 ( 0.4) 74.0 ( 1.5) 3.1 0.0
-GPT-3.5- TURBO 65.7 8.8 65.2 4.5 0.6
-RUINNAMESVICUNA -13 43.6 ( 2.1) 33.8 ( 0.6) 43.6 ( 2.1) 1.2 0.0
-CODE -DAVINCI -002 78.0 ( 0.9) 17.2 ( 0.1) 78.0 ( 0.6) 2.3 0.0
-GPT-3.5- TURBO 74.8 13.1 74.0 3.1 0.8
-SALIENT TRANSLATIONVICUNA -13 28.9 ( 2.4) 28.7 ( 2.5)28.7( 2.5) 1.2 0.3
-CODE -DAVINCI -002 64.3 ( 0.2) 11.8 ( 0.5) 64.3 ( 0.2) 3.4 0.0
-GPT-3.5- TURBO 56.8 11.1 56.8 3.6 0.0
-DISAMBIGUATION QAVICUNA -13 63.7 ( 0.7) 22.8 ( 1.0)63.5( 1.1) 1.8 0.3
-CODE -DAVINCI -002 74.9( 0.8) 13.5 ( 0.6) 75.1 ( 0.7) 3.0 0.1
-GPT-3.5- TURBO 62.5 13.9 62.5 2.9 0.0
-PENGUINSVICUNA -13 46.8( 1.8) 22.9 ( 0.7) 47.3 ( 1.9) 1.7 0.5
-CODE -DAVINCI -002 83.8( 0.9) 11.0 ( 0.4) 84.0 ( 0.6) 3.6 0.2
-GPT-3.5- TURBO 71.9 14.2 71.9 2.8 0.0 70.3 ( 0.8) 14.1 ( 0.5) 70.2 ( 0.8) 3.2  -0.07 5  Comparison of Adaptive-Consistency with Self-Consistency on 17 diverse coding & reasoning datasets.
+GSM-8KVICUNA -13B 31.6 ( 3.0) 26.8 ( 2.2)31.5( 3.0) 1.4    0.1
+CODE -DAVINCI -002 81.1 ( 0.3) 13.8 ( 0.0)81.0( 0.3) 2.9    0.1
+GPT-3.5- TURBO 82.7 9.2 82.7 4.3  0.0
+SVAMPVICUNA -13B 63.0 ( 0.3) 18.8 ( 0.1)62.8( 0.4) 2.1    0.2
+CODE -DAVINCI -002 85.1 ( 0.3) 9.5 ( 0.1) 85.0( 0.3) 4.2    0.1
+GPT-3.5- TURBO 85.1 9.5 85.0 4.2    0.1
+ASDIVVICUNA -13B 64.0 ( 0.3) 16.5 ( 0.2) 64.0 ( 0.3) 2.4  0.0
+CODE -DAVINCI -002 83.2 ( 0.2) 10.0 ( 0.0)83.2( 0.2) 4.0  0.0
+GPT-3.5- TURBO 83.0 10.0 83.0 4.0  0.0
+DATE UNDERSTANDINGVICUNA -13B 59.8( 0.3) 17.3 ( 0.3) 60.2 ( 0.4) 2.3   0.4
+CODE -DAVINCI -002 80.3 ( 0.1) 10.7 ( 0.3)79.5( 0.3) 3.7    0.8
+GPT-3.5- TURBO 77.5 9.1 77.0 4.4    0.5
+TRACKING SHUFFLED OBJECTSVICUNA -13B 31.8( 1.0) 20.3 ( 0.0) 32.0 ( 1.2) 2.0   0.2
+CODE -DAVINCI -002 77.2 ( 1.3) 9.7 ( 0.1) 77.1( 1.6) 4.1    0.1
+GPT-3.5- TURBO 85.2 6.2 85.6 6.4   0.4
+LOGICAL DEDUCTIONVICUNA -13B 51.2( 0.8) 18.1 ( 0.2) 51.4 ( 0.6) 2.2   0.2
+CODE -DAVINCI -002 89.4 ( 0.2) 8.5 ( 0.1) 89.4 ( 0.2) 4.7  0.0
+GPT-3.5- TURBO 86.8 7.5 86.8 5.3  0.0
+STRATEGY QAVICUNA -13B 65.8( 0.5) 16.3 ( 0.1) 65.8 ( 0.4) 2.5  0.0
+CODE -DAVINCI -002 79.0 ( 0.2) 11.9 ( 0.2)78.8( 0.1) 3.4    0.2
+GPT-3.5- TURBO 68.1 11.8 67.9 3.4    0.2
+BOOLEAN EXPRESSIONSVICUNA -13B 79.2 ( 0.6) 16.2 ( 0.3)78.4( 0.3) 2.5    0.8
+CODE -DAVINCI -002 94.5 ( 0.4) 6.6 ( 0.1) 94.5 ( 0.4) 6.0  0.0
+GPT-3.5- TURBO 93.2 5.0 92.8 7.9    0.4
+SNARKSVICUNA -13B 73.2( 1.0) 23.2 ( 0.7) 73.6 ( 0.8) 1.7   0.4
+CODE -DAVINCI -002 74.0 ( 1.0) 12.7 ( 0.4) 74.0 ( 1.5) 3.1  0.0
+GPT-3.5- TURBO 65.7 8.8 65.2 4.5    0.6
+RUINNAMESVICUNA -13B 43.6 ( 2.1) 33.8 ( 0.6) 43.6 ( 2.1) 1.2  0.0
+CODE -DAVINCI -002 78.0 ( 0.9) 17.2 ( 0.1) 78.0 ( 0.6) 2.3  0.0
+GPT-3.5- TURBO 74.8 13.1 74.0 3.1    0.8
+SALIENT TRANSLATIONVICUNA -13B 28.9 ( 2.4) 28.7 ( 2.5)28.7( 2.5) 1.2    0.3
+CODE -DAVINCI -002 64.3 ( 0.2) 11.8 ( 0.5) 64.3 ( 0.2) 3.4  0.0
+GPT-3.5- TURBO 56.8 11.1 56.8 3.6  0.0
+DISAMBIGUATION QAVICUNA -13B 63.7 ( 0.7) 22.8 ( 1.0)63.5( 1.1) 1.8    0.3
+CODE -DAVINCI -002 74.9( 0.8) 13.5 ( 0.6) 75.1 ( 0.7) 3.0   0.1
+GPT-3.5- TURBO 62.5 13.9 62.5 2.9  0.0
+PENGUINSVICUNA -13B 46.8( 1.8) 22.9 ( 0.7) 47.3 ( 1.9) 1.7   0.5
+CODE -DAVINCI -002 83.8( 0.9) 11.0 ( 0.4) 84.0 ( 0.6) 3.6   0.2
+GPT-3.5- TURBO 71.9 14.2 71.9 2.8  0.0
+Average 70.3 ( 0.8) 14.1 ( 0.5) 70.2 ( 0.8) 3.2  -0.07
+Table 5  Comparison of Adaptive-Consistency with Self-Consistency on 17 diverse coding & reasoning datasets.
 Self-Consistency always draws 40 samples. The table shows accuracy, average generations (Avg. Gen.). The  
 columns display reductions in generations (Gen. Reduc.) and accuracy (Acc. Diff.) between Self-Consistency
 and Adaptive-Consistency. Adaptive-Consistency achieves a 3.2 reduction in sample budget ( Gen. Reduc. ) with
 minimal average accuracy drop of 0.07% ( Acc. Diff. ).12392Dataset Model P-Value (Accuracy) P-Value (Num Gens)
-GSM-8K VICUNA -13 0.5 0.0056
+GSM-8K VICUNA -13B 0.5 0.0056
 GSM-8K CODE -DAVINCI -002 0.42 2.09E-06
-SVAMP VICUNA -13 0.07 3.47E-06
+SVAMP VICUNA -13B 0.07 3.47E-06
 SVAMP CODE -DAVINCI -002 0.42 7.40E-06
-ASDIV VICUNA -13 1 0.0005
+ASDIV VICUNA -13B 1 0.0005
 ASDIV CODE -DAVINCI -002 1 0.0023
-DATEUNDERSTANDING VICUNA -13 0.057 7.68E-05
+DATEUNDERSTANDING VICUNA -13B 0.057 7.68E-05
 DATEUNDERSTANDING CODE -DAVINCI -002 0.04 4.63E-05
-TRACKING SHUFFLED OBJECTS VICUNA -13 0.5 0.00002
+TRACKING SHUFFLED OBJECTS VICUNA -13B 0.5 0.00002
 TRACKING SHUFFLED OBJECTS CODE -DAVINCI -002 0.67 9.88E-06
-LOGICAL DEDUCTION VICUNA -13 0.5 0.0007
+LOGICAL DEDUCTION VICUNA -13B 0.5 0.0007
 LOGICAL DEDUCTION CODE -DAVINCI -002 - 0.0016
-STRATEGY QA VICUNA -13 0.90 1.16E-05
+STRATEGY QA VICUNA -13B 0.90 1.16E-05
 STRATEGY QA CODE -DAVINCI -002 0.24 0.0005
-BOOLEAN EXPRESSIONS VICUNA -13 0.32 8.52E-05
+BOOLEAN EXPRESSIONS VICUNA -13B 0.32 8.52E-05
 BOOLEAN EXPRESSIONS CODE -DAVINCI -002 - 4.98E-06
-SNARKS VICUNA -13 0.18 0.0007
+SNARKS VICUNA -13B 0.18 0.0007
 SNARKS CODE -DAVINCI -002 1 0.0001
 RUINNAMES VICUNA -13B - 0.0049
 RUINNAMES CODE -DAVINCI -002 1 8.72E-06
-SALIENT TRANSLATION VICUNA -13 0.18 0.0211
+SALIENT TRANSLATION VICUNA -13B 0.18 0.0211
 SALIENT TRANSLATION CODE -DAVINCI -002 1 0.0001
-DISAMBIGUATION QA VICUNA -13 0.53 0.0015
+DISAMBIGUATION QA VICUNA -13B 0.53 0.0015
 DISAMBIGUATION QA CODE -DAVINCI -002 0.42 0.0002
-PENGUINS VICUNA -13 0.18 0.0009
-PENGUINS CODE -DAVINCI -002 0.42 7.79E-05 0.503 0.0002 6  P-values using 2 sample t-test over 3 seeds on multiple datasets and models. The p-value for  number of
+PENGUINS VICUNA -13B 0.18 0.0009
+PENGUINS CODE -DAVINCI -002 0.42 7.79E-05
+Average 0.503 0.0002
+Table 6  P-values using 2 sample t-test over 3 seeds on multiple datasets and models. The p-value for  number of
 generations  is significantly less than 0.05 (average  1.5e-3), confirming our method s efficiency, while the p-value
 for accuracy is much larger than 0.05 (average  0.50), indicating that the slight accuracy difference is statistically
-insignificant.123930 5 10 15 20 25 30 35 40 65.067.570.072.575.077.580.082.5 0.95(13.8, 81.3)
+insignificant.123930 5 10 15 20 25 30 35 40
+Sample Budget65.067.570.072.575.077.580.082.5AccuracyCthresh 0.95(13.8, 81.3)
 Adaptive-Consistency
-Self-Consistency(a) GSM-8 0 5 10 15 20 25 30 35 40 0.95(9.9, 83.3)
+Self-Consistency(a) GSM-8K
+0 5 10 15 20 25 30 35 40
+Sample Budget777879808182838485AccuracyCthresh 0.95(9.9, 83.3)
 Adaptive-Consistency
 Self-Consistency (b) ASDIV
-0 5 10 15 20 25 30 35 40 0.95(9.5, 84.9)
+0 5 10 15 20 25 30 35 40
+Sample Budget7880828486AccuracyCthresh 0.95(9.5, 84.9)
 Adaptive-Consistency
 Self-Consistency (c) SVAMP
-0 5 10 15 20 25 30 35 40 0.95(10.9, 79.1)
+0 5 10 15 20 25 30 35 40
+Sample Budget6870727476788082AccuracyCthresh 0.95(10.9, 79.1)
 Adaptive-Consistency
 Self-Consistency
 (d) D ATEUNDERSTANDING
-0 5 10 15 20 25 30 35 40 0.95(9.8, 79.2)
+0 5 10 15 20 25 30 35 40
+Sample Budget68707274767880AccuracyCthresh 0.95(9.8, 79.2)
 Adaptive-Consistency
 Self-Consistency (e) T RACKING SHUFFLED OBJECTS
-0 5 10 15 20 25 30 35 40 0.95(8.4, 90.5)
+0 5 10 15 20 25 30 35 40
+Sample Budget80828486889092AccuracyCthresh 0.95(8.4, 90.5)
 Adaptive-Consistency
 Self-Consistency (f) L OGICAL DEDUCTION
-0 5 10 15 20 25 30 35 40 0.95(11.7, 78.8)
+0 5 10 15 20 25 30 35 40
+Sample Budget7274767880AccuracyCthresh 0.95(11.7, 78.8)
 Adaptive-Consistency
 Self-Consistency
 (g) S TRATEGY QA
-0 5 10 15 20 25 30 35 40 0.95(6.6, 94.8)
+0 5 10 15 20 25 30 35 40
+Sample Budget8990919293949596AccuracyCthresh 0.95(6.6, 94.8)
 Adaptive-Consistency
 Self-Consistency (h) B OOLEAN EXPRESSIONS
-0 5 10 15 20 25 30 35 40 0.95(13.3, 75.3)
+0 5 10 15 20 25 30 35 40
+Sample Budget6466687072747678AccuracyCthresh 0.95(13.3, 75.3)
 Adaptive-Consistency
 Self-Consistency (i) S NARKS
-0 5 10 15 20 25 30 35 40 0.95(17.1, 78.4)
+0 5 10 15 20 25 30 35 40
+Sample Budget50556065707580AccuracyCthresh 0.95(17.1, 78.4)
 Adaptive-Consistency
 Self-Consistency
 (j) R UINNAMES
-0 5 10 15 20 25 30 35 40 0.95(12.0, 64.0)
+0 5 10 15 20 25 30 35 40
+Sample Budget60626466AccuracyCthresh 0.95(12.0, 64.0)
 Adaptive-Consistency
 Self-Consistency (k) S ALIENT TRANSLATION
-0 5 10 15 20 25 30 35 40 0.95(14.3, 74.8)
+0 5 10 15 20 25 30 35 40
+Sample Budget606264666870727476AccuracyCthresh 0.95(14.3, 74.8)
 Adaptive-Consistency
 Self-Consistency (l) D ISAMBIGUATION QA
-0 5 10 15 20 25 30 35 40 70.072.575.077.580.082.585.087.5 0.95(11.3, 83.6)
+0 5 10 15 20 25 30 35 40
+Sample Budget70.072.575.077.580.082.585.087.5AccuracyCthresh 0.95(11.3, 83.6)
 Adaptive-Consistency
 Self-Consistency (m) P ENGUINS
 Figure 5  Comparison of Adaptive-Consistency with Self-Consistency on various average sampling costs. AdaptiveConsistency
  is able to consistently beat Self-Consistency, especially when the sampling cost is low. Moreover,
 Cthresh   0.95is a good indication of saturation in accuracy indicating the value works out-of-box for most
-configurations considered.123944 6 8 10 12 14 16 18 0.770.780.790.800.81AccuracyAccuracy vs Number of Generations - GSM-8K
+configurations considered.123944 6 8 10 12 14 16 18
+Number of Generations0.770.780.790.800.81AccuracyAccuracy vs Number of Generations - GSM-8K
 Beta
 Entropy
-Majority(a) GSM-8 2 4 6 8 10 12 14 16 18 0.750.760.770.780.79AccuracyAccuracy vs Number of Generations - strategy_qa
+Majority(a) GSM-8K
+2 4 6 8 10 12 14 16 18
+Number of Generations0.750.760.770.780.79AccuracyAccuracy vs Number of Generations - strategy_qa
 Beta
 Entropy
 Majority (b) S TRATEGY QA
@@ -1480,85 +1586,113 @@ BETA consistently beats ENTROPY andMAJORITY for the same sampling cost. This sho
 performs better than both for the desirable range of accuracy and sampling cost.
 RANDOM MAJORITY ENTROPY BETA(Adaptive-Consistency) D IRICHLET CRP
 Average  Accuracy  Average  Accuracy  Average  Accuracy  Average  Accuracy  Average  Accuracy  Average  Accuracy  Generations Generations Generations Generations Generations Generations
-GSM-8KVICUNA -13 26.0 30.1 28.7 31 .5 26.3 31 .5 26.8 31 .5 28.2 31.7 25.6 31.5
+GSM-8KVICUNA -13B 26.0 30.1 28.7 31 .5 26.3 31 .5 26.8 31 .5 28.2 31.7 25.6 31.5
 CODE -DAVINCI -002 13.8 76 .9 16.6 80 .9 15.3 81 .0 13.8 81 .0 15.2 81.1 13.2 81.1
-ASDIVVICUNA -13 28.0 63 .2 14.8 63.7 15.8 63 .9 16.5 64.0 17.7 64.0 16.9 64.0
+ASDIVVICUNA -13B 28.0 63 .2 14.8 63.7 15.8 63 .9 16.5 64.0 17.7 64.0 16.9 64.0
 CODE -DAVINCI -002 13.8 81 .9 9.2 83.1 11.5 83.3 10.0 83 .2 10.7 83 .1 10.7 83 .1
-SVAMPVICUNA -13 28.0 61 .3 17.1 62.5 17.7 62 .6 18.8 62 .8 19.7 62.9 18.2 62 .8
+SVAMPVICUNA -13B 28.0 61 .3 17.1 62.5 17.7 62 .6 18.8 62 .8 19.7 62.9 18.2 62 .8
 CODE -DAVINCI -002 13.4 83 .3 8.4 84.8 10.7 85 .1 9.5 85 .0 10.3 85.1 9.8 85 .0
-DATE UNDERSTANDINGVICUNA -13 28.0 58 .3 15.3 59.5 16.0 59 .9 17.3 60.2 18.5 59 .9 16.9 59 .9
+DATE UNDERSTANDINGVICUNA -13B 28.0 58 .3 15.3 59.5 16.0 59 .9 17.3 60.2 18.5 59 .9 16.9 59 .9
 CODE -DAVINCI -002 13.2 76 .4 9.7 78.7 11.6 79 .9 10.7 79 .5 11.9 80.5 10.7 79 .8
-TRACKING SHUFFLED OBJECTSVICUNA -13 27.9 31 .8 15.0 33.0 18.4 32 .0 20.3 32 .0 23.3 32 .0 19.6 31 .8
+TRACKING SHUFFLED OBJECTSVICUNA -13B 27.9 31 .8 15.0 33.0 18.4 32 .0 20.3 32 .0 23.3 32 .0 19.6 31 .8
 CODE -DAVINCI -002 13.5 76 .3 7.0 76.8 11.5 76 .9 9.7 77 .1 11.5 77.2 10.2 77 .1
-LOGICAL DEDUCTIONVICUNA -13 27.9 50 .5 12.9 51.2 15.8 51.4 18.1 51.4 20.9 51 .2 18.3 51.4
+LOGICAL DEDUCTIONVICUNA -13B 27.9 50 .5 12.9 51.2 15.8 51.4 18.1 51.4 20.9 51 .2 18.3 51.4
 CODE -DAVINCI -002 13.7 88 .3 5.9 89.6 10.1 89.6 8.5 89 .4 10.2 89 .2 9.3 89 .4
-STRATEGY QAVICUNA -13 28.1 65 .1 11.7 65.5 14.5 65 .8 16.3 65 .8 18.7 65.8 17.0 65 .7
+STRATEGY QAVICUNA -13B 28.1 65 .1 11.7 65.5 14.5 65 .8 16.3 65 .8 18.7 65.8 17.0 65 .7
 CODE -DAVINCI -002 13.4 76 .6 7.2 77.8 14.9 78 .5 11.9 78 .8 14.5 78.9 11.4 78.9
-BOOLEAN EXPRESSIONSVICUNA -13 27.6 78 .0 10.4 76.8 14.8 78 .3 16.2 78 .4 19.1 78.8 17.0 78 .5
+BOOLEAN EXPRESSIONSVICUNA -13B 27.6 78 .0 10.4 76.8 14.8 78 .3 16.2 78 .4 19.1 78.8 17.0 78 .5
 CODE -DAVINCI -002 13.1 93 .4 4.3 94.3 8.2 94.5 6.6 94.5 8.2 94.5 7.9 94 .4
-SNARKSVICUNA -13 28.4 70 .3 18.1 72.1 20.3 73 .0 23.2 73.6 25.8 73.6 22.9 73.6
+SNARKSVICUNA -13B 28.4 70 .3 18.1 72.1 20.3 73 .0 23.2 73.6 25.8 73.6 22.9 73.6
 CODE -DAVINCI -002 13.6 71 .6 10.5 74.0 12.1 74.0 12.7 74.0 14.2 73 .4 12.3 73 .2
-RUINNAMESVICUNA -13 28.3 40.6 30.4 43 .9 31.9 43 .7 33.8 43 .6 34.0 43 .6 32.0 44.0
+RUINNAMESVICUNA -13B 28.3 40.6 30.4 43 .9 31.9 43 .7 33.8 43 .6 34.0 43 .6 32.0 44.0
 CODE -DAVINCI -002 13.8 71.7 17.5 77 .7 18.6 78.1 17.2 78 .0 17.6 76 .8 16.4 78.1
-SALIENT TRANSLATIONVICUNA -13 24.9 27 .7 24.6 28.5 26.3 28 .0 28.7 28 .7 29.4 28 .8 26.9 28.9
+SALIENT TRANSLATIONVICUNA -13B 24.9 27 .7 24.6 28.5 26.3 28 .0 28.7 28 .7 29.4 28 .8 26.9 28.9
 CODE -DAVINCI -002 14.0 62 .5 9.9 64.7 13.1 64 .3 11.8 64 .3 13.7 64 .1 11.7 64 .3
-DISAMBIGUATION QAVICUNA -13 27.9 62 .9 18.3 63.5 20.1 63 .1 22.8 63 .5 25.4 63.9 22.1 63 .3
+DISAMBIGUATION QAVICUNA -13B 27.9 62 .9 18.3 63.5 20.1 63 .1 22.8 63 .5 25.4 63.9 22.1 63 .3
 CODE -DAVINCI -002 13.7 72 .1 10.4 73.9 15.9 74 .9 13.5 75 .1 16.3 75.2 13.2 75.2
-PENGUINSVICUNA -13 27.9 45 .6 19.7 46.3 20.7 47.3 22.9 47.3 25.1 47.3 22.1 47.3
-CODE -DAVINCI -002 13.3 81 .4 9.0 83.3 13.1 83 .8 11.0 84 .0 12.9 84 .0 11.0 84.5 7  Comparison of various Stopping Criterias in Adaptive-Consistency. In general, BETA outperforms
+PENGUINSVICUNA -13B 27.9 45 .6 19.7 46.3 20.7 47.3 22.9 47.3 25.1 47.3 22.1 47.3
+CODE -DAVINCI -002 13.3 81 .4 9.0 83.3 13.1 83 .8 11.0 84 .0 12.9 84 .0 11.0 84.5
+Table 7  Comparison of various Stopping Criterias in Adaptive-Consistency. In general, BETA outperforms
 RANDOM andMAJORITY by decent margins across all datasets. BETAhas comparable performance to DIRICHLET ,
 but the latter is much slower. ENTROPY performs similarly to BETA but lacks human-interpretable stopping
-rationale.123950.5 0.6 0.7 0.8 0.9 1.0 0510152025303540
+rationale.123950.5 0.6 0.7 0.8 0.9 1.0
+Confidence Threshold666870727476788082Accuracy
+0510152025303540
 Sample Budget
 Accuracy
-Average Samples(a) GSM-8 0.5 0.6 0.7 0.8 0.9 1.0 81.882.082.282.482.682.883.083.283.4 0510152025303540
+Average Samples(a) GSM-8K
+0.5 0.6 0.7 0.8 0.9 1.0
+Confidence Threshold81.882.082.282.482.682.883.083.283.4Accuracy
+0510152025303540
 Sample Budget
 Accuracy
 Average Samples (b) ASDIV
-0.5 0.6 0.7 0.8 0.9 1.0 82.583.083.584.084.585.085.5 0510152025303540
+0.5 0.6 0.7 0.8 0.9 1.0
+Confidence Threshold82.583.083.584.084.585.085.5Accuracy
+0510152025303540
 Sample Budget
 Accuracy
 Average Samples (c) SVAMP
-0.5 0.6 0.7 0.8 0.9 1.0 0510152025303540
+0.5 0.6 0.7 0.8 0.9 1.0
+Confidence Threshold727374757677787980Accuracy
+0510152025303540
 Sample Budget
 Accuracy
 Average Samples
 (d) D ATEUNDERSTANDING
-0.5 0.6 0.7 0.8 0.9 1.0 75.576.076.577.077.578.078.579.079.5 0510152025303540
+0.5 0.6 0.7 0.8 0.9 1.0
+Confidence Threshold75.576.076.577.077.578.078.579.079.5Accuracy
+0510152025303540
 Sample Budget
 Accuracy
 Average Samples (e) T RACKING SHUFFLED OBJECTS
-0.5 0.6 0.7 0.8 0.9 1.0 88.589.089.590.090.5 0510152025303540
+0.5 0.6 0.7 0.8 0.9 1.0
+Confidence Threshold88.589.089.590.090.5Accuracy
+0510152025303540
 Sample Budget
 Accuracy
 Average Samples (f) L OGICAL DEDUCTION
-0.5 0.6 0.7 0.8 0.9 1.0 0510152025303540
+0.5 0.6 0.7 0.8 0.9 1.0
+Confidence Threshold7576777879Accuracy
+0510152025303540
 Sample Budget
 Accuracy
 Average Samples
 (g) S TRATEGY QA
-0.5 0.6 0.7 0.8 0.9 1.0 92.7593.0093.2593.5093.7594.0094.2594.5094.75 0510152025303540
+0.5 0.6 0.7 0.8 0.9 1.0
+Confidence Threshold92.7593.0093.2593.5093.7594.0094.2594.5094.75Accuracy
+0510152025303540
 Sample Budget
 Accuracy
 Average Samples (h) B OOLEAN EXPRESSIONS
-0.5 0.6 0.7 0.8 0.9 1.0 0510152025303540
+0.5 0.6 0.7 0.8 0.9 1.0
+Confidence Threshold6970717273747576Accuracy
+0510152025303540
 Sample Budget
 Accuracy
 Average Samples (i) S NARKS
-0.5 0.6 0.7 0.8 0.9 1.0 0510152025303540
+0.5 0.6 0.7 0.8 0.9 1.0
+Confidence Threshold7072747678Accuracy
+0510152025303540
 Sample Budget
 Accuracy
 Average Samples
 (j) R UINNAMES
-0.5 0.6 0.7 0.8 0.9 1.0 62.563.063.564.064.565.065.5 0510152025303540
+0.5 0.6 0.7 0.8 0.9 1.0
+Confidence Threshold62.563.063.564.064.565.065.5Accuracy
+0510152025303540
 Sample Budget
 Accuracy
 Average Samples (k) S ALIENT TRANSLATION
-0.5 0.6 0.7 0.8 0.9 1.0 0510152025303540
+0.5 0.6 0.7 0.8 0.9 1.0
+Confidence Threshold707172737475Accuracy
+0510152025303540
 Sample Budget
 Accuracy
 Average Samples (l) D ISAMBIGUATION QA
-0.5 0.6 0.7 0.8 0.9 1.0 82.583.083.584.084.585.085.586.0 0510152025303540
+0.5 0.6 0.7 0.8 0.9 1.0
+Confidence Threshold82.583.083.584.084.585.085.586.0Accuracy
+0510152025303540
 Sample Budget
 Accuracy
 Average Samples (m) P ENGUINS

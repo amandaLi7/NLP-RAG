@@ -45,9 +45,20 @@ representations instead of raw text, which avoids
 {yury,michiel}@augmentcode.com
  Augment Computing. Work done at Google Research.FiD LUMEN L-VQ
 Inference cost in TFLOPs
-Per sample 28.0 12.5 12.5 2 8 0.5 8 30 2 1 2 7 0.5 PB
+Per sample 28.0 12.5 12.5
+Storage cost
+Per token 2 bytes 8 KB 0.5 KB
+For Wikipedia 8 GB 30 TB 2 TB
+For 1T tokens 2 TB 7 PB 0.5 PB
 KILT valid in % exact match
-Average 72.80 72.66 72.42 61.47 62.64 62.74 83.40 82.84 82.61 93.47 92.77 92.18 83.58 83.78 83.42 72.77 72.85 72.61 42.09 41.09 41.00 1  Main results  LUMEN -VQ(L-VQ) nearly
+Average 72.80 72.66 72.42
+NaturalQuestions 61.47 62.64 62.74
+TriviaQA 83.40 82.84 82.61
+FEVER 93.47 92.77 92.18
+TREX 83.58 83.78 83.42
+ZeroShot RE 72.77 72.85 72.61
+HotpotQA 42.09 41.09 41.00
+Table 1  Main results  LUMEN -VQ(L-VQ) nearly
 matches Fusion-in-Decoder in quality while benefiting
  from LUMEN compute savings without impracticalLUMEN
  storage requirements.
@@ -60,7 +71,8 @@ However, these pre-encoding memory models
 use much more storage than traditional retrievalaugmented
  models - LUMEN saves an embedding
 for each token in the corpus, which takes up much
-more space than token IDs. Table 1 5 XXL-sized models.
+more space than token IDs. Table 1 compares
+storage requirements for T5 XXL-sized models.
 FiD requires 2 bytes to store an ID of each token,
  while LUMEN uses a 4096-dimensional vector
 ofbfloat16 values, summing to 8KB per token.
@@ -68,12 +80,13 @@ Wikipedia contains around 4 billion tokens, which
 means LUMEN token representations take up 30TB.
 For an internet-scale corpus of 1 trillion tokens,
 disk requirements balloon to an impractical 7PB.
-This work combines of product quantization (Jé-arXiv 2308.14903 1  [cs.CL]  28 2023gou et al., 2011) and VQ-V AE method (van den
+This work combines of product quantization (Jé-arXiv 2308.14903v1  [cs.CL]  28 Aug 2023gou et al., 2011) and VQ-V AE method (van den
 Oord et al., 2017) to significantly reduce storage
 requirements for memory-based methods with limited
  loss in quality. In particular, LUMEN -VQ
 achieves a 16x compression rate, meaning we only
-need 2 500 1 trillion token corpus. Moreover,
+need 2TB to store memories for all of Wikipedia
+and 500TB for a 1 trillion token corpus. Moreover,
 LUMEN -VQsuffers minimal loss in performance
 on the KILT benchmark (Petroni et al., 2021) of
 knowledge intensive tasks.
@@ -99,7 +112,8 @@ requirements. For an in-depth analysis, please see
 de Jong et al. (2023a). We follow up with background
  on vector quantization, including product
 quantization and VQ-V AE used for MEMORY -VQ.
-2.1 2.1.1 Fusion-in-Decoder
+2.1 Retrieval and memory augmented models
+2.1.1 Fusion-in-Decoder
 Fusion-in-Decoder (FiD) (Izacard and Grave, 2021)
 builds upon the T5 (Raffel et al., 2020) encoderdecoder
  model. It retrieves relevant text passages,
@@ -115,7 +129,7 @@ FiD storage needs are low since we only need to
 store token IDs. Each ID can be encoded with 16
 bits, so the storage cost for a retrieval corpus with
 Ntokens is
-SFiD  16 2.1.2 LUMEN
+SFiD  16 N2.1.2 LUMEN
 LUMEN (de Jong et al., 2023a) reduces inference
 cost by partially pre-computing encoder representations
  for retrieved passages. Instead of retrieving
@@ -146,7 +160,8 @@ for any given model size.
 LUMEN keeps d-dimensional MemEnc output
 representations for every token. With bfloat16
 format, the total storage cost becomes
-SLUMEN   16 2.2 Vector quantization
+SLUMEN   16d N
+2.2 Vector quantization
 Vector quantization (VQ) is a classical compression
 technique for vector data. The general idea is to
 prepare a set of vectors known as  codes  and then
@@ -215,8 +230,9 @@ storage requirement for each quantized vector is
 the number of subspaces multiplied by the number
 of bits required to represent each ID, which is the
 logarithm of the number of codes.
-SLUMEN -VQ g   log C   N
-4 0 510 15 20 25 30 356970717273
+SLUMEN -VQ g   log2C   N
+4 Experiments
+0 510 15 20 25 30 356970717273
 Compression rateKILT (exact match)LUMEN
 LUMEN -VQ(main)
 LUMEN -VQ
@@ -231,7 +247,10 @@ LUMEN Large) and LUMEN -Light (FiD-Light from Hofstätter
  et al. (2022a) adapted for LUMEN ).
 Model KILT, EM
 LUMEN -VQ 72.43
-initialize from fine-tuned LUMEN 72.42 72.33 71.79 2  Performance comparison of different approaches
+initialize from fine-tuned LUMEN 72.42
+  freeze memory encoder 72.33
+  freeze whole model 71.79
+Table 2  Performance comparison of different approaches
  for initializing and training the LUMEN -VQ.
 4.1 Experimental setup
 Model configuration LUMEN -VQand LUMEN
@@ -244,7 +263,8 @@ The training setup for LUMEN and LUMEN -VQ
 is based on de Jong et al. (2023b). We initializethe memory encoder with the first 1 - αproportion
 of layers from the T5 encoder and the live encoder
 with the last αproportion of layers, where αis the
-given proportion of live layers. We set α 1 3in
+given proportion of live layers. We set α 1
+3in
 our main experiments.
 We train and evaluate on a subset of knowledgeintensive
  task datasets from the KILT benchmark
@@ -254,9 +274,11 @@ We train and evaluate on a subset of knowledgeintensive
 Appendix A and de Jong et al. (2023b) for details.
 4.2 Main results
 In our main experiments, we compress LUMEN XXL s
- 4096-dimensional memories using g  256 65536 codes per subspace,
+ 4096-dimensional memories using g  256
+subspaces and C  65536 codes per subspace,
 allowing us to store code IDs in int16 format. We
-need 512 8192 bytes for the original memories. As a result,
+need 512 bytes to store each token vector instead of
+8192 bytes for the original memories. As a result,
 LUMEN -VQachieves a compression rate of 16 with
 minimal performance loss, as shown in Table 1.
 4.3 Quality-Compression rate trade-off
@@ -265,17 +287,20 @@ LUMEN -VQby varying the number of subspaces.
 We compare against several naive baselines 
 the first involves scaling down the model (e.g.,
 LUMEN-XL or LUMEN-Large). This reduces d
-from 4096 2048 1024, respectively. The second
+from 4096 to 2048 or 1024, respectively. The second
  baseline, called LUMEN-Light, is inspired by
 the FiD-Light approach (Hofstätter et al., 2022a).
 In LUMEN-Light, we retain memories of the first
-K tokens, varying K from1 2 1 4of the passage
-length, achieving compression rates of 2 4.
+K tokens, varying K from1
+2to1
+4of the passage
+length, achieving compression rates of 2 and 4.
 Figure 1 presents the performance results. Both
 baselines exhibit significant performance losses
 as compression rates increase. In contrast, the
 LUMEN -VQmeasure shows a gradual decline in
-performance, with a loss of approximately 0.2 16.
+performance, with a loss of approximately 0.2 performance
+ points at a compression rate of 16.
 4.4 Ablations
 We investigate if initializing VQ-V AE training from
 a fine-tuned LUMEN model yields better results.
@@ -355,7 +380,7 @@ Irving, Oriol Vinyals, Simon Osindero, Karen Simonyan,
  Jack W. Rae, Erich Elsen, and Laurent Sifre.
 2022. Improving language models by retrieving from
 trillions of tokens. In International Conference on
-Machine Learning, ICML 2022, 17-23 2022, Baltimore,
+Machine Learning, ICML 2022, 17-23 July 2022, Baltimore,
  Maryland, USA , volume 162 of Proceedings
 of Machine Learning Research , pages 2206 2240.
 PMLR.
@@ -407,7 +432,7 @@ David Simcha, Felix Chern, and Sanjiv Kumar. 2020.
 Accelerating large-scale inference with anisotropic
 vector quantization. In Proceedings of the 37th International
  Conference on Machine Learning, ICML
-2020, 13-18 2020, Virtual Event , volume 119 of
+2020, 13-18 July 2020, Virtual Event , volume 119 of
 Proceedings of Machine Learning Research , pages
 3887 3896. PMLR.
 Kelvin Guu, Kenton Lee, Zora Tung, Panupong Pasupat,
@@ -431,7 +456,8 @@ passage retrieval with generative models for open domain
  question answering. In Proceedings of the 16th
 Conference of the European Chapter of the Association
  for Computational Linguistics  Main Volume,
-EACL 2021, Online, April 19 - 23, 2021 , pages 874 880. Association for Computational Linguistics.
+EACL 2021, Online, April 19 - 23, 2021 , pages 874 
+880. Association for Computational Linguistics.
 Gautier Izacard, Patrick Lewis, Maria Lomeli, Lucas
 Hosseini, Fabio Petroni, Timo Schick, Jane DwivediYu,
  Armand Joulin, Sebastian Riedel, and Edouard
@@ -464,7 +490,8 @@ Danielle Epstein, Illia Polosukhin, Jacob Devlin, Kenton
 Kelcey, Ming-Wei Chang, Andrew M. Dai, Jakob
 Uszkoreit, Quoc Le, and Slav Petrov. 2019. Natural
  questions  a benchmark for question answering
-research. Trans. Assoc. Comput. Linguistics , 7 452 466.
+research. Trans. Assoc. Comput. Linguistics , 7 452 
+466.
 Omer Levy, Minjoon Seo, Eunsol Choi, and Luke Zettlemoyer.
  2017. Zero-shot relation extraction via reading
  comprehension. In Proceedings of the 21st Conference
@@ -478,7 +505,9 @@ Goyal, Heinrich Küttler, Mike Lewis, Wen-tau Yih,
 Tim Rocktäschel, Sebastian Riedel, and Douwe
 Kiela. 2020. Retrieval-augmented generation for
 knowledge-intensive NLP tasks. In Advances in Neural
- Information Processing Systems 33 2020, NeurIPS 2020, December 6-12, 2020, virtual .
+ Information Processing Systems 33  Annual Conference
+ on Neural Information Processing Systems
+2020, NeurIPS 2020, December 6-12, 2020, virtual .
 Zonglin Li, Ruiqi Guo, and Sanjiv Kumar. 2022. Decoupled
  context processing for context augmented
 language modeling. CoRR , abs/2210.05758.
@@ -514,7 +543,8 @@ of transfer learning with a unified text-to-text transformer.
 Ali Razavi, Aäron van den Oord, and Oriol Vinyals.
 2019. Generating diverse high-fidelity images with
 VQ-V AE-2. In Advances in Neural Information Processing
- Systems 32 2019, NeurIPS 2019,
+ Systems 32  Annual Conference on Neural
+Information Processing Systems 2019, NeurIPS 2019,
 December 8-14, 2019, Vancouver, BC, Canada , pages
 14837 14847.
 Keshav Santhanam, Omar Khattab, Jon Saad-Falcon,
@@ -524,7 +554,8 @@ lightweight late interaction. In Proceedings of the
 2022 Conference of the North American Chapter of
 the Association for Computational Linguistics  Human
  Language Technologies, NAACL 2022, Seattle,
-WA, United States, July 10-15, 2022 , pages 3715 3734. Association for Computational Linguistics.
+WA, United States, July 10-15, 2022 , pages 3715 
+3734. Association for Computational Linguistics.
 Noam Shazeer and Mitchell Stern. 2018. Adafactor 
 Adaptive learning rates with sublinear memory cost.
 InProceedings of the 35th International Conference
@@ -545,11 +576,13 @@ Computational Linguistics.
 Aäron van den Oord, Oriol Vinyals, and Koray
 Kavukcuoglu. 2017. Neural discrete representation
 learning. In Advances in Neural Information Processing
- Systems 30 2017, December 4-9,
+ Systems 30  Annual Conference on Neural
+Information Processing Systems 2017, December 4-9,
 2017, Long Beach, CA, USA , pages 6306 6315.
 Will Williams, Sam Ringer, Tom Ash, David MacLeod,
 Jamie Dougherty, and John Hughes. 2020. Hierarchical
- quantized autoencoders. In Advances in NeuralInformation Processing Systems 33 2020,
+ quantized autoencoders. In Advances in NeuralInformation Processing Systems 33  Annual Conference
+ on Neural Information Processing Systems 2020,
 NeurIPS 2020, December 6-12, 2020, virtual .
 Yuhuai Wu, Markus Norman Rabe, DeLesley Hutchins,
 and Christian Szegedy. 2022a. Memorizing transformers.
@@ -606,7 +639,7 @@ Adafactor optimizer (Shazeer and Stern, 2018) with
 a constant learning rate of 0.0001, a batch size of
 128, and a dropout rate of 0.1 for all tasks. When
 performing multi-task training, we uniformly sample
- from the tasks. We allocate 48 304 tokens
+ from the tasks. We allocate 48 and 304 tokens
  for question and passage inputs, respectively.
 LUMEN -VQis using 0.999 as an EMA factor for
 code updates.
@@ -625,7 +658,8 @@ dataset issues, we apply the relevance filtering procedure
 For the retrieval corpus, we use a Wikipedia
 dump provided by the KILT benchmark
 http //dl.fbaipublicfiles.com/BLINK/
-enwiki-pages-articles.xml.bz2 4B tokens.
+enwiki-pages-articles.xml.bz2 containing
+approximately 4B tokens.
 Retrieval We adopt the retrieval procedure introduced
  by Hofstätter et al. (2022b), where
 Wikipedia articles are segmented into chunks, each
@@ -635,7 +669,9 @@ is utilized to identify the most relevant chunks for
 each query, with 20 retrieved passages for each
 query.
 B Experiments
-B.1 4096 65536 . Results in
+B.1 Smaller codebook
+We study the effect of using a smaller codebook of
+sizeC  4096 instead of C  65536 . Results in
 Figure 2 show that using a smaller codebook has
 similar quality-compression trade-offs for lower
 compression rates but leads to worse trade-offs
@@ -647,10 +683,12 @@ using fewer bits for frequent patterns. For instance,
 applying standard compression tools like gzip or10 20 30 407171.57272.5
 Compression rateKILT avg, valid exact matchLUMEN
 LUMEN -VQ(main)
-C  65 4 2  The plot shows average exact match on validation
+C  65K
+C  4K
+Figure 2  The plot shows average exact match on validation
  sets of KILT tasks as a function of compression
 rate. We compare LUMEN -VQwith the codebook of size
-C  65536 4096 .
+C  65536 andC  4096 .
 zstd to Wikipedia token IDs resulted in a compression
  factor of around 1.5. However, using the same
 tools on LUMEN -VQcodes of Wikipedia passages
@@ -658,6 +696,6 @@ yielded a more modest compression rate of 1.1.
 Compression was performed independently on
 each subspace, with most subspaces being incompressible.
  Around 5% of the subspaces showed
-compression rates ranging from 2 6. Notably,
+compression rates ranging from 2 to 6. Notably,
 no compression was achieved when attempting to
 compress codes from all subspaces together.

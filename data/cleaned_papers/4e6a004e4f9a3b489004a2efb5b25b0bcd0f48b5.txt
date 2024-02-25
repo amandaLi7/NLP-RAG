@@ -20,7 +20,7 @@ chronologically, to help understand if and how the polarization
  amongst candidates changes. This data has been cleaned
 to remove biases. To understand the polarization we begin
 by showing results from some classical language models in
-Word Vec and Doc Vec. And then use more powerful techniques
+Word2Vec and Doc2Vec. And then use more powerful techniques
  like the Longformer, a transformer-based encoder, to
 assimilate more information and ﬁnd the nearest neighbors of
 each candidate based on their political view and their background.
@@ -47,8 +47,8 @@ the process, create a dataset that will be useful for the research
 Intelligence (www.aaai.org). All rights reserved.cal system, the methods we suggest for measuring polarization
  would be useful for other countries with similar democratic
  elections in determining how polazised a candidate is.
-We ﬁrst try classical methods such as Word Vec(Mikolov
-et al. 2013) and Doc Vec(Le and Mikolov 2014) to understand
+We ﬁrst try classical methods such as Word2Vec(Mikolov
+et al. 2013) and Doc2Vec(Le and Mikolov 2014) to understand
  if we can ﬁnd polarization using the data we have
 and gain more insights. We ﬁnd that words that are politically
  sensitive(Center 2019) are related to other words which
@@ -86,9 +86,9 @@ from the candidates. (DeSilver 2022) claims that the candidates
 over the years. With this paper, we release a dataset and a
 few metrics that will help us understand if political polarization
  exists in political candidates and how we might be able
-to measure this political polarization. The aim of this studyarXiv 2301.00891 1  [cs.CL]  2 2023is to aid voters to make informed decisions before elections.
+to measure this political polarization. The aim of this studyarXiv 2301.00891v1  [cs.CL]  2 Jan 2023is to aid voters to make informed decisions before elections.
 And we use language-based techniques on a dataset that is
-classiﬁed into 4 3 parts, mainly background,
+classiﬁed into 4 eras and divided into 3 parts, mainly background,
  political and other.
 (Belcastro et al. 2020) Demonstrates that Political Polarization
  can be mapped with the help of Neural Networks.
@@ -137,7 +137,7 @@ framework.
 a model that will be used extensively. It also shows the results
  of ﬁne-tuning BERT. These indirectly or directly will
 be used either as pre-trained constraints or as tuning methods.
- petroni language
+ petroni2019language
 (Petroni et al. 2019) Demonstrates the ability of pretrained
  high-capacity models like BERT and ELMo to be
 used as knowledge repositories. This is mainly based on 3
@@ -169,11 +169,12 @@ the role of frequency and polysemy in the building structural
 sentiment analysis and thus affect results. Thus frequency
 and polysemy must be duly curtailed. (2) The embedding
 research is fundamental as we are using embedding-based
-models. Speciﬁcally Word vec.
+models. Speciﬁcally Word2vec.
 Dataset Description
 Source
 Our data is sourced from the individual pages of politicians(Senators
- and Congress members) from the 58 117thcongress. We divide these into 4 phases, chronologically,
+ and Congress members) from the 58thto the
+117thcongress. We divide these into 4 phases, chronologically,
  with each phase consisting of about 14 congresses.
 For each congress member, we scrape the section-wise data.
 Data Collection and Processing
@@ -201,7 +202,8 @@ Political Career. All other categories such as Awards, Controversies,
  Business related activity, Post political career areclubbed under the Others category. This way, only relevant
 data is selected under each category by manually changing
  the annotation based on the content inside each category.
- To conclude, for just Phase 4, a total of 1656 3 1631 instances in
+ To conclude, for just Phase 4, a total of 1656 categories
+ were merged into 3 categories for 1631 instances in
 the ﬁrst pass spread over roughly 26 years(1995-2021). This
 data still contains information names, organizations, locations,
  numbers, etc. which need to be cleaned. We ﬁrst run
@@ -216,7 +218,8 @@ deleted. This information, after the NER, is passed to remove
  numbers and other irrelevant regular expressions. This
 makes sure the data being passed for other downstream tasks
 is clean and gives unbiased answers.
-Figure 1 2  Background
+Figure 1  Webscraping based on each Tag
+Figure 2  Background
 Language Model
 Natural Language Processing based applications have been
 dominated by transformer-based language models where
@@ -227,7 +230,7 @@ it comes to our dataset, these models have a drawback, that
 is, their ability to process longer sequences since the cost of
 attention grows on the order of O(N2). Longformer(Beltagy,
 Peters, and Cohan 2020) and other variants are useful for
-this task, they accept 4096 512
+this task, they accept 4096 input tokens as opposed to 512
 for BERT. It reduces model complexity by reformulating the
 self-attention computation. The performance of Longformer
 against the current SOTA is represented by the table present
@@ -237,35 +240,35 @@ Preliminary Experiments
 Our initial experiments were aimed at gaining insights about
 patterns or trends that might be present in our data, and
 also questioning if polarization exists. We do these preliminary
- experiments using the Doc Vec(Le and Mikolov 2014)
-and Word Vec(Mikolov et al. 2013) models. The Doc Vec
+ experiments using the Doc2Vec(Le and Mikolov 2014)
+and Word2Vec(Mikolov et al. 2013) models. The Doc2Vec
 model was built from scratch with the raw data, where each
 Wikipedia page is considered to be a document. We ﬁrst
-use the Doc Vec model with K-means clustering and get
+use the Doc2Vec model with K-means clustering and get
 a classiﬁcation accuracy of 59.52% with political data and
 61.846% with background data. We then used the same
-Doc Vec model with binary SVM classiﬁer and achieved an
+Doc2Vec model with binary SVM classiﬁer and achieved an
 accuracy of 72.872% with political data and 63.564% with
 background data. These results are summarized in the table
- presented below. The Word Vec tests were run on pretrained
+ presented below. The Word2Vec tests were run on pretrained
  models as well as models we built from scratch and
-trained using the data we collected. We used the Word Vec
+trained using the data we collected. We used the Word2Vec
 approach to ﬁnd approximate nearest neighbors and exact
 nearest neighbors for certain words on both the Democratic
 and the Republican sides. This nearest-neighbor approach
 led to some interesting insights. We expected to see some
 disparity in the nearest neighbor searches for the Republican
  data and Democratic data basis the assumption that
-there is polarization. However using the simple Word Vec
+there is polarization. However using the simple Word2Vec
 models the 15 nearest neighbors we got were quite similar
  but as there were certain words for whom the order of
 the neighbors changed based on the party, for example, for
 the word  GUN  ,  VIOLENCE  is the 2ndnearest neigh-bor(approximate nearest neighbor using spotify s annoy algorithm)
  for democratic data however the same word is 9th
 for the republican case, similarly the word  CHECKS  is
-the 3 8th
+the 3rdnearest neighbor for democrats while it is the 8th
 for republicans. There are more such interesting examples
-which coupled with the results from the Doc Vec classiﬁcation
+which coupled with the results from the Doc2Vec classiﬁcation
  results, prove that political polarization exists and can
 be learned using Natural Language Processing based techniques.
 
@@ -281,7 +284,7 @@ can be seen in the table. There are two versions of Longformer
  -  longformer-base-4096  and  longformer-large4096.
  Longformer base provides a signiﬁcant improvement
 over the previous model RoBERTa and simpler models such
-as Doc Vec. However Longformer large provided a better
+as Doc2Vec. However Longformer large provided a better
 score and has been the best performing model when it comes
 to classifying a given candidate s political party. We also analyze
  using BigBird which is yet another model which can
@@ -344,12 +347,16 @@ is Blue vs Red points in this graph, so one of our hypotheses
  is that if a politician isn t polarized this ratio should be
 0.5(democrat/total) if we just look at the background data.
 Model Data Accuracy
-Doc Vec Political 59.520 61.846
-Allenai/longformer-large-4096 52.128
-Allenai/longformer-large-4096 56.383 1  K-means Classiﬁcation ResultsModel Data Accuracy
-Doc Vec Political 72.872 63.564
-Allenai/longformer-large-4096 76.862
-Allenai/longformer-large-4096 69.681 2  Binary SVM Classiﬁcation Results
+Doc2Vec Political 59.520
+Doc2Vec Background 61.846
+Allenai/longformer-large-4096 Political 52.128
+Allenai/longformer-large-4096 Background 56.383
+Table 1  K-means Classiﬁcation ResultsModel Data Accuracy
+Doc2Vec Political 72.872
+Doc2Vec Background 63.564
+Allenai/longformer-large-4096 Political 76.862
+Allenai/longformer-large-4096 Background 69.681
+Table 2  Binary SVM Classiﬁcation Results
 Figure 6  Nearest neighbors for political data belonging
 to Mitch McConnell (Republican)
 Figure 7  Nearest neighbors for background data belonging
@@ -357,10 +364,11 @@ Figure 7  Nearest neighbors for background data belonging
 The above graph in Figure 10 shows the neighbors for Mitch
 McConnell (Republican) and it is very evident that majority
 of the neighbors are Republican (red in color) whereas the
-Democrat count is only 2 20. So one can infer that the
+Democrat count is only 2 out of 20. So one can infer that the
 polarization ratio is 0.9 for Mitch McConnell. Similarly, in
 Figure 11, we can see that Ayenna Presley who is a Democrat
- has 16 0.8 for background data. Scaled-up versions of
+ has 16 neighbors belonging to the same party resulting
+in a ratio of 0.8 for background data. Scaled-up versions of
 such websites with more metrics that highlight the political
 views of a member as radical or moderate will be beneﬁcial
 to the voters.
@@ -385,7 +393,7 @@ contributions.
 References
 Belcastro, L.  Cantini, R.  Marozzo, F.  Talia, D.  and Trunﬁo,
  P. 2020. Learning political polarization on social media
-using neural networks. IEEE Access , 8 47177 47187.
+using neural networks. IEEE Access , 8  47177 47187.
 Beltagy, I.  Peters, M. E.  and Cohan, A. 2020. Longformer 
  The long-document transformer. arXiv preprint
 arXiv 2004.05150 .
@@ -420,7 +428,7 @@ Mitchell, T. 2021. We Don t Speak the Same Language  Interpreting
 volume 35, 14893 14901.KhudaBukhsh, A. R.  Sarkar, R.  Kamlet, M. S.  and
 Mitchell, T. M. 2022. Fringe news networks  dynamics of
 US news viewership following the 2020 presidential election.
- In 14 2022 , 269 278.
+ In 14th ACM Web Science Conference 2022 , 269 278.
 Le, Q.  and Mikolov, T. 2014. Distributed representations
 of sentences and documents. In International conference on
 machine learning , 1188 1196. PMLR.
@@ -439,7 +447,8 @@ Petroni, F.  Rockt  aschel, T.  Lewis, P.  Bakhtin, A.  Wu, Y .
 Miller, A. H.  and Riedel, S. 2019. Language models as
 knowledge bases  arXiv preprint arXiv 1909.01066 .
 Poole, K. T.  and Rosenthal, H. 1984. The polarization of
-American politics. The journal of politics , 46(4)  1061 1079.
+American politics. The journal of politics , 46(4)  1061 
+1079.
 Rajani, N. F.  McCann, B.  Xiong, C.  and Socher, R. 2019.
 Explain yourself  leveraging language models for commonsense
  reasoning. arXiv preprint arXiv 1906.02361 .

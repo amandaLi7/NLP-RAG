@@ -1,5 +1,6 @@
 TOWARD UNIVERSAL SPEECH ENHANCEMENT FOR DIVERSE INPUT CONDITIONS
-Wangyou Zhang1,3, Kohei Saijo2,3, Zhong-Qiu Wang3, Shinji Watanabe3, Yanmin Qian1 1Shanghai Jiao Tong University, China Waseda University, Japan Carnegie Mellon University, USA
+Wangyou Zhang1,3, Kohei Saijo2,3, Zhong-Qiu Wang3, Shinji Watanabe3, Yanmin Qian1
+1Shanghai Jiao Tong University, China2Waseda University, Japan3Carnegie Mellon University, USA
 ABSTRACT
 The past decade has witnessed substantial growth of data-driven
 speech enhancement (SE) techniques thanks to deep learning. While
@@ -42,12 +43,13 @@ such as generative adversarial networks (GANs) [9, 11], diffusion
 models [12, 13], and resynthesis-based models [10, 14]. These approaches
  can provide impressive performance in a condition similar
 The experiments were done using the PI supercomputer at Shanghai
-Jiao Tong University and the PSC Bridges2 210014, supported by National Science Foundation grants #2138259,
+Jiao Tong University and the PSC Bridges2 system via ACCESS allocation
+CIS210014, supported by National Science Foundation grants #2138259,
 #2138286, #2138307, #2137603, and #2138296. Wangyou Zhang and Yanmin
  Qian were supported in part by China STI 2030-Major Projects under
-Grant No. 2021 0201500, in part by China NSFC projects under Grants
-62122050 62071288, and in part by Shanghai Municipal Science and
-Technology Major Project under Grant 2021 0102.to the training setup. However, most of the existing approaches are
+Grant No. 2021ZD0201500, in part by China NSFC projects under Grants
+62122050 and 62071288, and in part by Shanghai Municipal Science and
+Technology Major Project under Grant 2021SHZDZX0102.to the training setup. However, most of the existing approaches are
 designed only for a single input condition, such as single-channel
 input, multi-channel input, or input with a fixed sampling frequency.
 Recently, there are some attempts to address multiple input conditions
@@ -85,7 +87,7 @@ model is then tested on the corresponding test sets with five metrics
 to comprehensively demonstrate its capability of handling diverse
 conditions. Our experiments on various datasets show that the proposed
  model can successfully cope with different input conditions
-with strong performance. The proposed model will be released in
+with strong performance. The proposed model will be released2in
 the ESPnet toolkit [27]. We expect this work to attract more attention
  toward building universal SE models, which can also benefit
 many downstream speech tasks such as automatic speech recognition
@@ -96,13 +98,13 @@ In this section, we first describe the overall architecture of the proposed
 each of the variable conditions that make our model versatile.
 1We validate the speech separation and enhancement abilities separately.
 2https //github.com/espnet/espnet
-979-8-3503-0689-7/23/$31.00 2023 IEEE to Appear in Proc. ASRU 2023 2309.17384 2  [eess.AS]  16 2024(a) Proposed USES model.
+979-8-3503-0689-7/23/$31.00  2023 IEEE to Appear in Proc. ASRU 2023arXiv 2309.17384v2  [eess.AS]  16 Feb 2024(a) Proposed USES model.
 (b) Multi-path block. The batch dimension is omitted in the figure. The TAC module is only used in the first  𝐾𝑠multi-path blocks.
-(c) T AC module. It is applied to both single-channel ( 𝐶   1 ) and multi-channel ( 𝐶   1 ) inputs.STFT D Conv
-2, 𝐷, (3, 3)LayerNorm D Conv
+(c) T AC module. It is applied to both single-channel ( 𝐶   1 ) and multi-channel ( 𝐶   1 ) inputs.STFT2D Conv
+2, 𝐷, (3, 3)LayerNorm2D Conv
 𝐷, 𝑁, (1, 1)Multi-path Block
   𝐾2D Conv
-𝑁, 𝐷, (1, 1)PReLU D TrConv
+𝑁, 𝐷, (1, 1)PReLU2D TrConv
 𝐷, 2, (3,3)𝐶  2 𝐹 𝑇 𝐶  𝐷 𝐹 𝑇 𝐶  𝑁 𝐹  𝑇
 iSTFT𝑁 𝐹 𝑇 𝐷  𝐹 𝑇 2 𝐹 𝑇
 Encoder Decoder① ③ ② ④ ⑤ ⑥ ⑦
@@ -140,7 +142,7 @@ be shown in Section 2.2, this model is a natural fit for handling different
  sampling frequencies. Without loss of generality, we assume
 that the input signal contains Cmicrophone channels, where Ccan
 be 1 or more. The encoder consists of a short-time Fourier transform
-(STFT) module and a subsequent 2 1. The
+(STFT) module and a subsequent 2D convolutional layer 1. The
 former converts each input channel into a complex spectrum with
 shape 2 F T, where 2 denotes the real and imaginary parts, F
 is the number of frequencies, and Tthe number of frames. The latter
@@ -163,13 +165,15 @@ and decoder , following the observations in a recent paper [29].
 Specifically, we adopt the complex spectral mapping method instead
 of complex-valued masking in TFPSNet, as it is shown to produce
 better performance [29]. Therefore, the original convolutional layers
- for mask estimation are replaced with a single 2 6. The projection layers in the encoder and decoder are also
-replaced with 2 1 7
+ for mask estimation are replaced with a single 2D convolutional
+layer 6. The projection layers in the encoder and decoder are also
+replaced with 2D convolutional 1and transposed convolutional 7
 layers, respectively. The multi-path block 4is mostly the same
 as that in TFPSNet, containing a transformer layer for frequency
 3While we mainly focus on speech enhancement in this paper, we also
 show in Section 3.3 that this model works well for speech separation.
-(a) 16kHz(b) 8kHzFig. 2  STFT with fixed-duration window and hop sizes (e.g., 32 16 ms) will generate spectra with the same frequency and
+(a) 16kHz(b) 8kHzFig. 2  STFT with fixed-duration window and hop sizes (e.g., 32
+ms and 16 ms) will generate spectra with the same frequency and
 temporal resolution for different sampling frequencies.
 sequence modeling and another for temporal sequence modeling, as
 shown in Fig. 3 (b). The transformer layers are the same as those
@@ -184,7 +188,7 @@ consistent T-F representations across different sampling frequencies
 (SFs). Since the frequency response of STFT filterbanks shifts linearly
  for all center frequencies [31], it can be easily extended to handle
  different SFs. As shown in Fig. 2, if we use fixed-duration STFT
-window and hop sizes (e.g., 32 16 ms) for different SFs, the
+window and hop sizes (e.g., 32 and 16 ms) for different SFs, the
 resultant spectra will have constant T-F resolution. As a result, the
 STFT spectra of the same signal sampled at different SFs will have
 the same number of frames and different numbers of frequency bins,
@@ -192,17 +196,18 @@ while the resolution is always consistent. We can leverage this property
  to build an SFI model easily as long as the model is capable of
 handling inputs with two variable dimensions, time and frequency.
 Interestingly, the time-frequency domain dual-path models such
-as TFPSNet and the proposed USES model inherently satisfy this
+as TFPSNet4and the proposed USES model inherently satisfy this
 requirement and can be directly used for SFI modeling without any
 4However, this property is not noticed in the original paper [28].Table 1  Detailed information of the corpora used in our SE experiments.  #Ch  denotes the number of microphone channels in the data.
  T60  denotes the reverberation time.  Train. SNR  represents signal-to-noise ratio in the training data.  (Simu)  and  (Real)  denote the
 synthetic and recorded data, while  A  and  R  in parentheses represent anechoic and reverberant, respectively.
 Dataset Train (hr) Dev (hr) Test (hr) Sampling Freq. #Ch T60 (ms) Train. SNR (dB)
-V oiceBank DEMAND [22] 8.8 0.6 0.6 48 1 - (A)
- 0.42 (A) -DNS1 (v1) [23] (A) 90 (A) 10(R) 0.4216 1(R) 300 13000 40 1 (v2) [23] (A) 2700 (A) 300 16 1 Same as above -5 15
-(Simu) 2.3CHiME-4 [24] (Simu) 14.7 (Simu) 2.9(Real) 2.216 5 -  5
-REVERB [25] (Simu) 15.5 (Simu) 3.2(Simu) 4.816 8(Simu) 250, 500, 70020(Real) 0.7 (Real) 700
-(A) 58.0 (A) 14.7 (A) 9.0 (A) -WHAMR  [26](R) 58.0 (R) 14.7 (R) 9.016 2(R) 100 1000-6 3
+V oiceBank DEMAND [22] 8.8 0.6 0.6 48kHz 1 - (A)
+ 0.42 (A) -DNS1 (v1) [23] (A) 90 (A) 10(R) 0.4216kHz 1(R) 300  13000 40
+DNS1 (v2) [23] (A) 2700 (A) 300 Same as above 16kHz 1 Same as above -5  15
+(Simu) 2.3CHiME-4 [24] (Simu) 14.7 (Simu) 2.9(Real) 2.216kHz 5 -  5
+REVERB [25] (Simu) 15.5 (Simu) 3.2(Simu) 4.816kHz 8(Simu) 250, 500, 70020(Real) 0.7 (Real) 700
+(A) 58.0 (A) 14.7 (A) 9.0 (A) -WHAMR  [26](R) 58.0 (R) 14.7 (R) 9.016kHz 2(R) 100  1000-6 3
 modification. This is because these models treat the SE process as
 decoupled frequency sequence modeling aand temporal sequence
 modeling b, as illustrated in Fig. 1 (b), and the transformer layers
@@ -250,7 +255,7 @@ design. As shown in Fig. 3, we only make a minimal modification to
 the proposed model by adding a group of memory tokens [mem]
 5Our preliminary trial also shows it is less generalizable than STFT.
 Multi-path BlockOutput feature (seg 1)[mem]Output feature (seg 2)[mem]Multi-path BlockInput feature (seg 1)[mem]Input feature (seg 2)[mem]Forreverberantdata,[mem] [mem1](w/dereverb.)or[mem2](w/odereverb.)Foranechoicdata,[mem] [mem2](w/odereverb.)Fig. 3  Memory token-based long sequence modeling.
-of dimension 1 1 G, where Gis the group size. These learnable
+of dimension 1 N 1 G, where Gis the group size. These learnable
  memory tokens are simply concatenated as a prefix with the feature
  sequence (output of 3in Fig. 1) along the temporal dimension
 via shape broadcasting. The concatenated feature is then fed into K
@@ -280,12 +285,12 @@ on the commonly-used WSJ0-2mix benchmark [35] and its spatialized
  (anechoic) version [36] ( min mode). Each dataset consists of a
 30-hour training set, a 10-hour development set, and a 5-hour test set
 of 2-speaker clean speech mixtures sampled at 8 kHz. The signalto-interference
- ratio (SIR) ranges from -10 10 dB. The spatialized
+ ratio (SIR) ranges from -10 to 10 dB. The spatialized
 version contains 8 microphone channels, with the microphone arrangement
  sampled randomly.
 Speech enhancement in a single condition  We train our proposed
-model on the 16 1 data [23] alone to show its capability in
-a single condition. Following existing SE works [3, 4], we simulate3000 hours of non-reverberant data in total, with 2700 and hours
+model on the 16 kHz DNS1 data [23] alone to show its capability in
+a single condition. Following existing SE works [3, 4], we simulate3000 hours of non-reverberant data in total, with 2700 and300hours
 for training and development, respectively. The SE performance is
 then evaluated on the non-blind test set without reverberation, which
 is around 0.42hours. The detailed information can be found in Table
@@ -304,8 +309,9 @@ scenarios.
 In all our experiments, the proposed USES model consists of K  6
 multi-path blocks, with a TAC module in the first Ks  3 blocks
 for spatial modeling. The STFT/iSTFT window and hop sizes are
-always 32 16 ms, respectively. Following TFPSNet [28], the
-embedding dimension Dis set to 256 64. The transformer layers in the multi-path blocks have the
+always 32 and 16 ms, respectively. Following TFPSNet [28], the
+embedding dimension Dis set to 256and the bottleneck dimension
+Nto64. The transformer layers in the multi-path blocks have the
 same configuration as in [28]. The hidden dimension Hin each TAC
 module is 192. When processing multi-channel data, we always take
 the first channel as the reference channel. When the memory tokens
@@ -318,7 +324,7 @@ Our experiments are done based on the ESPnet toolkit [27]. The
 models are trained using the Adam optimizer, and the learning rate
 increases linearly to 4e-4 in the first Xsteps and then decreases by
 half when the validation performance does not improve for two consecutive
- epochs. We set Xto 4000 25000 for speech separation
+ epochs. We set Xto 4000 and 25000 for speech separation
 and enhancement experiments, respectively. During training, we divide
  the samples into 4-second chunks to reduce memory costs. The
 batch size of all experiments is 4. We also limit the number of samples
@@ -329,10 +335,10 @@ select the number of channels (up to 4 channels) to increase diversity.
 revert the variance in the model s output. For speech separation, all
 models are trained until convergence (up to 150 epochs) using the SISNR
  loss [37]  and for speech enhancement, we train all models for
-up to 20 epochs using the loss function proposed in [38]. The loss
-function is a scale-invariant multi-resolution L loss in the frequency
-domain plus a time-domain L loss term. We set the STFT window
-sizes of the multi-resolution L loss to {256, 512, 768, 1024} and
+up to 20 epochs6using the loss function proposed in [38]. The loss
+function is a scale-invariant multi-resolution L1loss in the frequency
+domain plus a time-domain L1loss term. We set the STFT window
+sizes of the multi-resolution L1loss to {256, 512, 768, 1024} and
 the time-domain loss weight to 0.5. In each experiment, the model
 with the best validation performance is selected for evaluation.
 We evaluate the SE models with the metrics below  wide-band
@@ -340,36 +346,40 @@ PESQ (PESQ-WB) [39], STOI [40], scale-invariant signal-to-noise
 ratio (SI-SNR) [37], signal-to-distortion ratio (SDR) [41], DNSMOS
  (OVRL)7[42], and word error rate (WER). Except for WER,
 a higher value indicates better performance for all metrics. The
-6 1 data alone, we only train for up to 5 epochs due to the large
+6For DNS1 data alone, we only train for up to 5 epochs due to the large
 amount of data, which are enough for the model to converge.
 7https //github.com/microsoft/DNS-Challenge/
-blob/master/DNSMOS/DNSMOS/sig_bak_ovr.onnxTable 2 0-2mix and its spatialized
+blob/master/DNSMOS/DNSMOS/sig_bak_ovr.onnxTable 2  Speech separation performance on WSJ0-2mix and its spatialized
  version ( min mode). All models are trained only on 8 kHz
-data, and tested on 8 16 kHz data.
+data, and tested on 8 kHz and 16 kHz data.
 Model SI-SNRi ( 8 kHz / 16 kHz )
 WSJ0-2mix test data
 TFPSNet [28] 21.1 / TFPSNet
  (reproduced) 21.0 / 12.0 (resampling)
   SFI STFT/iSTFT - / 19.7
 USES (1ch) 20.3 / 19.8
-  mem tokens (1ch) 20.9 / 19.3 1ch spatialized test data
+  mem tokens (1ch) 20.9 / 19.3
+1ch spatialized test data
 USES (1-2ch) 18.9 / 18.4
-  mem tokens (1-6ch) 19.9 / 18.3 2ch spatialized test data
+  mem tokens (1-6ch) 19.9 / 18.3
+2ch spatialized test data
 USES (1-2ch) 24.6 / 24.2
-  mem tokens (1-6ch) 36.1 / 35.0 2 8[43] is used for WER evaluation.
+  mem tokens (1-6ch) 36.1 / 35.0
+Whisper Large v2 model8[43] is used for WER evaluation.
 3.3. Evaluation of speech separation performance
 We first examine the effectiveness of the three components proposed
-in Section 2 0-2mix, which makes the comparison with the top-performing
+in Section 2 by evaluating the speech separation performance on
+WSJ0-2mix, which makes the comparison with the top-performing
 TFPSNet [28] convenient. In addition, the datasets are not large,
 making it easy to investigate different setups. We train the model on
-8 kHz mixture data, and evaluate the performance on both 8 16
+8 kHz mixture data, and evaluate the performance on both 8 and 16
 kHz test data. Table 2 reports the SI-SNR improvement (SI-SNRi)
 of models trained on a single channel (denoted as 1ch) and on a variable
- number of channels (denoted as 1-2 1-6ch). From the
+ number of channels (denoted as 1-2ch and 1-6ch). From the
 first section in Table 2, we observe that the proposed SFI approach
 can successfully preserve strong separation performance for the reproduced
- TFPSNet on 16 kHz data. In comparison, first downsampling
- 16 8 kHz, then applying TFPSNet trained
+ TFPSNet9on 16 kHz data. In comparison, first downsampling
+ 16 kHz mixtures to 8 kHz, then applying TFPSNet trained
 at 8 kHz for separation, and finally upsampling the separation results
  to 16 kHz (denoted as  resampling  in the second row) suffer
 from severe SI-SNR degradation. The proposed USES model also
@@ -380,7 +390,7 @@ tokens does not change the performance significantly, it enables the
 model to process variable-length inputs with a constant memory cost
 during inference.
 For experiments on the spatialized WSJ0-2mix data, we can see
-that the model achieves very similar performance on both 8 16
+that the model achieves very similar performance on both 8 and 16
 kHz data. Although the single-channel SI-SNR performance degrades
   1.4 dB, the multi-channel performance becomes much better,
  even with only 2 input channels. Further applying the memory
@@ -391,23 +401,28 @@ Given the success of the universal properties of USES in a controlled
 experimental condition in Section 3.3, this subsection compares the
 SE performance of the proposed model with memory tokens to existing
  methods on the DNS1 non-blind test data. Our models are
-respectively trained on the simulated DNS1 1 2 data without
+respectively trained on the simulated DNS1 v1 and v2 data without
 reverberation, as described in Table 1. Due to the large amount of
 training data and limited time, we only train the proposed model for
- 0.5 1 2 data, covering around 45% of the entire
-8https //huggingface.co/openai/whisper-large-v2 9Different from [28], our reproduction replaces all T-F path scanning
+ 0.5 epochs on DNS1 v2 data, covering around 45% of the entire
+8https //huggingface.co/openai/whisper-large-v2
+9Different from [28], our reproduction replaces all T-F path scanning
 transformers with the time-path scanning transformer.Table 4  Speech enhancement performance of the proposed model in diverse conditions. The models are by default trained only on 8 kHz
 data, and tested with the original sampling frequencies.  noisy  denotes the performance of the input noisy speech, while  excl  and  USES 
 denote those of the enhanced speech by corpus-exclusive SE and the proposed single SE models, respectively.  USES   denotes the proposed
-SE model trained for 5 more epochs (25 epochs in total) with variable SFs (8, 16 24 kHz, achieved via downsampling) on the same data.
+SE model trained for 5 more epochs (25 epochs in total) with variable SFs (8, 16 and 24 kHz, achieved via downsampling) on the same data.
 On REVERB and WHAMR  (reverb), the models always do denoising and dereverberation by applying the corresponding memory tokens
 [mem 1]  for other data, only denoising is performed. The best and second best results are made bold and underlined , respectively.
 PESQ-WB   STOI (  100)  SDR (dB)   DNSMOS OVRL   WER (%)  Test set Conditionnoisy excl USES USES noisy excl USES USES noisy excl USES USES noisy excl USES USES noisy excl USES USES 
-V oiceBank DEMAND 1ch, 48kHz - - - - 92.1 92.8 93.1 95.8 8.4 11.0 11.0 17.3 2.70 3.10 3.14 3.15 4.4 4.2 3.2 2.3 1ch, 16 1.98 3.08 3.11 3.06 92.1 95.3 95.0 95.9 8.5 20.4 21.5 21.8 2.70 3.16 3.19 3.18 4.4 2.7 3.1 2.8 1 (w/o reverb) 1ch, 16 1.58 3.16 3.23 3.35 91.5 97.4 97.8 98.1 9.1 19.9 19.6 20.5 2.48 3.29 3.32 3.33 7.2 6.2 6.4 5.9 1 (reverb) 1ch, 16 1.82 1.51 2.75 2.92 86.6 68.5 89.9 89.5 9.2 2.2 13.4 14.0 1.39 2.28 2.36 2.30 19.1 75.7 28.9 30.4
-CHiME-4 (Simu) 5ch, 16 1.27 3.16 2.95 2.95 87.0 98.3 97.8 97.9 7.54 20.6 18.3 19.1 2.08 3.22 3.22 3.24 5.8 4.2 4.4 4.1
-REVERB (Simu) 8ch, 16 1.48 1.82 2.09 2.08 85.2 88.1 89.8 89.8 8.7 10.5 11.9 12.2 2.10 2.84 2.98 2.98 4.9 4.7 4.6 4.6
-WHAMR  (anechoic) 2ch, 16 1.11 2.62 2.55 2.69 76.0 96.8 96.4 96.7 -2.8 16.3 15.8 16.2 1.69 3.34 3.33 3.33 8.4 6.0 6.2 6.2
-WHAMR  (reverb) 2ch, 16 1.11 2.57 2.51 2.33 73.1 96.4 96.0 94.7 -1.8 14.6 13.8 12.9 1.41 3.32 3.32 3.28 9.3 6.5 6.5 6.9 3 1 non-blind test
+V oiceBank DEMAND 1ch, 48kHz - - - - 92.1 92.8 93.1 95.8 8.4 11.0 11.0 17.3 2.70 3.10 3.14 3.15 4.4 4.2 3.2 2.3
+V oiceBank DEMAND 1ch, 16kHz 1.98 3.08 3.11 3.06 92.1 95.3 95.0 95.9 8.5 20.4 21.5 21.8 2.70 3.16 3.19 3.18 4.4 2.7 3.1 2.8
+DNS1 (w/o reverb) 1ch, 16kHz 1.58 3.16 3.23 3.35 91.5 97.4 97.8 98.1 9.1 19.9 19.6 20.5 2.48 3.29 3.32 3.33 7.2 6.2 6.4 5.9
+DNS1 (reverb) 1ch, 16kHz 1.82 1.51 2.75 2.92 86.6 68.5 89.9 89.5 9.2 2.2 13.4 14.0 1.39 2.28 2.36 2.30 19.1 75.7 28.9 30.4
+CHiME-4 (Simu) 5ch, 16kHz 1.27 3.16 2.95 2.95 87.0 98.3 97.8 97.9 7.54 20.6 18.3 19.1 2.08 3.22 3.22 3.24 5.8 4.2 4.4 4.1
+REVERB (Simu) 8ch, 16kHz 1.48 1.82 2.09 2.08 85.2 88.1 89.8 89.8 8.7 10.5 11.9 12.2 2.10 2.84 2.98 2.98 4.9 4.7 4.6 4.6
+WHAMR  (anechoic) 2ch, 16kHz 1.11 2.62 2.55 2.69 76.0 96.8 96.4 96.7 -2.8 16.3 15.8 16.2 1.69 3.34 3.33 3.33 8.4 6.0 6.2 6.2
+WHAMR  (reverb) 2ch, 16kHz 1.11 2.57 2.51 2.33 73.1 96.4 96.0 94.7 -1.8 14.6 13.8 12.9 1.41 3.32 3.32 3.28 9.3 6.5 6.5 6.9
+Table 3  Speech enhancement performance on DNS1 non-blind test
 set (without reverberation). All models are trained on 16 kHz data.
 Our models are non-causal.
 Model PESQ-WB  STOI (  100) SI-SNR (dB)  
@@ -415,15 +430,15 @@ Noisy 1.58 91.5 9.07
 GaGNet [3] (causal) 3.17 97.1 18.9
 FRCRN [4] (causal) 3.23 97.7 19.8
 MFNet [8] (non-causal) 3.43 98.0 20.3
-Proposed (DNS1 1) 3.16 97.4 19.9
-Proposed (DNS1 2) 3.46 98.1 21.2
-training set. For DNS1 1 data, we train the model for 5 epochs,
-which is around 3.7 10. The SE performance
+Proposed (DNS1 v1) 3.16 97.4 19.9
+Proposed (DNS1 v2) 3.46 98.1 21.2
+training set. For DNS1 v1 data, we train the model for 5 epochs,
+which is around 3.7 passes of the entire training set10. The SE performance
  is presented in Table 3, where we compare our proposed
 model with the top-performing methods on DNS1 data. We can see
 that although our models are only trained for very limited steps, they
 can still achieve very competitive performance compared to the existing
- SE methods. The model trained on DNS1 2 data achieves a
+ SE methods. The model trained on DNS1 v2 data achieves a
 new state-of-the-art performance while only trained for  0.5 epochs.
 However, it should be noted that our proposed model and MFNet [8]
 are non-causal, while the other listed models are causal. Therefore,
@@ -449,7 +464,7 @@ performance, which shows the benefit of training on diverse data using
  the proposed model. However, we can see that, on the 48 kHz
 V oiceBank DEMAND test set, both SE models suffer from SDR
 degradation. Our investigation implies that it is caused by the greatly
-increased frequency bins in 48 kHz (129 769), as the model is only
+increased frequency bins in 48 kHz (129  769), as the model is only
 trained on 8 kHz. To mitigate this mismatch, we continue training
 10The training of both models is well converged with our setup.Table 5  DNSMOS and ASR results on real-recorded data.
 Test setDNSMOS OVRL   WER (%)  
@@ -494,7 +509,7 @@ for evaluating the universal SE performance across various conditions,
  such as the generalizability across different domains. We hope
 this contribution can attract more efforts toward building universal
 SE models for real-world speech applications.
-11 1 test data, we prepare the transcription manually as the reference,
+11For DNS1 test data, we prepare the transcription manually as the reference,
  which is available at github.com/Emrys365/DNS_text .5. REFERENCES
 [1] J. Benesty et al. ,Springer handbook of speech processing .
 Springer, 2008, vol. 1.
@@ -561,7 +576,8 @@ Computer Speech & Language , vol. 46, pp. 535 557, 2017.[25] K. Kinoshita et al.
  framework for dereverberation and recognition of reverberant
  speech,  in Proc. IEEE WASPAA , 2013, pp. 1 4.
 [26] M. Maciejewski et al. ,  WHAMR   Noisy and reverberant
-single-channel speech separation,  in ICASSP , 2019, pp. 696 700.
+single-channel speech separation,  in ICASSP , 2019, pp. 696 
+700.
 [27] C. Li et al. ,  ESPnet-SE  End-to-end speech enhancement and
 separation toolkit designed for ASR integration,  in Proc. IEEE
 SLT, 2021, pp. 785 792.
@@ -593,11 +609,12 @@ speech separation,  in ICASSP , 2018, pp. 1 5.
 [37] J. Le Roux et al. ,  SDR half-baked or well done   in
 ICASSP , 2019, pp. 626 630.
 [38] Y .-J. Lu et al. ,  Towards low-distortion multi-channel speech
-enhancement  The ESPnet-SE submission to the L DAS22
+enhancement  The ESPnet-SE submission to the L3DAS22
 challenge,  in ICASSP , 2022, pp. 9201 9205.
 [39] A. W. Rix et al. ,  Perceptual evaluation of speech quality
 (PESQ) a new method for speech quality assessment of telephone
- networks and codecs,  in ICASSP , vol. 2, 2001, pp. 749 752.
+ networks and codecs,  in ICASSP , vol. 2, 2001, pp. 749 
+752.
 [40] C. H. Taal et al. ,  An algorithm for intelligibility prediction of
 time frequency weighted noisy speech,  IEEE Trans. ASLP . ,
 vol. 19, no. 7, pp. 2125 2136, 2011.

@@ -1,7 +1,8 @@
 Improving Cascaded Unsupervised Speech Translation with Denoising
 Back-translation
 Yu-Kuan Fu1 , Liang-Hsuan Tseng1 , Jiatong Shi2, Chen-An Li1,
-Tsu-Yuan Hsu1,Shinji Watanabe2,Hung-yi Lee1 1College of Electrical Engineering and Computer Science, National Taiwan University
+Tsu-Yuan Hsu1,Shinji Watanabe2,Hung-yi Lee1
+1College of Electrical Engineering and Computer Science, National Taiwan University
 2Language Technologies Institute, Carnegie Mellon University
 1{r11942083,r11921067,b08902123,b08201047,hungyilee}@ntu.edu.tw
 2{jiatongs@cs.cmu.edu,shinjiw@cmu.edu}
@@ -35,21 +36,21 @@ Speech translation (ST) aims to convert speech
 from one language to another, allowing seamless
 communication between individuals speaking in
 different languages. Conventional speech-to-text
-translation (S TT) system is accomplished by concatenating
+translation (S2TT) system is accomplished by concatenating
  automatic speech recognition (ASR) and
 text-to-text machine translation (MT) (Ney, 1999)
 modules. Meanwhile, the cascaded speech-tospeech
- translation (S ST) system further appends
+ translation (S2ST) system further appends
 a text-to-speech (TTS) synthesis module after the
-S TT system (Lavie et al., 1997  Wahlster, 2000 
-Nakamura et al., 2006). Recently, direct S TT
-(Bérard et al., 2016  Weiss et al., 2017) and S ST
+S2TT system (Lavie et al., 1997  Wahlster, 2000 
+Nakamura et al., 2006). Recently, direct S2TT
+(Bérard et al., 2016  Weiss et al., 2017) and S2ST
 (Jia et al., 2019, 2021) systems emerge to solve the
  Equal Contribution
-1https //anonymous-acl2023.github.io/us s-demo/error propagation and inference latency problem of
-the cascaded systems. Some direct S TT systems
+1https //anonymous-acl2023.github.io/us2s-demo/error propagation and inference latency problem of
+the cascaded systems. Some direct S2TT systems
 have shown comparable results or even outperform
-the cascaded S TT systems (Wang et al., 2021 
+the cascaded S2TT systems (Wang et al., 2021 
 Bentivogli et al., 2021).
 Most of the ST systems are trained on parallel
 data, which is extremely limited, especially for lowresource
@@ -63,7 +64,7 @@ corpora.
 Compared to parallel data, unlabelled data is
 much easier to obtain regardless of modalities.
 The ﬁrst unsupervised speech-to-text translation
-(US TT) aligned spoken words with written words
+(US2TT) aligned spoken words with written words
 and then applied unsupervised word-by-word translation
  (Chung et al., 2018, 2019b). Moreover,
 with the recent progress in unsupervised automatic
@@ -73,20 +74,21 @@ unsupervised neural machine translation (UNMT)
 Song et al., 2019), and unsupervised text-to-speech
 (UTTS) synthesis (Ni et al., 2022  Liu et al., 2022b),
 Wang et al. (2022) built an unsupervised speech-tospeech
- translation (US ST) system. Besides building
- cascaded US ST, they also generated pseudo
-labels for training direct US TT systems. Their
+ translation (US2ST) system. Besides building
+ cascaded US2ST, they also generated pseudo
+labels for training direct US2TT systems. Their
 work might be considered concurrent with ours,
 mainly focusing on techniques to conduct simple
-and effective US ST systems.
-Although the idea of cascaded US ST is simple,
+and effective US2ST systems.
+Although the idea of cascaded US2ST is simple,
 directly concatenating UASR, UNMT, and UTTS
 might suffer from severe error propagation problems.
  For example, UNMT is trained on clean
 text, and small perturbations may greatly affect the
 translation results (Belinkov and Bisk, 2017). To
 tackle the issue, research on robust NMT has been
-widely investigated (Di Gangi et al., 2019 1 2305.07455 1  [cs.CL]  12 2023et al., 2017  Sun et al., 2020)  however, improving
+widely investigated (Di Gangi et al., 2019  Sperber
+1arXiv 2305.07455v1  [cs.CL]  12 May 2023et al., 2017  Sun et al., 2020)  however, improving
  the robustness of UNMT is rarely studied. In
 this paper, we proposed denoising back-translation
 (DBT), a novel method to build a robust UNMT
@@ -112,40 +114,41 @@ text into unnormalized target text. While there may
 be some degradation in performance, this method
 simpliﬁes the pipeline of the cascaded system and
 signiﬁcantly reduces inference time.
-We evaluate our cascaded US ST system on
-CVSS (Jia et al., 2022), a multilingual S ST corpus 
+We evaluate our cascaded US2ST system on
+CVSS (Jia et al., 2022), a multilingual S2ST corpus 
  and CoV oST 2 (Wang et al., 2020b), a multilingual
  ST corpus of which CVSS built on top. We
-demonstrate that our US ST could yield reasonable
+demonstrate that our US2ST could yield reasonable
  results across multiple translation directions,
 some of which are even better than the previous supervised
  approach2. Moreover, the proposed DBT
 method can help improve the performance by mitigating
  error propagation and domain mismatch
 problems.
-2 2.1 ST
-Traditional S TT system is composed of ASR and
-MT (Ney, 1999), and S ST system further append a
+2 Related works
+2.1 ST
+Traditional S2TT system is composed of ASR and
+MT (Ney, 1999), and S2ST system further append a
 TTS model after the MT model (Lavie et al., 1997 
 Wahlster, 2000  Nakamura et al., 2006). However,
 cascaded systems might suffer from error propagation
  and inference latency. Recent develpments in
-end-to-end S TT (Bérard et al., 2016  Weiss et al.,
-2017) and S ST (Jia et al., 2019, 2021) systems
+end-to-end S2TT (Bérard et al., 2016  Weiss et al.,
+2017) and S2ST (Jia et al., 2019, 2021) systems
 have been proposed to address these issues.
 2All data are public, and we will release the code, so the
 results will be easy to reproduce.The main challenge of ST systems is the lack
 of parallel data. The unsupervised approach for
 ST is limited, but some progress has been made.
-The ﬁrst US TT system intended to learn the crossmodal
+The ﬁrst US2TT system intended to learn the crossmodal
  alignment to map speech into written words,
 and used cross-lingual embedding to align words in
 different languages Chung et al. (2018, 2019b). Additionally,
- concurrent work built a US ST system
+ concurrent work built a US2ST system
 by combining SOTA UASR, UNMT, and UTTS
-to build a cascaded US ST system. Further, they
+to build a cascaded US2ST system. Further, they
 generated pseudo labels from the cascaded system
-to train an end-to-end US ST system (Wang et al.,
+to train an end-to-end US2ST system (Wang et al.,
 2022).
 2.2 UASR
 UASR takes audio features or representations as
@@ -160,22 +163,22 @@ breaks the limit by iteratively reﬁning the audio
 segments with Hidden Markov Model (HMM) and
 GAN, achieving complete UASR.
 Recently, Baevski et al. (2021) proposed
-wav vec-U, building the GAN-based UASR framework
- on top of the representation from wav vec 2.0
-(W V2) (Baevski et al., 2020), a self-supervised
+wav2vec-U, building the GAN-based UASR framework
+ on top of the representation from wav2vec 2.0
+(W2V2) (Baevski et al., 2020), a self-supervised
 speech model. The results outperformed previous
  SOTA, and are even comparable with some
 of the best-known supervised methods. Moreover,
  the original paper has shown that with the
-cross-lingual pre-trained version of W V2 (Conneau
+cross-lingual pre-trained version of W2V2 (Conneau
  et al., 2020), UASR in other languages is
-also available. The follow-up work, wav vec-U
+also available. The follow-up work, wav2vec-U
 2.0 (Liu et al., 2022a), enabled the model to be
 trained end-to-end with the simpliﬁed pipeline and
 the improved training objective.
 2.3 UNMT
 The ﬁrst fully unsupervised neural machine translation
- model adopted a seq seq model, and the
+ model adopted a seq2seq model, and the
 encoder mapped monolingual corpus in two languages
  to a shared latent space via adversarial training.
  The decoder learned to reconstruct in both languages
@@ -183,14 +186,14 @@ encoder mapped monolingual corpus in two languages
 autoencoding loss and online back-translation loss
 (Lample et al., 2017).
 Recently, cross-lingual language model pretraining
- brought large progress to UNMT. XLM (Lam Figure
- 1  The framework of our cascade US ST.
+ brought large progress to UNMT. XLM (Lam2Figure
+ 1  The framework of our cascade US2ST.
 ple and Conneau, 2019) ﬁrst adopted masked language
  modeling pretraining to initialize the encoder
  and decoder, and then used back-translation
 loss together with denoising autoencoding loss to
-ﬁne-tune the whole seq seq model. MASS (Song
-et al., 2019) further used masked seq seq pretraining
+ﬁne-tune the whole seq2seq model. MASS (Song
+et al., 2019) further used masked seq2seq pretraining
  to pretrain encoder and decoder jointly to reduce
  the discrepancy between pretraining and ﬁnetuning.
  Their proposed method can align two languages
@@ -227,28 +230,29 @@ from paired data seems to be extremely hard. However,
 be accomplished in another way training on the
 pseudo labels generated from UASR systems (Ni
 et al., 2022  Liu et al., 2022b).
-3 1 shows the architecture overview of our proposed
+3 Methods
+Figure 1 shows the architecture overview of our proposed
  approach to unsupervised speech-to-speech
-translation (US ST). We split US ST into three
+translation (US2ST). We split US2ST into three
 stages  unsupervised speech recognition (UASR),
 unsupervised machine translation (UNMT), and unsupervised
  speech synthesis (UTTS). The modules
 were trained separately but all in an unsupervised
 manner. During inference, we form the functionality
- of S ST by concatenating them. Furthermore,
+ of S2ST by concatenating them. Furthermore,
 we proposed denoising back-translation, to mitigate
 the error propagation and the domain mismatch issues
  between UASR and UMT submodules.
 3.1 Base Architecture
 UASR We conducted our UASR subsystem following
- wav vec-U (Baevski et al., 2021), and our
+ wav2vec-U (Baevski et al., 2021), and our
 code is based on their implementation in fairseq3.
 Besides its breakthrough performance on UASR in
 multiple languages, the robustness and stabilities
 across different corpora have also been well analyzed
  (Lin et al., 2022). Thus, We mainly follow
 the data preparation procedure, model architecture,
-and the training objective of wav vec-U. During
+and the training objective of wav2vec-U. During
 inference, the model takes the preprocessed audio
 features as input and generates phoneme sequences.
 To further obtain word-level sequences, we adopt
@@ -265,7 +269,7 @@ better performance, we also learned a text denormalizer
  to transform the generated word sequences
 back into sequences with punctuation marks and
 capitalized words, namely, denormalization. The
-module was a transformer-based seq seq model.
+module was a transformer-based seq2seq model.
 We ﬁrst formed the paired data by normalizing
 raw text sentences and then trained the model with
 cross-entropy loss.
@@ -274,7 +278,7 @@ source languageSto target language Twithout
 leveraging any paired data. We conduct UNMT by
 following the architecture and pretrain process of
 MASS (Song et al., 2019), which is a transformerbased
- seq seq language model. During the ﬁnetuning
+ seq2seq language model. During the ﬁnetuning
  process, we use denoising back-translation
 plus denoising autoencoder objective to align two
 languages and increase robustness.
@@ -316,18 +320,19 @@ so the model should learn to transcribe the noisy
 pseudo sentences into clean sentences, and thus
 become more robust. The whole process of DBT
 was illustrated in Figure 2.
-4 4.1 Data
-To demonstrate our US ST systems across different
- languages, we evaluate our S ST results on
+4 Experiments
+4.1 Data
+To demonstrate our US2ST systems across different
+ languages, we evaluate our S2ST results on
 CVSS, which is a multilingual corpus built on top
 of CoV oST 2 (Wang et al., 2020b) and CommonV
  oice ver.4 (CV4  Ardila et al., 2019). Thus, we
-are also available to evaluate our S TT results on
-CoV oST 2 4.
+are also available to evaluate our S2TT results on
+CoV oST 2 and ASR results on CV4.
 However, we do not utilize any paired data
 from the corpus during training   instead, we use
 audio and text data from different corpora, constructing
- an unpaired scenario for our US ST. For
+ an unpaired scenario for our US2ST. For
 audio, we adopt Common V oice ver.4 for UASR
 and LJspeech (Ito and Johnson, 2017) for UTTS
 without using any transcriptions from them  and
@@ -339,25 +344,27 @@ open-sourced and public-available.
  2015)
 5Following Liu et al. (2022b), we exclude the transcriptions
  of LJspeech to form fully unpaired scenario
-44.2 4 and text data
+44.2 System setups
+UASR We used audio from CV4 and text data
 from Wikipedia to train our UASR models. More
-precisely, we use 100 1 3M sentences for each language. After training,
+precisely, we use 100 hours of audio and about
+1 3M sentences for each language. After training,
  we evaluate the results with the transcriptions
-from CV4. For the pre-trained W V2 model, we
+from CV4. For the pre-trained W2V2 model, we
 directly use the cross-lingual version (XLSR  Conneau
  et al., 2020) without ﬁnetuning. XLSR had
 pre-trained in many different languages thus suiting
  our needs for training UASR in languages other
 than English.
 During preprocessing, we adopted the same conﬁguration
- in wav vec-U, except for the silence insertion
+ in wav2vec-U, except for the silence insertion
  rate of French. We found that our French
 model converged better when  SIL  token insertion
  rate is 0.5 instead.
 As for the GAN training conﬁguration, we chose
 the coefﬁcients of the loss function according to
 the original paper as follows  the gradient penalty
-weightλ  1.5 2.0, the smoothness penalty
+weightλ  1.5or2.0, the smoothness penalty
 weightγ  0.5, and the phoneme diversity loss
 weightη  4. We trained 3seeds for each conﬁguration,
  conducting 6 models for each language.
@@ -365,10 +372,10 @@ TDN For the text denormalizer (TDN), we
 adopted transformer encoder-decoder architecture,
 both of which contained 4 layers of transformer
 blocks. We constructed the input data by normalizing
- 8 10 100, and the
+ 8 10M of plain text data from CC100, and the
 objective is to reconstruct the unnormalized data.
 UNMT We used the back-translation ﬁne-tuned
-MASS model released by Microsoft to initialize
+MASS model released by Microsoft6to initialize
 our German-English and French-English UNMT
 models. For the Spanish-English UNMT model,
 we followed the same pretraining and ﬁne-tuning
@@ -387,11 +394,11 @@ UASR-generated pseudo labels, we then proceeded
 with the training of VITS7, but the transcription of
 6https //github.com/microsoft/MASS
 7https //github.com/jaywalnut310/vitsLJSpeech was replaced by the pseudo label.
-4.3 Supervised cascaded S ST
+4.3 Supervised cascaded S2ST
 First, we constructed our upper bound model
-by training a supervised cascaded S ST
+by training a supervised cascaded S2ST
 (ASR MT TTS) which shares similar model
-architecture with our US ST.
+architecture with our US2ST.
 For ASR, we ﬁnetuned the whole XLSR instead
 of treating it as a feature extractor. We adopted
 letter-based training and followed the conﬁguration
@@ -401,7 +408,7 @@ Furthermore, we ﬁnetuned the XLSR models individually
  for each language. MT is achieved by
 training the same initial model with UNMT, but
 the training data were the transcriptions of CoV oST
-2 100. We supervised trained with CoVoST
+2 plus CC100. We supervised trained with CoVoST
  2, and CC100 was used for back-translation
 training, which can boost the performance of supervised
  machine translation models. Finally, instead
@@ -409,20 +416,21 @@ of training on pseudo labels from UASR, the supervised
  TTS model directly uses the reference
 phoneme sequences and their corresponding utterance
  audio as paired data.
-By constructing cascaded supervised S ST, we
+By constructing cascaded supervised S2ST, we
 can discuss the performance individually for each
 component.
 4.4 Evaluation
 The evaluation metric of ASR was normalized
 word error rate (WER), which removed all punctuation
  marks and converted all characters to lowercase.
- We used sacreBLEU to calculate the BLEU
-score of S TT. For the ﬁnal S ST results, Whisper
+ We used sacreBLEU8to calculate the BLEU
+score of S2TT. For the ﬁnal S2ST results, Whisper
 9(Radford et al., 2022), a supervised ASR model
 released by OpenAI, is adopted to transcribe the
 hypothesized audio and calculated the BLEU score.
-4.5 1, including the results
-of ASR, S TT, and S ST. To compare our US ST
+4.5 Results
+We show our results in Table 1, including the results
+of ASR, S2TT, and S2ST. To compare our US2ST
 system with others  works, we collect some results
 from the previous studies on CoV oST 2 and CVSS
 ((a) (f),(h) (i)). To get better comparisons, both
@@ -430,72 +438,72 @@ cascaded and direct systems are included.
 Next, we discuss the details of the methods in the
 table. (a)comes from Wang et al. (2020b)  among
 all experiments in their paper, we only report the
-results of the cascaded S TT system constructed
+results of the cascaded S2TT system constructed
 8https //github.com/mjpost/sacrebleu
 9we used the cross-lingual large-v2 model released by
 https //github.com/openai/whisper
-5 1 2 for S TT, and CVSS for S ST. C-T stands for cascaded S TT 
-D-S for direct S ST.
-Method TypeASR  S TT (X En)  S ST (X En) 
+5Table 1  The results are evaluated on CoV oST 2 for S2TT, and CVSS for S2ST. C-T stands for cascaded S2TT 
+D-S for direct S2ST.
+Method TypeASR  S2TT (X En)  S2ST (X En) 
 Fr De Es Fr De Es Fr De Es
 SUPERVISED LEARNING
 (a)Wang et al. (2020b) C-T 18.3 21.4 16.0 27.6 21.0 27.4 - - (b)fairseq
- S T (T-Sm) (Wang et al., 2020a) D-T - - - 26.3 17.1 23.0 - - (c)fairseq
- S T (Multi. T-Md) D-T - - - 26.5 17.5 27.0 - - (d)XLS-R
+ S2T (T-Sm) (Wang et al., 2020a) D-T - - - 26.3 17.1 23.0 - - (c)fairseq
+ S2T (Multi. T-Md) D-T - - - 26.5 17.5 27.0 - - (d)XLS-R
  (2B) (Babu et al., 2021) D-T - - - 37.6 33.6 39.2 - - (e)Translatotron
  (Jia et al., 2019) D-S - - - - - - 15.5 6.9 14.1
 (f)Translatotron 2 (Jia et al., 2021) D-S - - - - - - 28.3 19.7 23.5
 (g)Our upper bound C-S 16.2 14.1 11.0 29.5 25.6 31.0 23.8 21.8 26.2
 UNSUPERVISED LEARNING
-(h)Wang et al. (2022) cascaded US ST - - - 24.4 - 23.4 21.6 - 21.2
-(i)Wang et al. (2022) end-to-end US ST - - - 24.2 - 24.0 21.2 - 20.1
-(j)Our cascaded US ST C-S33.2 23.8 17.420.0 19.5 23.8 13.4 13.8 16.7
-(k)Our cascaded US ST with DBT (artiﬁcial noise) C-S 20.8 20.4 24.5 14.4 14.7 17.4
+(h)Wang et al. (2022) cascaded US2ST - - - 24.4 - 23.4 21.6 - 21.2
+(i)Wang et al. (2022) end-to-end US2ST - - - 24.2 - 24.0 21.2 - 20.1
+(j)Our cascaded US2ST C-S33.2 23.8 17.420.0 19.5 23.8 13.4 13.8 16.7
+(k)Our cascaded US2ST with DBT (artiﬁcial noise) C-S 20.8 20.4 24.5 14.4 14.7 17.4
 by monolingual ASR and bilingual MT for fair
-comparison. According to the table, our US TT
+comparison. According to the table, our US2TT
 performances in De En are just having small degradation
  from theirs ( (j)and(k)vs(a)), indicating
-that our US TT system can be comparable to some
-early supervised cascaded S TT works in some
+that our US2TT system can be comparable to some
+early supervised cascaded S2TT works in some
 language pairs.
 Rows (b)and(c)are the results of the direct
-S TT systems from Wang et al. (2020a). They have
-developed a tool-kit for S TT and demonstrated
+S2TT systems from Wang et al. (2020a). They have
+developed a tool-kit for S2TT and demonstrated
 it on CoV oST 2 with different model backbones.
-We compare our US TT results (row (j) and (k) )
+We compare our US2TT results (row (j) and (k) )
 with their Transformer-based models. Our results
 have not only outperformed their small model ( (b))
 in De-En and Es-En tasks but also outperformed
 their large model in De-En (row (c)). Our works
-are comparable to some early direct S TT systems
+are comparable to some early direct S2TT systems
 ((b),(c)) except for the Fr-En pair.
-Row (d)is the SOTA direct S TT model, which
-is a cross-lingual speech model based on wav vec
+Row (d)is the SOTA direct S2TT model, which
+is a cross-lingual speech model based on wav2vec
 2.0 architecture. Taking advantage of the large
 pretrained self-supervised model, the performance
 is signiﬁcantly better than all the other works in all
 language pairs, showing there is still a huge gap
-between SOTA supervised S TT and our US TT
+between SOTA supervised S2TT and our US2TT
 systems.
 Rows (h)and (i)come from the concurrent
-US ST system (Wang et al., 2022)  (h)is constructed
+US2ST system (Wang et al., 2022)  (h)is constructed
  by concatenating UASR, UNMT, and
-UTTS, and (i)is an end end S ST systems trained
+UTTS, and (i)is an end2end S2ST systems trained
 on pseudo labels generated by (h). Our model architecture
  is similar to theirs, while they ﬁne-tune
-the wav vec 2.0 with target languages in UASR to
+the wav2vec 2.0 with target languages in UASR to
 mitigate the domain mismatch between pretraining
-and downstream tasks. For Fr-En S TT, their per-formance is superior to ours. This may be due to
+and downstream tasks. For Fr-En S2TT, their per-formance is superior to ours. This may be due to
 the difﬁculty of French UASR, which has a higher
 error rate than other languages. This phenomenon
 was also observed in Wang et al. (2022), and we
 think that it might be more severe in our case since
-we did not ﬁne-tune the wav vec 2.0 models on the
+we did not ﬁne-tune the wav2vec 2.0 models on the
 target languages. Suffering from domain mismatch,
 our systems still outperform their works in Es-En
-S TT.
-The performance of our S ST systems drops
-even more than S TT. However, this is because we
+S2TT.
+The performance of our S2ST systems drops
+even more than S2TT. However, this is because we
 did not utilize the data from CVSS when training
 our UTTS models for the fairness concern. Other
 studies ( (e),(f),(h),(i)) directly trained the whole
@@ -505,12 +513,12 @@ our models are trained with LJSpeech (row (g),
 problems during inference on out-domain data. We
 had also investigated the cause of the performance
 drop in the later section and came out with the same
-conclusion. In spite of this, our unsupervised S ST
+conclusion. In spite of this, our unsupervised S2ST
 results still outperform Translatotron (row (j),(k)
 v.s.(e)) in De-En and Es-EN translation directions.
 Last but not least, Our cascaded system with
-DBT (k)outperforms (j)by 0.7 0.9 in both
-US TT and US ST, indicating a model can better
+DBT (k)outperforms (j)by 0.7 to 0.9 in both
+US2TT and US2ST, indicating a model can better
  translate the noisy input under the guidance of
 DBT, and thus mitigate the problem of error propagation
  in cascaded systems.
@@ -518,7 +526,7 @@ DBT, and thus mitigate the problem of error propagation
 Stabilities of UASR cross different languages
 First of all, we found that the stabilities of our
 UASR models vary between languages. The measurement
- of the stability is by calculating the per centage
+ of the stability is by calculating the per6centage
  of the converged rate among the models
 leveraging the same amount of text and speech
 data. We consider a UASR model is converged if
@@ -528,7 +536,7 @@ and Spanish are easier to converge  while French
 usually can not converge well. However, we found
 that it might be more suitable for French UASR
 models to converge if we change the  SIL  token
-insertion rate from 0.25 0.5.
+insertion rate from 0.25to0.5.
 Table 2  Stabilities of UASR across different languages.
 
 Lang. SIL 
@@ -540,7 +548,7 @@ Es 0.25 27.0% 50%
 Fr 0.25 49.2%  10%
 0.50 35.2% 17%
 Decoding and self-training in UASR The original
- outputs of wav vec-U are in phoneme-level,
+ outputs of wav2vec-U are in phoneme-level,
 which are incompatible with the UNMT. However,
 with the integration with LM, we are available to
 obtain word-level output sequences. As shown in
@@ -573,9 +581,12 @@ We use the same 4-gram LM (phoneme-level or wordlevel)
  across different methods.
 Method LM PER(%) WER(%)
 (I)Without self-training
-Viterbi   25.2 29.5 39.5 21.3 34.4
+Viterbi   25.2 Kenlm
+   29.5 39.5
+WFST   21.3 34.4
 (II)With self-training
-Viterbi HMM   15.2 25.3 14.4 23.8
+Viterbi HMM   15.2 25.3
+WFST HMM   14.4 23.8
 original DBT ﬁne-tuning, but ﬁne-tunes on normalized
  source text and unnormalized target text.
 While directly ﬁne-tune the checkpoint pretrained
@@ -607,21 +618,22 @@ potential solution would be pretraining the model
 on normalized source text and unnormalized target
 text from scratch.
 Robustness of UNMT DBT has been shown to
-improve the performance of cascaded S TT and
-S ST systems. In this section, we investigate the
+improve the performance of cascaded S2TT and
+S2ST systems. In this section, we investigate the
 robustness of UNMT. Table 4 shows the BLEU
 scores of translating the ground truth of CoV oST
 ("Clean"), and that of translating the output of
-7 4  Robustness of UNMT across languages.
+7Table 4  Robustness of UNMT across languages.
 "Clean" and "ASR" refer to the BLEU score of translating
  on the ground truth and UASR output respectively.
 DirectionClean ASR
 BT DBT BT DBT
 Fr-En 35.3 35.0 20.0 20.8
 De-En 27.1 28.0 19.5 20.4
-Es-En 33.4 33.1 23.8 24.5 5  The BLEU score of integrating text normalization
- and UNMT for De-En S TT.
-Model S TT
+Es-En 33.4 33.1 23.8 24.5
+Table 5  The BLEU score of integrating text normalization
+ and UNMT for De-En S2TT.
+Model S2TT
 (I) TDN   UNMT 20.8
 (II) UNMT 13.0
 (III) NFT 18.2
@@ -647,7 +659,7 @@ Performance analysis of UTTS In this section,
 we present more analytical results of our UTTS
 submodule. In part (I)in Table 6, we evaluate our
 supervised TTS and UTTS on in-domain testing
-set (LJspeech) and out-domain testing set (US ST,
+set (LJspeech) and out-domain testing set (US2ST,
 Fr En). After we got the synthesis speech, we
 send the audio to whisper and then calculate the
 WER. We used the base model for this experiment
@@ -669,7 +681,7 @@ sup. ST 23.8 20.6
 unsup. ST (BT) 15.5 13.4
 main mismatch between the training data of TTS
 models and the testing data is one of the main reasons
- for our S ST performance drop. Leveraging
+ for our S2ST performance drop. Leveraging
 the data from CVSS for UTTS training might be a
 solution, but it may also induce fairness concerns
 from our point of view.
@@ -682,7 +694,7 @@ drop induced by pseudo-labeling is acceptable or
 at least reasonable.
 6 Conclusion
 In this work, we build cascaded unsupervised
-speech-to-speech translation (US ST) systems in
+speech-to-speech translation (US2ST) systems in
 several translation directions. To further improve
 the performance and mitigate the error propagation
 problems, we propose denoising back-translation
@@ -698,26 +710,26 @@ different settings individually  and we also attempt
 to integrate the TDN into the UNMT to reduce
 inference latency. In the future, we may investigate
  more techniques that can reduce the error
-propagation problems between different unsuper vised
+propagation problems between different unsuper8vised
  cascaded modules  or conduct direct UST or
-US ST.
+US2ST.
 Limitations
 In this work, we have handled the problem of error
 propagation among UASR, TDN, and UNMT. Nevertheless,
  we didn t resolve that between UTTS and
 other modules, which may lead to a lower score of
-the S ST result.
+the S2ST result.
 Our methodology works for most languages,
-however, our US ST is based on UNMT for unpaired
+however, our US2ST is based on UNMT for unpaired
  text data. Therefore, it is limited to written
  languages. We believe that our denoise backtranslation
- brings new insights to US ST and can
+ brings new insights to US2ST and can
 extend to unwritten language setups.
 Ethics Statement
 Our works build an effective UST cascaded system
 and try to mitigate the error propagation and inference
  latency. The communities might be interested
-in how to build a direct US TT or even US ST
+in how to build a direct US2TT or even US2ST
 system or how to further improve the performance
 of the UST system.
 References
@@ -740,7 +752,7 @@ Michael Auli. 2021. Unsupervised speech recognition.
  Advances in Neural Information Processing
 Systems , 34 27826 27839.
 Alexei Baevski, Yuhao Zhou, Abdelrahman Mohamed,
-and Michael Auli. 2020. wav vec 2.0  A framework
+and Michael Auli. 2020. wav2vec 2.0  A framework
  for self-supervised learning of speech representations.
  Advances in Neural Information Processing
 Systems , 33 12449 12460.
@@ -839,7 +851,8 @@ Donna Gates, Marsal Gavalda, Torsten Zeppenfeld,
  and Puming Zhan. 1997. Janus-iii  Speechto-speech
  translation in multiple languages. In
 1997 IEEE International Conference on Acoustics,
-Speech, and Signal Processing , volume 1, pages 99 102. IEEE.
+Speech, and Signal Processing , volume 1, pages 99 
+102. IEEE.
 Jiachen Lian, Chunlei Zhang, Gopala Krishna Anumanchipalli,
  and Dong Yu. 2022. Utts  Unsupervised
  tts with conditional disentangled sequential
@@ -878,7 +891,7 @@ Hermann Ney. 1999. Speech translation  Coupling
 of recognition and translation. In 1999 IEEE International
  Conference on Acoustics, Speech, and
 Signal Processing. Proceedings. ICASSP99 (Cat. No.
-99 36258) , volume 1, pages 517 520. IEEE.
+99CH36258) , volume 1, pages 517 520. IEEE.
 Junrui Ni, Liming Wang, Heting Gao, Kaizhi Qian,
 Yang Zhang, Shiyu Chang, and Mark HasegawaJohnson.
  2022. Unsupervised text-to-speech synthesis
@@ -923,7 +936,7 @@ Auli, and Juan Pino. 2022. Simple and effective
 unsupervised speech translation. arXiv preprint
 arXiv 2210.10191 .
 Changhan Wang, Yun Tang, Xutai Ma, Anne Wu,
-Dmytro Okhonko, and Juan Pino. 2020a. fairseq s t 
+Dmytro Okhonko, and Juan Pino. 2020a. fairseq s2t 
 Fast speech-to-text modeling with fairseq. arXiv
 preprint arXiv 2010.05171 .
 Changhan Wang, Anne Wu, and Juan Pino. 2020b.

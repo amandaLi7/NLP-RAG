@@ -1,9 +1,14 @@
-StyleRF  Zero-shot 3 1 3,5 1 4,5 1 3University of Ottawa Carnegie Mellon University MBZUAI
+StyleRF  Zero-shot 3D Style Transfer of Neural Radiance Fields
+Kunhao Liu1Fangneng Zhan2Yiwen Chen1Jiahui Zhang1
+Yingchen Yu1Abdulmotaleb El Saddik3,5Shijian Lu1 Eric Xing4,5
+1Nanyang Technological University2Max Planck Institute for Informatics
+3University of Ottawa4Carnegie Mellon University5MBZUAI
 Multi-view Content ImagesReference Style Images   Stylized Novel Views
 Figure 1. Zero-shot 3D Style Transfer. Given a set of Multi-view Content Images of a 3D scene, StyleRF can transfer arbitrary Reference
 Styles to the 3D scene in a zero-shot manner, rendering high-quality Stylized Novel Views with superb multi-view consistency.
 Abstract
-3 3D scene with multi-view consistency. However, most existing
+3D style transfer aims to render stylized novel views of
+a 3D scene with multi-view consistency. However, most existing
  work suffers from a three-way dilemma over accurate
  geometry reconstruction, high-quality stylization, and
 being generalizable to arbitrary new styles. We propose
@@ -20,7 +25,8 @@ innovative designs. The ﬁrst is sampling-invariant content
  transformation that makes the transformation invari*Shijian
  Lu is the corresponding author.ant to the holistic statistics of the sampled 3D points and
 accordingly ensures multi-view consistency. The second is
-deferred style transformation of 2 3D points but greatly reduces
+deferred style transformation of 2D feature maps which is
+equivalent to the transformation of 3D points but greatly reduces
  memory footprint without degrading multi-view consistency.
  Extensive experiments show that StyleRF achieves
 superior 3D stylization quality with precise geometry reconstruction
@@ -29,14 +35,15 @@ zero-shot manner. Project website  https //kunhaoliu.github.io/StyleRF/
 
 1. Introduction
 Given a set of multi-view images of a 3D scene and an
-image capturing a target style, 3 3D scene that have the target style
+image capturing a target style, 3D style transfer aims to generate
+ novel views of the 3D scene that have the target style
 consistently across the generated views (Fig. 1). Neural
 style transfer has been investigated extensively, and stateof-the-art
- methods allow transferring arbitrary styles in aarXiv 2303.10598 3  [cs.CV]  24 2023zero-shot manner. However, most existing work focuses
+ methods allow transferring arbitrary styles in aarXiv 2303.10598v3  [cs.CV]  24 Mar 2023zero-shot manner. However, most existing work focuses
 on style transfer across 2D images [15, 21, 24] but cannot
 extend to a 3D scene that has arbitrary new views. Prior
 studies [19, 22, 37, 39] have shown that naively combining
-3 2D style transfer often leads
+3D novel view synthesis and 2D style transfer often leads
 to multi-view inconsistency or poor stylization quality, and
 3D style transfer should optimize novel view synthesis and
 style transfer jointly.
@@ -93,7 +100,8 @@ style transformation to the volume-rendered 2D feature
 maps based on the observation that the style transformation
  of each point is the same. By formulating the style
 transformation by pure matrix multiplication and adaptive
-bias addition, transforming 2 3D point features but it
+bias addition, transforming 2D feature maps is mathematically
+ equivalent to transforming 3D point features but it
 saves computation and memory greatly. Thanks to the
 memory-efﬁcient representation of 3D scenes and deferred
 style transformation, our network can train with 256 256
@@ -180,7 +188,8 @@ They can produce smooth videos, but have little knowledge
 of the underlying 3D geometry and cannot render consistent
 frames in arbitrary views [19, 37].
 Huang et al. ﬁrst tackle stylizing complex 3D
-scenes [19]. They construct a 3D scene by back-projectingimage features into the 3 3D
+scenes [19]. They construct a 3D scene by back-projectingimage features into the 3D space to form a point cloud and
+then perform style transformation on the features of 3D
 points. Their method can achieve zero-shot style transfer,
 but requires an error-prone pre-trained depth estimator to
 model scene geometry. [37] also constructs a point cloud
@@ -213,9 +222,11 @@ Style Transformation (DST) described in Sec. 3.2.2 transforms
   Fcto the feature map Fcsadaptively using the sum
 weight of the sampled points wralong the ray rand the style
 information T,µ(Fs),andσ(Fs). Finally, a stylized novel
-view is generated via a CNN decoder.3.1. Feature Grid 3 3D scene with deep features, we use a continuous
+view is generated via a CNN decoder.3.1. Feature Grid 3D Representation
+To model a 3D scene with deep features, we use a continuous
  volumetric ﬁeld of density and radiance. Different
-from the original NeRF [36], for every queried 3 3, we get a volume density σ(x)and a multi-channel
+from the original NeRF [36], for every queried 3D position
+x R3, we get a volume density σ(x)and a multi-channel
 featureF(x) RCinstead of an RGB color, where Cis
 the number of the feature channels. Then we can get the
 feature of any rays rpassing through the volume by integrating
@@ -224,7 +235,8 @@ feature of any rays rpassing through the volume by integrating
 F(r)  N 
 i 1wiFi, (1)
 wherewi  exp 
-  i 1 1σjδj 
+  i 1 
+j 1σjδj 
  (1 exp ( σiδi)),
 (2)
 whereσi,Fidenotes the volume density and feature of sampled
@@ -276,7 +288,7 @@ it has two problems  1)vanilla zero-shot style transformation
  is conditioned on holistic statistics of the sampled point
 batch [21, 28, 32], which violates multi-view consistency in
 volume rendering as the feature transformation of a speciﬁc
-3 2)volume
+3D point will vary across different sampled points  2)volume
  rendering requires sampling hundreds of points along
 a single ray, which makes transformation on the point batch
 memory-intensive.
@@ -323,8 +335,10 @@ Channel-wise self-attention can thus be implemented by
 where denotes matrix multiplication and  cov(Q,K ) 
 RN C  C denotes the covariance matrix in the channel dimension.
 
-3.2.2 3D point, we apply
- DST to the volume-rendered 2 3D point features  Fi. To ensure multi-view consistency,
+3.2.2 Deferred Style Transformation
+After applying SICT to the features of each 3D point, we apply
+ DST to the volume-rendered 2D feature maps  Fcrather
+than 3D point features  Fi. To ensure multi-view consistency,
  we formulate the transformation as matrix multiplication
  and adaptive bias addition as illustrated in Fig. 4.
 Speciﬁcally, we ﬁrst extract feature maps Fsof the reference
@@ -338,7 +352,7 @@ can partially instill style information, they are not expressive
  enough without bias addition containing style information
  [58]. Thus following [21], we multiply the featuremaps with the standard-deviation value σ(Fs)and add the
 mean valueµ(Fs). To ensure it is equivalent when applying
-the transformation to either 3 2D feature
+the transformation to either 3D point features or 2D feature
 maps, we adaptively modulate the mean value µ(Fs)with
 the sum weight of sampled points along each ray wr. DST
 can be mathematically formulated by 
@@ -364,7 +378,8 @@ T  Fi)
    ,(9)
 where part (i) can be seen as applying style transformation
  on every 3D point feature independently before volume
-rendering. This proves that applying DST on 2 3D
+rendering. This proves that applying DST on 2D feature
+maps is equivalent to applying the transformation on 3D
 points  features, maintaining multi-view consistency. The
 full derivation of Eq. (9) is provided in the appendix.
 Finally, we adopt a 2D CNN decoder to project the stylized
@@ -391,9 +406,12 @@ supervising feature maps are not strictly multi-view consistent.
 and RGB images. Following [19, 37], we use perceptualloss [24] as additional supervision to increase reconstructed
 image quality. The overall loss function is 
 Lgrid  
-r R   ˆF(r) F(r)   2 2    ˆIR IR   2 2
+r R   ˆF(r) F(r)   2
+2    ˆIR IR   2
+2
   
-l lp   Fl(ˆIR) Fl(IR)   2 2,(10)
+l lp   Fl(ˆIR) Fl(IR)   2
+2,(10)
 whereRis the set of rays in each training batch, ˆF(r),F(r)
 are the predicted and ground truth feature of ray r,ˆIR,IR
 are the predicted and ground truth RGB image, lpdenotes
@@ -442,7 +460,9 @@ AdaIN [21] 0.152 0.123 0.220 0.186
 CCPL [60] 0.110 0.106 0.191 0.174
 ReReVST [57] 0.098 0.080 0.186 0.146
 LSNV [19] 0.093 0.092 0.181 0.155
-Hyper [8] 0.084 0.068 0.131 0.101 0.072 0.082 0.149 0.137 1. Results on consistency. We compare StyleRF with the
+Hyper [8] 0.084 0.068 0.131 0.101
+Ours 0.072 0.082 0.149 0.137
+Table 1. Results on consistency. We compare StyleRF with the
 state-of-the-art on consistency using LPIPS (  ) and RMSE (  ).
 can successfully restore the intricate geometry of complex
 scenes thanks to its radiance ﬁeld representations. In addition,
@@ -481,7 +501,10 @@ it produces over-smooth results and inadequate stylization
 as shown in Fig. 5.
 4.3. Ablation Studies
 We design two innovative techniques to improve the stylization
- quality and maintain the multi-view consistency.Ground Truth Novel ViewsLSNVHyperOursNovel View 1 2 1 2Depth Map
+ quality and maintain the multi-view consistency.Ground Truth Novel ViewsLSNVHyperOursNovel View 1Novel View 2Depth Map
+Scene
+Style
+Novel View 1Novel View 2Depth Map
 Scene
 StyleN/A
 N/AFigure 5. Comparison of StyleRF with two state-of-the-art zero-shot 3D style transfer methods LSNV [19] and Hyper [8]. For each of the
@@ -576,7 +599,8 @@ style transfer methods, and can be extended to various interesting
  applications for artistic 3D creations.
 Acknowledgement
 This project is funded by the Ministry of Education Singapore,
- under the Tier-1 18/22.References
+ under the Tier-1 project scheme with project number
+RT18/22.References
 [1] Panos Achlioptas, Olga Diamanti, Ioannis Mitliagkas, and
 Leonidas Guibas. Learning representations and generative
 models for 3d point clouds. In International conference on
@@ -671,7 +695,8 @@ real-time with adaptive instance normalization. In Proceedings
  of the IEEE international conference on computer vision,
  pages 1501 1510, 2017. 2, 3, 4, 5, 6, 7
 [22] Yi-Hua Huang, Yue He, Yu-Jie Yuan, Yu-Kun Lai, and Lin
-Gao. Stylizednerf  consistent 3 2d-3d mutual learning. In Proceedings of
+Gao. Stylizednerf  consistent 3d scene stylization as stylized
+ nerf via 2d-3d mutual learning. In Proceedings of
 the IEEE/CVF Conference on Computer Vision and Pattern
 Recognition , pages 18342 18352, 2022. 2, 3, 6
 [23] Mengqi Ji, Juergen Gall, Haitian Zheng, Yebin Liu, and Lu
@@ -685,7 +710,8 @@ Springer, 2016. 2, 3, 6
 [25] Angjoo Kanazawa, Shubham Tulsiani, Alexei A Efros, and
 Jitendra Malik. Learning category-speciﬁc mesh reconstruction
  from image collections. In Proceedings of the European
- Conference on Computer Vision (ECCV) , pages 371 386, 2018. 2[26] Sosuke Kobayashi, Eiichi Matsumoto, and Vincent Sitzmann.
+ Conference on Computer Vision (ECCV) , pages 371 
+386, 2018. 2[26] Sosuke Kobayashi, Eiichi Matsumoto, and Vincent Sitzmann.
  Decomposing nerf for editing via feature ﬁeld distillation.
  arXiv preprint arXiv 2205.15585 , 2022. 8
 [27] Kiriakos N Kutulakos and Steven M Seitz. A theory of shape
@@ -694,7 +720,8 @@ by space carving. International journal of computer vision ,
 [28] Xueting Li, Sifei Liu, Jan Kautz, and Ming-Hsuan Yang.
 Learning linear transformations for fast image and video
 style transfer. In Proceedings of the IEEE/CVF Conference
-on Computer Vision and Pattern Recognition , pages 3809 3817, 2019. 3, 4, 5
+on Computer Vision and Pattern Recognition , pages 3809 
+3817, 2019. 3, 4, 5
 [29] Yijun Li, Chen Fang, Jimei Yang, Zhaowen Wang, Xin Lu,
 and Ming-Hsuan Yang. Universal style transfer via feature
 transforms. Advances in neural information processing systems,
@@ -736,7 +763,8 @@ Representing scenes as neural radiance ﬁelds for view synthesis.
 [37] Fangzhou Mu, Jian Wang, Yicheng Wu, and Yin Li. 3d photo
 stylization  Learning to generate stylized novel views from a
 single image. In Proceedings of the IEEE/CVF Conference
-on Computer Vision and Pattern Recognition , pages 16273 16282, 2022. 2, 3, 5
+on Computer Vision and Pattern Recognition , pages 16273 
+16282, 2022. 2, 3, 5
 [38] Thomas M  uller, Alex Evans, Christoph Schied, and Alexander
  Keller. Instant neural graphics primitives with a multiresolution
  hash encoding. arXiv preprint arXiv 2201.05989 ,
@@ -750,7 +778,7 @@ Vision and Pattern Recognition , pages 11453 11464, 2021.
 3, 4
 [41] Michael Niemeyer, Lars Mescheder, Michael Oechsle, and
 Andreas Geiger. Differentiable volumetric rendering  Learning
- implicit 3 3d supervision. In
+ implicit 3d representations without 3d supervision. In
 Proceedings of the IEEE/CVF Conference on Computer Vision
  and Pattern Recognition , pages 3504 3515, 2020. 2
 [42] Simon Niklaus and Feng Liu. Softmax splatting for video
@@ -796,14 +824,15 @@ preprint arXiv 1409.1556 , 2014. 5
 [52] Cheng Sun, Min Sun, and Hwann-Tzong Chen. Direct voxel
 grid optimization  Super-fast convergence for radiance ﬁelds
 reconstruction. In Proceedings of the IEEE/CVF Conference
-on Computer Vision and Pattern Recognition , pages 5459 5469, 2022. 2[53] Zachary Teed and Jia Deng. Raft  Recurrent all-pairs ﬁeld
+on Computer Vision and Pattern Recognition , pages 5459 
+5469, 2022. 2[53] Zachary Teed and Jia Deng. Raft  Recurrent all-pairs ﬁeld
 transforms for optical ﬂow. In European conference on computer
  vision , pages 402 419. Springer, 2020. 6
 [54] Dmitry Ulyanov, Andrea Vedaldi, and Victor Lempitsky. Instance
  normalization  The missing ingredient for fast stylization.
  arXiv preprint arXiv 1607.08022 , 2016. 4
 [55] Nanyang Wang, Yinda Zhang, Zhuwen Li, Yanwei Fu, Wei
-Liu, and Yu-Gang Jiang. Pixel mesh  Generating 3d mesh
+Liu, and Yu-Gang Jiang. Pixel2mesh  Generating 3d mesh
 models from single rgb images. In Proceedings of the European
  conference on computer vision (ECCV) , pages 52 67,
 2018. 2
@@ -827,7 +856,8 @@ Proceedings of the IEEE conference on computer vision and
 pattern recognition , pages 1912 1920, 2015. 2
 [60] Zijie Wu, Zhen Zhu, Junping Du, and Xiang Bai. Ccpl  Contrastive
  coherence preserving loss for versatile style transfer.
-InEuropean Conference on Computer Vision , pages 189 206. Springer, 2022. 6
+InEuropean Conference on Computer Vision , pages 189 
+206. Springer, 2022. 6
 [61] Lior Yariv, Yoni Kasten, Dror Moran, Meirav Galun, Matan
 Atzmon, Basri Ronen, and Yaron Lipman. Multiview neural
  surface reconstruction by disentangling geometry and appearance.

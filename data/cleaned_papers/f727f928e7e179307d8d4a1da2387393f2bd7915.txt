@@ -1,7 +1,10 @@
-Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics , pages 2714 2731 2-6, 2023 2023 Association for Computational Linguistics
+Proceedings of the 17th Conference of the European Chapter of the Association for Computational Linguistics , pages 2714 2731
+May 2-6, 2023  2023 Association for Computational Linguistics
 Methods for Measuring, Updating, and Visualizing Factual Beliefs in
 Language Models
-Peter Hase1,2 1 1 1Meta AI UNC Chapel Hill
+Peter Hase1,2Mona Diab1Asli Celikyilmaz1Xian Li1
+Zornitsa Kozareva1Veselin Stoyanov1Mohit Bansal2Srinivasan Iyer1
+1Meta AI2UNC Chapel Hill
 {peter, mbansal}@cs.unc.edu
 {mdiab, aslic, xianl, zori, ves, sviyer}@fb.com
 Abstract
@@ -30,7 +33,8 @@ greatly improve their consistency. Although
 off-the-shelf optimizers are surprisingly strong
 belief-updating baselines, our learned optimizers
  can outperform them in more difficult settings
- than have been considered in past work.1 1 Introduction
+ than have been considered in past work.1
+1 Introduction
 Pretrained language models have been shown to
 store a large amount of factual information about
 the world that can be elicited by cloze prompting
@@ -38,7 +42,8 @@ the world that can be elicited by cloze prompting
 et al., 2020), or finetuning models for question
 answering or true/false statement classification
 (Roberts et al., 2020). We refer to this kind of
-stored information as model factual beliefs .2 1Code is available at https //github.com/
+stored information as model factual beliefs .2
+1Code is available at https //github.com/
 peterbhase/SLAG-Belief-Updating .
 2We use the term factual belief rather than knowledge
 as in related work (Zhu et al., 2020  De Cao et al., 2021)
@@ -85,7 +90,7 @@ change other entailed beliefs  Does it erroneously
 change other unrelated beliefs  Past work has focused
  primarily on consistency under paraphrase
 (Elazar et al., 2021  De Cao et al., 2021  Mitchell
-et al., 2021). Here, we adapt data from Talmor SLAG   Sequential, Local, and Generalizing Model Updates
+et al., 2021). Here, we adapt data from Talmor2714SLAG   Sequential, Local, and Generalizing Model Updates
 (Main Input)
 (Entailed Data)
 (Local Neutral Data)
@@ -101,7 +106,7 @@ i), and (4) avoid changing outputs for other logically neutral data
 LN i, even if it is similar (local) to Mi. This is done iteratively for Trequested updates.
 et al. (2020) to measure consistency under entailment
  (including for contrapositives), and we use
-the Wikidata m dataset (Wang et al., 2021) to construct
+the Wikidata5m dataset (Wang et al., 2021) to construct
  logically neutral belief pairs for checking
 that models do treat these beliefs as independent.
 Updating factual beliefs. We propose a Sequential,
@@ -166,7 +171,7 @@ that LMs can answer open-ended questions. Subsequent
 Most relevant to our work are studies from Talmor
  et al. (2020) and Elazar et al. (2021). Talmor
 et al. (2020) train LMs to perform True/False classification
- of factual claims, and they measure how beliefs correlate between entailed facts. We use
+ of factual claims, and they measure how2715beliefs correlate between entailed facts. We use
 their LeapOfThought data as a part of our SLAG
 objective (Eq. 1) and to measure model consistency
  under entailment before and after updating
@@ -264,7 +269,7 @@ measure logical consistency for an updated model,
 since changing one belief entails changes in logically
  entailed beliefs. Retain Rate ( Local Neutral )2716Dataset Data Type Input Label(s)
 zsREMain Input Player Ali Kanaan plays for what team {Sporting Al Riyadi Beirut}Paraphrase What team is Ali Kanaan associated with 
-Wikidata mMain Input Mary Good has relation  award received  to {Garvan-Olin Medal  Arkansas
+Wikidata5mMain Input Mary Good has relation  award received  to {Garvan-Olin Medal  Arkansas
 Women s Hall of Fame  etc.} Paraphrase Mary Lowe Good has relation  winner of  to
 Local Neutral Mary Good has relation  educated at  to {The University of Arkansas  U
 Arkansas  etc.}
@@ -319,7 +324,8 @@ i. Then, we can package the above
 update as θ(k 1) θ(k) gϕ(xi,ˆyi, y 
 i, θ(k)), and
 obtain new model parameters via a looped update,
-θ  θ(k) K 1 0gϕ(xi,ˆyi, y 
+θ  θ(k) K 1 
+j 0gϕ(xi,ˆyi, y 
 i, θ(k j))
  Update (xi,ˆyi, y 
 i, θ(k) ϕ, K)
@@ -403,7 +409,7 @@ Datasets. We run experiments with four datasets
 FEVER includes 115,409 True/False factual claims
 (Thorne et al., 2018). We use the original test set
 of 10,444 points, and we randomly split the training
- data into 94,469 10,496 dev
+ data into 94,469 train points and 10,496 dev
 points. (2) zsRE includes 151,631 questions based
 on relational knowledge from Wikipedia, which
 we randomly shuffle into train/dev/test splits with
@@ -413,31 +419,31 @@ dataset, consisting of factual claims that are entailed
  to be true or false depending on a contextBelief Consistency  
 Dataset Paraphrase Entailed Contrapos.
 LeapOfThought - 85.6 (1.1) 16.5 (2.7)
-zsRE 69.5 (1.1) - Wikidata m
+zsRE 69.5 (1.1) - Wikidata5m
  25.8 (0.5) - Table
  2  Belief metric results across datasets.
 Paraphrase Consistency  
 Dataset Model Incorrect Model Correct
 zsRE 61.39 (1.33) 91.82 (1.17)
-Wikidata m 24.55 (0.48) 37.20 (2.06)
+Wikidata5m 24.55 (0.48) 37.20 (2.06)
 Table 3  Paraphrase consistency by the correctness of
 the model prediction on the Main Input.
 fact. We filter the data so that the context facts are
 unique, then shuffle the resulting 14,939 points into
 train/dev/test splits with 60/10/30% of the data.
 In order to get Local Neutral data, we construct
-(4) a sequence prediction task using Wikidata m,
+(4) a sequence prediction task using Wikidata5m,
 a relational knowledge base with over 20 million
 triplets (Wang et al., 2021). Each input consists
-of an entity e and relation r, and the label is another
- entity e that completes the triplet. All inputs
-come in pairs that share the same entity e but use
+of an entity e1and relation r, and the label is another
+ entity e2that completes the triplet. All inputs
+come in pairs that share the same entity e1but use
 different relations with different labels. In general,
-the completion e to the Main Input triplet ( e1,r1,
+the completion e2to the Main Input triplet ( e1,r1,
 e2) has no logical consequences for its paired input,
  (e1,r2,  ). The paired points are also local to
 the Main Input, i.e. they pertain to the same entity
-e as the Main Input. We obtain four paraphrases
+e1as the Main Input. We obtain four paraphrases
 for each Main Input using different aliases for the
 entity and synonyms of the relation. We construct
 a train set of 150k points and dev/test sets of 10k
@@ -458,7 +464,7 @@ Table 10 for final selections  results discussed in
 Appendix E). Other hyperparameters are given
 in Appendix B. To summarize the differences
 between SLAG and KNOWLEDGE EDITOR   (1) we
-useKtrain Ktestrather than Ktrain 1  (2) we adopt Single-Update Setting Update Success Rate Retain Rate  -Acc
+useKtrain Ktestrather than Ktrain 1  (2) we adopt2718Single-Update Setting Update Success Rate Retain Rate  -Acc
 Dataset Method Main Input Paraphrases Entailed Data Local Neutral All Data All Data
 FEVERAdamW 100 (0.0) - - - 98.80 (0.2) 0.22 (0.1)
 KE 99.98 ( 0.1) - - - 98.28 (0.3) -0.24 (0.1)
@@ -469,7 +475,7 @@ SLAG 100 (0.0) - 75.50 (4.3) - 94.92 (1.4) -1.31 (1.2)
 zsRESGD 99.36 (0.1) 94.44 (0.6) - - 74.73 (0.4) -0.43 (0.1)
 KE 84.73 (1.4) 89.26 (1.8) - - 71.55 (2.4) -2.19 (0.4)
 SLAG 94.29 (0.4) 94.71 (0.5) - - 80.48 (1.3) -0.29 (0.1)
-Wikidata mSGD 98.05 (0.3) 68.78 (0.8) - 41.46 (1.0) 58.62 (0.6) -1.97 (0.3)
+Wikidata5mSGD 98.05 (0.3) 68.78 (0.8) - 41.46 (1.0) 58.62 (0.6) -1.97 (0.3)
 KE 74.57 (2.9) 58.05 (2.2) - 40.84 (1.8) 53.58 (2.2) -3.03 (0.5)
 SLAG 87.59 (0.6) 80.70 (0.9) - 47.85 (1.0) 63.51 (1.3) -1.71 (0.3)
 Table 4  Belief update metrics for off-the-shelf optimizers, KNOWLEDGE EDITOR (KE) from De Cao et al. (2021),
@@ -492,7 +498,8 @@ intervals and perform hypothesis tests via block
 bootstrap, resampling model seeds and data points
 (Efron and Tibshirani, 1994). For ablation experiments,
  we run only one model seed per condition.
-5 5.1 Do LMs have consistent factual beliefs 
+5 Experiment Results
+5.1 Do LMs have consistent factual beliefs 
 We measure Paraphrase Consistency, Entailment
 Acc, and Contrapositive Acc for finetuned task
 models. Paraphrase Cons. is the fraction of paraphrase
@@ -519,7 +526,7 @@ Belief measurement results. Table 2 shows the belief
 parameter models show limited evidence of having
 consistent factual beliefs. Paraphrase consistency
 is 69.50% (  1.09) for zsRE and much lower for
-Wikidata m (25.84%  0.53). While entailment accuracy
+Wikidata5m (25.84%  0.53). While entailment accuracy
  is high for LeapOfThought (85.63%  1.08),
 the model is consistent under the contrapositive
 only 16.51% (  2.71) of the time. Overall, these
@@ -536,7 +543,7 @@ the model s beam search. We do so for zsRE using
  between KNOWLEDGE EDITOR , SLAG,
 and off-the-shelf optimizers. We report results in
 single-update ( rtest  1) and sequential-update
-(rtest  10 ) settings. See Appendix Fig. 5 for Sequential-Update Setting Update Success Rate Retain Rate  -Acc
+(rtest  10 ) settings. See Appendix Fig. 5 for2719Sequential-Update Setting Update Success Rate Retain Rate  -Acc
 Dataset Method Main Input Paraphrases Entailed Data Local Neutral All Data All Data
 FEVERAdamW 92.81 (1.3) - - - 91.86 (1.4) 1.16 (0.6)
 KE 74.13 (1.8) - - - 39.86 (0.7) -27.13 (1.3)
@@ -547,18 +554,18 @@ SLAG 100 (0.0) - 50.46 (5.5) - 74.02 (1.1) -13.03 (1.3)
 zsRESGD 82.71 (0.6) 90.81 (0.7) - - 40.49 (0.6) -2.38 (0.3)
 KE 0.10 ( 0.1) 36.55 (1.4) - - 0.05 ( 0.1) -20.98 (0.7)
 SLAG 87.57 (0.6) 92.20 (0.7) - - 47.19 (0.7) -1.74 (0.3)
-Wikidata mSGD 56.82 (0.8) 54.49 (0.7) - 6.40 (0.4) 26.37 (0.6) -3.96 (0.4)
+Wikidata5mSGD 56.82 (0.8) 54.49 (0.7) - 6.40 (0.4) 26.37 (0.6) -3.96 (0.4)
 KE 0 (0.0) 40.84 (0.9) - 0 (0.0) 0 (0.0) -10.05 (0.6)
 SLAG 58.27 (1.0) 65.51 (0.9) - 7.36 (0.5) 27.76 (0.7) -3.62 (0.4)
-Table 6 10 times. Here, SLAG uses rtrain R. On
+Table 6  Belief update results when a model is sequentially updated rtest 10 times. Here, SLAG uses rtrain R. On
 sequence prediction tasks in this setting, SLAG can outperform the off-the-shelf optimizers across metrics.
 an ablation across rtest.
 Correcting beliefs vs. changing factual beliefs.
 Given the results in Table 5, we find that correcting
 model outputs is harder than simply changing them
 to a plausible alternative. Update Success rises by a
-full 2.96 (  0.48 1 4) points for Main Inputs
-and 2.58 (  0.81 1 4) for Paraphrases, while
+full 2.96 (  0.48  p 1e 4) points for Main Inputs
+and 2.58 (  0.81  p 1e 4) for Paraphrases, while
  -Acc is virtually unchanged. This suggests that
 that past work has overestimated the efficacy of
 belief update methods for actually fixing models.
@@ -574,14 +581,16 @@ When strongly tuned, these baselines outperform
 learned optimizers on most metrics here.
 However, SLAG surpasses the baselines in a few
 places. All Data Retain Rate on zsRE rises by
-5.77 points (  1.43 1 4), and on Wikidata m
-Paraphrase Update Success rises by 11.92 (  1.20 1 4) and the Local Neutral Retain Rate by
-6.40 ( 1.41 1 4). SLAG also greatly improves
+5.77 points (  1.43  p 1e 4), and on Wikidata5m
+Paraphrase Update Success rises by 11.92 (  1.20 
+p 1e 4) and the Local Neutral Retain Rate by
+6.40 ( 1.41  p 1e 4). SLAG also greatly improves
  over KE for sequence prediction tasks.
 Interestingly, we observe that belief updates
 greatly improve paraphrase consistency and entailment
  accuracy (SLAG results in Table 7). Updates
-improve Paraphrase consistency by 33.14 1.46 3Positive  -Acc values are possibly due to distribution
+improve Paraphrase consistency by 33.14  1.46 on
+3Positive  -Acc values are possibly due to distribution
 shift in the test split. In FEVER, for instance, the train and
 dev data are 73% True, while test data is 50% True. On the
 dev split, AdamW achieves a negative  -Acc, -0.18 (  0.11).Metric Before Update After Update
@@ -590,8 +599,8 @@ Para. Cons (zsRE) 61.39 (1.3) 94.53 (0.6)
 Para. Cons (Wiki) 24.69 (0.5) 84.56 (0.9)
 Table 7  Entailment Acc and Paraphrase Consistency
 rise greatly after model updates to incorrect points.
-zsRE and 59.87 1.09 on Wikidata m, while Entailment
- Acc rises by 17.20 7.10 points.
+zsRE and 59.87  1.09 on Wikidata5m, while Entailment
+ Acc rises by 17.20  7.10 points.
 Update method results (sequential updates).
 We give results for a sequential update setting
 (rtest 10) in Table 6. Immediately we see this is a
@@ -600,19 +609,20 @@ much more difficult evaluation, as metrics are generally
 that learned optimizers with SLAG ( rtrain 10) outperform
  baselines on sequence prediction tasks.
 On zsRE, we improve Update Success for Main
-Inputs by 4.86 (  0.83 1 4) and for Paraphrases
+Inputs by 4.86 (  0.83  p 1e 4) and for Paraphrases
  by 1.39 (  0.93  p .004), with better  Acc
  by 0.64 (  0.35  p .0005). Improvements
-trend in the same direction for Wikidata m and are
+trend in the same direction for Wikidata5m and are
 all statistically significant except for the gain in  Acc.
  The jump on Paraphrases in particular is large
-(11.02 1.17 1 4). In comparison, using the
+(11.02 1.17  p 1e 4). In comparison, using the
 KNOWLEDGE EDITOR training objective leads to
 drastic drops in performance.
 Learned optimizers still struggle compared to
 baselines on binary datasets . Here, AdamW and
 SGD achieve high update update success with
-much better  -Acc scores, by 13.12 (  4.51 1 4) on FEVER and 8.16 (  1.63 1 4)
+much better  -Acc scores, by 13.12 (  4.51 
+p 1e 4) on FEVER and 8.16 (  1.63  p 1e 4)
 on LeapOfThought.2720Middle-earth is a real place.
 [y  false]
 Hot Right Now is mistakenly
@@ -678,12 +688,12 @@ beliefs change around 4% of the time when other
 beliefs are updated, while correct beliefs change
 only 2.5% of the time. Second, we find that Local
 Neutral beliefs are much harder to avoid changing
-than simply random data. On Wikidata m (Table
+than simply random data. On Wikidata5m (Table
 4), we observe that the Retain Rate on All Data isDataset
 Metric FEVER LeapOfThought
 # Nodes 10,444 8,642
 % Edgeless 0.0 0.0
-# Edges Total 1.88 9.71m
+# Edges Total 1.88m 9.71m
 # In Edges (95thperc.) 1,088 5,347
 # Out Edges (95thperc.) 390 3,087
 % Update-Transitivity 66.64 24.38*
@@ -812,7 +822,7 @@ Jack Clark, Christopher Berner, Sam McCandlish,
 Alec Radford, Ilya Sutskever, and Dario Amodei.
 2020. Language models are few-shot learners. In
 NeurIPS .
-Damai Dai, Li Dong, Yaru Hao, Zhifang Sui, and Furu Wei. 2021. Knowledge neurons in pretrained transformers.
+Damai Dai, Li Dong, Yaru Hao, Zhifang Sui, and Furu2722Wei. 2021. Knowledge neurons in pretrained transformers.
  arXiv preprint arXiv 2104.08696 .
 Nicola De Cao, Wilker Aziz, and Ivan Titov. 2021.
 Editing factual knowledge in language models. In
@@ -887,7 +897,9 @@ Association for Computational Linguistics.
 Fabio Petroni, Tim Rocktäschel, Sebastian Riedel,
 Patrick Lewis, Anton Bakhtin, Yuxiang Wu, and
 Alexander Miller. 2019. Language models as knowledge
- bases  In Proceedings of the 2019 9th International Joint Conference
+ bases  In Proceedings of the 2019 Conference
+ on Empirical Methods in Natural Language Processing
+ and the 9th International Joint Conference
 on Natural Language Processing (EMNLP-IJCNLP) ,
 pages 2463 2473, Hong Kong, China. Association
 for Computational Linguistics.
@@ -915,7 +927,9 @@ over implicit knowledge. In NeurIPS .
 James Thorne, Andreas Vlachos, Christos
 Christodoulopoulos, and Arpit Mittal. 2018.
 FEVER  a large-scale dataset for fact extraction
-and VERification. In Proceedings of the 2018 2723Human Language Technologies, Volume 1 (Long
+and VERification. In Proceedings of the 2018
+Conference of the North American Chapter of
+the Association for Computational Linguistics 2723Human Language Technologies, Volume 1 (Long
 Papers) , pages 809 819, New Orleans, Louisiana.
 Association for Computational Linguistics.
 Xiaozhi Wang, Tianyu Gao, Zhaocheng Zhu, Zhengyan
@@ -944,11 +958,12 @@ that are used to transform the model gradient on xi,
 i). For Transformer models, the method
 edits only attention and feed-forward weights, so
 all model gradients match the shape of an associated
- weight matrix of shape d1 2. Formally, a
+ weight matrix of shape d1 d2. Formally, a
 new model θ is obtained using a learned optimizer
 gϕas follows 
 h LSTM ([x  ˆy y ])
-{u, v, γ, δ } {MLP i(h)}4 1
+{u, v, γ, δ } {MLP i(h)}4
+i 1
 A softmax (u)vT
 B softmax (γ)δT
 η σ(MLP(h))
@@ -1021,26 +1036,30 @@ for experiments in the paper. Building the belief
 graphs takes 25 hours for FEVER ( n  10,444)
 and 17.5 hours for LeapOfThought ( n  8642 )
 on an NVIDIA RTX 2080 GPU. Computing summary
- statistics for graphs takes 3 3 hours for LeapOfThought for statistics be-2724 3  The backpropagation graph for sequential model updates.
+ statistics for graphs takes 3 hours on FEVER
+and 3 hours for LeapOfThought for statistics be-2724Task Model
+OptimizerBackprop
+Stop GradientSequential Backprop GraphFigure 3  The backpropagation graph for sequential model updates.
 sides Update-Transitivity. We compute UpdateTransitivity
  for LeapOfThought with a subset of
 4000 points, which takes 45 hours.
 All other experiments are run on a NVIDIA
 V100 32GB GPU. Training the task models takes
 7 minutes for LeapOfThought, 45 minutes for
-FEVER, 4 hours for zsRE, and 10 hours for Wikidata m.
- Training the learned optimizer with r  1 2.3 hours for LeapOfThought, 5 hours for
+FEVER, 4 hours for zsRE, and 10 hours for Wikidata5m.
+ Training the learned optimizer with r  1
+takes 2.3 hours for LeapOfThought, 5 hours for
 FEVER, 9.5 hours for zsRE, and 16 hours for
-Wikidata m. Training the learned optimizer with
-r  10 53 minutes for LeapOfThought, 2.9
+Wikidata5m. Training the learned optimizer with
+r  10 takes 53 minutes for LeapOfThought, 2.9
 hours for FEVER, 7 hours for zsRE, and 12.5 hours
-for Wikidata m. Computing update statistics with
-the off-the-shelf optimizers with r  1 4 minutes
+for Wikidata5m. Computing update statistics with
+the off-the-shelf optimizers with r  1takes 4 minutes
  for LeapOfThought, 30 minutes for FEVER,
-2.3 hours for zsRE, and 3.9 hours for Wikidata m.
+2.3 hours for zsRE, and 3.9 hours for Wikidata5m.
 With r  10 , the baselines require 1 minute for
 LeapOfThought, 15 minutes for FEVER, 54 minutes
- for zsRE, and 1.8 hours for Wikidata m. Total
+ for zsRE, and 1.8 hours for Wikidata5m. Total
 runtimes for each experiment should take into account
  multiple conditions and multiple seeds of
 each model being run.
@@ -1052,12 +1071,22 @@ We train for 10 epochs on the binary tasks, and
 20 for the sequence-to-sequence tasks. When predicting
  with BART-base, we use a beam search
 with width 5. In each case, we use AdamW from
-torch.optim with a LR of 1e-5 1e-4. We select the best model according
+torch.optim with a LR of 1e-5 and weight decay
+ of 1e-4. We select the best model according
 to the best dev set accuracy, checkpointing after
 each training epoch. The learned optimizers are
 optimized with AdamW, using a learning rate of
-3e-4 0. We train the learned
-optimizer for 5 1 5 10 1 1 5 10 1 1 5 10 5 1 5 10 5 10  Final hyperparameters and objective terms of
+3e-4 and weight decay of 0. We train the learned
+optimizer for 5 epochs on each dataset except forDataset rtest K Objective
+FEVER1 5 Main
+10 1 Main
+LeapOfThought1 5 Main
+10 1 Main
+zsRE1 5 Main
+10 5 Main
+Wikidata5m1 5 Main Para
+10 5 Main Para
+Table 10  Final hyperparameters and objective terms of
 the learned optimizer for each task.
 LeapOfThought, which we train for 10 epochs
 given its smaller size. The learned optimizers are
@@ -1067,7 +1096,7 @@ checkpointing after each training epoch. Their selection
 Rate (averaged over each kind of data), Retain Rate
 (Local Neutral ) and  -Acc, with terms dropped
 when they cannot be computed given the available
-data. Note that dev epochs with zsRE and Wikidata m
+data. Note that dev epochs with zsRE and Wikidata5m
  are fairly slow, so in order to speed up our
 experiments we compute dev epochs with a subset
 of 4000 dev points.
@@ -1084,11 +1113,25 @@ Ktrain 5for all experiments. For results across
 Kvalues on zsRE, see Fig. 8.
 Baseline update method . We tune a baseline offthe-shelf
  optimizer separately for each dataset, usingrtest 
- 1. Our performance criterion is the Relation % Test Data
-Place of Birth 11.00 11.00 5.66 11.00 8.33 11.00 11.00 11.00 11.00 9.01 11  Wikidata relations and their proportion of the
+ 1. Our performance criterion is the2725Relation % Test Data
+Place of Birth 11.00
+Award Received 11.00
+Cause of Death 5.66
+Place of Death 11.00
+Place of Burial 8.33
+Educated At 11.00
+Child 11.00
+Occupation 11.00
+Spouse 11.00
+Sibling 9.01
+Table 11  Wikidata relations and their proportion of the
 test data.
 Dataset Optimizer LR Num. Steps
-FEVER AdamW 1e-6 100 1e-2 100 1e-1 10 1e-1 10 12  Final hyperparameters of the baseline update
+FEVER AdamW 1e-6 100
+LeapOfThought SGD 1e-2 100
+zsRE SGD 1e-1 10
+Wikidata5m SGD 1e-1 10
+Table 12  Final hyperparameters of the baseline update
 method for each task.
 same as with learned optimizers, a raw average of
 Update Success Rate (averaged over each kind of
@@ -1106,7 +1149,7 @@ on the optimizer  {1e-4, 1e-5, 1e-6} for AdamW,
 Our final hyperparameter values are shown in Table
  12 for each dataset. For comparison, De Cao
 et al. (2021) use RMSProp with 100 update steps.
-The LR for zsRE and Wikidata m may seem quite
+The LR for zsRE and Wikidata5m may seem quite
 high, but this is the condition that actually does the
 least damage to the model s accuracy on other data,
  -Acc. The baseline optimizes all of the trainable
@@ -1114,7 +1157,7 @@ least damage to the model s accuracy on other data,
 learned optimizer which optimizes only attention
 and feedforward weights for purposes of parameter
 efficiency.
-B.3 Wikidata m Additional Details.
+B.3 Wikidata5m Additional Details.
 We construct four paraphrases per Main Input by
 selecting from a set of alternative phrasings for the
 entity and relation in the Main Input. The syntax
@@ -1165,12 +1208,13 @@ Here we give sources and licenses for each dataset,
 and we document some shortcomings of each
 dataset, with reference to examples in Table 15.
 Dataset sources and licenses. FEVER and zsRE
-are available through the KILT resource and are
+are available through the KILT4resource and are
 4https //github.com/
 facebookresearch/KILT/ fbclid 
-IwAR WiFkl-7 5_
-PcsKA vpuXaELKBz KK
-0102030 1 2 4 6 8 10
+IwAR2WiFkl-7KLIQAoNI9bJgBVKWgsAQEDV342vV5_
+PcsKA881vpuXaELKBz02726KK
+0102030
+1 2 4 6 8 10
 rMemory Used (GB)Memory Usage byrFigure 4  Training memory usage in terms of Kandrhyperparameters in our implementation, for a learned
 optimizer trained for a BART-base model on zsRE, using a batch size of 16. For comparison, the orange dashed
 line shows the memory use of training the BART-base model on zsRE, using the same batch size. Our use of the
@@ -1190,13 +1234,13 @@ accuracies, and edit success from Mitchell et al. (2021) combines two metrics in
 in Zhu et al. (2020) is an average of Update Success Rate ( Main Input ) and  -Acc.
 available under the MIT license (Petroni et al.,
 2021). LeapOfThought data can be constructed
-through their available code and is also available
-under the MIT license. The source data for Wikidata m
- data can be downloaded through the KEPLER code
+through their available code5and is also available
+under the MIT license. The source data for Wikidata5m
+ data can be downloaded through the KEPLER6code
  repository (Wang et al., 2021) and
 is available under the MIT license. Use of each
 dataset is in accordance with their intended licensed
-uses. The zsRE and Wikidata m datasets do refer
+uses. The zsRE and Wikidata5m datasets do refer
 to people by name as they reference public figures
 on Wikipedia. All datasets are in English.
 FEVER. Some claims are slightly vague or ambiguous
@@ -1239,16 +1283,16 @@ Wikidata. Aliases sometimes vary greatly even
 as they refer to the same person, or they are simply
  noisy. For example, as shown in Table 15,
  SusunW  appears in an entity name, but this is
-actually a username of someone who contributed Dataset Model Acc Paraphrase Cons  Entailment Acc  Contrapositive Acc  
+actually a username of someone who contributed2727Dataset Model Acc Paraphrase Cons  Entailment Acc  Contrapositive Acc  
 FEVER RoBERTa-base 78.29 (0.86) - - LeapOfThought
  RoBERTa-base 93.66 (0.87) - 85.63 (1.08) 16.51 (2.71)
-zsRE BART-base 21.01 (0.64) 69.50 (1.09) - Wikidata m
+zsRE BART-base 21.01 (0.64) 69.50 (1.09) - Wikidata5m
  BART-base 10.21 (0.59) 25.84 (0.53) - Table
  14  Model accuracy and belief metric results and for four datasets.
 Dataset Data Type Input Label(s)
 zsREMain Input What did Gifford Pinchot die of {Leukemia}Paraphrase How did Gifford Pinchot die 
 Main Input Player Ali Kanaan plays for what team {Sporting Al Riyadi Beirut}Paraphrase What team is Ali Kanaan associated with 
-Wikidata mMain Input Margarita Nolasco Armas has relation  place
+Wikidata5mMain Input Margarita Nolasco Armas has relation  place
 of birth  to{Orizaba, Veracruz  Orizaba 
 etc.}Paraphrase SusunW/Margarita Nolasco Armas has relation
   born at  to
@@ -1284,13 +1328,14 @@ difficult metric to calculate is  -Acc, which requires
  computing the updated language model s
 accuracy on other data after every single belief update.
  We randomly sample other data after every
-update for this purpose, using n  30 200 points for
+update for this purpose, using n  30 points for
+zsRE and Wikidata5m and n  200 points for
 FEVER and LeapOfThought. We ensure that all
 evaluation data is used at some point during thissampling by preferentially selecting data that has
 been infrequently selected before. We note that
 paraphrase consistency is easy to evaluate for a
 small number of paraphrases per datapoint, as we
-have for both zsRE and Wikidata m. Additionally,
+have for both zsRE and Wikidata5m. Additionally,
 on LeapOfThought, we compute  -Acc using both
 Main Inputs and Entailed Data.
 Update-Transitivity caveat. The % UpdateTransitivity
@@ -1308,7 +1353,12 @@ change too. That said, when we have no reason to
 think there are such confounding beliefs, we would
 expect a logically consistent model to display 100%
 Update-Transitivity of their beliefs. In Fig. 2, for
-instance, we see no reason to suspect there are con-2728 12 4 6 81012 4 6 81000.10.20.30.40.50.60.70.80.91 1 5  Ablation across values of rfor training and testing. On zsRE, our method outperforms the baseline when
+instance, we see no reason to suspect there are con-2728FEVER ZSRE
+12 4 6 81012 4 6 81000.10.20.30.40.50.60.70.80.91
+rtestUpdate Success RateMethod by rtrain
+Baseline
+r 1
+r matches testAblation by rFigure 5  Ablation across values of rfor training and testing. On zsRE, our method outperforms the baseline when
 rtest  10 , and the gap is likely to increase as rtestrises further. When using a non-sequential objective from past
 work, performance declines drastically as rtestrises.
 founding beliefs for the relationship between the
@@ -1343,7 +1393,8 @@ shape n s n, but it was quite slow and gave
 similar results to the block bootstrap.
 E Additional Results
 Ablation across num. sequential steps. Fig.
-5 1,Update Success Rate  -Acc
+5 shows the results for an ablation across rtest
+using two kinds of learned optimizers  SLAG 1,Update Success Rate  -Acc
 Desired Label Main Input Paraphrases All Data
 Beam Label 91.19 (0.5) 92.07 (0.8) -0.39 (0.1)
 Hard Label 94.46 (0.7) 94.45 (0.7) -0.24 (0.1)
@@ -1375,7 +1426,7 @@ Table 16. If one s goal is to fix wrong model outputs,
  then it is much better to use either the correct
 label or a random label as the desired model output
  during training rather than a sample from the
-model s beam search. Update success improves by Objective Term Ablation Update Success Rate Retain Predictions  Acc
+model s beam search. Update success improves by2729Objective Term Ablation Update Success Rate Retain Predictions  Acc
 Dataset Objective Main Input Paraphrases Entailed Data Local Neutral All Data All Data
 FEVERMain 100 (0.0) - - - 98.27 (0.1) -0.15 (0.1)
 (no KL) 100 (0.0) - - - 40.42 (0.6) -27.19 (1.2)
@@ -1383,15 +1434,15 @@ LeapOfThoughtMain 100 (0.0) - 76.43 (5.3) - 96.84 (0.3) -1.22 (0.8)
  Ent 100 (0.0) - 71.87 (5.3) - 96.52 (0.3) -0.40 (0.8)
 zsREMain 94.46 (0.4) 94.44 (0.7) - - 81.96 (0.4) -0.24 (0.1)
  Para 93.75 (0.4) 94.41 (0.7) - - 75.24 (0.5) -0.42 (0.2)
-Wikidata mMain 88.67 (0.7) 64.12 (0.7) - 49.78 (1.0) 71.04 (0.5) -1.54 (0.3)
+Wikidata5mMain 88.67 (0.7) 64.12 (0.7) - 49.78 (1.0) 71.04 (0.5) -1.54 (0.3)
  Para 87.46 (0.7) 81.06 (0.7) - 47.15 (1.0) 63.02 (0.6) -1.55 (0.3)
  LN 87.73 (0.7) 59.75 (0.7) - 60.49 (1.0) 72.69 (0.6) -1.57 (0.3)
  Para LN 87.02 (0.7) 81.18 (0.7) - 56.86 (1.0) 68.42 (0.6) -1.65 (0.3)
 Table 17  Belief update results by the objective terms used for the learned optimizer. We do not bold any numbers
 based on statistical significance. For tuning purposes we select whichever condition achieves the higher selection
 criterion without testing for statistical significance.
-3.27 ( 0.65 1 4) points for the Main Input
-and 2.38 (  1.05 1 4) for Paraphrases, while
+3.27 ( 0.65  p 1e 4) points for the Main Input
+and 2.38 (  1.05  p 1e 4) for Paraphrases, while
  -Acc rises by 0.15 (  0.18  p .09).
 Which beliefs are hard to update  We hypothesize
  that beliefs will be easier to update when they
@@ -1403,7 +1454,7 @@ single-update setting ( r  1). Surprisingly, we observe
  no relationship between update success and
 the belief consistency. The correlation between
 consistency and update success is near 0 for both
-zsRE ( ρ  .027) and Wikidata m ( ρ .013) 
+zsRE ( ρ  .027) and Wikidata5m ( ρ .013) 
 see Fig. 6 for a plot of the relationship. So it appears
  that the learned optimizer can update model
 beliefs independently of how belief-like they are to
@@ -1424,24 +1475,31 @@ zsRE, the objective term seems to hinder performance,
  with update success dropping on Main Inputs
  by 0.71 (  0.60  p .021) and  -Acc dropping
 by 0.18 (  0.19  p .069), while the paraphrase Update
- Success Rate itself is unaffected. With WikiZSREWikidata m
+ Success Rate itself is unaffected. With WikiZSREWikidata5m
 
-0.00 0.25 0.50 0.75 1.000.850.900.951.00 0.850.900.951.00 6  Beliefs are neither easier nor harder to update
+0.00 0.25 0.50 0.75 1.000.850.900.951.00
+0.850.900.951.00
+Pre Update ConsistencyUpdate Success RateWhich Beliefs Are Hard to Update Figure 6  Beliefs are neither easier nor harder to update
 depending on their consistency beforehand.
-859095100 103103.5104104.5105 7  Main Input Update Success Rate across training
+859095100
+103103.5104104.5105
+nMain Input Update SuccessLearning Curve for zsRE
+Figure 7  Main Input Update Success Rate across training
  set sizes, using SLAG on zsRE.
-data m, however, the paraphrase term improves
+data5m, however, the paraphrase term improves
 paraphrase update success by a large margin of
-16.94 (  1.03 1 4) points. Adding the Local
+16.94 (  1.03  p 1e 4) points. Adding the Local
 Neutral (LN) term with the paraphrase term greatly
-improves the LN Retain Rate for Wikidata m, by
-9.71 points (  1.44 1 4), though both of these
+improves the LN Retain Rate for Wikidata5m, by
+9.71 points (  1.44  p 1e 4), though both of these
 terms come at a cost to Main Input Update Success,
 similar to zsRE. Lastly, we do not find that the entailment
  objective improves Entailed Data Update
-Success  in fact, this metric falls by 4.56 (  7.22 27300.900.920.940.96 12 4 6 8 10
+Success  in fact, this metric falls by 4.56 (  7.22 27300.900.920.940.96
+12 4 6 8 10
 KtestUpdate Success RateTraining Obj . (Ktrain)
-1 8  Ablation across values of Kfor training and
+1
+Matches TestAblation by KFigure 8  Ablation across values of Kfor training and
 testing, using SLAG on zsRE. It is useful to train the
 optimizer using the value of Kit will use at test time.
 Asylum Records is an English
@@ -1471,7 +1529,7 @@ Harold Macmillan was born
  on February 20, 1894.
 [y  false]
 Filming for Boyhood was stopped
- between 2002 2013.
+ between 2002 and 2013.
 [y  false]CHiPs is an American comedy
  film.
 [y  true]
@@ -1495,9 +1553,12 @@ Figure 9  A random subgraph of the belief graph for
 FEVER. Note all nodes actually are connected to at least
 one another node.
 p .213) points with the objective.
-Ablation by num. update steps. Fig. 8 1
+Ablation by num. update steps. Fig. 8 shows the
+results of an ablation across values of Kusing a
+learned optimizer trained using SLAG with r  1
 on zsRE. Main Input Update Success rises by over
-three points by increasing Ktestfrom 1 5. Using a value of Ktrainthat matches Ktestgives
+three points by increasing Ktestfrom 1 to at least
+5. Using a value of Ktrainthat matches Ktestgives
 a further increase of about 0.5 points.
 Humphrey Bogart was ranked
  greatest male star of Classic

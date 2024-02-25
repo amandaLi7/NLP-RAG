@@ -3,7 +3,8 @@ IMPRECISE LABEL LEARNING   A U NIFIED FRAME WORK
  FOR LEARNING WITH VARIOUS IMPRECISE LABEL
  CONFIGURATIONS
 Hao Chen1 ,Ankit Shah1,Jindong Wang2,Ran Tao1,Yidong Wang3,
-Xing Xie2,Masashi Sugiyama4,5,Rita Singh1,Bhiksha Raj1,6 1Carnegie Mellon University,2Microsoft Research Asia,3Peking University,
+Xing Xie2,Masashi Sugiyama4,5,Rita Singh1,Bhiksha Raj1,6
+1Carnegie Mellon University,2Microsoft Research Asia,3Peking University,
 4RIKEN AIP,5The University of Tokyo,6Mohamed bin Zayed University of AI
 ABSTRACT
 Learning with reduced labeling standards, such as noisy label, partial label, and
@@ -39,22 +40,23 @@ partial label learning (PLL) (Cour et al., 2011  Luo & Orabona, 2010  Feng et al
 et al., 2019a  Wen et al., 2021  Wu et al., 2022  Wang et al., 2022a) allows instances to have a set
 of candidate labels, instead of a single definitive one. Semi-supervised Learning (SSL) (Lee et al.,
 2013  Samuli & Timo, 2017  Berthelot et al., 2019b a  Sohn et al., 2020  Xie et al., 2020b  Zhang
-et al., 2021b  Wang et al., 2022 2023  Chen et al., 2023) seeks to enhance the generalization ability
+et al., 2021b  Wang et al., 2022c  2023  Chen et al., 2023) seeks to enhance the generalization ability
 when only a small set of labeled data is available, supplemented by a larger unlabeled set. Noisy label
 learning (NLL) (Xiao et al., 2015a  Bekker & Goldberger, 2016  Goldberger & Ben-Reuven, 2016 
-Ghosh et al., 2017  Han et al., 2018  Zhang & Sabuncu, 2018  Li et al., 2018  Wang et al., 2019 3@andrew.cmu.edu
-1 2305.12715 3  [cs.LG]  29 2023Preprint
-𝒙𝟏𝒙𝟐𝒙𝟒𝒙𝟑 1 2 3
+Ghosh et al., 2017  Han et al., 2018  Zhang & Sabuncu, 2018  Li et al., 2018  Wang et al., 2019c 
+ haoc3@andrew.cmu.edu
+1arXiv 2305.12715v3  [cs.LG]  29 Sep 2023Preprint
+𝒙𝟏𝒙𝟐𝒙𝟒𝒙𝟑Label 1Label 2Label 3
 True Label
 (a) Full Label
-𝒙𝟏𝒙𝟐𝒙𝟒𝒙𝟑 1 2 3
+𝒙𝟏𝒙𝟐𝒙𝟒𝒙𝟑Label 1Label 2Label 3
 Candidate Label (b) Partial Label
-𝒙𝟏𝒙𝟐𝒙𝟒𝒙𝟑 1 2 3
+𝒙𝟏𝒙𝟐𝒙𝟒𝒙𝟑Label 1Label 2Label 3
 Unlabeled (c) Semi-Supervised
-𝒙𝟏𝒙𝟐𝒙𝟒𝒙𝟑 1 2 3
+𝒙𝟏𝒙𝟐𝒙𝟒𝒙𝟑Label 1Label 2Label 3
 Noisy Label (d) Noisy Label
 Figure 1  Illustration of the full label and imprecise label configurations. We use an example dataset
-of 4 3 classes. (a) Full label, the annotation is a single true label  (b) Partial
+of 4 training instances and 3 classes. (a) Full label, the annotation is a single true label  (b) Partial
 label, the annotation is a label candidate set containing true label  (c) Semi-supervised, only part of
 the dataset is labeled, and the others are unlabeled  (d) Noisy label, the annotation is mislabeled.
 Liu et al., 2020  Li et al., 2020  Ma et al., 2020b  Zhang et al., 2021d) deals with noisy scenarios
@@ -110,7 +112,7 @@ Figure 2  Baseline model pipelines for various imprecise label configurations. (
 2022a) for partial label learning. (b) FixMatch (Sohn et al., 2020) for semi-supervised learning. (c)
 SOP (Liu et al., 2022) for noisy label learning. (d) The proposed unified framework. It accommodates
 anyimprecise label configurations and also mixed imprecise labels with an EM formulation.
-and approximations on the imprecise information for learnablility (Campagner, 2021 2023), thus
+and approximations on the imprecise information for learnablility (Campagner, 2021  2023), thus
 presenting limited scalability on practical settings (Quost & Denoeux, 2016). On the contrary, the
 unified framework we propose subsumes all of these and naturally extends to the more practical
  mixed  style of data, where different types of imprecise labels coexist. Moreover, for noisy labels,
@@ -173,10 +175,10 @@ p(y Aw(xl) θ), yl
   1(ˆpu τ)LCE(p(y As(xu) θ),ˆyu). (2)
 Noisy label learning (NLL) . NLL aims at learning with a dataset of corrupted labels, DNLL 
 {(xi,ˆyi)}i [N]. Overfitting to the noisy labels ˆycould result in poor generalization performance,
-even if the training error is optimized towards zero (Zhang et al., 2016 2021c). Several strategies
+even if the training error is optimized towards zero (Zhang et al., 2016a  2021c). Several strategies
 to address the noisy labels have been proposed, such as robust loss functions (Ghosh et al., 2017 
 Zhang & Sabuncu, 2018  Wang et al., 2019c) and noise estimation/correction techniques (Han et al.,
-2018  Li et al., 2020  Bai et al., 2021  Li et al., 2021 2022). We illustrate the NLL pipeline (in
+2018  Li et al., 2020  Bai et al., 2021  Li et al., 2021b  2022). We illustrate the NLL pipeline (in
 Fig. 2(c)) with the recent sparse over-parameterization (SOP) model (Liu et al., 2022), where a sparse
 noise model consisting of parameters ui,vi [ 1,1]Cfor each sample is adopted. The noise model
 transforms the network prediction from the true label distribution into the noisy label distribution. A
@@ -241,7 +243,7 @@ represents a set of noisy labels, P(Y I)would represent the distribution of the 
 noisy labels. When Idoes not contain any information, i.e., unlabeled data, Ycan take any value.
 By the maximum likelihood estimation (MLE) principle, we must estimate the model to maximize the
 likelihood of the data/information we have been provided, namely XandI. LetP(X, I θ)represent
-a parametric form for the joint distribution of XandI Explicitly considering the labels Y, we have
+a parametric form for the joint distribution of XandI3Explicitly considering the labels Y, we have
 P(X, I θ)  P
 YP(X, Y, I  θ). The maximum likelihood principle requires us to find 
 θ   arg max
@@ -271,16 +273,17 @@ labels, low-resource labels, noisy labels, etc. In this work, we specialize this
 learning, semi-supervised learning, noisy label learning, and the mixture of them below.
 3The actual parameters θmay apply only to some component such as P(Y X θ)of the overall distribution 
 we will nonetheless tag the entire distribution P(X, I θ)withθto indicate that it is dependent on θoverall.
-5 3.2 I NSTANTIATING THE UNIFIED EM F ORMULATION
+5Preprint
+3.2 I NSTANTIATING THE UNIFIED EM F ORMULATION
 We illustrate how to seamlessly expand the formulation from Eq. (5) to partial label learning, semisupervised
- learning, and noisy label learning, and derive the loss function for each setting here. The
+ learning, and noisy label learning, and derive the loss function4for each setting here. The
 actual imprecise labels only affect the manner in which the posterior P(Y X, I θt)is computed
 for each setting. We show that all learning objectives derived from Eq. (5) naturally include a
 consistency term with the posterior as the soft target. We also demonstrate that the proposed unified
 EM framework closely connects with the prior arts, which reveals the potential reason behind the
 success of these techniques. Note that while we only demonstrate the application of the unified
 framework to three learning paradigms here, it is flexible and can expand to learning with a mixture
-of imprecise labels with robust performance, as we will show in Appendix C.2 4.4.
+of imprecise labels with robust performance, as we will show in Appendix C.2 and Section 4.4.
 Partial label learning (PLL) . The imprecise label Ifor partial labels is defined as the label candidate
 setsS {si}i [N]containing the true labels. These partial labels indicate that the posterior
 P(Y X, S θt)can only assign its masses on the candidate labels. Since Scontains the information
@@ -322,7 +325,7 @@ confidence threshold implicitly conducts the EM optimization, where the maximal 
 approximates the expectation, and the degree of the approximation is determined by the threshold τ.
 Noisy label learning (NLL) . Things become more complicated here since the noisy labels ˆYdo not
 directly reveal the true information about Y, thus P(ˆY Y, X θ)inherently involves a noise model that
-needs to be learned. We define a simplified instance-independent noise transition model T(ˆY Y ω)
+needs to be learned. We define a simplified instance-independent5noise transition model T(ˆY Y ω)
 with parameters ω, and take a slightly different way to formulate the loss function for NLL 
 LNLL
 ILL  X
@@ -333,16 +336,19 @@ p(y As(x),ˆy θ, ωt),p(y Aw(x),ˆy θt, ωt)
 4To formulate the loss function, we convert the problem to minimization of the negative log-likelihood.
 5A more complicated instance-dependent noise model T(ˆY Y, X ω)can also be formulated under our
 unified framework, but not considered in this work.
-6 1  Accuracy of different partial ratio qon CIFAR-10, CIFAR-100, and CUB-200 for partial
+6Preprint
+Table 1  Accuracy of different partial ratio qon CIFAR-10, CIFAR-100, and CUB-200 for partial
 label learning . The best and the second best results are indicated in bold andunderline respectively.
-Dataset CIFAR-10 CIFAR-100 CUB-200 0.1 0.3 0.5 0.01 0.05 0.1 0.05
-Fully-Supervised 94.91 0.07 73.56 0.10 LWS
- (Wen et al., 2021) 90.30 0.60 88.99 1.43 86.16 0.85 65.78 0.02 59.56 0.33 53.53 0.08 39.74 0.47
-PRODEN (Lv et al., 2020) 90.24 0.32 89.38 0.31 87.78 0.07 62.60 0.02 60.73 0.03 56.80 0.29 62.56 0.10
-CC (Feng et al., 2020b) 82.30 0.21 79.08 0.07 74.05 0.35 49.76 0.45 47.62 0.08 35.72 0.47 55.61 0.02
-MSE (Feng et al., 2020a) 79.97 0.45 75.65 0.28 67.09 0.66 49.17 0.05 46.02 1.82 43.81 0.49 22.07 2.36
-EXP (Feng et al., 2020a) 79.23 0.10 75.79 0.21 70.34 1.32 44.45 1.50 41.05 1.40 29.27 2.81 9.44 2.32
-PiCO (Wang et al., 2022a) 94.39 0.18 94.18 0.12 93.58 0.06 73.09 0.34 72.74 0.30 69.91 0.24 72.17 0.72 96.37 0.08 96.26 0.03 95.91 0.05 75.31 0.19 74.58 0.03 74.00 0.02 70.77 0.29
+Dataset CIFAR-10 CIFAR-100 CUB-200
+Partial Ratio q 0.1 0.3 0.5 0.01 0.05 0.1 0.05
+Fully-Supervised 94.91  0.07 73.56  0.10 LWS
+ (Wen et al., 2021) 90.30  0.60 88.99  1.43 86.16  0.85 65.78  0.02 59.56  0.33 53.53  0.08 39.74  0.47
+PRODEN (Lv et al., 2020) 90.24  0.32 89.38  0.31 87.78  0.07 62.60  0.02 60.73  0.03 56.80  0.29 62.56  0.10
+CC (Feng et al., 2020b) 82.30  0.21 79.08  0.07 74.05  0.35 49.76  0.45 47.62  0.08 35.72  0.47 55.61  0.02
+MSE (Feng et al., 2020a) 79.97  0.45 75.65  0.28 67.09  0.66 49.17  0.05 46.02  1.82 43.81  0.49 22.07  2.36
+EXP (Feng et al., 2020a) 79.23  0.10 75.79  0.21 70.34  1.32 44.45  1.50 41.05  1.40 29.27  2.81 9.44  2.32
+PiCO (Wang et al., 2022a) 94.39  0.18 94.18  0.12 93.58  0.06 73.09  0.34 72.74  0.30 69.91  0.24 72.17  0.72
+Ours 96.37  0.08 96.26  0.03 95.91  0.05 75.31  0.19 74.58  0.03 74.00  0.02 70.77  0.29
 where the parameters ωandθare learned end-to-end. The first term corresponds to the consistency
 regularization of prediction conditioned on noisy labels and the second term corresponds to the
 supervised loss on noisy predictions that are converted from the ground truth predictions. Both
@@ -373,7 +379,7 @@ compared to the baseline methods. Perhaps more surprisingly, on CIFAR-10 and CIF
 method even outperforms the fully-supervised reference, indicating the potential better generalization
 capability using the proposed framework, sharing similar insights as (Wu et al., 2022). While PiCO
 adopts a contrastive learning objective, our method still surpasses PiCO by an average of 2.13%
-on CIFAR-10 2.72%on CIFAR-100. Our approach can be further enhanced by incorporating
+on CIFAR-10 and 2.72%on CIFAR-100. Our approach can be further enhanced by incorporating
 contrastive learning objectives, potentially leading to more significant performance improvements.
 4.2 S EMI-SUPERVISED LEARNING
 Setup . For experiments of SSL, we follow the training and evaluation protocols of USB (Wang
@@ -381,34 +387,39 @@ et al., 2022d) on image and text classification. To construct the labeled datase
 learning, we uniformly select l/Csamples from each class and treat the remaining samples as the
 unlabeled dataset. We present the results on CIFAR-100 and STL-10 (Krizhevsky et al., 2009) for
 image classification, and IMDB (Maas et al., 2011) and Amazon Review (McAuley & Leskovec,
-7 2  Error rate of different number of labels lon CIFAR-100, STL-10, IMDB, and Amazon
+7Preprint
+Table 2  Error rate of different number of labels lon CIFAR-100, STL-10, IMDB, and Amazon
 Review datasets for semi-supervised learning .
 Datasets CIFAR-100 STL-10 IMDB Amazon Review
 # Labels l 200 400 40 100 20 100 250 1000
-AdaMatch (Berthelot et al., 2021) 22.32 1.73 16.66 0.62 13.64 2.49 7.62 1.90 8.09 0.99 7.11 0.20 45.40 0.96 40.16 0.49
-FixMatch (Sohn et al., 2020) 29.60 0.90 19.56 0.52 16.15 1.89 8.11 0.68 7.72 0.33 7.33 0.13 47.61 0.83 43.05 0.54
-FlexMatch (Zhang et al., 2021b) 26.76 1.12 18.24 0.36 14.40 3.11 8.17 0.78 7.82 0.77 7.41 0.38 45.73 1.60 42.25 0.33
-CoMatch (Li et al., 2021a) 35.08 0.69 25.35 0.50 15.12 1.88 9.56 1.35 7.44 0.30 7.72 1.14 48.76 0.90 43.36 0.21
-SimMatch (Zheng et al., 2022) 23.78 1.08 17.06 0.78 11.77 3.20 7.55 1.86 7.93 0.55 7.08 0.33 45.91 0.95 42.21 0.30
-FreeMatch (Wang et al., 2023) 21.40 0.30 15.65 0.26 12.73 3.22 8.52 0.53 8.94 0.21 7.95 0.45 46.41 0.60 42.64 0.06
-SoftMatch (Chen et al., 2023) 22.67 1.32 16.84 0.66 13.55 3.16 7.84 1.72 7.76 0.58 7.97 0.72 45.29 0.95 42.21 0.20 22.06 1.06 16.40 0.54 11.09 0.71 8.10 1.02 7.32 0.12 7.64 0.67 43.96 0.32 42.32 0.02 3  Accuracy of synthetic noise on CIFAR-10 and CIFAR-100 and instance noise on Clothing M
+AdaMatch (Berthelot et al., 2021) 22.32  1.73 16.66  0.62 13.64  2.49 7.62  1.90 8.09  0.99 7.11  0.20 45.40  0.96 40.16  0.49
+FixMatch (Sohn et al., 2020) 29.60  0.90 19.56  0.52 16.15  1.89 8.11  0.68 7.72  0.33 7.33  0.13 47.61  0.83 43.05  0.54
+FlexMatch (Zhang et al., 2021b) 26.76  1.12 18.24  0.36 14.40  3.11 8.17  0.78 7.82  0.77 7.41  0.38 45.73  1.60 42.25  0.33
+CoMatch (Li et al., 2021a) 35.08  0.69 25.35  0.50 15.12  1.88 9.56  1.35 7.44  0.30 7.72  1.14 48.76  0.90 43.36  0.21
+SimMatch (Zheng et al., 2022) 23.78  1.08 17.06  0.78 11.77  3.20 7.55  1.86 7.93  0.55 7.08  0.33 45.91  0.95 42.21  0.30
+FreeMatch (Wang et al., 2023) 21.40  0.30 15.65  0.26 12.73  3.22 8.52  0.53 8.94  0.21 7.95  0.45 46.41  0.60 42.64  0.06
+SoftMatch (Chen et al., 2023) 22.67  1.32 16.84  0.66 13.55  3.16 7.84  1.72 7.76  0.58 7.97  0.72 45.29  0.95 42.21  0.20
+Ours 22.06  1.06 16.40  0.54 11.09  0.71 8.10  1.02 7.32  0.12 7.64  0.67 43.96  0.32 42.32  0.02
+Table 3  Accuracy of synthetic noise on CIFAR-10 and CIFAR-100 and instance noise on Clothing1M
 and WebVision for noisy label learning . We use noise ratio of {0.2,0.5,0.8}for synthetic symmetric
 noise and 0.4for asymmetric label noise. The instance noise ratio is unknown.
-Dataset CIFAR-10 CIFAR-100 Clothing M WebVision
+Dataset CIFAR-10 CIFAR-100 Clothing1M WebVision
 Noise Type Sym. Asym. Sym. Asym. Ins. Ins.
 Noise Ratio η 0.2 0.5 0.8 0.4 0.2 0.5 0.8 0.4 - CE
  87.20 80.70 65.80 82.20 58.10 47.10 23.80 43.30 69.10 Mixup
  (Zhang et al., 2017) 93.50 87.90 72.30 - 69.90 57.30 33.60 - - DivideMix
  (Li et al., 2020) 96.10 94.60 93.20 93.40 77.10 74.60 60.20 72.10 74.26 77.32
 ELR (Liu et al., 2020) 95.80 94.80 93.30 93.00 77.70 73.80 60.80 77.50 72.90 76.20
-SOP (Liu et al., 2022) 96.30 95.50 94.00 93.80 78.80 75.90 63.30 78.00 73.50 76.60 96.78 0.11 96.6 0.15 94.31 0.07 94.75 0.81 77.49 0.28 75.51 0.52 66.46 0.72 75.82 1.89 74.02 0.12 79.37 0.09 2013) for text classification. We compare with the current methods with confidence thresholding,
+SOP (Liu et al., 2022) 96.30 95.50 94.00 93.80 78.80 75.90 63.30 78.00 73.50 76.60
+Ours 96.78  0.11 96.6  0.15 94.31  0.07 94.75  0.81 77.49  0.28 75.51  0.52 66.46  0.72 75.82  1.89 74.02  0.12 79.37  0.09
+2013) for text classification. We compare with the current methods with confidence thresholding,
 such as FixMatch (Sohn et al., 2020), AdaMatch (Berthelot et al., 2021), FlexMatch (Zhang et al.,
 2021b), FreeMatch (Wang et al., 2023), and SoftMatch (Chen et al., 2023). We also compare with
 methods with the contrastive loss, CoMatch (Li et al., 2021a) and SimMatch (Zheng et al., 2022). A
 full comparison of the USB datasets and hyper-parameters are shown in Appendix D.3.
 Results . We present the results for SSL on Table 2. Although no individual SSL algorithm dominates
 the USB benchmark (Wang et al., 2022d), our method still shows competitive performance. Notably,
-our method performs best on STL-10 40 250 labels, outperforming
+our method performs best on STL-10 with 40 labels and Amazon Review with 250 labels, outperforming
  the previous best by 0.68%and1.33%. In the other settings, the performance of our method
 is also very close to the best-performing methods. More remarkably, our method does not employ
 any thresholding, re-weighting, or contrastive techniques to achieve current results, demonstrating a
@@ -416,7 +427,7 @@ significant potential to be further explored in SSL for even better performance.
 4.3 N OISY LABEL LEARNING
 Setup . We conduct the experiments of NLL following SOP (Liu et al., 2022) on both synthetic
 symmetric/asymmetric noise on CIFAR-10 and CIFAR-100, and more realistic and larger-scale
-instance noise on Clothing M (Xiao et al., 2015b), and WebVision (Li et al., 2017). To introduce the
+instance noise on Clothing1M (Xiao et al., 2015b), and WebVision (Li et al., 2017). To introduce the
 synthetic symmetric noise to CIFAR-10 and CIFAR-100, we uniformly flip labels for a probability
 ηinto other classes. For asymmetric noise, we only randomly flip the labels for particular pairs of
 classes. We mainly select three previous best methods as baselines  DivideMix (Li et al., 2020)  ELR
@@ -429,28 +440,43 @@ performance on both symmetric noise and asymmetric noise. On CIFAR-100, our meth
 produces similar results comparable to SOP. One may notice that our method shows inferior performance
  on asymmetric noise of CIFAR-100  we argue this is mainly due to the oversimplification of
 the noise transition model. Our method also achieves the best results on WebVision, outperforming the
-previous best by 2.05%. On Clothing M, our results are also very close to DivideMix, which trains
-for 80 10 epochs in ours, and no doubt further training improves performance.
-8 4  Accuracy comparison of mixture of different imprecise labels . We report results of full
+previous best by 2.05%. On Clothing1M, our results are also very close to DivideMix, which trains
+for 80 epochs compared to 10 epochs in ours, and no doubt further training improves performance.
+8Preprint
+Table 4  Accuracy comparison of mixture of different imprecise labels . We report results of full
 labels, partial ratio qof 0.1 (0.01) and 0.3 (0.05) for CIFAR-10 (CIFAR-100), and noise ratio ηof
 0.1, 0.2, and 0.3 for CIFAR-10 and CIFAR-100.
 Method qCIFAR-10, l 50000qCIFAR-100, l 50000
 η 0.1 η 0.2 η 0.3 η 0.1 η 0.2 η 0.3
 PiCO  (Wang et al., 2022b)
-0.193.64 93.13 92.18 0.0171.42 70.22 66.14
+0.193.64 93.13 92.18
+0.0171.42 70.22 66.14
 IRNet (Lian et al., 2022b) 93.44 92.57 92.38 71.17 70.10 68.77
 DALI (Xu et al., 2023) 94.15 94.04 93.77 72.26 71.98 71.04
 PiCO  Mixup (Xu et al., 2023) 94.58 94.74 94.43 75.04 74.31 71.79
-DALI Mixup (Xu et al., 2023) 95.83 95.86 95.75 76.52 76.55 76.09 96.47 0.11 96.09 0.20 95.83 0.05 77.53 0.24 76.96 0.02 76.43 0.27
+DALI Mixup (Xu et al., 2023) 95.83 95.86 95.75 76.52 76.55 76.09
+Ours 96.47  0.11 96.09  0.20 95.83  0.05 77.53  0.24 76.96  0.02 76.43  0.27
 PiCO  (Wang et al., 2022b)
-0.392.32 92.22 89.95 0.0569.40 66.67 62.24
+0.392.32 92.22 89.95
+0.0569.40 66.67 62.24
 IRNet (Lian et al., 2022b) 92.81 92.18 91.35 70.73 69.33 68.09
 DALI (Xu et al., 2023) 93.44 93.25 92.42 72.28 71.35 70.05
 PiCO  Mixup (Xu et al., 2023) 94.02 94.03 92.94 73.06 71.37 67.56
-DALI Mixup (Xu et al., 2023) 95.52 95.41 94.67 76.87 75.23 74.49 96.2 0.02 95.87 0.14 95.22 0.06 77.07 0.16 76.34 0.08 75.13 0.63 5  Robust test accuracy results of our method on more mixture of imprecise label configurations
+DALI Mixup (Xu et al., 2023) 95.52 95.41 94.67 76.87 75.23 74.49
+Ours 96.2  0.02 95.87  0.14 95.22  0.06 77.07  0.16 76.34  0.08 75.13  0.63
+Table 5  Robust test accuracy results of our method on more mixture of imprecise label configurations
  .l,qandηare the number of labels, partial, and noise ratio.
-l qCIFAR l qCIFAR100
-η 0.0 η 0.1 η 0.2 η 0.3 η 0.0 η 0.1 η 0.2 η 0.3 5,0000.1 95.29 0.18 93.90 0.11 92.02 0.22 89.02 0.63 10,0000.01 69.90 0.23 68.74 0.15 66.87 0.34 65.34 0.02 0.3 95.13 0.16 92.95 0.37 90.14 0.61 87.31 0.27 0.05 69.85 0.20 68.08 0.28 66.78 0.43 64.83 0.17 0.5 95.04 0.10 92.18 0.52 88.39 0.62 83.09 0.56 0.10 68.92 0.45 67.15 0.63 64.44 1.29 60.26 1.96 1,0000.1 94.48 0.09 91.68 0.17 87.17 0.51 81.04 1.13 5,0000.01 65.66 0.27 63.13 0.27 60.93 0.17 58.36 0.56 0.3 94.35 0.05 89.94 1.90 82.06 1.52 69.20 2.16 0.05 65.06 0.04 62.28 0.47 58.92 0.34 53.24 1.69 0.5 93.92 0.29 86.34 2.37 70.86 2.78 38.19 6.55 0.10 63.32 0.55 58.73 1.33 53.27 1.57 46.19 1.04 4.4 M IXED IMPRECISE LABEL LEARNING
+l qCIFAR10l qCIFAR100
+η 0.0 η 0.1 η 0.2 η 0.3 η 0.0 η 0.1 η 0.2 η 0.3
+5,0000.1 95.29  0.18 93.90  0.11 92.02  0.22 89.02  0.63
+10,0000.01 69.90  0.23 68.74  0.15 66.87  0.34 65.34  0.02
+0.3 95.13  0.16 92.95  0.37 90.14  0.61 87.31  0.27 0.05 69.85  0.20 68.08  0.28 66.78  0.43 64.83  0.17
+0.5 95.04  0.10 92.18  0.52 88.39  0.62 83.09  0.56 0.10 68.92  0.45 67.15  0.63 64.44  1.29 60.26  1.96
+1,0000.1 94.48  0.09 91.68  0.17 87.17  0.51 81.04  1.13
+5,0000.01 65.66  0.27 63.13  0.27 60.93  0.17 58.36  0.56
+0.3 94.35  0.05 89.94  1.90 82.06  1.52 69.20  2.16 0.05 65.06  0.04 62.28  0.47 58.92  0.34 53.24  1.69
+0.5 93.92  0.29 86.34  2.37 70.86  2.78 38.19  6.55 0.10 63.32  0.55 58.73  1.33 53.27  1.57 46.19  1.04
+4.4 M IXED IMPRECISE LABEL LEARNING
 Setup . We evaluate on CIFAR-10 and CIFAR-100 in a more challenging and realistic setting, the
 mixture of various imprecise label configurations, with unlabeled, partially labeled, and noisy labeled
 data existing simultaneously. We first sample the labeled dataset and treat other samples as the
@@ -557,7 +583,7 @@ Thomas G Dietterich, Richard H Lathrop, and Tomás Lozano-Pérez. Solving the mu
 problem with axis-parallel rectangles. Artificial intelligence , 89(1-2) 31 71, 1997.
 Alexey Dosovitskiy, Lucas Beyer, Alexander Kolesnikov, Dirk Weissenborn, Xiaohua Zhai, Thomas
 Unterthiner, Mostafa Dehghani, Matthias Minderer, Georg Heigold, Sylvain Gelly, et al. An
-image is worth 16 16 words  Transformers for image recognition at scale. arXiv preprint
+image is worth 16x16 words  Transformers for image recognition at scale. arXiv preprint
 arXiv 2010.11929 , 2020.
 Lei Feng, Takuo Kaneko, Bo Han, Gang Niu, Bo An, and Masashi Sugiyama. Learning with multiple
 complementary labels. In Proceedings of the International Conference on Machine Learning
@@ -650,7 +676,7 @@ Sheng Liu, Zhihui Zhu, Qing Qu, and Chong You. Robust training under label noise
  In Kamalika Chaudhuri, Stefanie Jegelka, Le Song, Csaba Szepesvari, Gang
 Niu, and Sivan Sabato (eds.), Proceedings of the International Conference on Machine Learning
 (ICML) , volume 162 of Proceedings of Machine Learning Research , pp. 14153 14172. PMLR,
-17 23 2022. URL https //proceedings.mlr.press/v162/liu w.html .
+17 23 Jul 2022. URL https //proceedings.mlr.press/v162/liu22w.html .
 Tongliang Liu and Dacheng Tao. Classification with noisy labels by importance reweighting. In
 IEEE Transactions on pattern analysis and machine intelligence , pp. 447 461, 2016.
 Jie Luo and Francesco Orabona. Learning from candidate labeling sets. Advances in Neural
@@ -709,8 +735,8 @@ with consistency and confidence. Advances in Neural Information Processing Syste
 Hwanjun Song, Minseok Kim, and Jae-Gil Lee. SELFIE  Refurbishing unclean samples for robust
 deep learning. In Kamalika Chaudhuri and Ruslan Salakhutdinov (eds.), Proceedings of the
 International Conference on Machine Learning (ICML) , volume 97 of Proceedings of Machine
-Learning Research , pp. 5907 5915. PMLR, 09 15 2019. URL https //proceedings.
-mlr.press/v97/song b.html .
+Learning Research , pp. 5907 5915. PMLR, 09 15 Jun 2019. URL https //proceedings.
+mlr.press/v97/song19b.html .
 Hwanjun Song, Minseok Kim, Dongmin Park, Yooju Shin, and Jae-Gil Lee. Learning from noisy
 labels with deep neural networks  A survey. IEEE Transactions on Neural Networks and Learning
 Systems , pp. 1 19, 2022. ISSN 2162-2388. doi  10.1109/tnnls.2022.3152527. URL http 
@@ -744,7 +770,7 @@ learning. IEEE Transactions on Pattern Analysis and Machine Intelligence , 44 87
 Haobo Wang, Ruixuan Xiao, Yixuan Li, Lei Feng, Gang Niu, Gang Chen, and Junbo Zhao. PiCO 
 Contrastive label disambiguation for partial label learning. In International Conference on
 Learning Representations (ICLR) , 2022a. URL https //openreview.net/forum id 
-EhYjZy e gJ .
+EhYjZy6e1gJ .
 Haobo Wang, Ruixuan Xiao, Yixuan Li, Lei Feng, Gang Niu, Gang Chen, and Junbo Zhao. Pico  
 Contrastive label disambiguation for robust partial label learning, 2022b.
 Qian-Wei Wang, Yu-Feng Li, and Zhi-Hua Zhou. Partial label learning with unlabeled data. In IJCAI ,
@@ -784,7 +810,7 @@ Dong-Dong Wu, Deng-Bao Wang, and Min-Ling Zhang. Revisiting consistency regulari
 deep partial label learning. In Kamalika Chaudhuri, Stefanie Jegelka, Le Song, Csaba Szepesvari,
 Gang Niu, and Sivan Sabato (eds.), Proceedings of the International Conference on Machine Learning
  (ICML) , volume 162 of Proceedings of Machine Learning Research , pp. 24212 24225. PMLR,
-17 23 2022. URL https //proceedings.mlr.press/v162/wu l.html .
+17 23 Jul 2022. URL https //proceedings.mlr.press/v162/wu22l.html .
 Renzhi Wu, Shen-En Chen, Jieyu Zhang, and Xu Chu. Learning hyper label model for programmatic
 weak supervision. In International Conference on Learning Representations (ICLR) , 2023a.
 Zhenguo Wu, Jiaqi Lv, and Masashi Sugiyama. Learning with proper partial labels. Neural
@@ -815,7 +841,7 @@ Jiancheng Yang, Rui Shi, and Bingbing Ni. Medmnist classification decathlon  A l
 benchmark for medical image analysis. In IEEE 18th International Symposium on Biomedical
 Imaging (ISBI) , pp. 191 195, 2021a.
 Jiancheng Yang, Rui Shi, Donglai Wei, Zequan Liu, Lin Zhao, Bilian Ke, Hanspeter Pfister, and
-Bingbing Ni. Medmnist v2  A large-scale lightweight benchmark for 2 3d biomedical image
+Bingbing Ni. Medmnist v2  A large-scale lightweight benchmark for 2d and 3d biomedical image
 classification. arXiv preprint arXiv 2110.14795 , 2021b.
 Kun Yi and Jianxin Wu. Probabilistic end-to-end noise correction for learning with noisy labels.
 2019 IEEE/CVF Conference on Computer Vision and Pattern Recognition (CVPR) , Jun 2019. doi 
@@ -858,20 +884,28 @@ Zhilu Zhang and Mert Sabuncu. Generalized cross entropy loss for training deep n
 with noisy labels. Advances in Neural Information Processing Systems (NeurIPS) , 31, 2018.
 Mingkai Zheng, Shan You, Lang Huang, Fei Wang, Chen Qian, and Chang Xu. Simmatch  Semisupervised
  learning with similarity matching. arXiv preprint arXiv 2203.06915 , 2022.
-18 19 19
+18Preprint
+Appendix
+CONTENTS
+A Notation 19
+B Related Work 19
 B.1 Partial Label Learning . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 19
 B.2 Semi-Supervised Learning . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 20
 B.3 Noisy Label Learning . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 21
 B.4 Multi-Instance Learning . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 22
-B.5 Mixed Imprecise Label Learning . . . . . . . . . . . . . . . . . . . . . . . . . . . 22 23
+B.5 Mixed Imprecise Label Learning . . . . . . . . . . . . . . . . . . . . . . . . . . . 22
+C Methods 23
 C.1 Derivation of Variational Lower Bound . . . . . . . . . . . . . . . . . . . . . . . 23
 C.2 Instantiations Mixed Imprecise Label Learning . . . . . . . . . . . . . . . . . . . 23
-C.3 Forward-Backward Algorithm on the NFA of Imprecise Labels . . . . . . . . . . . 23 24
+C.3 Forward-Backward Algorithm on the NFA of Imprecise Labels . . . . . . . . . . . 23
+D Experiments 24
 D.1 Additional Training Details . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 24
 D.2 Partial Label Learning . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 25
 D.3 Semi-Supervised Learning . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 26
 D.4 Noisy Label Learning . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 27
-D.5 Mixed Imprecise Label Learning . . . . . . . . . . . . . . . . . . . . . . . . . . . 28 6.
+D.5 Mixed Imprecise Label Learning . . . . . . . . . . . . . . . . . . . . . . . . . . . 28
+A N OTATION
+We present the notation table for each symbol used in this paper in Table 6.
 B R ELATED WORK
 Many previous methods have been proposed for dealing with the specific types and some combinations
 of imprecise label configurations. In the main paper, we only introduced the representative pipelines
@@ -887,7 +921,8 @@ neighborhood equally and predicting the ground-truth label through voting strate
 significant drawback of average-based methods is that false positive labels can mislead them.
 To overcome these limitations, researchers have explored identification-based methods for PLL. In
 contrast to average-based methods, which treat all candidate labels equally, identification-based
-19 6  Notation Table
+19Preprint
+Table 6  Notation Table
 Notation Definition
 x A training instance
 y A class index label
@@ -978,7 +1013,7 @@ loss functions (Ghosh et al., 2017  Zhang & Sabuncu, 2018  Wang et al., 2019c  M
 noise estimation (Xiao et al., 2015a  Goldberger & Ben-Reuven, 2016  Liu et al., 2020  Zhang et al.,
 2021d  Northcutt et al., 2021), and noise correction (Han et al., 2018  Li et al., 2020  Liu et al., 2022).
 Designing loss functions that are robust to noise is a well-explored strategy for tackling the label
-noise problem. The l loss [59], which is a robust loss function, is a popular choice and has seen
+noise problem. The l1loss [59], which is a robust loss function, is a popular choice and has seen
 many recent extensions (Zhang & Sabuncu, 2018  Wang et al., 2019c  Ma et al., 2020a  Yu et al.,
 2020). Additionally, methods that re-weight loss (Liu & Tao, 2016) have also been explored for
 learning with noisy labels. However, despite enabling the model to learn faster from accurate labels,
@@ -1057,7 +1092,7 @@ valuable contribution to the field of machine learning.
 𝒙𝟎𝒙𝟏𝒙𝟐𝒙𝟑𝑺 (b) Partial Label
 𝒀𝑳𝒙𝟎𝒍𝒙𝟏𝒍𝒙𝟐𝒖𝒙𝟑𝒖 (c) Semi-Supervised
 𝒙𝟎𝒙𝟏𝒙𝟐𝒙𝟑$𝒀 (d) Noisy Label
-Figure 3 4 3 classes.
+Figure 3  Illustration of NFA for different imprecise label configurations on 4 instances with 3 classes.
 We use edge to denote the transition paths for each symbol yand circle to denote the finite state
 x. Different label configurations Icorrespond to set the transition paths in the NFA, where we
 use red solid edge for available paths and blue dash edge for unavailable paths. (a) Full label, the
@@ -1173,27 +1208,35 @@ labels with a probability q, which is also denoted as a partial ratio. Specifica
 labels are uniformly aggregated into the ground truth label to form a set of label candidates. We
 consider q  {0.1,0.3,0.5}for CIFAR-10, q  {0.01,0.05,0.1}for CIFAR-100, and q  0.05for
 CUB-200. For CIFAR-10 and CIFAR-100, we use ResNet-18 (He et al., 2016) as backbone. We use
-SGD as an optimizer with a learning rate of 0.01, a momentum of 0.9, and a weight decay of 1 3.
+SGD as an optimizer with a learning rate of 0.01, a momentum of 0.9, and a weight decay of 1e 3.
 For CUB-200, we initialize the ResNet-18 (He et al., 2016) with ImageNet-1K (Deng et al., 2009)
 pre-trained weights. We train 800epochs for CIFAR-10 and CIFAR-100 (Krizhevsky et al., 2009),
-and epochs for CUB-200, with a cosine learning rate scheduler. For CIFAR-10 and CIFAR-100,
+and300epochs for CUB-200, with a cosine learning rate scheduler. For CIFAR-10 and CIFAR-100,
 we use an input image size of 32. For CUB-200, we use an input image size of 224. A batch size
 of 256 is used for all datasets. The choice of these parameters mainly follows PiCO (Wang et al.,
 2022a). We present the full hyper-parameters systematically in Table 7.
 Table 7  Hyper-parameters for partial label learning used in experiments.
-Hyper-parameter CIFAR-10 CIFAR-100 CUB-200 32 32 224
+Hyper-parameter CIFAR-10 CIFAR-100 CUB-200
+Image Size 32 32 224
 Model ResNet-18 ResNet-18ResNet-18
 (ImageNet-1K Pretrained)
-Batch Size 256 256 256 0.01 0.01 0.01 1e-3 1e-3 1e-5 800 800 300 10 100 200
+Batch Size 256 256 256
+Learning Rate 0.01 0.01 0.01
+Weight Decay 1e-3 1e-3 1e-5
+LR Scheduler Cosine Cosine Cosine
+Training Epochs 800 800 300
+Classes 10 100 200
 D.2.2 D ISCUSSION
 We additionally compare our method with R-CR (Wu et al., 2022), which uses a different architecture
-as the results in Table 1. R-CR uses Wide-ResNet x10 as backbone, and adopts multiple strong data
+as the results in Table 1. R-CR uses Wide-ResNet34x10 as backbone, and adopts multiple strong data
 augmentations. It also adjusts the loss weight along training. For fair comparison, we use the same
 architecture without multiple augmentation and the curriculum adjust on loss. The results are shown
 in Table 8, where our method outperforms R-CR on CIFAR-10 and is comparable on CIFAR-100.
 Table 8  Comparison with R-CR in partial label learning
-MethodCIFAR-10 CIFAR-100 0.3 0.5 0.05 0.10
-R-CR 97.28 0.02 97.05 0.05 82.77 0.10 82.24 0.07 97.55 0.07 97.17 0.11 82.46 0.08 82.22 0.05
+MethodCIFAR-10 CIFAR-100
+0.3 0.5 0.05 0.10
+R-CR 97.28  0.02 97.05  0.05 82.77  0.10 82.24  0.07
+Ours 97.55  0.07 97.17  0.11 82.46  0.08 82.22  0.05
 A recent work on PLL discussed and analyzed the robustness performance of different loss functions,
 especially the average-based methods (Lv et al., 2023). We perform a similar analysis here for the
 derived loss function in ILL. Following the notation in Lv et al. (2023), let sdenote the candidate
@@ -1227,114 +1270,151 @@ STL-10 (Coates et al., 2011), TissueMNIST (Yang et al., 2021a b), Semi-Aves (Su 
 For text classification tasks, we adopt BERT (Devlin et al., 2018) as backbone, including IMDB
 (Maas et al., 2011), Amazon Review (McAuley & Leskovec, 2013), Yelp Review (yel), AG News
 (Zhang et al., 2015) , Yahoo Answer (Chang et al., 2008). The hyper-parameters strictly follow USB,
-and are shown in Table 9 10.
+and are shown in Table 9 and Table 10.
 Table 9  Hyper-parameters of semi-supervised learning used in vision experiments of USB.
 Hyper-parameter CIFAR-100 STL-10 Euro-SAT TissueMNIST Semi-Aves
 Image Size 32 96 32 32 224
-Model ViT-S-P4-32 ViT-B-P16-96 ViT-S-P4-32 ViT-T-P4-32 ViT-S-P16-224 16 16 5e-4 1e-4 5e-5 5e-5 1e-3 5e-4 0.5 0.95 1.0 0.95 0.65
+Model ViT-S-P4-32 ViT-B-P16-96 ViT-S-P4-32 ViT-T-P4-32 ViT-S-P16-224
+Labeled Batch size 16
+Unlabeled Batch size 16
+Learning Rate 5e-4 1e-4 5e-5 5e-5 1e-3
+Weight Decay 5e-4
+Layer Decay Rate 0.5 0.95 1.0 0.95 0.65
 LR Scheduler η η0cos(7πk
 16K)
-Training epochs 20 100 10 10 10 200 0.0 0.999
+Training epochs 20
+Classes 100 10 10 10 200
+Model EMA Momentum 0.0
+Prediction EMA Momentum 0.999
 Weak Augmentation Random Crop, Random Horizontal Flip
 Strong Augmentation RandAugment (Cubuk et al., 2020)
 Table 10  Hyper-parameters of semi-supervised learning NLP experiments in USB.
-Hyper-parameter AG News Yahoo  Answer IMDB Amazom-5 Yelp-5 512
+Hyper-parameter AG News Yahoo  Answer IMDB Amazom-5 Yelp-5
+Max Length 512
 Model Bert-Base
-Labeled Batch size 4 4 5e-5 1e-4 5e-5 1e-5 5e-5 1e-4 0.65 0.65 0.75 0.75 0.75
+Labeled Batch size 4
+Unlabeled Batch size 4
+Learning Rate 5e-5 1e-4 5e-5 1e-5 5e-5
+Weight Decay 1e-4
+Layer Decay Rate 0.65 0.65 0.75 0.75 0.75
 LR Scheduler η η0cos(7πk
 16K)
-Training epochs 10 4 10 2 5 5 0.0 0.999
+Training epochs 10
+Classes 4 10 2 5 5
+Model EMA Momentum 0.0
+Prediction EMA Momentum 0.999
 Weak Augmentation None
 Strong Augmentation Back-Translation (Xie et al., 2020a)
 D.3.2 R ESULTS
 In the main paper, we only provide the comparison on CIFAR-100, STL-10, IMDB, and Amazon
-Review. Here we provide the full comparison in Table 11 12. From the full results,
+Review. Here we provide the full comparison in Table 11 and Table 12. From the full results,
 similar conclusion can be drawn as in the main paper. Our ILL framework demonstrates comparable
 performance as previous methods.
-26 11  Error rate comparison of different number of labels on CIFAR-100, STL-10, EuroSAT,
+26Preprint
+Table 11  Error rate comparison of different number of labels on CIFAR-100, STL-10, EuroSAT,
 TissueMNIST, and SemiAves for semi-supervised learning . We use USB (Wang et al., 2022d)
 image classification task results. The best results are indicated in bold. Our results are averaged over
 3 independent runs.
 Datasets CIFAR-100 STL-10 EuroSat TissueMNIST SemiAves
 # Labels 200 400 40 100 20 40 80 400 3959
-Pseudo-Label (Lee et al., 2013) 33.99 0.95 25.32 0.29 19.14 1.33 10.77 0.60 25.46 1.36 15.70 2.12 56.92 4.54 50.86 1.79 40.35 0.30
-Mean-Teacher (Tarvainen & Valpola, 2017) 35.47 0.40 26.03 0.30 18.67 1.69 24.19 10.15 26.83 1.46 15.85 1.66 62.06 3.43 55.12 2.53 38.55 0.21
-V AT (Miyato et al., 2018) 31.49 1.33 21.34 0.50 18.45 1.47 10.69 0.51 26.16 0.96 10.09 0.94 57.49 5.47 51.30 1.73 38.82 0.04
-MixMatch (Berthelot et al., 2019b) 38.22 0.71 26.72 0.72 58.77 1.98 36.74 1.24 24.85 4.85 17.28 2.67 55.53 1.51 49.64 2.28 37.25 0.08
-ReMixMatch (Berthelot et al., 2019a) 22.21 2.21 16.86 0.57 13.08 3.34 7.21 0.39 5.05 1.05 5.07 0.56 58.77 4.43 49.82 1.18 30.20 0.03
-AdaMatch (Berthelot et al., 2021) 22.32 1.73 16.66 0.62 13.64 2.49 7.62 1.90 7.02 0.79 4.75 1.10 58.35 4.87 52.40 2.08 31.75 0.13
-FixMatch (Sohn et al., 2020) 29.60 0.90 19.56 0.52 16.15 1.89 8.11 0.68 13.44 3.53 5.91 2.02 55.37 4.50 51.24 1.56 31.90 0.06
-FlexMatch (Zhang et al., 2021b) 26.76 1.12 18.24 0.36 14.40 3.11 8.17 0.78 5.17 0.57 5.58 0.81 58.36 3.80 51.89 3.21 32.48 0.15
-Dash (Xu et al., 2021) 30.61 0.98 19.38 0.10 16.22 5.95 7.85 0.74 11.19 0.90 6.96 0.87 56.98 2.93 51.97 1.55 32.38 0.16
-CoMatch (Li et al., 2021a) 35.08 0.69 25.35 0.50 15.12 1.88 9.56 1.35 5.75 0.43 4.81 1.05 59.04 4.90 52.92 1.04 38.65 0.18
-SimMatch (Zheng et al., 2022) 23.78 1.08 17.06 0.78 11.77 3.20 7.55 1.86 7.66 0.60 5.27 0.89 60.88 4.31 52.93 1.56 33.85 0.08
-FreeMatch (Wang et al., 2023) 21.40 0.30 15.65 0.26 12.73 3.22 8.52 0.53 6.50 0.78 5.78 0.51 58.24 3.08 52.19 1.35 32.85 0.31
-SoftMatch (Chen et al., 2023) 22.67 1.32 16.84 0.66 13.55 3.16 7.84 1.72 5.75 0.62 5.90 1.42 57.98 3.66 51.73 2.84 31.80 0.22 22.06 1.06 17.40 1.04 11.09 0.71 8.10 1.02 5.86 1.06 5.74 1.13 57.99 2.16 50.95 2.03 33.08 0.26 12  Error rate comparison of different number of labels on IMDB, AG News, Amazon Review,
+Pseudo-Label (Lee et al., 2013) 33.99  0.95 25.32  0.29 19.14  1.33 10.77  0.60 25.46  1.36 15.70  2.12 56.92  4.54 50.86  1.79 40.35  0.30
+Mean-Teacher (Tarvainen & Valpola, 2017) 35.47  0.40 26.03  0.30 18.67  1.69 24.19  10.15 26.83  1.46 15.85  1.66 62.06  3.43 55.12  2.53 38.55  0.21
+V AT (Miyato et al., 2018) 31.49  1.33 21.34  0.50 18.45  1.47 10.69  0.51 26.16  0.96 10.09  0.94 57.49  5.47 51.30  1.73 38.82  0.04
+MixMatch (Berthelot et al., 2019b) 38.22  0.71 26.72  0.72 58.77  1.98 36.74  1.24 24.85  4.85 17.28  2.67 55.53  1.51 49.64  2.28 37.25  0.08
+ReMixMatch (Berthelot et al., 2019a) 22.21  2.21 16.86  0.57 13.08  3.34 7.21  0.39 5.05  1.05 5.07  0.56 58.77  4.43 49.82  1.18 30.20  0.03
+AdaMatch (Berthelot et al., 2021) 22.32  1.73 16.66  0.62 13.64  2.49 7.62  1.90 7.02  0.79 4.75  1.10 58.35  4.87 52.40  2.08 31.75  0.13
+FixMatch (Sohn et al., 2020) 29.60  0.90 19.56  0.52 16.15  1.89 8.11  0.68 13.44  3.53 5.91  2.02 55.37  4.50 51.24  1.56 31.90  0.06
+FlexMatch (Zhang et al., 2021b) 26.76  1.12 18.24  0.36 14.40  3.11 8.17  0.78 5.17  0.57 5.58  0.81 58.36  3.80 51.89  3.21 32.48  0.15
+Dash (Xu et al., 2021) 30.61  0.98 19.38  0.10 16.22  5.95 7.85  0.74 11.19  0.90 6.96  0.87 56.98  2.93 51.97  1.55 32.38  0.16
+CoMatch (Li et al., 2021a) 35.08  0.69 25.35  0.50 15.12  1.88 9.56  1.35 5.75  0.43 4.81  1.05 59.04  4.90 52.92  1.04 38.65  0.18
+SimMatch (Zheng et al., 2022) 23.78  1.08 17.06  0.78 11.77  3.20 7.55  1.86 7.66  0.60 5.27  0.89 60.88  4.31 52.93  1.56 33.85  0.08
+FreeMatch (Wang et al., 2023) 21.40  0.30 15.65  0.26 12.73  3.22 8.52  0.53 6.50  0.78 5.78  0.51 58.24  3.08 52.19  1.35 32.85  0.31
+SoftMatch (Chen et al., 2023) 22.67  1.32 16.84  0.66 13.55  3.16 7.84  1.72 5.75  0.62 5.90  1.42 57.98  3.66 51.73  2.84 31.80  0.22
+Ours 22.06  1.06 17.40  1.04 11.09  0.71 8.10  1.02 5.86  1.06 5.74  1.13 57.99  2.16 50.95  2.03 33.08  0.26
+Table 12  Error rate comparison of different number of labels on IMDB, AG News, Amazon Review,
 Yahoo Answers, and Yelp Review for semi-supervised learning . We use USB (Wang et al., 2022d)
 text classification task results. Best results are indicated in bold. Our results are averaged over 3
 independent runs.
 Datasets IMDB AG News Amazon Review Yahoo Answers Yelp Review
 # Labels 20 100 40 200 250 1000 500 2000 250 1000
-Pseudo-Label (Lee et al., 2013) 45.45 4.43 19.67 1.01 19.49 3.07 14.69 1.88 53.45 1.9 47.00 0.79 37.70 0.65 32.72 0.31 54.51 0.82 47.33 0.20
-Mean-Teacher (Tarvainen & Valpola, 2017) 20.06 2.51 13.97 1.49 15.17 1.21 13.93 0.65 52.14 0.52 47.66 0.84 37.09 0.18 33.43 0.28 50.60 0.62 47.21 0.31
-V AT (Miyato et al., 2018) 25.93 2.58 11.61 1.79 14.70 1.19 11.71 0.84 49.83 0.46 46.54 0.31 34.87 0.41 31.50 0.35 52.97 1.41 45.30 0.32
-MixMatch (Berthelot et al., 2019b) 26.12 6.13 15.47 0.65 13.50 1.51 11.75 0.60 59.54 0.67 61.69 3.32 35.75 0.71 33.62 0.14 53.98 0.59 51.70 0.68
-AdaMatch (Berthelot et al., 2021) 8.09 0.99 7.11 0.20 11.73 0.17 11.22 0.95 46.72 0.72 42.27 0.25 32.75 0.35 30.44 0.31 45.40 0.96 40.16 0.49
-FixMatch (Sohn et al., 2020) 7.72 0.33 7.33 0.13 30.17 1.87 11.71 1.95 47.61 0.83 43.05 0.54 33.03 0.49 30.51 0.53 46.52 0.94 40.65 0.46
-FlexMatch (Zhang et al., 2021b) 7.82 0.77 7.41 0.38 16.38 3.94 12.08 0.73 45.73 1.60 42.25 0.33 35.61 1.08 31.13 0.18 43.35 0.69 40.51 0.34
-Dash (Xu et al., 2021) 8.34 0.86 7.55 0.35 17.67 3.19 13.76 1.67 47.10 0.74 43.09 0.60 35.26 0.33 31.19 0.29 45.24 2.02 40.14 0.79
-CoMatch (Li et al., 2021a) 7.44 0.30 7.72 1.14 11.95 0.76 10.75 0.35 48.76 0.90 43.36 0.21 33.48 0.51 30.25 0.35 45.40 1.12 40.27 0.51
-SimMatch (Zheng et al., 2022) 7.93 0.55 7.08 0.33 14.26 1.51 12.45 1.37 45.91 0.95 42.21 0.30 33.06 0.20 30.16 0.21 46.12 0.48 40.26 0.62
-FreeMatch (Wang et al., 2023) 8.94 0.21 7.95 0.45 12.98 0.58 11.73 0.63 46.41 0.60 42.64 0.06 32.77 0.26 30.32 0.18 47.95 1.45 40.37 1.00
-SoftMatch (Chen et al., 2023) 7.76 0.58 7.97 0.72 11.90 0.27 11.72 1.58 45.29 0.95 42.21 0.20 33.07 0.31 30.44 0.62 44.09 0.50 39.76 0.13 7.32 0.12 7.64 0.67 14.77 1.59 12.21 0.82 43.96 0.32 42.32 0.02 33.80 0.25 30.86 0.17 44.82 0.17 39.67 0.71
+Pseudo-Label (Lee et al., 2013) 45.45  4.43 19.67  1.01 19.49  3.07 14.69  1.88 53.45  1.9 47.00  0.79 37.70  0.65 32.72  0.31 54.51  0.82 47.33  0.20
+Mean-Teacher (Tarvainen & Valpola, 2017) 20.06  2.51 13.97  1.49 15.17  1.21 13.93  0.65 52.14  0.52 47.66  0.84 37.09  0.18 33.43  0.28 50.60  0.62 47.21  0.31
+V AT (Miyato et al., 2018) 25.93  2.58 11.61  1.79 14.70  1.19 11.71  0.84 49.83  0.46 46.54  0.31 34.87  0.41 31.50  0.35 52.97  1.41 45.30  0.32
+MixMatch (Berthelot et al., 2019b) 26.12  6.13 15.47  0.65 13.50  1.51 11.75  0.60 59.54  0.67 61.69  3.32 35.75  0.71 33.62  0.14 53.98  0.59 51.70  0.68
+AdaMatch (Berthelot et al., 2021) 8.09  0.99 7.11  0.20 11.73  0.17 11.22  0.95 46.72  0.72 42.27  0.25 32.75  0.35 30.44  0.31 45.40  0.96 40.16  0.49
+FixMatch (Sohn et al., 2020) 7.72  0.33 7.33  0.13 30.17  1.87 11.71  1.95 47.61  0.83 43.05  0.54 33.03  0.49 30.51  0.53 46.52  0.94 40.65  0.46
+FlexMatch (Zhang et al., 2021b) 7.82  0.77 7.41  0.38 16.38  3.94 12.08  0.73 45.73  1.60 42.25  0.33 35.61  1.08 31.13  0.18 43.35  0.69 40.51  0.34
+Dash (Xu et al., 2021) 8.34  0.86 7.55  0.35 17.67  3.19 13.76  1.67 47.10  0.74 43.09  0.60 35.26  0.33 31.19  0.29 45.24  2.02 40.14  0.79
+CoMatch (Li et al., 2021a) 7.44  0.30 7.72  1.14 11.95  0.76 10.75  0.35 48.76  0.90 43.36  0.21 33.48  0.51 30.25  0.35 45.40  1.12 40.27  0.51
+SimMatch (Zheng et al., 2022) 7.93  0.55 7.08  0.33 14.26  1.51 12.45  1.37 45.91  0.95 42.21  0.30 33.06  0.20 30.16  0.21 46.12  0.48 40.26  0.62
+FreeMatch (Wang et al., 2023) 8.94  0.21 7.95  0.45 12.98  0.58 11.73  0.63 46.41  0.60 42.64  0.06 32.77  0.26 30.32  0.18 47.95  1.45 40.37  1.00
+SoftMatch (Chen et al., 2023) 7.76  0.58 7.97  0.72 11.90  0.27 11.72  1.58 45.29  0.95 42.21  0.20 33.07  0.31 30.44  0.62 44.09  0.50 39.76  0.13
+Ours 7.32  0.12 7.64  0.67 14.77  1.59 12.21  0.82 43.96  0.32 42.32  0.02 33.80  0.25 30.86  0.17 44.82  0.17 39.67  0.71
 D.4 N OISY LABEL LEARNING
 D.4.1 S ETUP
 We conduct experiments of noisy label learning following SOP (Liu et al., 2022). We evaluate the
 proposed method on both synthetic symmetric/asymmetric noise on CIFAR-10 and CIFAR-100,
-and more realistic and larger-scale instance noise on Clothing M and WebVision. To introduce the
+and more realistic and larger-scale instance noise on Clothing1M and WebVision. To introduce the
 synthetic symmetric noise to CIFAR-10 and CIFAR-100, we uniformly flip labels for a probability
 ηinto other classes. For asymmetric noise, we only randomly flip the labels for particular pairs of
-classes. For CIFAR-10 and CIFAR-100, we train PreAct-ResNet-18 0.02, a weight decay of 1 3, and a momentum of 0.9. We train for 300 128. For WebVision, we use InceptionResNet-v2 32. Other settings are similar to CIFAR-10. For Clothing M,
+classes. For CIFAR-10 and CIFAR-100, we train PreAct-ResNet-18 with SGD using a learning rate
+of0.02, a weight decay of 1e 3, and a momentum of 0.9. We train for 300epochs with a cosine
+learning rate schedule and a batch size of 128. For WebVision, we use InceptionResNet-v2 as the
+backbone and set the batch size to 32. Other settings are similar to CIFAR-10. For Clothing1M,
 we use ImageNet-1K pre trained ResNet-50 as the backbone. We train it using SGD with an initial
-learning rate of 2e-3 10 epochs, where the learning rate is reduced by 10 5 epochs.
+learning rate of 2e-3for a total of 10 epochs, where the learning rate is reduced by 10 after 5 epochs.
 In addition, we also conduct experiments on CIFAR-10N and CIFAR-100N. We present the detailed
 hyper-parameters in Table 13.
 D.4.2 R ESULTS
 In addition to the results regarding noisy label learning provided in the main paper, we also present
 comparison results on CIFAR-10N and CIFAR-100N (Wei et al., 2021) in Table 14. We include a
-full comparison on Clothing M and WebVision, incorporating methods like Co-Teaching, Forward,
+full comparison on Clothing1M and WebVision, incorporating methods like Co-Teaching, Forward,
 and CORES, in Table 15. As shown in Table 14, the proposed ILL framework achieves performance
 comparable to the previous best method, SOP (Liu et al., 2022). On CIFAR-10N, our method yields
 results very close to SOP in the Random and Aggregate case noise scenarios and surpasses SOP in the
-27 13  Hyper-parameters for noisy label learning used in experiments.
-Hyper-parameter CIFAR-10 (CIFAR-10N) CIFAR-100 (CIFAR-100N) Clothing M WebVision
+27Preprint
+Table 13  Hyper-parameters for noisy label learning used in experiments.
+Hyper-parameter CIFAR-10 (CIFAR-10N) CIFAR-100 (CIFAR-100N) Clothing1M WebVision
 Image Size 32 32 224 299
 Model PreAct-ResNet-18 (ResNet-34) PreAct-ResNet-18 (ResNet-34)ResNet-50
-(ImageNet-1K Pretrained)Inception-ResNet-v2 128 128 64 32 0.02 0.02 0.002 0.02 1e-3 1e-3 1e-3 5e-4 300 300 10 100 10 100 14 50 1.0 2.0 0.5 2.5
+(ImageNet-1K Pretrained)Inception-ResNet-v2
+Batch Size 128 128 64 32
+Learning Rate 0.02 0.02 0.002 0.02
+Weight Decay 1e-3 1e-3 1e-3 5e-4
+LR Scheduler Cosine Cosine MultiStep MultiStep
+Training Epochs 300 300 10 100
+Classes 10 100 14 50
+Noisy Matrix Scale 1.0 2.0 0.5 2.5
 Worst case noise scenario. However, on CIFAR-100N, our method slightly underperforms previous
 methods, possibly due to the oversimplified noise model utilized in ILL. We believe that a more
 realistic noise transition model and further tuning of our method could lead to improved performance.
-Table 14  Test accuracy comparison of instance independent label noise on CIFAR-10N and CIFAR N
+Table 14  Test accuracy comparison of instance independent label noise on CIFAR-10N and CIFAR100N
  for noisy label learning . The best results are indicated in bold , and the second best results are
 indicated in underline . Our results are averaged over three independent runs with ResNet34 as the
 backbone.
-Dataset CIFAR-10N CIFAR-100 1 2 3 92.92 0.11 85.02 0.65 86.46 1.79 85.16 0.61 87.77 0.38 77.69 1.55 76.70 0.74 55.50 0.66
-Forward (Patrini et al., 2016) 93.02 0.12 86.88 0.50 86.14 0.24 87.04 0.35 88.24 0.22 79.79 0.46 76.18 0.37 57.01 1.03
-Co-teaching (Han et al., 2018) 93.35 0.14 90.33 0.13 90.30 0.17 90.15 0.18 91.20 0.13 83.83 0.13 73.46 0.09 60.37 0.27
-DivideMix (Li et al., 2020) - 95.16 0.19 95.23 0.07 95.21 0.14 95.01 0.71 92.56 0.42 - 71.13 0.48
-ELR (Liu et al., 2020) 95.39 0.05 94.43 0.41 94.20 0.24 94.34 0.22 94.83 0.10 91.09 1.60 78.57 0.12 66.72 0.07
-CORES (Cheng et al., 2020) 94.16 0.11 94.45 0.14 94.88 0.31 94.74 0.03 95.25 0.09 91.66 0.09 73.87 0.16 55.72 0.42
-SOP (Liu et al., 2022) 96.38 0.31 95.28 0.13 95.31 0.10 95.39 0.11 95.61 0.13 93.24 0.21 78.91 0.43 67.81 0.23 96.21 0.29 96.06 0.07 95.98 0.12 96.10 0.05 96.40 0.03 93.55 0.14 78.53 0.21 68.07 0.33 15  Test accuracy comparison of realistic noisy labels on Clothing M and WebVision for noisy
+Dataset CIFAR-10N CIFAR-100N
+Noisy Type Clean Random 1 Random 2 Random 3 Aggregate Worst Clean Noisy
+CE 92.92  0.11 85.02  0.65 86.46  1.79 85.16  0.61 87.77  0.38 77.69  1.55 76.70  0.74 55.50  0.66
+Forward (Patrini et al., 2016) 93.02  0.12 86.88  0.50 86.14  0.24 87.04  0.35 88.24  0.22 79.79  0.46 76.18  0.37 57.01  1.03
+Co-teaching (Han et al., 2018) 93.35  0.14 90.33  0.13 90.30  0.17 90.15  0.18 91.20  0.13 83.83  0.13 73.46  0.09 60.37  0.27
+DivideMix (Li et al., 2020) - 95.16  0.19 95.23  0.07 95.21  0.14 95.01  0.71 92.56  0.42 - 71.13  0.48
+ELR (Liu et al., 2020) 95.39  0.05 94.43  0.41 94.20  0.24 94.34  0.22 94.83  0.10 91.09  1.60 78.57  0.12 66.72  0.07
+CORES (Cheng et al., 2020) 94.16  0.11 94.45  0.14 94.88  0.31 94.74  0.03 95.25  0.09 91.66  0.09 73.87  0.16 55.72  0.42
+SOP (Liu et al., 2022) 96.38  0.31 95.28  0.13 95.31  0.10 95.39  0.11 95.61  0.13 93.24  0.21 78.91  0.43 67.81  0.23
+Ours 96.21  0.29 96.06  0.07 95.98  0.12 96.10  0.05 96.40  0.03 93.55  0.14 78.53  0.21 68.07  0.33
+Table 15  Test accuracy comparison of realistic noisy labels on Clothing1M and WebVision for noisy
 label learning . The best results are indicated in bold and the second best results are indicated in
-underline . Our results are averaged over 3 independent runs. For Clothing M, we use ImageNet-1 50 as the backbone. For WebVision, InceptionResNetv2 is used as the backbone.
-Dataset Clothing M WebVision
+underline . Our results are averaged over 3 independent runs. For Clothing1M, we use ImageNet-1K
+pre trained ResNet50 as the backbone. For WebVision, InceptionResNetv2 is used as the backbone.
+Dataset Clothing1M WebVision
 CE 69.10 Forward
  (Patrini et al., 2016) 69.80 61.10
 Co-Teaching (Han et al., 2018) 69.20 63.60
 DivideMix (Li et al., 2020) 74.76 77.32
 ELR (Liu et al., 2020) 72.90 76.20
 CORES (Cheng et al., 2020) 73.20 SOP
- (Liu et al., 2022) 73.50 76.60 74.02 0.12 79.37 0.09
+ (Liu et al., 2022) 73.50 76.60
+Ours 74.02  0.12 79.37  0.09
 D.5 M IXED IMPRECISE LABEL LEARNING
 D.5.1 S ETUP
 To create a mixture of various imprecise label configurations, we select CIFAR-10 and CIFAR-100 as
@@ -1349,40 +1429,51 @@ l  {1000,5000,50000}, and for CIFAR-100, we set l  {5000,10000 ,50000}. Similarl
 the partial label setting, we set q  {0.1,0.3,0.5}for CIFAR-10, and q  {0.01,0.05,0.1}for
 CIFAR-100. For noisy labels, we set η  {0.1,0.2,0.3}for both datasets.
 28Preprint
-D.5.2 4 16. On partial noisy labels of CIFAR-10 0.5and of CIFAR-100 0.1, most baseline methods are more robust or
+D.5.2 R ESULTS
+We provide a more complete version of Table 4 in Table 16. On partial noisy labels of CIFAR-10 with
+partial ratio 0.5and of CIFAR-100 with partial ratio 0.1, most baseline methods are more robust or
 even fail to perform. However, our ILL still shows very robust performance with minor performance
 degradation as increase of noise ratios.
 Table 16  Test accuracy comparison of mixture of different imprecise labels . We report results of
 full labels, partial ratio qof{0.1,0.3,0.5}for CIFAR-10 and {0.01,0.05,0.1}for CIFAR-100, and
 noise ratio ηof{0.1,0.2,0.3}for CIFAR-10 and CIFAR-100.
 Dataset # Labels Partial Ratio q Noise Ratio η 0 0.1 0.2 0.3
-PiCO  (Wang et al., 2022b) 95.99 0.03 93.64 93.13 92.18
+PiCO  (Wang et al., 2022b) 95.99  0.03 93.64 93.13 92.18
 IRNet (Lian et al., 2022b) - 93.44 92.57 92.38
 DALI (Xu et al., 2023) - 94.15 94.04 93.77
 PiCO  w/ Mixup (Xu et al., 2023) - 94.58 94.74 94.43
-DALI w/ Mixup (Xu et al., 2023) - 95.83 95.86 95.750.1 96.55 0.08 96.47 0.11 96.09 0.20 95.83 0.05
-PiCO  (Wang et al., 2022b) 95.73 0.10 92.32 92.22 89.95
+DALI w/ Mixup (Xu et al., 2023) - 95.83 95.86 95.750.1
+Ours 96.55  0.08 96.47  0.11 96.09  0.20 95.83  0.05
+PiCO  (Wang et al., 2022b) 95.73  0.10 92.32 92.22 89.95
 IRNet (Lian et al., 2022b) - 92.81 92.18 91.35
 DALI (Xu et al., 2023) - 93.44 93.25 92.42
 PiCO  w/ Mixup (Xu et al., 2023) - 94.02 94.03 92.94
-DALI w/ Mixup (Xu et al., 2023) - 95.52 95.41 94.670.3 96.52 0.12 96.2 0.02 95.87 0.14 95.22 0.06
-PiCO  (Wang et al., 2022b) 95.33 0.06 91.07 89.68 84.08
+DALI w/ Mixup (Xu et al., 2023) - 95.52 95.41 94.670.3
+Ours 96.52  0.12 96.2  0.02 95.87  0.14 95.22  0.06
+PiCO  (Wang et al., 2022b) 95.33  0.06 91.07 89.68 84.08
 IRNet (Lian et al., 2022b) - 91.51 90.76 86.19
 DALI (Xu et al., 2023) - 92.67 91.83 89.8
 PiCO  w/ Mixup (Xu et al., 2023) - 93.56 92.65 88.21
-DALI w/ Mixup (Xu et al., 2023) - 95.19 93.89 92.26CIFAR-10 50,000 0.5 96.28 0.13 95.82 0.07 95.28 0.08 94.35 0.08
-PiCO  (Wang et al., 2022b) 76.29 0.42 71.42 70.22 66.14
+DALI w/ Mixup (Xu et al., 2023) - 95.19 93.89 92.26CIFAR-10 50,000
+0.5
+Ours 96.28  0.13 95.82  0.07 95.28  0.08 94.35  0.08
+PiCO  (Wang et al., 2022b) 76.29  0.42 71.42 70.22 66.14
 IRNet (Lian et al., 2022b) - 71.17 70.10 68.77
 DALI (Xu et al., 2023) - 72.26 71.98 71.04
 PiCO  w/ Mixup (Xu et al., 2023) - 75.04 74.31 71.79
-DALI w/ Mixup (Xu et al., 2023) - 76.52 76.55 76.090.01 78.08 0.26 77.53 0.24 76.96 0.02 76.43 0.27
-PiCO  (Wang et al., 2022b) 76.17 0.18 69.40 66.67 62.24
+DALI w/ Mixup (Xu et al., 2023) - 76.52 76.55 76.090.01
+Ours 78.08  0.26 77.53  0.24 76.96  0.02 76.43  0.27
+PiCO  (Wang et al., 2022b) 76.17  0.18 69.40 66.67 62.24
 IRNet (Lian et al., 2022b) - 70.73 69.33 68.09
 DALI (Xu et al., 2023) - 72.28 71.35 70.05
 PiCO  w/ Mixup (Xu et al., 2023) - 73.06 71.37 67.56
-DALI w/ Mixup (Xu et al., 2023) - 76.87 75.23 74.490.05 76.95 0.46 77.07 0.16 76.34 0.08 75.13 0.63
-PiCO  (Wang et al., 2022b) 75.55 0.21 - - IRNet
+DALI w/ Mixup (Xu et al., 2023) - 76.87 75.23 74.490.05
+Ours 76.95  0.46 77.07  0.16 76.34  0.08 75.13  0.63
+PiCO  (Wang et al., 2022b) 75.55  0.21 - - IRNet
  (Lian et al., 2022b) - - - DALI
  (Xu et al., 2023) - - - PiCO 
  w/ Mixup (Xu et al., 2023) - - - DALI
- w/ Mixup (Xu et al., 2023) - - - -CIFAR-100 50,000 0.1 76.41 1.02 75.50 0.54 74.67 0.30 73.88 0.60 29
+ w/ Mixup (Xu et al., 2023) - - - -CIFAR-100 50,000
+0.1
+Ours 76.41  1.02 75.50  0.54 74.67  0.30 73.88  0.60
+29

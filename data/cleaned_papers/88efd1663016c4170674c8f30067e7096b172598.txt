@@ -6,7 +6,7 @@ David Rodriguez , Akshath Jain , Jose M. del Alamo , Norman Sadeh
  School of Computer Science, Carnegie Mellon University
 arjain@andrew.cmu.edu, sadeh@cs.cmu.edu
 Abstract  Apple and Android introduced privacy labels in
-2020 2022 respectively as a way of providing consumers
+2020 and 2022 respectively as a way of providing consumers
 with succinct summaries of mobile apps  more salient data
 practices. A number of apps are published in both stores,
 offering us the opportunity to compare their privacy label
@@ -81,7 +81,8 @@ the privacy labels comparison is presented. An analysis
 at scale is conducted in Section 4, highlighting the differences
  identified. Those differences are discussed in section
 5 with the relevant findings. Potential threats to validity
-are exposed in Section 6 7.
+are exposed in Section 6 and the paper s final conclusions
+are reported in Section 7.
 2. Background & Related Work
 Privacy labels have emerged as a result of the readability
  and comprehension problems of privacy policies
@@ -220,7 +221,8 @@ privacy labels  correctness was not validated during the
 app approval process  .
 But even fewer studies [3], [19] have addressed Android
  privacy labels. Closer to our work, Mozilla has
-conducted a study [19] on the Android top 20 20 paid apps comparing the privacy policy with
+conducted a study [19] on the Android top 20 free apps
+and top 20 paid apps comparing the privacy policy with
 the privacy labels for each app. The study concludes by
 finding discrepancies between privacy policies and privacy
 labels for nearly 80% of the apps reviewed.
@@ -272,7 +274,9 @@ are indeed the same on both platforms.
 The logo comparison method downloads both logos
 and then performs a comparison based on the Structural
 Similarity Index Measure (SSIM) [23] between them. Our
-initial validation in a random sample of 30 1.0 0.9 in the range of [0-1]. However, we found
+initial validation in a random sample of 30 applications
+outputted a 1.0 precision score when using an SSIM
+threshold of 0.9 in the range of [0-1]. However, we found
 a few false positive cases when validating a larger dataset.
 Apps filtering. Since we needed to ensure that the
 dataset contained only matching applications for the labels
@@ -290,7 +294,7 @@ between privacy policies and other texts. This classifier
 is based on the Support Vector Machines (SVM) algorithm
  and was trained with 195 manually classified texts,
 achieving 98.76% precision, 97.56% recall, and 98.15%
-F1 100 unseen English texts.
+F1 score when evaluated against 100 unseen English texts.
 After discarding non-privacy policies texts, we compared
 them by computing the cosine similarity [21] to dismiss
 the applications that did not perfectly match (i.e., cosine
@@ -412,7 +416,7 @@ developers report their applications to do. However, apps
 may intentionally or unintentionally be accessing nonreported
  personal data. To assess their statements, we
 managed to successfully download and perform static
-analysis on 560 822 Android apps.
+analysis on 560 out of the 822 Android apps.
 First, we checked whether applications have access to
 two types of personal data  coarse location and precise location.
  Figure 5 shows a comparison between the apps that
@@ -467,7 +471,7 @@ data collection disclosed in the privacy labels
 Differences between the number of applications
 disclosing collection of precise location and coarse
 (approximate) location in Android and iOS . In figures
-3 4 we could see that iOS apps mostly collect precise
+3 and 4 we could see that iOS apps mostly collect precise
 location while Android does the same with coarse location.
  Apple considers as precise location the latitude and
 longitude coordinates with three or more decimal places,
@@ -567,7 +571,8 @@ Accessed  2023-03-29.[2] Ying Chen, Heng Xu, Yilu Zhou, Sencun Zhu, and George W
 maturity ratings on android and ios applications. pages 201 212.
 Association for Computing Machinery (ACM), 5 2013.
 [3] Lorrie Faith Cranor. Mobile-app privacy nutrition labels missing
-key ingredients for success. Communications of the ACM , 65 26 28, 11 2022.
+key ingredients for success. Communications of the ACM , 65 26 
+28, 11 2022.
 [4] Apple Developer. App privacy details. https //developer.apple.com/
 app-store/app-privacy-details/. Accessed  2023-03-29.
 [5] Jack Gardner, Yuanyuan Feng, Kayla Reiman, Zhi Lin, Akshath

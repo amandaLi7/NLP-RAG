@@ -1,6 +1,8 @@
 Can Language Models Solve Graph Problems
 in Natural Language 
-Heng Wang 1, Shangbin Feng 2, Tianxing He2, Zhaoxuan Tan3, Xiaochuang Han2, Yulia Tsvetkov2 1 2213210554@stu.xjtu.edu.cn ,shangbin@cs.washington.edu
+Heng Wang 1, Shangbin Feng 2, Tianxing He2, Zhaoxuan Tan3, Xiaochuang Han2, Yulia Tsvetkov2
+1Xi an Jiaotong University2University of Washington3University of Notre Dame
+wh2213210554@stu.xjtu.edu.cn ,shangbin@cs.washington.edu
 Abstract
 Large language models (LLMs) are increasingly adopted for a variety of tasks
 with implicit graphical structures , such as planning in robotics, multi-hop question
@@ -39,7 +41,7 @@ graphical structures while achieving preliminary success. However, one underlyin
 question remains underexplored  Can LLMs reason with graphs  More concretely, are LLMs capable
 of mapping textual descriptions of graphs and structures to grounded conceptual spaces and solving
  equal contribution
-37th Conference on Neural Information Processing Systems (NeurIPS 2023).arXiv 2305.10037 3  [cs.CL]  6 2024graph algorithm problems explicitly with natural language  The answer to this question has profound
+37th Conference on Neural Information Processing Systems (NeurIPS 2023).arXiv 2305.10037v3  [cs.CL]  6 Jan 2024graph algorithm problems explicitly with natural language  The answer to this question has profound
 implications for large language model applications with implicit graphs and structures, the reasoning
 ability of LLMs in advanced and graph-based settings, and more.
 To this end, we propose the Natural Language Graph (NLGraph) benchmark, a comprehensive testbed
@@ -98,35 +100,46 @@ two nodes in the graph. Note that (i,j)
 means that node i and node j are
 connected with an undirected edge.
 Graph  (0,1) (1,2) (3,4) (4,5)
-Q  Is there a path between node 1 4 1. Connectivity
+Q  Is there a path between node 1 and
+node 4 1. Connectivity
 In an undirected graph, (i,j) means that
 node i and node j are connected with an
 undirected edge.
-The nodes are numbered from 0 5,
+The nodes are numbered from 0 to 5,
 and the edges are  (3,4) (3,5) (1,0) (2,5)
 (2,0)
 Q  Is there a cycle in this graph 2. Cycle
-In a directed graph with 5 0 4 0 4, ...
+In a directed graph with 5 nodes
+numbered from 0 to 4 
+node 0 should be visited before node
+4, ...
 Q  Can all the nodes be visited  Give the
 solution.3. Topological Sort
 In an undirected graph, the nodes are
-numbered from 0 4, and the edges are 
-an edge between node 0 1 2,  ...
-Q  Give the shortest path from node 0 4.4. Shortest Path
+numbered from 0 to 4, and the edges are 
+an edge between node 0 and node 1 with
+weight 2,  ...
+Q  Give the shortest path from node 0 to
+node 4.4. Shortest Path
 In a directed graph, the nodes are
-numbered from 0 3, and the edges
+numbered from 0 to 3, and the edges
 are 
-an edge from node 1 0 10,
-an edge from node 0 2 6,
-an edge from node 2 3 4.
+an edge from node 1 to node 0 with
+capacity 10,
+an edge from node 0 to node 2 with
+capacity 6,
+an edge from node 2 to node 3 with
+capacity 4.
 Q  What is the maximum flow from node
-1 3 5. Maximum Flow
-There are 4 0 3, and 5 0 4. Each applicant is interested in
+1 to node 3 5. Maximum Flow
+There are 4 job applicants numbered
+from 0 to 3, and 5 jobs numbered from
+0 to 4. Each applicant is interested in
 some of the jobs. Each job can only
 accept one applicant and a job
 applicant can be appointed for only one
 job.
-Applicant 0 4 , ...
+Applicant 0 is interested in job 4 , ...
 Q  Find an assignment of jobs to
 applicants in such that the maximum
 number of applicants find the job they
@@ -134,16 +147,45 @@ are interested in.6. Bipartite Graph Matching
 In an undirected graph, (i,j) means that
 node i and node j are connected with
 an undirected edge.
-The nodes are numbered from 0 4,
+The nodes are numbered from 0 to 4,
 and the edges are  (4,2) (0,4) (4,3) (0,1)
 (0,2) (4,1) (2,3)
 Q  Is there a path in this graph that
 visits every node exactly once  If yes,
 give the path. Note that in a path,
 adjacent nodes must be connected
-with edges.7. Hamilton Path21 1 123 201 421 1 123 201 4 320 14 320 14 3 520 1 4 3 520 1 4 0 1 45 3 20 1 45 3 2 106 4 32 0 1106 4 32 0 1 3 2 0 1 3 2 0 1 4 3 2 0 1 3 2 0 1 4
+with edges.7. Hamilton Path21
+1
+123 201
+421
+1
+123 201
+4
+320
+14
+320
+14
+3
+520 1 4
+3
+520 1 4 0
+1 45
+3 20
+1 45
+3 2
+106
+4
+32 0
+1106
+4
+32 0
+1job applicants
+jobs3 2 0 1
+3 2 0 1 4job applicants
+jobs3 2 0 1
+3 2 0 1 4
 In an undirected graph, the nodes are
-numbered from 0 4, and every node has an
+numbered from 0 to 4, and every node has an
 embedding. (i,j) means that node i and node j
 are connected with an undirected edge.
 Embeddings   node 0  [1,1] ,  
@@ -153,7 +195,18 @@ node's embedding is updated by the sum of
 its neighbors' embeddings.
 Q  What's the embedding of each node after
 one layer of simple graph convolution layer 8. GNN
-3 20 141111 0101 0101 11110101 3 20 1411 01 01 1101 3201 4 3201 4 1  Overview of the NLGraph Benchmark, featuring eight tasks with varying complexity. We
+3 20
+141111
+0101
+0101 11110101
+3 20
+1411
+01
+01 1101
+3201
+4
+3201
+4Figure 1  Overview of the NLGraph Benchmark, featuring eight tasks with varying complexity. We
 show an intuitive figure representing each task along with the example natural language prompts
 being passed to the LLMs.
 problem difficulty within each of the eight tasks, resulting in easy, medium, and hard subsets in each
@@ -188,11 +241,12 @@ as the True subset. We retain a balanced set of cyclic and noncyclic graphs in t
 such that for every directed edge (u, v)from node uto node v,ucomes before vin the ordering.
 3Subset Connect. Cycle Topo. Sort Shortest Path Max. Flow Bipartite Graph Hamilton Path GNNs
 # EASY 352 / 730 150 / 300 180 / 360 180 / 360 150 / 300 300 / 600 150 / 300 100 / 200
-SPEC . n  5-10 5-10 5-10 5-10 5-10 6-20 5-10 5-8
+SPEC . n  5-10 n  5-10 n  5-10 n  5-10 n  5-10 n  6-20 n  5-10 n  5-8
 # M EDIUM 1,200 / 8,580 600 / 1,800 150 / 1,350 / / / / /
-SPEC . n  11-25 11-25 11-25 / / / / /
+SPEC . n  11-25 n  11-25 n  11-25 / / / / /
 # H ARD 680 / 7,090 400 / 2,000 200 / 1,200 200 / 1,200 200 / 1,200 210 / 1,260 200 / 600 140 / 840
-SPEC . n  26-35 26-35 26-35 11-20 11-20 17-33 11-20 9-15 1  Statistics of the NLGraph benchmark. We use A / B to indicate that there are A and B
+SPEC . n  26-35 n  26-35 n  26-35 n  11-20 n  11-20 n  17-33 n  11-20 n  9-15
+Table 1  Statistics of the NLGraph benchmark. We use A / B to indicate that there are A and B
 problems in the standard and extended set of NLGraph. SPEC . denotes difficulty specifications.
 The task is to find a valid topological sort given a directed graph and there could be multiple valid
 solutions. We ask LLMs to generate a valid topological sort for the given directed graph and
@@ -235,7 +289,8 @@ relative error is formulated as RE  x y
 max(x,y), where xis the value generated by LLMs and yis
 the value in the standard answer, averaged across all embedding dimensions.
 2.3 Benchmark Statistics
-Using the above methodology, we generate the NLGraph benchmark with 5,902 29,370 problems in an extended version. Intuitively easier tasks, including
+Using the above methodology, we generate the NLGraph benchmark with 5,902 problems in a
+standard version and 29,370 problems in an extended version. Intuitively easier tasks, including
 connectivity, cycle, and topological sort problems, are further divided into easy, medium, and hard
 subsets based on graph size, sparsity, among other difficulty control factors. More algorithmically
 advanced tasks, including shortest path, maximum flow, bipartite graph matching, Hamilton path,
@@ -243,7 +298,11 @@ advanced tasks, including shortest path, maximum flow, bipartite graph matching,
 Easy Medium Hard Avg. Easy Medium Hard Avg. Easy Hard Easy (PC) Hard (PC) Avg.
 RANDOM 50.00 50.00 50.00 50.00 50.00 50.00 50.00 50.00 6.07 6.69 14.73 13.81 17.81
 ZERO -SHOT 83.81 72.75 63.38 71.31 50.00 50.00 50.00 50.00 29.40 21.00 46.00 26.76 30.79
-FEW-SHOT 93.75 83.83 76.61 84.73 80.00 70.00 61.00 70.33 31.11 26.00 49.19 35.73 35.51 94.32 82.17 77.21 84.57 84.67 63.33 53.25 66.75 63.89 29.50 76.84 35.79 51.51 0-C OT 79.55 65.83 68.53 71.30 55.33 57.67 49.00 54.00 8.89 7.50 62.39 43.95 32.03 93.18 84.50 82.79 86.82 82.00 63.67 53.50 66.39 68.89 29.00 80.25 38.47 54.15 2  Model performance on the connectivity, cycle, and shortest path tasks. PC denotes partial
+FEW-SHOT 93.75 83.83 76.61 84.73 80.00 70.00 61.00 70.33 31.11 26.00 49.19 35.73 35.51
+COT 94.32 82.17 77.21 84.57 84.67 63.33 53.25 66.75 63.89 29.50 76.84 35.79 51.51
+0-C OT 79.55 65.83 68.53 71.30 55.33 57.67 49.00 54.00 8.89 7.50 62.39 43.95 32.03
+COT SC 93.18 84.50 82.79 86.82 82.00 63.67 53.50 66.39 68.89 29.00 80.25 38.47 54.15
+Table 2  Model performance on the connectivity, cycle, and shortest path tasks. PC denotes partial
 credit. Large language models with COTorCOT SC prompting greatly outperforms the random
 baseline by 37.33% to 57.82%, indicating that LLMs have preliminary graph reasoning abilities.
 and graph neural networks problems, are divided into easy and hard subsets. We present benchmark
@@ -277,18 +336,27 @@ connectivity task and cycle task, we set kto 4, for the GNN task, we set kto 1 d
 size limit, while for other tasks kis 5. We evaluate LLMs and various prompting techniques on the
 standard set of NLGraph due to monetary costs, while we encourage future research to leverage the
 extended version for enhanced evaluation.
-4 4.1 LLMs Have (Preliminary) Graph Reasoning Abilities
+4 Results
+4.1 LLMs Have (Preliminary) Graph Reasoning Abilities
 We first find that on intuitively simple graph reasoning tasks, large language models achieve impressive
 performance and demonstrate preliminary graph reasoning abilities. As demonstrated in Table 2,
 LLM performance on the connectivity, cycle, and shortest path tasks is significantly better than the
 RANDOM baseline, indicating that LLMs are not giving random answers and they dohave preliminary
 graph reasoning abilities. In the first two tasks with true/false questions, LLM performance is 37.33%
 to 57.82% higher than random with COTorCOT SC prompting. The performance is also impressive
-5zero-shot few-shot 0-CoT CoT CoT SC LTM Acc51.770.6 36.154.450.5 37.8easy
-zero-shot few-shot 0-CoT CoT CoT SC Acc15.3 12.0 9.3 10.0 4.0easy
-zero-shot few-shot 0-CoT CoT CoT SC LTM Acc5.118.4 1.1 0.9 1.60.2
+5zero-shot few-shot 0-CoT CoT CoT SC LTM0255075Acc51.770.6
+36.154.450.5
+37.8easy
+zero-shot few-shot 0-CoT CoT CoT SC01020Acc15.3
+12.0
+9.3 10.0
+4.0easy
+zero-shot few-shot 0-CoT CoT CoT SC LTM01020Acc5.118.4
+1.1 0.9 1.60.2
 topological sortmedium
-zero-shot few-shot 0-CoT CoT CoT SC Acc2.52.0 2.04.0 1.0 2  (left) Model performance on the topological sort task. COT,LTM, and self-consistency
+zero-shot few-shot 0-CoT CoT CoT SC0510Acc2.52.0 2.04.0
+1.0
+maximum flowhardFigure 2  (left) Model performance on the topological sort task. COT,LTM, and self-consistency
 are mostly ineffective on this problem. (right) Model performance on the maximum flow task.
 FEW-SHOT prompting outperforms COT SC prompting on both easy and hard subsets, suggesting
 that LLMs fall short of generating valid intermediate steps to solve the more complex graph reasoning
@@ -303,7 +371,11 @@ models dopossess preliminary abilities to process graphs and structures in input
 4.2 Mixed Results with Advanced Prompting
 Method PC ( ) A CC( ) RE (  )
 ZERO -SHOT 13.61 0.00 20.04
-FEW-SHOT 20.04 0.00 37.83 64.55 31.00 14.34 0-C OT 13.85 0.00 44.55 63.92 28.00 13.28 3  Model performance on the task of simulating
+FEW-SHOT 20.04 0.00 37.83
+COT 64.55 31.00 14.34
+0-C OT 13.85 0.00 44.55
+COT SC 63.92 28.00 13.28
+Table 3  Model performance on the task of simulating
  graph neural networks. PC and RE are two
 partial credit metrics introduced in  2.2. Chainof-thought
  prompting significantly improves the
@@ -337,21 +409,31 @@ the correlation between the number of exemplars and model performance on the Ham
 task. As illustrated in Figure 4, when the number of exemplars increases, model performance is
 not trending up, and the performance is consistently lower than zero-shot prompting. These results
 further suggest that in-context learning could be counterproductive in complex structured reasoning.
-6zero-shot few-shot 0-CoT CoT CoT SC Acc49.346.7 14.740.0 34.7 20.017.5 4.08.0 8.5
+6zero-shot few-shot 0-CoT CoT CoT SC0204060Acc49.346.7
+14.740.0
+34.7
+20.017.5
+4.08.0 8.5
 Hamilton patheasy hard
-zero-shot few-shot 0-CoT CoT CoT SC Acc46.0 45.0 40.748.3 47.0 27.6 17.127.1 13.311.4 3  (left) Model performance on the Hamilton path task. ZERO -SHOT prompting consistently
+zero-shot few-shot 0-CoT CoT CoT SC0204060Acc46.0 45.0
+40.748.3 47.0
+27.6
+17.127.1
+13.311.4
+bipartite graph matchingeasy hardFigure 3  (left) Model performance on the Hamilton path task. ZERO -SHOT prompting consistently
 outperforms all other prompting techniques. (right) Model performance on the bipartite graph
 matching task. The effect of in-context learning and advanced prompting is also mostly marginal in
 this complex graph reasoning problem. Together these results demonstrate that in-context learning
 can be counterproductive in advanced graph reasoning problems.
 Dataset ZERO -SHOT FEW -SHOT COT 0-C OT C OT SC Avg.
-GENERAL 74.67 83.33 85.33 66.00 82.67 78.40 51.67 (-23.00) 45.00 (-35.33) 40.83 (-44.50) 92.50 ( 26.50) 44.17 (-38.50) 54.83 (-23.57)
+GENERAL 74.67 83.33 85.33 66.00 82.67 78.40
+CHAIN 51.67 (-23.00) 45.00 (-35.33) 40.83 (-44.50) 92.50 ( 26.50) 44.17 (-38.50) 54.83 (-23.57)
 CLIQUE 60.83 (-13.84) 73.33 (-10.00) 85.00 (-0.33) 52.50 (-13.50) 83.33 ( 0.66) 71.00 (-7.40)
 Table 4  Model performance on the chain and clique subset of the connectivity task. Large language
 models indeed rely on spurious correlations in problem settings, evident in the reduced performance
 on the two special cases compared to the general connectivity task.
 0 2 4 8 12 16
-# exemplar Acc
+# exemplar0204060Acc
 easy hard
 Figure 4  Model performance on the Hamilton
 path task with an increasing amount of exemplars.
@@ -375,7 +457,7 @@ exact opposite of the spurious correlation.
 Chain We firstly generate a graph with kcomponents, where each components is a chain. Formally,
 G {V,E}can be divided into subgraphs G1,G2, . . . ,Gk, where subgraph Giconsists of a chain of
 nodes and edges vi1, ei1, vi2, ei2, . . . , e iti, viti. We then randomly select query node pairs that are at
-the two ends of a chain, i.e.vi andviti. These nodes only have a degree of one but they are actually
+the two ends of a chain, i.e.vi1andviti. These nodes only have a degree of one but they are actually
 connected through the chain structure. We curate a chain dataset with 120 examples.
 Clique We first generate a graph with kdensely connected subgraphs. Formally, G {V,E}
 can be divided into subgraphs G1,G2, . . . ,Gk, where subgraph Giis generated by the random graph
@@ -389,16 +471,20 @@ performances with the general connectivity task in Table 4. LLM performs much wo
 7Algorithmic Prompting Build -a-Graph Prompting
  in-context exemplar 
 In an undirected graph, the nodes are
-numbered from 0 4, and the edges are 
-an edge between node 0 4 4,   
+numbered from 0 to 4, and the edges are 
+an edge between node 0 and node 4 with
+weight 4,   
 Let's construct a graph with the nodes and
 edges first.
-Q  Give the shortest path from node 0 2.
-A   All the paths from node 0 2 0,3,2 3 1 4,
-0,1,4,2 3 4 2 9,
-0,4,3,2 4 1 1 6.
+Q  Give the shortest path from node 0 to
+node 2.
+A   All the paths from node 0 to node 2 are 
+0,3,2 with a total weight of 3   1   4,
+0,1,4,2 with a total weight of 3   4   2   9,
+0,4,3,2 with a total weight of 4   1   1   6.
 The weight of path 0,3,2 is the smallest, so
-the shortest path from node 0 2 0,3,2 4.We can use a Depth -First Search (DFS) algorithm to
+the shortest path from node 0 to node 2 is
+0,3,2 with a total weight of 4.We can use a Depth -First Search (DFS) algorithm to
 find the shortest path between two given nodes in an
 undirected graph.
 The basic idea is to start at one of the nodes and use
@@ -410,36 +496,62 @@ can backtrack and pick the node which has the
 shortest distance to reach the destination node.
  in-context exemplar 
 In an undirected graph, the nodes are numbered from
-0 4, and the edges are 
-an edge between node 0 4 4,  ...
-Q  Give the shortest path from node 0 2.
-A   All the paths from node 0 2 0,3,2 3 1 4,
-0,1,4,2 3 4 2 9,
-0,4,3,2 4 1 1 6.
+0 to 4, and the edges are 
+an edge between node 0 and node 4 with weight 4,  ...
+Q  Give the shortest path from node 0 to node 2.
+A   All the paths from node 0 to node 2 are 
+0,3,2 with a total weight of 3   1   4,
+0,1,4,2 with a total weight of 3   4   2   9,
+0,4,3,2 with a total weight of 4   1   1   6.
 The weight of path 0,3,2 is the smallest, so the
-shortest path from node 0 2 0,3,2 4. in-context exemplar 
+shortest path from node 0 to node 2 is 0,3,2 with a
+total weight of 4. in-context exemplar 
 In an undirected graph, the nodes are
-numbered from 0 4, and the edges are 
-an edge between node 0 4 4,
-an edge between node 0 3 3,
-an edge between node 0 1 3,
+numbered from 0 to 4, and the edges are 
+an edge between node 0 and node 4 with
+weight 4,
+an edge between node 0 and node 3 with
+weight 3,
+an edge between node 0 and node 1 with
+weight 3,
 ...
-Q  Give the shortest path from node 0 2.Standard Prompting
-34 3 201 434 2 1134 3 201 434 2 11
+Q  Give the shortest path from node 0 to
+node 2.Standard Prompting
+34
+3
+201
+434
+2
+1134
+3
+201
+434
+2
+11
  in-context exemplar 
 In an undirected graph, the nodes are
-numbered from 0 4, and the edges are 
-an edge between node 0 4 4,
-an edge between node 0 3 3,
-an edge between node 0 1 3,
+numbered from 0 to 4, and the edges are 
+an edge between node 0 and node 4 with
+weight 4,
+an edge between node 0 and node 3 with
+weight 3,
+an edge between node 0 and node 1 with
+weight 3,
 ...
-Q  Give the shortest path from node 0 2.Standard Prompting
-34 3 201 434 2 11 5  Overview of Build-a-Graph prompting and Algorithmic prompting, aiming to make LLMs
+Q  Give the shortest path from node 0 to
+node 2.Standard Prompting
+34
+3
+201
+434
+2
+11Figure 5  Overview of Build-a-Graph prompting and Algorithmic prompting, aiming to make LLMs
 better at reasoning with graphs by encouraging conceptual grounding and algorithmic reflection. Red
 underline indicates our proposed instructions while green background indicates LLMs  generation.
 cases with a performance drop of more than 40% across various settings. This suggests that LLMs
 are indeed (un)surprisingly vulnerable to spurious correlations in structured reasoning.
-5 5.1 Methodology
+5 Making Language Models Better Graph Reasoners
+5.1 Methodology
 We propose two instruction-based prompting techniques that improve the graph reasoning ability of
 LLMs, which can be used together with in-context learning and chain-of-thought prompting.
 Build-a-Graph Prompting ( BAG)We hypothesize that it might be helpful to map the textual
@@ -459,7 +571,8 @@ solve the problem before actually solving it.
 We illustrate our proposed build-a-graph prompting and algorithmic prompting in Figure 5. In the
 following, we use these two approaches together with chain-of-thought prompting and evaluate on
 three representative tasks in the NLGraph benchmark with varying difficulties.
-5.2 5 shows the results of our proposed prompting methods on three representative tasks with
+5.2 Results
+Table 5 shows the results of our proposed prompting methods on three representative tasks with
 varying complexity. On the two easier tasks, cycle and shortest path, our instruction-based prompting
 methods resulted in a 3.07% to 16.85% performance gain across the two tasks. However, on the more
 complex task, Hamilton path, the two natural language instructions are largely ineffective. The result
@@ -467,7 +580,10 @@ suggests that the two simple instruction-based prompting techniques successfully
 graph reasoning abilities on relatively easy graph reasoning tasks, while how to make LLMs better
 8MethodCycle Shortest Path Hamilton Path
 Easy Medium Hard Avg. Easy Hard Easy (PC) Hard (PC) Avg. Easy Hard Avg.
-COT 84.67 63.33 53.25 66.75 63.89 29.50 76.84 35.79 51.51 40.00 8.00 24.00 86.00 69.33 62.00 72.44 67.78 33.50 79.20 42.56 55.76 38.67 6.00 22.34 77.33 74.00 64.00 71.78 63.89 28.00 76.06 38.70 51.66 36.67 7.50 22.09 5  Model performance on the connectivity, cycle, and shortest path tasks with our proposed
+COT 84.67 63.33 53.25 66.75 63.89 29.50 76.84 35.79 51.51 40.00 8.00 24.00
+COT B AG 86.00 69.33 62.00 72.44 67.78 33.50 79.20 42.56 55.76 38.67 6.00 22.34
+COT ALGORITHM 77.33 74.00 64.00 71.78 63.89 28.00 76.06 38.70 51.66 36.67 7.50 22.09
+Table 5  Model performance on the connectivity, cycle, and shortest path tasks with our proposed
 BAGand ALGORITHM prompting. On the two easier tasks, cycle and shortest path, our instructionbased
  prompting techniques resulted in a 3.07% to 16.85% performance gain across the two tasks.
 More complex graph reasoning tasks such as Hamilton path remain an open research question.
@@ -496,7 +612,7 @@ as a comprehensive testbed towards evaluating the graph reasoning abilities of l
 LLMs for few-shot reasoning. There is a long line of work on evaluating LLMs  reasoning ability
 in an in-context learning setting, including arithmetic reasoning, logical reasoning, common sense
 reasoning, and more. Particularly, simple math problem datasets such as AQUA Ling et al. [2017],
-GSM K [Cobbe et al., 2021], and SV AMP [Patel et al., 2021] are used for evaluating arithmetic
+GSM8K [Cobbe et al., 2021], and SV AMP [Patel et al., 2021] are used for evaluating arithmetic
 reasoning [He-Yueya et al., 2023, Touvron et al., 2023, Shi et al., 2023]. Welleck et al. [2021]
 developed NaturalProofs, a multi-domain dataset for studying mathematical reasoning in natural
 language, while Welleck et al. [2022] study LLMs  ability to generate the next step in mathematical
@@ -523,7 +639,7 @@ question, and we encourage future work to develop upon our proposed NLGraph benc
 Acknowledgements
 We would like to thank the reviewers, the area chair, Jiacheng Liu, Minnan Luo, and members of
 the UW NLP Group for their comments and feedback. This material is funded by the DARPA Grant
-under Contract No. HR C0124. We also gratefully acknowledge support from NSF CAREER
+under Contract No. HR001120C0124. We also gratefully acknowledge support from NSF CAREER
 Grant No. IIS2142739, the Alfred P. Sloan Foundation Fellowship, and NSF grant No. IIS2203097.
 Any opinions, findings and conclusions or recommendations expressed in this material are those
 of the authors and do not necessarily state or reflect those of the United States Government or any
@@ -543,9 +659,10 @@ Systems , 33 3045 3057, 2020.
 Prithviraj Ammanabrolu and Mark Riedl. Learning knowledge graph-based world models of textual
 environments. In A. Beygelzimer, Y . Dauphin, P. Liang, and J. Wortman Vaughan, editors,
 Advances in Neural Information Processing Systems , 2021. URL https //openreview.net/
-forum id o k_XfIe6_ .
+forum id o24k_XfIe6_ .
 Niket Tandon, Bhavana Dalvi, Keisuke Sakaguchi, Peter Clark, and Antoine Bosselut. WIQA  A
-dataset for  what if...  reasoning over procedural text. In Proceedings of the 2019 9th International Joint Conference
+dataset for  what if...  reasoning over procedural text. In Proceedings of the 2019 Conference on
+Empirical Methods in Natural Language Processing and the 9th International Joint Conference
 on Natural Language Processing (EMNLP-IJCNLP) , pages 6076 6085, Hong Kong, China,
 November 2019. Association for Computational Linguistics. doi  10.18653/v1/D19-1629. URL
 https //aclanthology.org/D19-1629 .
@@ -556,13 +673,14 @@ December 2022. Association for Computational Linguistics. URL https //aclantholo
 org/2022.emnlp-main.90 .
 Antonia Creswell, Murray Shanahan, and Irina Higgins. Selection-inference  Exploiting large
 language models for interpretable logical reasoning. In The Eleventh International Conference on
-Learning Representations , 2023. URL https //openreview.net/forum id 3Pf Wg o-A4 .
+Learning Representations , 2023. URL https //openreview.net/forum id 3Pf3Wg6o-A4 .
 Tom Brown, Benjamin Mann, Nick Ryder, Melanie Subbiah, Jared D Kaplan, Prafulla Dhariwal,
 Arvind Neelakantan, Pranav Shyam, Girish Sastry, Amanda Askell, et al. Language models are
 few-shot learners. Advances in neural information processing systems , 33 1877 1901, 2020.
 10Long Ouyang, Jeffrey Wu, Xu Jiang, Diogo Almeida, Carroll Wainwright, Pamela Mishkin, Chong
 Zhang, Sandhini Agarwal, Katarina Slama, Alex Ray, et al. Training language models to follow
-instructions with human feedback. Advances in Neural Information Processing Systems , 35 27730 27744, 2022.
+instructions with human feedback. Advances in Neural Information Processing Systems , 35 
+27730 27744, 2022.
 Sébastien Bubeck, Varun Chandrasekaran, Ronen Eldan, Johannes Gehrke, Eric Horvitz, Ece Kamar,
 Peter Lee, Yin Tat Lee, Yuanzhi Li, Scott Lundberg, et al. Sparks of artificial general intelligence 
 Early experiments with gpt-4. arXiv preprint arXiv 2303.12712 , 2023.
@@ -574,18 +692,18 @@ _VjQlMeSB_J .
 Takeshi Kojima, Shixiang Shane Gu, Machel Reid, Yutaka Matsuo, and Yusuke Iwasawa. Large
 language models are zero-shot reasoners. In Alice H. Oh, Alekh Agarwal, Danielle Belgrave,
 and Kyunghyun Cho, editors, Advances in Neural Information Processing Systems , 2022. URL
-https //openreview.net/forum id e TBb y yFf .
+https //openreview.net/forum id e2TBb5y0yFf .
 Denny Zhou, Nathanael Schärli, Le Hou, Jason Wei, Nathan Scales, Xuezhi Wang, Dale Schuurmans,
 Claire Cui, Olivier Bousquet, Quoc V Le, and Ed H. Chi. Least-to-most prompting enables
 complex reasoning in large language models. In The Eleventh International Conference on
-Learning Representations , 2023. URL https //openreview.net/forum id WZH tgfM .
+Learning Representations , 2023. URL https //openreview.net/forum id WZH7099tgfM .
 Xuezhi Wang, Jason Wei, Dale Schuurmans, Quoc V Le, Ed H. Chi, Sharan Narang, Aakanksha
 Chowdhery, and Denny Zhou. Self-consistency improves chain of thought reasoning in language
 models. In The Eleventh International Conference on Learning Representations , 2023. URL
-https //openreview.net/forum id 1PL NIMMrw .
+https //openreview.net/forum id 1PL1NIMMrw .
 Roma Patel and Ellie Pavlick. Mapping language models to grounded conceptual spaces. In
 International Conference on Learning Representations , 2022. URL https //openreview.net/
-forum id gJcEM sxHK .
+forum id gJcEM8sxHK .
 Arkil Patel, Satwik Bhattamishra, and Navin Goyal. Are NLP models really able to solve simple
 math word problems  In Proceedings of the 2021 Conference of the North American Chapter of
 the Association for Computational Linguistics  Human Language Technologies , pages 2080 2094,
@@ -597,7 +715,7 @@ https //openreview.net/forum id -cqvvvb-NkI .
 Karthik Valmeekam, Alberto Olmo, Sarath Sreedharan, and Subbarao Kambhampati. Large
 language models still can t plan (a benchmark for LLMs on planning and reasoning about
 change). In NeurIPS 2022 Foundation Models for Decision Making Workshop , 2022. URL
-https //openreview.net/forum id wUU-7XTL XO .
+https //openreview.net/forum id wUU-7XTL5XO .
 Melanie Sclar, Sachin Kumar, Peter West, Alane Suhr, Yejin Choi, and Yulia Tsvetkov. Minding
 language models  (lack of) theory of mind  A plug-and-play multi-character belief tracker. In
 Proceedings of the 61st Annual Meeting of the Association for Computational Linguistics (Volume
@@ -620,7 +738,7 @@ https //arxiv.org/abs/2211.17257 .
 Xikun Zhang, Antoine Bosselut, Michihiro Yasunaga, Hongyu Ren, Percy Liang, Christopher D
 Manning, and Jure Leskovec. GreaseLM  Graph REASoning enhanced language models. In
 International Conference on Learning Representations , 2022a. URL https //openreview.
-net/forum id 41e o cQPj .
+net/forum id 41e9o6cQPj .
 Tianxing He, Kyunghyun Cho, and James Glass. An empirical study on few-shot knowledge probing
 for pretrained language models, 2021.
 Zhikai Chen, Haitao Mao, Hang Li, Wei Jin, Hongzhi Wen, Xiaochi Wei, Shuaiqiang Wang, Dawei
@@ -645,7 +763,7 @@ International Conference on Machine Learning , pages 31210 31227. PMLR, 2023.
 Sean Welleck, Jiacheng Liu, Ronan Le Bras, Hannaneh Hajishirzi, Yejin Choi, and Kyunghyun Cho.
 Naturalproofs  Mathematical theorem proving in natural language. In Thirty-fifth Conference on
 Neural Information Processing Systems Datasets and Benchmarks Track (Round 1) , 2021. URL
-https //openreview.net/forum id Jvxa adr iY .
+https //openreview.net/forum id Jvxa8adr3iY .
 Sean Welleck, Jiacheng Liu, Ximing Lu, Hannaneh Hajishirzi, and Yejin Choi. Naturalprover 
 Grounded mathematical proof generation with language models. In Alice H. Oh, Alekh Agarwal,
 Danielle Belgrave, and Kyunghyun Cho, editors, Advances in Neural Information Processing
@@ -730,9 +848,10 @@ C NLGraph Details
 In Table 6, we provide the details of the NLGraph benchmark including edge probabilities and
 specific values of parameters mentioned in  2.2.
 14Subset Connect. Cycle Topo. Sort Shortest Path Maximum Flow Bipartite Graph Hamilton Path GNNs
-# EASY p  0.3, 0.7, 1.0 1-4 0.3, 0.5, 0.7 0.5, 0.7, 0.9 1-4  ℓ  2-6 0.2, 0.3 1-10 0.3-0.7 0.4, 0.6 0.4  ℓ  1
-# M EDIUM p  0.3, 0.7, 1.0 1-4 0.3, 0.5, 0.7 / / / / /
-# H ARD p  0.3, 0.7 1-4 0.3, 0.5 0.2, 0.25 1-10  ℓ  2-6 0.25 1-20 0.2-0.6 0.4, 0.6 0.2  ℓ  1 6  Details of the NLGraph benchmark. pdenotes the edge probability. Other characters have
+# EASY p  0.3, 0.7, 1.0 m  1-4 p  0.3, 0.5, 0.7 p  0.5, 0.7, 0.9  w  1-4  ℓ  2-6 p  0.2, 0.3  c  1-10 p  0.3-0.7 p  0.4, 0.6 p  0.4  ℓ  1
+# M EDIUM p  0.3, 0.7, 1.0 m  1-4 p  0.3, 0.5, 0.7 / / / / /
+# H ARD p  0.3, 0.7 m  1-4 p  0.3, 0.5 p  0.2, 0.25  w  1-10  ℓ  2-6 p  0.25  c  1-20 p  0.2-0.6 p  0.4, 0.6 p  0.2  ℓ  1
+Table 6  Details of the NLGraph benchmark. pdenotes the edge probability. Other characters have
 the same meaning mentioned in  2.2.
 MethodShortest Path
 Easy Hard Easy (PC) Hard (PC)
@@ -741,7 +860,8 @@ BAG-DOT 65.00 29.00 75.55 37.18
 ALGORITHMIC -DOT 66.67 31.00 78.27 39.68
 INSTRUCTION #1 66.22 32.50 78.18 40.32
 INSTRUCTION #2 67.78 28.50 77.32 37.06
-INSTRUCTION #3 67.78 30.50 79.56 37.89 7  The results of variants of instructions on the shortest path task. The BAGprompting approach
+INSTRUCTION #3 67.78 30.50 79.56 37.89
+Table 7  The results of variants of instructions on the shortest path task. The BAGprompting approach
 achieves the best performance across three of the four settings.
 D Analysis
 Instruction variants To further study the effect of BAGprompting and ALGORITHMIC prompting,
@@ -759,7 +879,7 @@ all the "node"s into "city"s, "edge"s into "road"s, and "weight"s into "distance
 models are indeed sensitive to the specific instantiations of the graph description, the results are
 mixed as to which is easier or harder.
 3 4 5 6 7 8
-# node Acc
+# node020406080Acc
 Figure 6  Model performance for the
 shortest path task with different numbers
 of nodes on the shortest path. The performance
@@ -768,7 +888,10 @@ length increases.
 easy medium hardquestion
 easy
 medium
-hardexemplar84.67 63.33 53.25 62.00 52.67 49.75 49.33 50.67 52.25 20406080100 7  Model performance for the cycle
+hardexemplar84.67 63.33 53.25
+62.00 52.67 49.75
+49.33 50.67 52.25
+20406080100Figure 7  Model performance for the cycle
  task with varied exemplar difficulty.
 When the in-context exemplars are based
 on more difficult problems, the performance
@@ -776,12 +899,19 @@ on more difficult problems, the performance
 15MethodCycle Shortest Path Hamilton Path
 Easy Medium Hard Easy Hard Easy (PC) Hard (PC) Easy Hard
 RANDOM 50.00 50.00 50.00 50.00 50.00 6.07 6.69 0.00 0.00
-FEW-SHOT 58.00 50.00 49.75 39.44 28.50 55.10 37.63 36.67 7.00 60.67 66.83 69.00 41.11 / 45.00 / 50.00 12.00 59.33 52.67 53.75 42.22 / 49.26 / 34.00 5.00 8  The results of CODE -DAVINCI -002 on the cycle, shortest path, and Hamilton path task.
+FEW-SHOT 58.00 50.00 49.75 39.44 28.50 55.10 37.63 36.67 7.00
+COT 60.67 66.83 69.00 41.11 / 45.00 / 50.00 12.00
+COT SC 59.33 52.67 53.75 42.22 / 49.26 / 34.00 5.00
+Table 8  The results of CODE -DAVINCI -002 on the cycle, shortest path, and Hamilton path task.
 MethodShortest Path
 Easy Hard Easy (PC) Hard (PC)
 RANDOM 50.00 50.00 6.07 6.69
 ZERO -SHOT 29.40 14.00 47.53 20.13
-FEW-SHOT 41.11 20.50 58.78 29.28 73.33 28.00 82.57 35.50 0-C OT 6.67 2.00 65.40 51.95 72.78 27.00 83.50 35.19 9  Model performance when graph descriptions are changed into cities, roads, and distances on
+FEW-SHOT 41.11 20.50 58.78 29.28
+COT 73.33 28.00 82.57 35.50
+0-C OT 6.67 2.00 65.40 51.95
+COT SC 72.78 27.00 83.50 35.19
+Table 9  Model performance when graph descriptions are changed into cities, roads, and distances on
 the shortest path task.
 LLMs are brittle to problem scales For the shortest path task, we study the correlation between
 model performance and the number of nodes on the optimal shortest path. We group problems by
@@ -797,7 +927,11 @@ the exemplar difficulty increases, indicating that LLM struggles to learn from e
 difficulty.
 Method Easy Hard
 ZERO -SHOT 25.65 10.37
-FEW-SHOT 24.83 12.37 16.99 22.07 0-C OT 17.41 7.04 9.88 8.62 10  Partial credit for the maximum flow task.Partial credit for the maximum flow task
+FEW-SHOT 24.83 12.37
+COT 16.99 22.07
+0-C OT 17.41 7.04
+COT SC 9.88 8.62
+Table 10  Partial credit for the maximum flow task.Partial credit for the maximum flow task
 We provide partial credit for the maximum flow
 task in Table 10. The performance generally has
 the same trend as the results provided in Figure
@@ -816,30 +950,34 @@ limited on more complex problems. However, in the COTandCOT SC settings, CODE -D
 Table 8.
 16E.2 OPT Results
 We fine-tune OPT-2.7 B[Zhang et al., 2022b] and evaluate the model on the NLGraph benchmark.
-We randomly divide the standard version of the NLGraph benchmark into 4902 1,000 test problems. We generate zero-shot solutions for the training problems, combine the solutions
+We randomly divide the standard version of the NLGraph benchmark into 4902 training problems and
+1,000 test problems. We generate zero-shot solutions for the training problems, combine the solutions
 with the problems, and attain nine corpus of text ( i.e.one for each task and one that concatenating all
 the text). We then fine-tune OPT on the nine corpus separately. However, we find that fine-tuning did
 not elicit the graph reasoning abilities of OPT-2.7 B  the generated text is mostly meaningless, falling
 short of answering questions and following formats. We leave it to future work on fine-tuning larger
 language models to elicit graph reasoning abilities due to our limitations in computational resources.
 E.3 Qualitative Analaysis with GPT-3.5- TURBO and GPT-4
-Due to monetary costs, we only conduct qualitative analysis on GPT-3.5- TURBO and GPT-4 19
+Due to monetary costs, we only conduct qualitative analysis on GPT-3.5- TURBO and GPT-4with 19
 representative problems across the eight tasks. We provide the results in Table 11, Table 12, Table
 13, Table 14, Table 15. Results demonstrate that while GPT-4does present better graph reasoning
 abilities, it is still far from being a robust reasoner towards graph-based problems.
-17 11  Results of GPT-3.5- TURBO and GPT-4 19 cases (#1 to #6 example) through the eight
+17Table 11  Results of GPT-3.5- TURBO and GPT-4on 19 cases (#1 to #6 example) through the eight
 tasks. We omitted the C OT in-context exemplars in the table.
 Question GPT-3.5- TURBO GPT -4
 Determine if there is a path between two nodes in the
 graph. Note that (i,j) means that node i and node j are
 connected with an undirected edge. Graph  (0,4) (1,3)
 (1,2) (1,6) (2,5) (2,6) (3,5) (5,6)
-Q  Is there a path between node 4 5 4 5, but we can follow the path 
+Q  Is there a path between node 4 and node 5 Node 4 is not directly connected to
+node 5, but we can follow the path 
 4- 0- 6- 2- 5, so the answer is yes.
-%Node 4 0,
+%Node 4 is only connected to node 0,
 which does not have any connections
 to the other nodes in the graph. Node
-5 1, 2, 3, 5, and 6. Node 4 5 are not in the same connected
+5 is in the connected block consisting
+of nodes 1, 2, 3, 5, and 6. Node 4 and
+node 5 are not in the same connected
 block, so the answer is no. "
 Determine if there is a path between two nodes in the
 graph. Note that (i,j) means that node i and node j
@@ -849,16 +987,16 @@ are connected with an undirected edge. Graph  (0,3)
 (3,11) (3,8) (3,7) (4,12) (5,10) (5,9) (5,8) (5,7) (5,6)
 (6,10) (6,9) (6,11) (6,8) (7,10) (7,11) (7,8) (7,13) (8,10)
 (8,11) (8,13) (9,10) (9,11) (9,13) (10,11) (10,13)
-Q  Is there a path between node 6 3 6 0, node
-0 3. We can follow
+Q  Is there a path between node 6 and node 3 Node 6 is connected to node 0, node
+0 is connected to node 3. We can follow
  the path  6- 0- 3, so the answer
-is yes."A  Node 6 2,
-node 2 3. We
+is yes."A  Node 6 is connected to node 2,
+node 2 is connected to node 3. We
 can follow the path  6- 2- 3, so the
 answer is yes. "
 In an undirected graph, (i,j) means that node i and node
 j are connected with an undirected edge. The nodes are
-numbered from 0 7, and the edges are  (2,4) (0,3)
+numbered from 0 to 7, and the edges are  (2,4) (0,3)
 (1,2) (5,7) (1,5) (6,5) (1,0)
 Q  Is there a cycle in this graph The edges (1,2), (2,4), (4,0), (0,3),
 (3,1) form a cycle, so yes, there is a
@@ -869,61 +1007,170 @@ cycle. So yes, there is a cycle in this
 graph.%
 In an undirected graph, (i,j) means that node i and node
 j are connected with an undirected edge. The nodes are
-numbered from 0 7, and the edges are  (1,7) (0,6)
+numbered from 0 to 7, and the edges are  (1,7) (0,6)
 (1,3) (4,5) (1,0) (0,4) (0,2) (7,2)
 Q  Is there a cycle in this graph The edges (0,6), (6,4), (4,5), (5,7),
 (7,1), (1,0) form a cycle, so yes, there
 is a cycle in this graph. %The edges (1,7), (7,2), (2,0), (0,1)
 form a cycle, so yes, there is a cycle
 in this graph. "
-In an undirected graph, the nodes are numbered from 0 5, and the edges are  An edge between node 2 0 2, An edge between node 0 4 1, An edge between node 1 2 4, An edge between node 1 3 4, An edge between node 4 1 4, An edge between node 2 3 1, An edge between node 2 5 2, An edge between node 2 4 3, An edge between node 5 3 2, An edge between node 3 4 3, An edge between node 4 5 2.
-Q  Give the shortest path from node 3 0.All the paths from node 3 0 3,2,0 2 2 4, 3,2,4,1,0 3 4 1 8, 3,2,4,0 3 1 4, 3,1,4,0 4 4 1 9, 3,1,2,0 4 4 2 10,
-3,5,2,0 2 2 2 6, 3,5,4,0 2 2 1 5. The weight of path
-3,2,0 3,5,4,0 is the smallest, so
-the shortest path from node 3 0 3,2,0 3,5,4,0, both with
-a total weight of 4. %All the paths from node 3 0 3,2,0 1 2 3, 3,1,2,0 4 4 2 10, 3,4,0 3 1 4, 3,4,2,0 3 3 2 8, 3,5,2,0 2 2 2 6,
-3,5,4,0 2 2 1 5.
+In an undirected graph, the nodes are numbered from 0
+to 5, and the edges are  An edge between node 2 and
+node 0 with weight 2, An edge between node 0 and
+node 4 with weight 1, An edge between node 1 and
+node 2 with weight 4, An edge between node 1 and
+node 3 with weight 4, An edge between node 4 and
+node 1 with weight 4, An edge between node 2 and
+node 3 with weight 1, An edge between node 2 and
+node 5 with weight 2, An edge between node 2 and
+node 4 with weight 3, An edge between node 5 and
+node 3 with weight 2, An edge between node 3 and
+node 4 with weight 3, An edge between node 4 and
+node 5 with weight 2.
+Q  Give the shortest path from node 3 to node 0.All the paths from node 3 to node 0
+are  3,2,0 with a total weight of 2  
+2   4, 3,2,4,1,0 with a total weight
+of 3   4   1   8, 3,2,4,0 with a total
+weight of 3   1   4, 3,1,4,0 with a
+total weight of 4   4   1   9, 3,1,2,0
+with a total weight of 4   4   2   10,
+3,5,2,0 with a total weight of 2   2
+  2   6, 3,5,4,0 with a total weight
+of 2   2   1   5. The weight of path
+3,2,0 and 3,5,4,0 is the smallest, so
+the shortest path from node 3 to node
+0 is either 3,2,0 or 3,5,4,0, both with
+a total weight of 4. %All the paths from node 3 to node
+0 are  3,2,0 with a total weight of 1
+  2   3, 3,1,2,0 with a total weight
+of 4   4   2   10, 3,4,0 with a total
+weight of 3   1   4, 3,4,2,0 with a
+total weight of 3   3   2   8, 3,5,2,0
+with a total weight of 2   2   2   6,
+3,5,4,0 with a total weight of 2   2  
+1   5.
 The weight of path 3,2,0 is the smallest,
- so the shortest path from node 3 0 3,2,0 3."
-In an undirected graph, the nodes are numbered from 0 4, and the edges are  An edge between node 1 0 1, An edge between node 2 0 1, An edge between node 4 1 1, An edge between node 1 2 3, An edge between node 2 3 3.
-Q  Give the shortest path from node 3 1.All the paths from node 3 1 3,2,1 3 3 6, 3,2,0,1 1 1 1 3, 3,2,1,0,1 3 1 1 1 6,
-3,2,0,1,4,1 1 1 1 1 1 5. The weight of path
+ so the shortest path from node 3
+to node 0 is 3,2,0 with a total weight
+of 3."
+In an undirected graph, the nodes are numbered from 0
+to 4, and the edges are  An edge between node 1 and
+node 0 with weight 1, An edge between node 2 and
+node 0 with weight 1, An edge between node 4 and
+node 1 with weight 1, An edge between node 1 and
+node 2 with weight 3, An edge between node 2 and
+node 3 with weight 3.
+Q  Give the shortest path from node 3 to node 1.All the paths from node 3 to node 1
+are  3,2,1 with a total weight of 3
+  3   6, 3,2,0,1 with a total weight
+of 1   1   1   3, 3,2,1,0,1 with a
+total weight of 3   1   1   1   6,
+3,2,0,1,4,1 with a total weight of 1  
+1   1   1   1   5. The weight of path
 3,2,0,1 is the smallest, so the shortest
-path from node 3 1 3,2,0,1 3. %All the paths from node 3 1 3,2,1 3 3 6, 3,2,0,1 3 1 1 5.
+path from node 3 to node 1 is 3,2,0,1
+with a total weight of 3. %All the paths from node 3 to node 1
+are  3,2,1 with a total weight of 3  
+3   6, 3,2,0,1 with a total weight of
+3   1   1   5.
 The weight of path 3,2,0,1 is the
 smallest, so the shortest path from
-node 3 1 3,2,0,1 5. "
-18 12  Results of GPT-3.5- TURBO and GPT-4 19 cases (#7 to #9 example ) through the eight
+node 3 to node 1 is 3,2,0,1 with a total
+ weight of 5. "
+18Table 12  Results of GPT-3.5- TURBO and GPT-4on 19 cases (#7 to #9 example ) through the eight
 tasks. We omitted the C OT in-context exemplars in the table.
 Question GPT-3.5- TURBO GPT -4
-In an undirected graph, the nodes are numbered from 0 6, and the edges are  An edge between node 0 2 1, An edge between node 3 0 4, An edge between node 5 0 2, An edge between node 4 0 3, An edge between node 0 1 4, An edge between node 0 6 2, An edge between node 2 1 2, An edge between node 3 1 3, An edge between node 4 1 3, An edge between node 1 6 2, An edge between node 2 5 4, An edge between node 2 4 3, An edge between node 6 2 2, An edge between node 3 5 1, An edge between node 4 3 2, An edge between node 3 6 4, An edge between node 4 5 3, An edge between node 4 6 1, An edge between node 6 5 2.
-Q  Give the shortest path from node 2 3.All the paths from node 2 3 2,0,3 1 4 5, 2,1,3 2 3 5, 2,4,3 3 2 5. The weight of path 2,0,3
+In an undirected graph, the nodes are numbered from 0
+to 6, and the edges are  An edge between node 0 and
+node 2 with weight 1, An edge between node 3 and
+node 0 with weight 4, An edge between node 5 and
+node 0 with weight 2, An edge between node 4 and
+node 0 with weight 3, An edge between node 0 and
+node 1 with weight 4, An edge between node 0 and
+node 6 with weight 2, An edge between node 2 and
+node 1 with weight 2, An edge between node 3 and
+node 1 with weight 3, An edge between node 4 and
+node 1 with weight 3, An edge between node 1 and
+node 6 with weight 2, An edge between node 2 and
+node 5 with weight 4, An edge between node 2 and
+node 4 with weight 3, An edge between node 6 and
+node 2 with weight 2, An edge between node 3 and
+node 5 with weight 1, An edge between node 4 and
+node 3 with weight 2, An edge between node 3 and
+node 6 with weight 4, An edge between node 4 and
+node 5 with weight 3, An edge between node 4 and
+node 6 with weight 1, An edge between node 6 and
+node 5 with weight 2.
+Q  Give the shortest path from node 2 to node 3.All the paths from node 2 to node 3
+are  2,0,3 with a total weight of 1  
+4   5, 2,1,3 with a total weight of 2
+  3   5, 2,4,3 with a total weight of
+3   2   5. The weight of path 2,0,3
 is the smallest, so the shortest path
-from node 2 3 2,0,3 5. %All the paths from node 2 3 2,0,3 1 4 5, 2,1,3 2 3 5, 2,1,0,3 2 4 4 10, 2,1,6,3 2 2 4 8, 2,4,3 3 2 5, 2,4,0,3 3 3 4 10, 2,4,1,3 3 3 3 9,
-2,4,1,0,3 3 3 4 4 14, 2,4,1,6,3 3 3 2 4 12, 2,5,0,3 4 2 4 10,
-2,5,4,3 4 5 2 11, 2,5,4,0,3 4 5 3 4 16, 2,5,4,1,3 4 5 3 3 15,
-2,5,6,3 4 6 4 14, 2,6,1,3 2 2 3 7, 2,6,1,0,3 2 2 4 4 12,
-2,6,5,0,3 2 5 2 4 13, 2,6,5,4,3 2 5 5 2 14.
+from node 2 to node 3 is 2,0,3 with a
+total weight of 5. %All the paths from node 2 to node 3
+are  2,0,3 with a total weight of 1   4
+  5, 2,1,3 with a total weight of 2   3
+  5, 2,1,0,3 with a total weight of 2  
+4   4   10, 2,1,6,3 with a total weight
+of 2   2   4   8, 2,4,3 with a total
+weight of 3   2   5, 2,4,0,3 with a
+total weight of 3   3   4   10, 2,4,1,3
+with a total weight of 3   3   3   9,
+2,4,1,0,3 with a total weight of 3  
+3   4   4   14, 2,4,1,6,3 with a total
+weight of 3   3   2   4   12, 2,5,0,3
+with a total weight of 4   2   4   10,
+2,5,4,3 with a total weight of 4   5  
+2   11, 2,5,4,0,3 with a total weight
+of 4   5   3   4   16, 2,5,4,1,3 with
+a total weight of 4   5   3   3   15,
+2,5,6,3 with a total weight of 4   6
+  4   14, 2,6,1,3 with a total weight
+of 2   2   3   7, 2,6,1,0,3 with a
+total weight of 2   2   4   4   12,
+2,6,5,0,3 with a total weight of 2  
+5   2   4   13, 2,6,5,4,3 with a total
+weight of 2   5   5   2   14.
 The weight of paths 2,0,3, 2,1,3, and
 2,4,3 is the smallest. So, there are
-three shortest paths from node 2 3, which are 2,0,3 2,1,3 2,4,3, each with a total weight of 5.
+three shortest paths from node 2 to
+node 3, which are 2,0,3  2,1,3  and
+2,4,3, each with a total weight of 5.
 %
-In a directed graph with 5 0 4 2 4 2 1 2 0 4 1 4 0
+In a directed graph with 5 nodes numbered from 0 to 4 
+node 2 should be visited before node 4
+node 2 should be visited before node 1
+node 2 should be visited before node 0
+node 4 should be visited before node 1
+node 4 should be visited before node 0
 Q  Can all the nodes be visited  Give the solution.This is not possible as there is a cycle
-between nodes 0, 1, and 4. Node 2 0, 1,
-and 4, and nodes 0, 1, and 4 2. Therefore,
+between nodes 0, 1, and 4. Node 2
+cannot be visited before nodes 0, 1,
+and 4, and nodes 0, 1, and 4 cannot
+be visited before node 2. Therefore,
 it is not possible to visit all the nodes
 in this graph. %Since no nodes are required to be visited
- before node 2 3, node 2 3 can be visited first. Since
-visiting node 4 2 first, after node 2 is visited, node 4
-can be visited. Since visiting node 0 2, node 4 first,
-after node 2 4 are visited,
+ before node 2 and node 3, node 2
+and node 3 can be visited first. Since
+visiting node 4 requires visiting node
+2 first, after node 2 is visited, node 4
+can be visited. Since visiting node 0
+requires visiting node 2, node 4 first,
+after node 2 and node 4 are visited,
 node 0 can be visited. Since visiting
-node 1 2, node
-4 first, after node 2 4 are
+node 1 requires visiting node 2, node
+4 first, after node 2 and node 4 are
 visited, node 1 can be visited. So the
 solution is  2,3,4,0,1. "
-In a directed graph with 5 0 4 0 1 1 2 3 1 3 2 4 3 4 0 4 1
+In a directed graph with 5 nodes numbered from 0 to 4 
+node 0 should be visited before node 1
+node 1 should be visited before node 2
+node 3 should be visited before node 1
+node 3 should be visited before node 2
+node 4 should be visited before node 3
+node 4 should be visited before node 0
+node 4 should be visited before node 1
 Q  Can all the nodes be visited  Give the solution.This graph has a cycle, which means
 it is not possible to visit all nodes in
 a valid order. Specifically, there is
@@ -931,158 +1178,229 @@ a cycle between nodes 1, 2, and 3,
 which cannot be resolved based on
 the given constraints. %Since no nodes are required to be visited
  before node 4, node 4 can be
-visited first. Since visiting node 0 3 4
-first, after node 4 is visited, node 0 3 can be visited. Since visiting
- node 1 0 3 first, after node 0 3 are visited, node 1 can be visited.
- Since visiting node 2 1 3 first, after
-node 1 3 are visited, node
+visited first. Since visiting node 0
+and node 3 requires visiting node 4
+first, after node 4 is visited, node 0
+and node 3 can be visited. Since visiting
+ node 1 requires visiting node
+0 and node 3 first, after node 0 and
+node 3 are visited, node 1 can be visited.
+ Since visiting node 2 requires
+visiting node 1 and node 3 first, after
+node 1 and node 3 are visited, node
 2 can be visited. So the solution is 
 4,0,3,1,2. "
-19 13  Results of GPT-3.5- TURBO and GPT-4 19 cases (#10 to #12 example ) through the eight
+19Table 13  Results of GPT-3.5- TURBO and GPT-4on 19 cases (#10 to #12 example ) through the eight
 tasks. We omitted the C OT in-context exemplars in the table.
-Question GPT-3.5- TURBO GPT -4 6 0 5 0 5 0 1 2 1 3 0 3 5 3 1 4 0 4 2 5 2 3 4, node 3 4 can be visited first. Since
-visiting node 0 3 first, after node 3 is visited, node 0
-can be visited. Since visiting node 1 0, node 2, node
+Question GPT-3.5- TURBO GPT -4
+In a directed graph with 6 nodes numbered from 0 to 5 
+node 0 should be visited before node 5
+node 0 should be visited before node 1
+node 2 should be visited before node 1
+node 3 should be visited before node 0
+node 3 should be visited before node 5
+node 3 should be visited before node 1
+node 4 should be visited before node 0
+node 4 should be visited before node 2
+node 5 should be visited before node 2
+Q  Can all the nodes be visited  Give the solutionSince no nodes are required to be visited
+ before node 3 and node 4, node 3
+and node 4 can be visited first. Since
+visiting node 0 requires visiting node
+3 first, after node 3 is visited, node 0
+can be visited. Since visiting node 1
+requires visiting node 0, node 2, node
 3 first, after node 0, node 2, and node
 3 are visited, node 1 can be visited.
-Since visiting node 5 0, node 3 first, after node
-0 3 are visited, node 5 can
-be visited. Since visiting node 2 4, node 5 first,
-after node 4 5 are visited,
+Since visiting node 5 requires visiting
+ node 0, node 3 first, after node
+0 and node 3 are visited, node 5 can
+be visited. Since visiting node 2 requires
+ visiting node 4, node 5 first,
+after node 4 and node 5 are visited,
 node 2 can be visited. So the solution
 is  3,4,0,2,1,5. %Since no nodes are required to be visited
- before node 3 4, node 3 4 can be visited first. Since
-visiting node 0 3 4 first, after node 3 4 are visited, node 0 can be visited.
- Since visiting node 5 0 3 first, after
-node 0 3 are visited, node 5
-can be visited. Since visiting node 1 0, node 2, and
-node 3 first, node 2 1. Since visiting node
-2 4 5 first, after node 4 5 are
+ before node 3 and node 4, node 3
+and node 4 can be visited first. Since
+visiting node 0 requires visiting node
+3 and node 4 first, after node 3 and
+node 4 are visited, node 0 can be visited.
+ Since visiting node 5 requires
+visiting node 0 and node 3 first, after
+node 0 and node 3 are visited, node 5
+can be visited. Since visiting node 1
+requires visiting node 0, node 2, and
+node 3 first, node 2 must be visited
+before node 1. Since visiting node
+2 requires visiting node 4 and node
+5 first, after node 4 and node 5 are
 visited, node 2 can be visited. Now,
 since node 0, node 2, and node 3
 have been visited, node 1 can be visited.
  So the solution is  3,4,0,5,2,1.
 "
-In a directed graph, the nodes are numbered from 0 5, and the edges are  an edge from node 1 3 4,
-an edge from node 1 0 9,
-an edge from node 2 1 4,
-an edge from node 3 1 4,
-an edge from node 4 3 1,
-an edge from node 4 5 2,
-an edge from node 5 1 4,
-an edge from node 5 0 7.
-Q  What is the maximum flow from node 4 0 4 0, so the maximum flow from node
-4 0 0. %From the source (node 4), we can
-send 1 3, and 2 5.
-1 3, then
-we can send 1 3 1.
-2 5, then
-we can send 2 5 0.
-1 1, then
-we can send 1 1 0.
+In a directed graph, the nodes are numbered from 0 to
+5, and the edges are  an edge from node 1 to node 3
+with capacity 4,
+an edge from node 1 to node 0 with capacity 9,
+an edge from node 2 to node 1 with capacity 4,
+an edge from node 3 to node 1 with capacity 4,
+an edge from node 4 to node 3 with capacity 1,
+an edge from node 4 to node 5 with capacity 2,
+an edge from node 5 to node 1 with capacity 4,
+an edge from node 5 to node 0 with capacity 7.
+Q  What is the maximum flow from node 4 to node 0 There is no path from node 4 to node
+0, so the maximum flow from node
+4 to node 0 is 0. %From the source (node 4), we can
+send 1 unit of flow to node 3, and 2
+units of flow to node 5.
+1 unit of flow arrives at node 3, then
+we can send 1 unit of flow from node
+3 to node 1.
+2 units of flow arrive at node 5, then
+we can send 2 units of flow from
+node 5 to node 0.
+1 unit of flow arrives at node 1, then
+we can send 1 unit of flow from node
+1 to node 0.
 The total unit of flow arrives at node
-0 3. So the maximum flow from
-node 4 0 3. "
-In a directed graph, the nodes are numbered from 0 7, and the edges are  an edge from node 0 6 1,
-an edge from node 0 7 10,
-an edge from node 2 1 9,
-an edge from node 2 7 8,
-an edge from node 3 1 9,
-an edge from node 3 6 10,
-an edge from node 3 4 7,
-an edge from node 4 6 1,
-an edge from node 5 3 7,
-an edge from node 5 2 9,
-an edge from node 6 4 1,
-an edge from node 7 5 8,
-an edge from node 7 6 5.
-Q  What is the maximum flow from node 2 4 From the source (node 2), we can
-send 8 7, and 9 1.
-8 7, then
-we can send 5 7 6, and 3 7 5.
-9 1, then
-we can send 9 3 1.
-9 6, then
-we can send 1 6 4.
-7 3, then
-we can send 7 3 4.
+0 is 3. So the maximum flow from
+node 4 to node 0 is 3. "
+In a directed graph, the nodes are numbered from 0 to
+7, and the edges are  an edge from node 0 to node 6
+with capacity 1,
+an edge from node 0 to node 7 with capacity 10,
+an edge from node 2 to node 1 with capacity 9,
+an edge from node 2 to node 7 with capacity 8,
+an edge from node 3 to node 1 with capacity 9,
+an edge from node 3 to node 6 with capacity 10,
+an edge from node 3 to node 4 with capacity 7,
+an edge from node 4 to node 6 with capacity 1,
+an edge from node 5 to node 3 with capacity 7,
+an edge from node 5 to node 2 with capacity 9,
+an edge from node 6 to node 4 with capacity 1,
+an edge from node 7 to node 5 with capacity 8,
+an edge from node 7 to node 6 with capacity 5.
+Q  What is the maximum flow from node 2 to node 4 From the source (node 2), we can
+send 8 units of flow to node 7, and 9
+units of flow to node 1.
+8 units of flow arrive at node 7, then
+we can send 5 units of flow from
+node 7 to node 6, and 3 units of flow
+from node 7 to node 5.
+9 units of flow arrive at node 1, then
+we can send 9 units of flow from
+node 3 to node 1.
+9 units of flow arrive at node 6, then
+we can send 1 unit of flow from node
+6 to node 4.
+7 units of flow arrive at node 3, then
+we can send 7 units of flow from
+node 3 to node 4.
 The total unit of flow arrives at node
-4 8. So the maximum flow from
-node 2 4 8. "From the source (node 2), we can
-send 9 1, and 8 7.
-9 1, then
-we can send 9 1 3.
-8 7, then
-we can send 8 7 5, and 5 7 6.
-8 5, then
-we can send 7 5 3, and 1 5 2.
-14 3, then
-we can send 14 3 4.
+4 is 8. So the maximum flow from
+node 2 to node 4 is 8. "From the source (node 2), we can
+send 9 units of flow to node 1, and 8
+units of flow to node 7.
+9 units of flow arrive at node 1, then
+we can send 9 units of flow from
+node 1 to node 3.
+8 units of flow arrive at node 7, then
+we can send 8 units of flow from
+node 7 to node 5, and 5 units of flow
+from node 7 to node 6.
+8 units of flow arrive at node 5, then
+we can send 7 units of flow from
+node 5 to node 3, and 1 unit of flow
+from node 5 to node 2.
+14 units of flow arrive at node 3, then
+we can send 14 units of flow from
+node 3 to node 4.
 The total unit of flow arrives at node
-4 14. So the maximum flow from
-node 2 4 14. %
-20 14  Results of GPT-3.5- TURBO and GPT-4 19 cases (#13 to #16 example ) through the eight
+4 is 14. So the maximum flow from
+node 2 to node 4 is 14. %
+20Table 14  Results of GPT-3.5- TURBO and GPT-4on 19 cases (#13 to #16 example ) through the eight
 tasks. We omitted the C OT in-context exemplars in the table.
 Question GPT-3.5- TURBO GPT -4
-In a directed graph, the nodes are numbered from 0 7, and the edges are  an edge from node 0 6 9,
-an edge from node 0 3 7,
-an edge from node 1 7 8,
-an edge from node 1 2 3,
-an edge from node 2 7 7,
-an edge from node 2 4 5,
-an edge from node 3 5 7,
-an edge from node 3 1 8,
-an edge from node 4 0 3,
-an edge from node 5 7 5,
-an edge from node 6 5 6,
-an edge from node 6 7 6,
-an edge from node 6 0 9,
-an edge from node 7 4 4,
-an edge from node 7 1 8.
-Q  What is the maximum flow from node 1 6 1 6 in this graph, so the maximum flow
-from node 1 6 0. %From the source (node 1), we can
-send 8 7, and
-3 2. 8 7, then we can
-send 4 7 4, and 4 7 1. 4 4, then we can send 3 4 0. 3 0, then we can
-send 3 0 6. 3 2, then we can send 3 2 4. 3 4, then we can
-send 3 4 0. 3 0, then we can send 3 0 6.
+In a directed graph, the nodes are numbered from 0 to
+7, and the edges are  an edge from node 0 to node 6
+with capacity 9,
+an edge from node 0 to node 3 with capacity 7,
+an edge from node 1 to node 7 with capacity 8,
+an edge from node 1 to node 2 with capacity 3,
+an edge from node 2 to node 7 with capacity 7,
+an edge from node 2 to node 4 with capacity 5,
+an edge from node 3 to node 5 with capacity 7,
+an edge from node 3 to node 1 with capacity 8,
+an edge from node 4 to node 0 with capacity 3,
+an edge from node 5 to node 7 with capacity 5,
+an edge from node 6 to node 5 with capacity 6,
+an edge from node 6 to node 7 with capacity 6,
+an edge from node 6 to node 0 with capacity 9,
+an edge from node 7 to node 4 with capacity 4,
+an edge from node 7 to node 1 with capacity 8.
+Q  What is the maximum flow from node 1 to node 6 There is no path from node 1 to node
+6 in this graph, so the maximum flow
+from node 1 to node 6 is 0. %From the source (node 1), we can
+send 8 units of flow to node 7, and
+3 units of flow to node 2. 8 units of
+flow arrive at node 7, then we can
+send 4 units of flow from node 7 to
+node 4, and 4 units of flow from node
+7 to node 1. 4 units of flow arrive at
+node 4, then we can send 3 units of
+flow from node 4 to node 0. 3 units
+of flow arrive at node 0, then we can
+send 3 units of flow from node 0 to
+node 6. 3 units of flow arrive at node
+2, then we can send 3 units of flow
+from node 2 to node 4. 3 units of
+flow arrive at node 4, then we can
+send 3 units of flow from node 4 to
+node 0. 3 units of flow arrive at node
+0, then we can send 3 units of flow
+from node 0 to node 6.
 The total unit of flow arrives at node
-6 6. So the maximum flow from
-node 1 6 6. %
+6 is 6. So the maximum flow from
+node 1 to node 6 is 6. %
 In an undirected graph, (i,j) means that node i and node
 j are connected with an undirected edge. The nodes are
-numbered from 0 6, and the edges are  (4,3) (6,5)
+numbered from 0 to 6, and the edges are  (4,3) (6,5)
 (5,1) (3,0) (2,4) (1,0) (5,2) (4,0) (2,3) (0,2) (6,2)
 Q  Is there a path in this graph that visits every node
 exactly once  If yes, give the path. Note that in a path,
 adjacent nodes must be connected with edges.No, there is no path that visits every
 node exactly once. This graph contains
  two disconnected components 
-0,1,2,3,4 5,6. It is not possible
+0,1,2,3,4 and 5,6. It is not possible
 to visit all nodes in a single path because
  there is no edge connecting the
 two components. %Yes. We can start at node 3. As node
-3 0, and node
+3 is connected with node 0, and node
 0 is not visited, we can then visit
-node 0. As node 0 1, and node 1 is not visited, we
-can then visit node 1. As node 1 5, and node 5 is
+node 0. As node 0 is connected with
+node 1, and node 1 is not visited, we
+can then visit node 1. As node 1 is
+connected with node 5, and node 5 is
 not visited, we can then visit node 5.
-As node 5 6,
+As node 5 is connected with node 6,
 and node 6 is not visited, we can then
-visit node 6. As node 6 2, and node 2 is not visited,
-we can then visit node 2. As node 2 4, and node 4
+visit node 6. As node 6 is connected
+with node 2, and node 2 is not visited,
+we can then visit node 2. As node 2
+is connected with node 4, and node 4
 is not visited, we can then visit node
 4. The path can be  3, 0, 1, 5, 6, 2, 4.
 "
 In an undirected graph, (i,j) means that node i and node
 j are connected with an undirected edge. The nodes are
-numbered from 0 4, and the edges are  (1,3) (1,2)
+numbered from 0 to 4, and the edges are  (1,3) (1,2)
 (4,3) (2,0) (0,4) (0,1)
 Q  Is there a path in this graph that visits every node
 exactly once  If yes, give the path. Note that in a path,
 adjacent nodes must be connected with edges.No, there is no path in this graph that
 visits every node exactly once. This
-is because node 1 2, meaning
+is because node 1 has degree 2, meaning
  it is connected to two other nodes.
 In order to visit every node exactly
 once, we would need to start and end
@@ -1092,79 +1410,102 @@ we cannot return to it without visiting
 is impossible to find a path that visits
 every node exactly once in this graph.
 %Yes. We can start at node 0. As node
-0 1, and node
+0 is connected with node 1, and node
 1 is not visited, we can then visit
-node 1. As node 1 3, and node 3 is not visited, we
-can then visit node 3. As node 3 4, and node 4
+node 1. As node 1 is connected with
+node 3, and node 3 is not visited, we
+can then visit node 3. As node 3 is
+connected with node 4, and node 4
 is not visited, we can then visit node
-4. As node 4 2, and node 2 is not visited, we can
+4. As node 4 is connected with node
+2, and node 2 is not visited, we can
 then visit node 2. The path can be 
 0,1,3,4,2. %
-There are 4 0 3, and 2 0 1. Each applicant is interested
+There are 4 job applicants numbered from 0 to 3, and 2
+jobs numbered from 0 to 1. Each applicant is interested
 in some of the jobs. Each job can only accept one
 applicant and a job applicant can be appointed for only
 one job.
-Applicant 0 1.
-Applicant 2 0.
-Applicant 0 0.
-Applicant 2 1.
-Applicant 3 1.
-Applicant 3 0.
-Applicant 1 0.
+Applicant 0 is interested in job 1.
+Applicant 2 is interested in job 0.
+Applicant 0 is interested in job 0.
+Applicant 2 is interested in job 1.
+Applicant 3 is interested in job 1.
+Applicant 3 is interested in job 0.
+Applicant 1 is interested in job 0.
 Q  Find an assignment of jobs to applicants in such that
 the maximum number of applicants find the job they
-are interested in.Applicant 0 0, job
+are interested in.Applicant 0 is interested in job 0, job
 1.
-Applicant 1 0.
-Applicant 2 0, job
+Applicant 1 is interested in job 0.
+Applicant 2 is interested in job 0, job
 1.
-Applicant 3 0, job
-1.
-We can make the following assignments 
-
-applicant 0 1 2 0 3 1 3 applicants can find the job they are
-interested in. %Applicant 0 0, job
-1.
-Applicant 1 0.
-Applicant 2 0, job
-1.
-Applicant 3 0, job
+Applicant 3 is interested in job 0, job
 1.
 We can make the following assignments 
 
-applicant 0 0 1  - (no job available)
-applicant 2 1 3  - (no job available)
+applicant 0  job 1
+applicant 2  job 0
+applicant 3  job 1
+3 applicants can find the job they are
+interested in. %Applicant 0 is interested in job 0, job
+1.
+Applicant 1 is interested in job 0.
+Applicant 2 is interested in job 0, job
+1.
+Applicant 3 is interested in job 0, job
+1.
+We can make the following assignments 
+
+applicant 0  job 0
+applicant 1  - (no job available)
+applicant 2  job 1
+applicant 3  - (no job available)
 2 applicants can find the job they are
 interested in. "
-21 15  Results of GPT-3.5- TURBO and GPT-4 19 cases (#17 to #19 example ) through the eight
+21Table 15  Results of GPT-3.5- TURBO and GPT-4on 19 cases (#17 to #19 example ) through the eight
 tasks. We omitted the C OT in-context exemplars in the table.
-Question GPT-3.5- TURBO GPT -4 5 0 4, and 6 0 5. Each applicant is interested
+Question GPT-3.5- TURBO GPT -4
+There are 5 job applicants numbered from 0 to 4, and 6
+jobs numbered from 0 to 5. Each applicant is interested
 in some of the jobs. Each job can only accept one
 applicant and a job applicant can be appointed for only
 one job.
-Applicant 0 3.
-Applicant 4 5. Applicant 4 4.
-Applicant 3 0.
-Applicant 0 5.
-Applicant 1 0.
-Applicant 0 2.
-Applicant 0 4.
-Applicant 4 0.
-Applicant 4 2.
-Applicant 2 3.
+Applicant 0 is interested in job 3.
+Applicant 4 is interested in job 5. Applicant 4 is interested
+ in job 4.
+Applicant 3 is interested in job 0.
+Applicant 0 is interested in job 5.
+Applicant 1 is interested in job 0.
+Applicant 0 is interested in job 2.
+Applicant 0 is interested in job 4.
+Applicant 4 is interested in job 0.
+Applicant 4 is interested in job 2.
+Applicant 2 is interested in job 3.
 Q  Find an assignment of jobs to applicants in such that
 the maximum number of applicants find the job they
-are interested in.Applicant 0 2, job
-3, job 4, job 5. Applicant 1 0. Applicant 2 3. Applicant 3 0. Applicant 4 0, job 2, job 4, job 5. We
+are interested in.Applicant 0 is interested in job 2, job
+3, job 4, job 5. Applicant 1 is interested
+ in job 0. Applicant 2 is interested
+ in job 3. Applicant 3 is interested
+ in job 0. Applicant 4 is interested
+ in job 0, job 2, job 4, job 5. We
 can make the following assignments 
-applicant 0 5 1 0 2 3 3 0 4 2 5 applicants can
-find the job they are interested in. %Applicant 0 2, job
-3, job 4, job 5. Applicant 1 0. Applicant 2 3. Applicant 3 0. Applicant 4 0, job 2, job 4, job 5. We
+applicant 0  job 5 applicant 1  job 0
+applicant 2  job 3 applicant 3  job 0
+applicant 4  job 2 5 applicants can
+find the job they are interested in. %Applicant 0 is interested in job 2, job
+3, job 4, job 5. Applicant 1 is interested
+ in job 0. Applicant 2 is interested
+ in job 3. Applicant 3 is interested
+ in job 0. Applicant 4 is interested
+ in job 0, job 2, job 4, job 5. We
 can make the following assignments 
-applicant 0 3 1 0 4 4 3 applicants can
+applicant 0  job 3 applicant 1  job 0
+applicant 4  job 4 3 applicants can
 find the job they are interested in. %
 n an undirected graph, the nodes are numbered from
-0 5, and every node has an embedding. (i,j) means
+0 to 5, and every node has an embedding. (i,j) means
 that node i and node j are connected with an undirected
 edge.
 Embeddings 
@@ -1179,29 +1520,42 @@ In a simple graph convolution layer, each node s embedding
  is updated by the sum of its neighbors  embeddings.
 
 Q  What s the embedding of each node after one layer
-of simple graph convolution layer Layer 1 0 1, node 5, [0,1]   [0,1]  
+of simple graph convolution layer Layer 1  node 0  sum of embeddings
+of node 1, node 5, [0,1]   [0,1]  
 [0,2].
-node 1 0, node 4, node 5, [1,1]   [0,0]  
+node 1  sum of embeddings of node
+0, node 4, node 5, [1,1]   [0,0]  
 [0,1]   [1,2].
-node 2 4, [0,0]   [0,0].
-node 3 4, [0,0]   [0,0].
-node 4 1, node 2, node 3, [1,2]   [1,0]   [0,0]
+node 2  sum of embeddings of node
+4, [0,0]   [0,0].
+node 3  sum of embeddings of node
+4, [0,0]   [0,0].
+node 4  sum of embeddings of node
+1, node 2, node 3, [1,2]   [1,0]   [0,0]
   [2,2].
-node 5 0, node 1, [0,2]   [1,2]   [1,4].
+node 5  sum of embeddings of node
+0, node 1, [0,2]   [1,2]   [1,4].
 So the answer is 
 node 0  [0,2]
 node 1  [1,2]
 node 2  [0,0]
 node 3  [0,0]
 node 4  [2,2]
-node 5  [1,4] %Layer 1 0 1, node 5, [0,1]   [0,1]   [0,2].
-node 1 0, node 4, node 5, [1,1]   [0,0]  
+node 5  [1,4] %Layer 1 
+node 0  sum of embeddings of node
+1, node 5, [0,1]   [0,1]   [0,2].
+node 1  sum of embeddings of node
+0, node 4, node 5, [1,1]   [0,0]  
 [0,1]   [1,2].
-node 2 4, [0,0]   [0,0].
-node 3 4, [0,0]   [0,0].
-node 4 1, node 2, node 3, [0,1]   [1,0]   [1,1]
+node 2  sum of embeddings of node
+4, [0,0]   [0,0].
+node 3  sum of embeddings of node
+4, [0,0]   [0,0].
+node 4  sum of embeddings of node
+1, node 2, node 3, [0,1]   [1,0]   [1,1]
   [2,2].
-node 5 0, node 1, [1,1]   [0,1]   [1,2].
+node 5  sum of embeddings of node
+0, node 1, [1,1]   [0,1]   [1,2].
 So the answer is 
 node 0  [0,2]
 node 1  [1,2]
@@ -1210,7 +1564,7 @@ node 3  [0,0]
 node 4  [2,2]
 node 5  [1,2] "
 In an undirected graph, the nodes are numbered from
-0 7, and every node has an embedding. (i,j) means
+0 to 7, and every node has an embedding. (i,j) means
 that node i and node j are connected with an undirected
 edge.
 Embeddings 
@@ -1228,20 +1582,28 @@ In a simple graph convolution layer, each node s embedding
  is updated by the sum of its neighbors  embeddings.
 
 Q  What s the embedding of each node after one layer
-of simple graph convolution layer Layer 1 0 3, node 4, node 6, [1,1]  
+of simple graph convolution layer Layer 1  node 0  sum of embeddings
+of node 3, node 4, node 6, [1,1]  
 [1,1]   [1,0]   [3,2].
-node 1 4, [1,1]   [1,1].
-node 2 3, node 5, node 6, [1,1]   [0,0]  
+node 1  sum of embeddings of node
+4, [1,1]   [1,1].
+node 2  sum of embeddings of node
+3, node 5, node 6, [1,1]   [0,0]  
 [1,0]   [2,1].
-node 3 0, node 2, node 5, node 6, [0,1]  
+node 3  sum of embeddings of node
+0, node 2, node 5, node 6, [0,1]  
 [1,1]   [0,0]   [1,0]   [2,2].
-node 4 0, node 1, node 5, [3,2]   [1,1]  
+node 4  sum of embeddings of node
+0, node 1, node 5, [3,2]   [1,1]  
 [0,0]   [4,3].
-node 5 2, node 3, node 4, node 7, [2,1]  
+node 5  sum of embeddings of node
+2, node 3, node 4, node 7, [2,1]  
 [2,2]   [4,3]   [1,0]   [9,6].
-node 6 0, node 2, node 3, [3,2]   [1,1]  
+node 6  sum of embeddings of node
+0, node 2, node 3, [3,2]   [1,1]  
 [1,0]   [5,3].
-node 7 5, [9,6]   [9,6].
+node 7  sum of embeddings of node
+5, [9,6]   [9,6].
 So the answer is 
 node 0  [3,2]
 node 1  [1,1]
@@ -1250,21 +1612,29 @@ node 3  [2,2]
 node 4  [4,3]
 node 5  [9,6]
 node 6  [5,3]
-node 7  [9,6] %Layer 1 0 3, node 4, node 6, [1,1]  
+node 7  [9,6] %Layer 1  node 0  sum of embeddings
+of node 3, node 4, node 6, [1,1]  
 [1,1]   [1,0]   [3,2].
-node 1 5, node 4, [0,0]   [1,1]   [1,1].
-node 2 5, node 3, node 6, [0,0]   [1,1]  
+node 1  sum of embeddings of node
+5, node 4, [0,0]   [1,1]   [1,1].
+node 2  sum of embeddings of node
+5, node 3, node 6, [0,0]   [1,1]  
 [1,0]   [2,1].
-node 3 0, node 2, node 5, node 6, [0,1]  
+node 3  sum of embeddings of node
+0, node 2, node 5, node 6, [0,1]  
 [1,0]   [0,0]   [1,0]   [2,1].
-node 4 0, node 1, node 5, [0,1]   [1,1]  
+node 4  sum of embeddings of node
+0, node 1, node 5, [0,1]   [1,1]  
 [0,0]   [1,2].
-node 5 1, node 2, node 3, node 4, node 7,
+node 5  sum of embeddings of node
+1, node 2, node 3, node 4, node 7,
 [1,1]   [1,0]   [1,1]   [1,1]   [1,0]  
 [5,3].
-node 6 0, node 2, node 3, node 7, [0,1]  
+node 6  sum of embeddings of node
+0, node 2, node 3, node 7, [0,1]  
 [1,0]   [1,1]   [1,0]   [3,2].
-node 7 5, [0,0]   [0,0].
+node 7  sum of embeddings of node
+5, [0,0]   [0,0].
 So the answer is 
 node 0  [3,2]
 node 1  [1,1]

@@ -1,4 +1,6 @@
-Proceedings of the Workshop on Natural Language Processing for Indigenous Languages of the Americas (AmericasNLP) , pages 173 176 14, 2023 2023 2023
+Proceedings of the Workshop on Natural Language Processing for Indigenous Languages of the Americas (AmericasNLP) , pages 173 176
+July 14, 2023  2023 Association for Computational Linguistics
+PlayGround Low Resource Machine Translation System for the 2023
 AmericasNLP Shared Task
 Tianrui Gu, Kaie Chen, Siqi Ouyang, Lei Li
 University of California, Santa Barbara
@@ -16,7 +18,8 @@ weight averaging, on average, led to a 0.0169
 improvement in the ChrF   score. Additionally,
  we found that back translation resulted in
 a 0.008 improvement in the ChrF   score.
-1 2023
+1 Introduction
+We participated in the AmericasNLP 2023
 (Ebrahimi et al., 2023) shared task with the goal
 of advancing previous studies (Mager et al., 2021)
 on indigenous American languages. The task is
@@ -27,7 +30,7 @@ Hñähñu, Nahuatl, Quechua, Raramuri, ShipiboKonibo,
 another language, Chatino1, for which we did not
 participate in.
 We started with the monolingual and bilingual
-data from Mager et al. (2021) and finetuned NLLB M,
+data from Mager et al. (2021) and finetuned NLLB600M,
  a multilingual pre-trained MT model from
 Meta s No Language Left Behind (NLLB) project
 (NLLBTeam et al., 2022) both bilingually and multilingually.
@@ -55,7 +58,11 @@ We selected the bilingual model with weight
 averaging and back translation as our final submission.
  The implementation of this study is available
 in our Git repository2.
-2 2.1 2021 (Vázquez et al., 2021) for our system.
+2 Methods
+2.1 Data
+We adopted the data preparation method described
+by the University of Helsinki s submission to AmericasNLP
+ 2021 (Vázquez et al., 2021) for our system.
  The details of the dataset can be found in
 Table 1. Our model training utilized the filtered
 parallel data (referred to as parallel data), which
@@ -68,26 +75,36 @@ and applied back translation techniques (refer to
 Section 2.3). The development data was used for
 model selection purposes.
 2.2 Pre-trained Model
-Our models are based on the NLLB-600M Seq Seq
+Our models are based on the NLLB-600M Seq2Seq
 pre-training scheme introduced by the NLLB team
 (NLLBTeam et al., 2022). For tokenization, we
 utilize the SentencePiece tokenizer (Kudo and
 Richardson, 2018), following the NLLB configuration.
  The NLLB model was initially trained on
-2https //github.com/KaieChen/ameircasnlp Lang Filtered Monoling Dev
-Ashaninka 3858 13195 883 8352 16750 996 7303 0 996 14483 40516 995
-Hñähñu 7049 537 599 17431 9222 672 228624 60399 996 16529 0 995
-Shipibo-Konibo 28854 23595 996 11525 511 994 1  Number of segments in dataset. Filtered data
+2https //github.com/KaieChen/ameircasnlp2023173Lang Filtered Monoling Dev
+Ashaninka 3858 13195 883
+Aymara 8352 16750 996
+Bribri 7303 0 996
+Guarani 14483 40516 995
+Hñähñu 7049 537 599
+Nahuatl 17431 9222 672
+Quechua 228624 60399 996
+Raramuri 16529 0 995
+Shipibo-Konibo 28854 23595 996
+Wixarika 11525 511 994
+Table 1  Number of segments in dataset. Filtered data
 and monolingual data are collected and filtered by University
  of Helsinki team (Vázquez et al., 2021) from
 AmericasNLP 2021.
 the Flores-200 dataset, which consists of Aymara,
 Guarani, Quechua, and Spanish.
 2.3 Fine-tuned Models
-We fine-tune NLLB-600 1. For both X-to-Spanish and
+We fine-tune NLLB-600M using the data mentioned
+ in Table 1. For both X-to-Spanish and
 Spanish-to-X directions, we fine-tune NLLB-600M
 using filtered parallel data in both bilingual and
-multilingual way. This produces 20 2 multilingual models.
+multilingual way. This produces 20 bilingual models
+ and 2 multilingual models.
 We leverage the above X-to-Spanish models to
 generate back translated data to enrich the training
 corpus. Then we further fine-tune the Spanish-to-X
@@ -128,7 +145,9 @@ the average of the model weights from the previous
 Kepochs. For inference, we compute the final
 model by averaging the model weights from the last
 Kepochs. The model can be defined as follows 
-NLLB (x  Θt)  NLLB (x 1 1Θt k)(2)
+NLLB (x  Θt)  NLLB (x 1
+KK 
+k 1Θt k)(2)
 where Θtrepresents the model parameters at epoch
 t.
 This technique shares similarities with training
@@ -145,29 +164,36 @@ training on a vast amount of Spanish sentences. We
 optimized the model using AdamW (Loshchilov
 and Hutter, 2017) with hyperparameters β 
 (0.9,0.999),ϵ  10 6. We employed a learning
-rate of 3 10 4 10,000iterations. For
+rate of 3 10 4for a total of 10,000iterations. For
 regularization, we utilized the same dropout rate
 as the original NLLB model and a weight decay
 of0.01. Furthermore, for weight averaging, we set
 the value of Kto be 5.
 2.4 Evaluation
 We report the results using ChrF   (Popovi  c,
-2017), following the evaluation script provided
+2017), following the evaluation script3provided
 by the AmericasNLP 2023 shared task. ChrF  
 3https //github.com/AmericasNLP/
-americasnlp Target language Baseline (Test) Multi Multi  Multi   Bi Bi   Bi   (Test)
+americasnlp2023174Target language Baseline (Test) Multi Multi  Multi   Bi Bi   Bi   (Test)
 Wixarika 0.304 0.277 0.294 0.294 0.266 0.279 0.288
-Hñähñu 0.147 0.129 0.133 0.138 0.144 0.141 0.148 0.283 0.291 0.328 0.326 0.336 0.326 0.300
-Shipibo-Konibo 0.329 0.224 0.238 0.253 0.261 0.283 0.277 0.266 0.241 0.252 0.275 0.282 0.283 0.237 0.336 0.304 0.316 0.321 0.315 0.303 0.331
-Asháninka 0.258 0.222 0.238 0.272 0.269 0.286 0.280 0.343 0.324 0.341 - 0.337 - 0.344
-Rarámuri 0.184 0.161 0.175 - 0.184 - 0.145 0.165 0.210 0.237 - 0.231 - 0.148 2  Result in ChrF   on develop dataset, except for baseline and Bi  (test). Baseline model is the best
+Hñähñu 0.147 0.129 0.133 0.138 0.144 0.141 0.148
+Aymara 0.283 0.291 0.328 0.326 0.336 0.326 0.300
+Shipibo-Konibo 0.329 0.224 0.238 0.253 0.261 0.283 0.277
+Nahuatl 0.266 0.241 0.252 0.275 0.282 0.283 0.237
+Guarani 0.336 0.304 0.316 0.321 0.315 0.303 0.331
+Asháninka 0.258 0.222 0.238 0.272 0.269 0.286 0.280
+Quechua 0.343 0.324 0.341 - 0.337 - 0.344
+Rarámuri 0.184 0.161 0.175 - 0.184 - 0.145
+Bribri 0.165 0.210 0.237 - 0.231 - 0.148
+Table 2  Result in ChrF   on develop dataset, except for baseline and Bi  (test). Baseline model is the best
 submission for AmericasNLP 2021. The effectiveness of weight averaging (Multi  and Bi ) and back translation is
 compared (Multi   and Bi  ). We also compared the performance of bilingual (Bi) and multilingual (Multi).
 captures the character-level performance, making
 it particularly suitable for evaluating the polysynthetic
  properties observed in many indigenous languages
  (Zheng et al., 2021).
-3 2 for both the
+3 Results
+The results are presented in Table 2 for both the
 development and test datasets. Our Bi   model
 demonstrates improvements in four languages 
 Hñähñu, Aymara, Asháninka, and Quechua, compared
@@ -227,7 +253,7 @@ Enora Rice, Cynthia Montaño, John Ortega, Shruti
 Rijhwani, Alexis Palmer, Rolando Coto-Solano, Hilaria
  Cruz, and Katharina Kann. 2023. Findings of
 the AmericasNLP 2023 shared task on machine translation
- into indigenous languages. In Proceedings of the Third Workshop on Natural Language Processing
+ into indigenous languages. In Proceedings of175the Third Workshop on Natural Language Processing
 for Indigenous Languages of the Americas . Association
  for Computational Linguistics.
 Taku Kudo and John Richardson. 2018. SentencePiece 
@@ -286,7 +312,8 @@ abs/2008.00401.
 Raúl Vázquez, Yves Scherrer, Sami Virpioja, and Jörg
 Tiedemann. 2021. The Helsinki submission to theAmericasNLP shared task. In Proceedings of the
 First Workshop on Natural Language Processing for
-Indigenous Languages of the Americas , pages 255 264, Online. Association for Computational Linguistics.
+Indigenous Languages of the Americas , pages 255 
+264, Online. Association for Computational Linguistics.
 
 Mitchell Wortsman, Gabriel Ilharco, Samir Ya Gadre,
 Rebecca Roelofs, Raphael Gontijo-Lopes, Ari S Morcos,

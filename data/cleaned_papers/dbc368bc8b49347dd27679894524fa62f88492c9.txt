@@ -20,13 +20,13 @@ BookSum dataset, without any input truncation at test time. We demonstrate that
 Unlimiformer improves pretrained models such as BART (Lewis et al., 2020a) and
 Longformer (Beltagy et al., 2020) by extending them to unlimited inputs without
 additional learned weights and without modifying their code. Our code and models
-are publicly available, and support LLaMA-2 2.
+are publicly available, and support LLaMA-2 as well2.
 1 Introduction
 Transformers (Vaswani et al., 2017) have risen as the dominant sequence-to-sequence architecture.
 Pretrained transformers generally have a context window of 512 (e.g. BERT (Devlin et al., 2019), T5
 (Raffel et al., 2020)) or 1024 tokens (e.g. BART (Lewis et al., 2020b)), which are sufficient lengths
 for many current conditional generation datasets (XSum  Narayan et al., 2018) (CNN/DM  Nallapati
-et al., 2016). To address inputs between 1024 16,384 tokens, specialized long-context models
+et al., 2016). To address inputs between 1024 and 16,384 tokens, specialized long-context models
 sparsify or approximate attention (e.g. Longformer (Beltagy et al., 2020), Performers (Choromanski
 et al., 2020)), allowing the maximum input length to quadruple while remaining computationally
 feasible. Most long-document summarization and question-answering datasets, such as SCROLLS
@@ -40,7 +40,12 @@ In these extremely-long-input cases, vanilla transformers cannot be simply scale
 and thus necessitate re-pre-training the model from scratch, which requires significant computational
  Now at Google DeepMind
 2https //github.com/abertsch72/unlimiformer
-37th Conference on Neural Information Processing Systems (NeurIPS 2023).arXiv 2305.01625 3  [cs.CL]  30 2023 2  In this example, a given LM s encoder s maximum input length is 2 tokens. A 6-token
+37th Conference on Neural Information Processing Systems (NeurIPS 2023).arXiv 2305.01625v3  [cs.CL]  30 Oct 2023Input Index of one long  input Retrieved
+hidden states
+querykNN Search Encoder
+a b c d e fa b c dEncode chunks
+Cross attentionDecoder Layer
+b c d e c d e fFigure 2  In this example, a given LM s encoder s maximum input length is 2 tokens. A 6-token
 input is encoded in chunks and indexed in an index. We inject Unlimiformer into each decoder layer
 prior to cross-attention. In Unlimiformer, we perform kNN search to select a 2-token context for
 each attention head from the index. This makes cross-attention attend to tokens from the entire input
@@ -48,7 +53,10 @@ sequence, without adding parameters and without changing the given LM s architec
 resources. Other architectures such as Longformer-Encoder-Decoder (LED  Beltagy et al., 2020)
 canleverage pretrained models, but they still need to further train new position embeddings or global
 attention weights, which is computationally and environmentally costly.
-XSum (Avg)CNN/DM (Avg)ArXiv (Avg)GovReport (Avg)WikiSum (Avg)NarrativeQA (Avg)BookSum (Avg)NarrativeQA (Max)BookSum (Max)WikiSum (Max)103104105 16384 4096 1024 1  Long-range transformers can avoid input
+XSum (Avg)CNN/DM (Avg)ArXiv (Avg)GovReport (Avg)WikiSum (Avg)NarrativeQA (Avg)BookSum (Avg)NarrativeQA (Max)BookSum (Max)WikiSum (Max)103104105Input tokens16384 tokens
+4096 tokens
+1024 tokens
+Figure 1  Long-range transformers can avoid input
 truncation in some datasets  however, there are
 datasets with inputs many times longer than these
 models  maximum input length. The dotted lines
@@ -107,7 +115,7 @@ values, retrieving the most-attended tokens preserves the vast majority of atten
 Figure 2 illustrates our generic changes to any sequence-to-sequence transformer s architecture. The
 full input is encoded using the encoder in chunks and indexed in a kNN index  then, the index of
 encoded hidden states is queried at each decoding step. The kNN search step is non-parametric and
-can be injected into any pretrained seq seq transformer. The search step reformulates attention for
+can be injected into any pretrained seq2seq transformer. The search step reformulates attention for
 space efficiency, as detailed below.
 2.3 Attention reformulation
 Lethdbe the decoder hidden state and hebe an encoder s last layer hidden state. The standard
@@ -134,7 +142,8 @@ which allows us to store a single index across allattention heads and all decode
 changing the mathematical definition of the transformer s standard dot-product attention. The
 3See Memorizing Transformers  official implementation at https //github.com/google-research/meliad/
 blob/main/transformer/memory_factory.py#L78-L79 and https //github.com/google-research/meliad/blob/main/
-transformer/memory_layer.py#L334-L339 3dot-product part of the transformer s attention computation can be rewritten as follows 4
+transformer/memory_layer.py#L334-L339
+3dot-product part of the transformer s attention computation can be rewritten as follows 4
 QKT  (hdWq) (heWk) (2)
   (hdWq)W 
 khe 
@@ -155,7 +164,7 @@ all indexes during each decoding step, we construct a single index from heand re
 just projecting the decoder hidden states to per-head per-layer hdWqW 
 k.
 Using our reformulation, the index stores only a single vector per input token. Using 16-bit floats
-and hidden states of size 1024, this requires only 2 1,000,000 input tokens. Since
+and hidden states of size 1024, this requires only 2GB of memory for 1,000,000 input tokens. Since
 indexes can be offloaded to the CPU memory, Unlimiformer s input length is practically unlimited.
 3 Training Unlimiformer
 Unlimiformer can be used, at test time, with an already-trained model, and lead to gains without
@@ -166,11 +175,16 @@ Method name Training inputtotal # tokens in
 example seen at
 training timeValidation input
 (early stopping)Test input
-Baseline 1024 1024 1024 1024 1024 1024 1024 unlimited
- early stop w/ Unlimiformer 1024 1024 1024 all unlimited unlimited
-SLED (Ivgi et al., 2022) 16 16 16 16k
-Longformer (Beltagy et al., 2020) 16 16 16 16k
-Random-encoded training 8-16 8-16 8-16 8-16 8-16 8-16 1  A comparison of the training approaches using BART (context window size 1024) as a
+Baseline 1024 1024 1024 1024
+ test Unlimiformer 1024 1024 1024 unlimited
+ early stop w/ Unlimiformer 1024 1024 unlimited unlimited
+Train chunked  test Unlimiformer 1024 all unlimited unlimited
+SLED (Ivgi et al., 2022) 16k 16k 16k 16k
+Longformer (Beltagy et al., 2020) 16k 16k 16k 16k
+Random-encoded training 8-16k 8-16k unlimited unlimited
+Retrieval training 8-16k 8-16k unlimited unlimited
+Alternating training 8-16k 8-16k unlimited unlimited
+Table 1  A comparison of the training approaches using BART (context window size 1024) as a
 running example. The dashed line separates methods that are approximately the same training-time
 cost as the baseline, from those that require significant additional compute.
 3.1 Low (additional-) Cost Training Methods  Applying Unlimiformer at validation or
@@ -205,10 +219,17 @@ the test-time computation.
 Alternating training  In this approach we alternate batches of Random-encoded training andRetrieval
  training .Retrieval training is identical to the test-time setting, while Randomencoded
  introduces regularization that makes the model attend to non-top- kkeys as well.
-4 4.1 Datasets
+4 Experimental Settings
+4.1 Datasets
 Avg # tokens
 Dataset Domain # examples Input Output Input length distribution
-GovReport Government 19,402 9,616 597 74 303192 4,348 8,987 137 2365 22635 436 143,301 1294 8388 642376 2  Dataset statistics. The last column is a visualization of the distribution of input example
+GovReport Government 19,402 9,616 597 74
+ 303192
+SummScreen TV shows 4,348 8,987 137 2365
+ 22635
+BookSum Literature 436 143,301 1294 8388
+ 642376
+Table 2  Dataset statistics. The last column is a visualization of the distribution of input example
 lengths in each dataset  the histogram is binned by powers of 2, with the minimum and maximum
 input size displayed on either end. The dotted line indicates the mean length.
 We experiment with two long-document- and one book-summarization datasets from varying domains.
@@ -225,13 +246,19 @@ Zhang et al. (2021), in BookSum we also used Entity Mention Recall ( EntMent ) a
 the informativeness of the candidate summaries. EntMent measured the fraction of gold entities
 mentioned in the candidate summary. Additional evaluation details are provided in Appendix C.
 4.2 Baselines
-BART (base) (Lewis et al., 2020b) is a pretrained seq seq model (139M parameters), commonly
+BART (base) (Lewis et al., 2020b) is a pretrained seq2seq model (139M parameters), commonly
 used for summarization tasks. Its maximum input sequence length is 1024 tokens.
-5 1 / 2 / L / BERTScore
+5Base model Training method ROUGE 1 / 2 / L / BERTScore
 GovReport SummScreen
 BART base Standard finetuning 48.7 / 19.2 / 22.8 / 64.3 29.7 / 6.2 / 17.7 / 56.3
-BART base  test SLED (Ivgi et al., 2022) 45.8 / 16.1 / 20.2 / 62.7 27.5 / 5.5 / 16.7 / 55.9 49.7 / 19.6 / 22.0 / 64.8 30.9 / 6.5 / 18.2 / 57.5
-BART base  early stop w/ Unlimiformer 51.0 /20.5 / 21.5 / 65.1 32.1 /6.8/18.6 /57.6 46.2 / 17.8 / 21.7 / 63.3 28.1 / 5.6 / 17.0 / 55.6 53.4 /22.5 /22.5 /66.0 29.3 /6.6/17.6 /57.0 55.1 / 23.9 / 25.9 / 67.0 32.3 / 7.1 / 18.3 / 57.1 56.5 /24.8 /26.3 /67.7 33.3 /7.7/19.1 /57.6 3  Results on long-document summarization, low-cost training methods  the training costs are
+BART base  test SLED (Ivgi et al., 2022) 45.8 / 16.1 / 20.2 / 62.7 27.5 / 5.5 / 16.7 / 55.9
+BART base  test Unlimiformer 49.7 / 19.6 / 22.0 / 64.8 30.9 / 6.5 / 18.2 / 57.5
+BART base  early stop w/ Unlimiformer 51.0 /20.5 / 21.5 / 65.1 32.1 /6.8/18.6 /57.6
+BART base Train chunked 46.2 / 17.8 / 21.7 / 63.3 28.1 / 5.6 / 17.0 / 55.6
+BART base  test Unlimiformer 53.4 /22.5 /22.5 /66.0 29.3 /6.6/17.6 /57.0
+PRIMERA Standard finetuning 55.1 / 23.9 / 25.9 / 67.0 32.3 / 7.1 / 18.3 / 57.1
+PRIMERA  test Unlimiformer 56.5 /24.8 /26.3 /67.7 33.3 /7.7/19.1 /57.6
+Table 3  Results on long-document summarization, low-cost training methods  the training costs are
 no higher than standard finetuning that truncates the inputs to the model s max input size. The best
 metric in every training category is marked in bold . PRIMERA (Xiao et al., 2022) is a LongformerEncoder-Decoder
  (Beltagy et al., 2020) with additional summarization-specific pretraining.
@@ -244,7 +271,7 @@ attends to allinput tokens. This allows the use of pretrained models, albeit wit
 The input sequence length is eventually memory bounded.
 Memorizing Transformers (Wu et al., 2022) is the most similar work to ours  they propose extending
 a transformer with a trainable attention gate that moderates between the standard cross-attention and
-attention over retrieved keys from a datastore. Since their public implementation is  not officially
+attention over retrieved keys from a datastore. Since their public implementation5is  not officially
 supported  and is not fully reproducible, we approximated it by using attention over the index in only
 asingle decoder layer  this is equivalent to their setting with the learned interpolation parameter gset
 to 1.6Our work differs from Memorizing Transformers in several key ways  Wu et al. (2022) added
@@ -253,7 +280,8 @@ non-parametric and can improve performance without fine-tuning  further, Wu et a
 retrieval attention to only a single layer because of computational constraints, while our attention
 reformulation enables the use of Unlimiformer in every decoder layer with individualized retrieval
 per-head, while still being more efficient than Memorizing Transformers, as we detail in Section 2.3.
-5 5.1 Long Document Summarization
+5 Results
+5.1 Long Document Summarization
 Low-cost training Table 3 shows the results in the long-document summarization datasets. First,
 we can see that applying Unlimiformer on an existing checkpoint without any training (  test Unlimiformer
  ) improves BART baseby, for example, 1.8 ROUGE-1 points on both datasets, and improves
@@ -262,30 +290,40 @@ performance. Thus, Unlimiformer is the only model that can provide benefits with
 Early stop w/ Unlimiformer further improves the base model without any special training  it provides,
 for example, 3.3 ROUGE-1 points gain on GovReport, while the training computational cost is
 identical to standard finetuning. Train chunked does not provide benefits on its own  however
-injecting Unlimiformer applied at test time results in the most significant gains  7.2 ROUGE-1 3
+injecting Unlimiformer applied at test time results in the most significant gains  7.2 ROUGE-1 and 3
 BERTScore points improvements, while training is as computationally cheap as standard finetuning.
 5https //github.com/google-research/meliad
 6Wu et al. (2022) note that in their experiments that most heads learned a value for gsuch that they attended
  almost exclusively  to the external memory.
-6 1 / 2 / L / BERTScore
+6Base model Training method ROUGE 1 / 2 / L / BERTScore
 GovReport SummScreen
 BART base Standard finetuning 48.7 / 19.2 / 22.8 / 64.3 29.7 / 6.2 / 17.7 / 56.3
-BART base SLED (Ivgi et al., 2022) 54.7 / 24.4 / 25.4 / 67.0 32.7 / 7.9 / 19.1 / 58.4 55.2 / 25.1 / 26.4 / 67.5 32.7 / 7.4 / 19.2 / 57.4
-BART base Unlimiformer (this work) 56.6 /26.3 /27.6 /68.2 34.7 /8.5/19.9 /58.5 55.1 / 23.9 / 25.9 / 67.0 32.3 / 7.1 / 18.3 / 57.1 57.0 / 25.3 / 26.5 / 67.7 33.0 / 7.3 / 18.4 / 57.3
-PRIMERA Unlimiformer (this work) 57.4 /26.2 /28.0 /68.1 33.3 /7.6/18.9 /57.7 4  Test results on long-document datasets, when allowing compute-costly, long-range training
+BART base SLED (Ivgi et al., 2022) 54.7 / 24.4 / 25.4 / 67.0 32.7 / 7.9 / 19.1 / 58.4
+BART base Memorizing transformers 55.2 / 25.1 / 26.4 / 67.5 32.7 / 7.4 / 19.2 / 57.4
+BART base Unlimiformer (this work) 56.6 /26.3 /27.6 /68.2 34.7 /8.5/19.9 /58.5
+PRIMERA Standard finetuning 55.1 / 23.9 / 25.9 / 67.0 32.3 / 7.1 / 18.3 / 57.1
+PRIMERA Memorizing transformers 57.0 / 25.3 / 26.5 / 67.7 33.0 / 7.3 / 18.4 / 57.3
+PRIMERA Unlimiformer (this work) 57.4 /26.2 /28.0 /68.1 33.3 /7.6/18.9 /57.7
+Table 4  Test results on long-document datasets, when allowing compute-costly, long-range training
 methods, using different base models. The best metric in every dataset and every training category
 is marked in bold . The Unlimiformer results in this table are from using the alternating training
 strategy.
 Base model Training method ROUGE 1 / 2 / L EntMent
-BART base Hierarchical (Kry  sci nski et al., 2021) 30.0 / 6.0 / 11.0 36.4 / 7.6 / 15.3 10.0 35.5 / 7.7/ 15.4 21.9
-BART base  early stop w/ Unlimiformer 35.5 / 7.7/ 15.4 21.9 35.6 / 6.4 / 14.6 10.1
+BART base Hierarchical (Kry  sci nski et al., 2021) 30.0 / 6.0 / 11.0 BART
+ base Standard finetuning 36.4 / 7.6 / 15.3 10.0
+BART base  test Unlimiformer 35.5 / 7.7/ 15.4 21.9
+BART base  early stop w/ Unlimiformer 35.5 / 7.7/ 15.4 21.9
+BART base Memorizing Transformers 35.6 / 6.4 / 14.6 10.1
 BART base Unlimiformer (retrieval training) 36.8 / 8.3 / 15.7 20.3
 BART base Unlimiformer (random-encoded training) 37.3 / 6.7 / 15.2 20.8
-BART base Unlimiformer (alternating training) 36.7 / 7.3 / 15.5 20.3 38.6 / 7.2 / 15.6 11.6 38.3 / 7.5 / 15.9 18.9
+BART base Unlimiformer (alternating training) 36.7 / 7.3 / 15.5 20.3
+PRIMERA Standard finetuning 38.6 / 7.2 / 15.6 11.6
+PRIMERA  test Unlimiformer 38.3 / 7.5 / 15.9 18.9
 PRIMERA  early stop w/ Unlimiformer 39.5 / 7.3 / 15.8 22.2
 PRIMERA Unlimiformer (retrieval training) 37.9 / 8.2 / 16.3 25.5
 PRIMERA Unlimiformer (random-encoded training) 39.5 / 7.1 / 15.9 19.7
-PRIMERA Unlimiformer (alternating training) 38.2 / 7.1 / 16.0 23.4 5  Results on BookSum (average input length  143k tokens). EntMent is entity recall. Hierarchical
+PRIMERA Unlimiformer (alternating training) 38.2 / 7.1 / 16.0 23.4
+Table 5  Results on BookSum (average input length  143k tokens). EntMent is entity recall. Hierarchical
  summarization is a baseline reported by Kry  sci nski et al. (2021), where chapter summaries are
 condensed to form a book summary. The best metric in every dataset is marked in bold .
 Long-range training Table 4 shows results when allowing computationally expensive training
@@ -298,7 +336,8 @@ summarization  second, not only can Unlimiformer outperform Longformer-based mod
 PRIMERA, Unlimiformer can also be applied on top of existing long-range transformers and further
 improve them  Unlimiformer PRIMERA improves over PRIMERA across all metrics and datasets.
 Additional results on the validation set are provided in Appendix E.
-5.2 5 shows the result on BookSum. As shown, Unlimiformer improves both base models BART base
+5.2 Book Summarization
+Table 5 shows the result on BookSum. As shown, Unlimiformer improves both base models BART base
 and PRIMERA, in both low-cost training approaches such as Early stop w/ Unlimiformer , as well as
 in the long-range training approaches. Random-encoded- ,Retrieval- , and Alternating- training show
 competitive performance, with the best method varying across datasets and models.
@@ -326,7 +365,7 @@ Nonetheless, the ability to attend to unlimited inputs at test time allows Unlim
 significantly better Entity Mention Recall (EntMent)  the Unlimiformer models exhibit far higher
 EntMent, and even adding Unlimiformer only at test time without costly training ( Early stop w/
 Unlimiformer )doubles the entity recall compared to the base model. Further, Unlimiformer improves
-EntMent in the base PRIMERA from 11.6 25.5 in Unlimiformer PRIMERA.
+EntMent in the base PRIMERA from 11.6 to 25.5 in Unlimiformer PRIMERA.
 6 Analysis
 Is the long input really needed  As found in various recent papers (Shaham et al., 2022  Kedzie
 et al., 2018), many text generation datasets do not require long-range modeling, since most of the
@@ -350,8 +389,14 @@ additional time overhead relative to the baseline for indexing and search. Howev
 8It is also possible that the baseline s strong performance on this task is due to some contamination from
 pretraining data  BART was trained on books and Wikipedia data, which likely includes some articles used in
 WikiSum. Any contamination from pretraining here strengthens the baseline performance.
-8 1 / 2 / LNarrative QA
-F1 22.0 77.5 30.8 / 8.7/20.8 15.5 27.5 77.7 30.9 / 8.0 / 19.9 18.5 6  Results on question answering, query-based summarization, and NLI datasets.
+8Base model Training methodQASPER
+F1Contract NLI
+Exact MatchQMSum
+ROUGE 1 / 2 / LNarrative QA
+F1
+BART base Standard finetuning 22.0 77.5 30.8 / 8.7/20.8 15.5
+BART base Unlimiformer 27.5 77.7 30.9 / 8.0 / 19.9 18.5
+Table 6  Results on question answering, query-based summarization, and NLI datasets.
 Unlimiformer are clear as input length increases  the total GPU-time required increases sublinearly
 with input length9. Additional GPU-time measurements are reported in in Appendix D.
 Performance on other tasks We measure the performance of Unlimiformer relative to the base
@@ -362,7 +407,8 @@ meeting transcripts  and NarrativeQA (Ko ˇciský et al., 2018), a reading compr
 narratives10.
 Table 6 shows the performance of BART-Unlimiformer (with alternating training) relative to base
 BART. On three of the four datasets, applying Unlimiformer improves over the base model.
-0.00.2 0.4 0.6 0.8 1.0 0.0%2.0%4.0%6.0%8.0%10.0%% of total r etrieval occuring in this r egion
+0.00.2 0.4 0.6 0.8 1.0 location
+ in document0.0%2.0%4.0%6.0%8.0%10.0%% of total r etrieval occuring in this r egion
 Figure 5  Histogram of location of retrieved embeddings
  in the original document (averaged over
 the BookSum test set). There is a slight bump at
@@ -472,7 +518,7 @@ Uri Alon, Frank F. Xu, Junxian He, Sudipta Sengupta, Dan Roth, and Graham Neubig
 Ahsaas Bajaj, Pavitra Dangati, Kalpesh Krishna, Pradhiksha Ashok Kumar, Rheeya Uppaal, Bradford
 Windsor, Eliot Brenner, Dominic Dotterrer, Rajarshi Das, and Andrew McCallum. 2021. Long
 document summarization in a low resource setting using pretrained language models. In Proceedings
- of the 59 11th
+ of the 59th Annual Meeting of the Association for Computational Linguistics and the 11th
 International Joint Conference on Natural Language Processing  Student Research Workshop ,
 pages 71 80, Online. Association for Computational Linguistics.
 Iz Beltagy, Matthew E Peters, and Arman Cohan. 2020. Longformer  The long-document transformer.
@@ -645,7 +691,8 @@ B WikiSum scraping
 We rescraped the dataset, following the same preprocessing steps as the original authors. We observe
 that many inputs in the scraped dataset are shorter than reported, likely due to changes in availability
 of the data since 2017  as a preprocessing step, we remove all inputs that are less than 1457 words,
-which is the 40th percentile of citation size for the original dataset. We trained on 10,000 2,000 randomly sampled examples
+which is the 40th percentile of citation size for the original dataset. We trained on 10,000 randomly
+selected examples from this version of WikiSum and evaluate on 2,000 randomly sampled examples
 (1,000 validation, 1,000 test), maintaining the same sample across all experiments. When sampling,
 we respect the original WikiSum train/validation/test split. We release the subset we trained on as
 well as our modified version of the scraping code.
@@ -656,12 +703,13 @@ BookSum, we experimented with using allenai/longformer-large-4096 (context size
 4096), as many references are longer than 1024 tokens  however, we found that this approach
 had no distinguishing power between model outputs, ranking all models tested within 0.3 points
 of each other despite observing significant differences with ROUGE, EntMent, and manual inspection.
-For computing Entity Mention Recall (EntMent), we used SpaCy to tag all named entities in the
+For computing Entity Mention Recall (EntMent), we used SpaCy12to tag all named entities in the
 gold summary and collected a set of unique entities. We then tagged each candidate summary and
 computed the percentage of entities present in this summary, that is, recall of unique entities. For the
 named entity recognition in EntMent, we used SpaCy s en_core_web_lg model.
 D Computational Cost
-We estimate the total GPU time for results presented in this paper did not exceed approximately 116 48-GB A6000. The longest-training models, SLED and retrieval training for
+We estimate the total GPU time for results presented in this paper did not exceed approximately 116
+days of time on a single 48-GB A6000. The longest-training models, SLED and retrieval training for
 GovReport, took approximately 10 days to train.
 GPU-time Table 7 shows the relative cost for each method. The Unlimiformer training methodologies
  are higher cost than the base training  however, the largest difference occurs during inference,
@@ -676,12 +724,25 @@ does not support retrieving more than 2048 nearest neighbors  however, the datas
 stored on GPU.
 12https //spacy.io
 15Method Relative GPU-time
-Baseline training 1.00 0.00 1.02 0.02
- early stop w/ Unlimiformer 1.00 0.00 1.89 0.06
-Random-encoded training 2.87 0.28 1.00 0.00 4.48 0.56 7  Computational effort per epoch for different training methodologies, relative to the baseline
-of standard finetuning and inference. All are averaged over 3 48 6000 GPU, 32 GB RAM, and 16 CPUs.
+Baseline training 1.00  0.00
+Chunked training 1.02  0.02
+ early stop w/ Unlimiformer 1.00  0.00
+Retrieval training 1.89  0.06
+Random-encoded training 2.87  0.28
+Baseline inference 1.00  0.00
+Unlimiformer inference 4.48  0.56
+Table 7  Computational effort per epoch for different training methodologies, relative to the baseline
+of standard finetuning and inference. All are averaged over 3 runs on BookSum using a single 48 GB
+A6000 GPU, 32 GB RAM, and 16 CPUs.
 Number of layers using Unlimiformer Memory consumption (GB)
-0 (normal inference) 1.61 1 7.33 2 7.32 3 7.36 4 7.32 5 7.33 6 (all) 7.35 8  Memory consumption for applying Unlimiformer at different numbers of layers in BART.
+0 (normal inference) 1.61
+1 7.33
+2 7.32
+3 7.36
+4 7.32
+5 7.33
+6 (all) 7.35
+Table 8  Memory consumption for applying Unlimiformer at different numbers of layers in BART.
 Memory usage Table 8 shows the memory required to apply Unlimiformer on varying numbers
 of layers in a BART model. Using Unlimiformer requires more memory than the base model for
 two reasons  index construction and the additional input processed. There is a slight overhead for
@@ -708,18 +769,27 @@ Fyodor, the eldest Karamazov, has three sons  Dmitri, Ivan, and Alyosha. Ivan
 and Alyosha have the same mother, but Dmitri, the oldest, has a different mother.
 Fyodor is a greedy landowner, a bawdy lecher, and a neglectful father. Hence, the
 Karamazov brothers end up growing into young men under the care of various
-16 1 / 2 / L / BERTScore
+16Base model Training method ROUGE 1 / 2 / L / BERTScore
 GovReport SummScreen
 Low-cost training methods  
-BART base Standard finetuning 47.7 / 18.5 / 22.3 / 64.0 30.0 / 6.5 / 17.7 / 56.7 46.0 / 16.3 / 20.3 / 62.8 28.4 / 5.9 / 17.0 / 56.0 49.5 / 19.6 / 21.9 / 64.8 31.8 / 7.1 / 18.6 / 57.8
-BART base  early stop w/ Unlimiformer 51.0 / 20.6 / 21.6 / 65.9 32.5 /7.2/19.9 /57.9 48.3 / 18.1 / 22.3 / 63.8 29.4 / 6.3 / 17.6 / 56.8 52.9 /22.2 /22.4 / 65.8 29.4 / 6.3 / 17.6 / 56.8
+BART base Standard finetuning 47.7 / 18.5 / 22.3 / 64.0 30.0 / 6.5 / 17.7 / 56.7
+BART base  test SLED 46.0 / 16.3 / 20.3 / 62.8 28.4 / 5.9 / 17.0 / 56.0
+BART base  test Unlimiformer 49.5 / 19.6 / 21.9 / 64.8 31.8 / 7.1 / 18.6 / 57.8
+BART base  early stop w/ Unlimiformer 51.0 / 20.6 / 21.6 / 65.9 32.5 /7.2/19.9 /57.9
+BART base Train chunked 48.3 / 18.1 / 22.3 / 63.8 29.4 / 6.3 / 17.6 / 56.8
+BART base  test Unlimiformer 52.9 /22.2 /22.4 / 65.8 29.4 / 6.3 / 17.6 / 56.8
 Long-range training methods  
-BART base SLED (Ivgi et al., 2022) 55.5 / 24.8 / 25.8 / 66.9 34.2 / 8.2 / 19.2 / 58.8 55.8 / 25.6 / 26.9 / 67.7 32.8 / 7.6 / 19.3 / 57.7 57.4 /26.4 /27.9 /68.2 35.0 /8.3/19.6 / 58.4
+BART base SLED (Ivgi et al., 2022) 55.5 / 24.8 / 25.8 / 66.9 34.2 / 8.2 / 19.2 / 58.8
+BART base Memorizing Transformers 55.8 / 25.6 / 26.9 / 67.7 32.8 / 7.6 / 19.3 / 57.7
+BART base Unlimiformer 57.4 /26.4 /27.9 /68.2 35.0 /8.3/19.6 / 58.4
 Low-cost training methods  
-PRIMERA Standard finetuning 55.0 / 23.6 / 25.9 / 66.9 33.0 / 7.8 / 18.8 / 57.4 56.4 / 24.7 / 26.4 /67.6 33.1 / 7.9 / 18.7 / 57.4
+PRIMERA Standard finetuning 55.0 / 23.6 / 25.9 / 66.9 33.0 / 7.8 / 18.8 / 57.4
+PRIMERA  test Unlimiformer 56.4 / 24.7 / 26.4 /67.6 33.1 / 7.9 / 18.7 / 57.4
 PRIMERA  early stop w/ Unlimiformer 56.4 /25.0 /26.4 /67.6 33.5 /8.2/19.3 /57.7
 Long-range training methods  
-PRIMERA Memorizing transformers 57.0 / 25.6 / 26.8 / 67.8 32.9 / 7.7 / 18.5 / 57.5 58.0 /26.5 /28.6 /68.3 34.1 /7.9/19.0 /57.8 9  Validation results on long-document datasets (average input length between 4 16k
+PRIMERA Memorizing transformers 57.0 / 25.6 / 26.8 / 67.8 32.9 / 7.7 / 18.5 / 57.5
+PRIMERA Unlimiformer 58.0 /26.5 /28.6 /68.3 34.1 /7.9/19.0 /57.8
+Table 9  Validation results on long-document datasets (average input length between 4k to 16k
 tokens). The best metric in every dataset and every training category is marked in bold .
 other people. But they all have returned home to visit their father, and it is the first
 time they all have been together for quite some time. Dmitri has a dispute with

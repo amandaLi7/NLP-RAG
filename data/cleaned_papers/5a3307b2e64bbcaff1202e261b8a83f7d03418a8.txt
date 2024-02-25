@@ -1,5 +1,6 @@
 Rethinking Voice-Face Correlation  A Geometry View
-Xiang Li1, Yandong Wen2, Muqiao Yang1, Jinglu Wang3, Rita Singh1, Bhiksha Raj1,4 1Carnegie Mellon University,2Max Planck Institute,3Microsoft,
+Xiang Li1, Yandong Wen2, Muqiao Yang1, Jinglu Wang3, Rita Singh1, Bhiksha Raj1,4
+1Carnegie Mellon University,2Max Planck Institute,3Microsoft,
 4Mohamed bin Zayed University of Artificial Intelligence
 ABSTRACT
 Previous works on voice-face matching and voice-guided face synthesis
@@ -92,17 +93,19 @@ different from the original ones. In addition, for a 2D face image,
 identity-unrelated factors like expressions, hairs, glasses, illumination,
  background, etc., are also involved in the recovery process
 leading to noisy and unstable outcomes. Different from 2D images,
-general 3 3D coordinates of a
-number of points on its surface called vertices [ 4] which inherentlyarXiv 2307.13948 1  [cs.CV]  26 2023 23, July 2023, Ottawa, Canada Xiang Li1, Y andong Wen2, Muqiao Y ang1, Jinglu Wang3, Rita Singh1, Bhiksha Raj1,4
+general 3D facial shape is represented by the 3D coordinates of a
+number of points on its surface called vertices [ 4] which inherentlyarXiv 2307.13948v1  [cs.CV]  26 Jul 2023Conference 23, July 2023, Ottawa, Canada Xiang Li1, Y andong Wen2, Muqiao Y ang1, Jinglu Wang3, Rita Singh1, Bhiksha Raj1,4
 excludes the identity-unrelated factors. Moreover, since the topology
 of 3D facial shape is predefined and consistent across different faces,
 we can easily measure the reconstruction accuracy with distances
 between the predicted vertices and their ground truths.
 Similar to our target, one recent work [ 47] attempts to recover 3D
 faces from voice while, due to the lack of ground-truth 3D face scans,
-they first generate 2 3D faces guided by an off-the-shelf 3D face reconstruction model.
+they first generate 2D face images from voice and then reconstruct
+3D faces guided by an off-the-shelf 3D face reconstruction model.
 The noise enrolled in the 2D-to-3D face reconstruction makes the
-result unconvincing. For example, any expression in the 2 3D face to have the
+result unconvincing. For example, any expression in the 2D face
+from the first stage will force the reconstructed 3D face to have the
 same expression. In this way, we consider the face is still determined
 by the first-stage 2D face image.
 In our method, we aim to disable all previously used semantics,
@@ -160,7 +163,8 @@ scenarios, such as hoax calls and voice-based phishing.
 In this paper, we try to answer two core questions - (1) Is there a
 correlation between face geometry and voice  (2) If so, which part
 of the face can be represented by the voice  To fulfill our target, we
-collect a large-scale dataset containing ground-truth 3 1026 speaker identities.
+collect a large-scale dataset containing ground-truth 3D face scans
+and corresponding voice recordings from 1026 speaker identities.
 A voice-AM-face paradigm equipped with a phonatory module is
 proposed for analyzing the voice-face correlation. Our contributions
 can be summarized as follows.
@@ -174,7 +178,8 @@ verification.
  We leverage voice production as a proxy task to learn face
 geometry representation and verify that voice production is
 highly related to 3D facial shapes.
-2 2.1 Voice-face Matching and Voice-guided Face
+2 RELATED WORKS
+2.1 Voice-face Matching and Voice-guided Face
 Synthesis
 The human voice contains rich information that can be used to
 recognize personality traits, such as speaker identity [ 6,24,33],
@@ -198,7 +203,8 @@ semantic correlations between voice and face, our work investigates
 the voice-face correlation from a geometry view by studying holistic
 facial structures. There has been recent work that seeks to understand
  the correlations between voice and facial geometry by first
-recovering 2 3 2D representations [ 47]. However, during this process, it is
+recovering 2D faces from voice and then reconstructing 3D faces
+from the 2D representations [ 47]. However, during this process, it is
 still inevitable that the semantic correlations are encoded in the 2DRethinking Voice-Face Correlation  A Geometry View Conference 23, July 2023, Ottawa, Canada
 face and affect the 2D-to-3D face reconstruction. Instead, we aim to
 model our voice-face correlation from a pure geometry view without
@@ -241,7 +247,8 @@ research.
 3 METHOD
 In this section, we first introduce the task formulation and then
 demonstrate our method in detail.
-3.1 3D facial shape from their
+3.1 Formulation
+We aim to reconstruct any speaker s 3D facial shape from their
 voice recordings. Given a set of paired voice recordings and 3D
 facial shapes{(𝑣𝑖,𝑓𝑖)}from different individuals, where 𝑣𝑖is a voice
 recording spoken by the 𝑖-th person and 𝑓𝑖is a 3D facial shape
@@ -311,7 +318,7 @@ distribution to the prediction. The estimator 𝐹𝑘(𝑣 E𝑘,𝜔𝑘)maps�
 Speech𝑣%𝑧 𝑥$ 𝑧"𝒜𝒜 (T 1)UNet𝜖 
 Speech*𝑣DiffusionProcessDenoisingProcess
 Log-melSpec.
-Speech 𝑣ℰ[0.1 0.7]UncertaintyPhonatory Module
+Speech 𝑣ℰ[0.1  0.7]UncertaintyPhonatory Module
 Facial AM PredictionAM-guided ReconstructionShare IdentityUnpredictable AMPredictable AMV oice Code 𝑒AMs
 AMs
 Face GeometryBases𝑏$𝑏6𝑏7  
@@ -470,13 +477,14 @@ the speech signal from Gaussian noise which is defined as a conditional
 a distribution 𝑞(𝑥0 𝑐). By applying the parameterization trick [ 21],
 we obtain the additional training constraint as
 {E ,𝜃 } arg min
-E,𝜃 E𝑥0,𝜖,𝑡 𝜖 𝜖𝜃(  𝛼𝑡𝑥0 1  𝛼𝑡𝜖,𝑡,𝑒) 1(6)
+E,𝜃 E𝑥0,𝜖,𝑡 𝜖 𝜖𝜃(  𝛼𝑡𝑥0  1  𝛼𝑡𝜖,𝑡,𝑒) 1(6)
 where𝛼𝑡 1 𝛽𝑡and  𝛼𝑡 Î𝑡
 𝑡  1𝛼𝑡 . As shown in Fig. 2, the 𝜃is
 a Net [ 36] with cross-attention [ 35]. Since the phonatory model is
 only utilized as an auxiliary constraint during training, we omit the
 inference details to obtain  𝑣here.
-3.4 AM-Guided 3 3D facial shape, we first need to predict AMs of
+3.4 AM-Guided 3D Facial Shape Reconstruction
+To reconstruct the 3D facial shape, we first need to predict AMs of
 the voice recordings in D𝑒first. Subsequently, we generate the 3D
 facial shapes based on the predicted AMs by an optimization-based
 method. To do so, we first project the 3D facial shapes into a lowdimensional
@@ -485,7 +493,8 @@ method. To do so, we first project the 3D facial shapes into a lowdimensional
 The learning objective is to find a set of coefficients, such that the
 differences between the AMs of the re-projected 3D facial shape and
 the predicted AMs are minimized. Specifically, we construct a big
-matrix𝐵 [𝑏1,𝑏2,   ]  R3𝑇  D 𝑡 where each column 𝑏𝑖 R3𝑇 1 3D facial shape 𝑓𝑖 R𝑇 3.
+matrix𝐵 [𝑏1,𝑏2,   ]  R3𝑇  D 𝑡 where each column 𝑏𝑖 R3𝑇 1
+is a long vector obtained by flattening a 3D facial shape 𝑓𝑖 R𝑇 3.
 𝑇is the number of vertices on 3D faces. Since 3𝑇   D𝑡 , we
 compute the project matrix 𝑃 R3𝑇 𝑑(𝑑 3𝑇)using eigenfaces
 [5] on𝐵. Now any flattened 3D facial shape 𝑏can be approximated
@@ -496,7 +505,8 @@ maps any flattened 3D facial shape 𝑏into the𝑘-th AM of𝑏. Since
 shape, it is a differentiable function. The optimization objective is
 given below.
 𝛽  arg min
-𝛽𝜆 𝛽 2 2 𝐾  
+𝛽𝜆 𝛽 2
+2 𝐾  
 𝑘 1(𝑄𝑘(𝑃𝛽) ˆ𝑚(𝑘))2 𝑧(𝑘)(7)
 where𝜆is the loss weight balancing two terms. The reconstructed
 3D facial shape is given by ˆ𝑏 𝑃𝛽 .
@@ -508,8 +518,9 @@ Figure 4  The normalized errors and 𝐶𝐼s of 24 AMs on (a) male subset, (b) 
 the AM is predictable else unpredictable.
 4.1 Dataset
 We perform experiments on a private audiovisual dataset D. The
-dataset consists of paired voice recordings and scanned 3 1,026 people, with 364 662 females. The
-scanned 3 6790 points for
+dataset consists of paired voice recordings and scanned 3D facial
+shapes from 1,026 people, with 364 males and 662 females. The
+scanned 3D face is stored in the mesh format with 6790 points for
 each face. The voice recordings are about 2 minutes long for each
 speaker. We reduce the influencing factors to the voice and face
 by (1) asking participants to speak a set of specified sentences, (2)
@@ -519,7 +530,7 @@ models from taking the gender shortcuts, we split the dataset Dby
 gender, and experiments are individually performed on male and female
  subsets. For each subset, we adopt 7/1/1/1 splitting for D𝑡/D𝑣1
 /D𝑣2/D𝑒. In training, the voice recordings are randomly trimmed
-to segments of 6 8 seconds, while we use the entire recordings
+to segments of 6 to 8 seconds, while we use the entire recordings
 in testing. The ground truth AMs are normalized to zero mean and
 unit variance. For voice features, we extract 64-dimensional log Melspectrograms
  using an analysis window of 25ms, with the hop of
@@ -543,10 +554,11 @@ follows [ 18]. We directly normalized the voice signal as input to the
 network instead of first converting it to Log-Mel spectrum. To ensure
 statistical significance, we perform N   100 repeated experiments to
 compute the 𝐶𝐼𝑢. For the experiments at phoneme level, we leverage
-Wav Vec [2] to cut the long voice recordings into phonemes.Rethinking Voice-Face Correlation  A Geometry View Conference 23, July 2023, Ottawa, Canada
+Wav2Vec [2] to cut the long voice recordings into phonemes.Rethinking Voice-Face Correlation  A Geometry View Conference 23, July 2023, Ottawa, Canada
 Phonation Module 100% ˆ𝑤 75% ˆ𝑤 50% ˆ𝑤
   0.953 0.009 0.909 0.024 0.842 0.030
-% 0.952 0.014 0.927 0.030 0.879 0.041 1  Effect of the phonatory module. We measure the normalized
+% 0.952 0.014 0.927 0.030 0.879 0.041
+Table 1  Effect of the phonatory module. We measure the normalized
  mean squared error between predicted and ground-truth
 AM among all AMs with different confidence thresholds.
 MaleFemale
@@ -558,8 +570,8 @@ selected based on their performance on D𝑣1(hyperparameter tuning).
  For AM selection, the predictable AMs are selected based on
 the upper bound of the CI (𝐶𝐼𝑢)onD𝑣2. The performance can be
 evaluated by the mean error of each AM and its CI.
-Fig. 4 shows the results, including 20 1 𝐶𝐼𝑢
-and 4 1 𝐶𝐼𝑢. The gray bars are the results on
+Fig. 4 shows the results, including 20 AMs with highest 1 𝐶𝐼𝑢
+and 4 AMs with lowest 1 𝐶𝐼𝑢. The gray bars are the results on
 the entire validation set D𝑣2, while the red and yellow ones are the
 results of 75% and 50% voice samples with lowest uncertainty ˆ𝑤on
 D𝑣2, respectively. The self-constructed female subset has the same
@@ -587,7 +599,8 @@ better than that of the male subset. To investigate whether the improvements
 females), we perform another set of repeated experiments on a selfconstructed
  female subset, which has the same size as the malePhonatory Module Predictable Unpredictable
   0.628 0.021 0.990 0.032
-% 0.730 0.048 1.002 0.031 2  Effect of phonatory module for predictable and unpredictable
+% 0.730 0.048 1.002 0.031
+Table 2  Effect of phonatory module for predictable and unpredictable
  AMs. We measure the normalized mean squared error
 between predicted and ground-truth AM among all predictable
 and unpredictable AMs. Interestingly, we find phonatory module
@@ -608,7 +621,8 @@ we do not claim they are not predictable from voice. Instead, we fail
 to demonstrate their predictability based on our current empirical
 results. The possible reasons include imperfect modeling, limited
 data, data noise, etc.
-4.4 1, it is evident that utilizing the phonatory
+4.4 Effect of Phonatory Module
+As presented in Table 1, it is evident that utilizing the phonatory
 module during training enhances the accuracy of predicted AMs.
 Our evaluation involved computing the normalized error across all
 AMs with various confidence thresholds. Although the models with
@@ -633,8 +647,9 @@ value for each phoneme across all AMs, as shown in Fig. 7. Our
 results indicate that /i /had the highest average 1 𝐶𝐼𝑢value of
 0.199, while /b/had the lowest value of -0.06. When the 1 𝐶𝐼𝑢
 value is less than 0, it suggests that AMs are generally unpredictable
-from the corresponding phoneme.Conference 23, July 2023, Ottawa, Canada Xiang Li1, Y andong Wen2, Muqiao Y ang1, Jinglu Wang3, Rita Singh1, Bhiksha Raj1,4 100 %90 %80 %70 %60 %50 %MaleFemale
-Figure 6 3D facial shapes for the male and female subsets. From left to right  the error maps
+from the corresponding phoneme.Conference 23, July 2023, Ottawa, Canada Xiang Li1, Y andong Wen2, Muqiao Y ang1, Jinglu Wang3, Rita Singh1, Bhiksha Raj1,4
+100 %90 %80 %70 %60 %50 %MaleFemale
+Figure 6  Error maps of the reconstructed 3D facial shapes for the male and female subsets. From left to right  the error maps
 corresponding to 100% (i.e. the entire test set) to 50% of the test set.
 Phonemes1 𝐶𝐼 
 Figure 7  Phonemes with corresponding averaged 𝐶𝐼𝑢in decreasing
@@ -648,15 +663,16 @@ is minimal movement of the facial muscles and structures, making
 it challenging for the model to predict AMs based solely on these
 phonemes.
 In contrast, most vowels achieved good performance in the test set,
-with all of the top 6 1 𝐶𝐼𝑢 
+with all of the top 6 phonemes belonging to vowels with 1 𝐶𝐼𝑢 
 0.10. Compared to consonants, the production of vowels does not
 involve constriction of airflow in the vocal tract. Instead, the facial
 muscles have relatively greater movement during the pronunciation
 of these phonemes, such as jaw movement due to mouth opening or
 lip spreading. Thus, vowel phonemes may carry more informationabout facial features, making it easier for the model to capture the
 hidden correlation when predicting AMs.
-4.6 3 4.3, we have discovered a number of predictable AMs,
-from which we choose 10 1 𝐶𝐼𝑢for the
+4.6 3D Facial Shape Reconstruction
+In Section 4.3, we have discovered a number of predictable AMs,
+from which we choose 10 AMs with the highest 1 𝐶𝐼𝑢for the
 subsequent reconstructions on male and female subsets.
 To evaluate the performance, we compute the per-vertex errors
 between the reconstructed 3D facial shape and their ground truths.
@@ -690,7 +706,7 @@ REFERENCES
  health monitoring system for patients suffering from voice complications in
 smart cities. IEEE Access 5 (2017), 3900 3908.
 [2]Alexei Baevski, Yuhao Zhou, Abdelrahman Mohamed, and Michael Auli. 2020.
-wav vec 2.0  A framework for self-supervised learning of speech representations.
+wav2vec 2.0  A framework for self-supervised learning of speech representations.
 Advances in neural information processing systems 33 (2020), 12449 12460.
 [3]Mohamad Hasan Bahari, Mitchell McLaren, Hugo Van hamme, and David A.
 van Leeuwen. 2012. Age Estimation from Telephone Speech using i-vectors. In
@@ -704,7 +720,7 @@ morphable model. IEEE Transactions on pattern analysis and machine intelligence
 [6]Ray Bull, Harriet Rathborn, and Brian R Clifford. 1983. The voice-recognition
 accuracy of blind listeners. Perception 12, 2 (1983), 223 226.
 [7]R. H. C. Bull, Harriet Rathborn, and Brian R. Clifford. 1983. The V oiceRecognition
- Accuracy of Blind Listeners. Perception 12 (1983), 223 226.
+ Accuracy of Blind Listeners. Perception 12 (1983), 223   226.
 [8] Lele Chen, Zhiheng Li, Ross K Maddox, Zhiyao Duan, and Chenliang Xu. 2018.
 Lip movements generation at a glance. In ECCV . 520 535.
 [9]Daniel Cudeiro, Timo Bolkart, Cassidy Laidlaw, Anurag Ranjan, and Michael J
@@ -712,14 +728,16 @@ Black. 2019. Capture, learning, and synthesis of 3D speaking styles. In CVPR .
 10101 10111.
 [10] Leslie G Farkas, Otto G Eiben, Stefan Sivkov, Bryan Tompson, Marko J Katic,
 and Christopher R Forrest. 2004. Anthropometric measurements of the facial
-framework in adulthood  age-related changes in eight age categories in 600 16 90 years of age. Journal
+framework in adulthood  age-related changes in eight age categories in 600 healthy
+white North Americans of European ancestry from 16 to 90 years of age. Journal
 of Craniofacial Surgery 15, 2 (2004), 288 298.
 [11] Donya Ghafourzadeh, Cyrus Rahgoshay, Sahel Fallahdoust, Adeline Aubame,
 Andre Beauchamp, Tiberiu Popa, and Eric Paquette. 2019. Part-based 3D face
 morphable model with anthropometric local control. (2019).
 [12] Prasanta Kumar Ghosh and Shrikanth Narayanan. 2011. Automatic speech recognition
  using articulatory features from subject-independent acoustic-to-articulatory
-inversion. The Journal of the Acoustical Society of America 130, 4 (2011), EL251 257.
+inversion. The Journal of the Acoustical Society of America 130, 4 (2011), EL251 
+EL257.
 [13] Patrick Gomez and Brigitta Danuser. 2007. Relationships between musical structure
  and psychophysiological measures of emotion. Emotion 7, 2 (2007), 377.
 [14] Ian Goodfellow, Jean Pouget-Abadie, Mehdi Mirza, Bing Xu, David Warde-Farley,
@@ -735,7 +753,8 @@ Hasthanasombat, Dimitris Spathis, Tong Xia, Pietro Cicuta, and Cecilia Mascolo.
  2021. Exploring Automatic COVID-19 Diagnosis via voice and symptoms
 from Crowdsourced Data. In ICASSP . IEEE.
 [18] Jonathan Ho, Ajay Jain, and Pieter Abbeel. 2020. Denoising diffusion probabilistic
-models. Advances in Neural Information Processing Systems 33 (2020), 6840 6851.
+models. Advances in Neural Information Processing Systems 33 (2020), 6840 
+6851.
 [19] Amir Jamaludin, Joon Son Chung, and Andrew Zisserman. 2019. You said that  
 Synthesising talking faces from audio. International Journal of Computer Vision
 (IJCV) 127, 11 (2019), 1767 1779.
@@ -763,7 +782,7 @@ Speaker Verification and Recognition  A Multilingual Perspective. In CVPRW .
 [28] Hailong Ning, Xiangtao Zheng, Xiaoqiang Lu, and Yuan Yuan. 2021. Disentangled
 Representation Learning for Cross-modal Biometric Matching. TMM (2021).
 [29] Tae-Hyun Oh, Tali Dekel, Changil Kim, Inbar Mosseri, William T Freeman,
-Michael Rubinstein, and Wojciech Matusik. 2019. Speech face  Learning the face
+Michael Rubinstein, and Wojciech Matusik. 2019. Speech2face  Learning the face
 behind a voice. In Proceedings of the IEEE/CVF conference on computer vision
 and pattern recognition . 7539 7548.
 [30] Paul H Ptacek and Eric K Sander. 1966. Age recognition from voice. Journal of
@@ -785,8 +804,9 @@ InProceedings of the IEEE/CVF Conference on Computer Vision and Pattern
 Recognition . 10684 10695.
 [36] Olaf Ronneberger, Philipp Fischer, and Thomas Brox. 2015. U-net  Convolutional
 networks for biomedical image segmentation. In Medical Image Computing and
-Computer-Assisted Intervention MICCAI 2015 18th International Conference,
-Munich, Germany, October 5-9, 2015, Proceedings, Part III 18 . Springer, 234 241.
+Computer-Assisted Intervention MICCAI 2015  18th International Conference,
+Munich, Germany, October 5-9, 2015, Proceedings, Part III 18 . Springer, 234 
+241.
 [37] Leda Sarı, Kritika Singh, Jiatong Zhou, Lorenzo Torresani, Nayan Singhal, and
 Yatharth Saraf. 2021. A Multi-View Approach to Audio-Visual Speaker Verification.
  In ICASSP .
@@ -815,12 +835,13 @@ Qingming Huang. 2021. Seeking the Shape of Sound  An Adaptive Framework
 for Learning V oice-Face Association. In CVPR . 16347 16356.
 [45] Yandong Wen, Bhiksha Raj, and Rita Singh. 2019. Face Reconstruction from
 V oice using Generative Adversarial Networks. In NeurIPS , V ol. 32.
-[46] Olivia Wiles, A Koepke, and Andrew Zisserman. 2018. X face  A network
+[46] Olivia Wiles, A Koepke, and Andrew Zisserman. 2018. X2face  A network
 for controlling face generation using images, audio, and pose codes. In ECCV .
 670 686.
 [47] Cho-Ying Wu, Chin-Cheng Hsu, and Ulrich Neumann. 2022. Cross-Modal Perceptionist 
  Can Face Geometry be Gleaned from V oices . In Proceedings of the
-IEEE/CVF Conference on Computer Vision and Pattern Recognition . 10452 10461.
+IEEE/CVF Conference on Computer Vision and Pattern Recognition . 10452 
+10461.
 [48] Marzena Wyganowska-Swikatkowska, Iwona Kowalkowska, Grazyna FlicinskaPamfil,
  Mikolaj Dabrowski, Przemyslaw Kopczynski, and Bozena WiskirskaWoznica.
  2017. V ocal training in an anthropometrical aspect. Logopedics Phoniatrics

@@ -1,9 +1,12 @@
-Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023) , pages 389 396 13-14, 2023 2023 Association for Computational Linguistics
+Proceedings of the 20th International Conference on Spoken Language Translation (IWSLT 2023) , pages 389 396
+July 13-14, 2023 c 2023 Association for Computational Linguistics
 Towards Efficient Simultaneous Speech Translation 
 CUNI-KIT System for Simultaneous Track at IWSLT 2023
-Peter Polák and Danni Liu and Ngoc-Quan Ngoc2 2,3and Ond ˇrej Bojar1
+Peter Polák1and Danni Liu2and Ngoc-Quan Ngoc2
+Jan Niehues2and Alexander Waibel2,3and Ond ˇrej Bojar1
 polak@ufal.mff.cuni.cz
-1 3Carnegie Mellon University
+1Charles University2Karlsruhe Institute of Technology
+3Carnegie Mellon University
 Abstract
 In this paper, we describe our submission to the
 Simultaneous Track at IWSLT 2023. This year,
@@ -79,7 +82,7 @@ Controllable Quality-Latency Tradeoff
 To use the traditional offline ST model in a simultaneous
  regime, Liu et al. (2020) proposed chunking,
 i.e., splitting the audio source utterance into small
-constant-length chunks that are then incrementally fed into the model. As translation quality tends to
+constant-length chunks that are then incrementally389fed into the model. As translation quality tends to
 diminish toward the end of the unfinished source,
 an online policy is employed to control the latencyquality
  tradeoff in the generated output. Popular
@@ -107,12 +110,29 @@ streaming beam search algorithm for incremental
  ST
 Input   A list of blocks, an ST model
 Output   A set of hypotheses and scores
-1 2 3 4 5 6 while #active beams  0and not max. length do
-7 8 9 ifbends with  eos  or (score minScore
+1Seen     
+2foreach block do
+3 Encode block using the ST model 
+4 Stopped      
+5 minScore       
+6 while #active beams  0and not max. length do
+7 Extend beams and compute scores 
+8 foreach active beam bdo
+9 ifbends with  eos  or (score minScore
 andb / Seen )then
 10 minScore  max (minScore, score ) 
-11 12 13 14 15 16 17 SortStopped by length-normalized score 
-18 19 20 21 1, the overgeneration problem
+11 Stopped  Stopped  b 
+12 Remove bfrom the beam search 
+13 end
+14 end
+15 end
+16 Seen Seen Stopped  
+17 SortStopped by length-normalized score 
+18 Set the best hypothesis from Stopped as active beam 
+19 Apply the incremental policy 
+20 Remove the last two tokens from the active beam 
+21end
+In Algorithm 1, the overgeneration problem
 is addressed by stopping unreliable beams (see
 Line 9). The unreliable beam is defined as a beam
 ending with  eos  token or having a score lower
@@ -127,7 +147,9 @@ of previous blocks.
 Finally, the algorithm removes two instead of
 one token in the current beam (see Line 20). Removing
  the last two tokens mitigates the issue of
-low-quality translation toward the end of the context.1 2.2 Rethinking Online Policies for
+low-quality translation toward the end of the context.1
+
+2.2 Rethinking Online Policies for
 Attention-based ST Models
 While the improved incremental blockwise beam
 search improves the performance, it still requires a
@@ -237,15 +259,18 @@ Finally, to control the latency of the online decoding,
  we compare the logarithm of Odds end(g)with
 a tunable constant Cend. IflogOdds end(g)  C end,
 we stop the beam search and discard the last token
-fromg. We found values of Cendbetween -2 2
+fromg. We found values of Cendbetween -2 and 2
 to work well across all models and language pairs.
-3 3.1 Models
+3 Experiments and Results
+3.1 Models
 Our offline multilingual ST models are based on
 attentional encoder-decoder architecture. Specifically,
  the encoder is based on WavLM (Chen et al.,
 2022), and the decoder is based on multilingual
 BART (Lewis et al., 2019) or mBART for short.
-The model is implemented in the NMTGMinor library.2 2023 Multilingual track (Liu
+The model is implemented in the NMTGMinor library.2For
+ details on the offline model see KIT
+submission to IWSLT 2023 Multilingual track (Liu
 et al., 2023).
 The small simultaneous speech translation models
  for English-to-German and English-to-Chinese
@@ -258,7 +283,7 @@ look-ahead of 16, with 18 layers, and a hidden
 dimension of 256. The decoder is a 6-layer Transformer
  decoder (Vaswani et al., 2017). To improve
 the training speed, we initialize the encoder with
-2https //github.com/quanpn90/NMTGMinor weights pretrained on the ASR task. Further, we
+2https //github.com/quanpn90/NMTGMinor391weights pretrained on the ASR task. Further, we
 employ ST CTC (Deng et al., 2022  Yan et al.,
 2022) after the encoder with weight 0.3 during the
 training. During the decoding, we use 0.3 for English
@@ -285,7 +310,8 @@ For evaluation, we use Simuleval (Ma et al.,
 BLEU (Post, 2018), and for latency, we report average
  lagging (Ma et al., 2019). To realistically
 assess the inference speed, we run all our experiments
- on a computer with Intel i7-10700 1080 8 GB graphic
+ on a computer with Intel i7-10700 CPU and
+NVIDIA GeForce GTX 1080 with 8 GB graphic
 memory.
 3.3 Incremental Blockwise Beam Search with
 Controllable Quality-Latency Tradeoff
@@ -307,16 +333,21 @@ In Table 1, we also report the real-time factor
 the baseline beam search by 13, 28, and 17 %
 on En {De, Ja, Zh}, resp., when measured with
 RTF. This might be due to the fact that we recom-Lang Decoding AL   AL CA RTF BLEU  
-En-DeBWBS 1922 3121 0.46 30.6 1977 3277 0.52 31.7
-En-JaBWBS 1992 3076 0.50 15.5 1935 3264 0.64 15.6
-En-ZhBWBS 1948 2855 0.41 26.5 1945 3031 0.48 26.5 1  Incremental SST with the original BWBS and
+En-DeBWBS 1922 3121 0.46 30.6
+IBWBS 1977 3277 0.52 31.7
+En-JaBWBS 1992 3076 0.50 15.5
+IBWBS 1935 3264 0.64 15.6
+En-ZhBWBS 1948 2855 0.41 26.5
+IBWBS 1945 3031 0.48 26.5
+Table 1  Incremental SST with the original BWBS and
 IBWBS. Better scores in bold.
 pute the decoder states after each source increment.
 Since the IBWBS sometimes waits for more source
 chunks to output more tokens, the unnecessary decoder
  state recomputations might increase the computational
  complexity.
-3.4 1, we compare the improved blockwise
+3.4 CTC Online Policy
+In Figure 1, we compare the improved blockwise
 beam search (IBWBS) with the proposed CTC policy
  using the blockwise streaming models. The
 tradeoff curves for English-to-German (see Figure
@@ -346,7 +377,8 @@ slightly worse quality (by 0.7 BLEU) in En  Zh.
 This is most probably due to the delayed CTCattention
  synchronization that is not present for the
 blockwise models (as both decoders there share the
-3 4000 8000 for En  Zh, and the offline model has
+3The blockwise models have a vocabulary size of 4000
+for En De and 8000 for En  Zh, and the offline model has
 250k.3921,750 2,000 2,250 2,5002424.52525.5
 AL (ms)BLEU  
 CTC
@@ -361,11 +393,16 @@ blockwise streaming models.
 same vocabulary and the models compute the CTC
 policy after each token rather than word). However,
 we still observe a significant reduction in computational
- latency, namely by 45 34 % relative RTF
+ latency, namely by 45 and 34 % relative RTF
 for En De and En  Zh, respectively.
 Lang Decoding AL   AL CA RTF BLEU  
-En-DeBWBS 1922 3121 0.46 30.6 1977 3277 0.52 31.7 1946 2518 0.21 30.6
-En-ZhBWBS 1948 2855 0.41 26.5 1945 3031 0.48 26.5 1981 2515 0.28 25.8 2  Comparison of onlinization of the large offline
+En-DeBWBS 1922 3121 0.46 30.6
+IBWBS 1977 3277 0.52 31.7
+CTC 1946 2518 0.21 30.6
+En-ZhBWBS 1948 2855 0.41 26.5
+IBWBS 1945 3031 0.48 26.5
+CTC 1981 2515 0.28 25.8
+Table 2  Comparison of onlinization of the large offline
 model using chunking with the local agreement policy
 (LA-2) and with the proposed CTC policy.
 4 Submission
@@ -375,7 +412,7 @@ we submit 10 systems for all three language pairs.
 4.1 Onlinized Offline Models
 Following our last year s submission, we onlinize
 two large offline models (our models for IWSLT
-2022 2023 Multilingual
+2022 Offline ST track and IWSLT 2023 Multilingual
  track). This year, however, we utilize the
 improved blockwise beam search to yield higher
 BLEU scores. We submit systems for all language
@@ -385,13 +422,17 @@ their performance in Table 3. As we can observe
 in Table 3, the 2023 model appears to perform
 worse. However, we learned during the writing of
 this paper that there was some overlap between the
-training and test data for the 2022 4, making
+training and test data for the 2022 model4, making
 4(Zhang and Ao, 2022) found an overlap between ST-TED
 training corpus and tst-COMMON set of MuST-C dataset.the BLEU scores for the 2022 model unreliable.
 Lang Model AL   AL CA BLEU  
-En-De2022 1991 3138 31.8 2023 1955 3072 31.4
-En-Ja2022 1906 3000 15.5 2023 1982 3489 15.3
-En-Zh2022 1984 3289 26.8 2023 1987 3508 26.6 3  Submitted onlinized large offline models.
+En-De2022 1991 3138 31.8
+2023 1955 3072 31.4
+En-Ja2022 1906 3000 15.5
+2023 1982 3489 15.3
+En-Zh2022 1984 3289 26.8
+2023 1987 3508 26.6
+Table 3  Submitted onlinized large offline models.
 We also submit the system based on the large
 model onlinized using the CTC policy. The systems
  are summarized in Table 4. Unfortunately, we
@@ -400,7 +441,8 @@ during the evaluation period, so we decided to use
 our 2022 model also this year.
 Lang Model AL   AL CA BLEU  
 En-De 2022 1959 2721 31.4
-En-Zh 2022 1990 2466 26.3 4  Submitted large offline models onlinized using
+En-Zh 2022 1990 2466 26.3
+Table 4  Submitted large offline models onlinized using
 the proposed CTC policy.
 4.2 Blockwise Online Models
 Finally, we submit small blockwise models. Their
@@ -409,7 +451,8 @@ faster than real time (more than 5  faster). We
 report their performance in Table 5.
 Lang AL   AL CA RTF BLEU  
 En-De 1986 2425 0.19 25.4
-En-Zh 1999 2386 0.19 23.8 5  Submitted small blockwise models using the
+En-Zh 1999 2386 0.19 23.8
+Table 5  Submitted small blockwise models using the
 proposed CTC online policy.3935 Conclusion and Future Work
 In this paper, we present the CUNI-KIT submission
  to the Simultaneous track at IWSLT 2023. We
@@ -535,7 +578,8 @@ Jindˇrich Libovický and Jind ˇrich Helcl. 2018. End-toend
  non-autoregressive neural machine translation
 with connectionist temporal classification. In Proceedings
  of the 2018 Conference on Empirical Methods
- in Natural Language Processing , pages 3016 3021, Brussels, Belgium. Association for Computational
+ in Natural Language Processing , pages 3016 
+3021, Brussels, Belgium. Association for Computational
  Linguistics.
 Danni Liu, Ngoc-Quan Pham, Tuan Nam Nguyen,
 Thai-Binh Nguyen, Danni Liu, Carlos Mullov, Jan
@@ -587,7 +631,8 @@ Waibel, and Ondrej Bojar. 2023. Incremental Blockwise
 Proc. Interspeech 2023 .
 Matt Post. 2018. A call for clarity in reporting BLEU
 scores. In Proceedings of the Third Conference on
-Machine Translation  Research Papers , pages 186 191, Brussels, Belgium. Association for Computational
+Machine Translation  Research Papers , pages 186 
+191, Brussels, Belgium. Association for Computational
  Linguistics.
 Marc Aurelio Ranzato, Sumit Chopra, Michael Auli,
 and Wojciech Zaremba. 2015. Sequence level training

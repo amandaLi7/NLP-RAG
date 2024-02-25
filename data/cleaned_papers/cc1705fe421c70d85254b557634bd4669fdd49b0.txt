@@ -1,6 +1,8 @@
 DataFinder  Scientific Dataset Recommendation from
 Natural Language Descriptions
-Vijay Viswanathan Luyu Gao1 2,3 1,3 1Carnegie Mellon University Shanghai Jiao Tong University Inspired Cognition
+Vijay Viswanathan1Luyu Gao1
+Tongshuang Wu1Pengfei Liu2,3Graham Neubig1,3
+1Carnegie Mellon University2Shanghai Jiao Tong University3Inspired Cognition
 {vijayv, luyug, sherryw, gneubig}@cs.cmu.edu stefanpengfei@gmail.com
 Abstract
 Modern machine learning relies on datasets to
@@ -31,7 +33,8 @@ onthe DataFinder Dataset , finds more relevant
 search results than existing third-party dataset
 search engines. To encourage progress on
 dataset recommendation, we release our dataset
-and models to the public.1 1 Introduction
+and models to the public.1
+1 Introduction
 Innovation in modern machine learning (ML) depends
  on datasets. The revolution of neural network
  models in computer vision (Krizhevsky et al.,
@@ -44,8 +47,8 @@ Treebank (Marcus et al., 1993  Palmer and Xue,
 1Code and data  https //github.com/viswavi/
 datafinder
 Natural Language Query  I want to use adversarial learning to perform domain adaptation for semantic segmentation of images. Keyword Query  semantic segmentation domain adaptation images 
-GTA ADE KCityscapeQuery Interface(Explicit) -Image semantic segmentation(Implicit) -Image semantic segmentation -Datasets should include diverse domains.Relevant datasetsConstraints  (task/modality/etc)
-fef e e f fbe f eaF F FAFEEFE fad cfGTA ADE KPACSCityscape
+GTA5ADE20KCityscapeQuery Interface(Explicit) -Image semantic segmentation(Implicit) -Image semantic segmentation -Datasets should include diverse domains.Relevant datasetsConstraints  (task/modality/etc)
+fef7e0e4f7fbe6f4eaF8F9FAFEEFE3fad2cfGTA5ADE20KPACSCityscape
 SYNTHIAFigure 1  Queries for dataset recommendation impose
  constraints on the type of dataset desired. Keyword
  queries make these constraints explicit, while fullsentence
@@ -64,7 +67,7 @@ need a dataset for semantic segmentation of images,
  and they want datasets that include diverse
 visual domains. A researcher may intuitively select
 popular, generic semantic segmentation datasets
-like COCO (Lin et al., 2014) or ADE K (Zhou
+like COCO (Lin et al., 2014) or ADE20K (Zhou
 et al., 2019), but these are insufficient to cover the
 query s requirement of supporting domain adaptation.
  How can we infer the intent of the researcher
@@ -73,11 +76,12 @@ To study this problem, we operationalize the
 task of   dataset recommendation    given a fullsentence
  description orkeywords describing a research
  topic, recommend datasets to support research
- on this topic ( 2). A concrete example isarXiv 2305.16636 2  [cs.IR]  7 20231990 2000 2010 202005001,0001,500
+ on this topic ( 2). A concrete example isarXiv 2305.16636v2  [cs.IR]  7 Jun 20231990 2000 2010 202005001,0001,500
 Year# of Datasets
 Figure 2  The number of public AI datasets has exploded
  in recent years. Here we show the # released
-from 1990 2022 according to Papers with Code.2 1. This task was introduced by
+from 1990 to 2022 according to Papers with Code.2
+shown in Figure 1. This task was introduced by
 Färber and Leisinger (2021), who framed it as text
 classification. In contrast, we naturally treat this
 task as retrieval (Manning et al., 2005), where the
@@ -166,23 +170,37 @@ iRi/m. High MRR
 means a user sees at least some relevant datasets
 early in the search results.
 4https //github.com/usnistgov/trec_eval . We use
-the-cflag for the trec_eval command.S ORC
+the-cflag for the trec_eval command.S2ORC
 (Lo et al,
 2020) Dataset
 Tagger Qry
-1 2Galactica
+1Qry
+2Galactica
 (Taylor et al, 2022)
 Relevant
 Datasets Training Queries
 SciREX
 (Jain et al,
 2020) Qry
-1 2 1) MARCO
+1Qry
+2
+Queries Human
+Annotation Ranking
+1) MARCO
 2) CNN/DM
 3) SQuAD
 Evaluation Relevant
 Datasets Training
-Testing 1 72 2 55 45123Papers
+Testing 1
+72Negative
+Mining
+Ranker 2
+55
+Positive
+Examples
+Negative
+Examples
+45123Papers
 with Code -Dataset Description
 -Intro. Paper Title
 -Struct. Metadata
@@ -204,7 +222,7 @@ data collection contains two primary steps  (1) collecting
  search queries qthat a user would use to
 describe their dataset needs, and (2) identifying
 relevant datasets Rthat match the query. Our
-final training and test sets contain 17495 392
+final training and test sets contain 17495 and 392
 queries, respectively. Figure 3 summarizes our data
 collection approach. We explain the details below
 and provide further discussion of the limitations of
@@ -227,7 +245,7 @@ paper s title to textually represent each dataset, and
 we analyze this design decision in  5.4.
 3.2 Training Set Construction
 To ensure scalability for the training set, we rely
-on a large corpus of scientific papers, S ORC (Lo
+on a large corpus of scientific papers, S2ORC (Lo
 et al., 2020). We extract nearly 20,000 abstracts
 from AI papers that use datasets. To overcome
 the high cost of manually-annotating queries or
@@ -261,7 +279,8 @@ to identify the dataset used in a given paper (corresponding
 auto-labeled). For each paper, we tag all datasets
 that satisfy two conditions  the paper must cite
 the paper that introduces the dataset, and the paper
-must mention the dataset by name twice.6 5Note that our queries are obtained from the abstract alone
+must mention the dataset by name twice.6
+5Note that our queries are obtained from the abstract alone
 while the relevance judgements are obtained from the text
 body, to encourage more general queries.
 6We apply the additional requirement that the counted
@@ -269,7 +288,7 @@ dataset mentions must occur in a section with section title con-This tagging pro
  precision (i.e., an identified dataset is indeed
 used in the paper) over recall (i.e., all the used
 datasets are identified). Nonetheless, using this
-procedure, we tag 17,495 papers from S ORC with
+procedure, we tag 17,495 papers from S2ORC with
 at least one dataset from our collection of datasets.
 To estimate the quality of these tagged labels, we
 manually examined 200 tagged paper-dataset pairs.
@@ -300,7 +319,7 @@ US universities. We recruited 23 annotators on a
 voluntary basis through word of mouth  for the rest,
 we offered 10 USD in compensation. We sent each
 annotator a Google Form that contained between
-10 20 abstracts to annotate. The instructions
+10 and 20 abstracts to annotate. The instructions
 provided for that form are shown in Appendix B.
 Annotation structure. For each abstract, we
 asked annotators to extract metadata regarding the
@@ -314,7 +333,9 @@ of the given paper/abstract, which becomes the fullsentence
 keyphrases helped annotators better ground and
 taining  results ,  experiment ,  evaluation ,  result ,  training ,
  or  testing , to avoid non-salient dataset mentions, such
-as those commonly occurring in  related work".01234567891011 01,0002,0003,000 4  Distribution of relative year of datasets used
+as those commonly occurring in  related work".01234567891011 01,0002,0003,000
+Relative Age of Dataset Used
+Figure 4  Distribution of relative year of datasets used
 across all papers that used a dataset.
 concretize their queries, and the queries often contain
  (a subset of) these keyphrases.
@@ -340,7 +361,7 @@ listed on Papers With Code or were purely theorybased
 final set of 392 test examples.
 We double-annotated 10 papers with the datasets
 used. The annotators labeled the exact same set of
-datasets for 8 10 papers, with a Fleiss-Davies
+datasets for 8 out of 10 papers, with a Fleiss-Davies
 kappa of 0.667, suggesting that inter-annotator
 agreement for our  relevant dataset  annotations
 is substantial (Davies and Fleiss, 1982  Loper and
@@ -348,7 +369,8 @@ Bird, 2002).
 3.4 Dataset Analysis
 Using this set of paper-dataset tags, what can we
 learn about how researchers use datasets 
-Our final collected dataset contains 17,495 392 test queries. The training examples
+Our final collected dataset contains 17,495 training
+ queries and 392 test queries. The training examples
  usually associate queries with a single dataset
 much more frequently than our test set does. This
 is due to our rule-based tagging scheme, which emphasizes
@@ -441,19 +463,29 @@ encoding (Gao et al., 2021). For retrieval, we separately
  using efficient similarity search. Following
 recent work (Karpukhin et al., 2020), we minimize
 a contrastive loss and select hard negatives using
-8 25 1 0.8 0.4.
+8We run BM25 with k1  0.8andb  0.4.
 9https //github.com/texttron/tevatronSQuADSNLICOCOSSTGLUE
 MultiNLIUDSICK0%20%40%60%
 NLP
 16.312.78.87.55.94.44.13.3% of Papers
 COCO
 ImageNetKITTI
-CIFAR-10 101 20.213.98.46.55.2 5 4.12.8 0%20%40%60%
-Robotics44.9 11.88.87.44.4 4 3.32.9% of Papers
-CIFAR-10 28.9 18.411.57.97.22.42.3 2 6  We analyze the distribution of datasets used in NLP, robotics, vision, and machine learning research.
+CIFAR-10UCF101 CelebA
+CityscapesMPIICV
+20.213.98.46.55.2 5 4.12.8
+KITTIMuJoCoCOCO
+ImageNet CityscapesScanNetShapeNetCARLA0%20%40%60%
+Robotics44.9
+11.88.87.44.4 4 3.32.9% of Papers
+CIFAR-10 ImageNetCelebA COCOMuJoCo SQuAD
+MovieLensSNLIML
+28.9
+18.411.57.97.22.42.3 2
+Figure 6  We analyze the distribution of datasets used in NLP, robotics, vision, and machine learning research.
 BM25 for training. We initialize the bi-encoder
 with SciBERT (Beltagy et al., 2019) and finetune it
-on our training set. This model takes 20 11GB Nvidia GPU.
+on our training set. This model takes 20 minutes to
+finetune on one 11GB Nvidia GPU.
 4.3 Comparison with Search Engines
 Besides benchmarking existing methods, we also
 compare the methods enabled by our new data recommendation
@@ -465,7 +497,7 @@ dataset search engines taking as input either keyword
  queries or full-sentence method descriptions.
 We compare on our test set with two third-party
 systems  Google Dataset Search10(Brickley et al.,
-2019) and Papers with Code search. Google
+2019) and Papers with Code11search. Google
 Dataset Search supports a large dataset collection,
 so we limit results to those from Papers with Code
 to allow comparison with the ground truth.
@@ -483,16 +515,22 @@ engine, results were combined using balanced interleaving
 11https //paperswithcode.com/datasetsModel P@5 R@5 MAP MRR
 Full-Sentence Queries
 BM25 4.7 0.111.6 1.78.0 1.314.5 2.0
-kNN (TF-IDF) 5.5 0.6 12.3 1.6 7.8 1.1 15.5 2.0
-kNN (BERT) 7.1 0.7 14.2 1.5 9.7 1.2 21.3 2.3
-Bi-Encoder 16.0 1.131.2 2.223.4 1.942.6 2.7 25 6.6 0.5 15.3 1.1 11.4 0.8 19.9 1.5
-kNN (TF-IDF) 2.7 0.4 5.9 1.1 3.3 0.7 8.2 1.6
-kNN (BERT) 2.8 0.4 5.8 1.1 3.3 1.1 7.3 1.3
-Bi-Encoder 16.5 1.032.4 2.223.3 1.842.3 2.6 1  A comparison of methods on full-sentence and
+kNN (TF-IDF) 5.5 0.6 12.3  1.6 7.8  1.1 15.5  2.0
+kNN (BERT) 7.1 0.7 14.2  1.5 9.7  1.2 21.3  2.3
+Bi-Encoder 16.0 1.131.2 2.223.4 1.942.6 2.7
+Keyphrase Queries
+BM25 6.6 0.5 15.3  1.1 11.4  0.8 19.9  1.5
+kNN (TF-IDF) 2.7 0.4 5.9  1.1 3.3  0.7 8.2  1.6
+kNN (BERT) 2.8 0.4 5.8  1.1 3.3  1.1 7.3  1.3
+Bi-Encoder 16.5 1.032.4 2.223.3 1.842.3 2.6
+Table 1  A comparison of methods on full-sentence and
 keyword search shows that the neural bi-encoder performs
  best by a significant margin. Standard deviations
 are obtained via bootstrap sampling on the test set.
-5 5.1 2012 202012, with median
+5 Evaluation
+5.1 Time Filtering
+The queries in our test set were made from papers
+ published between 2012 and 202012, with median
  year 2017. In contrast, half the datasets in
 our search corpus were introduced in 2018 or later.
 To account for this discrepancy, for each query q,
@@ -510,7 +548,8 @@ PwC ( keywords ) 3.5 10.0 6.5 9.1
 Google ( descriptions ) 0.1 0.1 0.1 0.3
 Google ( keywords ) 9.7 19.5 12.3 24.0
 Ours ( descriptions ) 16.0 31.2 23.4 42.6
-Ours ( keywords ) 16.5 32.4 23.3 42.3 2  Comparing third-party search engines ( Papers
+Ours ( keywords ) 16.5 32.4 23.3 42.3
+Table 2  Comparing third-party search engines ( Papers
  with Code andGoogle Dataset Search ) against
 our DataFinder system using a bi-encoder architecture.
 in  4. To determine the standard deviation of
@@ -533,7 +572,8 @@ effectively support full-sentence queries. We speculate
  web search engines. In contrast, our neural
 retriever gives much better search results using both
 keyword search and full-sentence query search.
-5.3 7 highlight the tradeoffs
+5.3 Qualitative Analysis
+Examples in Figure 7 highlight the tradeoffs
 between third-party search engines and models
 trained on DataFinder. In the first two examples,
  we see keyword-based search engines struggle
@@ -554,17 +594,24 @@ Full-Sentence Query   I want to use adversarial learning to perform
 domain adaptation for semantic segmentation of images.
 Keyword Query   semantic segmentation domain adaptation images
  Actual Google PWC Ours
-Cityscapes 1 5 2Office-31 5 3 2.0 SYNTHIA
+Cityscapes 1LoveDA VQA Cityscapes
+GTA5 2Office-31 RTE GTA5
+SYNTHIA 3Dark Zurich VQA 2.0 SYNTHIA
 Full-Sentence Query   We propose a method for knowledge graph link
 prediction based on complex embeddings
 Keyword Query   knowledge base link prediction graph
  Actual Google PWC Ours
-FB k 1 18 2 18 3FB k-237 CVL-DataBase
+FB15k 1WN18RR RuBQ FB15k
+WN18 2YAGO DRKG WN18
+ 3FB15k-237 CVL-DataBase
 Full-Sentence Query   A new deep neural network architecture for
 machine translation using depthwise separable convolutions.
 Keyword Query   machine translation text
  Actual Google PWC Ours
-WMT 2014 1 2014 2 UCI Datasets WikiText-2 3 Affective Text WikiText-103 7  We qualitatively compare the retrieval behavior
+WMT 2014 1WMT 2014 Machine Number
+Sense SQuAD
+ 2 UCI Datasets WikiText-2
+ 3 Affective Text WikiText-103 Figure 7  We qualitatively compare the retrieval behavior
  of a neural biencoder retriever (trained on
 DataFinder ) and third-party dataset search engines.
 5.4 More In-depth Exploration
@@ -589,21 +636,28 @@ with concealing particular information from the
 keyphrase query.
 In Figure 8, we see task information is critical
  for dataset search  removing task keywords
-from queries reduces MAP from 23.5 7.5 (statistically
+from queries reduces MAP from 23.5 to 7.5 (statistically
  significant with p   0.001by a paired
 bootstrap t-test). Removing constraints on the language
  of text data also causes a significant drop in
 MAP ( p  0.0001 ). Removing keywords for text
 length causes an insignificant reduction in MAPWithout Task
-Without Modality Without DomainWithout LanguageWithout Text Length00.050.10.15 8  Comparison of the reduction in the MAP
+Without Modality Without DomainWithout LanguageWithout Text Length00.050.10.15
+ MAP
+Figure 8  Comparison of the reduction in the MAP
 metric of the retrieval results after removing different
 types of query terms (e.g. keywords related to the task
 or language the researcher is interested in studying).
 Model P@5 R@5 MAP MRR
 Full-Sentence Queries
 Description 15.3 1.030.0 2.123.0 1.942.8 2.7
-  Struct. Info 16.0 1.131.2 2.2 23.3 1.842.4 2.7 15.8 1.1 30.8 2.2 23.1 1.9 42.2 2.7 13.1 1.0 25.6 2.0 17.4 1.6 33.1 2.5
-  Struct. Info 16.6 1.1 32.7 2.2 23.5 1.8 42.8 2.8 16.8 1.033.4 2.2 23.6 1.843.0 2.6 3  Adding structured metadata for each dataset s
+  Struct. Info 16.0 1.131.2 2.2 23.3 1.842.4 2.7
+  Citances 15.8 1.1 30.8  2.2 23.1  1.9 42.2  2.7
+Keyphrase Queries
+Description 13.1 1.0 25.6  2.0 17.4  1.6 33.1  2.5
+  Struct. Info 16.6 1.1 32.7  2.2 23.5  1.8 42.8  2.8
+  Citances 16.8 1.033.4 2.2 23.6 1.843.0 2.6
+Table 3  Adding structured metadata for each dataset s
 textual representation significantly improves keyphrase
 search quality using a neural bi-encoder. We compute
 standard deviations via bootstrap resampling. We use
@@ -637,7 +691,8 @@ COCO-DR (not finetuned) 6.1 14.8 8.8 15.7
 Keyphrase Queries
 SciBERT (finetuned) 16.6 32.7 23.5 42.8
 SciBERT (not finetuned) 0.0 0.0 0.0 0.0
-COCO-DR (not finetuned) 6.2 13.9 9.6 16.8 4  Finetuning for the dataset recommendation task
+COCO-DR (not finetuned) 6.2 13.9 9.6 16.8
+Table 4  Finetuning for the dataset recommendation task
 significantly outperforms strong retrieval architectures
 finetuned for general search, like COCO-DR.
 resentation. adding structured information to the
@@ -710,7 +765,7 @@ VOC 2010 (Everingham et al., 2010), and CHiME4
 also skews the publication year of papers used in
 theDataFinder Dataset towards the present (the
 median years of papers in our train and test set
-are 2018 2017, respectively). For the most
+are 2018 and 2017, respectively). For the most
 part, PwC only includes datasets used by another
 paper listed in Papers With Code, leading to the
 systematic omission of datasets seldom used today.
@@ -719,7 +774,7 @@ set is derived from the SciREX corpus (Jain et al.,
 2020). This corpus is biased towards popular or
 influential works  the median number of citations
 of a paper in SciREX is 129, compared to 19 for
-any computer science paper in S ORC. The queries
+any computer science paper in S2ORC. The queries
 in our test set are therefore more likely to describe
 mainstream ideas in popular subields of AI.
 Automatic tagging Our training data is generated
@@ -814,7 +869,8 @@ marco  A human generated machine reading comprehension
 Adriane P. Chapman, Elena Paslaru Bontas Simperl,
 Laura M. Koesten, G. Konstantinidis, Luis Daniel
 Ibáñez, Emilia Kacprzak, and Paul Groth. 2019.
-Dataset search  a survey. The VLDB Journal , 29 251 272.
+Dataset search  a survey. The VLDB Journal , 29 251 
+272.
 Daniel Chou. 2022. Counting AI research  Exploring
 ai research output in english- and chinese-language
 sources.
@@ -846,7 +902,7 @@ Luyu Gao, Zhuyun Dai, and Jamie Callan. 2021. Rethink
 Andreas Geiger, Philip Lenz, Christoph Stiller, and
 Raquel Urtasun. 2013. Vision meets robotics  The
 kitti dataset. The International Journal of Robotics
-Research , 32 1231 1237.
+Research , 32 1231   1237.
 Melissa R.H. Hall, Laurens van der Maaten, Laura
 Gustafson, and Aaron B. Adcock. 2022. A
 systematic study of bias amplification. ArXiv ,
@@ -855,7 +911,8 @@ Sarthak Jain, Madeleine van Zuylen, Hannaneh Hajishirzi,
  and Iz Beltagy. 2020. SciREX  A challenge
 dataset for document-level information extraction. In
 Proceedings of the 58th Annual Meeting of the Association
- for Computational Linguistics , pages 7506 7516, Online. Association for Computational Linguistics.
+ for Computational Linguistics , pages 7506 
+7516, Online. Association for Computational Linguistics.
 
 Thorsten Joachims. 2002. Optimizing search engines
 using clickthrough data. Proceedings of the eighth
@@ -881,7 +938,7 @@ Empirical Methods in Natural Language Processing .
 Alex Krizhevsky, Ilya Sutskever, and Geoffrey E. Hinton.
  2012. Imagenet classification with deep convolutional
  neural networks. Communications of the ACM ,
-60 84 90.
+60 84   90.
 Sven R. Kunze and Sören Auer. 2013. Dataset retrieval.
 2013 IEEE Seventh International Conference on Semantic
  Computing , pages 1 8.
@@ -913,7 +970,7 @@ and C Lawrence Zitnick. 2014. Microsoft coco
 Common objects in context. In European conference
  on computer vision , pages 740 755. Springer.
 Kyle Lo, Lucy Lu Wang, Mark Neumann, Rodney Kinney,
- and Daniel Weld. 2020. S ORC  The semantic
+ and Daniel Weld. 2020. S2ORC  The semantic
 scholar open research corpus. In Proceedings of the
 58th Annual Meeting of the Association for Computational
  Linguistics , pages 4969 4983, Online. Association
@@ -923,7 +980,7 @@ language toolkit. arXiv preprint cs/0205028 .
 Meiyu Lu, Srinivas Bangalore, Graham Cormode, Marios
  Hadjieleftheriou, and Divesh Srivastava. 2012. A
 dataset search engine for the research document corpus.
- 2012 28th International Conference on
+ 2012 IEEE 28th International Conference on
 Data Engineering , pages 1237 1240.
 Christopher D. Manning, Prabhakar Raghavan, and Hinrich
  Schütze. 2005. Introduction to Information Retrieval.
@@ -984,7 +1041,7 @@ Jimmy J. Lin. 2022. Evaluating token-level and
 passage-level dense retrieval models for math information
  retrieval. ArXiv , abs/2203.11163.Bolei Zhou, Hang Zhao, Xavier Puig, Tete Xiao, Sanja
 Fidler, Adela Barriuso, and Antonio Torralba. 2019.
-Semantic understanding of scenes through the ade k
+Semantic understanding of scenes through the ade20k
 dataset. International Journal of Computer Vision ,
 127(3) 302 321.
 A Few-Shot Prompt for Generating
@@ -1102,7 +1159,7 @@ uses two region-based segmentation networks
 as the back-end (which takes the fused features
 from the two-stream network as the input and
 predicts actor-action labeling). Experiments
-on the A D dataset demonstrate that both the
+on the A2D dataset demonstrate that both the
 region-based segmentation strategy and the fused
 features from the two-stream network contribute
 to the performance improvements. The proposed
@@ -1131,7 +1188,7 @@ for our annotation collection process. For each annotator,
  we received their verbal or written interest
 in participating in our data collection.
 We then sent them a Google Form containing between
- 10 20 abstracts to annotate. An example
+ 10 and 20 abstracts to annotate. An example
 of the form instructions is included in Figure 9.
 We originally had annotators label the  Training
  Style  (unsupervised, semi-supervised, supervised,
@@ -1139,5 +1196,5 @@ We originally had annotators label the  Training
 Task, Modality, Domain, Text Length, and Language
  Required. However, this field saw excessively
  noisy labels so we ignore this field for our
-experiments.Figure 9 10-20 abstracts for our label collection using a Google Form with the
+experiments.Figure 9  Annotators each annotated 10-20 abstracts for our label collection using a Google Form with the
 instructions shown here..

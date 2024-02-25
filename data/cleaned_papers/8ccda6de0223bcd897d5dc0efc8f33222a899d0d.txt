@@ -1,4 +1,5 @@
-Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing  Industry Track , pages 707 722 6-10, 2023 2023 Association for Computational Linguistics
+Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing  Industry Track , pages 707 722
+December 6-10, 2023  2023 Association for Computational Linguistics
 DocumentNet  Bridging the Data Gap in Document Pre-Training
 Lijun Yu  , Jin Miao , Xiaoyu Sun , Jiayi Chen , Alexander G. Hauptmann ,
 Hanjun Dai , Wei Wei  
@@ -22,7 +23,7 @@ collected dataset, named DocumentNet, does
 not depend on specific document types or entity
  sets, making it universally applicable to all
 VDER tasks. The current DocumentNet consists
- of 30 400
+ of 30M documents spanning nearly 400
 document types organized in a four-level ontology.
  Experiments on a set of broadly adopted
 VDER tasks show significant improvements
@@ -88,24 +89,25 @@ their reasoning capabilities. DocumentNet provides
 performance of LLMs for document understanding.707Dataset #Samples   OntologyDiverse
 DomainsHigh-quality
 OCRAnnotation
-FUNSD (Jaume et al., 2019) 199 3
-Kleister-NDA (Stanisławek et al., 2021) 540 4
-VRDU-Ad-buy (Wang et al., 2022b) 641 14
-SROIE (Huang et al., 2019) 973 4
-CORD (Park et al., 2019) 1 30
-DeepForm (Borchmann et al., 2021) 1.1 5
-VRDU-Registration (Wang et al., 2022b) 1.9 6
-Kleister-Charity (Stanisławek et al., 2021) 2.7 8
+FUNSD (Jaume et al., 2019) 199 E 3
+Kleister-NDA (Stanisławek et al., 2021) 540   E 4
+VRDU-Ad-buy (Wang et al., 2022b) 641   E 14
+SROIE (Huang et al., 2019) 973 E 4
+CORD (Park et al., 2019) 1K E 30
+DeepForm (Borchmann et al., 2021) 1.1K   E 5
+VRDU-Registration (Wang et al., 2022b) 1.9K   E 6
+Kleister-Charity (Stanisławek et al., 2021) 2.7K   E 8
 DocVQA (Mathew et al., 2021) 12.8K   Q
 CC-PDF (Powalski et al., 2021) 350K  
-PubLayNet (Zhong et al., 2019) 358 5
-RVL-CDIP (Lewis et al., 2006) 400 16
+PubLayNet (Zhong et al., 2019) 358K   B 5
+RVL-CDIP (Lewis et al., 2006) 400K   C 16
 UCSF-IDL (Powalski et al., 2021) 480K  
 IIT-CDIP (Lewis et al., 2006) 11.4M  
 ImageNet (Deng et al., 2009) 1.3M images   - - C 1K
 ActivityNet (Caba Heilbron et al., 2015) 20K videos   - - C 200
-DocumentNet-v1 (ours) 9.9 398, E 6
-DocumentNet-v2 (ours) 30 398, E 6 1  Comparison between the proposed DocumentNet dataset and existing document understanding datasets.
+DocumentNet-v1 (ours) 9.9M       C 398, E 6
+DocumentNet-v2 (ours) 30M       C 398, E 6
+Table 1  Comparison between the proposed DocumentNet dataset and existing document understanding datasets.
 Datasets from other areas also built with ontology are listed in gray. Annotation includes class label (C), bounding
 box (B), entity (E), and question (Q), where the value refers to the number of classes.
 2 Related Work
@@ -158,7 +160,7 @@ images on the Web are not relevant to document
 types. We need a scalable pipeline to only select
 the concerned images. Broadly, this is achievable
 via a nearest-neighbor search of relevant keywords
-in a text-image joint embedding space. First, we Financial Legal Business Education
+in a text-image joint embedding space. First, we708Financial Legal Business Education
 Figure 1  Exemplar documents of each of the four top-level hierarchies. Images are downloaded via keyword
 searching using a commercial search engine. All images are for demonstration purposes only and do not contain
 real transactions or personal information.
@@ -197,7 +199,8 @@ Image retrieval from ontology. To retrieve only
 the most relevant document images out of the hundreds
  of billions of general Web images, we leverage
  a highly efficient nearest neighbor pipeline by
-Figure 3 30M document
+Figure 3  Mean and standard deviation of the dotproduct
+ distance between the retrieved 30M document
 images and each query keyword. A distance of 1.0indicates
  the closest semantic relevance.
 defining the similarity metric as the dot product between
@@ -211,15 +214,24 @@ in English for each query keyword. Note that the
 same image might be retrieved via multiple semantically
  similar keywords, so a de-duplication step is
 needed afterward. We summarize the main pipeline
-steps in Fig. 2. Fig. 3 30M document images with the mean
+steps in Fig. 2. Fig. 3 shows statistical insights of
+the retrieved 30M document images with the mean
 and standard deviation histogram over each of the
 query keywords. The majority of the retrieved images
- are with mean distance values greater than 0.8 0.03, indicating
+ are with mean distance values greater than 0.8
+and standard deviations no more than 0.03, indicating
  high relevance to the document ontology.709Multimodal Transformerw/ Relative Position-aware Self-AttentionText 2
 (Pad)0
-(Pad)[CLS]Char 1,Box 1 1 11 1 1 22
-(Pad)[Mask]Box 33 3 3 44
-(Pad)[Mask]Box 55 5 5 66 6 61-D Position Embeddings (Lookup)2-D Position Embeddings (Lookup)Text Token Embeddings (Lookup)Visual Crop Embeddings (Linear Projection)OCRTokenizerChar 2,Box 2,Hier 2 3,Box 3,Hier 3 1,Box 1,Hier1,Crop 1 2,Box 2,Hier2,Crop 2 3,Box 3,Hier3,Crop 3 4 6 4  UniFormer pre-training pipeline. The multimodal tokenization process (left) outputs tokens with aligned
+(Pad)[CLS]Char 1,Box 1Hier 1
+Box 11
+Crop 1Text 1Box 22
+(Pad)[Mask]Box 33
+Crop 3Text 3Box 44
+(Pad)[Mask]Box 55
+Crop 5Text 5Box 66
+Crop 6Text 61-D Position Embeddings (Lookup)2-D Position Embeddings (Lookup)Text Token Embeddings (Lookup)Visual Crop Embeddings (Linear Projection)OCRTokenizerChar 2,Box 2,Hier 2Char 3,Box 3,Hier 3 
+Text 1,Box 1,Hier1,Crop 1 Text 2,Box 2,Hier2,Crop 2Text 3,Box 3,Hier3,Crop 3ClassificationMultimodal Masked Language ModelingCrop 4RegressionMasked Crop ModelingTag 6ClassificationToken TaggingExternalText Tagger
+Visual CropFigure 4  UniFormer pre-training pipeline. The multimodal tokenization process (left) outputs tokens with aligned
 image crops. The UniFormer model (right) learns a unified token representation with three objectives (top).
 Task Target Modality
 MMLMMultimodal Masked
@@ -283,13 +295,17 @@ projecting the flattened pixels in the image crop,
 following ViT (Dosovitskiy et al., 2020).710Model InputsPre-training
 DataPre-training
 ObjectivesFUNSD
-Entity F1 1  RVL-CDIP
+Entity F1  CORD
+Entity F1  RVL-CDIP
 Accuracy  
 BERT T - MLM 60.26 89.68 89.81
 LayoutLM T   L IIT-CDIP MVLM 78.66 94.72 91.78
 UniFormer T   L   C IIT-CDIP MMLM 80.63 95.17 93.47
 UniFormer T   L   CIIT-CDIP
- DocumentNet-v MMLM 82.61 95.91 94.86 83.45 96.08 95.15 84.18 96.45 95.34 3  Ablation studies on three document understanding benchmarks regarding pretraining datasets, pretraining
+ DocumentNet-v1MMLM 82.61 95.91 94.86
+MMLM   MCM 83.45 96.08 95.15
+MMLM   MCM   TT 84.18 96.45 95.34
+Table 3  Ablation studies on three document understanding benchmarks regarding pretraining datasets, pretraining
 objectives, and model architectures. Input modalities include text (T), layout (L), and crop (C).
 Masked crop modeling. In addition to predicting
  the text token in the MMLM objective, A UniFormer
@@ -301,7 +317,8 @@ with a linear layer outputing flattened pixels and
 the objective is
 LMCM  E
 data[ 
-vi M fθ(c,v, ρ)i vi 2 2]
+vi M fθ(c,v, ρ)i vi 2
+2]
 (1)
 where candvdenote the masked tokens and crops
 according to mask M.ρis the position and layout
@@ -327,7 +344,8 @@ using the uncased vocabulary. The models are pretrained
 with linear warmup during the first 2% steps and a
 peak learning rate of 10 4. We use 20% of the samples
  for the token tagging pre-training task. The
-models are trained for 500 2048 128 3 devices.5.2 Classic VDER Setting
+models are trained for 500K steps with a batch size
+of 2048 on 128 TPUv3 devices.5.2 Classic VDER Setting
 We evaluate the performance of pre-trained UniFormer
  models on three commonly used benchmarks 
  entity extraction on FUNSD and CORD,
@@ -341,10 +359,12 @@ learning rate of 5 10 5, following a schedule
 of linear warm-up in the first 10% steps and then
 linear decay. Dropout with 0.1 probability is applied
  in the head layers. UniFormer is fine-tuned
-for 1000 32 256 on CORD. For document classification
+for 1000 steps with a batch size of 32 on FUNSD
+and 256 on CORD. For document classification
 on RVL-CDIP, we add a multi-class classification
 head on top of the [CLS] token. We fine-tune with
-a constant learning rate of 10 5 15000 2048.
+a constant learning rate of 10 5for 15000 steps
+with a batch size of 2048.
 Ablation Studies. Table 3 lists the ablation results
  for pre-training data, pre-training objectives,
 and model design. Compared to LayoutLM, our
@@ -363,19 +383,26 @@ Comparisons with existing methods. We compare
 existing approaches at the base model scale in Table
  4. As shown, most prior methods use stronger
 language or image initialization compared to our
-lightweight UniFormer, but all of them are only Model InitializationTotal
+lightweight UniFormer, but all of them are only711Model InitializationTotal
 ParametersPretrain
 Data SourceFUNSD
-Entity F1 1  RVL-CDIP
+Entity F1  CORD
+Entity F1  RVL-CDIP
 Accuracy  
 LayoutLMBERT 113M IIT-CDIP 78.66 94.72 91.78
 BERT   ResNet-101 160M IIT-CDIP 79.27 - 94.42
-UDoc BERT   ResNet-50 272M IIT-CDIP - - 95.05 2 UniLM   ResNeXt-101 200M IIT-CDIP 82.76 94.95 95.25 5   U-Net 230MRVL-CDIP  
+UDoc BERT   ResNet-50 272M IIT-CDIP - - 95.05
+LayoutLMv2 UniLM   ResNeXt-101 200M IIT-CDIP 82.76 94.95 95.25
+TILT T5   U-Net 230MRVL-CDIP  
 UCSF-IDL  
-CC-PDF- 95.11 95.25 110M IIT-CDIP 83.05 95.73 DocFormer
+CC-PDF- 95.11 95.25
+BROS BERT 110M IIT-CDIP 83.05 95.73 DocFormer
  LayoutLM   ResNet-50 183M IIT-CDIP 83.34 96.33 96.17
-SelfDoc BERT   ResNeXt-101 137M RVL-CDIP 83.36 - 92.81 3 126M IIT-CDIP - 96.11 95.00 115MIIT-CDIP  
-DocumentNet-v184.18 96.45 95.34 4  Comparison with existing document pretraining approaches on three document understanding benchmarks.
+SelfDoc BERT   ResNeXt-101 137M RVL-CDIP 83.36 - 92.81
+LayoutLMv3 RoBERTa 126M IIT-CDIP - 96.11 95.00
+UniFormer BERT 115MIIT-CDIP  
+DocumentNet-v184.18 96.45 95.34
+Table 4  Comparison with existing document pretraining approaches on three document understanding benchmarks.
 Models at the base scale are listed for fair comparisons, while state-of-the-art results are obtained by models at
 larger scales. denotes a variant that does not use its proprietary tokenizer in pre-training.
 DatasetsSetting
@@ -386,7 +413,8 @@ Hierarchical
 F1 Prec. Recall F1 Prec. Recall F1 Prec. Recall
 IIT-CDIP 0.099 0.253 0.062 0.108 0.103 0.114 0.115 0.110 0.123
 IIT-CDIP   DocumentNet-v1 0.102 0.217 0.067 0.121 0.114 0.132 0.129 0.125 0.134
-IIT-CDIP   DocumentNet-v2 0.133 0.263 0.090 0.147 0.137 0.160 0.157 0.155 0.160 5  Performance comparisons on the few-shot VDER settings with the CORD dataset.
+IIT-CDIP   DocumentNet-v2 0.133 0.263 0.090 0.147 0.137 0.160 0.157 0.155 0.160
+Table 5  Performance comparisons on the few-shot VDER settings with the CORD dataset.
 pre-trained on datasets no larger than IIT-CDIP. Although
  UniFormer is only using 115M parameters
 and BERT initialization, it outperforms all baseline
@@ -409,11 +437,13 @@ the label imbalance problem where the majority of
 the tokens are labeled as background. After eliminating
  a few entities that do not appear frequently
 enough, we use 18 entities for meta-train and 5
-entities for meta-test, for a total of 23 entities. Wefine-tune for 15 0.02.
+entities for meta-test, for a total of 23 entities. Wefine-tune for 15 steps with a constant learning rate
+of 0.02.
 Results. As shown in Tab 5, adding the DocumentNet
  data significantly boosts the performance
 of our models across all few-shot learning settings.
-In particular, the 30M DocumentNet-v2 9.9M
+In particular, the 30M DocumentNet-v2 variant
+yields a much larger improvement than the 9.9M
 DocumentNet-v1. The amount of data and the diversity
  in terms of the collected document type
 played a significant role in the performance improvements.
@@ -480,7 +510,7 @@ generation. In NeurIPS .Alexey Dosovitskiy, Lucas Beyer, Alexander
 Kolesnikov, Dirk Weissenborn, Xiaohua Zhai,
 Thomas Unterthiner, Mostafa Dehghani, Matthias
 Minderer, Georg Heigold, Sylvain Gelly, et al. 2020.
-An image is worth 16 16 words  Transformers for
+An image is worth 16x16 words  Transformers for
 image recognition at scale. In ICLR .
 Jiuxiang Gu, Jason Kuen, Vlad I Morariu, Handong
 Zhao, Rajiv Jain, Nikolaos Barmpalios, Ani Nenkova,
@@ -611,7 +641,8 @@ layout analysis. In ICDAR .714A Details on UniFormer Models
 In this section, we detail our UniFormer model
 architecture and setups for pretraining and finetuning
  for VDER.
-A.1 3be a visually-rich document
+A.1 Multimodal Tokenization
+LetD RH W 3be a visually-rich document
 image with height Hand width W. We obtain a
 sequence of characters by applying OCR on the
 document image. The characters are accompanied
@@ -619,7 +650,8 @@ by their bounding box coordinates. Then we perform
  a multimodal tokenization process as follows.
 With a pre-defined text tokenizer, we first tokenize
  the character sequence into a sequence of text
-tokens c.prepresents the 1 0 1. For each token ci, we
+tokens c.prepresents the 1D position of the tokens
+ranging from 0to c   1. For each token ci, we
 obtain its bounding box bi  (x0, y0, x1, y1)iby
 taking the union of the bounding boxes of its characters.
  We enlarge the bounding box by a context
@@ -633,15 +665,18 @@ and pretrained weights. The input for each token
 consists of a text embedding and a 1D position
 embedding for p.
 Following LayoutLM (Xu et al., 2020), we add
-2 0,y0,x1,y1,w,h, where
-w x1 1 0. These embeddings
+2D position embeddings x0,y0,x1,y1,w,h, where
+w x1 x0andh y1 y0. These embeddings
 are used to represent the spatial location of each
 token. All the embeddings mentioned above are
 obtained from trainable lookup tables.
 Following LayoutLMv2 (Xu et al., 2021),
 UniFormer adopts relative position-aware selfattention
  layers by adding biases to the attention
-scores according to relative 1 2 0 1 2, y0 1 2.
+scores according to relative 1D locations  pand
+relative 2D locations  x0 x1
+2, y0 y1
+2.
 Image Crop Input To model visual information,
 we add a crop embedding by linearly projecting
 the flattened pixels in the image crop, following
@@ -675,7 +710,7 @@ During pretraining, we adopt the following objectives
  on a UniFormer parameterized by θ. For each
 objective, we use a separate head upon the last attention
  layer. Let ρdenote the always available
-input embeddings, including the 1 2D positions.
+input embeddings, including the 1D and 2D positions.
 
 Multimodal Masked Language Modeling
 (MMLM) We randomly select 15% (Devlin
@@ -697,14 +732,23 @@ ci M logpθ(ci [c,v, ρ])]
 Masked Crop Modeling (MCM) We also predict
  the visual modality by reconstructing the image
 crops for the masked tokens in MMLM, in a way
-similar to MAE (He et al., 2022). It is formulated Multimodal Transformerw/ Relative Position-aware Self-Attention(Pad)0
-(Pad)[CLS]Box 11 1 1 22 2 2 33 3 3 44 4 4 55 5 5 66 6 61-D Position Embeddings (Lookup)2-D Position Embeddings (Lookup)Text Token Embeddings (Lookup)Visual Crop Embeddings (Linear Projection)Making prediction with token embeddings
-Initialized from pretrained modelFine-tuned jointly with supervisionToken embeddings[CLS]Token 1 2 3 4 5 6 1,Box 1 1 2,Box 2,Hier 2 3,Box 3,Hier 3 1,Box 1,Hier1,Crop 1 2,Box 2,Hier2,Crop 2 3,Box 3,Hier3,Crop 3 6  UniFormer finetuning model architecture.
+similar to MAE (He et al., 2022). It is formulated715Multimodal Transformerw/ Relative Position-aware Self-Attention(Pad)0
+(Pad)[CLS]Box 11
+Crop 1Text 1Box 22
+Crop 2Text 2Box 33
+Crop 3Text 3Box 44
+Crop 4Text 4Box 55
+Crop 5Text 5Box 66
+Crop 6Text 61-D Position Embeddings (Lookup)2-D Position Embeddings (Lookup)Text Token Embeddings (Lookup)Visual Crop Embeddings (Linear Projection)Making prediction with token embeddings
+Initialized from pretrained modelFine-tuned jointly with supervisionToken embeddings[CLS]Token 1Token 2Token 3Token 4Token 5Token 6Char 1,Box 1Hier 1
+OCRTokenizerChar 2,Box 2,Hier 2Char 3,Box 3,Hier 3 
+Text 1,Box 1,Hier1,Crop 1 Text 2,Box 2,Hier2,Crop 2Text 3,Box 3,Hier3,Crop 3Visual CropFigure 6  UniFormer finetuning model architecture.
 as a regression problem with a linear layer over
 flattened pixels. The MCM loss is defined as
 LMCM  E
 D[ 
-ci M ˆvi vi 2 2]
+ci M ˆvi vi 2
+2]
 (3)
 where ˆv fθ(c,v, ρ]).
 Token Tagging (TT) We add an extra pretraining
@@ -762,8 +806,8 @@ Smaller document datasets The Form Understanding
 dataset (Jaume et al., 2019), while being the most
 popular, only contains 199 document pages with
 three types of entities. The Consolidated Receipt
- Dataset for Post-OCR Parsing ( CORD (Park et al., 2019) dataset comes at a larger scale with
-1 30 entity types. Other
+ Dataset for Post-OCR Parsing ( CORD (Park716et al., 2019) dataset comes at a larger scale with
+1K document pages and 30 entity types. Other
 datasets, such as the Scanned Receipts OCR and
 key Information Extraction ( SROIE (Huang et al.,
 2019), Kleister (Stanisławek et al., 2021) NDA
@@ -774,12 +818,14 @@ scale of a few thousand documents. Among them,
 DocVQA (Mathew et al., 2021) contains 12.8K
 documents with question-answer annotations.
 Larger document datasets IIT-CDIP (Lewis
-et al., 2006) consists of 11 39M pages. PDF files from Common
+et al., 2006) consists of 11M unlabeled documents
+with more than 39M pages. PDF files from Common
  Crawl (CC-PDF) and UCSF Industry Documents
  Library (UCSF-IDL) have also been used
 for pretraining (Powalski et al., 2021), with a total
 of less than 1M documents. RVL-CDIP, a subset
-of IIT-CDIP, contains 400 16 classes for the document classification task.
+of IIT-CDIP, contains 400K documents categorized
+into 16 classes for the document classification task.
 PubLayNet (Zhong et al., 2019) is at a similar scale
 but for the layout detection task with bounding box
 and segmentation annotations.
@@ -809,7 +855,11 @@ and LayoutLMv3 (Huang et al., 2022) models are
 initialized from RoBERTa (Liu et al., 2019) to provide
  a stronger language prior. In our experiments,
 we adopt the vanilla BERT-base model for fair com-Precision Recall F1-score Support
-Question 84.84 88.41 86.59 1070 57.26 56.30 56.78 119 82.67 87.27 84.91 809 82.41 86.04 84.18 1998 6  Detailed metrics on the FUNSD entity extraction
+Question 84.84 88.41 86.59 1070
+Header 57.26 56.30 56.78 119
+Answer 82.67 87.27 84.91 809
+Average 82.41 86.04 84.18 1998
+Table 6  Detailed metrics on the FUNSD entity extraction
  task.
 parisons without the benefit of a stronger language
 model.
@@ -835,21 +885,22 @@ models but learn a joint vision-language representation
 C Detailed Experimental Setups and
 Analysis
 C.1 Classic VDER Setting
-Task setup. FUNSD contains 199 149 49 for evaluation. It is labeled
+Task setup. FUNSD contains 199 documents
+with 149 for training and 49 for evaluation. It is labeled
  with 3 entity types, i.e., header, question, and
-answer. CORD contains 1000 800
+answer. CORD contains 1000 documents with 800
 for training, 100 for validation, and 100 for testing.
  It is labeled with 30 entity types for receipts,
 such as menu name, price, etc. RVL-CDIP contains
- 400 16 classes, with 320K for
+ 400K documents in 16 classes, with 320K for
 training, 40K for validation, and 40K for testing.
 Error analysis. Table 6 lists the detailed metrics
 on the FUNSD entity extraction task. Among the
 three labeled entity types, header has the poorest
 performance and the lowest number of examples.
 The other two types have much better performance
-with F1 86.59 1 84.91 for answer .
-Fig. 7 7  Visualization of annotation (left) and prediction examples (middle and right) from the FUNSD validation
+with F1 86.59 for question and F1 84.91 for answer .
+Fig. 7 visualizes a few examples with annotations717Figure 7  Visualization of annotation (left) and prediction examples (middle and right) from the FUNSD validation
 set. Zoom in for details.
 and predictions from our UniFormer. As we can see
 in the annotation, the reading order is often weird
@@ -888,11 +939,71 @@ Fig. 8 illustrates the document ontology tree stub
 used for the construction of DocumentNet. Below
 we list all of the search keywords organized into
 four groups.
-D.1 1040 1040 1040 1040 1040 nr DocumentFinancialLegalBusinessEducationGeneralInsuranceTaxHome ownershipFinancial AccountsRetirementIncomeGovernment BenefitsFinancial ObligationFamily DocumentsHousingHealthcareMilitaryCourt DocumentsInvestmentGeneralGeneralGeneralGeneralEmployer/Employee AgreementSubscriptionsGeneralUtilityChildrenPersonalPartnershipVehiclesRentalHome OwnershipVisualMedicalDentalFigure 8  Document ontology tree stub, based on which the proposed DocumentNet datasets are collected. We
+D.1 Financial Documents
+  accounts receivable aging report
+  bill of exchange pdf
+  invoice
+  receipt
+  loan estimate
+  loan application form
+  credit report pdf
+  employee insurance enrollment form
+  property insurance declaration page
+  renters insurance addendum
+  auto insurance card
+  dental insurance card
+  dental insurance verification form
+  vision insurance card
+  medical insurance card
+  liability insurance certificate
+  insurance cancellation letter
+  life insurance application form
+  flood elevation certificate
+  flood insurance application form
+  hazard insurance application form
+  tax return form
+  form 1040 schedule C
+  form 1040 schedule E
+  form 1040 schedule D
+  form 1040 schedule B
+  form 1040 nr718DocumentFinancialLegalBusinessEducationGeneralInsuranceTaxHome ownershipFinancial AccountsRetirementIncomeGovernment BenefitsFinancial ObligationFamily DocumentsHousingHealthcareMilitaryCourt DocumentsInvestmentGeneralGeneralGeneralGeneralEmployer/Employee AgreementSubscriptionsGeneralUtilityChildrenPersonalPartnershipVehiclesRentalHome OwnershipVisualMedicalDentalFigure 8  Document ontology tree stub, based on which the proposed DocumentNet datasets are collected. We
 create a document ontology with about 400 search keywords hierarchically connected by three intermediate layers.
-  form 1040 4506 4506 4506 1076 2 4 1099 1099-MISC
+  form 1040 sr
+  form 4506T EZ
+  form 4506T
+  form 4506 C
+  transfer of residence form 1076
+  property tax bill
+  W2
+  W4
+  1099 B
+  1099-MISC
   1099-NEC
-  1099 1099 1099 1099 1099 1120 1120 1065 7 9 4 940 5498 1 401k enrollment form
+  1099 DIV
+  1099 G PDF
+  1099 R
+  1099 INT
+  SSA 1099 form
+  1120 form
+  1120S Form
+  form 1065
+  W7 form
+  W8BEN form
+  W9 form
+  SS4 form
+  form 940 pdf
+  form 5498
+  ucc 1 form
+  bank statement
+  personal check
+  check deposit slip pdf
+  credit union statement pdf
+  credit card authorization form
+  credit card
+  debit card
+  credit card statement
+  TSP election form
+  401k enrollment form
   IRA distribution request form  stock certificate
   stock purchase agreement
   bond certificate
@@ -929,8 +1040,40 @@ create a document ontology with about 400 search keywords hierarchically connect
   demand for payment letter
   magazine subscription form
   streaming service agreement
-  gym waiver form719 1003 26-0551 26-8923 form pdf
-  USDA-AD 3030 1040 1005
+  gym waiver form719  gym membership cancellation letter
+  gym membership card
+  massage therapy waiver
+  HOA agreement
+  HOA dues letter
+  urla form 1003
+  home appraisal report
+  security instrument
+  ucdp summary report
+  audit findings report pdf
+  sales contract
+  purchase agreement
+  title commitment pdf
+  earnest money deposit pdf
+  patriot act disclosure
+  owner occupancy affidavit form
+  compliance agreement
+  name affadavit
+ notice of right to reclaim abandoned property
+  VBA 26-0551 debt questionnaire pdf
+  VBA 26-8923 form pdf
+  USDA-AD 3030
+  loan application pdf
+  homeowner insurance declaration page
+  1040
+  wage and tax statement
+  employee s withholding certificate
+  miscellaneous income form
+  nonemployee compensation form
+  dividends and distributions form
+  certain government payments
+  distributions from pensions
+  social security benefits form
+  form 1005
   stimulus check pdf
   waste management bill
   comcast internet bill pdf
@@ -939,7 +1082,11 @@ create a document ontology with about 400 search keywords hierarchically connect
   one and the same person affadavit
   xfinity internet bill pdf
   car payment contract
-D.2 89 form
+D.2 Legal Documents
+  birth certificate
+  social security card
+  social security form
+  ssa 89 form
   social security change in information form
   passport book
   passport card  new passport application
@@ -947,8 +1094,152 @@ D.2 89 form
   green card
   green card application form
   naturalization certificate
-  N-400 720 92541 54114 92561 92051 92900-A
-  form HUD 92544 92900 92900 92800 214 1-4 721  ssn card
+  N-400 form pdf
+  living will sample
+  living will form
+  living will declaration
+  voter identification card
+  disability card
+  death certificate
+  death certificate application
+  name change form
+  state issued identification card
+  prenup form
+  postnuptial agreement
+  marriage license
+  marriage certificate
+  application for marriage license
+  family court cover sheet
+  complaint for divorce no children
+  complaint for divorce with children
+  divorce summons
+  divorce certificate
+  domestic partnership application form
+  domestic partnership certificate
+  domestic partnership termination form
+  separation agreement
+  pet custody agreement form
+  pet ownership transfer form
+  child adoption certificate
+  child power of attorney
+  child visitation form
+  daycare contract
+  child custody agreement
+  child support modification form
+  free minor travel consent form
+  child identity card
+  DNA paternity test order form
+ petition for declaration of emancipation of
+minor
+  vehicle registration card
+  vehicle registration form
+  vehicle registration renewal notice
+  vehicle certificate of title
+  motor vehicle transfer form
+  driver s license
+  application for driver s license
+  truck driver application
+  learner s permit card720  pilot s license card
+  vehicle leasing agreement
+  motor vehicle power of attorney
+  mortgage interest credit form
+  mortgage application form
+  mortgage verification form
+  mortgage loan modification form
+  real estate deed of trust
+  mortgage deed
+  warranty deed
+  quitclaim deed
+  usps mail forwarding form PDF
+  property power of attorney
+  notice of intent to foreclose
+  closing disclosure
+  HUD 92541 form
+  HUD 54114 form
+  HUD 92561 form
+ FHA loan underwriting and transmittal summary
+
+  form HUD92051
+  form HUD 92900-A
+  form HUD 92544
+ form HUD 92900 B important notice to housebuyers
+
+ form HUD 92900 WS mortgage credit analysis
+ worksheet
+  Form HUD 92800 Conditional Commitment
+  SFHDF
+  lease agreement
+  lease application
+  notice to enter
+  notice of intent to vacate premises
+  notice of lease violation
+  pay rent or quit
+  lease offer letter
+  roommate agreement
+  eviction notice form
+  lease termination letter
+  lease renewal agreement
+  pet addendum
+  notice of rent increase
+  sublease agreement
+  record of immunization
+  allergy record sheet
+  allergy immunotherapy record
+  medication log
+  prescription sheet
+  disability documentation
+  advance directive form
+  DNA test request form  medical power of attorney
+  health care proxy form
+  revocation of power of attorney
+  dnr form
+  hipaa release form
+  hipaa complaint form
+  health history form
+  birth plan form
+  new patient form
+  child medical consent
+  grandparent medical consent for minor
+  medical treatment authorization form
+  dental policy and procedure document
+  endodontic treatment consent form
+  denture treatment consent form
+  dental patient referral form
+  patient dismissal letter
+  dental record release form
+  oral surgery postop instructions
+  refusal of dental treatment form
+  tooth extraction consent form
+  corrective lens prescription pdf
+  military id card
+  dd214
+  honorable discharge certificate
+  supreme court distribution schedule pdf
+  case docket pdf
+  jury summons pdf
+  jury duty excuse letter
+  supplemental juror information pdf
+  attorney termination letter
+  certificate of good standing
+  attorney oath of admission pdf
+  substitution of attorney
+  notice of appearance of counsel
+  bankruptcy declaration form
+  notice of lawsuit letter
+  court summons pdf
+  arrest warrant pdf
+  promissory note
+  tolling agreement pdf
+  notary acknowledgement form
+  cease and desist letter
+  condominium rider pdf
+  adjustable rate rider pdf
+  family rider form 1-4 pdf
+  balloon rider form pdf
+  second home rider pdf
+  revocable trust rider form pdf
+  pud rider pdf
+  birth certificate form721  ssn card
   application for a social security card
   application for naturalization pdf
   legal name change form
@@ -1040,4 +1331,10 @@ D.3 Business Documents
   employment contract
   contract termination letter
   non disclosure agreement
-D.4 722
+D.4 Education Documents
+  research papers pdf
+  certificate of enrollment
+  high school transcript
+  high school diploma
+  college diploma
+  college transcript722

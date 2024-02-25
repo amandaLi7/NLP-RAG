@@ -1,6 +1,7 @@
 Prompting the Hidden Talent of Web-Scale Speech Models
 for Zero-Shot Task Generalization
-Puyuan Peng1, Brian Yan2, Shinji Watanabe2, David Harwath1 1Department of Computer Science, The University of Texas at Austin, USA
+Puyuan Peng1, Brian Yan2, Shinji Watanabe2, David Harwath1
+1Department of Computer Science, The University of Texas at Austin, USA
 2Language Technology Institute, Carnegie Mellon University, USA
 pyp@utexas.edu
 Abstract
@@ -35,7 +36,7 @@ special-purpose models for new tasks and domains, resulting in
 tremendous impact on the application of AI.
 In the field of audio and speech processing, prompt engineering
  has only recently started to attract attention. Gao et al. [ 9]
-finetuned a wav vec2 model [ 10] to produce tokens as prompt
+finetuned a wav2vec2 model [ 10] to produce tokens as prompt
 for the frozen GPT-2 [ 11] to do speech and audio classification
 tasks. Concurrently, Chang et al. [ 12] studied gradient-based
 prompt tuning on a pre-trained speech unit language model [ 13]
@@ -97,7 +98,7 @@ a summary of our proposed prompts.
 1We use   sop   to abbreviate   startofprev   , and
   sot   for  startoftranscript   . Also   asr   for
   transcribe   , and  st   for  translate   later.
-2 2305.11095 3  [eess.AS]  16 2023 1  Summary of our proposed prompts and relative improvement over the default prompts. The differences between our prompt
+2and therefore we omit this token in the rest of the paperarXiv 2305.11095v3  [eess.AS]  16 Aug 2023Table 1  Summary of our proposed prompts and relative improvement over the default prompts. The differences between our prompt
 and the default are in bold. In the AVSR task, CLIP retrie. stands for  CLIP retrieved objects , and  default  stands for
   sot    en    asr   , please find detailed description of our prompt for AVSR in section 3. For each task only one case is
 shown in the table, and similar improvements are shown across different datasets and languages in the main text.
@@ -135,13 +136,14 @@ enables large pretrained models to  talk  to one other to solve a
 complex task.
 Datasets and implementation details. Our main dataset for
 the A VSR task is the recently proposed VisSpeech [ 19], which
-is a subset of the instructional video dataset HowTo M [ 22].
+is a subset of the instructional video dataset HowTo100M [ 22].
 VisSpeech consists of those videos where an audio-only baseline
  ASR system performs badly, and whose visual stream and
 speech audio are semantically related. Since VisSpeech is proposed
  as a test set and it only contains 508 examples, we use
 another instructional video dataset, How2 [ 18], for hyperparameter
- tuning. We use a randomly selected 2000 2, and add pub noise to the audio to increase the ASR
+ tuning. We use a randomly selected 2000 example subset
+of How2, and add pub noise to the audio to increase the ASR
 difficulty similar to [ 19], since the dataset has been shown to be
 biased towards clean audio [ 19] preventing the visual modality
 from offering significant benefit to its ASR task. For the external
@@ -160,9 +162,12 @@ the visual prompt. In addition, more than 90% of the utterances
 WhisperEncoderWhisper DecoderCLIP
 ObjectVocabcraftsman, powder, concrete ...As promptI've never had a color coat separate from a houseFigure 1  Framework for visually prompting Whisper. The external
  object vocab is dataset agnostic.
-in our How2 30words. This shows that Whisper is very robust to the noise
+in our How2 dataset have a ground truth transcription less than
+30words. This shows that Whisper is very robust to the noise
 and length of the prompt.
-For each model, the top 3 2 3, and the average WER is shown in figure 2. We see
+For each model, the top 3best performing number of object
+choices selected from How2 are used for the experiments on
+VisSpeech3, and the average WER is shown in figure 2. We see
 that the visually-informed prompt improves the performance for
 all four English models and three smaller multilingual models,
 but hurts the performance of the multilingual models Medium,
@@ -192,7 +197,8 @@ research area [ 24]. While we cannot know for certain whether
 Whisper was trained on code-switched data, it is clear that the
 model s language and task tokens can not explicitly direct the
 model to do CS-ASR - each language token only represents one
-3 3 2 and VisSpeech.Tiny.en Base.en Small.en Medium.en Tiny Base Small Medium Large LargeV WEREnglish Models Multilingual ModelsAudio Only
+3We use 3number of objects choices to reduce the tuning noise
+introduced by the mismatch between How2 and VisSpeech.Tiny.en Base.en Small.en Medium.en Tiny Base Small Medium Large LargeV2681012141618WEREnglish Models Multilingual ModelsAudio Only
 Audio   Visual PromptFigure 2  The effectiveness of visual prompt on VisSpeech across different models.Table 2  Comparison of model performance
  on VisSpeech. With visual
  prompt, Medium.en outperforms
@@ -200,7 +206,10 @@ Audio   Visual PromptFigure 2  The effectiveness of visual prompt on VisSpeech a
 Model Modality WER
 SotA [19] A V 11.28
 Whisper Medium.en A 8.35
-Whisper Medium.en A V 7.60 8.02 2 7.16 99 training languages, and the task tokens do not convey
+Whisper Medium.en A V 7.60
+Whisper Large A 8.02
+Whisper LargeV2 A 7.16
+of the 99 training languages, and the task tokens do not convey
 any information on whether the model should output text in more
 than one language.
 Approach. To test Whisper s CS-ASR capabilities, we use
@@ -250,10 +259,10 @@ on SEAME compared to default . Secondly, with prompt
   zh   , Whisper performs much better on pure Mandarin utterances
  on ASCEND ( 16.3) than SEAME ( 26.3). Similar results
  are observed for pure English utterances. This indicates
-4 0.thatWhisper s monolingual ASR performance is much worse on
+4We set the probabilities of the languages other than the two to be 0.thatWhisper s monolingual ASR performance is much worse on
 SEAME than on ASCEND. Next we note that on SEAME, when
 we use default instead of   en   , En WER increased from
-33.8 85.5, while on ASCEND, WER was 31.8in both cases.
+33.8to85.5, while on ASCEND, WER was 31.8in both cases.
 This indicates that i.e. Whisper s LID performance for detecting
 English is much worse on SEAME than on ASCEND.
 To understand how do different language prompts steer
@@ -274,12 +283,26 @@ utterances, En WER represents results on English utterances. CS
 MER shows mixed error rate on code-switched utterance. Total
 MER is the summarizing metric on the entire dataset.
 Dataset Lang. prompt. Zh CER En WER CS MER Total MER
-ASCEND  zh   16.3 93.1 33.1 32.6 90.4 31.5 80.1 78.9 17.0 31.8 26.6 22.1 16.6 31.8 25.0 21.3 26.3 97.4 43.3 46.7 99.3 33.8 86.9 82.2 27.1 85.5 43.2 45.3 25.9 44.7 38.4 36.9 4  Comparison between zero-shot Whisper Large and
+ASCEND  zh   16.3 93.1 33.1 32.6
+  en   90.4 31.5 80.1 78.9
+default 17.0 31.8 26.6 22.1
+concat 16.6 31.8 25.0 21.3
+SEAME  zh   26.3 97.4 43.3 46.7
+  en   99.3 33.8 86.9 82.2
+default 27.1 85.5 43.2 45.3
+concat 25.9 44.7 38.4 36.9
+Table 4  Comparison between zero-shot Whisper Large and
 supervised SotA models on ASCEND and SEAME test sets
 Dataset Approach Zh CER En WER CS MER Total MER
-ASCENDSup. SotA [27] - - - 25.0 19.6 30.3 23.6 22.8 16.8 30.8 22.0 20.9
-SEAME DEVMAN Sup. SotA [28] - - - 16.6 24.7 76.3 38.2 38.2 23.6 45.8 33.4 32.7
-SEAME DEVSGE Sup. SotA [28] - - - 23.3 32.4 82.8 56.4 65.0 31.0 46.7 49.6 47.6
+ASCENDSup. SotA [27] - - - 25.0
+Whisper  default 19.6 30.3 23.6 22.8
+Whisper  concat 16.8 30.8 22.0 20.9
+SEAME DEVMAN Sup. SotA [28] - - - 16.6
+Whisper  default 24.7 76.3 38.2 38.2
+Whisper  concat 23.6 45.8 33.4 32.7
+SEAME DEVSGE Sup. SotA [28] - - - 23.3
+Whisper  default 32.4 82.8 56.4 65.0
+Whisper  concat 31.0 46.7 49.6 47.6
 Remarks. Recall that ASCEND is Chinese accented, and
 SEAME is Singaporean and Malaysian accented, and based on
 our discussion on table 3, we hypothesize that the performance
@@ -336,7 +359,7 @@ it also performs vert poorly except for Mandarin. We compare
 Whisper s performance with other models in table 55. Whisper
  performs reasonably on all three directions, and especially
 well on En  Ru. We note that the comparison in this table
-5 2 for En  Ru and En  Fr.should only be treated as a reference. This is because even for
+5Whisper Large for En  De  LargeV2 for En  Ru and En  Fr.should only be treated as a reference. This is because even for
 the unsupervised and zero-shot approaches, they are particularly
 designed for ST, and they either leverage machine translation systems
  [ 30,33] or multilingual sentence embedding models [ 34].
@@ -359,15 +382,16 @@ Libri-Trans (En  Fr). Zero-shot Whisper performs reasonably
 on all three directions. *T-Modules [ 34] relies on strong multilingual
  sentence embedding models that are trained on bitext.
 Category Approach En  De En  Ru En  Fr
-Supervisedw v2 mBART [30] 32.4 20.0 23.1
-E E Transformer [35] 27.2 15.3 11.4
+Supervisedw2v2 mBART [30] 32.4 20.0 23.1
+E2E Transformer [35] 27.2 15.3 11.4
 UnsupervisedChung et al. [36] - - 12.2
 Cascaded [30] 22.0 10.0 15.4
-E E (w v2 mBART) [30] 23.8 9.8 15.3
+E2E (w2v2 mBART) [30] 23.8 9.8 15.3
 Zero-shotEscolano et al. [33] 6.8 - 10.9
 T-Modules* [34] 23.8 - 32.7
 Whisper w/ default prompt 0.4 8.8 0.8
-Whisper w/ our prompt 18.1 12.8 13.1 6. Conclusion
+Whisper w/ our prompt 18.1 12.8 13.1
+6. Conclusion
 We investigate the emergent abilities of Whisper through the
 lens of prompt-based zero-shot task generalization. Our proposed
  prompts significantly outperform the default prompts in
@@ -416,7 +440,7 @@ no. 9, 2023.
 [9]H. Gao, J. Ni, K. Qian, Y . Zhang, S. Chang, and M. HasegawaJohnson,
   Wavprompt  Towards few-shot spoken language understanding
  with frozen language models,  in Interspeech , 2022.
-[10] A. Baevski, H. Zhou, A. rahman Mohamed, and M. Auli,  wav vec
+[10] A. Baevski, H. Zhou, A. rahman Mohamed, and M. Auli,  wav2vec
 2.0  A framework for self-supervised learning of speech representations, 
  in NeurIPS , 2020.
 [11] A. Radford, J. Wu, R. Child, D. Luan, D. Amodei, and I. Sutskever,
@@ -453,7 +477,7 @@ J. Lee, V . Vanhoucke, and P. Florence,  Socratic models  Composing
  zero-shot multimodal reasoning with language,  in ICLR ,
 2023.
 [22] A. Miech, D. Zhukov, J. Alayrac, M. Tapaswi, I. Laptev, and
-J. Sivic,  Howto m  Learning a text-video embedding by watching
+J. Sivic,  Howto100m  Learning a text-video embedding by watching
  hundred million narrated video clips,  in ICCV , 2019.
 [23] B. Wu, W. Chen, Y . Fan, Y . Zhang, J. Hou, J. Liu, and T. Zhang,
  Tencent ml-images  A large-scale multi-label image database for
@@ -496,7 +520,7 @@ language-specific encoders and decoders,  ASRU , 2020.
 Translation modules for zero-shot cross-modal machine translation, 
  in EMNLP , 2022.
 [35] C. Wang, Y . Tang, X. Ma, A. Wu, D. Okhonko, and J. Pino,
- Fairseq S T  Fast speech-to-text modeling with fairseq,  in AACL 
+ Fairseq S2T  Fast speech-to-text modeling with fairseq,  in AACL 
 System Demonstrations , 2020.
 [36] Y . Chung, W. Weng, S. Tong, and J. R. Glass,  Towards unsupervised
  speech-to-text translation,  in ICASSP , 2019.

@@ -33,7 +33,9 @@ structure. In addition, unlike in previous work,
 we do not rely on hand-crafted features  this
 improves the model s robustness. Experiments
 show that our method achieves new state-ofthe-art,
- surpassing the previous model by 2.3 1.5 on Molweni (F1 scores).1 1 Introduction
+ surpassing the previous model by 2.3
+on STAC and 1.5 on Molweni (F1 scores).1
+1 Introduction
 Discourse parsing is a series of tasks that consist
 of elementary discourse unit (EDU) segmentation,
 relation directionality classification (optional), and
@@ -74,7 +76,7 @@ One straightforward solution to this problem is
 to transform the parsing structure into a series of
 local pairwise link prediction problems. In other
 words, the model is expected to compute some
-local potentials between each pair of utterances,arXiv 2306.15103 1  [cs.CL]  26 2023Models Encoding Decoding Link & Relation Prediction Use Feature
+local potentials between each pair of utterances,arXiv 2306.15103v1  [cs.CL]  26 Jun 2023Models Encoding Decoding Link & Relation Prediction Use Feature
 MST (2015) local, edge-wise partial MST separate Y
 ILP (2016) local, edge-wise ILP separate Y
 Deep-Seq. (2019) global, two-staged indp. multiple choice separate Y
@@ -118,7 +120,10 @@ batchwise variable-length determinant calculation.
  Experimental results demonstrate state-of-theart
  discoursing parsing performance on two
 datasets.
-2 17 discourse relations defined in Asher et al.(2016). All the utterances, links, and relations constitute
+2 Task Background
+We are given a dialogue session Dand the links and
+relations between pairs of utterances labeled using
+the 17 discourse relations defined in Asher et al.(2016). All the utterances, links, and relations constitute
  a graph G(V, E, R ), where Vrepresents the
 set of utterances, Erepresents the links connecting
 them, and Rrepresents the edge labels. The goal
@@ -191,7 +196,8 @@ since our model does not rely on such explicitly
 modeled feature, the performance drop is less than
 the ones that use them when the speaker and turn
 information are removed.
-3 2 can theoretically be any
+3 Structure Formulation
+The graph Gdefined in   2 can theoretically be any
 directed acyclic graph, which is generally difficult
 to optimize. Fortunately, we find that by discarding
 only a small fraction of the edges, which is 6% for
@@ -225,7 +231,8 @@ three-dimensional adjacency matrix, we can
 run the modified maximum spanning tree induction
  algorithm to induce the tree structure.
 See   4.4.
-4 4.1 Model Parameterization
+4 Proposed Framework
+4.1 Model Parameterization
 Given nutterances (aka EDUs) {Ui}n
 i 1in a dialogue
  session D, we define a discourse pair inD
@@ -250,18 +257,19 @@ of utterances as input, and a special [CLS] token
 is prepended before the concatenation of the two
 3There are four types of spanning trees investigated in
 the dependency parsing domain (McDonald et al., 2005  Koo
-et al., 2007)Tomm  Fancy some tasty ore Dave  I do not  _ dummy rootTomm  But you can you know...smelt it Tomm  How about clay Dave  nope, sorry " # $ % &Input DialoguePairwise Potential Vectors Relation ScalarsperPair
+et al., 2007)Tomm  Fancy some tasty ore Dave  I do not  _ dummy rootTomm  But you can you know...smelt it Tomm  How about clay Dave  nope, sorry " # $ % &Input DialoguePairwise Potential Vectors17Relation ScalarsperPair
  
   '
 1234501234..17
  ",$
 1234501234... ",$%LSTMd
-1234501234...LSTM ",$%dFigure 2  The contextual encoding process. Row numbers from 0 4 represent h, and column numbers from 1 5
+1234501234...LSTM ",$%dFigure 2  The contextual encoding process. Row numbers from 0 to 4 represent h, and column numbers from 1 to 5
 represents m. In this example, the 1-st utterance can connect to the 2-nd, 3-rd or 5-th utterances when predicting the
 V1,4cell. This is represented by the orange rectangles. Similarly, the 4-th utterance can have 0, 1, or 3-rd utterances
 as its parent, represented by the green rectangles. We use two LSTMs for two directions (orange and green). Finally,
 we add the contextualized vectors together to get the purple vector Linear (Vr
-1,4 1,4)  θ1,4.
+1,4 Vc
+1,4)  θ1,4.
 utterances. The representation of the [CLS] token
 is further used to calculate d-dimensional pairwise
 representation 
@@ -281,7 +289,9 @@ Uhshould point to Um, we should collect the information
 that appear later chronologically. Similarly, for the
 m-th column, all the hidden states are 
 {Vc
-t,m}m 1 0  LSTM( {Vt,m}m 1 0) (3)
+t,m}m 1
+t 0  LSTM( {Vt,m}m 1
+t 0) (3)
 The final context-aware potential score is 
  Vh,m Vr
 h,m Vc
@@ -355,7 +365,7 @@ adjacency matrix
 Lh,m(θ)  (Pn
 i  1Ai ,m(θ),ifh m
  Ah,m(θ), otherwise(10)
-Then the minor L(0,0)(θ)is equal to the sum of
+Then the minor4L(0,0)(θ)is equal to the sum of
 the weights of all directed spanning trees rooted at
 the dummy root utterance (Tutte, 1984) 
 Z(θ)   det( ˆL), (11)
@@ -397,9 +407,10 @@ between the predicted and reference tree distributions.
 4.4 Inference of Tree
 There is a well-known algorithm - Chiu-LiuEdmonds
  (CLE) (Edmonds, 1967  Chu, 1965) that
-can find the directed spanning tree  Twith maxi- 1 x  -  --- - -  -  -- - - -  -  --- - -   1 4  This is an efficient padding for calculating batch determinant. The original 4 4 6 6(leftmost) one for padding. Note that the last two diagonal elements are all ones. The second matrix encodes
+can find the directed spanning tree  Twith maxi- 1 x  -  --- - -  -  -- - - -  -  --- - -   1 x   Figure 4  This is an efficient padding for calculating batch determinant. The original 4 4matrix is expanded to a
+6 6(leftmost) one for padding. Note that the last two diagonal elements are all ones. The second matrix encodes
 the coefficients for multiplying sub-matrices. After a series of cofactor expansions, we can see that the determinant
-of the padded 6 6 4 4matrix.
+of the padded 6 6matrix is equivalent to the original unpadded 4 4matrix.
 mum weight given A(θ)derived in eq. (8). However,
  we cannot directly apply the CLE algorithm
 as the original version does not accept labeled
@@ -411,7 +422,8 @@ Now we can feed this standard form into the CLE
 algorithm   T  CLE( A ). The correctness of this
 approach can be proved easily by contradiction 
 suppose the optimal tree includes one edge that is
-not the highest-scoring one among {Ah,m,r}17 1,
+not the highest-scoring one among {Ah,m,r}17
+r 1,
 we can always substitute that edge with the highestscoring
  one to get a better tree (contradiction). Note
 that for a pair of utterances, we only allow one direction
@@ -419,7 +431,8 @@ that for a pair of utterances, we only allow one direction
 CLE algorithm in fact degenerates to its undirected
 version known as Prim/Kruskal s algorithm (Prim,
 1957  Kruskal, 1956).
-5 5.1 Datasets
+5 Experiments
+5.1 Datasets
 There are two datasets for us to train the discourse
 parser, one of which is the STAC (Asher et al.,
 2016) corpus, which is a multi-party dialogue corpus
@@ -436,7 +449,8 @@ small portion of common tokens, 3) relation distributions
 5.2 Hyperparameters
 Following Liu and Chen (2021), we use the
 Roberta-Base uncased pretrained checkpoint fora fair comparison. The max utterance length is set
-to 28. The initial learning rate is set to 2e-5 0 4 epochs. The batch size is 4.
+to 28. The initial learning rate is set to 2e-5 with a
+linear decay to 0 for 4 epochs. The batch size is 4.
 The first 10% of training steps is the warmup stage.
 For all baselines using large pretrained models, we
 always use the same model checkpoint and tune
@@ -455,7 +469,8 @@ relations to be correct. We focus primarily on
 this metric since it is more informative and
 is used in downstream applications. (Also
 known as Link & Rel F1 score)
-5.4 2. The left part of
+5.4 Main Results
+We present the results in Table 2. The left part of
 the table focuses on in-domain training and testing,
 which is the standard setting. Bearing in mind that
 discourse parsers are often used as the first stage of
@@ -468,13 +483,15 @@ forum).
 In-domain We first take a look at the in-domain
 results. Our proposed parser is the best among
 all parsers, surpassing the previous state-of-the-art
-by 2.3 1.5 (F1 scores) on MolweniSTAC / STAC MOL / MOL STAC / MOL MOL / STAC
+by 2.3 on STAC and 1.5 (F1 scores) on MolweniSTAC / STAC MOL / MOL STAC / MOL MOL / STAC
 UAS LAS UAS LAS UAS LAS UAS LAS
 MST (Afantenos et al., 2015) 69.6 52.1 69.0 48.7 61.5 24.0 60.5 14.8
 ILP (Perret et al., 2016) 69.0 53.1 67.3 48.3 57.0 24.1 60.4 14.5
 Deep-Seq. (Shi and Huang, 2019) 73.2 54.4 76.1 53.3 53.5 21.6 42.7 15.7
 Hierarchical (Liu and Chen, 2021) 73.1 57.1 80.1 56.1 60.1 32.1 48.9 26.8
-Struct-Aware (Wang et al., 2021) 73.4 57.3 81.6 58.4 57.0 32.9 44.7 26.1 74.4 59.6 83.5 59.9 64.5 38.0 50.6 31.6 2  STAC / MOL means the training dataset is STAC and the testing dataset is MOL. LAS is the harder setting
+Struct-Aware (Wang et al., 2021) 73.4 57.3 81.6 58.4 57.0 32.9 44.7 26.1
+This Work 74.4 59.6 83.5 59.9 64.5 38.0 50.6 31.6
+Table 2  STAC / MOL means the training dataset is STAC and the testing dataset is MOL. LAS is the harder setting
 used for downstream applications. Results are the average of three runs. Note that speaker information is still used
 in this set of experiments, except our parser does not need to model their relations explicitly as described in   2.4.
 under the LAS setting. The trend is similar for
@@ -513,7 +530,8 @@ the parser to predict long-range links. We focus
 on the in-domain setting and plot the results in
 Figure 5. As we can see, the performance of our
 parser drops less than baselines when the dialogue
-0.20.40.60.81 27121722273237 1 ScoreDialogue LengthDeep-Seq.Struct-AwareOursFigure 5  Parsing performance w.r.t dialogue lengths.
+0.20.40.60.81
+27121722273237F1 ScoreDialogue LengthDeep-Seq.Struct-AwareOursFigure 5  Parsing performance w.r.t dialogue lengths.
 As we can see, the performance difference is larger
 when the dialogue becomes longer, demonstrating the
 length robustness of our parser.
@@ -522,7 +540,8 @@ structured learning and inference.
 Relation Performance Breakdown In order to
 know what kinds of relations benefit the most from
 our proposed parser, we count the number of correct
- relation predictions and plot them in Figure 6 7.5The baseline parser we compare with is
+ relation predictions and plot them in Figure 6
+and 7.5The baseline parser we compare with is
 the Hierarchical model (Liu and Chen, 2021) as it
 can be viewed as the non-structured version of our
 parser with the same pretrained model backbone.
@@ -546,8 +565,9 @@ Figure 7  Molweni relation performance breakdown.
 Speaker and Turn Feature Robustness We experiment
  with removing speaker and turn information
  used in baselines. The performance drop (LAS
-of STAC) of our parser (59.6 54.4) is less than
-that of the best baseline (Struct-Aware) (57.3 47.8), demonstrating the robustness of our parser.
+of STAC) of our parser (59.6  54.4) is less than
+that of the best baseline (Struct-Aware) (57.3  
+47.8), demonstrating the robustness of our parser.
 6 Related Work
 Discourse Parsing As discussed in the Introduction
  section, there are three types of discourse
@@ -633,7 +653,9 @@ Conference on Empirical Methods in Natural Language
  Association for Computational Linguistics.
 Chloé Braud, Maximin Coavoux, and Anders Søgaard.
 2017. Cross-lingual RST discourse parsing. In Proceedings
- of the 15 1, Long Papers , pages 292 304,
+ of the 15th Conference of the European
+Chapter of the Association for Computational Linguistics 
+ Volume 1, Long Papers , pages 292 304,
 Valencia, Spain. Association for Computational Linguistics.
 
 Danqi Chen and Christopher D Manning. 2014. A fast
@@ -739,7 +761,7 @@ Daniel Jurafsky and James H. Martin. 2021. 22, 3
 edition.
 Yoon Kim, Carl Denton, Luong Hoang, and Alexander
  M. Rush. 2017. Structured attention networks.
-In th International Conference on Learning Representations,
+In5th International Conference on Learning Representations,
  ICLR 2017, Toulon, France, April 2426,
  2017, Conference Track Proceedings . OpenReview.net.
 
@@ -806,7 +828,8 @@ for Computational Linguistics , 6 63 75.
 Zhengyuan Liu and Nancy Chen. 2021. Improving
 multi-party dialogue discourse parsing via domain
 integration. In Proceedings of the 2nd Workshop on
-Computational Approaches to Discourse , pages 122 127, Punta Cana, Dominican Republic and Online.
+Computational Approaches to Discourse , pages 122 
+127, Punta Cana, Dominican Republic and Online.
 Association for Computational Linguistics.
 William C Mann and Sandra A Thompson. 1988.
 Rhetorical structure theory  Toward a functional theory
@@ -830,9 +853,11 @@ Workshop on Hybrid Approaches to Machine Translation
  (HyTra) , CONF.
 Karthik Narasimhan and Regina Barzilay. 2015. Machine
  comprehension with discourse relations. In
-Proceedings of the 53 7th
+Proceedings of the 53rd Annual Meeting of the Association
+ for Computational Linguistics and the 7th
 International Joint Conference on Natural Language
-Processing (Volume 1  Long Papers) , pages 1253 1262.
+Processing (Volume 1  Long Papers) , pages 1253 
+1262.
 Vlad Niculae, Andre Martins, Mathieu Blondel, and
 Claire Cardie. 2018. Sparsemap  Differentiable
 sparse structured inference. In International Conference
@@ -847,7 +872,9 @@ Linguistics.
 Max B. Paulus, Dami Choi, Daniel Tarlow, Andreas
 Krause, and Chris J. Maddison. 2020. Gradient estimation
  with stochastic softmax tricks. In Advances
-in Neural Information Processing Systems 33 2020, NeurIPS 2020, December 6-12, 2020,
+in Neural Information Processing Systems 33  Annual
+ Conference on Neural Information Processing
+Systems 2020, NeurIPS 2020, December 6-12, 2020,
 virtual .
 Jérémy Perret, Stergos Afantenos, Nicholas Asher, and
 Mathieu Morey. 2016. Integer linear programming
@@ -910,7 +937,8 @@ Citeseer.
 Nan Yu, Meishan Zhang, and Guohong Fu. 2018.
 Transition-based neural rst parsing with implicit syntax
  features. In Proceedings of the 27th International
-Conference on Computational Linguistics , pages 559 570.
+Conference on Computational Linguistics , pages 559 
+570.
 Tao Yu and Shafiq Joty. 2020. Online conversation
 disentanglement with pointer networks. In Proceedings
  of the 2020 Conference on Empirical Methods

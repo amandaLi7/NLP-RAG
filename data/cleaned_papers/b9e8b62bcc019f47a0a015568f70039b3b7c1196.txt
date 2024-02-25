@@ -1,6 +1,8 @@
 Toolink  Linking Toolkit Creation and Using through Chain-of-Solving on
 Open-Source Model
-Cheng Qian1, Chenyan Xiong2, Zhenghao Liu3, Zhiyuan Liu1 1Tsinghua University,2Carnegie Mellon University,3 20@mails.tsinghua.edu.cn
+Cheng Qian1, Chenyan Xiong2, Zhenghao Liu3, Zhiyuan Liu1
+1Tsinghua University,2Carnegie Mellon University,3Northeastern University
+qianc20@mails.tsinghua.edu.cn
 Abstract
 Large Language Models (LLMs) have demonstrated
  remarkable progress in utilizing tools,
@@ -16,7 +18,7 @@ and calling of tools through a chain-of-solving
 of Toolink in harnessing the model s creativity
 and CoS ability on ChatGPT. Subsequently, we
 curate CoS-GPT, a chain-of-solving dataset designed
- for tool-using, and finetune the LLaMA B
+ for tool-using, and finetune the LLaMA7B
  model. It results in LLaMA-CoS, a powerful
  open-source model with advanced toolplanning
  and tool-calling capabilities. Evaluation
@@ -61,8 +63,10 @@ ChatGPT (Closed -Source Model)
 LLaMa -CoSToolKit
  Training
 CorpusC# Calling Codes
-# Step 1 1   [Tool1] ( )
-# Step 2 2   [Tool2] ( )
+# Step 1  Call  
+out1   [Tool1] ( )
+# Step 2  Call  
+out2   [Tool2] ( )
  Figure 1  An illustration of Toolink. It decomposes the
 tasks through toolkit creation, and solves the queries
 through chain-of-solving (CoS). Toolink can be adapted
@@ -89,7 +93,7 @@ following aspects  (1) Limited adaptability   The
 closed-source nature of LLMs prevents them from
 being easily finetuned, resulting in a lack of flexibility
  to adapt to customized tasks according to
-specific requirements. (2) Low efficiency and higharXiv 2310.05155 1  [cs.CL]  8 2023inference cost   Many existing LLMs can only be
+specific requirements. (2) Low efficiency and higharXiv 2310.05155v1  [cs.CL]  8 Oct 2023inference cost   Many existing LLMs can only be
 accessed online , which imposes limitations on the
 inference rate and leads to high costs. (3) Privacy
  and security concerns   Each query must
@@ -181,14 +185,19 @@ extend instruction tuning to visual domains (Liu
 et al., 2023) and leverage the LLMs to build the
 instruction-following data to improve open-source
 models (Taori et al., 2023  Peng et al., 2023).
-3 2, Toolink first adopts toolkit
+3 Method
+As shown in Figure 2, Toolink first adopts toolkit
 creation to break down the target task through generating
  potential tools for task-solving (Sec. 3.1).
 Then, the model links these created tools to address
  specific queries by selecting pertinent tools
 from the toolkit, planning their uses, and makingToolkit Creation
 Start
-Step1 3 2 4 5
+Step1
+Step3
+Step2
+Step4
+ Step5
 CoS-Calling
 Result  TrueThe useful tools are
 [update_location ] and
@@ -200,7 +209,7 @@ to get the new orientation .
 We use [update_location] to
 get the new location.CoS-Planning
 (Navigate ) Please judge if you will return to the starting point after the se actions 
-Step1 4 2 3 1 4 3 5  Turn around
+Step1  Take 4 steps   Step2  Turn around   Step3  Take 1 step   Step4  Take 3 steps   Step5  Turn around
 start   ( 0,0)
 orient   N 
 # 10 steps
@@ -284,8 +293,13 @@ Tool-UsingTool-Planning Augmented 4.4K
 Tool-Calling Augmented 4.4K
 Code
 GenerationPython-Simple New 2.0K
-Python-Specific New 2.0 2.5 2.3 0.8 1.6K
-Total - - 20.0 1  The statistics about the sources and number of
+Python-Specific New 2.0K
+Math Augmented 2.5K
+Algorithm Github 2.3K
+LeetCode LeetCode 0.8K
+Rectification Sources Above 1.6K
+Total - - 20.0K
+Table 1  The statistics about the sources and number of
 data points in each category of CoS-GPT. Augmented
 represents augmented from an existing dataset.
 and enhances its applicability to open-source models.
@@ -342,7 +356,7 @@ for CoS within Toolink, and the last aspect as it
 serves as the medium for tool-using.
 For data points about planning and calling,
 we enhance the existing AQUA-RAT (Ling
-et al., 2017), GSM K (Cobbe et al., 2021), and
+et al., 2017), GSM8K (Cobbe et al., 2021), and
 TabMWP (Lu et al., 2022a) datasets by incorporating
  tools. These datasets consist of graduate-level
 math problems, numerical reasoning tasks, and diverse
@@ -396,7 +410,8 @@ BIG-bench dataset (Srivastava et al., 2022) to investigate
 ChatGPT s creativity and tool-using capability to
 improve task performance.
 Subsequently, we perform finetuning on the
-open-source LLaMA-7 3.3. This
+open-source LLaMA-7B model by following the
+adaptation process outlined in Section 3.3. This
 results in LLaMA-CoS, which links the created
 toolkit with specific tool use through CoS. We then
 assess the effectiveness of LLaMA-CoS in utilizing
@@ -462,22 +477,29 @@ of CoS which links toolkit creation with specific
 uses. These findings affirm the validity of Toolink,
 establishing a strong basis for its potential transferability
  to smaller, open-sourced models.Task Arith. Date U. Matrix S. Navigate Chinese R. Dyck L. Boolean E. Tracking S. Average
-Num. of Tools 5 3 5 2 2 4 2 4 3.38 77.78 68.67 40.90 65.16 0.0 19.40 80.70 23.67 47.03 79.44 68.67 80.46 87.96 0.0 19.42 75.88 40.78 56.58 100.00 69.28 93.67 85.30 95.14 52.46 97.37 99.11 86.54
+Num. of Tools 5 3 5 2 2 4 2 4 3.38
+Vanilla 77.78 68.67 40.90 65.16 0.0 19.40 80.70 23.67 47.03
+CoT 79.44 68.67 80.46 87.96 0.0 19.42 75.88 40.78 56.58
+CoS 100.00 69.28 93.67 85.30 95.14 52.46 97.37 99.11 86.54
 CoS-Planning 100.00 66.16 95.18 94.78 100.00 74.58 95.39 99.85 90.74
-CoS-Calling 100.00 90.96 97.44 88.44 95.67 98.55 93.42 100.00 95.56 2  We first record the number of tools in the toolkit created for each task. Next, we demonstrate the accuracy
+CoS-Calling 100.00 90.96 97.44 88.44 95.67 98.55 93.42 100.00 95.56
+Table 2  We first record the number of tools in the toolkit created for each task. Next, we demonstrate the accuracy
 (%) of ChatGPT under different settings on 8 tasks sourced from BIG-bench. We report the results of Vanilla, CoT
 baselines and our CoS method. We also report the performance of CoS-Planning and CoS-Calling separately.
 Method Model Arith. Date U. Matrix S. Navigate Chinese R. Dyck L. Boolean E. Tracking S.
 CoT
 (Zero-shot ,
 w/ demo )Alpaca 19.89 39.76 5.62 47.11 0.0 0.0 57.46 0.44
-LLaMA-7 39.44 33.73 12.58 39.70 0.0 2.90 50.44 14.22 79.44 68.67 80.46 87.96 0.0 19.42 75.88 40.78
+LLaMA-7B 39.44 33.73 12.58 39.70 0.0 2.90 50.44 14.22
+ChatGPT 79.44 68.67 80.46 87.96 0.0 19.42 75.88 40.78
 CoT (Tuned )LLaMA-CoT 50.44 49.40 70.82 71.64 0.0 35.27 62.72 28.44
 CoS
 (Zero-shot ,
 w/ demo )Alpaca 17.78 7.83 3.00 48.60 7.56 1.00 94.74 6.78
-LLaMA-7 55.89 17.47 10.65 45.90 23.80 35.83 99.12 0.67 100.00 69.28 93.67 85.30 95.14 52.46 97.37 99.11
-CoS (Tuned )LLaMA-CoS 100.00 74.10 91.01 99.56 95.44 98.21 100.00 99.56 3  The accuracy (%) on the 8 tasks sourced from BIG-bench. We report the baseline results from three models
+LLaMA-7B 55.89 17.47 10.65 45.90 23.80 35.83 99.12 0.67
+ChatGPT 100.00 69.28 93.67 85.30 95.14 52.46 97.37 99.11
+CoS (Tuned )LLaMA-CoS 100.00 74.10 91.01 99.56 95.44 98.21 100.00 99.56
+Table 3  The accuracy (%) on the 8 tasks sourced from BIG-bench. We report the baseline results from three models
 including LLaMA-7B, Alpaca, and ChatGPT. LLaMA-CoS employs planning and calling of tools, which beats all
 CoT baselines by large margins and is on par with ChatGPT s CoS ability.
 4.2 Experiments on LLaMA-CoS
@@ -496,7 +518,7 @@ Obtaining LLaMA-CoS. We follow the adaptation
  process outlined in Section 3.3 and finetune
  LLaMA-7B with the CoS-GPT we introduced
  ( DCoS) and eight sets of task-specific toolaugmented
- data ( DTi-tool,1 8). The eight
+ data ( DTi-tool,1 i 8). The eight
 target tasks are the same ones we apply in Section
  4.1. Through the training detailed in Appendices
  F, we derive a powerful variant, LLaMA-CoS,
@@ -510,7 +532,7 @@ the chain-of-thought (CoT) reasoning as the baseline.
  We evaluate both methods under two scenarios 
  (1) zero-shot prompting with demonstrations
  on Alpaca, LLaMA-7B, and ChatGPT, and
-(2) normal finetuning specifically on the LLaMA B
+(2) normal finetuning specifically on the LLaMA7B
  model. We referred to the LLaMA-7B tuned
 with CoT data as LLaMA-CoT, while our LLaMACoS
  is tuned with data points specially designed to
@@ -594,9 +616,9 @@ presented in the training data, even though we only
 leverage a few tool-augmented publicly available
 samples. To showcase the generalization ability of
 LLaMA-CoS, we further test it on two new tasks 
-FinQA (Chen et al., 2022b) and GSM K (Cobbe
+FinQA (Chen et al., 2022b) and GSM8K (Cobbe
 et al., 2021). FinQA involves question-and-answer
-pairs based on financial report data, while GSM K
+pairs based on financial report data, while GSM8K
 focuses on grade school math problems.
 Together with AQUA-RAT, MATH, and
 TabMWP, whose data are presented in CoS-GPT
@@ -619,18 +641,26 @@ CoS-Whole LLaMA-CoS 100.00 74.10 91.01 99.56 95.44 98.21 100.00 99.56
 CoS-Planning
 (Zero-shot ,
 w/ demo )Alpaca 18.22 27.41 24.15 77.16 100.00 76.3 97.59 99.37
-LLaMA-7 74.11 27.71 25.02 77.16 100.00 93.80 97.59 100.00 100.00 66.16 95.18 94.78 100.00 74.58 95.39 99.85
+LLaMA-7B 74.11 27.71 25.02 77.16 100.00 93.80 97.59 100.00
+ChatGPT 100.00 66.16 95.18 94.78 100.00 74.58 95.39 99.85
 CoS-Planning LLaMA-CoS 100.00 85.84 89.62 97.14 100.00 99.19 97.59 100.00
 CoS-Calling
 (Zero-shot ,
 w/ demo )Alpaca 99.44 24.70 30.08 48.60 17.97 1.56 89.91 6.78
-LLaMA-7 74.70 51.20 55.49 43.77 24.81 25.67 94.30 1.56 100.00 90.96 97.44 88.44 95.67 98.55 93.42 100.00
-CoS-Calling LLaMA-CoS 100.00 91.57 95.56 98.88 94.18 98.55 95.61 88.44 4  The accuracy (%) of CoS-Planning and CoS-Calling separately on 8 tasks sourced from BIG-bench. Results
+LLaMA-7B 74.70 51.20 55.49 43.77 24.81 25.67 94.30 1.56
+ChatGPT 100.00 90.96 97.44 88.44 95.67 98.55 93.42 100.00
+CoS-Calling LLaMA-CoS 100.00 91.57 95.56 98.88 94.18 98.55 95.61 88.44
+Table 4  The accuracy (%) of CoS-Planning and CoS-Calling separately on 8 tasks sourced from BIG-bench. Results
 show LLaMA-CoS has excellent ability in understanding and using tools through CoS.
 Task In DCoS CountCoSPlanningCoS-
 Calling
 
-AQUA-RAT 139 59.80 56.12 400 65.83 50.75 400 90.00 66.00 210 70.51 22.38 400 61.29 57.25 5  The accuracy (%) of CoS-Planning and CoSCalling
+AQUA-RAT 139 59.80 56.12
+MATH 400 65.83 50.75
+TabMWP 400 90.00 66.00
+FinQA 210 70.51 22.38
+GSM8K 400 61.29 57.25
+Table 5  The accuracy (%) of CoS-Planning and CoSCalling
  on five diverse datasets applying LLaMA-CoS.
 DCoSrepresents the CoS-GPT dataset. Results show
 LLaMA-CoS is robust to unseen tasks w.r.t. tool-using.
@@ -640,7 +670,8 @@ Cnt.Raw 97.50 80.83
 From Dyck L. 73.30 79.17
 Unit
 Interp.Raw 70.83 80.83
-From Arith. 65.83 80.00 6  The accuracy (%) of ChatGPT and LLaMACoS,
+From Arith. 65.83 80.00
+Table 6  The accuracy (%) of ChatGPT and LLaMACoS,
  with toolkit newly created for the target task ( Raw)
 or borrowed from other tasks. Our results show that
 both ChatGPT and LLaMA-CoS can utilize tools not
@@ -701,7 +732,7 @@ Our experiments focus on equipping the opensource
  model with tool-using capabilities through
 the CoS approach, specifically in planning and calling,
  while excluding the ability to create toolkits.
-This limitation arises from the fact that the LLaMA B
+This limitation arises from the fact that the LLaMA7B
  primarily relies on provided demonstrations and
 lacks the internal creativity required for toolkit creation.
  Moreover, the absence of enough training
@@ -1138,7 +1169,7 @@ shown mainly consists of the instruction for toolkit
 creation, the demonstration of format, sample public
  data, and the current tasks  meta information.
 B Toolkits for tasks from BIG-bench
-We show in Figures 6 13 3.5-turbo
+We show in Figures 6 to 13 the toolkits that GPT3.5-turbo
  created leveraging the prompt mentioned
 in the previous section. Notice that we show the
 final version of the toolkit, which may contain certain
@@ -1224,7 +1255,7 @@ Python function that is helpful to solve the problems in the task.
 You will be given the related information about the task and the example queries to help you create
 the useful tools.
 For each tool you create, please first state the tool s name and its purpose, and then give its
-implementation using python code. Please wrap the code in    python      . You can create 2 5
+implementation using python code. Please wrap the code in    python      . You can create 2 to 5
 tools for each task.
 ### Task 1
 -Task Meta Information
@@ -1282,7 +1313,7 @@ CoS-GPT is constructed. We introduce respectivelythe construction of tool-using 
 data points aim to enhance the open-source model s
 CoS ability.
 E.1 Construction of Tool-Using Data
-For each query in AQUA-RAT, GSM K, and
+For each query in AQUA-RAT, GSM8K, and
 TabMWP, we first utilize ChatGPT to create a diverse
  set of tools that are potentially relevant to
 the given query, forming the toolkit. We then provide
@@ -1376,15 +1407,16 @@ execute them again, retaining only the ones that
 give a correct answer finally and form the set based
 on these valid data points.
 F Main Experiment Setting Details
-For our main experiment, we finetune the LLaMA B
+For our main experiment, we finetune the LLaMA7B
  model on four A100-80G GPUs, with a total
-batch size of 32 1e-5. For
+batch size of 32 and a learning rate of 1e-5. For
 the model whose performance we demonstrate in
-Tables 3 4, its training dataset consists of 1.6K
-target task-specific data points (8 tasks, 100 100 for calling each), 4K tool-using
+Tables 3 and 4, its training dataset consists of 1.6K
+target task-specific data points (8 tasks, 100 for
+planning and 100 for calling each), 4K tool-using
 data and 3K code-generation data randomly sampled
  respectively from the CoS-GPT dataset. We
-trained the LLaMA-7 3 epochs
+trained the LLaMA-7B on these data for 3 epochs
 and obtain LLaMA-CoS.
 In addition, for the ablation study about the training
  on codes we perform in Section 4.3, we apply
@@ -1431,7 +1463,7 @@ performance of LLaMA-CoS and ChatGPT within
 this paper, so we deem expanding the dataset as
 fair and reasonable under our settings.
 We show the toolkits specially tailored for these
-two new tasks in Figures 14 15. The LLaMACoS
+two new tasks in Figures 14 and 15. The LLaMACoS
  model we apply is still the model we have
 trained in the main experiment, detailed in Appendices
  F. All the other settings, including the
@@ -1478,7 +1510,7 @@ new_date   start_date   datetime.timedelta (days days)
 ifnew_date.month   months   12 
 r   int((new_date.month   months) / 12)
 new_date   new_date.replace (year new_date.year   years   r, month (new_date.month   months  
-1) % 12 1)
+1) % 12  1)
 else 
 new_date   new_date.replace (year new_date.year   years, month new_date.month   months)
 returnnew_date.strftime ("%m/%d/%Y ")
@@ -1494,7 +1526,7 @@ new_date   start_date -datetime.timedelta (days days)
 ifnew_date.month -months    0 
 r   int((new_date.month -months) / -12)   1
 new_date   new_date.replace (year new_date.year -years -r, month (new_date.month -months  
-1) % 12 1)
+1) % 12  1)
 else 
 new_date   new_date.replace (year new_date.year -years, month new_date.month -months)
 returnnew_date.strftime ("%m/%d/%Y")
@@ -1524,7 +1556,7 @@ kronecker product.
 defkronecker (shape1, shape2) 
 iflen(shape1)    len(shape2) 
 raiseException ("The number of dimensions of the two matrices is not equal ")
-result_shape   [dim1 * dim2 1, dim2 inzip(shape1, shape2)]
+result_shape   [dim1 * dim2 fordim1, dim2 inzip(shape1, shape2)]
 returnresult_shape
    
 -Tool 3 
@@ -1550,7 +1582,9 @@ add_subtract_hadamard   it takes two lists representing the shape of two matrice
 and hadamard , and returns the shape of the resulting matrix.
    python
 defadd_subtract_hadamard (shape1, shape2) 
-assertshape1 2 1 8  The toolkit for task Matrix Shape.Toolkit for task  Navigation
+assertshape1    shape2
+returnshape1
+   Figure 8  The toolkit for task Matrix Shape.Toolkit for task  Navigation
 -Tool 1 
 update_orientation   It takes the original orientation(N, E, S or W) and turn direction(left, right or
 around), and returns the new orientation. It should be used only if not always face forward.
@@ -1773,12 +1807,12 @@ get_opening_parenthesis (closing )
 stack_insert (stack , element )
 stack_pop (stack )
 (b) Conditional Tool Calling.
-Nested Tool Calling  Jane visits thebookstore onthe th ofeach month starting from the
-October of2009. Itisher th visit tothebookstore today . What isthedate 24 hours later in
+Nested Tool Calling  Jane visits thebookstore onthe16th ofeach month starting from the
+October of2009. Itisher5th visit tothebookstore today . What isthedate 24 hours later in
 MM/DD/YYYY 
 Toolkit Creation
 The starting day that she visits the bookstore is 10/16/2009. So I should use
-[add_time ] to add 4 2009 to get the date today.
+[add_time ] to add 4 months to the October of 2009 to get the date today.
 I am asked to calculate the date 24 hours later, so I should use [convert_hour ]
 to convert 24 hours into days and use [add_time ] to add the days to today's
 date and get the target date.CoS-Planning

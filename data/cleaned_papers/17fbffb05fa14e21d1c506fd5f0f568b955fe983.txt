@@ -90,7 +90,7 @@ writing scripts (Zhang et al., 2022a  Rust et al.,
 2021  Muller et al., 2021). Many commercial language
  models are multilingual, and text from languages
  that suffer from excessive fragmentation
-will be represented using more tokens. This directlyarXiv 2305.13707 1  [cs.CL]  23 2023increases cost of API usage for certain language
+will be represented using more tokens. This directlyarXiv 2305.13707v1  [cs.CL]  23 May 2023increases cost of API usage for certain language
 speakers, even if they convey the same information
 as others.
 We highlight this unfairness through three stages
@@ -116,7 +116,8 @@ and pricing strategies to be more equitable. In addition,
  we encourage the NLP community to pay
 better attention to tokenizers, an often neglected
 part of the LLM pipeline.
-2 2.1 Background
+2 Do All Languages Cost the Same 
+2.1 Background
 Language Model APIs Autoregressive language
 models are trained to predict the next  token  given
 a previous context. Following the success of such
@@ -126,13 +127,13 @@ models using natural language instructions to perform
  various tasks with little to no exposure to
 the underlying workings of the models. The API
 providers often support dozens of languages and
-charge users at a fixed rate based on the total number
+charge users2at a fixed rate based on the total number
  of input and generated tokens.3
 What constitutes a  token,  however, is not a
 universally accepted definition but a design choice
 that the model developers make. The total token
 count is also not immediately obvious to users except
- through a tokenizer interface separate from
+ through a tokenizer interface4separate from
 the chat interface.
 2While most services also have free tiers, they limit daily
 usage to a small number of tokens per use.
@@ -233,8 +234,10 @@ APIs. This analysis indicates that users who likely
 cannot afford high API costs are charged more for
 poorer service , hindering uniform accessibility of
 this technology.
-5https //help.openai.com/en/articles/674236 9-how-do-i-use-the-openai-api-in-different-lan
-guages3 3.1 Models
+5https //help.openai.com/en/articles/674236
+9-how-do-i-use-the-openai-api-in-different-lan
+guages3 Experimental Setup
+3.1 Models
 Throughout this work, we focus on two language
 models  ChatGPT (Ouyang et al., 2022  Brown
 et al., 2020) (gpt-3.5-turbo) and BLOOMZ (Muennighoff
@@ -252,7 +255,8 @@ supports as many as 90 languages (Ahuja et al.,
 length of 4096 tokens (including both the prompt
 and generated tokens).
 BLOOMZ (Muennighoff et al., 2022) is an opensource
- multilingual model trained on 46 13 programming languages. The bestperforming
+ multilingual model trained on 46 natural languages
+ and 13 programming languages. The bestperforming
  version of this model has 175B parameters
  and is not feasible to be loaded on our academic
 servers  hence we rely on a free API of BLOOMZ
@@ -261,11 +265,14 @@ trained with ALiBi positional embeddings (Press
 et al., 2022) which allows the model to extrapolate
 to any length sequences during inference, the Huggingface
  API has a context limit of 1000 tokens.
-3.2 1 200
+3.2 Tasks and Datasets
+To answer RQ1 whether the same information
+is conveyed with similar numbers of tokens in different
+ languages we use a subset of FLORES200
  (Goyal et al., 2022), a multilingual parallel corpus
  containing examples in over 200 languages.7
 We tokenize each sentence in the FLORES-200
-subset with ChatGPT s tokenizer and compute the
+subset with ChatGPT s tokenizer8and compute the
 average number of tokens per sentence for each
 language. Using parallel data controls for the same
 information across languages. We consider that
@@ -275,7 +282,7 @@ average. While previous studies have computed
 fragmentation rates with fertility (Ács, 2019), we
 6https //huggingface.co/docs/api-inference/q
 uicktour .
-7 2021 data (Akhbardeh
+7We also experimented with WMT 2021 data (Akhbardeh
 et al., 2021) and found similar results. Note that the WMT
 data are focused on European languages.
 8see ChatGPT s tokenizer https //github.com/opena
@@ -287,7 +294,7 @@ control for content, we use a parallel corpus for
 this analysis. Second, many languages we analyze
 are understudied and do not have word tokenizers
 available which are required to compute fertility.
-For RQ2 3, to clearly highlight the cost
+For RQ2 and RQ3, to clearly highlight the cost
 and utility disparities, we evaluate the models on
 NLP tasks that involve long-form texts either at
 input or output. We evaluate the models on diverse,
@@ -342,7 +349,7 @@ Tamil
 Telugu
 Georgian
 Tibetan
-Language Script0100200300 122 1 112 2112 8131112 2  Average number of tokens by script after
+Language Script0100200300 Average number of tokens122 1 112 2112 8131112Figure 2  Average number of tokens by script after
 tokenizing the Flores dataset. The fragmentation rate
 is lower for Latin script languages and higher for other
 scripts. Number of languages per language group is
@@ -350,7 +357,8 @@ indicated at the top of each bar.
 Table 2 in the Appendix for the prompting format
 for all tasks). For each task, we randomly sample
 at most 500 test examples for evaluation.
-4 4.1 1 (number of tokens)  do all languages
+4 Results and Analysis
+4.1 RQ1 (number of tokens)  do all languages
 convey the same information with the
 same number of tokens 
 In Figure 2 we show that Latin-script languages are
@@ -368,7 +376,8 @@ available. However, we make a reasonable assumption
  that its training dataset has a similar proportion
  of languages as the publicly available large
 corpus CC100 (Wenzek et al., 2020). If we sort languages
- shown in Figure 2 100 (see Figure 14 in the Appendix), lowresourced
+ shown in Figure 2 based on their data size
+in CC100 (see Figure 14 in the Appendix), lowresourced
  languages of Latin script appear to be
 less fragmented compared to other mid-resourced
 languages of non-Latin scripts. In Figure 15 in
@@ -392,15 +401,26 @@ get excessively tokenized.
 To disentangle the effects of factors (1) and (2)
 we train BBPE tokenizers on a variety of languages
 with diverse scripts with vocabulary sizes ranging
-from 5,000 50,000, while controlling for content
+from 5,000 to 50,000, while controlling for content
 and data size. Specifically, we train the tokenizers
 on parallel corpora and include one language per
 script. We then use these tokenizers to tokenize the
 text they were trained on, and compute the average
 number of tokens per sentence.
-200 500 1000 5000 10000 25000 50000 50100150200250300350400 3  BBPE tokenizer trained on parallel text from
+200 500 1000 5000 10000 25000 50000
+Vocab size50100150200250300350400 Avg number of tokens
+Myanmar
+Khmer
+Tibetan
+Hangul
+Latin
+Cyrillic
+Japanese
+Arabic
+Figure 3  BBPE tokenizer trained on parallel text from
 different language scripts with varying vocabulary sizes.
-We display a larger version with 21 18 in the Appendix.
+We display a larger version with 21 more scripts in
+Figure 18 in the Appendix.
 As shown in Figure 3 , even when controlling for
 the content, there is still a disparity in the tokenization
  rate at different vocabulary sizes. In particular,
@@ -412,7 +432,7 @@ across all language scripts even with large vocabulary
 of BBPE tokenizers across languages is not just
 determined by the proportion of text from language
 in the pretraining data but also by language/script
-properties.4.2 2 (cost)  how do non-uniform
+properties.4.2 RQ2 (cost)  how do non-uniform
 tokenization rates affect LM API costs for
 different languages 
 LM APIs charge users a fixed amount for a given
@@ -424,7 +444,9 @@ the API for different languages. From the results
 of our analysis in  4.1, we compute the estimated
 cost of API use per language as a function of the
 average sequence length derived in Figure 2. We
-report this on a subset of languages in Figure 16 4.
+report this on a subset of languages in Figure 16
+in the Appendix and present a granular analysis of
+languages that share family and script in Figure 4.
 Languages that are more heavily segmented have
 predictably higher costs of usage. Overall, we
 see that the API costs are biased towards (i.e.,
@@ -450,7 +472,8 @@ with non-Latin scripts, we see close to a 5  increase
 (DR, Telugu)
 (KA, Georgian)
 (ST, Tibetan)
-Language Family and Script14812 4  Estimated cost per language family/script, relative
+Language Family and Script14812 Cost relative to English
+Figure 4  Estimated cost per language family/script, relative
  to English. The language families are abbreviated
 as follows  IE  Indo-European, ST  Sino-Tibetan, AC 
 Atlantic-Congo, AA  Afro-Asiatic, DR  Dravidian, KA 
@@ -460,13 +483,14 @@ relative to English. We report costs based on our
 zero-shot experiments across all tasks listed in  3.2.
 This is due to excessive tokenization in some languages
  for which we can only do zero-shot evaluations.
- For XLSUM, we show in Figure 5 4  more for both prompting and generation
+ For XLSUM, we show in Figure 5 that we
+spend up to 4  more for both prompting and generation
  in Telugu and Amharic. We observe similar
 findings in XFACT and CROSSUM, as displayed
 in Figure 11 in the Appendix.
 While the majority of the commercial LMs are
 perhaps being optimized to perform well in manyen fr pt sw es vi ar ko ru ja hi th team
-Language Experiment Cost relative to EnglishFigure 5  Average cost of prompt   generated tokens
+Language01234Experiment Cost relative to EnglishFigure 5  Average cost of prompt   generated tokens
 for XLSUM evaluations relative to English.
 languages, we show that there is less focus on the
 individual experiences of speakers of languages
@@ -475,7 +499,7 @@ ChatGPT might perform tasks in Telugu, for example,
  a user in Andhra Pradesh might have to pay
 5 more than an English user in the US would pay
 for an equivalent use of the model.
-4.3 3   Model utility  do non-uniform
+4.3 RQ3   Model utility  do non-uniform
 tokenization rates affect the models 
 utility 
 0 2 4 6 8 10
@@ -514,7 +538,8 @@ majority of their test set. As a result, the model is
 only capable of zero-shot prompting for these twolanguages.
 To measure the impact of this issue on task performance,
  we evaluate ChatGPT and BLOOMZ
-with a k-shot learning setup on the 5 3.2. Figure 7
+with a k-shot learning setup on the 5 tasks on diverse
+ languages as described in  3.2. Figure 7
 shows ChatGPT s performance according to standard
  automatic metrics of all tasks. Note that the
 focus of this experiment is to illustrate the impact of
@@ -561,7 +586,7 @@ do not expect them to be tokenized efficiently. For
 these examples that do not fit the context length,
 we feed in truncated news articles into the model.
 We therefore evaluate the generations for the frac-0 1 2 3 5
-Number of in-context examples Rouge-L
+Number of in-context examples102030Rouge-L
 ar
 ja
 fr
@@ -575,7 +600,7 @@ th
 hi
 pt(a) XLSUM
 0123 5 8 10
-Number of in-context examples F1-Score
+Number of in-context examples102030F1-Score
 pt
 it
 hi
@@ -587,7 +612,7 @@ ro
 tr
 es (b) XFACT
 0 1 2 3 5
-Number of in-context examples Rouge-L
+Number of in-context examples102030Rouge-L
 ta
 am
 hi
@@ -617,7 +642,7 @@ summaries in the prompt and when we use the full
 articles. While the performance drop is expected,
 our focus here is to highlight a consequence of
 differentiated tokenization in language models.
-4.4 4   Socio-economic aspects  what are
+4.4 RQ4   Socio-economic aspects  what are
 the socio-economic implications of the
 API s cross-lingual cost and performance
 disparity 
@@ -630,13 +655,15 @@ the fragmentation rate and vice versa. Evidently,
 the model s vocabulary is biased towards users of
 more developed countries.
 This bias is further validated by results shown in
-Table 1 9HDI is a composite of life expectancy, education, and
+Table 1 where we mostly find negative correlations
+9HDI is a composite of life expectancy, education, and
 income per capita indicators, used to rank countries into tiers
 of human development.TaskCost-HDI HDI-Utility Cost-Utility
 Spearman Pearson Spearman Pearson Spearman Pearson
 XFACT ** 0.41 ** 0.60 *0.34 **0.38 ** 0.61 ** 0.55
 XLSUM ** 0.42 ** 0.43 ** 0.44 ** 0.57 * 0.23 *0.21
-CROSS SUM ** 0.41 ** 0.45 * 0.18 *0.24 *0.27 * 0.17 1  Correlation between model utility, cost of API
+CROSS SUM ** 0.41 ** 0.45 * 0.18 *0.24 *0.27 * 0.17
+Table 1  Correlation between model utility, cost of API
 access and Human Development Index for each task.
 We mark correlations with p 0.05with * and also
 mark correlations with p 0.0056 (according to Bonferroni
@@ -668,7 +695,7 @@ using language technologies. A potential solution
  is to develop pricing policies based on languages/regions
  while also accounting for model
 performance on language-specific benchmarks. An3 1 0 5 8 10 15 2
-Number of in-context examples F1-Score
+Number of in-context examples20304050F1-Score
 ar
 bg
 de
@@ -704,7 +731,7 @@ ky
 uk
 ur (b) XLSUM
 1 0 2 3
-Number of in-context examples Exact Match
+Number of in-context examples203040506070Exact Match
 ar
 de
 zh
@@ -717,7 +744,27 @@ ru
 ro (c) XQUAD
 Figure 9  Results from BLOOMz few-shot evaluations. The BLOOMz model is clearly better at zero-shot prompting
 than few-shot.
-0.4 0.5 0.6 0.7 0.8 0.9 50100150200250300 10  Fragmentation rate per language against the
+0.4 0.5 0.6 0.7 0.8 0.9
+Human Development Index50100150200250300 Average number of tokens
+Assamese
+BelarusianBengali
+Bosnian Catalan GermanGreek
+EnglishEstonian FinnishFrenchGalicianGujarati
+HebrewHindi
+HungarianArmenian
+JapaneseKannadaGeorgian
+KazakhKhmer
+KyrgyzMalayalam
+Marathi
+MacedonianBurmese
+Eastern Panjabi
+PortugueseRussianSinhala
+Somali
+SpanishSundaneseTamilTelugu
+TagalogThaiUyghur
+UkrainianUrdu
+Vietnamese
+Figure 10  Fragmentation rate per language against the
 Human Development Index in the top country where
 the language is spoken.
 alternative is to not charge by tokens at all. A recently
@@ -1270,7 +1317,9 @@ training gopher.
 Phillip Rust, Jonas Pfeiffer, Ivan Vuli  c, Sebastian Ruder,
 and Iryna Gurevych. 2021. How good is your tokenizer 
  on the monolingual performance of multilingual
- language models. In Proceedings of the 59 11th International Joint Conference
+ language models. In Proceedings of the 59th
+Annual Meeting of the Association for Computational
+Linguistics and the 11th International Joint Conference
  on Natural Language Processing (Volume 1 
 Long Papers) , pages 3118 3135, Online. Association
 for Computational Linguistics.
@@ -1418,7 +1467,8 @@ Berlin, Germany. Association for Computational Linguistics.
 Emily Sheng, Kai-Wei Chang, Prem Natarajan, and
 Nanyun Peng. 2021. Societal biases in language
 generation  Progress and challenges. In Proceedings
-of the 59 11th International
+of the 59th Annual Meeting of the Association for
+Computational Linguistics and the 11th International
 Joint Conference on Natural Language Processing
 (Volume 1  Long Papers) , pages 4275 4293, Online.
 Association for Computational Linguistics.
@@ -1502,7 +1552,8 @@ Linguistics.
 Jingjing Xu, Hao Zhou, Chun Gan, Zaixiang Zheng,
 and Lei Li. 2021. V ocabulary learning via optimal
 transport for neural machine translation. In Proceedings
- of the 59 11th International
+ of the 59th Annual Meeting of the Association for
+Computational Linguistics and the 11th International
 Joint Conference on Natural Language Processing
 (Volume 1  Long Papers) , pages 7361 7373, Online.
 Association for Computational Linguistics.
@@ -1551,10 +1602,10 @@ XFACT Tell me whether the following claim is {label 1 } or {label
 2 }, {evidence 3 }
 Table 2  Prompt template used for each dataset
 es id de pt it ro sr pl tr ar hi ka ta
-Language Experiment Cost relative to Spanish
+Language01234Experiment Cost relative to Spanish
 (a) XFACT
 en idsw pt fres ru viko ar ja hi taam te
-Language Experiment Cost relative to English (b) CROSSUM
+Language01234Experiment Cost relative to English (b) CROSSUM
 Figure 11  Relative cost of prompt   generated tokens for XFACT and CROSS-SUM evaluations.
 Afro-Asiatic
 Atlantic-Congo
@@ -1579,7 +1630,9 @@ Tai-Kadai
 Tupian
 Turkic
 Uralic
-Language Family0100200 12 3.5 tokenizer.
+Language Family0100200 Average number of tokens
+Figure 12  Average number of tokens per language
+family after tokenizing Flores dataset with GPT3.5 tokenizer.
  The fragmentation rate is lower for Latin script
 languages and higher for other scripts.
 Han (Simpliﬁed)
@@ -1593,18 +1646,41 @@ Gujarati
 Malayalam
 Gurmukhi
 Latin
-Language Script010203040 13  Average number of tokens per language
+Language Script010203040 Average number of tokensFigure 13  Average number of tokens per language
 script after tokenizing Flores dataset with BLOOM tokenizer.
  The fragmentation rate is higher on average
 for Latin script languages. This is because majority of
 the low-resourced languages are latin-script and have
 higher fragmentation rate.engrusindvieukrswethajpndeuronhunbulfraﬁnkorspaporellzhodanpolhebitanldslkhinhrvturceslittamcatslvkatsrpbenmalkazesturdhyemkdtelbelsinislkantglglgmareusgujkhmafrkirepoamhpancymglemyasomuigsanjavglabosasmsun
-Language0100200300 14 3.5 tokenizer. Languages
+Language0100200300 Average number of tokensFigure 14  Average number of tokens per language after tokenizing FLORES with GPT3.5 tokenizer. Languages
 are arranged in descending order based on the size of pretraining data in Commoncrawl.
 engzhofraspaporarbviehinindbencattammaltelurdeuskanmarpangujasmswhyorkinxhoibozulsnalugwolrunfonnsolintsntwinyasottsoakabamkiktum
-Language0204060 15  Average number of tokens per language after tokenizing FLORES with BLOOM tokenizer. Languages
-are arranged in descending order based on the size of pretraining data in the ROOTS corpus.engporspaindglgdeuswefranlddanitaafrcatjavsunhrvestronepobosslvzhoeusturpolﬁntglcescymhunslkislsomlitjpnglekorglavierusbulmkdsrpukrkirbelhebkazthaurdhinsanmarelluigbenasmtamgujpantelsinkankhmmalkathyemyaLanguage14812 16 0.4 0.5 0.6 0.7 0.8 0.9 50100150200250300 17  Fragmentation rate per language against the Human Development Index in the top country where the
-language is spoken.200 500 1000 5000 10000 25000 50000 50100150200250300350400 Avg number of tokens
+Language0204060 Average number of tokens
+Figure 15  Average number of tokens per language after tokenizing FLORES with BLOOM tokenizer. Languages
+are arranged in descending order based on the size of pretraining data in the ROOTS corpus.engporspaindglgdeuswefranlddanitaafrcatjavsunhrvestronepobosslvzhoeusturpolﬁntglcescymhunslkislsomlitjpnglekorglavierusbulmkdsrpukrkirbelhebkazthaurdhinsanmarelluigbenasmtamgujpantelsinkankhmmalkathyemyaLanguage14812 Relative cost to EnglishFigure 16  Estimated cost of API access to relative to English
+0.4 0.5 0.6 0.7 0.8 0.9
+Human Development Index50100150200250300 Average number of tokens
+Assamese
+BelarusianBengali
+Bosnian Catalan GermanGreek
+EnglishEstonian FinnishFrenchGalicianGujarati
+HebrewHindi
+HungarianArmenian
+JapaneseKannadaGeorgian
+KazakhKhmer
+KyrgyzMalayalam
+Marathi
+MacedonianBurmese
+Eastern Panjabi
+PortugueseRussianSinhala
+Somali
+SpanishSundaneseTamilTelugu
+TagalogThaiUyghur
+UkrainianUrdu
+Vietnamese
+Figure 17  Fragmentation rate per language against the Human Development Index in the top country where the
+language is spoken.200 500 1000 5000 10000 25000 50000
+Vocab size50100150200250300350400 Avg number of tokens
 Arabic
 Armenian
 Bengali
@@ -1634,6 +1710,6 @@ Telugu
 Thai
 Tibetan
 Tiﬁnagh
-TurkicFigure 18 30 language scripts with varying vocabulary sizes. It is
+TurkicFigure 18  BBPE tokenizer trained on parallel text from 30 language scripts with varying vocabulary sizes. It is
 impossible to achieve uniform fragmnatation rate even when we have equal pretraining data sizes across all language
 scripts.

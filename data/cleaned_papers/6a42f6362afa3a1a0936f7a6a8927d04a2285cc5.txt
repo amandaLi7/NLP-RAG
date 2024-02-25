@@ -1,7 +1,8 @@
 Balancing Exploration and Exploitation in
 Hierarchical Reinforcement Learning via Latent
 Landmark Graphs
-Qingyang Zhang1,2, Yiming Yang1, Jingqing Ruan1,2, Xuantang Xiong1,3, Dengpeng Xing1,3, , and Bo Xu1,2,3 1Institute of Automation, Chinese Academy of Sciences, Beijing, China
+Qingyang Zhang1,2, Yiming Yang1, Jingqing Ruan1,2, Xuantang Xiong1,3, Dengpeng Xing1,3, , and Bo Xu1,2,3
+1Institute of Automation, Chinese Academy of Sciences, Beijing, China
 2School of Future Technology, University of Chinese Academy of Sciences, Beijing, China
 3School of Artificial Intelligence, University of Chinese Academy of Sciences, Beijing, China
 {zhangqingyang2019, yangyiming2019, ruanjingqing2019, xiongxuantang2021,
@@ -43,7 +44,7 @@ temporal abstraction to address this challenge. GCHRL typically
  controller periodically decomposes the source task into
 subgoal conditional subtasks, and a low-level controller learns
 This work is supported in part by National Key R&D Program of China
-(No.2022 0116405), in part by the Program for National Nature Science
+(No.2022ZD0116405), in part by the Program for National Nature Science
 Foundation of China (62073324), and in part by the Strategic Priority Research
 Program of the Chinese Academy of Sciences (No.XDA27030300).
 *Corresponding author.
@@ -87,7 +88,7 @@ This paper proposes a novel method to balance exploration
 and exploitation in HIerarchical reinforcement learning via
 dynamically building Latent Landmark graphs (HILL). HILL
 introduces a negative-power contrastive representation learning
-objective to train a subgoal representation function that con-arXiv 2307.12063 1  [cs.LG]  22 2023siders temporal coherence. The learned representations serve
+objective to train a subgoal representation function that con-arXiv 2307.12063v1  [cs.LG]  22 Jul 2023siders temporal coherence. The learned representations serve
 as possible subgoals, and landmarks are identified to maximize
 coverage of the explored latent space. Latent landmark graphs
 are built based on these landmarks, and two measures are
@@ -130,7 +131,7 @@ et al. [18] learn actionable representations that emphasize state
 factors inducing significant differences in corresponding actions
  and de-emphasize irrelevant features. Two recent studies
 [9, 10] use slow feature analysis methods [19] to extract useful
-features as subgoals. However, they use L norm as a distance
+features as subgoals. However, they use L2norm as a distance
 estimation when calculating triplet loss, which may lead to
 degenerate distributions [20]. In contrast, our method uses a
 negative-power contrastive representation learning objective to
@@ -179,7 +180,7 @@ at πθl(  st, gt)at every time step and is intrinsically rewarded
  with rl
 t(gt, φ(st))   D(gt, φ(st))to reach gt, where
 Dis a distance function. Following previous work [10], we
-employ L distance as Dto provide dense non-zero rewards,
+employ L2distance as Dto provide dense non-zero rewards,
 thus accelerating low-level policy learning. The policy πθlis
 trained to optimize the expected cumulative intrinsic rewards
 EπθlhPci c 1
@@ -230,7 +231,8 @@ andφ(st c)) are distinguishable, while those of low-level adjacent
  states (e.g., φ(st)andφ(st 1)) are relatively similar. To
 trainφ, we define a negative-power contrastive representation
 learning objective as follows 
-Lc(st, st 1, st c)    φ(st) φ(st 1)  2 2
+Lc(st, st 1, st c)    φ(st) φ(st 1)  2
+2
  β 1
   φ(st) φ(st c)  n
 2 ϵ,(2)
@@ -323,19 +325,27 @@ C. Balance Exploration and Exploitation
 We tackle the exploration-exploitation dilemma by selecting
 a landmark from Ltthat well-balances NandUas theAlgorithm 1 HILL algorithm
 Initialize  φ,πθh,πθlandp.
-1 1...num episodes do
-2 0...T 1 3 0(mod c)then
+1 fori  1...num episodes do
+2  fort  0...T 1do
+3  ift 0(mod c)then
 4  Generate a random float value q [0.0,1.0].
-5 1 6  Build a latent landmark graph.
-7 9.
-8 9  Sample gtusing πθh.
-10 11  Update θhusing SAC.
-12 13  rt, st 1 execute at πθl(  st, gt).
-14 15 0(mod 100)then
+5  if2q 1 pthen
+6  Build a latent landmark graph.
+7  Select gtwith the strategy in Equation 9.
+8  else
+9  Sample gtusing πθh.
+10  end if
+11  Update θhusing SAC.
+12  end if
+13  rt, st 1 execute at πθl(  st, gt).
+14  end for
+15  ifi 0(mod 100)then
 16  Update φusing Equation 4.
 17  Update pto the newest average train success rate.
-18 19  Update θlandφusing SAC.
-20 21 return φ,πθhandπθl.
+18  end if
+19  Update θlandφusing SAC.
+20 end for
+21 return φ,πθhandπθl.
 subgoal. When mapped to the [0,1]distribution, U(wi,j)can
 be regarded as an incremental probability of success as it
 approximates the expected benefits of transitioning from lito
@@ -357,7 +367,7 @@ as a high-level student policy. Both policies map states to
 subgoals and are employed with a probability of pand1 p,
 respectively. The role of the student policy is mainly to help
 increase randomness and prevent falling into local optimum. p
-is initialized to 0.5 1 in the training
+is initialized to 0.5 and gradually increases to 1 in the training
 process. θhis trained with SAC using episodes in Bl.
 V. E XPERIMENTS
 A. Environmental Settings
@@ -371,21 +381,27 @@ object manipulation skills. The reward is sparse  the agent gets(a) Ant Maze
  (e) HalfCheetah Climbing
  (f) HalfCheetah Ascending
 Fig. 2. The continuous control environments with sparse rewards for evaluating HILL and baselines.
-0 1 2 3 4 5 1 60.00.20.40.60.81.0Success
+0 1 2 3 4 5
+Steps  1e60.00.20.40.60.81.0Success
 (a) Ant Maze
-0 2 4 6 8 10 12 14 1 60.00.20.40.60.81.0Success
+0 2 4 6 8 10 12 14
+Steps  1e60.00.20.40.60.81.0Success
  (b) Ant FourRooms
-0 1 2 3 4 5 1 60.00.20.40.60.81.0Success
+0 1 2 3 4 5
+Steps  1e60.00.20.40.60.81.0Success
  (c) Ant Push
-0.0 0.5 1.0 1.5 2.0 2.5 1 60.00.20.40.60.81.0Success
+0.0 0.5 1.0 1.5 2.0 2.5
+Steps  1e60.00.20.40.60.81.0Success
 (d) HalfCheetah Hurdle
-0.0 0.5 1.0 1.5 2.0 2.5 3.0 1 60.00.20.40.60.81.0Success
+0.0 0.5 1.0 1.5 2.0 2.5 3.0
+Steps  1e60.00.20.40.60.81.0Success
  (e) HalfCheetah Climbing
-0.00 0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00 1 60.00.20.40.60.81.0Success
+0.00 0.25 0.50 0.75 1.00 1.25 1.50 1.75 2.00
+Steps  1e60.00.20.40.60.81.0Success
  (f) HalfCheetah Ascending
 Fig. 3. Learning curves of HILL and baselines on MuJoCo tasks. The x-axis shows the time step of training, and the y-axis shows the average test success
-rate of 10episodes. Each line is the mean of 5 95% confidence interval.
-0 1otherwise. During training,
+rate of 10episodes. Each line is the mean of 5runs with shaded regions corresponding to the 95% confidence interval.
+0when reaching the goal and  1otherwise. During training,
 the agent is initialized with random positions and is tested
 under the most challenging setting to reach the other side of
 the environment. We conduct experiments on six environments
@@ -426,7 +442,7 @@ solving long-term tasks with sparse rewards.Fig. 4. Episodes in the state space 
 (c) REP. DIST. ( 0.5Msteps)
  (d) REP. DIST. ( 1.5Msteps)
 Fig. 5. Visualization of exploration and exploitation in the Ant Maze task
-at 0.5 1.5 million steps, respectively. The x, y-axes are positions in the
+at 0.5 and 1.5 million steps, respectively. The x, y-axes are positions in the
 corresponding space, and the z-axis is the visit counts statistically obtained
 from the replay buffer with a capacity of 105.  REP.  denotes the word
  representation  and  DIST.  denotes the word  distribution .
@@ -442,9 +458,11 @@ space. As training progresses, the cumulative visits to various
 latent representations become uniform, and the utility measure
 enables more precise estimates and converges gradually. Consequently,
  episodes in the state and latent spaces gradually
-0.0 0.5 1.0 1.5 2.0 2.5 3.0 3.5 4.0 1 60.00.20.40.60.81.0Success
+0.0 0.5 1.0 1.5 2.0 2.5 3.0 3.5 4.0
+Steps  1e60.00.20.40.60.81.0Success
 (a) Ant Maze
-0 1 2 3 4 5 1 60.00.20.40.60.81.0Success
+0 1 2 3 4 5
+Steps  1e60.00.20.40.60.81.0Success
  (b) Ant Push
 Fig. 6. Ablation studies of critical modules.  B  denotes  Basic GCHRL ,
  CSRL  denotes  Contrastive Subgoal Representation Learning ,  G-N  denotes
@@ -473,16 +491,41 @@ incrementally adding critical modules to the basic GCHRL
 framework. The learning curves are shown in Figure 6. Basic
 GCHRL, which solely relies on SAC as the base RL optimizer
 of both levels, fails to learn policies efficiently due to the large
-exploration space and sparse rewards. The non-stationarity0.0 0.5 1.0 1.5 2.0 2.5 3.0 3.5 4.0 1 60.00.20.40.60.81.0 0.2 0.3 0.4 0.5 0.8(a) Stable Ratio k
-0.0 0.5 1.0 1.5 2.0 2.5 3.0 1 60.00.20.40.60.81.0 2 3 5 (b) Representation Dimension d
-0.0 0.5 1.0 1.5 2.0 2.5 3.0 1 60.00.20.40.60.81.0 1 β 0.1 1 β 1 1 β 10 2 β 0.1 2 β 1 2 β 10
+exploration space and sparse rewards. The non-stationarity0.0 0.5 1.0 1.5 2.0 2.5 3.0 3.5 4.0
+Steps  1e60.00.20.40.60.81.0Success0.2
+0.3
+0.4
+0.5
+0.8(a) Stable Ratio k
+0.0 0.5 1.0 1.5 2.0 2.5 3.0
+Steps  1e60.00.20.40.60.81.0Success
+2
+3
+5 (b) Representation Dimension d
+0.0 0.5 1.0 1.5 2.0 2.5 3.0
+Steps  1e60.00.20.40.60.81.0Successn 1 β 0.1
+n 1 β 1
+n 1 β 10
+n 2 β 0.1
+n 2 β 1
+n 2 β 10
 (c) Scaling Factor β, Power n
-0.0 0.5 1.0 1.5 2.0 2.5 3.0 1 60.00.20.40.60.81.0 10 20 50 100 (d) Subgoal Selection Interval c
-0.0 0.5 1.0 1.5 2.0 2.5 3.0 3.5 4.0 1 60.00.20.40.60.81.0Success
+0.0 0.5 1.0 1.5 2.0 2.5 3.0
+Steps  1e60.00.20.40.60.81.0Successc 10
+c 20
+c 50
+c 100 (d) Subgoal Selection Interval c
+0.0 0.5 1.0 1.5 2.0 2.5 3.0 3.5 4.0
+Steps  1e60.00.20.40.60.81.0Success
 FPS
 w/o FPS
 (e) Landmark Sampling Strategy
-0.0 0.5 1.0 1.5 2.0 2.5 3.0 1 60.00.20.40.60.81.0 100 200 300 400 500 (f) Landmark Number
+0.0 0.5 1.0 1.5 2.0 2.5 3.0
+Steps  1e60.00.20.40.60.81.0Success100
+200
+300
+400
+500 (f) Landmark Number
 Fig. 7. Ablation studies of hyperparameter selection in the Ant Maze task.
 introduced by joint training hinders bi-level policy updates.
 Our proposed contrastive representation learning objective
@@ -514,7 +557,7 @@ in Figure 7 (a). We set k  0.3for all tasks.
 information compression. The smaller dis, the more compact
 the representation abstracted by ϕis. The results in Figure
 7 (b) indicate that HILL achieves better performance when
-d  2. Therefore, we set dto for all tasks.3) Scaling Factor β, Power n βandnboth affect the
+d  2. Therefore, we set dto2for all tasks.3) Scaling Factor β, Power n βandnboth affect the
 performance of subgoal representation learning. A smaller nor
 a larger βpushes negative instances further away. As shown in
 Figure 7 (c), HILL maintains robustness when βis small and

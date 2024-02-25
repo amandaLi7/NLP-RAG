@@ -2,7 +2,8 @@ EXPLORING SPEECH RECOGNITION, TRANSLATION, AND UNDERSTANDING WITH
 DISCRETE SPEECH UNITS  A COMPARATIVE STUDY
 Xuankai Chang1, Brian Yan1, Kwanghee Choi1, Jeeweon Jung1, Yichen Lu1, Soumi Maiti1,
 Roshan Sharma1, Jiatong Shi1, Jinchuan Tian1, Shinji Watanabe1 , Yuya Fujita2, Takashi Maekaku2,
-Pengcheng Guo3, Yao-Fei Cheng4, Pavel Denisov5, Kohei Saijo6, Hsiu-Hsuan Wang7 1Carnegie Mellon University,2Yahoo Japan Corporation,3Northwestern Polytechnical University,
+Pengcheng Guo3, Yao-Fei Cheng4, Pavel Denisov5, Kohei Saijo6, Hsiu-Hsuan Wang7 
+1Carnegie Mellon University,2Yahoo Japan Corporation,3Northwestern Polytechnical University,
 4University of Washington,5University of Stuttgart,6Waseda University,7National Taiwan University
 ABSTRACT
 Speech signals, typically sampled at rates in the tens of thousands
@@ -28,7 +29,7 @@ speech translation, spoken language understanding
 Significant progress has been made in the field of automatic speech
 recognition (ASR) over the past few decades, largely attributed to
 the evolution of deep neural networks [1, 2]. Since the emergence of
-end-to-end (E E) ASR models [3 5], there have been many exciting
+end-to-end (E2E) ASR models [3 5], there have been many exciting
 outcomes. Among these achievements, a slew of potent architectures
  [6 9] has boosted the performance of speech tasks, including
 ASR, speech translation (ST), and spoken language understanding
@@ -45,9 +46,9 @@ the data storage and transmission efficiency are similar among raw
 waveforms and speech features [17]. It is not trivial to improve the
 efficiency of computation without performance degradation.
  Authors are ordered by the organizations. Corresponding author.
-Fig. 1   Illustration of the E E speech processing model with discrete
+Fig. 1   Illustration of the E2E speech processing model with discrete
 speech units. The speech discretization process is shown on the left.
-On the right side is a Seq Seq model that takes discrete units to
+On the right side is a Seq2Seq model that takes discrete units to
 output target text.
 Recently, a few studies have proposed the use of discrete speech
 units to represent speech signals, where the information of speech
@@ -76,13 +77,13 @@ our experiments and findings as follows
   A comparative analysis is conducted under fair conditions, evaluating
  the performance and training time reduction using discrete
 speech units as opposed to traditional speech features.
-  A diverse range of benchmarks, including 12 ASR (Section 3.2),arXiv 2309.15800 1  [cs.CL]  27 20233 ST (Section 3.3), and 1 SLU (Section 3.4) corpora, are mostly
+  A diverse range of benchmarks, including 12 ASR (Section 3.2),arXiv 2309.15800v1  [cs.CL]  27 Sep 20233 ST (Section 3.3), and 1 SLU (Section 3.4) corpora, are mostly
 evaluated for the first time.
   To demonstrate wide applicability of the discrete units, we adopted
 noisy speech, spontaneous speech, telephony speech, and several
 multi-lingual speech corpora, which would be the first work to
 explore these aspects (Section 3.2.1).
-  We show the versatility of discrete units in various E E frameworks,
+  We show the versatility of discrete units in various E2E frameworks,
  including connectionist temporal classification (CTC) [3],
 attention-based encoder-decoder (AED) [5], and RNN-Transducer [4]
 (Table 3).
@@ -99,7 +100,7 @@ ESPnet [28], which can significantly benefit the community.
 2. SPEECH PROCESSING WITH DISCRETE TOKENS
 This section elaborates on the details of our speech processing models,
  which take discrete units as input. Figure 1 summarizes the
-whole pipeline. Leveraging the sequence-to-sequence (Seq Seq)
+whole pipeline. Leveraging the sequence-to-sequence (Seq2Seq)
 paradigm as our backbone framework enables broad applicability
 across a spectrum of tasks involving the transformation of speech
 signals into diverse target outputs.
@@ -109,7 +110,7 @@ speech signals into discrete representations. Previous studies have
 employed techniques such as vector quantization (VQ) and clustering
  for discretization. The former typically necessitates the learning
  of a specialized vector quantization module during the training
-phase. Prominent examples include VQ-V AE [29], Wav Vec models
+phase. Prominent examples include VQ-V AE [29], Wav2Vec models
  [10 12], and recent popular neural codec models [27, 30] with
 multi-level residual VQ component. The alternative applies the clustering
  algorithms to the features extracted from the signals, where
@@ -145,10 +146,10 @@ to enhance the input token representation.
 Besides these two methods, simple data augmentation, time
 masking , is also adopted in [17], serving as a regularization technique
  during training.
-2.3. Seq Seq Modeling with Convolutional Subsampling
-We use Seq Seq models to map the discrete speech units to other
-target outputs with E E training. We take the advantage of wellestablished
- Seq Seq models, including AED [5], CTC [3], and
+2.3. Seq2Seq Modeling with Convolutional Subsampling
+We use Seq2Seq models to map the discrete speech units to other
+target outputs with E2E training. We take the advantage of wellestablished
+ Seq2Seq models, including AED [5], CTC [3], and
 RNN-Transducer [4]. The detailed definitions of these models can
 be found in their references.
 Convolutional Subsampling. The input sequence length of discrete
@@ -159,12 +160,15 @@ is quadratically dependent on the input sequence length. Hence, to
 reduce the computation overhead, we introduce a convolutional subsampling
  (Conv-Sub) layer between the input embedding layer and
 the self-attention networks (SAN), a common technique in conventional
- E E speech processing models based on continuous speech
-features. This Conv-Sub layer reduces the sequence length to1 2 1 3without performance degradation, as mentioned in [17]. By
-default, a 2-layer 1D-convolutional (CONV D) block is adopted.
+ E2E speech processing models based on continuous speech
+features. This Conv-Sub layer reduces the sequence length to1
+2or
+even1
+3without performance degradation, as mentioned in [17]. By
+default, a 2-layer 1D-convolutional (CONV1D) block is adopted.
 3. EXPERIMENTS
 3.1. General Setup
-Our experiments are conducted using the open-source E E speech
+Our experiments are conducted using the open-source E2E speech
 processing toolkit, ESPnet [28], aligning with [17]. To thoroughly
 evaluate the performance of speech processing tasks using discrete
 speech representations, we adopted various tasks, including ASR,
@@ -185,21 +189,33 @@ The process of speech discretization hinges heavily on the
 choice of features. In the prior study [17], the final layer of theTable 1   CER or WER (%) on ASR benchmarks using the joint CTC/AED framework.
 Dataset Language Metric Evaluation SetsDiscrete Tokenization Results
 K-means clusters BPE size FBank Discrete Units SSL (top line)
-AISHELL CH CER dev/test 2000 6000 4.2 / 4.5 4.6 / 4.9 3.8 / 4.0 4 EN WER {dt05,et05 }real mics 1000 2000 12.0 / 17.4 8.4 / 7.1 5.5 / 4.7
+AISHELL CH CER dev/test 2000 6000 4.2 / 4.5 4.6 / 4.9 3.8 / 4.0
+CHiME4 EN WER {dt05,et05 }real5mics 1000 2000 12.0 / 17.4 8.4 / 7.1 5.5 / 4.7
 CommonV oice FR WER dev / test 1000 1500 12.8 / 14.6 20.9 / 23.5 12.9 / 15.0
-Gigaspeech EN WER dev / test 1000 3000 11.8 / 11.6 11.2/11.6 10.2 / 10.3 2-2000 2000 6000 10.9 10.9 10.8
+Gigaspeech EN WER dev / test 1000 3000 11.8 / 11.6 11.2/11.6 10.2 / 10.3
+How2-2000 EN WER test 2000 6000 10.9 10.9 10.8
 LibriSpeech-100 EN WER {dev,test }-{clean,other } 2000 6000 6.1 / 16.7 / 6.3 / 17.0 3.8 / 6.7 / 3.9 / 7.0 3.2 / 5.3 / 3.1 / 5.5
 LibriSpeech EN WER {dev,test }-{clean,other } 2000 6000 2.5 / 6.3 / 2.6 / 6.2 2.2 / 4.5 / 2.4 / 4.6 1.9 / 3.7 / 1.9 / 3.7
 ML-SUPERB (1h) 143 CER normal / few-shot 2000 6000 59.6 / 58.6 44.8 / 46.4 21.8 / 38.9
 Must-C EN WER tst-COMMON 2000 4000 8.3 6.1 5.7
-SPGIspeech EN WER {dev,val }unnorm 1000 5000 6.0 / 6.0 5.9 / 5.9 5.5 / 5.5 2000 (callhm / swbd) 1000 1500 13.5 / 7.5 11.3 / 7.6 10.1 / 6.5 3 EN WER dev / test 1000 2000 9.4 / 8.8 9.0 / 8.9 8.9 / 8.8 2   Average sequence length (seq len) on training set of discrete speech unit (Disc Unit) and output asr transcription (ASR Trans).
+SPGIspeech EN WER {dev,val }unnorm 1000 5000 6.0 / 6.0 5.9 / 5.9 5.5 / 5.5
+SWBD EN WER eval2000 (callhm / swbd) 1000 1500 13.5 / 7.5 11.3 / 7.6 10.1 / 6.5
+TEDLIUM3 EN WER dev / test 1000 2000 9.4 / 8.8 9.0 / 8.9 8.9 / 8.8
+Table 2   Average sequence length (seq len) on training set of discrete speech unit (Disc Unit) and output asr transcription (ASR Trans).
 Lengths of discrete unit after manipulations are provided, including de-duplication  subword modeling  convolutional subsampling.
 Dataset Disc unitManipulations Conv-SubBPE-ASR Trans De-dup  BPE length reduction ratio Type length
-AISHELL 227 172 98 57% Conv d2 49 14 4 383 260 178 54% Conv d1 178 106
-CommonV oice (FR) 236 177 153 65% Linear 153 42 217 150 90 59% Conv d2 45 16 2-2000 297 207 127 57% Conv d2 63 25
-LibriSpeech-100 639 455 257 60% Conv d2 128 43 619 435 247 60% Conv d2 123 41
-ML-SUPERB (1h) 336 224 183 46% Conv d2 92 66
-MuST-C 321 229 122 62% Linear 122 25 458 307 159 65% Conv d2 79 30 269 182 144 46% Conv d2 72 20 3 306 208 143 53% Conv d2 72 36
+AISHELL 227 172 98 57% Conv1d2 49 14
+CHiME4 383 260 178 54% Conv1d1 178 106
+CommonV oice (FR) 236 177 153 65% Linear 153 42
+Gigaspeech 217 150 90 59% Conv1d2 45 16
+How2-2000 297 207 127 57% Conv1d2 63 25
+LibriSpeech-100 639 455 257 60% Conv1d2 128 43
+LibriSpeech 619 435 247 60% Conv1d2 123 41
+ML-SUPERB (1h) 336 224 183 46% Conv1d2 92 66
+MuST-C 321 229 122 62% Linear 122 25
+SPGIspeech 458 307 159 65% Conv1d2 79 30
+SWBD 269 182 144 46% Conv1d2 72 20
+TEDLIUM3 306 208 143 53% Conv1d2 72 36
 WavLM large model was adopted, guided by the learned weights
 from a pre-trained ASR model. In this paper, we draw inspiration
 from a recent study [26] using canonical correlation analysis (CCA),
@@ -207,12 +223,12 @@ assessing the similarity between the layer representation and the
 word labels. For example, both HuBERT and WavLM share similar
 patterns in their analyses due to their similar training objectives. For
 monolingual experiments, we choose WavLM large for all English
-corpora1, Chinese HuBERT large for Chinese corpus2, and XLSR for
+corpora1, Chinese HuBERT large for Chinese corpus2, and XLSR533for
  French corpus. Consequently, we choose layer 21 from large
-models, layer 9 11 from the XLSR-53
+models, layer 9 from the base model and layer 11 from the XLSR-53
 model, as they exhibit the highest CCA similarities with word labels.
 For multilingual experiments on ML-SUPERB (143 languages), we
-use XLS-R-1 35 from empirical resynthesis analysis
+use XLS-R-1b4and its layer 35 from empirical resynthesis analysis
 discussed in [31]. The number of K-Means clusters and the subword
 modeling vocabulary size are empirically selected considering the
 data variations and the length reduction balance.
@@ -225,10 +241,10 @@ set of speech corpora, encompassing a wide range of acoustic characteristics
 1https //huggingface.co/microsoft/wavlm-large
 2https //huggingface.co/TencentGameMate/
 chinese-hubert-large
-3https //dl.fbaipublicfiles.com/fairseq/wav vec/
+3https //dl.fbaipublicfiles.com/fairseq/wav2vec/
 xlsr_53_56k.pt
 4https //huggingface.co/facebook/
-wav vec2-xls-r-1bspeech (Gigaspeech [35], TEDLIUM3 [36], How2 [37], SPGIspeech
+wav2vec2-xls-r-1bspeech (Gigaspeech [35], TEDLIUM3 [36], How2 [37], SPGIspeech
  [38], MuST-C [39]), and non-English speech (AISHELL [40],
 CommonV oice [41], ML-SUPERB [42]).
 3.2.2. Results
@@ -263,26 +279,32 @@ using FBank / online SSL feature / discrete units. It can be seen
 that the training time using discrete units is less than 50% of that
 of using FBank. It s worth noting that online SSL feature extraction
 is computationally intensive but friendly to storage. Additionally,
-more aggressive subsampling (e.g. Conv d3) can further improve
+more aggressive subsampling (e.g. Conv1d3) can further improve
 the training speed without performance degradation in some cases5.
 Table 3   CER or WER (%) of CTC and RNN-Transducer models.
 Dataset FBank Discrete Units SSL (top line)
 CTC
-AISHELL 5.8 / 6.2 5.3 / 5.5 3.9 / 4.2 3.9 / 9.8 / 4.0 / 9.7 2.7 / 5.4 / 2.9 / 5.5 2.3 / 4.5 / 2.3 / 4.6 3 10.2 / 10.3 8.8 / 9.6 8.4 / 10.0
+AISHELL 5.8 / 6.2 5.3 / 5.5 3.9 / 4.2
+LibriSpeech 3.9 / 9.8 / 4.0 / 9.7 2.7 / 5.4 / 2.9 / 5.5 2.3 / 4.5 / 2.3 / 4.6
+TEDLIUM3 10.2 / 10.3 8.8 / 9.6 8.4 / 10.0
 RNN-Transducer
-AISHELL 5.6 / 6.0 5.7 / 6.0 4.0 / 4.3 2.5 / 6.2 / 2.7 / 6.2 2.2 / 4.6 / 2.4 / 4.5 2.0 / 4.1 / 2.1 / 4.3 3 7.7 / 7.6 6.7 / 6.9 6.4 / 7.1 3.2.4. ASR with Different Seq Seq Models
-We further verified the efficacy on other alternative Seq Seq models,
+AISHELL 5.6 / 6.0 5.7 / 6.0 4.0 / 4.3
+LibriSpeech 2.5 / 6.2 / 2.7 / 6.2 2.2 / 4.6 / 2.4 / 4.5 2.0 / 4.1 / 2.1 / 4.3
+TEDLIUM3 7.7 / 7.6 6.7 / 6.9 6.4 / 7.1
+3.2.4. ASR with Different Seq2Seq Models
+We further verified the efficacy on other alternative Seq2Seq models,
 namely, CTC and RNN-Transducer. Similar trends are found  using
 discrete units achieves the performance in between the FBank and
 SSL features, as shown in Table 3.
 Table 4   LibriSpeech WER (%) of different discrete units choices.
 Dataset SSL OWSM EnCodec
-LibriSpeech 2.2 / 4.5 / 2.4 / 4.6 3.9 / 10.1 / 4.2 / 10.2 3.2 / 8.5 / 3.0 / 8.5 3.2.5. ASR with Different Types of Discrete Units
+LibriSpeech 2.2 / 4.5 / 2.4 / 4.6 3.9 / 10.1 / 4.2 / 10.2 3.2 / 8.5 / 3.0 / 8.5
+3.2.5. ASR with Different Types of Discrete Units
 So far, SSL representations are used to derive discrete units, as they
 were known to be very robust in different tasks [12, 14]. However,
 other large models and discrete unit approaches are recently emerging,
  such as Whisper [15] and neural codec models [27, 30]. We
-adopt a Whisper-like model trained by ESPnet and the publicly
+adopt a Whisper-like model trained by ESPnet6and the publicly
 available EnCodec [27] model. For EnCodec, we use all 8-level
 discrete tokens at each frame, summing up embeddings of 8-levels
 per frame. The embedding layer is initialized from the pre-trained
@@ -290,11 +312,13 @@ codebook and frozen, followed by a layer normalization for stability.
  Subword modeling cannot be applied in this case. Table 4 shows
 our preliminary results. However, we observe that the SSL-based
 5https //github.com/espnet/espnet/tree/master/
-egs2/librispeech/asr2 6https //github.com/espnet/espnet/pull/5120 5   BLEU scores of speech translation tasks.
+egs2/librispeech/asr2
+6https //github.com/espnet/espnet/pull/5120Table 5   BLEU scores of speech translation tasks.
 Dataset FBank Discrete tokens SSL (top line)
 MuST-C En-De 26.7 28.6 29.7
 MuST-C En-Es 31.2 33.0 33.7
-MuST-C En-Fr 37.1 38.7 40.2 6   Intent classification accuracy (%) of SLURP dataset.
+MuST-C En-Fr 37.1 38.7 40.2
+Table 6   Intent classification accuracy (%) of SLURP dataset.
 Dataset FBank Discrete tokens SSL
 SLURP 86.9 / 86.3 81.8 / 80.8 84.2 / 83.3
 method still has the upper hand over the others. Nevertheless, we
@@ -327,7 +351,8 @@ units not only outperforms FBank features but also substantially enhances
 unit input in speech processing. Future research avenues could delve
 into investigating alternative discretization techniques.
 5. ACKNOWLEDGEMENTS
-Some experiments of this work used the Bridges2 210014 from the
+Some experiments of this work used the Bridges2 system at PSC
+and Delta system at NCSA through allocation CIS210014 from the
 Advanced Cyberinfrastructure Coordination Ecosystem  Services &
 Support (ACCESS) program, which is supported by National Science
  Foundation grants #2138259, #2138286, #2138307, #2137603,
@@ -357,16 +382,17 @@ for speech recognition,  in Proc. Interspeech , 2020, pp. 5036 5040.
  in Proc. ICASSP , 2021, pp. 5874 5878.
 [9] K. Kim et al. ,  E-branchformer  Branchformer with enhanced merging
  for speech recognition,  in Proc. SLT , 2023, pp. 84 91.
-[10] S. Schneider et al. ,  Wav vec  Unsupervised pre-training for speech
+[10] S. Schneider et al. ,  Wav2vec  Unsupervised pre-training for speech
 recognition,  Proc. Interspeech 2019 , pp. 3465 3469, 2019.
-[11] A. Baevski, S. Schneider, and M. Auli,  Vq-wav vec  Self-supervised
+[11] A. Baevski, S. Schneider, and M. Auli,  Vq-wav2vec  Self-supervised
 learning of discrete speech representations,  in Proc. ICLR , 2019.
-[12] A. Baevski et al. ,  Wav vec 2.0  A framework for self-supervised
+[12] A. Baevski et al. ,  Wav2vec 2.0  A framework for self-supervised
 learning of speech representations,  Advances in neural information
 processing systems , vol. 33, pp. 12 449 12 460, 2020.
 [13] W.-N. Hsu et al. ,  Hubert  Self-supervised speech representation
 learning by masked prediction of hidden units,  IEEE/ACM Transactions
- on Audio, Speech, and Language Processing , vol. 29, pp. 3451 3460, 2021.
+ on Audio, Speech, and Language Processing , vol. 29, pp. 3451 
+3460, 2021.
 [14] S. Chen et al. ,  Wavlm  Large-scale self-supervised pre-training for
 full stack speech processing,  IEEE Journal of Selected Topics in Signal
  Processing , vol. 16, no. 6, pp. 1505 1518, 2022.
@@ -407,7 +433,7 @@ vol. 30, 2017.
 [30] N. Zeghidour et al. ,  Soundstream  An end-to-end neural audio
 codec,  IEEE/ACM Transactions on Audio, Speech, and Language
 Processing , vol. 30, pp. 495 507, 2021.
-[31] L. Barrault et al. ,  Seamlessm t-massively multilingual & multimodal
+[31] L. Barrault et al. ,  Seamlessm4t-massively multilingual & multimodal
  machine translation,  arXiv preprint arXiv 2308.11596 , 2023.
 [32] V . Panayotov et al. ,  Librispeech  An asr corpus based on public domain
  audio books,  in Proc. ICASSP , 2015, pp. 5206 5210.
@@ -425,7 +451,8 @@ of the International Speech Communication Association, INTERSPEECH
 [36] F. Hernandez et al. ,  Ted-lium 3  Twice as much data and corpus
 repartition for experiments on speaker adaptation,  in Speech and
 Computer  20th International Conference, SPECOM 2018, Leipzig,
-Germany, September 18 22, 2018, Proceedings 20 , 2018, pp. 198 208.
+Germany, September 18 22, 2018, Proceedings 20 , 2018, pp. 198 
+208.
 [37] R. Sanabria et al. ,  How2  A large-scale dataset for multimodal language
  understanding,  in NeurIPS , 2018.
 [38] P. K. O Neill et al. ,  Spgispeech  5,000 hours of transcribed financial
@@ -443,7 +470,8 @@ databases and speech I/O systems and assessment (O-COCOSDA) ,
 corpus,  English, in Proceedings of the Twelfth Language Resources
 and Evaluation Conference , 2020, pp. 4218 4222.
 [42] J. Shi et al. ,  ML-SUPERB  Multilingual Speech Universal PERformance
- Benchmark,  in Proc. INTERSPEECH 2023 , 2023, pp. 884 888.
+ Benchmark,  in Proc. INTERSPEECH 2023 , 2023, pp. 884 
+888.
 [43] B. Yan et al. ,  Ctc alignments improve autoregressive translation,  in
 Proc. EACL , 2023.
 [44] B. Yan et al. ,  ESPnet-ST-v2  Multipurpose spoken language translation

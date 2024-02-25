@@ -48,8 +48,8 @@ A-L OLis very easy to implement over standard cross entropy loss using two key i
 sequence-level advantage and (2) importance weight (used to discourage big divergence of target
 LM s distribution from the initial reference LM). As illustrated in Table 1, our method only requires
 a sequence-level reward with single output for every data point, in contrast to recent preference-based
-1 2305.14718 3  [cs.CL]  10 2023Preprint under review.
-Table 1  Properties of existing offline and online RL algorithms compared to A-L OLand its variants.
+1arXiv 2305.14718v3  [cs.CL]  10 Oct 2023Preprint under review.
+Table 1  Properties of existing offline and online RL algorithms1compared to A-L OLand its variants.
 AlgorithmNeeds Human
 Preference Data Action
 RepresentationReference
@@ -97,7 +97,8 @@ Before introducing our main method, we first briefly explain how we frame langua
 as an RL game with the single-action assumption (  2.1). We then derive the main learning objective
 ofA-L OLusing offline policy gradient (  2.2). To better contextualize A-L OL, we also discuss its
 relationship with log-likelihood loss, weighted Behavior Cloning (Wang et al., 2020) (  2.3) and a
-another offline policy gradient algorithm GOLD (Pang & He, 2021) ( 2.4).2 1We do not compare with other online RL (Shi et al., 2018  Liu et al., 2022  Yang et al., 2023  Peng et al.,
+another offline policy gradient algorithm GOLD (Pang & He, 2021) ( 2.4).2
+1We do not compare with other online RL (Shi et al., 2018  Liu et al., 2022  Yang et al., 2023  Peng et al.,
 2023  Zhu et al., 2023) that are very similar to PPO and preference-based method (Zhao et al., 2023) similar to
 DPO. We also avoid comparing with offline RL methods that require additional data manipulation (Lu et al.,
 2022  Welleck et al., 2022  Jang et al., 2022  Verma et al., 2022  Guo et al., 2022  Cho et al., 2023  Liu et al.,
@@ -142,7 +143,7 @@ rewardπθ(y x)
 πref(y x) {z}
 importance weight θlnπθ(y x) {z}
 NLL] (3)
-Here, the importance weight is the ratio of sequence-level probability of ybetween πθandπref,
+Here, the importance weight3is the ratio of sequence-level probability of ybetween πθandπref,
 which results into a single scalar factor. Observe that the inputs of Dtrare a subset of the dπref, i.e.
 all possible texts in the language generation task X. Also, the ground truth outputs in Dtrare the
 outputs πrefis trained to imitate. Using these observations, we update the expectation in the previous
@@ -200,7 +201,7 @@ Furthermore, the positive-advantage priority sampling makes A-L OL s training ve
  reaching close to peak generalization with only 30% additional steps (see Figure 2).
 2.3 R ELATIONSHIP WITH NLL AND WEIGHTED BEHAVIOR CLONING
 We draw connections between Reward LOL RL and other learning methods. If we set both
-R(x,y,  )   1 andr(θ,ref)   1 4, it reduces to negative log-likelihood objective.
+R(x,y,  )   1 andr(θ,ref)   1 in the equation 4, it reduces to negative log-likelihood objective.
  This implies that maximum likelihood learning is a subset of R-L OL s objective. By carefully
 adjusting the R(x,y,  )term while keeping r(θ,ref)   1 , both data filtering (West et al., 2022) and
 weighted behavior cloning4(Wang et al., 2020) can also be viewed as subsets of our method.
@@ -214,7 +215,8 @@ x Dv,y  πθR(x,y ,  )  Maximize reward on Dv
 1V MLP (MhA (πref),1)  value layer with multi-head attention on frozen πref
 2Vπref min x Dv,y  πref(V R(x,y ,  ))2 Train πrefvalue estimate using rewards on Dv
 3A 
-πref  {Aπref(x,y, R)}  x,y Dtr, R(x,y,  ) Vπref(x) 0 4while P
+πref  {Aπref(x,y, R)}  x,y Dtr, R(x,y,  ) Vπref(x) 0 Positive Advantage on Dtr
+4while P
 x Dv,y  πθR(x,y ,  ) 
 converges do
 5 r(θ,ref) clip(πθ(y x)
@@ -266,10 +268,10 @@ offline RL algorithms compared with negative log-likelihood (NLL) training over 
 Song et al. (2023a) with minor data cleaning.5In total, this task has 143K train, 280 validation, and
 8.2K test conversations and their human preference labeled responses.
 Reference LM, Reward model and Training We choose LLaMA-7B base architecture (Touvron
-et al., 2023a) with QLoRA adapter (Dettmers et al., 2023) pretrained on HHA dataset as the reference
-policy. We also test PPO in this experiment, along with the aforementioned offline RL baselines and
-A-L OL variants. In total, we executed 36 12 learning methods, each with
-three random seeds. For all algorithms using rewards, we employ a 1.4B parameter classifier trained
+et al., 2023a) with QLoRA adapter (Dettmers et al., 2023) pretrained on HHA dataset6as the reference
+policy. We also test PPO7in this experiment, along with the aforementioned offline RL baselines and
+A-L OL variants. In total, we executed 36 different training runs for 12 learning methods, each with
+three random seeds. For all algorithms using rewards, we employ a 1.4B parameter classifier8trained
 on human preference labels as the reward model.
 While preference-based RL methods use all training paired comparisons, other methods only use the
 good subset responses during training. In fact, A-L OL methods are most data efficient, by ignoring
@@ -278,7 +280,8 @@ of training steps for every offline RL method, depending on their training data 
 PPO for 1.3 the training steps of offline methods (excluding the computation cost of generating
 online data). Finally, as a benchmark, we also evaluate an external 6B model trained with PPO on the
 HHA dataset.9We present the implementation details of all tested methods in Appendix B.1.
-4.1 2 shows the trajectories of validation
+4.1 HHA R ESULTS
+Stability Comparison of Offline RL algorithms Figure 2 shows the trajectories of validation
 reward achieved by all offline RL methods averaged across three random seeds. The leftplot shows
 that preference-based methods, especially DPO and DPO (ref. free), suffer from high variance
 across random seeds when compared with NLL training. In contrast, the reward-based methods have
@@ -290,16 +293,20 @@ penalty term instead of policy-gradient loss, as evidenced by a drop in performa
 of training. Comparatively, A-L OL and A-L OL seq. steadily improve throughout the training.
 We also separately plot the three trajectories of PPO in Appendix Figure 3 and notice one of the seeds
 shows performance deterioration and mode-collapse (Shumailov et al., 2023  Go et al., 2023).
-Automatic Evaluation and Analysis We employ a larger 6.5B parameter reward model to
+Automatic Evaluation and Analysis We employ a larger 6.5B parameter reward model10to
 evaluate the best checkpoints from each run on the test set. We also compare the response distribution
 using average length and diversity measures (Distinct-1, 2, and 3), which are calculated as the ratio of
 unique unigrams, bigrams, and trigrams (Li et al., 2016). The average evaluation metrics obtained by
 each method across three random seeds are reported in Table 2. In the first three rows, we establish
 the test set good andbadresponses and the reference policy ( πref) performance.
-5 20K training instances containing responses that abruptly end in a colon ( ). For example,  Here
+5Filtered  20K training instances containing responses that abruptly end in a colon ( ). For example,  Here
 are some options  . Further removed 343 test instances with overlapping conversation histories.
-6https //huggingface.co/timdettmers/qlora-hh-rlhf-7 7We use the huggingface TRL (von Werra et al., 2020) implementation of PPO.
-8https //huggingface.co/OpenAssistant/oasst-rm-2.1-pythia-1.4b-epoch-2.5 9https //huggingface.co/reciprocate/ppo hhpythia-6 10https //huggingface.co/OpenAssistant/oasst-rm-2-pythia-6.9b-epoch-1 6Preprint under review.
+6https //huggingface.co/timdettmers/qlora-hh-rlhf-7b
+7We use the huggingface TRL (von Werra et al., 2020) implementation of PPO.
+8https //huggingface.co/OpenAssistant/oasst-rm-2.1-pythia-1.4b-epoch-2.5
+9https //huggingface.co/reciprocate/ppo hhpythia-6B
+10https //huggingface.co/OpenAssistant/oasst-rm-2-pythia-6.9b-epoch-1
+6Preprint under review.
 Table 2  HHA aggregate test reward and diversity evaluation of NLL, PPO, and other offline RL
 methods averaged across three random seeds. For comparison, we also report the performance of
 Test responses and reference policy ( πref) in the first three rows, along with another external PPO
@@ -311,19 +318,25 @@ RewardAvg.
 LengthDiversity 
 Avg Distinct-1,2,3 base base online rejection
 #instances (2210) (2278) (1085) (2634) (8207)
-Test good responses 54.8 40 .3 61 .6 50 .5 50.3 46.7 .099/.471/.773 50.0 34 .3 59 .4 45 .3 45.4 45.3 .099/.468/.771
-πref (LLaMA-7B) 54.8 36 .5 49 .4 41 .5 44.7 51.1 .067/.246/.404 60.7 44 .0 56 .5 49 .5 51.9 0.543.3 3.5 .084/.336/.552
+Test good responses 54.8 40 .3 61 .6 50 .5 50.3 46.7 .099/.471/.773
+Test badresponses 50.0 34 .3 59 .4 45 .3 45.4 45.3 .099/.468/.771
+πref (LLaMA-7B) 54.8 36 .5 49 .4 41 .5 44.7 51.1 .067/.246/.404
+  MLE or NLL 60.7 44 .0 56 .5 49 .5 51.9 0.543.3 3.5 .084/.336/.552
 Preference-based offline RL
   PRO 63.0 46 .4 57 .6 51 .8 54.1 0.643.4 2.5 .084/.339/.560
-  DPO (ref. free) 53.6 50 .1 54 .4 52 .3 52.3 1.490.5 1.1 .049/.226/.432 60.9 55 .2 61 .0 58 .5 58.6 0.866.7 5.9 .065/.288/.503
+  DPO (ref. free) 53.6 50 .1 54 .4 52 .3 52.3 1.490.5 1.1 .049/.226/.432
+  DPO 60.9 55 .2 61 .0 58 .5 58.6 0.866.7 5.9 .065/.288/.503
 Reward-based offline RL
-  wBC 62.4 47 .0 59 .7 53 .2 54.8 0.442.7 1.1 .091/.380/.622 62.7 46 .7 59 .0 52 .6 54.5 0.344.2 3.1 .086/.355/.584
+  wBC 62.4 47 .0 59 .7 53 .2 54.8 0.442.7 1.1 .091/.380/.622
+  R GOLD 62.7 46 .7 59 .0 52 .6 54.5 0.344.2 3.1 .086/.355/.584
   R-L OL 63.7 47 .0 59 .4 53 .1 55.1 0.638.6 2.4 .095/.394/.640
 Advantage-based offline RL
   A-L OL (ref. free) 63.8 49 .2 60 .7 54 .7 56.4 0.640.7 1.7 .095/.400/.651
   A-L OL 64.3 50 .3 61 .1 55 .8 57.3 0.342.3 1.9 .094/.403/.657
   A-L OL seq. 64.4 50 .9 62 .2 55 .8 57.6 0.540.1 2.4.105/.464/.727
-  A-L OL KL 65.7 50 .7 61 .1 56 .2 57.9 0.344.0 1.7 .090/.387/.639 63.3 39 .9 48 .0 43 .5 48.4 2.118.7 1.0.114/.355/.512
+  A-L OL KL 65.7 50 .7 61 .1 56 .2 57.9 0.344.0 1.7 .090/.387/.639
+Online RL
+  PPO 63.3 39 .9 48 .0 43 .5 48.4 2.118.7 1.0.114/.355/.512
 PPO* (pythia 6B) 48.6 32 .1 33 .6 33 .3 37.1 13.3 .094/.301/.447
 Overall, A-L OLand its variants consistently achieve high average reward with relatively low variance,
 even after discarding  33% of training data points. Further qualitative analysis reveals that the lowest
@@ -345,10 +358,10 @@ good responses to determine their helpfulness and safety win-rate . Specifically
 between two responses, we ask GPT-4 and humans to select from four options ( A,B,tieorneither ) to
 indicate the winning response. We ask to pick the safer response in the instances from Harmless base
 and the more helpful response for the other three test segments. In total, we sample 400 instances
-for GPT-4 200 instances for human evaluation (equal size from 4 test segments). To
+for GPT-4 evaluation and 200 instances for human evaluation (equal size from 4 test segments). To
 mitigate positional bias in GPT-4 (Zheng et al., 2023  Wang et al., 2023), we query it twice and only
 aggregate the judgments when it selects the same preference even after shuffling the response order.
-11 52B parameter LM (Bai et al.,
+11The original responses in the HHA dataset were generated using a very large 52B parameter LM (Bai et al.,
 2022b) and thus show high linguistic diversity.
 7Preprint under review.
 Table 3  GPT-4 and Human safe and helpful win-rate of top performing baseline (DPO) and best
@@ -359,7 +372,8 @@ MethodSafe Helpful
 #samples win% tie% lose% neither% #samples win% tie% lose% neither%
 GPT-4 evaluation safety and helpfulness win-rate vs Test good responses
 Test bad 83 25.3 4 .8 56 .6 13 .3 240 30.4 2 .9 65 .8 0 .8
-πref(LLaMA-7B) 81 35.8 6 .2 53 .1 4 .9 267 24.3 3 .0 71 .9 0 .7 83 60.2 3 .6 36 .1 0 .0 260 41.2 3 .1 55 .0 0 .8
+πref(LLaMA-7B) 81 35.8 6 .2 53 .1 4 .9 267 24.3 3 .0 71 .9 0 .7
+  DPO 83 60.2 3 .6 36 .1 0 .0 260 41.2 3 .1 55 .0 0 .8
   A-L OL 76 68.4 9 .2 17 .1 5 .3 249 53.8 1 .2 45 .0 0 .0
   A-L OL seq. 82 73.2 7.3 17 .1 2 .4 247 54.7 2.0 42 .9 0 .4
   A-L OL KL 80 66.2 11 .2 21 .2 1 .2 249 45.4 3 .2 51 .0 0 .4
@@ -369,14 +383,17 @@ Human evaluation safety and helpfulness win-rate vs Test good responses
   A-L OL seq. 49 63.3 14 .3 14.3 8 .2 134 49.3 9 .0 38 .1 3 .7
   A-L OL KL 43 53.5 9 .3 23 .3 14 .0 137 48.9 11 .7 34 .3 5 .1
 In human evaluation, we ask three annotators to rate each pairwise comparison and aggregate the
-judgments if a majority is achieved. The final results from both GPT-4 3.
+judgments if a majority is achieved. The final results from both GPT-4 and human evaluations are
+presented in Table 3.
 To establish GPT-4 evaluation reliability, we first compare the reference policy ( πref) and Test set bad
 responses with Test good responses in the first two rows. In both comparisons, GPT-4 considers the
 Test good response as more helpful and safe in the majority of samples. Overall, A-L OLandA-L OL
 seq. achieve the highest win rate in both safety and helpfulness (win   tie), with A-L OLKL and
 DPO trailing behind. Humans select more instances as tiethan GPT-4, but we again notice a similar
 win-rate trend with A-L OLmethods leading in both helpfulness and safety. For all the instances in
-human evaluation with majority label, we compare with their corresponding GPT-4 72.1% agreement.12 7 11 in the Appendix.
+human evaluation with majority label, we compare with their corresponding GPT-4 s preference label
+and find 72.1% agreement.12We present a few example conversations from all the top models in
+Table 7 to 11 in the Appendix.
 5 R EDDIT RESPONSE GENERATION TASK
 Human preference data is supported by very few language generation tasks. Their annotation is also
 difficult and costly. Furthermore, preferences are inherently unidimensional and cannot be trivially
@@ -385,7 +402,7 @@ In contrast, policy-gradient-based methods can utilize multiple reward functions
 without the need for preference data.
 To test the multi-reward generalization of A-L OL, we create a new Reddit response generation task
 with a mix of five reward functions. The task is to learn a chatbot from Reddit comment-response
-pairs that is fluent, safe, engaging, exciting, and human-like (See et al., 2019). Therefore, we
+pairs13that is fluent, safe, engaging, exciting, and human-like (See et al., 2019). Therefore, we
 define the task reward as the sum of five scoring functions  (1) CoLA fluency classifier, (2) ToxiChat
 contextual safety classifier (Baheti et al., 2021), (3) dialog engagement classifier14(Gao et al., 2020),
 (4) Reddit upvote probability ranking model (Gao et al., 2020), and (5) length penalized TF-IDF
@@ -393,7 +410,7 @@ diversity.15The range of each scoring function is [0,1].
 To test the robustness to noise, we create two different training datasets for this task  (1) 88K Reddit
 upvoted comment pairs (score  [66,9582] ), reflective of good quality data, and (2) 87K Reddit
 downvoted comment pairs (score  [ 2946, 6]),bad quality data. For both instantiations, we create
-balanced validation and test sets, each with 1000 1000 downvoted comment pairs. We
+balanced validation and test sets, each with 1000 upvoted and 1000 downvoted comment pairs. We
 use DialoGPT-medium (355M parameters) (Zhang et al., 2020) model trained using NLL objective
 12We exclude the instances where GPT-4 preference didn t match after shuffling the response order.
 13https //www.kaggle.com/code/danofer/reddit-comments-scores-nlp/input
@@ -414,19 +431,25 @@ GOLD baseline. We do not show the test results for methods in which further fine
 policy didn t increase the validation reward.
 Model/Algo. Reward Fluency Safe Engagement P. Upvote TF-IDF Length Distinct-1/2/3
 Models trained on Reddit upvoted replies training set
-πref (DialoGPT) 2.93 .92 .84 .47 .43 .26 14.7 .137/.409/.609 2.95 .92 .84 .48 .44 .25 15.2 .143/.426/.626 2.97 .92 .85 .49 .45 .25 15.3 .154/.448/.648 3.03 .94 .89 .50 .44 .26 13.9 .120/.300/.412
+πref (DialoGPT) 2.93 .92 .84 .47 .43 .26 14.7 .137/.409/.609
+  NLL 2.95 .92 .84 .48 .44 .25 15.2 .143/.426/.626
+  wBC 2.97 .92 .85 .49 .45 .25 15.3 .154/.448/.648
+  R GOLD 3.03 .94 .89 .50 .44 .26 13.9 .120/.300/.412
   R-L OL 2.95 .93 .86 .44 .44 .27 9.6 .159/.423/.598
   A-L OL (ref. free) 3.15 .95 .90 .55 .48 .27 14.1 .146/.405/.587
   A-L OL 3.15 .93 .88 .55 .51 .29 11.4 .186/.502/.698
   A-L OL seq 3.28 .93 .88 .62 .57 .27 15.9.191/.519/.707
   A-L OL KL 3.18 .94 .87 .58 .53 .27 14.5 .168/.467/.669
 Models trained on Reddit downvoted replies training set
-πref (DialoGPT) 2.87 .91 .81 .49 .39 .27 13.6 .128/.369/.548 2.93 .92 .80 .53 .42 .26 14.8 .145/.422/.614 3.05 .94 .87 .52 .42 .29 11.0 .123/.297/.401
+πref (DialoGPT) 2.87 .91 .81 .49 .39 .27 13.6 .128/.369/.548
+  wBC 2.93 .92 .80 .53 .42 .26 14.8 .145/.422/.614
+  R GOLD 3.05 .94 .87 .52 .42 .29 11.0 .123/.297/.401
   R-L OL 2.91 .91 .83 .49 .41 .28 10.6 .179/.488/.666
   A-L OL (ref. free) 3.13 .94 .87 .56 .47 .29 11.3 .165/.441/.622
   A-L OL 3.14 .93 .87 .57 .47 .30 10.0 .199/.517/.688
   A-L OL seq 3.18 .93 .89 .58 .48 .30 10.2.207/.527/.713
-  A-L OL KL 3.18 .93 .88 .60 .49 .28 17.4 .127/.333/.454 6 epochs as the reference policy. We then perform further training for 3 epochs with A-L OL
+  A-L OL KL 3.18 .93 .88 .60 .49 .28 17.4 .127/.333/.454
+for 6 epochs as the reference policy. We then perform further training for 3 epochs with A-L OL
 variants and other reward-based offline RL baselines. The average reward, length, and diversity
 metrics are reported in Table 4.
 Results In both the upvote and downvote training splits, A-L OLvariants achieve higher test rewards
@@ -509,7 +532,7 @@ and Dario Amodei. Language models are few-shot learners. In H. Larochelle, M. Ra
 R. Hadsell, M.F. Balcan, and H. Lin (eds.), Advances in Neural Information Processing Systems ,
 10Preprint under review.
 volume 33, pp. 1877 1901. Curran Associates, Inc., 2020. URL https //proceedings.neurips.
-cc/paper files/paper/2020/file/1457c d bfcb bfb ac f a-Paper.pdf .
+cc/paper files/paper/2020/file/1457c0d6bfcb4967418bfb8ac142f64a-Paper.pdf .
 Stephen Casper, Xander Davies, Claudia Shi, Thomas Krendl Gilbert, J  er emy Scheurer, Javier
 Rando, Rachel Freedman, Tomasz Korbak, David Lindner, Pedro Freire, Tony Wang, Samuel
 Marks, Charbel-Rapha  el Segerie, Micah Carroll, Andi Peng, Phillip Christoffersen, Mehul Damani,
@@ -535,7 +558,7 @@ Tim Dettmers, Artidoro Pagnoni, Ari Holtzman, and Luke Zettlemoyer. Qlora  Effic
 of quantized llms, 2023.
 Emily Dinan, Stephen Roller, Kurt Shuster, Angela Fan, Michael Auli, and Jason Weston. Wizard of
 wikipedia  Knowledge-powered conversational agents. In International Conference on Learning
-Representations , 2019. URL https //openreview.net/forum id r l iRqKm .
+Representations , 2019. URL https //openreview.net/forum id r1l73iRqKm .
 Jesse Dodge, Taylor Prewitt, Remi Tachet des Combes, Erika Odmark, Roy Schwartz, Emma Strubell,
 Alexandra Sasha Luccioni, Noah A. Smith, Nicole DeCario, and Will Buchanan. Measuring the
 carbon intensity of ai in cloud instances. In 2022 ACM Conference on Fairness, Accountability,
@@ -568,7 +591,7 @@ https //aclanthology.org/2020.emnlp-main.28 .
 Dongyoung Go, Tomasz Korbak, Germ  an Kruszewski, Jos Rozen, Nahyeon Ryu, and Marc Dymetman.
  Aligning language models with preferences through f-divergence minimization. In International
  Conference on Machine Learning (ICML) , 2023. URL https //openreview.net/forum 
-id ttga UlrsE .
+id ttga7UlrsE .
 Max Grusky, Mor Naaman, and Yoav Artzi. Newsroom  A dataset of 1.3 million summaries with
 diverse extractive strategies. In Proceedings of the 2018 Conference of the North American
 Chapter of the Association for Computational Linguistics  Human Language Technologies, Volume
@@ -590,14 +613,15 @@ Minbeom Kim, Hwanhee Lee, Kang Min Yoo, Joonsuk Park, Hwaran Lee, and Kyomin Jun
 Critic-guided decoding for controlled text generation, 2022.
 Aviral Kumar, Joey Hong, Anikait Singh, and Sergey Levine. Should i run offline reinforcement
 learning or behavioral cloning  In International Conference on Learning Representations , 2022.
-URL https //openreview.net/forum id AP MKT rJ .
+URL https //openreview.net/forum id AP1MKT37rJ .
 Jiwei Li, Michel Galley, Chris Brockett, Jianfeng Gao, and Bill Dolan. A diversity-promoting
 objective function for neural conversation models. In Proceedings of the 2016 Conference of the
 North American Chapter of the Association for Computational Linguistics  Human Language
 Technologies , pp. 110 119, San Diego, California, June 2016. Association for Computational
 Linguistics. doi  10.18653/v1/N16-1014. URL https //aclanthology.org/N16-1014 .
 Ruibo Liu, Ge Zhang, Xinyu Feng, and Soroush V osoughi. Aligning generative language models with
-human values. In Findings of the Association for Computational Linguistics  NAACL 2022 , pp. 241 252, Seattle, United States, July 2022. Association for Computational Linguistics. doi  10.18653/
+human values. In Findings of the Association for Computational Linguistics  NAACL 2022 , pp. 241 
+252, Seattle, United States, July 2022. Association for Computational Linguistics. doi  10.18653/
 v1/2022.findings-naacl.18. URL https //aclanthology.org/2022.findings-naacl.18 .
 Tianqi Liu, Yao Zhao, Rishabh Joshi, Misha Khalman, Mohammad Saleh, Peter J. Liu, and Jialu Liu.
 Statistical rejection sampling improves preference optimization, 2023.
@@ -606,7 +630,7 @@ Ximing Lu, Sean Welleck, Jack Hessel, Liwei Jiang, Lianhui Qin, Peter West, Prit
  In S. Koyejo, S. Mohamed, A. Agarwal, D. Belgrave, K. Cho, and A. Oh (eds.), Advances
  in Neural Information Processing Systems , volume 35, pp. 27591 27609. Curran Associates,
  Inc., 2022. URL https //proceedings.neurips.cc/paper files/paper/2022/file/
-b bde e cbdbd df f-Paper-Conference.pdf .
+b125999bde7e80910cbdbd323087df8f-Paper-Conference.pdf .
 OpenAI. Gpt-4 technical report, 2023.
 12Preprint under review.
 Long Ouyang, Jeffrey Wu, Xu Jiang, Diogo Almeida, Carroll Wainwright, Pamela Mishkin, Chong
@@ -614,10 +638,10 @@ Zhang, Sandhini Agarwal, Katarina Slama, Alex Gray, John Schulman, Jacob Hilton,
 Luke Miller, Maddie Simens, Amanda Askell, Peter Welinder, Paul Christiano, Jan Leike, and
 Ryan Lowe. Training language models to follow instructions with human feedback. In Alice H. Oh,
 Alekh Agarwal, Danielle Belgrave, and Kyunghyun Cho (eds.), Advances in Neural Information
-Processing Systems , 2022. URL https //openreview.net/forum id TG KACxEON .
+Processing Systems , 2022. URL https //openreview.net/forum id TG8KACxEON .
 Richard Yuanzhe Pang and He He. Text generation by learning from demonstrations. In International
 Conference on Learning Representations , 2021. URL https //openreview.net/forum id 
-RovX-uQ Hua .
+RovX-uQ1Hua .
 Richard Yuanzhe Pang, Vishakh Padmakumar, Thibault Sellam, Ankur P. Parikh, and He He. Reward
 gaming in conditional text generation, 2023.
 Baolin Peng, Linfeng Song, Ye Tian, Lifeng Jin, Haitao Mi, and Dong Yu. Stabilizing rlhf through
@@ -632,7 +656,7 @@ Rajkumar Ramamurthy, Prithviraj Ammanabrolu, Kiant  e Brantley, Jack Hessel, Raf
 Bauckhage, Hannaneh Hajishirzi, and Yejin Choi. Is reinforcement learning (not) for natural
 language processing  Benchmarks, baselines, and building blocks for natural language policy
 optimization. In The Eleventh International Conference on Learning Representations , 2023. URL
-https //openreview.net/forum id 8aHzds uUyB .
+https //openreview.net/forum id 8aHzds2uUyB .
 Mark B. Ring. Child  A first step towards continual learning. Mach. Learn. , 28(1) 77 104, jul
 1997. ISSN 0885-6125. doi  10.1023/A 1007331723572. URL https //doi.org/10.1023/A 
 1007331723572 .
@@ -657,7 +681,7 @@ The curse of recursion  Training on generated data makes models forget, 2023.
 Joar Max Viktor Skalse, Nikolaus H. R. Howe, Dmitrii Krasheninnikov, and David Krueger. Defining
 and characterizing reward gaming. In Alice H. Oh, Alekh Agarwal, Danielle Belgrave, and
 Kyunghyun Cho (eds.), Advances in Neural Information Processing Systems , 2022. URL https 
-//openreview.net/forum id yb HOXO lX2 .
+//openreview.net/forum id yb3HOXO3lX2 .
 13Preprint under review.
 Charlie Snell, Ilya Kostrikov, Yi Su, Mengjiao Yang, and Sergey Levine. Offline rl for natural
 language generation with implicit language q learning. International Conference on Learning
@@ -692,7 +716,7 @@ Gomez, Łukasz Kaiser, and Illia Polosukhin. Attention is all you need. In I. Gu
 U. V on Luxburg, S. Bengio, H. Wallach, R. Fergus, S. Vishwanathan, and R. Garnett
 (eds.), Advances in Neural Information Processing Systems , volume 30. Curran Associates,
  Inc., 2017. URL https //proceedings.neurips.cc/paper files/paper/2017/file/
-3f ee dee fbd c c a aa-Paper.pdf .
+3f5ee243547dee91fbd053c1c4a845aa-Paper.pdf .
 Siddharth Verma, Justin Fu, Sherry Yang, and Sergey Levine. CHAI  A CHatbot AI for task-oriented
 dialogue with offline reinforcement learning. In Proceedings of the 2022 Conference of the
 North American Chapter of the Association for Computational Linguistics  Human Language
@@ -709,7 +733,7 @@ Reed, Bobak Shahriari, Noah Siegel, Caglar Gulcehre, Nicolas Heess, and Nando de
 Critic regularized regression. In H. Larochelle, M. Ranzato, R. Hadsell, M.F. Balcan, and H. Lin
 (eds.), Advances in Neural Information Processing Systems , volume 33, pp. 7768 7778. Curran
 Associates, Inc., 2020. URL https //proceedings.neurips.cc/paper files/paper/2020/
-file/588cb d bbe f f de a d-Paper.pdf .
+file/588cb956d6bbe67078f29f8de420a13d-Paper.pdf .
 14Preprint under review.
 Jason Wei, Maarten Bosma, Vincent Zhao, Kelvin Guu, Adams Wei Yu, Brian Lester, Nan Du,
 Andrew M. Dai, and Quoc V Le. Finetuned language models are zero-shot learners. In International
@@ -780,17 +804,20 @@ B.1 I MPLEMENTATION DETAILS
 We implement all A-L OLmethods along with the baselines using huggingface Transformers library
 (Wolf et al., 2020). For each training run, we use two NVIDIA RTX A6000 GPUs (48GB memory
 each). In total, we have 143K training instances in the Helpful and Harmless Assistant task. We
-keep the batch size  16 9,000 steps (i.e. in total 144K individual instances). For
+keep the batch size  16 for all methods with 9,000 steps (i.e. in total 144K individual instances). For
 A-L OLand its variants, around 46K instances were identified with negative advantages and were
 discarded from training. Therefore, we reduce the number of steps for A-L OLmethods to 6,093
 steps (i.e.  97K instances). Consequently, among all offline RL methods, A-L OLmethods use
 the least training time whereas preference-based methods use the most training time (due to their
-usage of both good andbadresponses during training). We select 0.0002 32bit optimizer. The remaining method-specific
+usage of both good andbadresponses during training). We select 0.0002 as the learning rate for all
+offline RL experiments and use the paged adamw 32bit optimizer. The remaining method-specific
 hyperparameters include β  0.1as the KL weight in DPO, γ  0.05as the SFT weight in PRO,
 andϵ  0.9as the clipping parameter in A-L OL. For both advantage and reward priority sampling,
-we simply divide the score of each instance with the L norm to obtain the sampling probability.
-For each method, we keep the same input formatting with 640 128 tokens with greedy decoding.
-In PPO, we execute 3,000 PPO update steps, where each step consists of a rollout of batch size 16 4 internal PPO epochs (  192K internal training steps). To encourage diversity during
+we simply divide the score of each instance with the L1norm to obtain the sampling probability.
+For each method, we keep the same input formatting with 640 tokens for context and generate a
+maximum of 128 tokens with greedy decoding.
+In PPO, we execute 3,000 PPO update steps, where each step consists of a rollout of batch size 16 that
+is trained for 4 internal PPO epochs (  192K internal training steps). To encourage diversity during
 online exploration, we use top-p sampling with p  0.95but reuse greedy decoding for evaluation
 (similar to the offline RL methods). We also reduced the learning rate to 0.00002 for PPO, as higher
 16Preprint under review.
@@ -849,13 +876,17 @@ model-identified bad-quality instances, A-L OLimproves both the training efficie
 quality of fine-tuned LMs.
 16A-L OL without clipping quickly started receiving nanvalues in loss.
 18Preprint under review.
-Table 5 20 20test set. We also report the generation length and
+Table 5  Commonsense Transformer quality improvement evaluated with average COMET critic
+classifier probability as reward on the ATOMIC20
+20test set. We also report the generation length and
 corpus diversity of all methods along with the human-written test set performance in the last row. We
 do not report the baselines that didn t improve over the reference policy. Models trained with A-L OL
 variants show the most improvement compared to the baselines.
 Model/Algo. COMET Critic Length Distinct-1/2/3
 πref (COMETDIS
-TIL) 84.6 3.3 .041/.145/.267 88.5 4.6 .040/.167/.331 88.8 5.0 .038/.159/.314
+TIL) 84.6 3.3 .041/.145/.267
+  wBC 88.5 4.6 .040/.167/.331
+  R GOLD 88.8 5.0 .038/.159/.314
   R-L OL 89.4 4.6 .041/.170/.336
   A-L OL (ref. free) 92.2 4.5 .040/.170/.342
   A-L OL 92.8 4.4 .040/.169/.335
@@ -865,21 +896,22 @@ C A DDITIONAL EXPERIMENTS AND RESULTS
 C.1 C OMMONSENSE REASONING TASK
 Commonsense Transformer (COMET) (Bosselut et al., 2019) is an LM trained to predict the
 cause/effect of various social situations. To improve beyond the original COMET model, West
-et al. (2022) proposed symbolic knowledge distillation (SKD). They first construct ATOMIC x
+et al. (2022) proposed symbolic knowledge distillation (SKD). They first construct ATOMIC10x
 containing 6.5M GPT-3-generated (Brown et al., 2020) commonsense knowledge pairs. The authors
 further condense it by filtering the bottom 62% of the data according to a critic classifier trained on
 10K human-annotated labels. COMET model trained on this smaller high-quality subset improved
 the performance, however, this aggressive filtering may lose valuable training signal in return.
 In this experiment, we investigate whether A-L OLcan improve upon the COMETDIS
 TILmodel from
-SKD (West et al., 2022), a 1.5 2-XL model trained on the entire ATOMIC xdata.
+SKD (West et al., 2022), a 1.5B parameter GPT2-XL model trained on the entire ATOMIC10xdata.
 Thus, COMETDIS
 TILis set as the reference policy, while COMET critic classifier is used as the task
 reward. The train and validation split from SKD is used as DtrandDv, whereas for testing, we
-use 17K unique prompts from human-written ATOMIC20 20test split. Due to the large training set,
+use 17K unique prompts from human-written ATOMIC20
+20test split. Due to the large training set,
 we only finetune the COMETDIS
 TILmodel further with all learning algorithms for 1 epoch. A-L OL
-identified 32% of ATOMIC xdata as negative advantage. In this task, we cannot compare with
+identified 32% of ATOMIC10xdata as negative advantage. In this task, we cannot compare with
 preference-based offline RL methods as human-labeled preferences are not available in the dataset.
 Results Table 5 shows that COMETDIS
 TILfinetuned with A-L OLvariants obtains the highest COMET
@@ -911,30 +943,40 @@ test set are shown in the last row. Models trained with A-L OLand its variants c
 the baselines and are also resilient to the bad quality WoW training data.
 Model/Algo. Reward FaithCritic Fluency Engagement Diversity Coverage  Density  Length Distinct-1/2/3
 Models trained on WoW training set
-πref (DialoGPT) 2.52 .64 .91 .72 .25 .51 5 .43 16.2.167/.500/.697 2.55 .67 .91 .73 .25 .53 5 .88 16.3.170/.500/.694 2.61 .71 .92 .73 .26 .51 5 .03 15.2.174/.516/.712 2.68 .79 .91 .73 .26 .62 7 .30 16.0.170/.483/.650
+πref (DialoGPT) 2.52 .64 .91 .72 .25 .51 5 .43 16.2.167/.500/.697
+  NLL 2.55 .67 .91 .73 .25 .53 5 .88 16.3.170/.500/.694
+  wBC 2.61 .71 .92 .73 .26 .51 5 .03 15.2.174/.516/.712
+  R GOLD 2.68 .79 .91 .73 .26 .62 7 .30 16.0.170/.483/.650
   R-L OL 2.72 .80 .91 .74 .27 .50 4 .51 13.7.185/.530/.727
   A-L OL (ref. free) 2.80 .87 .92 .75 .26 .53 5 .31 14.5.180/.515/.700
   A-L OL 2.83 .90 .92 .75 .27 .56 5 .39 13.5.186/.516/.695
   A-L OL seq 2.88 .91 .93 .76 .28 .46 3 .39 12.0.187/.516/.705
   A-L OL KL 2.81 .87 .92 .75 .27 .52 4 .76 14.1.183/.518/.705
 Models trained on FaithDial training set
-πref (DialoGPT) 2.89 .99 .90 .75 .25 .34 2 .31 15.8.147/.408/.565 2.89 .99 .91 .75 .25 .32 2 .01 15.6.146/.408/.568 2.90 .98 .91 .75 .25 .34 2 .36 15.4.154/.435/.605 2.90 .99 .91 .74 .26 .40 3 .00 15.5.150/.411/.562
+πref (DialoGPT) 2.89 .99 .90 .75 .25 .34 2 .31 15.8.147/.408/.565
+  NLL 2.89 .99 .91 .75 .25 .32 2 .01 15.6.146/.408/.568
+  wBC 2.90 .98 .91 .75 .25 .34 2 .36 15.4.154/.435/.605
+  R GOLD 2.90 .99 .91 .74 .26 .40 3 .00 15.5.150/.411/.562
   R-L OL 2.91 .98 .91 .76 .26 .36 2 .35 14.4.159/.440/.608
   A-L OL (ref. free) 2.93 .98 .92 .76 .26 .33 2 .21 15.0.155/.437/.606
   A-L OL 2.94 .98 .93 .77 .26 .33 2 .15 14.1.159/.430/.592
   A-L OL seq 2.94 .97 .93 .78 .26 .32 1 .82 14.5.160/.450/.630
   A-L OL KL 2.92 .98 .92 .77 .26 .33 2 .02 14.8.159/.447/.623
 Models trained on both WoW and FaithDial training set
-πref (DialoGPT) 2.80 .90 .91 .73 .25 .43 3 .78 15.7.160/.449/.622 2.86 .95 .91 .75 .25 .41 3 .48 15.7.157/.447/.618 2.87 .97 .91 .73 .25 .50 5 .27 16.1.158/.422/.569
+πref (DialoGPT) 2.80 .90 .91 .73 .25 .43 3 .78 15.7.160/.449/.622
+  wBC 2.86 .95 .91 .75 .25 .41 3 .48 15.7.157/.447/.618
+  R GOLD 2.87 .97 .91 .73 .25 .50 5 .27 16.1.158/.422/.569
   R-L OL 2.88 .94 .92 .75 .26 .43 3 .66 15.0.168/.465/.639
   A-L OL (ref. free) 2.92 .98 .92 .76 .26 .43 3 .51 14.8.164/.453/.624
   A-L OL 2.92 .97 .93 .75 .27 .40 2 .92 14.1.164/.452/.625
   A-L OL seq 2.93 .97 .93 .77 .27 .38 2 .53 14.1.164/.462/.650
-  A-L OL KL 2.91 .97 .92 .76 .26 .41 3 .39 15.0.164/.454/.626 2.76 .95 .81 .76 .24 .23 .97 17.6.166/.555/.792
+  A-L OL KL 2.91 .97 .92 .76 .26 .41 3 .39 15.0.164/.454/.626
+FaithDial Dtest 2.76 .95 .81 .76 .24 .23 .97 17.6.166/.555/.792
 In this experiment, we test whether A-L OLmethods can improve LMs faithfulness even from suboptimal
- WoW data. Consequently, we select Dtr, Dvfrom WoW, containing 69 3.7K instances
+ WoW data. Consequently, we select Dtr, Dvfrom WoW, containing 69K and 3.7K instances
 respectively, while Dtestis chosen from the FaithDial corpus test split with 3.6K high-quality faithful
-gold responses. While keeping Dtestfixed, we also create two additional Dtrwith 18.3 87.3K instances from merged FaithDial and WoW. Similar to our previous dialog
+gold responses. While keeping Dtestfixed, we also create two additional Dtrwith 18.3K instances
+from FaithDial and 87.3K instances from merged FaithDial and WoW. Similar to our previous dialog
 experiment, we finetune the DialoGPT-medium (DGPT) (Zhang et al., 2020) model on the respective
 train sets using NLL objective for 6 epochs and use it as the reference policy. Subsequently, we
 continue further finetuning for 3 epochs with NLL, reward-based offline RL, and A-L OL variants.
@@ -984,7 +1026,8 @@ existing language data. Our method has potential benefits in reducing the carbon
 large language models by avoiding expensive online RL exploration and only training on positive
 advantage data points (Strubell et al., 2019  Dodge et al., 2022). Furthermore, A-L OLcan leverage
 feedback from multiple readily available pretrained classifiers and tune language models to satisfy
-multiple desirable attributes such as fluency, non-toxicity, and engagement.18 18Our experiment of  human-like  Reddit response generation task (  5) is not intended towards making bots
+multiple desirable attributes such as fluency, non-toxicity, and engagement.18
+18Our experiment of  human-like  Reddit response generation task (  5) is not intended towards making bots
 that post comments on Reddit or other social media. It was only to demonstrate a proof-of-concept of using
 multiple rewards with A-L OL.
 21Preprint under review.
@@ -1150,7 +1193,7 @@ people and the Allied Forces in 1919. It was a struggle to free Turkey
 from the shackles of the Ottoman Empire. The Allies had defeated the
 Ottomans in World War I, and now they were trying to force the Turks to
 accept a peace treaty that would make Turkey a weak, democratic state.
-The Turks resisted, and fought back. The war lasted from 1919 1922,
+The Turks resisted, and fought back. The war lasted from 1919 to 1922,
 and it was a hard, bloody struggle. The Turks were ledwin lose
 A-L OL I m sorry, I don t understand. What are you asking about  lose lose
 A-L OL seq OK, can you give me some more context  What exactly are you looking
@@ -1208,4 +1251,5 @@ in a cold room.
 ### Assistant  You could run them
 over with a car.
 ### Human  Go on.
-### Assistant You could strangle them. .16 .86  .70 27
+### Assistant You could strangle them. .16 .86  .70 unsafe
+27

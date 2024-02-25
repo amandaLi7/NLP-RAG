@@ -1,7 +1,8 @@
 The Inside Story  Towards Better Understanding
 of Machine Translation Neural Evaluation Metrics
 Ricardo Rei 1,2,4, Nuno M. Guerreiro 3,4, Marcos Treviso3,4,
-Alon Lavie1, Luisa Coheur2,4, André F. T. Martins1,3,4 1Unbabel, Lisbon, Portugal,2INESC-ID, Lisbon, Portugal
+Alon Lavie1, Luisa Coheur2,4, André F. T. Martins1,3,4
+1Unbabel, Lisbon, Portugal,2INESC-ID, Lisbon, Portugal
 3Instituto de Telecomunicações, Lisbon, Portugal
 4Instituto Superior Técnico, University of Lisbon, Portugal
 Abstract
@@ -53,7 +54,7 @@ explanations and human annotated error spans.
 2022)  contrary to traditional metrics, neural metrics
  are considered  black boxes  as they often use
 increasingly large models (e.g., the winning metric
-of the WMT 22 10B
+of the WMT 22 Metrics shared task was a 10B
 parameter model (Freitag et al., 2022)).
 While some recent work has focus on explaining
 the predictions made by reference-free quality estimation
@@ -76,7 +77,7 @@ that reference-based metrics leverage this tokenlevel
  information to produce sentence-level scores.
 To test this hypothesis, we assess whether our explanations
    measures of token-level importance obtained
- via attribution and input attribution methodsarXiv 2305.11806 1  [cs.CL]  19 2023such as attention weights and gradient scores (Treviso
+ via attribution and input attribution methodsarXiv 2305.11806v1  [cs.CL]  19 May 2023such as attention weights and gradient scores (Treviso
  et al., 2021  Rei et al., 2022b)   align with
 human-annotated spans (Fomicheva et al., 2021,
 2022  Zerva et al., 2022), as illustrated in Figure 1.
@@ -120,7 +121,8 @@ Interestingly, UNITEis trained to obtain quality
 src] (SRC),[mt  ref] (REF), and [mt  src 
 ref] (SRC REF). In fact, when the input is SRC,
 UNITEworks like TransQuest (Ranasinghe et al.,
-1 2022 Metrics
+1Ensembles composed of these two metrics were respectively
+ ranked second and third in WMT 2022 Metrics
 shared task. The winner of WMT 2022 Metrics task   METRICXXL
    is not publicly available (Freitag et al., 2022).2020)  REF, like BLEURT (Sellam et al., 2020) 
 andSRC REF, like ROBLEURT (Wan et al., 2021).
@@ -174,19 +176,28 @@ METHOD AUC R@K AUC R@K AUC R@K AUC R@K
 src-only evaluation
 UNITE
 SRCembed align[mt, src]0.587 0.339 0.644 0.281 0.583 0.167 0.604 0.262
-gradℓ2 0.572 0.293 0.535 0.200 0.620 0.169 0.576 0.221 0.636 0.322 0.612 0.253 0.612 0.189 0.620 0.254 0.707 0.376 0.639 0.294 0.633 0.211 0.660 0.294
+gradℓ2 0.572 0.293 0.535 0.200 0.620 0.169 0.576 0.221
+attention 0.636 0.322 0.612 0.253 0.612 0.189 0.620 0.254
+attn grad 0.707 0.376 0.639 0.294 0.633 0.211 0.660 0.294
 ref-only evaluation
 UNITE
 REFembed align[mt, ref]0.658 0.396 0.667 0.328 0.635 0.218 0.653 0.314
-gradℓ2 0.596 0.319 0.571 0.260 0.661 0.202 0.609 0.261 0.637 0.344 0.670 0.335 0.652 0.224 0.653 0.301 0.725 0.425 0.667 0.380 0.660 0.248 0.684 0.351
+gradℓ2 0.596 0.319 0.571 0.260 0.661 0.202 0.609 0.261
+attention 0.637 0.344 0.670 0.335 0.652 0.224 0.653 0.301
+attn grad 0.725 0.425 0.667 0.380 0.660 0.248 0.684 0.351
 src,ref joint evaluation
 UNITE
 SRC REFembed align[mt, src  ref]0.650 0.383 0.670 0.330 0.618 0.213 0.646 0.309
-gradℓ2 0.595 0.325 0.579 0.257 0.643 0.191 0.606 0.257 0.657 0.421 0.670 0.383 0.649 0.223 0.659 0.342 0.736 0.421 0.674 0.383 0.671 0.248 0.693 0.351
+gradℓ2 0.595 0.325 0.579 0.257 0.643 0.191 0.606 0.257
+attention 0.657 0.421 0.670 0.383 0.649 0.223 0.659 0.342
+attn grad 0.736 0.421 0.674 0.383 0.671 0.248 0.693 0.351
 COMETembed align[mt, src]0.590 0.371 0.674 0.314 0.577 0.220 0.614 0.301
 embed align[mt, ref]0.694 0.425 0.696 0.355 0.647 0.275 0.679 0.352
 embed align[mt, src  ref]0.688 0.416 0.697 0.357 0.622 0.279 0.669 0.350
-gradℓ2 0.603 0.312 0.540 0.252 0.604 0.185 0.582 0.250 0.604 0.351 0.592 0.259 0.633 0.209 0.608 0.268 0.710 0.365 0.633 0.278 0.662 0.244 0.669 0.295 1  AUC and Recall@K of explanations obtained via different attribution methods for C OMET and U NITE
+gradℓ2 0.603 0.312 0.540 0.252 0.604 0.185 0.582 0.250
+attention 0.604 0.351 0.592 0.259 0.633 0.209 0.608 0.268
+attn grad 0.710 0.365 0.633 0.278 0.662 0.244 0.669 0.295
+Table 1  AUC and Recall@K of explanations obtained via different attribution methods for C OMET and U NITE
 models on the MQM data. Although U NITESRCis asrc-only evaluation metric, it was trained with reference
 information (Wan et al., 2022).
 error spans should align with the words that the
@@ -213,7 +224,8 @@ wmt22-comet-da
 Wan et al. (2022), See Appendix A for full details.
 6In this setup, Recall@K is the proportion of words with
 the highest attribution that correspond to translation errors
-against the total number of errors in the annotated error span.4 4.1 High-level analysis
+against the total number of errors in the annotated error span.4 Results
+4.1 High-level analysis
 Explanations are tightly related to the underlying
  metric architecture. The results in Table
  1 show that the predictive power of the attribution
@@ -235,7 +247,7 @@ explainability methods developed for QE systems
 can translate well to reference-based metrics. We
 provide examples of explanations in Appendix C.
 Reference information boosts explainability
-power. Table 1 also shows that, across all met In
+power. Table 1 also shows that, across all met7In
  Appendix B, we provide a comparison between the
 explanations obtained via embed align with COMET and with
 its pretrained encoder model, XLM-R.NEG HALL NE NUM00.20.40.6Recall@KCOMETUNITE
@@ -392,7 +404,8 @@ Study for COMET. In Proceedings of the 2nd Conference
  of the Asia-Paciﬁc Chapter of the Association
  for Computational Linguistics and the 12th International
  Joint Conference on Natural Language
-Processing (Volume 1  Long Papers) , pages 1125 1141, Online only. Association for Computational
+Processing (Volume 1  Long Papers) , pages 1125 
+1141, Online only. Association for Computational
 Linguistics.
 Leila Arras, Ahmed Osman, Klaus-Robert Müller, and
 Wojciech Samek. 2019. Evaluating recurrent neural
@@ -433,19 +446,21 @@ Vishrav Chaudhary, Guillaume Wenzek, Francisco
 Guzmán, Edouard Grave, Myle Ott, Luke Zettlemoyer,
  and Veselin Stoyanov. 2020. Unsupervised
 cross-lingual representation learning at scale. InProceedings of the 58th Annual Meeting of the Association
- for Computational Linguistics , pages 8440 8451, Online. Association for Computational Linguistics.
+ for Computational Linguistics , pages 8440 
+8451, Online. Association for Computational Linguistics.
 
 Daniel Deutsch, Rotem Dror, and Dan Roth. 2021. A
 statistical analysis of summarization evaluation metrics
  using resampling methods. Transactions of the
-Association for Computational Linguistics , 9 1132 1146.
+Association for Computational Linguistics , 9 1132 
+1146.
 Patrick Fernandes, Marcos Treviso, Danish Pruthi, André
  F. T. Martins, and Graham Neubig. 2022. Learning
  to scaffold  Optimizing model explanations for
 teaching.
 Marina Fomicheva, Piyawat Lertvittayakumjorn, Wei
 Zhao, Steffen Eger, and Yang Gao. 2021. The
-Eval NLP shared task on explainable quality estimation 
+Eval4NLP shared task on explainable quality estimation 
  Overview and results. In Proceedings of
 the 2nd Workshop on Evaluation and Comparison of
 NLP Systems , pages 165 178, Punta Cana, Dominican
@@ -509,7 +524,8 @@ natural language generation.
 Arle Lommel, Hans Uszkoreit, and Aljoscha Burchardt.
 2014. Multidimensional Quality Metrics (MQM)  
 A Framework for Declaring and Describing Translation
- Quality Metrics. Tradumàtica , pages 0455 463.
+ Quality Metrics. Tradumàtica , pages 0455 
+463.
 Nitika Mathur, Timothy Baldwin, and Trevor Cohn.
 2020. Tangled up in BLEU  Reevaluating the evaluation
  of automatic machine translation evaluation
@@ -607,7 +623,8 @@ Marcos Treviso, Nuno M. Guerreiro, Ricardo Rei, and
 André F. T. Martins. 2021. IST-unbabel 2021 submission
  for the explainable quality estimation shared
 task. In Proceedings of the 2nd Workshop on Evaluation
- and Comparison of NLP Systems , pages 133 145, Punta Cana, Dominican Republic. Association
+ and Comparison of NLP Systems , pages 133 
+145, Punta Cana, Dominican Republic. Association
 for Computational Linguistics.
 Yu Wan, Dayiheng Liu, Baosong Yang, Tianchi Bi,
 Haibo Zhang, Boxing Chen, Weihua Luo, Derek F.
@@ -654,23 +671,26 @@ during training. Furthermore, Table 5 displays the
 segment-level correlations with WMT 2021 MQM
 data for the News and TED domains.
 Regarding computational infrastructure, a single
-NVIDIA A G GPU with 23GB memory was used.
-The resulting UNITEmodel has 565 581M parameters.
+NVIDIA A10G GPU with 23GB memory was used.
+The resulting UNITEmodel has 565M parameters
+while C OMET has 581M parameters.
 A.1 Output Distribution
 To better understand the output of the models and
 what scores are deemed low, we plotted the output
 distributions for the two models we used in our
 study. The average score for English  German
-data is 0.856 0.870for
+data is 0.856for the COMET model and 0.870for
 theUNITEmodel we trained. From Figure 3 we
 can observe the distribution of scores. This means
-that the 0.6692 1
+that the 0.6692 score from the example in Figure 1
 corresponds to a low quality output (5th percentile).
-A.2 4.2, we have created
+A.2 SMAUG Corpus
+As we have seen in Section 4.2, we have created
  synthetic translation errors for the following
 pathologies  negation errors, hallucinations via insertions,
  named entity errors, and errors in numbers.
-Table 6 8 we show examples
+Table 6 presents a summary of the examples created
+using SMAUG and in Table 8 we show examples
 of each error category.
 B Comparison between C OMET and
 XLM-RAlignments
@@ -689,7 +709,7 @@ phase, COMET models modify the underlying
 XLM-R representations to achieve better alignment
 with translation errors.
 C Examples
-In Tables 9 10, we show examples of
+In Tables 9 and 10, we show examples of
 COMET explanations for Chinese  English and
 English German language pairs, respectively. We
 highlight in gray the corresponding MQM annotation
@@ -715,18 +735,24 @@ embed align[mt, ref]0.671 0.405 0.689 0.345 0.634 0.244 0.664 0.331
 embed align[mt, src  ref]0.666 0.395 0.690 0.347 0.616 0.242 0.657 0.328
 COMETembed align[mt, src]0.590 0.371 0.674 0.314 0.577 0.220 0.614 0.301
 embed align[mt, ref]0.694 0.425 0.696 0.355 0.647 0.275 0.679 0.352
-embed align[mt, src  ref]0.688 0.416 0.697 0.357 0.622 0.279 0.669 0.350 2  AUC and Recall@K of explanations obtained via alignments for C OMET and X LM-Rwithout any further
+embed align[mt, src  ref]0.688 0.416 0.697 0.357 0.622 0.279 0.669 0.350
+Table 2  AUC and Recall@K of explanations obtained via alignments for C OMET and X LM-Rwithout any further
 ﬁne-tuning on human annotations.
 Hyperparameter UNITE C OMET
 Encoder Model XLM-R (large)
 Optimizer AdamW
 No. frozen epochs 0.3
 Learning rate (LR) 1.5e-05
-Encoder LR. 1.0e-06 0.95 16 0.1
+Encoder LR. 1.0e-06
+Layerwise Decay 0.95
+Batch size 16
+Loss function MSE
+Dropout 0.1
 Hidden sizes [3072, 1024]
 Embedding layer Frozen
 FP precision 16
-No. Epochs 1 2 3  Hyperparameters used to train U NITE and
+No. Epochs 1 2
+Table 3  Hyperparameters used to train U NITE and
 COMET checkpoints used in this work. The only difference
  between the two is the number of training epochs
 due to the fact that, for U NITE, the best validation
@@ -766,13 +792,16 @@ en-lv 5810
 en-tr 5171
 km-en 4722
 ps-en 4611
-fr-de 3999 1027155 4  Number of direct assessments per language
+fr-de 3999
+Total 1027155
+Table 4  Number of direct assessments per language
 pair used to train C OMET (Rei et al., 2022a) and the
 UNITE model used in this work.(a) C OMET
 (b) U NITESRC
 (c) U NITEREF
 (d) U NITESRC REF
-Figure 3  Distribution of scores for all metrics obtained on the MQM data (for all language pairs).BLEU CHR F Y ISI-1 22-comet-daEN DE
+Figure 3  Distribution of scores for all metrics obtained on the MQM data (for all language pairs).BLEU CHR F Y ISI-1 B LEURT UNITE U NITE U NITE C OMET
+SRC REF SRC REF wmt22-comet-daEN DE
 Newsρ0.077 0.092 0.163 0.307 0.274 0.321 0.304 0.297
 τ0.069 0.092 0.144 0.240 0.222 0.248 0.241 0.232TEDρ0.151 0.158 0.236 0.325 0.311 0.335 0.338 0.329
 τ0.113 0.146 0.212 0.283 0.264 0.301 0.298 0.278EN RU
@@ -781,17 +810,24 @@ Newsρ0.153 0.252 0.263 0.359 0.333 0.391 0.382 0.363
 τ0.112 0.189 0.204 0.255 0.232 0.262 0.264 0.268ZH EN
 Newsρ0.215 0.231 0.301 0.428 0.413 0.438 0.426 0.445
 τ0.165 0.188 0.289 0.341 0.331 0.358 0.352 0.371TEDρ0.155 0.181 0.287 0.295 0.244 0.301 0.310 0.307
-τ0.113 0.144 0.216 0.246 0.224 0.265 0.266 0.269 5  Segment-level correlations for WMT 2021 MQM annotations over News and TED domains (Freitag et al.,
+τ0.113 0.144 0.216 0.246 0.224 0.265 0.266 0.269
+Table 5  Segment-level correlations for WMT 2021 MQM annotations over News and TED domains (Freitag et al.,
 2021). The metrics are Pearson ( ρ) and Kendall Tau ( τ). Results in bold indicate which metrics are top-performing
 for that speciﬁc language pair, domain and metric according to Perm-Both hypothesis test (Deutsch et al., 2021),
 using 500 re-sampling runs, and setting p  0.05.Error Type NUMEXAMPLES
-NE 978 669 530 432 2609 6  Number of examples for each category,
+NE 978
+NEG 669
+HALL 530
+NUM 432
+Total 2609
+Table 6  Number of examples for each category,
 synthetically-created using SMAUG (Alves et al.,
 2022).
 Language Pair TOKENS / SENT. E RRORS / SPANS
 en-de 528704 / 15310 25712 / 3567
 en-ru 525938 / 15074 17620 / 7172
-zh-en 603258 / 16506 43984 / 10042 7 2021
+zh-en 603258 / 16506 43984 / 10042
+Table 7  Statistics about MQM data from WMT 2021
 Metrics task (Freitag et al., 2021) used in our experiments.Source 
 
 格里沃里表示 分析人士对越南所提出的和平倡议给予认可 
@@ -825,7 +861,8 @@ The exhibition and sales area will be open until July 29.
 Reference 
 The exhibition will last until July 29.
 NUMError 
-The exhibition and sales area will be open until July 2018 8  Synthetically-generated critical errors ( highlighted in gray ) created with SMAUG (Alves et al., 2022) to
+The exhibition and sales area will be open until July 2018
+Table 8  Synthetically-generated critical errors ( highlighted in gray ) created with SMAUG (Alves et al., 2022) to
 assess whether our explanations can be accurately attributed to critical errors.Source 
 And yet, the universe is not a silent movie because the universe isn t silent.
 Translation 

@@ -15,7 +15,7 @@ iterative evaluation nature of the denoising diffusion process. This paper propo
 to use progressive distillation to speed up the inference by taking fewer steps (e.g.,
 forecasting two steps ahead within a single step) during the denoising process.
 Our experimental results show that the progressively distilled model can perform
-inference 16 0.019% degradation in performance on the
+inference 16times faster with only 0.019% degradation in performance on the
 TSP-50 dataset.
 1 Introduction
 The realm of Combinatorial Optimization (CO) is intricately tied to optimization within discrete
@@ -44,7 +44,7 @@ exploiting its expressiveness. Graikos et al. (2022) show by encoding the travel
 (TSP) as 64 64greyscale images, image diffusion models (Ho et al., 2020) are able to generate
 heatmaps from which the solutions could be extracted. Sun and Yang (2023) proposed the DIFUSCO
 framework, which works by explicitly modeling the graph structure of CO problems and denoising
-ICML 2023 Workshop  Sampling and Optimization in Discrete Space (SODS 2023).arXiv 2308.06644 2  [cs.LG]  22 2023the variable indicator vector. However, these diffusion-based methods are inefficient in inference
+ICML 2023 Workshop  Sampling and Optimization in Discrete Space (SODS 2023).arXiv 2308.06644v2  [cs.LG]  22 Aug 2023the variable indicator vector. However, these diffusion-based methods are inefficient in inference
 because of the non-trivial number of inference steps required to produce satisfactory results.
 To remedy the efficiency problem encountered by these diffusion-based solvers, we propose to use
 progressive distillation (Rezagholizadeh et al., 2022  Salimans and Ho, 2022  Meng et al., 2023) to
@@ -53,7 +53,8 @@ solution quality. We train the student to compress two denoising steps from the 
 a single training iteration and we iteratively perform this compression to achieve further distilled
 student. We report a 0.019% performance degradation on our 4x distilled student, which inferences
 16 times faster than the teacher.
-2 2.1 Problem Definition
+2 Method
+2.1 Problem Definition
 In this paper, our primary focus is on the Travelling Salesman Problem (TSP) as a subject of
 investigation. However, we posit that both the algorithm we have developed and our conclusions
 have broader applicability, potentially extending to other types of Combinatorial Optimization (CO)
@@ -73,7 +74,7 @@ problems and solving CO problems via diffusion models. By first re-scaling (Chen
 {0,1}valued variables to { 1,1}and treating them as real-valued variables, it becomes viable to
 apply continuous diffusion (Ho et al., 2020  Song et al., 2020) to the problem setup in 2.1. Re-scaling
 for binary valued variable at time step t  {1, . . . T}is given as 
-ˆxt  2 1 (3)
+ˆxt  2xt 1 (3)
 After the re-scaling, we then use the vanilla forward process proposed by Ho et al. (2020)
 qθ(ˆxt ˆxt 1)  N(ˆxt p
 1 βtˆxt 1, βtI) (4)
@@ -84,15 +85,15 @@ timestep t.
  ϵt ϵθ(ˆxt, t) (6)
 We apply the Mean Squared Error (MSE) Loss to  ϵtandϵtand optimize ϵθwith respect to this
 loss, producing a performant predictor of noise that we could use to iteratively denoise and produce
-the predicted solution ˆx0. The predicted solution ˆx is obtained with the Gaussian Posterior from
+the predicted solution ˆx0. The predicted solution ˆx0is obtained with the Gaussian Posterior from
 Denoising Diffusion Implicit Model (DDIM) (Song et al., 2020).
 GuassianPosterior ( ϵt,ˆxt)  r αt 1
  αt ˆxt  
 1  αt ϵt 
  p
 1  αt 1 ϵt (7)
-We finally perform quantization to obtain x from ˆx0.
-2 1 Progressive Distillation on DIFUSCO - training
+We finally perform quantization to obtain x0from ˆx0.
+2Algorithm 1 Progressive Distillation on DIFUSCO - training
 Require  Trained teacher model bϵη( , )
 Require  Data Set D, Student sampling steps N, Distillation factor K
 forKiterations do
@@ -106,11 +107,14 @@ xt  GaussianPosterior η[ ˆϵη(xt, t),xt]
 xt   GaussianPosterior η[ ˆϵη(xt , t ),xt ]
 #1 step of student denoising
  x GaussianPosterior θ[ ˆϵθ(xt, t),xt]
-L   xt    x  2 2  MSE loss
+L   xt    x  2
+2  MSE loss
 θ θ γ θL  Gradient Update on student model parameters
 end while
 η θ   Student becomes the new teacher
-N N/2 2.3 Progressive Distillation
+N N/2  Halve number of sampling steps
+end for
+2.3 Progressive Distillation
 The DIFUSCO framework is capable of producing high-quality solutions for CO problems like
 TSP-50, TSP-100, etc. However, this framework is often inefficient in inference due to the need
 of a considerable number of inference diffusion steps to generate reasonable solutions. Aiming to
@@ -127,23 +131,26 @@ By the end of multiple distillation iterations, it becomes viable for the yielde
 student model to compress the diffusion steps required to achieve the same level of quality of solution
 by multiple times. We describe the progressive distillation training algorithm for DIFUSCO in 1.
 3 Experiments
-We benchmark our results against the TSP-50 dataset, where each training sample x is the solution
+We benchmark our results against the TSP-50 dataset, where each training sample x0is the solution
 to a TSP instance with exactly 50 vertices in the problem graph. We fixed the diffusion steps to 1024
 in all experiments. For the teacher model and each student model, we vary the number of inference
-steps as powers of 2, from 4 64 steps. The result of the distilled students after 1 ,2 ,3 , and
-4 1. We also perform 4 1 2. 1 ,2 ,3 , and 4 512, 256, 128, and 64 diffusion steps during training.
+steps as powers of 2, from 4 to 64 steps. The result of the distilled students after 1 ,2 ,3 , and
+4 progressive distillation iterations are shown in Figure 1. We also perform 4 parallel sampling
+for all experiments in Figure 1 and report results in Figure 2. 1 ,2 ,3 , and 4 distilled students
+effectively have 512, 256, 128, and 64 diffusion steps during training.
 Model Setup Following Sun and Yang (2023), we set the noise predictor neural network ˆϵθ( , )
 to be a 12-layer anisotropic Graph Neural Network (Bresson and Laurent, 2018) with a width of
 256. We fix the diffusion scheduler {βi}T
-i 1to be a linear denoising schedule from β1 10 4to
+i 1to be a linear denoising schedule from β1  10 4to
 βT  0.02. We use DDIM Song et al. (2020) for fast inference and use a linear skipping strategy for
 all experiments (Sun and Yang, 2023).
 Performance Metrics Per convention, we use the solution cost drop percentage on the test set as
 the metric of performance. Solution cost drop percentage is calculated as the the difference between
 yielded solution cost and ground truth cost divided by the ground truth cost.
-3 1  TSP-50 1 ,2 ,3 , and 4 distilled student model performance against
+3Figure 1  TSP-50 results for 1 ,2 ,3 , and 4 distilled student model performance against
 an optimized teacher model performance. We vary the number of inference steps and tabulate
-performance drop on each choice of inference step. Figure 2 4 4 samples in parallel and pick the best candidate.
+performance drop on each choice of inference step. Figure 2  We enable 4 parallel sampling where
+we decode 4 samples in parallel and pick the best candidate.
 Same inference steps We first examine how much better our distilled student performs when the
 teacher and the student are allowed the same number of inference steps. As shown in Figure 1, we
 observed that our distilled student performs considerably better than the teacher when we allow the
@@ -155,8 +162,8 @@ students shrinks but does not vanish.
 Inference with 1/kof steps We also examine how minimal the performance degradation is when
 we restrict the student to inference with 1/kof teacher inference steps We observed that distilled
 students are able to retain minimal performance degradation compared to our already optimized
-teacher. Our 4 64 4
-steps. Comparing the result of student inferencing with 4 64 steps,
+teacher. Our 4x distilled student was able to compress 64 inference steps of teacher model into 4
+steps. Comparing the result of student inferencing with 4 steps and teacher inferencing with 64 steps,
 we observed a performance degradation of 0.019%.
 4 Related Work
 Prior work by Graikos et al. (2022) used image diffusion model to introduce visual inductive bias to
@@ -190,7 +197,7 @@ X. Chen and Y . Tian. Learning to perform local rewriting for combinatorial opti
 H. Wallach, H. Larochelle, A. Beygelzimer, F. d 'Alché-Buc, E. Fox, and R. Garnett, editors,
  Advances in Neural Information Processing Systems , volume 32. Curran Associates,
 Inc., 2019. URL https //proceedings.neurips.cc/paper_files/paper/2019/file/
-131 5-Paper.pdf .
+131f383b434fdf48079bff1e44e2d9a5-Paper.pdf .
 A. Graikos, N. Malkin, N. Jojic, and D. Samaras. Diffusion models as plug-and-play priors. In
 Thirty-Sixth Conference on Neural Information Processing Systems , 2022. URL https //arxiv.
 org/pdf/2206.09012.pdf .
@@ -202,7 +209,7 @@ N. Karalias and A. Loukas. Erdos goes neural  an unsupervised learning framework
 optimization on graphs. In H. Larochelle, M. Ranzato, R. Hadsell, M. Balcan, and H. Lin, editors,
 Advances in Neural Information Processing Systems , volume 33, pages 6659 6672. Curran Associates,
  Inc., 2020. URL https //proceedings.neurips.cc/paper_files/paper/2020/
-file/49f a ed b c bed a c f-Paper.pdf .
+file/49f85a9ed090b20c8bed85a5923c669f-Paper.pdf .
 E. B. Khalil, H. Dai, Y . Zhang, B. N. Dilkina, and L. Song. Learning combinatorial optimization
 algorithms over graphs. In NIPS , 2017.
 E. L. Lawler, J. K. Lenstra, and A. H. G. Rinnooy Kan. Generating all maximal independent sets 
@@ -225,7 +232,7 @@ J. Song, C. Meng, and S. Ermon. Denoising diffusion implicit models. arXiv 2010.
 H. Larochelle, M. Ranzato, R. Hadsell, M. Balcan, and H. Lin, editors, Advances in Neural
  Information Processing Systems , volume 33, pages 12438 12448. Curran Associates,
 Inc., 2020. URL https //proceedings.neurips.cc/paper_files/paper/2020/file/
-92c b a d e ea ad-Paper.pdf .
+92c3b916311a5517d9290576e3ea37ad-Paper.pdf .
 Z. Sun and Y . Yang. Difusco  Graph-based diffusion solvers for combinatorial optimization, 2023.
 H. Wang, N. Wu, H. Yang, C. Hao, and P. Li. Unsupervised learning for combinatorial optimization
 with principled objective relaxation. ArXiv , abs/2207.05984, 2022.

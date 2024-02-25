@@ -1,6 +1,7 @@
-arXiv 2302.14132 1  [cs.CL]  27 2023STRUCTURED PRUNING OF SELF-SUPERVISED PRE-TRAINED MODELS
+arXiv 2302.14132v1  [cs.CL]  27 Feb 2023STRUCTURED PRUNING OF SELF-SUPERVISED PRE-TRAINED MODELS
 FOR SPEECH RECOGNITION AND UNDERSTANDING
-Yifan Peng2 , Kwangyoun Kim1, Felix Wu1, Prashant Sridhar1, Shinji Watanabe2 1ASAPP Inc., Mountain View, CA, USA Carnegie Mellon University, Pittsburgh, PA, USA
+Yifan Peng2 , Kwangyoun Kim1, Felix Wu1, Prashant Sridhar1, Shinji Watanabe2
+1ASAPP Inc., Mountain View, CA, USA2Carnegie Mellon University, Pittsburgh, PA, USA
 {yifanpen,swatanab }@andrew.cmu.edu {kkim,fwu,psridhar }@asapp.com
 ABSTRACT
 Self-supervised speech representation learning (SSL) has shown to
@@ -15,14 +16,14 @@ has a small size but a heavy computational cost. In this work, we propose
  three task-speciﬁc structured pruning methods to deal with such
 heterogeneous networks. Experiments on LibriSpeech and SL URP
 show that the proposed method is more accurate than the origi nal
-wav vec2-base with 10% to 30% less computation, and is able t o
+wav2vec2-base with 10% to 30% less computation, and is able t o
 reduce the computation by 40% to 50% without any degradation .
 Index Terms  Structured pruning, self-supervised models,
 speech recognition, spoken language understanding
 1. INTRODUCTION
 Self-supervised speech representation learning (SSL) has achieved
 great success in a variety of speech processing tasks [1, 2, 3 , 4, 5,
-6, 7]. However, SSL pre-trained models (e.g., wav vec2 [8], HuBERT
+6, 7]. However, SSL pre-trained models (e.g., wav2vec2 [8], HuBERT
  [9] and WavLM [10]) usually require large memory and hig h
 computational cost. Hence, it is difﬁcult to deploy them in r ealworld
  applications. Recent studies have utilized model com pression
@@ -53,7 +54,7 @@ Another limitation is that PARP only prunes the Transformer layers
 while keeping the convolutional feature extractor (CNN) ﬁx ed. As
 discussed in [30], although the CNN has much fewer parameter s
 than the Transformer, its computational cost is large and ca nnot
-simply be ignored. For example, in wav vec2-base, the CNN ha s
+simply be ignored. For example, in wav2vec2-base, the CNN ha s
 less than 5% of the total parameters but its computational co st is
 nearly 33% in terms of multiply-accumulate (MAC) operation s for
 a 10-second audio.
@@ -71,19 +72,20 @@ our methods in the ASR and spoken language understanding (SL U)
 tasks. Experiments on LibriSpeech and SLURP show that all HJ Pruning
  methods outperform the previous Transformer-only pruning
 strategy. Our HJ-Pruning-MAC is more accurate than the orig inal
-wav vec2-base with 10% to 30% less computation, and is able t o
+wav2vec2-base with 10% to 30% less computation, and is able t o
 reduce the computation by 40% to 50% without any degradation .
 2. BACKGROUND
 2.1. Self-supervised pre-trained speech models
-We evaluate the pruning algorithms mainly using wav vec2 [8 ], but
+We evaluate the pruning algorithms mainly using wav2vec2 [8 ], but
 our proposed methods can be easily applied to other SSL model s
 with as a similar architecture such as HuBERT [9] (see Sec. 4. 5),
-SEW-D [30], and WavLM [10]. The wav vec2-base model (pretrained
+SEW-D [30], and WavLM [10]. The wav2vec2-base model (pretrained
  on Librispeech 960h [31]) consists of a convolution al feature
 extractor (CNN) and a Transformer [32] encoder. The CNN contains
  seven temporal convolutions with 512 channels and GeL U [33]
-activations. The Transformer encoder is a stack of 12 768 12 attention heads.
-2.2. Structured pruning using L regularization
+activations. The Transformer encoder is a stack of 12 Transf ormer
+layers with a hidden dimension of 768 and 12 attention heads.
+2.2. Structured pruning using L0regularization
 We follow [22, 23, 34] to formulate the structured pruning ta sk as
 a regularized learning problem, which aims to learn a sparse model.
 Letf(  θ)be a model with parameters θ {θj}n
@@ -100,7 +102,9 @@ j 1, then our training
  objective is 
 min
 θ,αEz q[
-1 1L(f(xi  θ),yi) λ  θ 0]
+1
+DD 
+i 1L(f(xi  θ),yi) λ  θ 0]
 , (1)
 where{(xi,yi)}D
 i 1is the training data containing Dsamples,Lis
@@ -120,7 +124,7 @@ logu
  v(α)   (r l) v(α) l,z  min(1,max(0, v(α))),(2)
 whereU(0,1)is a uniform distribution over the interval [0,1],σ( )
 is the sigmoid function and βis a temperature constant. The actual
-parameters are α.l  0 0are two constants to stretch
+parameters are α.l  0andr  0are two constants to stretch
 the output of sigmoid to [l,r], which is ﬁnally rectiﬁed to [0,1]. It
 is proven that the ﬁrst term in Eq. (1) now becomes differenti able
 w.r.t. all parameters. We can write the second term in a close d-form
@@ -141,7 +145,9 @@ adding a regularizer λ  θ 0, prior studies [22, 23] suggest optimizing
 the training loss subject to an explicit equality constrain t on sparsity 
 min
 θ,αEz[
-1 1L(f(xi  θ),yi)]
+1
+DD 
+i 1L(f(xi  θ),yi)]
 s.t.s(α)  t, (4)
 wheres(α)is the current sparsity and tis a pre-speciﬁed target sparsity.
  The sparsity is deﬁned as the percentage of parameters that are
@@ -155,7 +161,9 @@ be rewritten as an adversarial game according to the augment ed Lagrangian
 max
 λmin
 θ,αEz[
-1 1L(f(xi  θ),yi)]
+1
+DD 
+i 1L(f(xi  θ),yi)]
  g(λ,α), (5)
 g(λ,α)  λ1(s(α) t) λ2(s(α) t)2, (6)
 whereλ1,λ2 Rare two Lagrange multipliers that are jointly
@@ -246,7 +254,7 @@ entire model to directly meet a computational budget measur ed by
 MACs. We follow the formulas used in the DeepSpeed ﬂops proﬁl er
 to calculate MACs.1For an input sequence of length Tand hidden
 sized, the MACs for each MHA and FFN block are as follows 
-MACmha  4 2T hdhead, (10)
+MACmha  4Thddhead 2T2hdhead, (10)
 MACffn  2Tddint, (11)
 wherehis the number of attention heads and dheadis the size per
 head.dintdenotes the intermediate size of FFN. The MACs of a 1-D
@@ -263,7 +271,7 @@ we can still train the model using Eq. (5).
 4. EXPERIMENTS
 4.1. Experimental setup
 We focus on task-speciﬁc structured pruning of SSL speech mo dels.
-We mainly prune wav vec2-base, but we also show that our meth ods
+We mainly prune wav2vec2-base, but we also show that our meth ods
 can be directly applied to HuBERT-base in Sec. 4.5. We conduc t experiments
  using PyTorch [35] and HuggingFace s transforme rs [36].
 Our implementation of the basic pruning algorithm is based o n prior
@@ -275,13 +283,17 @@ and a linear learning rate scheduler for all experiments.
 ASR   The 100-hour clean set of LibriSpeech [31] is utilized. In
 Sec. 4.3, the Tedlium [37] test set is used as out-of-domain d ata to
 demonstrate the robustness of structured pruning. The trai ning loss
-is CTC [38]. We ﬁne-tune a pre-trained model for 25 30 1.5e-4 64. The target sparsity is linearly increased to the desir ed value
+is CTC [38]. We ﬁne-tune a pre-trained model for 25 epochs and
+prune for 30 epochs with a learning rate of 1.5e-4 and a batch s ize
+of 64. The target sparsity is linearly increased to the desir ed value
 during the ﬁrst 5 epochs. The learning rate of αandλis selected
-from{0.02,0.05}. The pruned model is ﬁne-tuned for another 10 5e-5. The learning rate warmup steps
+from{0.02,0.05}. The pruned model is ﬁne-tuned for another 10
+epochs with a learning rate of 5e-5. The learning rate warmup steps
 are 3k, 3k, and 1k for training, pruning, and ﬁne-tuning, res pectively.
 SLU   The SLURP corpus [39] is used for intent classiﬁcation. A
-pre-trained SSL model is ﬁne-tuned for 50 50 1e-4 80. The ﬁ nal
-ﬁne-tuning has 10 1e-5. The lea rning
+pre-trained SSL model is ﬁne-tuned for 50 epochs and pruned f or 50
+epochs with a learning rate of 1e-4 and a batch size of 80. The ﬁ nal
+ﬁne-tuning has 10 epochs with a learning rate of 1e-5. The lea rning
 rate warmup is performed for 4k, 4k, 1k steps for training, pr uning,
 and ﬁne-tuning, respectively. Other conﬁgs are the same as A SR.
 1https //github.com/microsoft/DeepSpeed
@@ -289,7 +301,7 @@ and ﬁne-tuning, respectively. Other conﬁgs are the same as A SR.
  MHA has quadratic complexity w.r.t. T. We use 10 seconds to compute
 MACs in our experiments. This is a  virtual  length used only for computing
 MACs. We do not modify any training utterances.20 30 40 50 60 705.777911
-MACs ( 109)% Word Error Rate (  )Unpruned wav vec2-base
+MACs ( 109)% Word Error Rate (  )Unpruned wav2vec2-base
 Pruning Transformer Only
 HJ-Pruning-Size
 HJ-Pruning-SepSize
@@ -299,7 +311,7 @@ on LibriSpeech test-clean. Our proposed HJ-Pruning method s consistently
  outperform the baseline.
 10 20 30 40 50 60 7075808586.1
 MACs ( 109)% Accuracy (  )
-Unpruned wav vec2-base
+Unpruned wav2vec2-base
 Pruning Transformer Only
 HJ-Pruning-Size
 HJ-Pruning-SepSize
@@ -337,21 +349,30 @@ sparsity (low MACs). HJ-Pruning-SepSize is comparable wit h HJPruning-MAC,
 sparsities as shown in Fig. 3b. This high complexity hinders its usage
 in practice. Compared to ASR, we can achieve a higher compres sion
 rate (over 55%) without loss in accuracy. This is probably be cause30 40 50 60 705.566.57
-MACs ( 109)% Word Error Rate (  )Unpruned wav vec2-base
-Transformer Sparsity   0.1 0.2 0.3 0.4
+MACs ( 109)% Word Error Rate (  )Unpruned wav2vec2-base
+Transformer Sparsity   0.1
+Transformer Sparsity   0.2
+Transformer Sparsity   0.3
+Transformer Sparsity   0.4
 Selected Points
 (a) Word Error Rates (%) on LibriSpeech test-clean.
 30 40 50 60 7084858687
 MACs ( 109)% Accuracy (  )
-Unpruned wav vec2-base
-Transformer Sparsity   0.1 0.2 0.3 0.4 0.5 0.6
+Unpruned wav2vec2-base
+Transformer Sparsity   0.1
+Transformer Sparsity   0.2
+Transformer Sparsity   0.3
+Transformer Sparsity   0.4
+Transformer Sparsity   0.5
+Transformer Sparsity   0.6
 Selected Points
 (b) Intent Classiﬁcation Accuracy (%) on the SLURP test set.
 Fig. 3   Model selection for HJ-Pruning-SepSize. As described in
-Sec. 3.1, we perform grid search over the Transformer sparsi ty (0.1 0.4/0.6) and CNN sparsity (0.1 0.95). The Pareto fronti ers are
+Sec. 3.1, we perform grid search over the Transformer sparsi ty (0.1
+to 0.4/0.6) and CNN sparsity (0.1 to 0.95). The Pareto fronti ers are
 shown in blue, which are also presented in Fig. 1 and Fig. 2.
 20 30 40 50 60 701820222426
-MACs ( 109)% Word Error Rate (  )Unpruned wav vec2-base
+MACs ( 109)% Word Error Rate (  )Unpruned wav2vec2-base
 Pruning Transformer Only
 HJ-Pruning-Size
 HJ-Pruning-SepSize
@@ -374,8 +395,11 @@ Fig. 5 shows the remaining CNN channels, attention heads and FFN
 intermediate sizes after HJ-Pruning-MAC. The target spars ity ranges
 from 10% to 40%. For CNN, the sequence length gradually decreases
  due to downsampling. The ﬁrst few layers have higher computational
- cost, so they tend to be pruned more. For MHA and FF N,1 2 3 4 5 6 7200300400500 10% 20% 30% 40%
-1 2 3 4 5 6 7 8 9 10 11 1204812 1 2 3 4 5 6 7 8 9 10 11 121,0002,0003,000
+ cost, so they tend to be pruned more. For MHA and FF N,1 2 3 4 5 6 7200300400500
+CNN LayerChannels10% 20% 30% 40%
+1 2 3 4 5 6 7 8 9 10 11 1204812
+MHA LayerHeads
+1 2 3 4 5 6 7 8 9 10 11 121,0002,0003,000
 FFN LayerInterm. Sizes
 Fig. 5   ASR model architectures after HJ-Pruning-MAC. The target
 sparsity ranges from 10% to 40%.
@@ -396,7 +420,7 @@ overall trend is also consistent with a prior work in NLP [23] .
 As introduced in Sec. 2.1, HJ-Pruning can be directly applie d to
 other SSL models. In Fig. 6, we prune the HuBERT-base model
 based on the overall MACs for ASR. The performance is similar to
-that of the wav vec2. We also include other compressed model s for
+that of the wav2vec2. We also include other compressed model s for
 comparison, including DistilHuBERT [15] and LightHuBERT [ 16].
 Note that these results are not really comparable due to  (1) Their
 WERs are from SUPERB [1], which combines a frozen SSL model
@@ -411,10 +435,10 @@ that our task-speciﬁc pruning method is highly effective.
 In this paper, we propose HJ-Pruning to jointly prune hetero geneous
  components of SSL speech models, which achieves stron g
 performance-efﬁciency tradeoffs compared to several base lines. At
-a small sparsity (0.1 0.3), HJ-Pruning improves the wav v ec2
+a small sparsity (0.1 to 0.3), HJ-Pruning improves the wav2v ec2
 baseline while being faster. Depending on the task, HJ-Prun ing
 saves 40% or 50% MACs while maintaining the performance of
-wav vec2. HJ-Pruning is a general method that can be applied to
+wav2vec2. HJ-Pruning is a general method that can be applied to
 most of speech SSL models such as HuBERT. In the future, we pla n
 to explore the application of HJ-Pruning on encoder-decode r SSL
 models [43] and other SLU tasks [44, 5].6. REFERENCES
@@ -439,7 +463,7 @@ inProc. ICASSP , 2022.
 [7] Y . Peng, S. Arora, Y . Higuchi, et al.,  A Study on the Integ ration
  of Pre-trained SSL, ASR, LM and SLU Models for Spoken
 Language Understanding,  in Proc. SLT , 2022.
-[8] A. Baevski, Y . Zhou, A. Mohamed, and M. Auli,  wav vec
+[8] A. Baevski, Y . Zhou, A. Mohamed, and M. Auli,  wav2vec
 2.0  A framework for self-supervised learning of speech rep resentations, 
  in Proc. NeurIPS , 2020.
 [9] W.-N. Hsu, B. Bolte, Y .-H. H. Tsai, et al.,  HuBERT  Selfsupervised
@@ -457,7 +481,7 @@ arXiv 1910.01108 , 2019.
 [13] X. Jiao, Y . Yin, et al.,  TinyBERT  Distilling BERT for n atural
 language understanding,  in Findings of EMNLP , 2020.
 [14] Z. Peng, A. Budhkar, I. Tuil, et al.,  Shrinking bigfoot   Reducing
- wav vec 2.0 footprint,  in SustaiNLP , 2021.
+ wav2vec 2.0 footprint,  in SustaiNLP , 2021.
 [15] H.-J. Chang, S.-w. Yang, and H.-y. Lee,  DistilHuBERT 
 Speech representation learning by layer-wise distillatio n of
 hidden-unit BERT,  in Proc. ICASSP , 2022.
@@ -529,7 +553,7 @@ inProc. ICML , 2022.
 [42] T. Maekaku, Y . Fujita, Y . Peng, and S. Watanabe,  Attent ion
 Weight Smoothing Using Prior Distributions for Transforme rBased
  End-to-End ASR,  in Proc. Interspeech , 2022.
-[43] F. Wu, K. Kim, S. Watanabe, et al.,  Wav seq  Pretraining
+[43] F. Wu, K. Kim, S. Watanabe, et al.,  Wav2seq  Pretraining
  speech-to-text encoder-decoder models using pse udo
 languages,  arXiv 2205.01086 , 2022.
 [44] L. Lugosch, M. Ravanelli, P. Ignoto, et al.,  Speech mod el

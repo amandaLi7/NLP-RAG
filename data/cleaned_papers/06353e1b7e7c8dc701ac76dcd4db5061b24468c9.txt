@@ -1,4 +1,4 @@
-arXiv 2309.08876 2  [eess.AS]  9 2024DECODER-ONLY ARCHITECTURE FOR SPEECH RECOGNITION WITH
+arXiv 2309.08876v2  [eess.AS]  9 Jan 2024DECODER-ONLY ARCHITECTURE FOR SPEECH RECOGNITION WITH
 CTC PROMPTS AND TEXT DATA AUGMENTATION
 Emiru Tsunoo, Hayato Futami, Yosuke Kashiwagi
 Sony Group Corporation, JapanSiddhant Arora, Shinji Watanabe
@@ -83,7 +83,8 @@ external text-only data effectively.
 lower word error rates (WERs) by 0.3% and 1.4% for LibriSpeech
  test-clean and test-other, respectively, than th e encoder 
 decoder model, with approximately half the computational c ost,
-when we used paired data of 100 960h transcription data.
+when we used paired data of 100h with text augmentation of
+960h transcription data.
 2. CTC PROMPTS FOR DECODER-ONLY ASR
 2.1. Decoder-only architecture
 We follow the encoder decoder conformer ASR model [21], exc ept
@@ -118,7 +119,7 @@ p(Yi)  i
 j 1p(yj ˆHτ,Y j)
  i 
 j 1Dec(ˆHτ,Y j), (1)
-wherey is a start-of-sequence token,  sos . An overview of the
+wherey0is a start-of-sequence token,  sos . An overview of the
 proposed method is presented in Fig. 1.
 2.2. Audio prompt using CTC prediction
 CTC prompts are generated using an encoder. Generally, the l ength
@@ -182,10 +183,21 @@ simultaneously, that is, B {BASR,BLM}.
 2.3.1. ASR training
 Following the joint training of the encoder decoder and CTC in [22],
 we train the encoder, decoder, and CTC simultaneously. In ea ch
-training step, in addition to the CTC loss Lctc, the decoder loss LattTable 1 . ASR results with LibriSpeech 100 960h text data results. External LM was trained using extern al text data.
+training step, in addition to the CTC loss Lctc, the decoder loss LattTable 1 . ASR results with LibriSpeech 100h audio text pair data and 960h text data results. External LM was trained using extern al text data.
 IDs Models Training Data Prompt Decoding Fusion WER Param RTF
 ext-text CTC ext-LM dev-clean dev-other test-clean test-other
-B1 Baseline CTC [24] 9.2 22.8 9.6 23.5 34.8 0.14 2 Baseline CTC [24]     7.1 18.8 7.3 19.6 44.2 0.29 3 Baseline RNN-T [25]     7.0 18.6 7.5 19.4 54.4 0.67 4 Baseline EncDec [21] 8.6 20.9 8.9 21.5 46.8 0.53 5 6.9 18.0 7.3 18.9 56.2 0.58 1 Dec-only downsample 14.1 26.9 14.8 27.7 45.3 0.38 2 30.5 41.8 30.2 41.2 45.3 0.55 3 9.3 22.4 9.5 23.0 45.3 0.23 1 Dec-only w/ textAug   CTC remove 8.7 19.6 9.3 19.9 45.3 0.24 2 7.0 18.1 7.2 18.5 45.3 0.24 3 6.7 16.8 7.0 17.5 54.7 0.29 1 Dec-only (ﬁne-tuned) [15]   CTC remove     7.0 18.0 7.3 18.7 54.7 0.29
+B1 Baseline CTC [24] 9.2 22.8 9.6 23.5 34.8M 0.14
+B2 Baseline CTC [24]     7.1 18.8 7.3 19.6 44.2M 0.29
+B3 Baseline RNN-T [25]     7.0 18.6 7.5 19.4 54.4M 0.67
+B4 Baseline EncDec [21] 8.6 20.9 8.9 21.5 46.8M 0.53
+B5       6.9 18.0 7.3 18.9 56.2M 0.58
+P1 Dec-only downsample 14.1 26.9 14.8 27.7 45.3M 0.38
+P2 CTC average 30.5 41.8 30.2 41.2 45.3M 0.55
+P3 CTC remove 9.3 22.4 9.5 23.0 45.3M 0.23
+D1 Dec-only w/ textAug   CTC remove 8.7 19.6 9.3 19.9 45.3M 0.24
+D2   CTC remove   7.0 18.1 7.2 18.5 45.3M 0.24
+D3   CTC remove     6.7 16.8 7.0 17.5 54.7M 0.29
+F1 Dec-only (ﬁne-tuned) [15]   CTC remove     7.0 18.0 7.3 18.7 54.7M 0.29
 is considered only for the transcription part, not includin g prompts,
 using teacher-forcing as 
 LASR λLctc (1 λ)Latt
@@ -245,13 +257,14 @@ than LM training with text augmentation (Eq. (6)) for ASR tas ks, we
 allocated most of the mini-batches to the ASR tasks and used 1 0% of
 them for the LM tasks. Furthermore, we split the minibatch fo r LM
 tasks as BLM   B 
-LM   1 1 as discussed in Sec. 2.3.2. Threshold
+LM   1   1 as discussed in Sec. 2.3.2. Threshold
 θin Sec. 2.3.1 was set to two. We used the Adam optimizer with
 Noam learning rate decay.
 The external LMs were trained using the text-only data, incl uding
  an additional text corpus from LibriSpeech or Fisher. Th e LMs
 were two-layer LSTMs with 512 units. We applied byte-pair en coding
- subword tokenization with 5,000 2000 for Switchboard.
+ subword tokenization with 5,000 token classes for Libri Speech
+and 2000 for Switchboard.
 For comparison, we evaluated the WERs of CTC [24] and RNNT
  [25]. The baseline CTC used the same architecture as the afo rementioned
  conformer encoder. RNN-T used a 15-block conform er
@@ -278,12 +291,12 @@ Baseline CTC [24] 3.1 7.0 0.30
 Baseline EncDec [21] 2.6 6.2 0.54
 Decoder-only w/ textAug 3.0 6.6 0.29
 the Baseline EncDec and proposed Decoder-only models, we fu sed
-CTC and LM with weights of 0.4 0.6, respectively, and the b eam
+CTC and LM with weights of 0.4 and 0.6, respectively, and the b eam
 size was 10. To evaluate the pure performance of decoder-onl y models,
  we also trained the models with only the audio text pair of 100h
 set, i.e.,B BASR, without any fusion. Furthermore, we measured
 the real-time factor (RTF) of the inference on the test-clea n set using
-an 8 3.60 9-9900K CPU.
+an 8 core 3.60 GHz Intel i9-9900K CPU.
 The results are listed in Table 1. First, the prompt compression
  methods discussed in Sec. 2.2 were compared (P1 3). Fol lowing
  [15], we applied convolution layers to downsample the fr ame
@@ -301,7 +314,8 @@ text pair data (P3), the decoder-only architecture could no t outperform
  the Baseline EncDec results (B4), as [16] reported that training
 the decoder-only model from scratch was slightly worse than the
 conventional encoder decoder model.
-Next, we trained models with proposed text augmentation (D1 3). In contrast to pair-data-only training, text augmentat ion using an
+Next, we trained models with proposed text augmentation (D1  
+3). In contrast to pair-data-only training, text augmentat ion using an
 external text-only corpus (D1) signiﬁcantly reduced the WE Rs from
 9.5% and 23.0% to 9.3% and 19.9% for the test-clean and test-o ther
 sets, respectively, compared to (P3). As discussed in Sec. 2 .3, because
@@ -322,7 +336,7 @@ with the paired data and unpaired text data, respectively, f ollowed
 by ﬁne-tuning using the paired data (F1), as described in Sec . 2.3.
 However, the ﬁne-tuning approach was slightly worse than tr aining
 from scratch (D3), presumably because the ﬁne-tuning appro ach was
-1 14.55% on average.Table 4 . ASR results with Switchboard paired data and Fisher text
+1The number of frames was reduced down to 14.55% on average.Table 4 . ASR results with Switchboard paired data and Fisher text
 corpus results. The external LM was fused to all the models.
 Models WER RTF
 Switchboard CallHome
@@ -333,7 +347,8 @@ less optimal. Thus, using text augmentation, this study suc cessfully
 outperforms the conventional encoder decoder model with a smaller
 parameter size, lower RTF, and lower WERs by training the dec oderonly
  model using same amount of data from scratch.
-3.3. LibriSpeech 960 960h pair set of LibriSpeech and its e xternal
+3.3. LibriSpeech 960h experiments
+We also evaluated a full 960h pair set of LibriSpeech and its e xternal
  text-only corpus. We trained the models for 30 epochs and
 used the same beam size and fusion weights as in Sec. 3.2 for in ference.
  The results are listed in Table 3. The decoder-only mod el successfully
@@ -344,11 +359,12 @@ to show how the decoder reﬁnes CTC predictions in Table 2. How ever,
 its performance. We assume that the capacity of the decoder i s relatively
  small because it is a 6-block transformer while a tran sformer
 LM generally has 12 blocks or more [26]. However, our propose d
-method still showed an advantage in the computational speed   0.29 0.54.
+method still showed an advantage in the computational speed   0.29
+of RTF against 0.54.
 3.4. Switchboard and Fisher experiments
 We evaluated the Switchboard models using Hub5 00 with the
 Switchboard and CallHome subsets. We fused CTC and LM with
-weights of 0.4 0.4, respectively, with a beam size of 10. T able 4
+weights of 0.4 and 0.4, respectively, with a beam size of 10. T able 4
 lists the results. We observed a similar tendency as in Secti on. 3.2 
 the proposed model successfully outperformed the Baseline EncDec
 model in both the test subsets, owing to effective text augme ntation.
@@ -375,7 +391,8 @@ Sengupta, Adam Coates, et al.,  Deep speech  Scaling up endto-end
 2014.
 [2] Jan K. Chorowski, Dzmitry Bahdanau, Dmitriy Serdyuk,
 Kyunghyun Cho, and Yoshua Bengio,  Attention-based models
- for speech recognition,  in Proc. of NIPS , 2015, pp. 577 585.
+ for speech recognition,  in Proc. of NIPS , 2015, pp. 577 
+585.
 [3] Zhong Meng, Sarangarajan Parthasarathy, Eric Sun, Yash esh
 Gaur, Naoyuki Kanda, Liang Lu, Xie Chen, Rui Zhao, Jinyu
 Li, and Yifan Gong,  Internal language model estimation
@@ -403,7 +420,8 @@ Proc. of Interspeech , 2021, pp. 2566 2570.
 [9] Zhehuai Chen, Yu Zhang, Andrew Rosenberg, Bhuvana Ramabhadran,
  Pedro J. Moreno, Ankur Bapna, and Heiga Zen,
  MAESTRO  Matched speech text representations through
-modality matching,  in Proc. of Interspeech , 2022, pp. 4093 4097.
+modality matching,  in Proc. of Interspeech , 2022, pp. 4093 
+4097.
 [10] Tom Brown, Benjamin Mann, Nick Ryder, Melanie Subbiah,
  Jared D Kaplan, Prafulla Dhariwal, Arvind Neelakanta n,
 Pranav Shyam, Girish Sastry, Amanda Askell, et al.,  Language
@@ -464,7 +482,8 @@ end-to-end speech recognition,  Journal of Selected Topics in
 Signal Processing , vol. 11, no. 8, pp. 1240 1253, 2017.
 [23] Vassil Panayotov, Guoguo Chen, Daniel Povey, and Sanje ev
 Khudanpur,  LibriSpeech  an ASR corpus based on public
-domain audio books,  in Proc. of ICASSP , 2015, pp. 5206 5210.
+domain audio books,  in Proc. of ICASSP , 2015, pp. 5206 
+5210.
 [24] Alex Graves, Santiago Fern  andez, Faustino Gomez, and J  urgen
 Schmidhuber,  Connectionist temporal classiﬁcation  labelling
  unsegmented sequence data with recurrent neural ne tworks, 

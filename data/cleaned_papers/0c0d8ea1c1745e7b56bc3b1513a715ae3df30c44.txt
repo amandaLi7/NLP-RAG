@@ -84,7 +84,7 @@ domains, our datasets describe the process of combining
  ingredients under certain conditions in a
 sequential fashion to produce a desired product.
 These range from preparing a cooking recipe to
-synthesizing a chemical compound to extractingarXiv 2307.03823 1  [cs.CL]  7 2023materials from ores. As a result, the relations that
+synthesizing a chemical compound to extractingarXiv 2307.03823v1  [cs.CL]  7 Jul 2023materials from ores. As a result, the relations that
 we derive from each dataset share a loose semantic
 correspondence, both to each other and to basic
 semantic relations such as verb arguments and locations.
@@ -118,7 +118,8 @@ degrade the performance of purely text-based models,
  gains that are robust to those effects.
 We make our code available with our submission1.
 
-2 2.1 Few-shot Relation Extraction
+2 Related Work
+2.1 Few-shot Relation Extraction
 The goal of relation extraction (RE) is to detect
 and classify the relation between specified entities
  in a text according to some predefined schema.
@@ -228,7 +229,7 @@ graph per sentence. We then create a "top" node for
 the graph to link the individual trees for relations
 that span sentences.
 For the AMR parses, we use the SPRING model
-(Bevilacqua et al., 2021) as implemented in AMRLib We
+(Bevilacqua et al., 2021) as implemented in AMRLib2We
  additionally verified that the model did
 not perform significantly differently than the original
  implementation. In contrast to the dependency
@@ -261,7 +262,7 @@ aligners. These were implemented in AMRLib
 as the RBWandFAAaligners, respectively. Both
 aligners perform poorly, especially on the scientific
  text in the MSCorpus dataset. Because alignments
- are necessary to producing token-level fea https //github.com/bjascob/amrlibtures
+ are necessary to producing token-level fea2https //github.com/bjascob/amrlibtures
  from an AMR representation, we developed
 heuristics as a second pass of alignment after applying
  the FAA aligner to the original text/AMR
@@ -295,7 +296,7 @@ architecture for relation extraction, based on BERT
 (Devlin et al., 2019). We begin by embedding the
 context for each relation. We then extract the embeddings
  for all tokens that constitute each entity,
-and max-pool them into embeddings e ande2.
+and max-pool them into embeddings e1ande2.
 We concatenate e1,e2, and the embedding for the
 [CLS] token, which we consider a stand-in for the
 context, into one vector. We then pass that vector
@@ -310,14 +311,14 @@ the baseline BERT model s embeddings. For every
 with the max-pool of the embeddings of each of
 its aligned tokens, leaving the embeddings zeroed
 out for unaligned nodes. We then pass the graph
-through a relational graph convolution network (R https //amr.isi.edu/doc/amr-alignment-guidelines.htmlGCN,
+through a relational graph convolution network (R3https //amr.isi.edu/doc/amr-alignment-guidelines.htmlGCN,
  Schlichtkrull et al. (2018)). We choose the
 R-GCN for its ability to model heterogeneous relations
  in graphs. After computing node embeddings,
  we employ a residual connection similar to
 theHier setting shown in figure 3a in Bai et al.
 (2021), where the mean pool of node embeddings
-corresponding to e ande is added back to the
+corresponding to e1ande2is added back to the
 BERT-based embeddings of the aligned entity tokens
  computed earlier. These updated embeddings
 are then passed to the same MLP relation classifier
@@ -327,14 +328,15 @@ capacity that it imposes on our models. Additionally,
  we measure the distribution of path lengths
 between entities in both frameworks in the train
 split of our datasets, and find that the mean path
-of each dataset lies between 3 4. We thus use
+of each dataset lies between 3 and 4. We thus use
 an R-GCN of depth 4 for all experiments in order
  to capture most paths. Because of the residual
 connection architecture, we are restricted to using
 the baseline BERT model s word embedding size
 as the node embedding size as well. Combined
 with the GNN depth of 4, our model adds significantly
- more parameters   203 111M. However, we hypothesize
+ more parameters   203M parameters vs the
+plaintext model s 111M. However, we hypothesize
 that being forced to operate in the same embedding
 space as the baseline will discourage models from
 memorizing the original dataset and overfitting, especially
@@ -363,7 +365,10 @@ our datasets exhibit a high degree of concentrationin their label distributions,
 being found sometimes as much as 200  less than
 the most frequent classes.
 Dataset Documents # Relations Labels Label Distribution
-RISeC 260 7,591 11 300 15,681 13 230 18,399 11 1  Dataset Statistics. The label distribution column
+RISeC 260 7,591 11
+EFGC 300 15,681 13
+MSCorpus 230 18,399 11
+Table 1  Dataset Statistics. The label distribution column
  visualizes sorted frequencies of labels in each
 dataset.
 The RISeC dataset (Jiang et al., 2020) is the
@@ -396,22 +401,24 @@ indicating the flow of operations. MSCorpus defines
 is atypical for the other datasets. We thus combine
  some of these labels to bring MSCorpus into
 alignment with the other annotation schemas.
-5 5.1 In-Domain Experiments
+5 Experiments
+5.1 In-Domain Experiments
 We train both the baseline and graph-aware models
  on each dataset, using the train/dev/test splits
 where provided. If no dev split was provided, we
 randomly split the training dataset 80/20 into new
-train and dev splits. We use bert-base-uncasedas available on the Huggingface Hub as our base
+train and dev splits. We use bert-base-uncasedas available on the Huggingface Hub4as our base
 BERT model, for both the baseline and graphaware
  variants. For our graph-aware variants, we
 use R-GCN as our graph network. We train each
 model with the Adam optimizer (Kingma and Ba,
 2014) to minimize the cross-entropy loss between
 predicted and true labels. We use a learning rate
-of2 10 5 16. Each model
-is trained on 3 30 epochs, using
+of2 10 5and a batch size of 16. Each model
+is trained on 3 random seeds for 30 epochs, using
  early stopping criterion based on the macroaveraged
- F1 5 epochs. We keep the model that performs
+ F1 score on the dev split with a patience
+of 5 epochs. We keep the model that performs
 best on the dev split, and calculate its corresponding
  macro F1 score on the test set. We refer to
 the graph aware models that add dependencies and
@@ -547,8 +554,8 @@ effect of transfer setting such that in-domain performance
 performance in a few-shot setting  F(1, 679)  
 10356.25, p   .0001. In these cases, the original(a)  AMR vs baseline
  (b)  Dep vs baseline
-Figure 2 1 over baseline from incorporating linguistic graphs in models.
-dataset for in-domain training is between 5 15
+Figure 2  Differences in F1 over baseline from incorporating linguistic graphs in models.
+dataset for in-domain training is between 5 and 15
 times the size of the target training dataset. We also
 find a significant effect of the few-shot setting, such
 that larger numbers of target domain examples are
@@ -574,7 +581,9 @@ particular, the effect of case is only significant in
 the transfer setting. There is also a significant interaction
  between few shot setting and case  F(2, 679)
   8.19, p   .0005. A student-t post-hoc analysis
-reveals that the effect is only significant for the 5 10-shot settings. Thus, 1 20 or
+reveals that the effect is only significant for the 5and
+ 10-shot settings. Thus, 1 target example is too
+small to yield a significant effect whereas 20 or
 more is too many such that the representational
 advantage disappears . We also find a significant
 interaction between representation case and target
@@ -614,7 +623,7 @@ model. In the cases of transfer between MSCorpus
  and RISeC in either direction, for instance, the
 baseline model in the transfer setting consistently
 underperforms the model trained from scratch by
-up to 7 1 points, and does not close that gap even
+up to 7 F1 points, and does not close that gap even
 in the 50- and 100-shot settings. However, incorporating
  linguistic formalisms proves to be far more
 robust to the choice of source domain  the linguistic
@@ -623,7 +632,8 @@ never worse than the baseline trained on that source
 domain, and still frequently outperform the baseline
  trained from scratch, even when the choice of
 source domain imposes a performance penalty.Fewshot Setting
-Target Source Case 1 5 10 20 50 100 18.6 (2.9) 36.5 (3.2) 48.3 (3.1) 60.2 (2.3) 71.1 (1.1) 76.9 (0.2)
+Target Source Case 1 5 10 20 50 100
+RISeC From Scratch Baseline 18.6 (2.9) 36.5 (3.2) 48.3 (3.1) 60.2 (2.3) 71.1 (1.1) 76.9 (0.2)
  Dep 19.3 (4.5) 40.0 (2.8) 51.5 (3.2) 62.7 (4.5) 71.1 (0.9) 79.5 (1.5)
  AMR 19.8 (7.1) 39.3 (5.2) 52.1 (2.6) 60.9 (4.0) 70.6 (0.7) 78.4 (1.0)
 MSCorpus Baseline 19.7 (5.5) 35.1 (5.4) 45.6 (0.8) 57.7 (0.9) 67.8 (1.3) 76.2 (1.6)
@@ -694,13 +704,28 @@ transfer setting. In the 10-shot transfer in both directions
  between EFGC and MSCorpus, as well
 as the EFCG to RISeC case, transfer models that
 incorporate dependencies and AMRs overperform
-their in-domain counterparts by between 3 7 5 10
+their in-domain counterparts by between 3 and 7Fewshot Setting
+Target Source Case 5 10
 RISeC MSCorpus Baseline -1.37 -2.66
- Dep -0.29 0.04 0.10 -1.92 5.50 5.42 10.53 6.09 8.44 5.87
+ Dep -0.29 0.04
+ AMR 0.10 -1.92
+EFGC Baseline 5.50 5.42
+ Dep 10.53 6.09
+ AMR 8.44 5.87
 MSCorpus RISeC Baseline -3.55 -6.92
  Dep -0.10 -6.24
  AMR -1.40 -3.91
-EFGC Baseline -0.33 0.41 6.06 0.63 8.45 6.82 1.12 -3.23 4.51 -2.34 4.02 -3.23 0.29 0.85 1.14 4.18 1.29 3.46 4 5- and 10-shot cases gained in using a
+EFGC Baseline -0.33 0.41
+ Dep 6.06 0.63
+ AMR 8.45 6.82
+EFGC RISeC Baseline 1.12 -3.23
+ Dep 4.51 -2.34
+ AMR 4.02 -3.23
+MSCorpus Baseline 0.29 0.85
+ Dep 1.14 4.18
+ AMR 1.29 3.46
+Table 4  Differences from baseline model trained from
+scratch in the 5- and 10-shot cases gained in using a
 different source domain. Linguistic representations are
 more robust to choice of source domain.
 points.
@@ -759,7 +784,7 @@ Acknowledgments
 This research was sponsored by the Defense Advanced
  Research Projects Agency and the Army
 Research Office and was accomplished under Grant
-Number W NF-20-1-0006. The views and conclusions
+Number W911NF-20-1-0006. The views and conclusions
  contained in this document are those of
 the authors and should not be interpreted as representing
  the official policies, either expressed or implied,
@@ -772,14 +797,17 @@ herein.
 References
 Xuefeng Bai, Yulong Chen, Linfeng Song, and Yue
 Zhang. 2021. Semantic representation for dialogue
-modeling. In Proceedings of the 59 11th International Joint Conference on Natural
+modeling. In Proceedings of the 59th Annual Meeting
+ of the Association for Computational Linguistics
+and the 11th International Joint Conference on Natural
  Language Processing (Volume 1  Long Papers) ,
 pages 4430 4445, Online. Association for Computational
  Linguistics.Livio Baldini Soares, Nicholas FitzGerald, Jeffrey Ling,
 and Tom Kwiatkowski. 2019. Matching the blanks 
 Distributional similarity for relation learning. In Proceedings
  of the 57th Annual Meeting of the Association
- for Computational Linguistics , pages 2895 2905, Florence, Italy. Association for Computational
+ for Computational Linguistics , pages 2895 
+2905, Florence, Italy. Association for Computational
 Linguistics.
 Laura Banarescu, Claire Bonial, Shu Cai, Madalina
 Georgescu, Kira Griffitt, Ulf Hermjakob, Kevin
@@ -976,7 +1004,8 @@ Ahmed S Elsayed, Skatje Myers, and Martha Palmer.
 2021. Fine-grained information extraction from
 biomedical literature based on knowledge-enriched
 abstract meaning representation. In Proc. The Joint
-Conference of the 59 11th
+Conference of the 59th Annual Meeting of the Association
+ for Computational Linguistics and the 11th
 International Joint Conference on Natural Language
 Processing (ACL-IJCNLP 2021) .
 Xinyu Zhao, Shih-Ting Lin, and Greg Durrett. 2021.
@@ -988,5 +1017,6 @@ Li Zhenzhen, Yuyang Zhang, Jian-Yun Nie, and Dongsheng
  Li. 2022. Improving few-shot relation classification
  by prototypical representation learning with
 definition text. In Findings of the Association for
-Computational Linguistics  NAACL 2022 , pages 454 464, Seattle, United States. Association for Computational
+Computational Linguistics  NAACL 2022 , pages 454 
+464, Seattle, United States. Association for Computational
  Linguistics.

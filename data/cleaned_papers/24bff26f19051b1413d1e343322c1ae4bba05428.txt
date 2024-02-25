@@ -1,5 +1,6 @@
 When to generate hedges in peer-tutoring interactions
-Alafate Abulimiti1,2, Chloé Clavel3, Justine Cassell1,4 1INRIA, Paris ENS/PSL  alafate.abulimiti@inria.fr 
+Alafate Abulimiti1,2, Chloé Clavel3, Justine Cassell1,4
+1INRIA, Paris2ENS/PSL  alafate.abulimiti@inria.fr 
 3LTCI, Institut Polytechnique de Paris, Telecom Paris  chloe.clavel@telecom-paris.fr 
 4Carnegie Mellon University  justine@cs.cmu.edu 
 Abstract
@@ -83,7 +84,8 @@ timing and the effectiveness of their use, particularly
  in dialogue rather than running text, and
 specifically in the current article, in peer-tutoring
 environments.
-To address this gap in the literature, our researcharXiv 2307.15582 1  [cs.CL]  28 2023 1   First, can we predict when hedges should
+To address this gap in the literature, our researcharXiv 2307.15582v1  [cs.CL]  28 Jul 2023focuses on two key questions 
+RQ1   First, can we predict when hedges should
 be generated in peer-tutoring environments 
 To address this question we investigate whether
 it is possible to identify the points at which hedges
@@ -94,7 +96,8 @@ RQ2   Second, what features contribute to accurate
 To address this question we focus on the explainability
  of classification models using Shapley
 values (Sundararajan and Najmi, 2020) .
-2 2.1 Hedges
+2 Related Work
+2.1 Hedges
 Hedges are a common rhetorical device used to diminish
  the impact of an utterance, often to avoid unnecessary
  embarrassment on the part of the listener
@@ -197,7 +200,7 @@ task, mainly because determining what is  appropriate
  in a conversation is rather subjective and is
 certainly context-dependent. For example, EmpDG
 (Li et al., 2020) model achieved an accuracy of approximately
- 0.34 32 evenly distributed
+ 0.34 across the 32 evenly distributed
 labels in the Empathetic Dialogue dataset (Rashkin
 et al., 2019). indicating the complexity of the problem
  at hand. Similarly, MoEL (Lin et al., 2019)
@@ -209,7 +212,8 @@ The current paper aims to fill the lucunae in prior
 work by integrating social context and nonverbal
 behaviors as predictive features to construct predictive
  models for hedges.
-3 3.1 Task Description
+3 Methodology
+3.1 Task Description
 Suppose we have a set of dialogues
 D  {d1, d2, d3, ...d n}. Each dialogue
 d {u1, u2, u3...um}consists of mturns,
@@ -246,7 +250,7 @@ conversational strategies in task-oriented dialogue.
 The corpus consists of face-to-face interaction from
 20 same-gender dyads of American teenagers, with
 an average age of 14.3 years (and a range of ages
-from 13 16 years), gender-balanced1, and
+from 13 to 16 years), gender-balanced1, and
 recorded twice over two weeks. However, due
 to technical issues, data from only 14 dyads  data
 were usable. The participants were asked to to take
@@ -260,7 +264,7 @@ period. For the 14 dyads we used for our model, 28hour-long
  face-to-face interactions were recorded
 over the period of two weeks. The recorded video
 and audio data were transcribed, resulting in approximately
- 9479 14 dyads. These
+ 9479 turns for the 14 dyads. These
 included 8399 non-hedges and 1080 hedges. 4214
 non-hedges and 507 hedges in the tutors  turns
 since, as described above, we looked only at tutor
@@ -411,7 +415,8 @@ reliability of 0.7or above on Krippendorff s alpha.
 We collected all nonverbal behaviors that occurred
 during one turn and encoded them using one-hot
 encoding. For head nods and smiles, we used a
-binary labeling approach, marking 1 0for non-occurrence. As gaze serves
+binary labeling approach, marking 1for their occurrence
+ and 0for non-occurrence. As gaze serves
 as a potent indicator of attention, we categorized
 it into 4 distinct types  no gaze appeared in the
 video, gaze at partner, gaze at worksheet, and gaze
@@ -462,14 +467,15 @@ a vector representation. Our vector representation
 consists of three basic parts  turns as a sequence
 of tokens, annotations based on the turn (e.g., conversational
  strategies), and the nonverbal behaviors.
-Figure 1 6 parts  turn embedding, conversational strategies
+Figure 1 shows that we divide a vector of turns into
+6 parts  turn embedding, conversational strategies
 (CS), tutoring strategies ( TS), nonverbal behaviors
 (NB), contextual information ( ConInfo ) and dialogue
  acts ( DialAct ). After encoding each turn in
 this fashion, we use the four previous turns as a
 history tensor of a turn. This history ten tensor
 will be the input to the prediction models, and the
-model s output will be this turn s hedge label.1x Turn emb
+model s output will be this turn s hedge label.1x384Turn emb
 SD PR SV HDCS
 KT KB MC DQ SQTS
 Gaz e Smile HeadNB
@@ -482,7 +488,8 @@ Dialogue History v ec
 Models
 Hedge/NonHedgeP
  eriod ...
-...Figure 1 3.5 Prediction as Classification
+...Figure 1  Vector Representation
+3.5 Prediction as Classification
 We mentioned in the previous section that we transform
  the prediction problem into a classification
 problem. This means that the corresponding hedge
@@ -569,7 +576,9 @@ adjusted the loss function to account for class imbalance,
  less frequent classes more effectively. The
 code is available in https //github.com/
 neuromaancer/hedge_prediction
-4 4.1 1, we conducted
+4 Results
+4.1 Classification Results
+To answer the research question 1, we conducted
 classification experiments on different models. Table
  1 offers an in-depth comparison of multiple
 machine learning models for predicting hedges in
@@ -594,7 +603,7 @@ those using only embeddings, showed a remarkable
  The LSTM model using only turn embeddings
  demonstrated balanced performance across
 all metrics, achieving the highest precision of 19%
-and a competitive F1 0.28. However, the
+and a competitive F1 score of 0.28. However, the
 attention-based LSTM (AttnLSTM) model did not
 significantly outperform the standard LSTM model
 in any metric.
@@ -623,7 +632,7 @@ LightGBM 0.24 ( 0.07) 0.16 (  0.08)0.09 ( 0.08) 0.10 (  0.07) 0.10 (  0.10) 0.12
 LSTM 0.25 ( 0.05) 0.24 (  0.05) 0.26 (  0.06) 0.24 (  0.06) 0.22 (  0.06) 0.25 (  0.07)0.21 ( 0.06)
 AttnLSTM 0.23 ( 0.06)0.20 ( 0.06) 0.22 (  0.05) 0.25 (  0.05) 0.24 (  0.05) 0.23 (  0.07) 0.22 (  0.06)
 MLP 0.26 ( 0.06) 0.25 (  0.06) 0.25 (  0.06) 0.26 (  0.06) 0.25 (  0.06) 0.27 (  0.06)0.21 ( 0.07)
-Table 2 1 scores after the feature ablation, CS  Conversational Strategies  TS  Tutoring Strategies  NB  Nonverbal
+Table 2  F1 scores after the feature ablation, CS  Conversational Strategies  TS  Tutoring Strategies  NB  Nonverbal
 Behaviors  ConInfo   Contextual Information  DialAct   Dialogue Act.
 porate attention mechanisms, do not show significant
  improvements over the regular LSTM models.
@@ -718,7 +727,7 @@ the model s performance. Our study considered
 (CS), Tutoring Strategies ( TS), Nonverbal Behaviors
  ( NB), Contextual Information ( ConInfo ), Dialogue
  Act (DialAct), and Rapport.
-Table 2 1 scores as a consequence
+Table 2 shows the different F1 scores as a consequence
  of removing the different features. For
 XGBoost and LightGBM, the worst performance
 is observed when NBandCSwere removed, respectively,
@@ -769,7 +778,7 @@ for answering our questions about their prior work.
 This study received support from the French government,
  administered by the Agence Nationale
 de la Recherche, as part of the "Investissements
-d avenir" program, with reference to ANR-19P IA-0001
+d avenir" program, with reference to ANR-19P3IA-0001
  (PRAIRIE 3IA Institute).
 References
 Alafate Abulimiti, Chloé Clavel, and Justine Cassell.
@@ -797,7 +806,8 @@ minority over-sampling technique. Journal of artificial
 Tianqi Chen and Carlos Guestrin. 2016. Xgboost  A
 scalable tree boosting system. In Proceedings of
 the 22nd acm sigkdd international conference on
-knowledge discovery and data mining , pages 785 794.
+knowledge discovery and data mining , pages 785 
+794.
 Valerian J Derlega, Sandra Metts, Sandra Petronio, and
 Stephen T Margulis. 1993. Self-disclosure. Sage
 Publications, Inc.Bruce Fraser. 2010. Pragmatic competence  The case
@@ -820,7 +830,8 @@ of Experimental & Theoretical Artificial Intelligence ,
 18(4) 449 469.
 Sergiu Hart. 1989. Shapley value . Springer.
 Sepp Hochreiter and Jürgen Schmidhuber. 1997. Long
-short-term memory. Neural computation , 9(8) 1735 1780.
+short-term memory. Neural computation , 9(8) 1735 
+1780.
 Dan Jurafsky. 1997. Switchboard swbd-damsl shallowdiscourse-function
  annotation coders manual. www.
 dcs. shef. ac. uk/nlp/amities/files/bib/ics-tr-97-02.
@@ -849,7 +860,9 @@ Ren, Zhaopeng Tu, and Zhumin Chen. 2020. Empdg
 pages 4454 4466.
 Zhaojiang Lin, Andrea Madotto, Jamin Shin, Peng Xu,
 and Pascale Fung. 2019. Moel  Mixture of empathetic
- listeners. In Proceedings of the 2019 9th International Joint Conference
+ listeners. In Proceedings of the 2019 Conference
+ on Empirical Methods in Natural Language Processing
+ and the 9th International Joint Conference
 on Natural Language Processing (EMNLP-IJCNLP) ,
 pages 121 132.Scott M Lundberg and Su-In Lee. 2017. A unified approach
  to interpreting model predictions. In I. Guyon,
@@ -927,12 +940,14 @@ dataset. In Proceedings of the 57th Annual Meeting
 pages 5370 5381.
 Nils Reimers and Iryna Gurevych. 2019. Sentence-bert 
 Sentence embeddings using siamese bert-networks.
-InProceedings of the 2019 9th
+InProceedings of the 2019 Conference on Empirical
+Methods in Natural Language Processing and the 9th
 International Joint Conference on Natural Language
 Processing (EMNLP-IJCNLP) , pages 3982 3992.
 Oscar J Romero, Ran Zhao, and Justine Cassell. 2017.
 Cognitive-inspired conversational-strategy reasoner
-for socially-aware agents. In IJCAI , pages 3807 3813. Melbourne, VIC.
+for socially-aware agents. In IJCAI , pages 3807 
+3813. Melbourne, VIC.
 John R Searle. 1965. What is a speech act. Perspectives
 in the philosophy of language  a concise anthology ,
 2000 253 268.
@@ -940,7 +955,8 @@ Jamin Shin, Peng Xu, Andrea Madotto, and Pascale
 Fung. 2020. Generating empathetic responses by
 looking ahead the user s sentiment. In ICASSP 20202020
  IEEE International Conference on Acoustics,
-Speech and Signal Processing (ICASSP) , pages 7989 7993. IEEE.
+Speech and Signal Processing (ICASSP) , pages 7989 
+7993. IEEE.
 Helen Spencer-Oatey. 2005. (im)politeness, face and
 perceptions of rapport  Unpackaging their bases and
 interrelationships. 1(1) 95 119.

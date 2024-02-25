@@ -1,7 +1,8 @@
 SPEECH COLLAGE  CODE-SWITCHED AUDIO GENERATION BY COLLAGING
 MONOLINGUAL CORPORA
 Amir Hussein 1, Dorsa Zeinali 2, Ond ˇrej Klejch3, Matthew Wiesner1, Brian Yan4,
-Shammur Chowdhury5, Ahmed Ali5, Shinji Watanabe4, Sanjeev Khudanpur1 1Johns Hopkins University, USA,2Northeastern University, USA,3University of Edinburgh, UK,
+Shammur Chowdhury5, Ahmed Ali5, Shinji Watanabe4, Sanjeev Khudanpur1
+1Johns Hopkins University, USA,2Northeastern University, USA,3University of Edinburgh, UK,
 4Carnegie Mellon University, USA,5Qatar Computing Research Institute, Doha
 ABSTRACT
 Designing effective automatic speech recognition (ASR) systems for
@@ -87,8 +88,8 @@ from multiple speakers and diverse acoustic environments. We first
 obtain the unit alignments with audio from the monolingual data by
 training standard Hidden Markov Model-Gaussian Mixture Model
 1Visit our repository for audio samples and implementation
-https //github.com/JSALT CodeSwitchingASR/
-generating-code-switched-audioarXiv 2309.15674 1  [cs.SD]  27 2023HMM-GMM
+https //github.com/JSALT2022CodeSwitchingASR/
+generating-code-switched-audioarXiv 2309.15674v1  [cs.SD]  27 Sep 2023HMM-GMM
 AlignmentsEnglish
 CS T extChinese
 Monolingual
@@ -121,7 +122,10 @@ follows
 X   
  
  xtq
-1 2 1,   , T 
+1
+TP
+tx2
+t t  1,   , T 
  
  (1)
 2.3. N-gram units
@@ -135,26 +139,31 @@ study, we only experimented with unigrams and bigrams. A detailed
 2https //github.com/kaldi-asr/kaldi/tree/master/
 egs/aishell/s5
 https //github.com/kaldi-asr/kaldi/tree/master/
-egs/mgb2_arabic/s Algorithm 1 Speech Collage
+egs/mgb2_arabic/s5Algorithm 1 Speech Collage
 Require  Monolingual combined corpus D
 Require  Code-switched text TCS
 Require  Alignments A, size of n-grams n
 1 function SETUP SUPERVISIONS (A, n)
-2 1 nwith timings (tn
+2  forw1 nwith timings (tn
 s, tn
 e)  Ado
 3  cut,w1 i GETLONGEST AUDIO CUT(w1 n,(tn
 s, tn
 e))
 4  D[w1 i] cut
-5 6 function NORMALIZE ENERGY (audioCut)  Eq 2 7  e AVGENERGY (audioCut)
+5  return D
+6 function NORMALIZE ENERGY (audioCut)  Eq 2
+7  e AVGENERGY (audioCut)
 8  return audioCut / e
 9 function SAMPLE UNIT(D,w1 i)
 10  return random cut from D[w1 i]
 11 function GENERATE COLLAGE (TCS,A,n)
 12  D   SETUP SUPERVISIONS (A, n)   n  size of n-gram
-13 14 15  W GETCONSEC UNITS (texti)
-16 17  cut SAMPLE UNIT(D[wi])
+13  DCS   
+14  fortexti  TCSdo
+15  W GETCONSEC UNITS (texti)
+16  forwi Wdo
+17  cut SAMPLE UNIT(D[wi])
 18  cutsi OVERLAP ADD(cutsi,cut)
 19  cutsi NORMALIZE ENERGY (cutsi)
 20  cutsi.text cutsi.text   wi  Append wi
@@ -181,7 +190,7 @@ text from monolingual resources using the lexicon-based (Random)
 replacements approach described in [13]. The approach entails the
 following steps 
 1.Parallel Text Translation   We leverage a public ArabicEnglish
- Machine Translation System to generate the parallel
+ Machine Translation System3to generate the parallel
 English text from the Arabic transcription.
 2.Word Level Alignments   After translation, we fine-tune
 multilingual BERT (mBERT) [30] to obtain the word-level
@@ -190,8 +199,8 @@ alignments.
 are randomly substituted with their corresponding English
 words at a rate of 20% , as suggested by [13].
 2.5. End-to-End Speech Recognition
-In this work, we utilized the end-to-end (E E) ASR conformer
-architecture [31], with the ESPNET toolkit [32]. The E E-ASR
+In this work, we utilized the end-to-end (E2E) ASR conformer
+architecture [31], with the ESPNET toolkit [32]. The E2E-ASR
 implementation consists of a conformer encoder and a transformer
 decoder. Both are multiblocked self-attention architectures with
 the encoder further enhanced by an additional convolution module.
@@ -210,7 +219,9 @@ is initially pre-trained on monolingual data and subsequently finetuned
 2.6. Code-Mixing Index
 To quantify the amount of code-switching we use Code-Mixing Index(CMI)
  metric [35]. The CMI for an utterance is defined as 
-CMI  1 2 (N max i)  1 2P(x)
+CMI  1
+2 (N max i)  1
+2P(x)
 N(3)
 Where max irepresents the number of words in the dominant language
  i,Nis the total word count in the utterance, Pis the number
@@ -221,17 +232,18 @@ CMI score implies high degree of code-mixing in the text.
 In-domain  The target domain we are considering is the MandarinEnglish
  code-switching, specifically SEAME [36]. In this scenario,
 we utilize monolingual training data from Chinese AISHELL-1 [37],
-100 3 [38] and
+100h of English data randomly sampled from Tedlium3 [38] and
 3API access available from https //mt.qcri.org/apiSEAME text [36] to generate 62.2hours of CS data. Evaluation
 is performed on SEAME test sets (devman and devsge), measuring
  mixed error-rate (MER) that considers word-level English and
 character-level Mandarin. We also report WER on monolingual English
  and CER on monolingual Chinese subsets.
 Zero-shot  For this scenario, we use monolingual training data from
-MGB-2 [39] and Tedlium3. We generate 80 2.4. Evaluation is conducted on ESCWA
+MGB-2 [39] and Tedlium3. We generate 80hours of CS data using
+synthetic CS text described in  2.4. Evaluation is conducted on ESCWA
  [8], which is a real Arabic-English CS dataset.
 Data pre-processing  All audios are augmented with speed perturbations
- ( 0.9,1.0 1.1) and transformed into 83-dimensional feature
+ ( 0.9,1.0and1.1) and transformed into 83-dimensional feature
  frames ( 80log-mel filterbank coefficients plus 3 pitch features).
 Additionally, we augment the features with specaugment , with
 mask parameters (mT, mF, T, F )   (5 ,2,27,0.05)and bi-cubic
@@ -239,16 +251,17 @@ time-warping.
 Models  the conformer encoder consists of 12blocks, each with
 2048 feed-forward dimensions, 256attention dimensions, and 4attention
  heads. The transformer decoder has 6blocks with configurations
- similar to the encoder. We combine 2622 3000 English BPE units for In domain scenario. As for the
+ similar to the encoder. We combine 2622 Mandarin characters
+with 3000 English BPE units for In domain scenario. As for the
 Zero-shot scenario we use a shared Arabic-English vocabulary of
 size5000 BPE. Our training configuration utilizes Adam optimizer
 with a learning rate of 0.001, warmup-steps of 25K, a dropout-rate of
-0.1and epochs. We use joint training with hybrid CTC/attention
+0.1and40epochs. We use joint training with hybrid CTC/attention
 by setting CTC weight α, Eq 2, to 0.3. During inference, we use
 a beam size of 10with no length penalty. For the language model
 (LM), we train a long short term memory (LSTM) with 4layers,
 each of 2048 dimensions, over 20epochs. When integrating LM
-with E E-ASR, we apply an LM weight of 0.2.
+with E2E-ASR, we apply an LM weight of 0.2.
 4. RESULTS AND ANALYSIS
 4.1. In-domain CS text
 We examine the impact of augmenting data with generated CS
@@ -275,25 +288,29 @@ Mono 37.2 67.4 32.9 56.7 47.5 38.4
   CS-Unigram 31.5 55.3 28.4 47.5 42.2 34.4
   CS-Unigram-SE 29.7 53.7 27.2 44.0 40.9 33.0
   CS-Bigram-SE 27.2 47.9 25.4 39.7 38.1 31.4
-SEAME-ASR (topline) 15.1 28.8 16.5 21.7 28.7 23.5 2 . Comparison of the CER/WER results on ESCWA. CS 
+SEAME-ASR (topline) 15.1 28.8 16.5 21.7 28.7 23.5Table 2 . Comparison of the CER/WER results on ESCWA. CS 
 data generated using synthetic CS text. Mono   baseline trained on
 monolingual data, (Unigram, Bigram)   generated CS using (unigram,
  bigram) units, SE  signal enhancement from  2
-ModelMGB-2 3 6.1 12.9 4.4 8.5 31.1 48.7
+ModelMGB-2 TED3 ESCWA
+CER WER CER WER CER WER
+Mono 6.1 12.9 4.4 8.5 31.1 48.7
   CS-LM 6.3 12.5 4.6 8.7 38.0 57.0
   CS-Unigram 6.9 14.6 5.2 10.1 24.0 42.7
   CS-Unigram-SE 7.0 14.7 10.4 5.4 23.1 42.0
-  CS-Bigram-SE 7.0 14.7 10.2 5.2 22.5 40.8 8.9% MER. Given that we utilize SEAME text
+  CS-Bigram-SE 7.0 14.7 10.2 5.2 22.5 40.8
+absolute gap is up to 8.9% MER. Given that we utilize SEAME text
 for data generation, this gap can be attributed to audio mismatches.
 Thus, we anticipate that further enhancements in audio quality to
 align with SEAME will bridge this gap.
 4.2. Zero-shot CS
 We investigate the effects of augmenting the dataset with CS speech,
 generated from monolingual data and synthetic CS text. This synthetic
- CS text is produced from the monolingual Arabic MGB-2 3 datasets, as described in  2.4. Our evaluations,
+ CS text is produced from the monolingual Arabic MGB-2 and
+English Tedlium3 datasets, as described in  2.4. Our evaluations,
 detailed in Table 2, utilize the ESCWA dataset. Operating under
 our assumption that we do not have access to real CS data, we use
-the merged evaluation sets from MGB-2 3 to select the
+the merged evaluation sets from MGB-2 and Tedlium3 to select the
 best epochs for the model. The observations align with those from
  4.1  the CS-Unigram yields relative reductions of 12.3% in WER
 and22.8% in CER. Interestingly, the results from shallow fusion
@@ -316,7 +333,9 @@ with all generated CS.Table 3 . Comparison of the average CMI. Mono   baseline t
 monolingual data, SE  Signal enhancement from  2, Ref  reference,
 (Uni, Bi)   generated CS using (unigram, bigram) units.
 Dataset Ref Mono CS-Uni CS-Uni-SE Bi-SE
-ESCWA 15.6 8.7 10.6 11.6 10.5 10.4 3.3 5.4 6.2 7.3 4.3. Generated CS data size
+ESCWA 15.6 8.7 10.6 11.6 10.5
+SEAME 10.4 3.3 5.4 6.2 7.3
+4.3. Generated CS data size
 We explore the impact of the amount of generated CS data size on
 ASR system performance. Figure 2 illustrates the WER at different
 percentages of generated CS data. In this experiment, we generated
@@ -356,7 +375,8 @@ This work was carried out during the 2022 Jelinek Memorial Summer
  and Google. This work was also partially supported by NSF
 CCRI Grant No 2120435.7. REFERENCES
 [1] C. M. Scotton,  The possibility of code-switching  Motivation for
-maintaining multilingualism,  Anthropological linguistics , pp. 432 444, 1982.
+maintaining multilingualism,  Anthropological linguistics , pp. 432 
+444, 1982.
 [2] S. Sitaram et al. ,  A survey of code-switched speech and language
 processing,  ArXiv preprint , vol. abs/1904.00784, 2019.
 [3] K. Taneja et al. ,  Exploiting monolingual speech corpora for codemixed
@@ -365,7 +385,8 @@ Kacic, Eds., 2019, pp. 2150 2154.
 [4] G. Liu and L. Cao,  Code-switch speech rescoring with monolingual
 data,  in Proc. ICASSP , 2021, pp. 6229 6233.
 [5] S. Chuang, T. Sung, and H. Lee,  Training code-switching language
-model with monolingual data,  in Proc. ICASSP , 2020, pp. 7949 7953.
+model with monolingual data,  in Proc. ICASSP , 2020, pp. 7949 
+7953.
 [6] S. Shah et al. ,  Learning to recognize code-switched speech without
  forgetting monolingual speech recognition,  ArXiv preprint ,
 vol. abs/2006.00782, 2020.
@@ -404,7 +425,8 @@ pp. 1026 1030.
 [19] A. Rosenberg et al. ,  Speech recognition with augmented synthesized
 speech,  in ASRU , 2019.
 [20] G. Wang et al. ,  Improving speech recognition using consistent predictions
- on synthesized speech,  in Proc. ICASSP , 2020, pp. 7029 7033.
+ on synthesized speech,  in Proc. ICASSP , 2020, pp. 7029 
+7033.
 [21] H. Yu et al. ,  Code-switching text generation and injection in
 mandarin-english asr,  in Proc. ICASSP , 2023, pp. 1 5.
 [22] T. K. Lam et al. ,  On-the-fly aligned data augmentation for sequenceto-sequence
@@ -445,7 +467,8 @@ unsegmented sequence data with recurrent neural networks,  in Machine
 Conference Proceeding Series, vol. 148, 2006, pp. 369 376.
 [35] B. Gamb  ack and A. Das,  Comparing the level of code-switching in
 corpora,  in Proceedings of the Tenth International Conference on
-Language Resources and Evaluation (LREC 16) , 2016, pp. 1850 1855.
+Language Resources and Evaluation (LREC 16) , 2016, pp. 1850 
+1855.
 [36] D.-C. Lyu et al. ,  Seame  A mandarin-english code-switching speech
 corpus in south-east asia,  in Proc. Interspeech , 2010.
 [37] H. Bu et al. ,  Aishell-1  An open-source mandarin speech corpus and
@@ -456,6 +479,7 @@ databases and speech I/O systems and assessment (O-COCOSDA) ,
 [38] F. Hernandez et al. ,  Ted-lium 3  Twice as much data and corpus
 repartition for experiments on speaker adaptation,  in Speech and
 Computer  20th International Conference, SPECOM 2018, Leipzig,
-Germany, September 18 22, 2018, Proceedings 20 , 2018, pp. 198 208.
+Germany, September 18 22, 2018, Proceedings 20 , 2018, pp. 198 
+208.
 [39] A. Ali et al. ,  The MGB-2 challenge  Arabic multi-dialect broadcast
 media recognition,  in SLT, 2016.

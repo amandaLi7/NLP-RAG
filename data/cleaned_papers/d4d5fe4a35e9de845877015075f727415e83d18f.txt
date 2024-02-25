@@ -1,7 +1,10 @@
-The CHiME-7 1,2, Matthew Wiesner3, Shinji Watanabe2, Desh Raj3, Xuankai Chang2, Paola
+The CHiME-7 DASR Challenge  Distant Meeting Transcription with Multiple
+Devices in Diverse Scenarios
+Samuele Cornell1,2, Matthew Wiesner3, Shinji Watanabe2, Desh Raj3, Xuankai Chang2, Paola
 Garcia3, Matthew Maciejewski3, Yoshiki Masuyama4, Zhong-Qiu Wang2, Stefano Squartini1,
-Sanjeev Khudanpur3 1Universit  a Politecnica delle Marche, Italy Carnegie Mellon University, USA
-3Johns Hopkins University, USA Tokyo Metropolitan University, Japan
+Sanjeev Khudanpur3
+1Universit  a Politecnica delle Marche, Italy2Carnegie Mellon University, USA
+3Johns Hopkins University, USA4Tokyo Metropolitan University, Japan
 Abstract
 The CHiME challenges have played a significant role in the development
  and evaluation of robust automatic speech recognition
@@ -42,10 +45,11 @@ distant conversational speech recognition requires a comprehensive
 front-end and ASR back-end techniques. Over the years, several
  challenges and corpora have played a significant role in
 advancing research in this field. These include, but are not
-limited to, ASpiRE [8], AMI [9], ICSI [10], the CHiME (1 4) challenges [11 14], the Sheffield Wargames corpus [15],
+limited to, ASpiRE [8], AMI [9], ICSI [10], the CHiME (1 
+4) challenges [11 14], the Sheffield Wargames corpus [15],
 and DIRHA [16]. More recently, we have seen VOiCES [17],
-DiPCo [18], LibriCSS [3], Alimeeting [19], Ego D [20], and
-the recent CHiME 5 6 challenges [1, 21].
+DiPCo [18], LibriCSS [3], Alimeeting [19], Ego4D [20], and
+the recent CHiME 5 and 6 challenges [1, 21].
 Several of these datasets/challenges, such as DIRHA,
 VOiCES, and CHiME-4, focused primarily on acoustic robustness,
  thus featuring pre-segmented single speaker utterances ina noisy/reverberant environment captured by multiple microphones.
@@ -66,12 +70,12 @@ more expensive to collect compared with simulated or semireal
  datasets, they better reflect possible real-world applications.
 Recently, this line of research has seen renewed interest, and has
 resulted in the collection and creation of datasets such as CHiME-5/6,
- DiPCo, Alimeeting, and Ego D. The progress made
+ DiPCo, Alimeeting, and Ego4D. The progress made
 in ASR, diarization and speech separation is a significant contributing
  factor to this trend, and it suggests that reliable and
 robust transcription in these scenarios is within our reach in the
 coming years.
-The proposed CHiME-7 DASR challenge follows this latter
+The proposed CHiME-7 DASR challenge1follows this latter
  line of research on real, unsegmented meeting scenarios.
 Our main goal is to foster research in an important direction 
 how can we build systems that can generalize across a wide
@@ -93,7 +97,7 @@ Mixer 6 Speech [23]. The objective is to encourage research towards
  linear (CHiME-6), circular (DiPCo), or heterogeneous
 (Mixer 6)  (2) are capable of handling variable numbers of
 speakers in each session  (3) account for linguistic differences
-1CHiME-7 DASR website  chimechallenge.org/current/task1/indexarXiv 2306.13734 2  [eess.AS]  14 2023between dinner party scenarios (CHiME-6 and DiPCo) versus
+1CHiME-7 DASR website  chimechallenge.org/current/task1/indexarXiv 2306.13734v2  [eess.AS]  14 Jul 2023between dinner party scenarios (CHiME-6 and DiPCo) versus
 interviews (Mixer 6)  and (4) can effectively handle diverse
 acoustic conditions. Such variability reflects real use-cases
 where such cross-domain generalization capability is highly desirable.
@@ -103,7 +107,7 @@ Pre-trained speech models trained on large datasets are increasingly
  becoming available to the public. These include
 supervised models such as OpenAI Whisper [24], Nvidia
 JASPER [25] and QuartzNet [26], and self-supervised ones
-such as Wav Vec 2.0 [27], HuBERT [28], and WavLM [29].
+such as Wav2Vec 2.0 [27], HuBERT [28], and WavLM [29].
 The latter, in particular, have proved effective in many downstream
  applications [30], and their integration with front-end
 speech enhancement has enabled state-of-the-art performance
@@ -121,7 +125,7 @@ multi-channel audio and/or can be distilled into smaller models.
 2.3. Open-Source Datasets
 The allowable external data sources are expanded to include
  many commonly used open-source datasets (e.g. LibriSpeech
- [22] and FSD k [33]). They facilitate the use of
+ [22] and FSD50k [33]). They facilitate the use of
 models for which, in prior challenges, necessary training data
 were lacking, but also enables the study of new research directions.
  For example, participants can create large synthetic
@@ -230,7 +234,8 @@ performance and disentangle it from the impact of diarization.
 The segmentation and speaker labels are known and are freely
 usable by participants, here the problem reduces to a standardASR task.
 3.3. Rules
-Detailed description of the task rules are available in the CHiME-7 3. Hereafter we briefly summarize them.
+Detailed description of the task rules are available in the CHiME-7
+ DASR website3. Hereafter we briefly summarize them.
   Only some external data and pre-trained models are allowed.
 Participants are encouraged to propose additional ones in the
 first month.
@@ -267,15 +272,26 @@ annotation, as well as a force-aligned (FA) annotation. We report
 as silence (sil), single-speaker speech (1-spk) and overlapped
 speech (ovl) ratios over the total duration.
 Scenario Split Size (h) Utts Spk. Sess. sil (%) 1-spk (%) ovl (%)
-CHiME-6 30 57 67615 28 14 22.6 53.5 23.9 4 27 7437 8 2 12.5 43.7 43.8 10 21 20683 12 4 19.9 50.9 29.2
+CHiME-6train 30 57 67615 28 14 22.6 53.5 23.9
+dev 4 27 7437 8 2 12.5 43.7 43.8
+eval 10 21 20683 12 4 19.9 50.9 29.2
 CHiME-6
-(FA)train 30 57 78640 28 14 38.8 50.2 11.0 4 27 11020 8 2 24.1 54.2 21.7 10 21 81890 12 4 38.8 49.2 12.0 2 43 3673 16 5 7.6 66.5 25.8 2 36 3405 16 5 9.2 65.8 25.0 6 36 09 27280 81 243 26 57 29893 77 189 14 75 14863 27 59 3.1 76.2 20.7 5 45 5115 18 23 2.4 83.6 13.9 4.1. CHiME-6
-The CHiME-6 4 participants
+(FA)train 30 57 78640 28 14 38.8 50.2 11.0
+dev 4 27 11020 8 2 24.1 54.2 21.7
+eval 10 21 81890 12 4 38.8 49.2 12.0
+DiPCodev 2 43 3673 16 5 7.6 66.5 25.8
+eval 2 36 3405 16 5 9.2 65.8 25.0
+Mixer 6train calls 36 09 27280 81 243      
+train intv 26 57 29893 77 189      
+dev 14 75 14863 27 59 3.1 76.2 20.7
+eval 5 45 5115 18 23 2.4 83.6 13.9
+4.1. CHiME-6
+The CHiME-6 dataset features real dinner parties with 4 participants
  in a home environment, usually across different rooms.
 Due to the particular setting, it features informal speech and
 low signal-to-noise ratio (SNR). Recordings from binaural microphones
  worn by each speaker are provided along with distant
- speech captured by 6 4 micro chimechallenge.org/current/task1/rulesphones
+ speech captured by 6 Kinect array devices with 4 micro3chimechallenge.org/current/task1/rulesphones
  each for a total of 24 microphones. Two annotations
 are provided [1], one manual and another obtained via forced
 alignment (FA)4. In CHiME-7 DASR, we retain the CHiME-6
@@ -289,13 +305,14 @@ We also provide universal evaluation map (UEM) files to exclude
  the speaker enrollment from evaluation, a feature missing
 from the previous iteration which incorrectly scored this portion
 as silence.
-1 76 . 340     ,
-2 73 . 500     ,
+1    end time           76 . 340     ,
+2    s t a r t t i m e           73 . 500     ,
 3    words           Let   s do l u n c h . [ l a u g h s ]     ,
-4 08     ,
-5 02     ,
+4    s p e a k e r           P08     ,
+5    r e f          U02     ,
 6    l o c a t i o n           k i t c h e n     ,
-7 02 1  Sample annotation for the CHiME-6 dataset.
+7    s e s s i o n i d           S02    
+Listing 1  Sample annotation for the CHiME-6 dataset.
 4.2. DiPCo
 DiPCo consists of 10 recorded dinner party sessions, each between
  4 speakers, recorded on 5 far-field devices each with a
@@ -307,20 +324,24 @@ recorded in the same single room. Importantly, the additional
 DiPCo data allows us to evaluate participants  submissions in
 a  best-case scenario   where the acoustic conditions between
 training and testing are reasonably matched.
-4.3. Mixer 6 6 Speech set (LDC catalog no. LDC S03) features
+4.3. Mixer 6 Speech
+The Mixer 6 Speech set (LDC catalog no. LDC2013S03) features
  a very different but relevant multi-speaker, multi-channel
-scenario. It consists of 594 1425 sessions, each lasting approximately
+scenario. It consists of 594 distinct native English speakers participating
+ in a total of 1425 sessions, each lasting approximately
 45 minutes. Sessions include an interview between an  interviewer 
  and a  subject  (15 min.), a telephone call (10 min.),
 and prompt reading. Each session is recorded using 14 microphones
  of varying styles, placed in various locations around one
 of 2 different rooms ( LDCandHRM).
-We make use of the interview and call portions of 450 1425 sessions for which we have collected humanannotated
+We make use of the interview and call portions of 450
+of the 1425 sessions for which we have collected humanannotated
  transcriptions. The remaining audio in the 450 sessions,
  for which no human annotation is available, can be used
 by the participants, for instance, to support unsupervised or selfsupervised
  training. The 450 sessions are split into train ,dev,
-andeval partitions with no speaker overlap. We only use 13 14th channel is
+andeval partitions with no speaker overlap. We only use 13 of
+the channels in the challenge as the SNR of the 14th channel is
 too low to be useful (or intelligible).
 Human-annotated time-marks and transcripts are available
 only for the  subject , who is usually the dominant speaker. For
@@ -328,7 +349,7 @@ the  interviewer  segments, preliminary transcripts were generated
  by running Whisper [40] large inference on the lapel microphone
  ( eval ), or via manual annotation ( dev). Interviewer
 transcripts were then force-aligned with the audio from the interviewer s
- lapel microphone (for dev) and/or manually cor chimechallenge/CHiME7
+ lapel microphone (for dev) and/or manually cor4chimechallenge/CHiME7
  DASR falignrected (for eval ) to get the ground-truth annotations. Information
  about the splits is shown in Table 1. Note that eval was
 recorded in the ( HRM) room  this new room condition tests robustness
@@ -410,7 +431,7 @@ Channel
 Selection
 Channel
 Selection𝑥𝑥𝑎𝑎(𝑡𝑡)
-𝑥𝑥2(𝑡𝑡)spk1 2
+𝑥𝑥2(𝑡𝑡)spk1 spk2
 GSS𝑥𝑥𝑡𝑡(𝑡𝑡)
 ASR
 Transcriptions
@@ -434,10 +455,11 @@ approaches. Channel selection is used to select the most promising
  subset of microphones for each utterance for later processing
  via GSS. We use a GPU-accelerated implementation of
 GSS [45] that allows to significantly speed up the inference
-time (e.g. up to 300x on CHiME-6 100 40GB GPUs).
+time (e.g. up to 300x on CHiME-6 development data with two
+NVIDIA A100 40GB GPUs).
 5.2. Diarization
 During preliminary experiments with the Pyannote [46] diarization
- pipeline on CHiME-6, we found that diarization error
+ pipeline6on CHiME-6, we found that diarization error
 rate (DER) between microphones belonging to the same array
 may vary by up to 10%. This agrees with similar observations
 made during the CHiME-6 challenge, where teams employed
@@ -449,8 +471,9 @@ embedding-based approaches, unless one wants to create extensive
  multi-channel synthetic data.
 For these reasons, here we opt for a simple but reasonably
 effective approach built over the Pyannote [46] diarization system,
- which is very popular and has been proven to be success espnet/tree/chime task1
- diar/egs2/chime7 1/diar asr1 6pyannote/speaker-diarization
+ which is very popular and has been proven to be success5espnet/tree/chime7task1
+ diar/egs2/chime7 task1/diar asr1
+6pyannote/speaker-diarization
 Diarization𝑥𝑥𝑎𝑎(𝑡𝑡)
 𝑥𝑥2(𝑡𝑡)
 𝑥𝑥1(𝑡𝑡)Diarizer
@@ -472,7 +495,7 @@ ful on a wide variety of scenarios. Our approach is depicted in
 Figure 3. In detail, instead of channel ensembling, we instead
 leverage the local end-to-end diarization (EEND) [49,50] module
  in the pipeline [46] for channel selection. The maximum
-number of local speakers is fixed to 3 5 s segments.
+number of local speakers is fixed to 3 and we use 5 s segments.
 Only this latter is ran over all channels and, assuming it is robust
 against false alarms, we select the channel which has the most
 speech activity as the best channel. The rest of the pipeline (including
@@ -490,7 +513,8 @@ to use the top-K channels instead of just one in the clustering
 phase.
 In the baseline recipe, we fine-tune the local EEND model
 of the Pyannote pipeline using all CHiME-6 train set (by using
- all far-field channels only) and use for validation Mixer 6 6 is the most
+ all far-field channels only) and use for validation Mixer 6
+dev set  only this latter is used because Mixer 6 is the most
 acoustically different dataset among the three scenarios from
 CHiME-6, so it made sense to use it as validation, to enforce
 early-stopping and preventing overfitting. To make the output
@@ -511,8 +535,10 @@ datasets for RIRs and noises, namely SLR26 [53] and MUSAN
  [54]. We also used GSS-enhanced data obtained from the
 whole CHiME-6 training set. Both these addition were found
 critical to reach state-of-the-art performance. The training takes
-approximately 18 100 100
-machine. This model is made available via HuggingFace8 7popcornell/pyannote-segmentation-chime6-mixer6 8popcornell/chime7 1 1 4  Effect of EV-based channel selection with GSS on
+approximately 18 hours using two A100 GPUs on a DGXA100
+machine. This model is made available via HuggingFace8
+7popcornell/pyannote-segmentation-chime6-mixer6
+8popcornell/chime7 task1 asr1 baselineFigure 4  Effect of EV-based channel selection with GSS on
 WER performance (left) and inference time (right), on the dev
 set. We show scenario-wise results and the macro-average.
 6. Results & Discussion
@@ -529,7 +555,7 @@ number of microphones used. Secondly, the error rate generally
 decreases as the number of microphones used increases. Thus
 there appears to be a trade-off between computational complexity
  and performance. In particular, the best performance for
-CHiME-6 80%, while
+CHiME-6 and DiPCo is achieved by using the top 80%, while
 Mixer 6 will benefit from the use of all microphones. This could
 be related to the fact that Mixer 6 is less noisy and all channels
 might contribute significantly to improving the GSS result. In
@@ -539,14 +565,17 @@ both training and inference, as this seems to maximize the performance
 6.2. Diarization
 In Table 2 we report the results achieved by our proposed diarization
  system in terms of DER and Jaccard error rate (JER)
-with ms collar. We can see that, overall, the system, despite
+with250ms collar. We can see that, overall, the system, despite
 being fine-tuned only on CHiME-6 data, generalizes well to the
 other scenarios.
 Table 2  CHiME-7 DASR diarization baseline results. We show
 scenario-wise results as well as the macro-average.
 ScenarioDev Eval
 DER JER DER JER
-CHiME-6 40.0 51.1 56.3 62.5 29.8 41.4 27.9 40.9 6 16.6 22.8 9.3 11.0 28.8 38.5 31.2 38.2
+CHiME-6 40.0 51.1 56.3 62.5
+DiPCo 29.8 41.4 27.9 40.9
+Mixer 6 16.6 22.8 9.3 11.0
+Macro 28.8 38.5 31.2 38.2
 CHiME-6 remains by far the most difficult scenarios among
 the three for what regards diarization, due to the challenging
 acoustical conditions and frequent overlapped speech.
@@ -564,8 +593,14 @@ Whisper results are reported for reference.
 ASR model Scenario Dev Eval
 DA-WER (%) DA-WER(%)
 sub main sub main
-BaselineCHiME-6 32.6 62.4 35.5 77.4 33.5 56.6 36.3 54.7 6 20.2 22.5 28.6 33.7 28.8 47.2 33.4 55.3
-WhisperCHiME-6 30.9 58.4 36.6 74.0 34.5 52.5 35.7 49.7 6 21.2 23.7 25.2 35.8 28.8 44.8 32.5 53.2
+BaselineCHiME-6 32.6 62.4 35.5 77.4
+DiPCo 33.5 56.6 36.3 54.7
+Mixer 6 20.2 22.5 28.6 33.7
+Macro 28.8 47.2 33.4 55.3
+WhisperCHiME-6 30.9 58.4 36.6 74.0
+DiPCo 34.5 52.5 35.7 49.7
+Mixer 6 21.2 23.7 25.2 35.8
+Macro 28.8 44.8 32.5 53.2
 Overall, our baseline ASR model compares favorably with
 Whisper large especially in the acoustic robustness sub-track
 where the final macro-average DA-WER scores are very close.
@@ -605,7 +640,7 @@ Region within the funded project  Miracle  POR MARCHE
 FESR 2014-2020. D. Raj was partially funded by NSF CCRI
 Grant No. 2120435, and a fellowship from Amazon via the
 JHU-Amazon Initiative for Interactive Artificial Intelligence
-(AI AI).9. References
+(AI2AI).9. References
 [1] S. Watanabe, M. Mandel et al. ,  CHiME-6 challenge  Tackling
 multispeaker speech recognition for unsegmented recordings,  in
 CHiME Workshop , 2020.
@@ -651,10 +686,10 @@ and recognition challenge,  2016.
  settings (VOiCES) corpus,  in InterSpeech , 2018.
 [18] M. Van Segbroeck, A. Zaid et al. ,  DiPCo   dinner party corpus, 
 ArXiv , 2019.
-[19] F. Yu, S. Zhang et al. ,  M MeT  The ICASSP 2022 multi-channel
+[19] F. Yu, S. Zhang et al. ,  M2MeT  The ICASSP 2022 multi-channel
 multi-party meeting transcription challenge,  in IEEE ICASSP ,
 2022.
-[20] K. Grauman, A. Westbury et al. ,  Ego d  Around the world in
+[20] K. Grauman, A. Westbury et al. ,  Ego4d  Around the world in
 3,000 hours of egocentric video,  in CVPR , 2022.
 [21] J. Barker, S. Watanabe et al. ,  The fifth CHiME speech separation
  and recognition challenge  Dataset, task and baselines,  in
@@ -671,7 +706,7 @@ neural acoustic model,  in InterSpeech , 2019.
 [26] S. Kriman, S. Beliaev et al. ,  Quartznet  Deep automatic speech
 recognition with 1d time-channel separable convolutions,  in
 IEEE ICASSP , 2019.
-[27] A. Baevski, Y . Zhou et al. ,  Wav Vec 2.0  A framework for selfsupervised
+[27] A. Baevski, Y . Zhou et al. ,  Wav2Vec 2.0  A framework for selfsupervised
  learning of speech representations,  in NeurIPS , 2020.
 [28] W.-N. Hsu, B. Bolte et al. ,  HuBERT  Self-supervised speech
 representation learning by masked prediction of hidden units, 
@@ -687,7 +722,7 @@ representation,  in InterSpeech , 2022.
 [32] Y . Masuyama, X. Chang et al. ,  End-to-end integration of speech
 recognition, dereverberation, beamforming, and self-supervised
 learning representation,  2022.
-[33] E. Fonseca, X. Favory et al. ,  FSD k  An open dataset of
+[33] E. Fonseca, X. Favory et al. ,  FSD50k  An open dataset of
 human-labeled sound events,  IEEE/ACM Transactions on Audio,
 Speech, and Language Processing , vol. 30, 2021.
 [34] N. Kanda, J. Wu et al. ,  VarArray meets t-SOT  Advancing the
@@ -730,7 +765,8 @@ for speaker diarization,  in IEEE ICASSP , 2020.
 both worlds,  in IEEE ICASSP , 2021.
 [49] Y . Fujita, N. Kanda et al. ,  End-to-end neural speaker diarization
 with self-attention,  in 2019 IEEE Automatic Speech Recognition
-and Understanding Workshop (ASRU) . IEEE, 2019, pp. 296 303.
+and Understanding Workshop (ASRU) . IEEE, 2019, pp. 296 
+303.
 [50] H. Bredin and A. Laurent,  End-to-end speaker segmentation for
 overlap-aware resegmentation,  in InterSpeech 2021 , 2021.
 [51] D. Raj, L. P. Garcia-Perera et al. ,  DOVER-Lap  A method for

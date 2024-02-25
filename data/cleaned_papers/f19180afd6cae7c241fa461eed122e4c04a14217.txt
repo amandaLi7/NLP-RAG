@@ -69,7 +69,7 @@ active learning approach.
 Although active learning (Settles, 2009) is regarded
  as an efficient method for training models,
 generic active learning methods can induce bias
-(Krishnan et al., 2021) rather than mitigate it. Al-arXiv 2305.17013 1  [cs.CL]  26 2023 though there have been numerous works aimed
+(Krishnan et al., 2021) rather than mitigate it. Al-arXiv 2305.17013v1  [cs.CL]  26 May 2023though there have been numerous works aimed
 at mitigating bias of active learning methods by
 the machine learning community (Farquhar et al.,
 2021  Gudovskiy et al., 2020), these approaches
@@ -234,7 +234,8 @@ In Eq. 3, i ranges over all possible labels.
 It should be noted that, in binary classification,
 all the above measures become equivalent. The
 active learning framework, within the scope of this
-paper, is summarized in Figure 2 3.1.3 Challenges
+paper, is summarized in Figure 2
+3.1.3 Challenges
 Bias Induction  Since the active learning framework
  relies on the model s uncertainty to choose
 samples, the framework may never query samples
@@ -256,7 +257,7 @@ To address the challenges outlined earlier, we approach
 the first step is to obtain vector representation of
 the unlabeled data. This can be done using SentenceBERT
  (Reimers and Gurevych, 2019) or more
-traditional Doc Vec (Le and Mikolov, 2014).
+traditional Doc2Vec (Le and Mikolov, 2014).
 The next step is to cluster the data. This can
 be done using any clustering algorithm such as
 KMeans. Then, informative samples are chosen
@@ -282,7 +283,8 @@ Partition Dinto { C
 1,C 
 2, ...C 
 m}
-while B 0 0,1,...m do
+while B 0do
+fori 0,1,...m do
 Estimate accuracy AiinC 
 i
 end for
@@ -357,7 +359,8 @@ clusters to 10 to be consistent with Cluster-TopN.4.2 Models
 Transformers We fine-tune the widely-used bertbased-cased
  (Devlin et al., 2019). We observed
 that the models stabilize on the dev data when finetuned
- for 5 8e-5 16. The same setting is used across
+ for 5 epochs with learning rate of 8e-5 and
+batch size of 16. The same setting is used across
 all experiments.
 Support Vector Machine (SVM) We choose
 SVM as our alternate model as it is completely
@@ -370,9 +373,10 @@ train SVMs with default scikit-learn settings2.
 We evaluate our proposed algorithm on eight diverse
  datasets, among which two are binary classification
  datasets and the rest are multiclass.
-BOOK32 (Iwana et al., 2016) contains 207 32 classes such as Biographies
+BOOK32 (Iwana et al., 2016) contains 207K
+book titles categorized into 32 classes such as Biographies
  & Memoirs . We take a subset that contains
- 20 10 most frequent
+ 20K random samples from 10 most frequent
 classes for runtime efficiency. Random sampling
 ensures the subset respects original distribution.
 CONAN (Fanton et al., 2021) contains 5K instances
@@ -383,7 +387,7 @@ CARER (Saravia et al., 2018) is an emotion detection
  dataset that contains six basic emotions in
 the released version  Anger ,Fear ,Joy,Love ,Sadness,
  and Surprise .3. The released version consists
-of 16K training, 2 2K test instances.
+of 16K training, 2K dev and 2K test instances.
 CoLA (Saravia et al., 2018) contains 9.5K sentences
  expertly annotated for acceptability (grammaticality)
  in the public version. We use the indomain
@@ -399,7 +403,8 @@ five basic labels  Statement ,BackChannel ,Disruption,FloorGrabber
 generated/sklearn.svm.LinearSVC.html
 3https //huggingface.co/datasets/emotiondata to 20K randomly chosen samples for runtime
 efficiency.
-Q-Type (Li and Roth, 2002) contains 5.5 0.5K test instances annotated for question
+Q-Type (Li and Roth, 2002) contains 5.5K train
+and 0.5K test instances annotated for question
 types. We take the first level of annotation, containing
  six classes  Entity, Description, Abbrebivation,
 Number, Human, and textitLocation.
@@ -414,69 +419,104 @@ treated as unlabeled pool of data, dev data is used
 for tuning purposes and test data is used to report
 results. Table 1 shows summary of data used.
 Dataset classes Pool Dev Test
-BOOK32 32 14 2 4 8 3.5 0.5 1 6 16 2 4 2 8.5 0.5 0.5 3 17.2 2.4 4.9 5 14 2 4K
-Q-Type 6 4.9 0.5 0.5 2 7 1 2 1  Statistics of used datasets
+BOOK32 32 14K 2K 4K
+CONAN 8 3.5K 0.5K 1K
+CARER 6 16K 2K 4K
+CoLA 2 8.5K 0.5K 0.5K
+Hatespeech 3 17.2K 2.4K 4.9K
+MRDA 5 14K 2K 4K
+Q-Type 6 4.9K 0.5K 0.5K
+Subjectivity 2 7K 1K 2K
+Table 1  Statistics of used datasets
 Vector Representation We use MiniLM (Wang
 et al., 2020) sentence-transformer to transform text
 instances into 384 dimensional vectors. These vectors
  are then used to cluster the unlabeled data.
 Clustering We use KMeans to cluster the unlabeled
- pool of data. We use scikit-learn implementation
+ pool of data. We use scikit-learn4implementation
  of KMeans with default parameters.
 5 Results and Case Study
 We first discuss findings of our experiments, followed
  by a case study of fine-grained hatespeech
-detection. Figures 4,5 6 summarize the results
+detection. Figures 4,5 and 6 summarize the results
  across the eight datasets, different measures
 of information gain, and different models. Table 2
 summarizes relative performance across all experiments.
- For each experiment, we report Macro-F1 4https //scikit-learn.org/stable/modules/
+ For each experiment, we report Macro-F1
+4https //scikit-learn.org/stable/modules/
 generated/sklearn.cluster.KMeans.htmlNumber of SamplesF1-Score
-2030405060 100 150 200 250 300Random TopN Cluster-TopN D-CALMBOOK32 1-Score
-102030405060 100 150 200 250 300Random TopN Cluster-TopN D-CALMCARER
+2030405060
+100 150 200 250 300Random TopN Cluster-TopN D-CALMBOOK32
+Number of SamplesF1-Score
+102030405060
+100 150 200 250 300Random TopN Cluster-TopN D-CALMCARER
 F1-Score
-404550556065 100 150 200 250 300Random TopN Cluster-TopN D-CALMCoLA
+404550556065
+100 150 200 250 300Random TopN Cluster-TopN D-CALMCoLA
 Number of SamplesF1-Score
-405060708090 100 150 200 250 300Random TopN Cluster-TopN D-CALMMRDA
+405060708090
+100 150 200 250 300Random TopN Cluster-TopN D-CALMMRDA
 Number of SamplesF1-Score
-40608010 0 100 150 200 250 300Random TopN Cluster-TopN D-CALMQ-TYPE
+40608010
+0
+100 150 200 250 300Random TopN Cluster-TopN D-CALMQ-TYPE
 Number of SamplesF1-Score
-80859095 100 150 200 250 300Random TopN Cluster-TopN D-CALMSubjectivity
+80859095
+100 150 200 250 300Random TopN Cluster-TopN D-CALMSubjectivity
 Number of SamplesF1-Score
-2040608010 0 100 150 200 250 300Random TopN Cluster-TopN D-CALMCONAN
+2040608010
+0
+100 150 200 250 300Random TopN Cluster-TopN D-CALMCONAN
 Number of SamplesF1-Score
-3040506070 100 150 200 250 300Random TopN Cluster-TopN D-CALMHatespeechFigure 4  Comparison of our proposed algorithm ( D-CALM ) and baseline approaches. D-CALM (green-dashedline)
+3040506070
+100 150 200 250 300Random TopN Cluster-TopN D-CALMHatespeechFigure 4  Comparison of our proposed algorithm ( D-CALM ) and baseline approaches. D-CALM (green-dashedline)
  consistently outperforms baseline approaches across eight datasets with Entropy as the measure of information
 gain and BERT as learner model.
 Number of SamplesF1-Score
-10203040506070 100 150 200 250 300TopN-LC CALM-LC TopN-SM D-CALM-SMBOOK32 1-Score
-20406080100 100 150 200 250 300TopN-LC CALM-LC TopN-SM D-CALM-SMCONAN
+10203040506070
+100 150 200 250 300TopN-LC CALM-LC TopN-SM D-CALM-SMBOOK32
 Number of SamplesF1-Score
-102030405060 100 150 200 250 300TopN-LC CALM-LC TopN-SM D-CALM-SMCARER
+20406080100
+100 150 200 250 300TopN-LC CALM-LC TopN-SM D-CALM-SMCONAN
 Number of SamplesF1-Score
-30405060708090 100 150 200 250 300TopN-LC CALM-LC TopN-SM D-CALM-SMMRDA
+102030405060
+100 150 200 250 300TopN-LC CALM-LC TopN-SM D-CALM-SMCARER
 Number of SamplesF1-Score
-20406080100 100 150 200 250 300TopN-LC CALM-LC TopN-SM D-CALM-SMQ-TYPE
+30405060708090
+100 150 200 250 300TopN-LC CALM-LC TopN-SM D-CALM-SMMRDA
 Number of SamplesF1-Score
-3040506070 100 150 200 250 300TopN-LC CALM-LC TopN-SM D-CALM-SMHATESPEECH
+20406080100
+100 150 200 250 300TopN-LC CALM-LC TopN-SM D-CALM-SMQ-TYPE
+Number of SamplesF1-Score
+3040506070
+100 150 200 250 300TopN-LC CALM-LC TopN-SM D-CALM-SMHATESPEECH
 Figure 5  Comparison of our algorithm with TopN approach under different measures of information gain. LC
 refers to Least Confident and SM refers to Smallest Margin. A consistent improvement over TopN baseline, similar
 to Entropy-based information gain in Figure 4 affirms the robustness of our algorithm
 .Number of SamplesF1-Score
-2025303540 100 150 200 250 300Random TopN Cluster-TopN D-CALMBOOK32 1-Score
-152025303540 100 150 200 250 300Random TopN Cluster-TopN D-CALMCARER
+2025303540
+100 150 200 250 300Random TopN Cluster-TopN D-CALMBOOK32
+Number of SamplesF1-Score
+152025303540
+100 150 200 250 300Random TopN Cluster-TopN D-CALMCARER
 F1-Score
-36384042444648 100 150 200 250 300Random TopN Cluster-TopN D-CALMCoLA
+36384042444648
+100 150 200 250 300Random TopN Cluster-TopN D-CALMCoLA
 Number of SamplesF1-Score
-30405060 100 150 200 250 300Random TopN Cluster-TopN D-CALMMRDA
+30405060
+100 150 200 250 300Random TopN Cluster-TopN D-CALMMRDA
 Number of SamplesF1-Score
-4050607080 100 150 200 250 300Random TopN Cluster-TopN D-CALMQ-TYPE
+4050607080
+100 150 200 250 300Random TopN Cluster-TopN D-CALMQ-TYPE
 Number of SamplesF1-Score
-60708090 100 150 200 250 300Random TopN Cluster-TopN D-CALMSubjectivity
+60708090
+100 150 200 250 300Random TopN Cluster-TopN D-CALMSubjectivity
 Number of SamplesF1-Score
-20406080100 100 150 200 250 300Random TopN Cluster-TopN D-CALMCONAN
+20406080100
+100 150 200 250 300Random TopN Cluster-TopN D-CALMCONAN
 Number of SamplesF1-Score
-3040506070 100 150 200 250 300Random TopN Cluster-TopN D-CALMHatespeechFigure 6  Comparison of our proposed algorithm ( D-CALM ) and baseline approaches for SVM as learner model.
+3040506070
+100 150 200 250 300Random TopN Cluster-TopN D-CALMHatespeechFigure 6  Comparison of our proposed algorithm ( D-CALM ) and baseline approaches for SVM as learner model.
 Consistent improvement for SVMs in addition to BERT models (Figure 4) suggests D-CALM can be used for
 completely different types of models.
 score averaged across 3 runs. We choose MacroF1
@@ -490,21 +530,34 @@ D-CALM consistently outperforms baselines
 From Figures 4, 5, 6 we can observe that DCALM
  consistently outperforms TopN, random
 and cluster-TopN across all datasets. From Table
-2, we observe that D-CALM beats TopN in 32 40 data points for BERT, among which, the difference
- in F1 5 15 cases. DCALM
+2, we observe that D-CALM beats TopN in 32 out
+of 40 data points for BERT, among which, the difference
+ in F1 score is greater than 5 in 15 cases. DCALM
  beats the nearest algorithm, Cluster-TopN
 in 28/40 (p value 0.003) for BERT and Random
 Sampling in 26/40 cases (p value 0.0073) for SVMs
 (Table 2). Both of these are statistically significant
-according to 2 0.01.Diff. Count for BERT (IG Entropy)
+according to 2 population proportion test at significance
+ level of 0.01.Diff. Count for BERT (IG Entropy)
 (F1) DL   RND DL   TN DL   CTN
-  0 33/40 32/40 28/40 1 30/40 27/40 23/40 3 24/40 18/40 16/40 5 15/40 12/40 11/40 10 4/40 4/40 2/40
+  0 33/40 32/40 28/40
+  1 30/40 27/40 23/40
+  3 24/40 18/40 16/40
+  5 15/40 12/40 11/40
+  10 4/40 4/40 2/40
 (F1) DL   RND DL   TN DL   CTN
-  0 26/40 30/40 34/40 1 21/40 23/40 30/40 3 16/40 18/40 23/40 5 10/40 11/40 16/40 10 0/40 2/40 6/40 2  Aggregated counts of D-CALM (DL) outperforming
+  0 26/40 30/40 34/40
+  1 21/40 23/40 30/40
+  3 16/40 18/40 23/40
+  5 10/40 11/40 16/40
+  10 0/40 2/40 6/40
+Table 2  Aggregated counts of D-CALM (DL) outperforming
  Random (RND), TopN (TN) and Cluster-TopN
 (CTN) across 8 datasets (5*8 40 data points). Diff denotes
  the difference of F1 score between DL and the
-contesting method. E.g.  diff  10 10 1 score or more.# of Samples Labeled
+contesting method. E.g.  diff  10 indicates the count of
+DL outperforming contesting methods by a difference
+of 10 F1 score or more.# of Samples Labeled
 0.0010.0020.0030.00
 CALM TopN Random Cluster-TopNMUSLIMS
 WOMEN
@@ -753,7 +806,8 @@ Margherita Fanton, Helena Bonaldi, Serra Sinem
 Tekiro  glu, and Marco Guerini. 2021. Human-in-theloop
  for data collection  a multi-target counter narrative
  dataset to fight online hate speech. In Proceedings
- of the 59 11th International
+ of the 59th Annual Meeting of the Association for
+Computational Linguistics and the 11th International
 Joint Conference on Natural Language Processing
 (Volume 1  Long Papers) , pages 3226 3240, Online.
 Association for Computational Linguistics.
@@ -774,7 +828,8 @@ Association for Computational Linguistics  System
 Demonstrations , pages 113 118, Online. Association
 for Computational Linguistics.
 Sabit Hassan, Younes Samih, Hamdy Mubarak, and
-Ahmed Abdelali. 2020. ALT at SemEval-2020 12  Arabic and English offensive language identification
+Ahmed Abdelali. 2020. ALT at SemEval-2020 task
+12  Arabic and English offensive language identification
  in social media. In Proceedings of the
 Fourteenth Workshop on Semantic Evaluation , pages
 1891 1897, Barcelona (online). International Committee
@@ -822,7 +877,8 @@ Xin Li and Dan Roth. 2002. Learning question classifiers.
 Mingyi Liu, Zhiying Tu, Tong Zhang, Tonghua Su, Xiaofei
  Xu, and Zhongjie Wang. 2022. Ltp  A new
 active learning strategy for crf-based named entity
-recognition. Neural Processing Letters , 54 2433 2454.
+recognition. Neural Processing Letters , 54 2433 
+2454.
 Kaiji Lu, Piotr Mardziel, Fangjing Wu, Preetam Amancharla,
  and Anupam Datta. 2020. Gender bias in
 neural natural language processing. In Logic, Language,
@@ -851,7 +907,9 @@ Conference on Empirical Methods in Natural Language
 Association for Computational Linguistics.
 Nils Reimers and Iryna Gurevych. 2019. SentenceBERT 
  Sentence embeddings using Siamese BERTnetworks.
- In Proceedings of the 2019 9th International Joint Conference on Natural
+ In Proceedings of the 2019 Conference on
+Empirical Methods in Natural Language Processing
+and the 9th International Joint Conference on Natural
  Language Processing (EMNLP-IJCNLP) , pages
 3982 3992, Hong Kong, China. Association for Computational
  Linguistics.

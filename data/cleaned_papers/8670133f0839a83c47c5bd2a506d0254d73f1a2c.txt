@@ -55,7 +55,7 @@ the compositional power of text-to-image models is rather
 expected thanks to the built-in composable structure of text
 prompts. As such, an important but often overlooked question
  to answer is whether such compositional capability is
-1 2306.00763 1  [cs.CV]  1 2023specific to models with text prompts or not.
+1arXiv 2306.00763v1  [cs.CV]  1 Jun 2023specific to models with text prompts or not.
 In this paper, we study the compositional generalization
 of image synthesis models trained on the standard ImageNet
 benchmark . Since images in ImageNet [6] are labeled with
@@ -98,7 +98,7 @@ kinds of learnable prompts. Subsequently, we present a domain
 improving not only visual fidelity but also domain adaptability.
  Our method is simple , introducing only one extra
 token to the pretrained generative transformer, and efficient ,
-introducing less than 10 10 minutes
+introducing less than 10k parameters trained within 10 minutes
  on a single GPU or TPU. Finally, our method is effective,
  as we show via thorough experimentation (Sec. 4).
 We evaluate our method in three aspects. First, we conduct
@@ -164,7 +164,9 @@ the rest (unmasked) token values.
 2After obtaining θ   arg minθLMTM(θ), the scheduled
 parallel decoding [4] is used to generate a token sequence 
 Require  m  [1]N,{n1, ..., n T},PT
-t 1 1 1 2  ˆzi pi pθ 
+t 1nt N
+1 fort 1toTdo
+2  ˆzi pi pθ 
 zi (tc,z) 
 , i mi  1.
 3  zi ˆzi,mi 0,i arg topknt
@@ -224,7 +226,7 @@ trained to disentangle domain and class knowledge, while transformer
  and class embedding matrix ( W) are frozen.
 One may argue that ZDAIS is simply a two step process
 of class-conditional image generation followed by NST. As
-shown in Secs. 4.2 4.3, the proposed method for ZDAIS
+shown in Secs. 4.2 and 4.3, the proposed method for ZDAIS
 shows a significant benefit over NST both on domain adaptive
  synthesis and domain adaptation by synthesis.
 3.2. Proposed Method
@@ -327,7 +329,8 @@ that it is crucial to drop both class and the prompt ( pϕ) tokens
 sample from the target instead of a source domain.
 4. Experiments
 We test the efficacy of our method for zero-shot domain
-adaptive image synthesis for various scenarios. In Secs. 4.1 4.2, we conduct a comprehensive study of ZDAIS when
+adaptive image synthesis for various scenarios. In Secs. 4.1
+and 4.2, we conduct a comprehensive study of ZDAIS when
 only a few training images from the target domain are available.
  Then, in Sec. 4.3, we show that synthesized images are
 used to train a classifier, achieving state-of-the-art zero-shot
@@ -338,13 +341,13 @@ We study ZDAIS with a few ( e.g., 1 10) training images
 given from the target domain. We focus on the qualitative
 evaluation on various target domains in Sec. 4.1, and propose
  a new benchmark for a quantitative study in Sec. 4.2.
-Dataset. Similarly to [33], we collect 5 10 images for each
+Dataset. Similarly to [33], we collect 5  10 images for each
 target domain with a keyword such as  haunted house . The
 complete information on the images used is in Appendix D.
 Setting. A class-conditional MaskGIT [4] trained on the
 ImageNet [6] is used as a source model. As discussed in
 Sec. 3.2, we use S  1for class-agnostic prompt. The bottleneck
- dimension is chosen between 2 32. Additional implementation
+ dimension is chosen between 2  32. Additional implementation
  details are in Appendix B.1.
 While we collect images using the same keyword per target
  domain on purpose, we find that not all images belong
@@ -360,14 +363,15 @@ class for zero-shot image synthesis.
 2Since we adopt publicly available MaskGIT pretrained model that is
 not trained with an additional unconditional token embedding, we simply
 average all class token embeddings to obtain tu.
-4 3. Zero-shot domain adaptive image synthesis from a few training images. Images inside red boxes are 3 training images (out of
+4Figure 3. Zero-shot domain adaptive image synthesis from a few training images. Images inside red boxes are 3 training images (out of
 3 10 in total) for each target domain, and the rest are synthesized. The class condition for each row is  lighthouse ,  tram  and  table
 lamp . More images from diverse classes and target domains are in Fig. 10. Information on training images are in Appendix D.
 Figure 4. Zero-shot domain adaptive image synthesis from a single training image. Images inside red boxes are a single (and only)
 training image for each target domain, and the rest are synthesized. Class conditions are  lighthouse ,  castle ,  convertible ,  table
 lamp ,  volcano  and  goldfish . More images from diverse classes are in Fig. 11. Information on training images are in Appendix D.
 Results. We show synthesized images by our method along
-with target training images (in green boxes) in Figs. 3 10. The keyword for each target domain and the number
+with target training images (in green boxes) in Figs. 3
+and 10. The keyword for each target domain and the number
  of images are as follows   abandoned cars  (10),  aurora
  mountain  (10),  inkpainting mountain  (3),  sketch
 mushroom  (4). We select  lighthouse ,  castle ,  tram ,
@@ -393,14 +397,17 @@ Bottleneck dimension. In Fig. 5, we show synthesized images
 ofChihuahua . 1 target domain image is used.
 Figure 5. Ablation on the bottleneck dimension of class-agnostic
 prompt. The number for each column is the bottleneck dimension.
-of the class-agnostic prompt generator. In Fig. 5a, we use 10 2 128. We see that our method behaves some5(a)
+of the class-agnostic prompt generator. In Fig. 5a, we use 10
+target training images and the bottleneck dimension is chosen
+ between 2  128. We see that our method behaves some5(a)
  Without attention control.
 (b) With attention control.
-Figure 6. ZDAIS using 6 10 target domain images from  Van
+Figure 6. ZDAIS using 6  10 target domain images from  Van
 Gogh house painting  and  watercolor dog painting . Classes for
 synthesis are (supposed to be) Chihuahua ,Koala ,Castle ,Convertible,Tram
  andTable lamp .
-0.0 0. 1 0.25 0.5 1.0 2.0 5.0 7. Synthesis with domain adaptive classifier-free guidance
+0.0 0. 1 0.25 0.5 1.0 2.0 5.0
+Figure 7. Synthesis with domain adaptive classifier-free guidance
 with varying guidance scale λfrom 0(i.e., no guidance) to 5.0.
 Images in the first and third rows (blue arrow) are using our proposed
  formulation in Eq. (11), while those in the second and fourth
@@ -410,7 +417,9 @@ Sec. 3.2.1. When it is too small, it does not fully adapt to the
 target domain. On the other hand, when it is large, the classagnostic
  prompt overpowers the class-specific prompt, and
 start to generate only target in-distribution images.
-Similar behavior is observed in Fig. 5 1 1 7. When the target images are less,
+Similar behavior is observed in Fig. 5b where we conduct
+ an experiment using 1 target training image with varying
+ dimension from 1  7. When the target images are less,
 it is recommended to use even fewer bottleneck units.
 Attention control (Eq. (9)). In Fig. 6a, we find that the
 class-agnostic prompt dominates without attention control
@@ -438,7 +447,8 @@ is designed to disentangle the domain knowledge using the
 class information from the source domain, it seems plausible
  to assume that the target images should be recognized as
 one of classes of the source domain. We check the predicted
-classes of images in Fig. 4 3 5 prediction. As in Tab. 1, most images have
+classes of images in Fig. 4 from the class affinity matrix A3
+and report top 5 prediction. As in Tab. 1, most images have
 relevant classes in their top 5 prediction ( e.g., Van Gogh
 painting in the fourth row is predicted as gondola, whose
 typical images contain a boat in a river). This confirms that
@@ -457,7 +467,7 @@ the dataset contains images from diverse domains, such as
 painting, sketch, deviant art, embroidery, or toy, while sharing
  categories with the ImageNet. Images are labeled with
 both the class and domain. We test on 10 domains.
-Setting. We pick 5 5 classes for each domain
+Setting. We pick 5 images from 5 classes for each domain
 and use them for visual prompt tuning. The list of images
 is in Tab. 5. We experiment with two settings. First, a single
  class-agnostic prompt is learned to model all 5 images
@@ -468,7 +478,7 @@ Evaluation. Images from each domain of the ImageNet-R
 are used as ground-truths to compute FIDs. Since the number
  of images in each domain varies from 550(origami) to
 3This is done by ranking scores from cthrow of A ac  [aj,c].
-6 5 5 5 classes predicted by A
+6image top 5 classes predicted by A image top 5 classes predicted by A image top 5 classes predicted by A
 Komodo dragon, Irish Wolfhound,
 cassette, mountain ,volcano
 gondola , king penguin, rapeseed,
@@ -483,10 +493,12 @@ barn ,entertainment center , chameleon,
 steam locomotive, castle
 Table 1. Top 5 ImageNet classes by the class affinity matrix A. Relevant classes to the images are bold-faced.
 Synthesis art cartoon deviant art embroidery graffiti graphic origami painting sketch toy average
-Source 92.0 134.4 89.0 166.3 166.5 138.8 155.5 78.4 94.0 97.7 121.3 2[7] 70.8 99.6 70.7 158.9 114.2 111.5 141.8 52.6 84.6 82.2 98.7
+Source 92.0 134.4 89.0 166.3 166.5 138.8 155.5 78.4 94.0 97.7 121.3
+Source   StyTr2[7] 70.8 99.6 70.7 158.9 114.2 111.5 141.8 52.6 84.6 82.2 98.7
 Target, in-dist [48] 168.0 118.3 173.8 176.1 168.0 182.0 142.9 145.1 163.1 133.3 157.1
 Target, zero-shot (single) 95.5 85.9 78.2 121.3 114.0 109.3 116.7 64.0 47.5 84.2 91.6
-Target, zero-shot (ensemble) 67.0 67.4 68.8 115.7 89.0 100.7 106.1 65.1 36.8 74.9 79.1 2. FIDs (lower the better) on 10 target domains of the ImageNet-R [19].  Source  refers to the class-conditional synthesis of the
+Target, zero-shot (ensemble) 67.0 67.4 68.8 115.7 89.0 100.7 106.1 65.1 36.8 74.9 79.1
+Table 2. FIDs (lower the better) on 10 target domains of the ImageNet-R [19].  Source  refers to the class-conditional synthesis of the
 original MaskGIT trained on the ImageNet,  Target, in-dist  refers to the synthesis conditioned on learned prompt and target domain indistribution
  classes, and  Target, zero-shot  refers the proposed zero-shot synthesis conditioned on learned prompt and source classes.
 4634 (sketch), FIDs are not comparable between domains.
@@ -500,7 +512,7 @@ with a typical setting for generative transfer learning [48].
 Finally, target zero-shot refers to the ZDAIS. Source classes
 are used as a condition only if there exist ground-truth images
  belonging to the same class in the target domain. We
-test 3 20k images for each run.
+test 3 times and synthesize 20k images for each run.
 Furthermore, we evaluate the two step process of classconditional
  image generation followed by NST, as introduced
  in Sec. 3.1, to show the difference between ZDAIS
@@ -542,7 +554,7 @@ source and synthesized images.
 Results are shown in Tab. 3. Compared to those trained
 on the source dataset only, classifiers trained on the combined
  source and synthesized images show consistent and
-significant improvement. In particular, we see 4 12% gain
+significant improvement. In particular, we see 4  12% gain
 in accuracy when the target domain is  Clipart , the most
 different from other domains, implying our method synthesizes
  images belonging to the target domain and classes. Visualization
@@ -553,10 +565,13 @@ ZSDA method [22] by a large margin.
 To our knowledge, there is no previous work tackling the
 exact ZDAIS setting. We review related works of similar
 capabilities and highlight the differences.
-7 60.9 75.1 86.5 66.8 70.9 76.5 64.2 57.9 83.7 81.8 66.7 88.9 73.3
+7Source domain Art Clipart Product Real
+Target domain Clipart Product Real Art Product Real Art Clipart Real Art Clipart Productaverage
+Source only 60.9 75.1 86.5 66.8 70.9 76.5 64.2 57.9 83.7 81.8 66.7 88.9 73.3
 Source   Synth (w/o adapt) 61.8 84.3 87.8 77.4 83.2 87.2 77.4 62.8 89.3 80.7 63.4 88.9 78.7
 Source   Synth (Ours) 69.0 84.8 88.2 80.9 84.2 86.9 80.9 69.8 89.1 82.7 70.7 89.0 81.4
-[22] 71.0 76.5 85.1 62.1 68.7 75.1 64.4 69.2 82.0 77.9 76.2 88.5 74.7 3. Zero-shot domain adaptation accuracy on Office-home dataset [53]. Numbers for [22] are taken from their paper. The best and
+[22] 71.0 76.5 85.1 62.1 68.7 75.1 64.4 69.2 82.0 77.9 76.2 88.5 74.7
+Table 3. Zero-shot domain adaptation accuracy on Office-home dataset [53]. Numbers for [22] are taken from their paper. The best and
 those within standard error are bold-faced.
 Generative Transfer Learning aims to build a generative
 model for target tasks, which often have limited data for
@@ -755,7 +770,9 @@ preprint arXiv 2210.09276 , 2022. 4, 8
 [27] Gwanghyun Kim, Taesung Kwon, and Jong Chul Ye. Diffusionclip 
  Text-guided diffusion models for robust image
 manipulation. In Proceedings of the IEEE/CVF Conference
-on Computer Vision and Pattern Recognition , pages 2426 2435, 2022. 8 9[28] Diederik P Kingma and Jimmy Ba. Adam  A method for
+on Computer Vision and Pattern Recognition , pages 2426 
+2435, 2022. 8
+9[28] Diederik P Kingma and Jimmy Ba. Adam  A method for
 stochastic optimization. arXiv preprint arXiv 1412.6980 ,
 2014. 20
 [29] Jos  e Lezama, Huiwen Chang, Lu Jiang, and Irfan Essa.
@@ -906,35 +923,61 @@ preprint arXiv 2206.10789 , 2022. 1, 4, 8
  Wang, Xiaolei Huang, and Dimitris N Metaxas. Stackgan 
  Text to photo-realistic image synthesis with stacked
 generative adversarial networks. In Proceedings of the IEEE
-international conference on computer vision , pages 5907 5915, 2017. 1 111import flax.linen as nn
+international conference on computer vision , pages 5907 
+5915, 2017. 1
+111import flax.linen as nn
 2import jax.numpy as jnp
-3 4class ClassAgnosticTokenGenerator(nn.Module) 
+3
+4class ClassAgnosticTokenGenerator(nn.Module) 
 5d_embed  int # Bottleneck dimension (P)
 6d_token  int # Token dimension (D)
-7 8@nn.compact
+7
+8@nn.compact
 9def __call__(self, ids  jnp.ndarray) 
 10 """Calls class agnostic token generator.
-11 12 13 1, values are all zeros.
-14 15 16 jnp.ndarray of dimension B x 1 x D.
+11
+12 Args 
+13 ids  B x 1, values are all zeros.
+14
+15 Return 
+16 jnp.ndarray of dimension B x 1 x D.
 17 """
 18 MLP_c   nn.Embed(1, self.d_embed)
 19 MLP_t   nn.Dense(self.d_token)
-20 21 return MLP_t(nn.LayerNorm(MLP_c(ids)))
-22 23 24class ClassDistilledTokenGenerator(nn.Module) 
+20
+21 return MLP_t(nn.LayerNorm(MLP_c(ids)))
+22
+23
+24class ClassDistilledTokenGenerator(nn.Module) 
 25 n_class  int # Number of target class (C_{tgt})
-26 27 @nn.compact
+26
+27 @nn.compact
 28 def __call__(self, cls_ids  jnp.ndarray, W  jnp.ndarray) 
 29 """Calls class distilled token generator.
-30 31 32 cls_ids  B x 1, class labels.
+30
+31 Args 
+32 cls_ids  B x 1, class labels.
 33 W  C_src x D, a matrix for class embedding tokens.
-34 35 36 jnp.ndarray of dimension B x 1 x D.
+34
+35 Return 
+36 jnp.ndarray of dimension B x 1 x D.
 37 """
 38 Affn   nn.Embed(self.n_class_tgt, W.shape[0])
-39 40 token   jax.nn.softmax(Affn(cls_ids)) *W # B x D
+39
+40 token   jax.nn.softmax(Affn(cls_ids)) *W # B x D
 41 return token[ , None,  ]
-42 43 44def compute_attention_weight(query, class_token, domain_token) 
+42
+43
+44def compute_attention_weight(query, class_token, domain_token) 
 45 """Computes attention weights with attention control.
-46 47 48 49 class_token  tensor of size D x 1 50 domain_token  tensor of size D x 1 51 52 53 tensor of size (sequence length) x (sequence length   2)
+46
+47 Args 
+48 query  tensor of size D x sequence length
+49 class_token  tensor of size D x 1
+50 domain_token  tensor of size D x 1
+51
+52 Return 
+53 tensor of size (sequence length) x (sequence length   2)
 54 """
 55 key   jnp.concatenate((class_token, domain_token, query), axis 1)
 56 attn_weight   jnp.einsum( dq,dk- qk , query, key)
@@ -951,27 +994,27 @@ https //www.rawpixel.com/image/3864574/illustration-image-art-vincent-van-gogh
 https //www.rawpixel.com/image/3864611/illustration-image-art-vincent-van-gogh-house
 https //www.rawpixel.com/image/537424/free-illustration-image-van-gogh-factory
 https //www.rawpixel.com/image/537422/free-illustration-image-van-gogh-cottage
-Van Gogh starry nighthttps //search-production.openverse.engineering/image/ec f5215-1307-457f-bc14-3 4735
-https //search-production.openverse.engineering/image/278dd a-0 55-416b-b f5-05798 34
-Haunted househttps //search-production.openverse.engineering/image/17662 45-aa50-474e-83 6-bd eda bd9
-https //search-production.openverse.engineering/image/f aca4-14 0-4464-a706-b ed fb8569
-https //search-production.openverse.engineering/image/ce bd d7-a509-4ece-a e2-eb d fb00
-https //search-production.openverse.engineering/image/2f a eee-c033-4781-bad0-3 2361
-https //search-production.openverse.engineering/image/89 86034-fe58-4 32-8259-9dbc bac ebc
-https //search-production.openverse.engineering/image/089 0-f070-4d f-9 5-a a d411
+Van Gogh starry nighthttps //search-production.openverse.engineering/image/ec5f5215-1307-457f-bc14-3e17d4fa4735
+https //search-production.openverse.engineering/image/278dd07a-0b55-416b-b1f5-05798f64cf34
+Haunted househttps //search-production.openverse.engineering/image/17662d45-aa50-474e-83b6-bd170eda9bd9
+https //search-production.openverse.engineering/image/f010aca4-14d0-4464-a706-b66ed7fb8569
+https //search-production.openverse.engineering/image/ce8bd8d7-a509-4ece-a9e2-eb8581d0fb00
+https //search-production.openverse.engineering/image/2f1a1eee-c033-4781-bad0-3e12212a2361
+https //search-production.openverse.engineering/image/89e86034-fe58-4f32-8259-9dbc4bac8ebc
+https //search-production.openverse.engineering/image/089c1cb0-f070-4d1f-9fc5-a82a7939d411
 https //www.rawpixel.com/image/5906049/photo-image-public-domain-house-halloween
 https //www.rawpixel.com/image/5964852/free-public-domain-cc0-photo
 https //www.rawpixel.com/image/6051791/free-public-domain-cc0-photo
-Abandoned carshttps //search-production.openverse.engineering/image/9e ffa-bac1-4892-b a-04eded cefcf
-https //search-production.openverse.engineering/image/545bb c-cafc-42fc-89cc-34 2
-https //search-production.openverse.engineering/image/b e bc e-982e-4792-a513-bdea a f cb
-https //search-production.openverse.engineering/image/b ce b-c c-41 4-97 0-8 59
+Abandoned carshttps //search-production.openverse.engineering/image/9e826ffa-bac1-4892-b78a-04eded1cefcf
+https //search-production.openverse.engineering/image/545bb05c-cafc-42fc-89cc-34b0e51593a2
+https //search-production.openverse.engineering/image/b1e4bc4e-982e-4792-a513-bdea0a5f72cb
+https //search-production.openverse.engineering/image/b103ce3b-c74c-41c4-97e0-8c3a7563bd59
 https //www.rawpixel.com/image/3090749/free-photo-image-abandoned-car-vintage
 https //www.rawpixel.com/image/5941829/free-public-domain-cc0-photo
 https //www.rawpixel.com/image/4026101/oldsmobile-route-66
-https //search-production.openverse.engineering/image/fbb a-a c-44 7-9571-6901 27957
-https //search-production.openverse.engineering/image/f d-d c8-4 59-8217-97 55
-https //search-production.openverse.engineering/image/f db9513-f a6-40 0-9 23-e e b e f3
+https //search-production.openverse.engineering/image/fbb2922a-a03c-44e7-9571-6901bba27957
+https //search-production.openverse.engineering/image/f579052d-d3c8-4a59-8217-97b9f4b6ae55
+https //search-production.openverse.engineering/image/f8db9513-f0a6-40e0-9e23-e6e34b5e04f3
 Watercolor dogshttps //pixy.org/6458158/
 https //pixy.org/5790662/
 https //pixy.org/6379346/
@@ -982,46 +1025,47 @@ https //pixy.org/5782945/
 https //pixy.org/6487827/
 https //pixy.org/6557843/
 https //pixy.org/5788893/
-chinese inkpaintinghttps //search-production.openverse.engineering/image/382 0452-14 5-4895-aff2-917dfec f c
-https //search-production.openverse.engineering/image/22 474-128d-4 69-8d e-98 77170
-https //search-production.openverse.engineering/image/3 8-3 49-4e e-9 9-f ca e dc c
-https //search-production.openverse.engineering/image/0793 761-3437-4591-a e9-5a f d ea f
-https //search-production.openverse.engineering/image/293879fc-9 71-410f-b b-161493 14377
-https //search-production.openverse.engineering/image/04edb b-b848-430b-9166-c efab a c
-aurora mountainhttps //unsplash.com/photos/CgoRzWX CDg
+chinese inkpaintinghttps //search-production.openverse.engineering/image/382e0452-14a5-4895-aff2-917dfec8f40c
+https //search-production.openverse.engineering/image/22a3f474-128d-4a69-8d4e-98f904a77170
+https //search-production.openverse.engineering/image/3aa5eee8-3a49-4e8e-9df9-f6ca2e0dc01c
+https //search-production.openverse.engineering/image/0793e761-3437-4591-a0e9-5a8f4d53ea7f
+https //search-production.openverse.engineering/image/293879fc-9f71-410f-b96b-161493e14377
+https //search-production.openverse.engineering/image/04edb78b-b848-430b-9166-c61efab08a3c
+aurora mountainhttps //unsplash.com/photos/CgoRzWX4CDg
 https //unsplash.com/photos/U_diPCXCBxU
 https //unsplash.com/photos/-OkHUsepnzw
 https //unsplash.com/photos/pDeagUyN-Pk
-https //unsplash.com/photos/ZJDMls ppY8
-https //unsplash.com/photos/Hn N I eHA0
+https //unsplash.com/photos/ZJDMls6ppY8
+https //unsplash.com/photos/Hn8N4I4eHA0
 https //unsplash.com/photos/fpaSXDuoHkc
-https //unsplash.com/photos/58X XfxxevU
-https //unsplash.com/photos/uWmWoH maR4
-https //unsplash.com/photos/w yDuFs-kGY
-inkpainting mountainhttps //unsplash.com/photos/6fv MEf FUE
+https //unsplash.com/photos/58X3XfxxevU
+https //unsplash.com/photos/uWmWoH9maR4
+https //unsplash.com/photos/w1yDuFs-kGY
+inkpainting mountainhttps //unsplash.com/photos/6fv0MEf3FUE
 https //unsplash.com/photos/NspHfyZnMBE
-https //unsplash.com/photos/Vc GBqapdfs
-oilpainting apple https //unsplash.com/photos/LQTdG SJpyA
-oilpainting appletree https //unsplash.com/photos/K QvdUkcQp4
+https //unsplash.com/photos/Vc8GBqapdfs
+oilpainting apple https //unsplash.com/photos/LQTdG9SJpyA
+oilpainting appletree https //unsplash.com/photos/K3QvdUkcQp4
 sketch mushroomhttps //freesvg.org/mushrooms-vector-illustration
 https //freesvg.org/psm-v07-d144-common-meadow-mushroom
 https //freesvg.org/1517757743
 https //freesvg.org/puffball
-watercolor imageshttps //unsplash.com/photos/KRztl I xac
+watercolor imageshttps //unsplash.com/photos/KRztl5I6xac
 https //unsplash.com/photos/0pJPixfGfVo
 https //unsplash.com/photos/YIfFVwDcgu8
 https //unsplash.com/photos/9dnNnTrHxmI
-https //unsplash.com/photos/Tyg rVhOTrE
-https //unsplash.com/photos/8D-0K JUAEE
-https //unsplash.com/photos/6 0
-https //unsplash.com/photos/-KfLa I eTo
-https //unsplash.com/photos/-IAS_N adA
-https //unsplash.com/photos/X QwsspYk_0
-https //unsplash.com/photos/TAZga MibgA
-https //unsplash.com/photos/wvD zZnRbcw
-https //unsplash.com/photos/6dY cFY-qTo
+https //unsplash.com/photos/Tyg0rVhOTrE
+https //unsplash.com/photos/8D-0K6JUAEE
+https //unsplash.com/photos/6NSVToSYwV0
+https //unsplash.com/photos/-KfLa4I4eTo
+https //unsplash.com/photos/-IAS_N85adA
+https //unsplash.com/photos/X2QwsspYk_0
+https //unsplash.com/photos/TAZga9MibgA
+https //unsplash.com/photos/wvD0zZnRbcw
+https //unsplash.com/photos/6dY9cFY-qTo
 Table 4. Image sources for experiments in Sec. 4.1.
-13 01443537/art 10.jpg
+13Domain File name Domain File name
+artn01443537/art 10.jpg
 graphicn01443537/graphic 3.jpg
 n01855672/art 0.jpg n01855672/graphic 1.jpg
 n02129604/art 4.jpg n02129604/graphic 1.jpg
@@ -1054,13 +1098,13 @@ n07614500/graffiti 1.jpg n03452741/toy 7.jpg
 Table 5. Image sources for ImageNet-R experiments in Sec. 4.2. For reader s convenience, n01443537 is for  goldfish , n01855672
 for  goose , n02129604 for  tiger , n02814860 for  lighthouse , n03452741 for  grand piano , n02980441 for  castle , and
 n07614500 for  ice cream .
-14 10. Zero-shot domain adaptive image synthesis from a few training images. Images inside red boxes are 3 training images (out of
+14Figure 10. Zero-shot domain adaptive image synthesis from a few training images. Images inside red boxes are 3 training images (out of
 6 10 in total) for each target domain, and the rest are synthesized. The class condition for each row is  light house ,  castle ,  tram ,
  convertible , and  table lamp . We provide information on training images in Appendix D.
-15 11. Zero-shot domain adaptive image synthesis from a single training image. Images inside red boxes are a single (and only)
+15Figure 11. Zero-shot domain adaptive image synthesis from a single training image. Images inside red boxes are a single (and only)
 training image for each target domain, and the rest are synthesized. From left to right, top to bottom, class conditions are  lighthouse ,
  castle ,  convertible ,  table lamp ,  volcano ,  goldfish ,  triumphal arch ,  teddy bear ,  tram ,  bolete ,  cliff ,  American alligator .
-16 12. Many styles of  watercolor painting . Our method is able to adapt to different styles of  watercolor painting  using a single
+16Figure 12. Many styles of  watercolor painting . Our method is able to adapt to different styles of  watercolor painting  using a single
 reference image per target domain (in red boxes) and generalize to unseen concepts. This is in contrast with text-guided image synthesis
 methods where inherent ambiguity could occur due to ambiguity in natural language prompt.
 Figure 13. Zero-shot domain adaptive image synthesis on ImageNet-R [19].
@@ -1093,13 +1137,13 @@ L times
 Figure 17. Generative visual prompt tuning with deep prompts. Separate learnable prompts (green) are provided for each transformer layer.
 B. Experiments
 B.1. Implementation Detail
-Experiments in Secs. 4.1 4.2. All experiments are done using the class-conditional MaskGIT [4] trained on the ImageNet
+Experiments in Secs. 4.1 and 4.2. All experiments are done using the class-conditional MaskGIT [4] trained on the ImageNet
  dataset, whose checkpoint is publicly available.5We use a deep prompt, as explained in Appendix A, with S  1. For
 optimization, we use an Adam optimizer [28] with the learning rate of 0.001decaying with a cosine learning rate decay [31].
-No weight decay nor learning rate warm-up is used. The parameters are updated for 1000 128.
-We note that the number of training images are 1 10 for experiments of Sec. 4.1, and as such we repeat the training data
+No weight decay nor learning rate warm-up is used. The parameters are updated for 1000 steps with the batch size of 128.
+We note that the number of training images are 1  10 for experiments of Sec. 4.1, and as such we repeat the training data
 by applying a stochastic data augmentation including random crop and horizontal flip. However, using a large batch size is
-not essential, and we empirically find that using batch size of 16 1000 optimization steps is sufficient for our method to
+not essential, and we empirically find that using batch size of 16with1000 optimization steps is sufficient for our method to
 work. The code will be released publicly for reproducible research.
 B.2. ZDAIS with Many Training Images
 Our prompt design in Sec. 3.2.1 is geared towards solving the problem when there are only a few training images provided
@@ -1128,7 +1172,7 @@ s 1exp
 q pϕ,s 
 from Eq. (9). This ensures sufficient attention to be given to the classspecific
  token even when the class-agnostic prompt has multiple tokens.
-Result. We report results in Tab. 6. FIDs are computed between 20 20k images sampled from
+Result. We report results in Tab. 6. FIDs are computed between 20k synthesized images and 20k images sampled from
 classes that do not belong to ImageNet-R sketch dataset. Similarly to Tab. 2,  Source  refers to the synthesis of zero-shot
 classes using pretrained class-conditional MaskGIT without domain transfer,  Target, in-dist  refers to the in-distribution
 synthesis, i.e., domain adaptive synthesis conditioned on the classes of ImageNet-R sketch, and  Target, zero-shot  refers to
@@ -1136,14 +1180,15 @@ the zero-shot domain adaptive image synthesis. The FID measured by synthetic ima
 that there exists a significant domain gap between the ImageNet and ImageNet sketch. When measured between target indistribution
  synthetic images and the target zero-shot ground-truth images, we still get significantly lower FIDs around 30.
 This denotes that the FID is more affected by the domain than the class. Our proposed method for ZDAIS further reduces the
-FID, achieving 14.8 12 12.2 36 synthesis steps. This suggests that our method synthesizes
+FID, achieving 14.8using 12 synthesis steps and 12.2using 36 synthesis steps. This suggests that our method synthesizes
 images not only belonging to the target distribution, but also respecting the class semantics. We visualize synthesized images
 from the zero-shot classes ( i.e., which do not belong to classes of ImageNet-R sketch) in Fig. 19.
-Different from experiments in Sec. 4.1 10, we
+Different from experiments in Sec. 4.1 where the number of training images from the target domain is less than 10, we
 observe a successful disentanglement of domain and class without strongly regularizing the prompt capacity. On the contrary,
 we see an improvement in the domain adaptive zero-shot synthesis with longer class-agnostic prompts. This implies that when
 there are many training examples, it is still beneficial to have a powerful class-agnostic prompt to adapt to the target domain.
-Another interesting observation is that the generation diversity is affected by the amount of training images. Fig. 20 1or images per class or full (  23images per class) training data.
+Another interesting observation is that the generation diversity is affected by the amount of training images. Fig. 20
+shows synthesized images by the models trained with 1or5images per class or full (  23images per class) training data.
 When comparing the most visually compelling results, we do not see too much differences between these models, and even
 synthesized images from the model trained with 1 images per class are highly realistic sketch images. However, the model
 trained with a few training images often sample from very narrow distribution, leading to a reduced diversity. As a result, as
@@ -1182,8 +1227,11 @@ model zoo model. We did a small hyperparameter search on our source-only classif
 transfer baseline and in some cases even beat the domain adapataion results from [22]. We hyperparameter searched over
 learning rate in {0.01,0.005,0.001,0.0005,0.0001}and selected lr  0.0005 . We used SGD with nesterov momentum. We
 found as is commonly known that this has resulted in a model with much better robustness than the ADAM trained model. We
-follow the learning rate schedule from [22] and cut the learning rate by 0.1 1 3 2 3into the total training steps. Following
-[22] we also used a batch size of 8 and trained on one GPU. We chose to train all experiments for a consistent 6250 50 epochs in [22] since all the datasets have a wildly varying number of examples. Following [22] we reported the
+follow the learning rate schedule from [22] and cut the learning rate by 0.1 a1
+3and2
+3into the total training steps. Following
+[22] we also used a batch size of 8 and trained on one GPU. We chose to train all experiments for a consistent 6250 steps
+instead of 50 epochs in [22] since all the datasets have a wildly varying number of examples. Following [22] we reported the
 best accuracy on the target domain during each training run which we evaluated every 250steps.
 For our method where the classification model is fine-tuned on the combined source and synthesized images, we used
 the same hyperparameters for comparability, but added 1000 generated target domain examples from each class. We did a
@@ -1215,7 +1263,8 @@ by NST usually reflect the style more faithfully.
 D. Information on Images for Target Domain
 We provide the sources of images used in Tab. 4 for experiments in Sec. 4.1 and Tab. 5 for experiments in Sec. 4.2 for
 reproducible research.
-22 1 16 64 128 12 77.0
+22Synthesis Shot Step S  1 S  16 S  64 S  128
+Source   12 77.0
 Target, in-dist [48]  23 (full) 12 30.2 31.4 31.5 31.5
 Target, zero-shot (ours) 1 12 66.1 46.1 41.3 35.8
 Target, zero-shot (ours) 2 12 40.2 26.6 24.8 22.1
@@ -1224,12 +1273,13 @@ Target, zero-shot (ours) 4 12 26.5 17.8 16.6 15.7
 Target, zero-shot (ours) 5 12 21.5 16.1 14.7 14.7
 Target, zero-shot (ours)  23 (full) 12 18.9 15.1 14.4 14.8
 Target, zero-shot (ours) 5 36 20.7 15.0 13.0 12.9
-Target, zero-shot (ours)  23 (full) 36 18.4 13.7 12.6 12.2 6. FID (lower the better) of models trained on ImageNet-R sketch [19] and tested on ImageNet-sketch [55]. The number of training
+Target, zero-shot (ours)  23 (full) 36 18.4 13.7 12.6 12.2
+Table 6. FID (lower the better) of models trained on ImageNet-R sketch [19] and tested on ImageNet-sketch [55]. The number of training
 images ( Shot ) and the number of decoding step ( Step ) are denoted.
 Figure 18. Zero-shot domain adaptive image synthesis from a single training image. Images inside red boxes are single training image for
 each target domain, and the rest are synthesized. Class conditions are  lighthouse ,  castle ,  convertible ,  table lamp ,  volcano  and
  goldfish . Information on training images are in Appendix D.
-image top 5 5 5 classes predicted by A
+image top 5 classes predicted by A image top 5 classes predicted by A image top 5 classes predicted by A
 carousel, skunk feather boa,
 website, borzoi
 carousel, cowboy boat, quilt,
@@ -1246,7 +1296,8 @@ Table 7. Top 5 ImageNet classes by the class affinity matrix A. Relevant classes
 23(a)S  1
  (b)S  16
  (c)S  64
- (d)S  128 19. Zero-shot domain adaptive image synthesis trained on ImageNet-R sketch [19]. Class conditions are  kite ( n01608432 ) ,
+ (d)S  128
+Figure 19. Zero-shot domain adaptive image synthesis trained on ImageNet-R sketch [19]. Class conditions are  kite ( n01608432 ) ,
  banded gecko ( n01675722 ) ,  water snake ( n01737021 ) ,  African grey parrot ( n01817953 ) ,  tiger beetle ( n02165105 ) ,
  Angora rabbit ( n02328150 ) ,  church ( n03028079 ) ,  cab ( n02930766 ) ,  dining table ( n03201208 ) ,  motor scooter
 (n03791053 ) ,  streetcar ( n04335435 ) , and  cliff ( n09246464 ) , which do not exist in the ImageNet-R sketch.

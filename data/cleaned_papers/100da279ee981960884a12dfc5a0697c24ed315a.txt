@@ -1,7 +1,9 @@
 Published as a conference paper at ICLR 2023
 SOFTMATCH   ADDRESSING THE QUANTITY -QUALITY
 TRADE -OFF IN SEMI-SUPERVISED LEARNING
-Hao Chen1 ,Ran Tao1 ,Yue Fan2,Yidong Wang3 3 ,Bernt Schiele2,Xing Xie3,Bhiksha Raj1,4,Marios Savvides1 1Carnegie Mellon University,2Max Planck Institute for Informatics, Saarland Informatics Campus,
+Hao Chen1 ,Ran Tao1 ,Yue Fan2,Yidong Wang3
+Jindong Wang3 ,Bernt Schiele2,Xing Xie3,Bhiksha Raj1,4,Marios Savvides1 
+1Carnegie Mellon University,2Max Planck Institute for Informatics, Saarland Informatics Campus,
 3Microsoft Research Asia,4Mohamed bin Zayed University of AI
 ABSTRACT
 The critical challenge of Semi-Supervised Learning (SSL) is how to effectively
@@ -43,8 +45,9 @@ In this work, we formally deﬁne the quantity and quality of pseudo-labels in S
 inherent trade-off present in previous methods from a perspective of uniﬁed sample weighting for Equal
  Contribution  haoc3@andrew.cmu.edu, taoran1@cmu.edu
  Correspondence to  jindong.wang@microsoft.com, marioss@andrew.cmu.edu.
-1 2301.10921 2  [cs.LG]  15 2023 2023 0.5 0.6 0.7 0.8 0.9 1.0
-Conﬁdence Number of Samples
+1arXiv 2301.10921v2  [cs.LG]  15 Mar 2023Published as a conference paper at ICLR 2023
+0.5 0.6 0.7 0.8 0.9 1.0
+Conﬁdence04080120160Number of Samples
 0.00.20.40.60.81.0
 Percentage of SamplesFixMatch
 FlexMatchAll
@@ -60,7 +63,8 @@ SoftMatch (b) Quantity
 Iter.0.50.60.70.80.91.0Quality of Pseudo-LabelsFixMatch
 FlexMatch
 SoftMatch (c) Quality
- 1 0 1 2 2 1012yFixMatch
+ 1 0 1 2
+x 2 1012yFixMatch
 FlexMatch
 SoftMatch (d) Decision Boundary
 Figure 1  Illustration on Two-Moon Dataset with only 4 labeled samples (triangle purple/pink points)
@@ -105,7 +109,8 @@ In this section, we formulate the quantity and quality of pseudo-labels from a u
  perspective, by demonstrating the connection between sample weighting function and the quantity/quality
  of pseudo-labels. SoftMatch is naturally inspired by revisiting the inherent limitation in
 quantity-quality trade-off of the existing methods.
-2 2023 2.1 P ROBLEM STATEMENT
+2Published as a conference paper at ICLR 2023
+2.1 P ROBLEM STATEMENT
 We ﬁrst formulate the framework of SSL in a C-class classiﬁcation problem. Denote the labeled
 and unlabeled datasets as DL {
 xl
@@ -122,7 +127,9 @@ for labeled data. We use NLandNUto represent the number of training samples in D
 respectively. Let p(y x) RCdenote the model s prediction. During training, given a batch of
 labeled data and unlabeled data, the model is optimized using a joint objective L Ls Lu, where
 Lsis the supervised objective of the cross-entropy loss ( H) on theBL-sized labeled batch 
-Ls 1 1H(yi,p(y xl
+Ls 1
+BLBL 
+i 1H(yi,p(y xl
 i)). (1)
 For the unsupervised loss, most existing methods with pseudo-labeling (Lee et al., 2013  Arazo et al.,
 2020  Xie et al., 2020  Sohn et al., 2020  Xu et al., 2021b  Zhang et al., 2021) exploit a conﬁdence
@@ -131,7 +138,9 @@ training. In this paper, we take a step further and present a uniﬁed formulati
 thresholding scheme (and other schemes) from the sample weighting perspective. Speciﬁcally, we
 formulate the unsupervised loss Luas the weighted cross-entropy between the model s prediction
 of the strongly-augmented data Ω(xu)and pseudo-labels from the weakly-augmented data ω(xu) 
-Lu 1 1λ(pi)H(ˆ pi,p(y Ω(xu
+Lu 1
+BUBU 
+i 1λ(pi)H(ˆ pi,p(y Ω(xu
 i))), (2)
 where pis the abbreviation of p(y ω(xu)), and ˆ pis the one-hot pseudo-label argmax( p) λ(p)is
 the sample weighting function with range [0,λmax]  andBUis the batch size for unlabeled data.
@@ -161,13 +170,15 @@ Table 1, with the detailed derivation present in Appendix A.1. For example, naiv
 2017  Berthelot et al., 2019b a) exploit the ﬁxed sample weight to fully enroll all pseudo-labels into
 training. It is equivalent to set λ λmaxand λ  1/NU, regardless of p, which means each pseudolabel
  is assumed equally correct. We can verify the quantity of pseudo-labels is maximized to λmax.
-3 2023 1  Summary of different sample weighting function λ(p), probability density function  λ(p)
+3Published as a conference paper at ICLR 2023
+Table 1  Summary of different sample weighting function λ(p), probability density function  λ(p)
 ofp, quantityf(p)and qualityg(p)of pseudo-labels used in previous methods and SoftMatch.
 Scheme Pseudo-Label FixMatch SoftMatch
 λ(p) λmax{λmax,ifmax( p) τ,
 0.0, otherwise.{
 λmaxexp(
- (max( p) µt)2 2σ2
+ (max( p) µt)2
+2σ2
 t)
 ,ifmax( p) µt,
 λmax, otherwise.
@@ -175,16 +186,24 @@ t)
 U,ifmax( p) τ,
 0.0, otherwise. 
     
-    exp( (max( pi) ˆµt)2 2 ˆσt2 )
+    exp( (max( pi) ˆµt)2
+2 ˆσt2 )
 NU
-2 2
-iexp( (max( pi) ˆµt)2 2 ˆσt2 ),max( p) µt
-1 2 2
-iexp( (max( pi) ˆµt)2 2 ˆσt2 ),max( p) µt
+2  NU
+2
+iexp( (max( pi) ˆµt)2
+2 ˆσt2 ),max( p) µt
+1
+NU
+2  NU
+2
+iexp( (max( pi) ˆµt)2
+2 ˆσt2 ),max( p) µt
 f(p) λmax λmaxˆNτ
 U/NU λmax/2  λmax/NU NU
 2
-iexp( (max( pi) ˆµt)2 2 ˆσt2 )
+iexp( (max( pi) ˆµt)2
+2 ˆσt2 )
 g(p) NU
 i1(ˆ p yu)/NU ˆNU
 i1(ˆ p yu)/ˆNτ
@@ -229,7 +248,8 @@ While some methods indeed consider the deﬁnition of λ(p)(Ren et al., 2020  Hu
 Kim et al., 2022), interestingly, they all neglect the assumption induced on the PMF. The lack of
 sophisticated modeling of  λ(p)usually leads to a quantity-quality trade-off in the unsupervised loss
 of SSL, which motivates us to propose SoftMatch to overcome this challenge.
-3 3.1 G AUSSIAN FUNCTION FOR SAMPLE WEIGHTING
+3 S OFTMATCH
+3.1 G AUSSIAN FUNCTION FOR SAMPLE WEIGHTING
 Inherently different from previous methods, we generally assume the underlying PMF  λ(p)of
 marginal distribution follows a dynamic and truncated Gaussian distribution of mean µtand varianceσtatt-th
  training iteration. We choose Gaussian for its maximum entropy property and empirically
@@ -239,12 +259,13 @@ max( p)from the mean µtof Gaussian as a proxy measure of the correctness of the
 conﬁdence, consistent to the observation as shown in Fig. 1(a). To this end, we can derive λ(p)as 
 λ(p)  {
 λmaxexp(
- (max( p) µt)2 2σ2
+ (max( p) µt)2
+2σ2
 t)
 ,ifmax( p) µt,
 λmax, otherwise.(5)
 which is also a truncated Gaussian function within the range [0,λmax], on the conﬁdence max( p).
-4 2023
+4Published as a conference paper at ICLR 2023
 However, the underlying true Gaussian parameters µtandσtare still unknown. Although we can
 set the parameters to ﬁxed values as in FixMatch (Sohn et al., 2020) or linearly interpolate them
 within some pre-deﬁned range as in Ramp-up (Tarvainen & Valpola, 2017), this might again oversimplify
@@ -252,18 +273,24 @@ within some pre-deﬁned range as in Ramp-up (Tarvainen & Valpola, 2017), this m
 we can instead ﬁtthe truncated Gaussian function directly to the conﬁdence distribution for better
 generalization. Speciﬁcally, we can estimate µandσ2from the historical predictions of the model.
 Att-th iteration, we compute the empirical mean and the variance as 
-ˆµb ˆEBU[max( p)]  1 1max( pi),
+ˆµb ˆEBU[max( p)]  1
+BUBU 
+i 1max( pi),
 ˆσ2
-b ˆVarBU[max( p)]  1 1(max( pi) ˆµb)2.(6)
+b ˆVarBU[max( p)]  1
+BUBU 
+i 1(max( pi) ˆµb)2.(6)
 We then aggregate the batch statistics for a more stable estimation, using Exponential Moving Average
  (EMA) with a momentum mover previous batches 
 ˆµt mˆµt 1  (1 m)ˆµb,
 ˆσ2
-t mˆσ2 1  (1 m)BU
+t mˆσ2
+t 1  (1 m)BU
 BU 1ˆσ2
 b,(7)
-where we use unbiased variance for EMA and initialize ˆµ0 1
-Candˆσ2 0 1.0. The estimated mean
+where we use unbiased variance for EMA and initialize ˆµ0as1
+Candˆσ2
+0as1.0. The estimated mean
 ˆµtand variance ˆσ2
 tare plugged back into Eq. (5) to compute sample weights.
 Estimating the Gaussian parameters adaptively from the conﬁdence distribution during training not
@@ -271,7 +298,8 @@ only improves the generalization but also better resolves the quantity-quality t
 verify this by computing the quantity and quality of pseudo-labels as shown in Table 1. The derived
 quantityf(p)is bounded by [λmax
 2(1   exp( (1
-C ˆµt)2 2 ˆσt2)),λmax], indicating SoftMatch guarantees
+C ˆµt)2
+2 ˆσt2)),λmax], indicating SoftMatch guarantees
 at leastλmax/2of quantity during training. As the model learns better and becomes more conﬁdent,
 i.e.,ˆµtincreases and ˆσtdecreases, the lower tail of the quantity becomes much tighter. While
 quantity maintains high, the quality of pseudo-labels also improves. As the tail of the Gaussian
@@ -297,18 +325,27 @@ where the Normalize( )   ( )/ ( ), ensuring the normalized probability sums to 1
 plugged in, the ﬁnal sample weighting function in SoftMatch becomes 
 λ(p)  {
 λmaxexp(
- (max(UA( p)) ˆµt)2 2ˆσ2
+ (max(UA( p)) ˆµt)2
+2ˆσ2
 t)
 ,ifmax(UA( p)) ˆµt,
 λmax, otherwise.(9)
 When computing the sample weights, UA encourages larger weights to be assigned to less-predicted
 pseudo-labels and smaller weights to more-predicted pseudo-labels, alleviating the imbalance issue.
-5 2023 2  Top-1 error rate (%) on CIFAR-10, CIFAR-100, STL-10, and SVHN of 3 different random
+5Published as a conference paper at ICLR 2023
+Table 2  Top-1 error rate (%) on CIFAR-10, CIFAR-100, STL-10, and SVHN of 3 different random
 seeds. Numbers with  are taken from the original papers. The best number is in bold.
 Dataset CIFAR-10 CIFAR-100 SVHN STL-10
-# Label 40 250 4,000 400 2,500 10,000 40 1,000 40 1,000 74.61 0.26 46.49 2.20 15.08 0.19 87.45 0.85 57.74 0.28 36.55 0.24 64.61 5.60 9.40 0.32 74.68 0.99 32.64 0.71 70.09 1.60 37.46 3.30 8.10 0.21 81.11 1.44 45.17 1.06 31.75 0.23 36.09 3.98 3.27 0.05 71.72 1.45 33.90 1.37 36.19 6.48 13.63 0.59 6.66 0.26 67.59 0.66 39.76 0.48 27.78 0.29 30.60 8.39 3.69 0.37 54.93 0.96 21.70 0.68 9.88 1.03 6.30 0.05 4.84 0.01 42.75 1.05 26.03 0.35 20.02 0.27 24.04 9.13 5.16 0.31 32.12 6.24 6.74 0.14 10.62 3.75 5.16 0.06 4.29 0.07 46.39 1.59 27.73 0.21 22.49 0.23 5.12 4.27 1.89 0.01 37.42 8.44 6.64 0.17 7.47 0.28 4.86 0.05 4.21 0.08 46.42 0.82 28.03 0.16 22.20 0.12 3.81 1.18 1.96 0.03 35.97 4.14 6.25 0.33
-Inﬂuence - 5.05 0.12 4.35 0.06 - - - 2.63 0.23 2.34 0.15 - FlexMatch
- 4.97 0.06 4.98 0.09 4.19 0.01 39.94 1.62 26.49 0.20 21.90 0.15 8.19 3.20 6.72 0.30 29.15 4.16 5.77 0.18 4.91 0.12 4.82 0.09 4.04 0.02 37.10 0.77 26.66 0.25 22.03 0.03 2.33 0.25 2.01 0.01 21.42 3.48 5.73 0.24
+# Label 40 250 4,000 400 2,500 10,000 40 1,000 40 1,000
+PseudoLabel 74.61 0.26 46.49 2.20 15.08 0.19 87.45 0.85 57.74 0.28 36.55 0.24 64.61 5.60 9.40 0.32 74.68 0.99 32.64 0.71
+MeanTeacher 70.09 1.60 37.46 3.30 8.10 0.21 81.11 1.44 45.17 1.06 31.75 0.23 36.09 3.98 3.27 0.05 71.72 1.45 33.90 1.37
+MixMatch 36.19 6.48 13.63 0.59 6.66 0.26 67.59 0.66 39.76 0.48 27.78 0.29 30.60 8.39 3.69 0.37 54.93 0.96 21.70 0.68
+ReMixMatch 9.88 1.03 6.30 0.05 4.84 0.01 42.75 1.05 26.03 0.35 20.02 0.27 24.04 9.13 5.16 0.31 32.12 6.24 6.74 0.14
+UDA 10.62 3.75 5.16 0.06 4.29 0.07 46.39 1.59 27.73 0.21 22.49 0.23 5.12 4.27 1.89 0.01 37.42 8.44 6.64 0.17
+FixMatch 7.47 0.28 4.86 0.05 4.21 0.08 46.42 0.82 28.03 0.16 22.20 0.12 3.81 1.18 1.96 0.03 35.97 4.14 6.25 0.33
+Inﬂuence - 5.05 0.12 4.35 0.06 - - - 2.63  0.23 2.34 0.15 - FlexMatch
+ 4.97 0.06 4.98 0.09 4.19 0.01 39.94 1.62 26.49 0.20 21.90 0.15 8.19 3.20 6.72 0.30 29.15 4.16 5.77 0.18
+SoftMatch 4.91 0.12 4.82 0.09 4.04 0.02 37.10 0.77 26.66 0.25 22.03 0.03 2.33 0.25 2.01 0.01 21.42 3.48 5.73 0.24
 An essential difference between UA and Distribution Alignment (DA) (Berthelot et al., 2019a) proposed
  earlier lies in the computation of unsupervised loss. The normalization operation makes the
 predicted probability biased towards the less-predicted classes. In DA, this might not be an issue,
@@ -320,44 +357,60 @@ pseudo-labels in SoftMatch. The complete training algorithm is shown in Appendix
 4 E XPERIMENTS
 While most SSL literature performs evaluation on image tasks, we extensively evaluate SoftMatch
 on various datasets including image and text datasets with classic and long-tailed settings. Moreover,
-We provide ablation study and qualitative comparison to analyze the effectiveness of SoftMatch.1 4.1 C LASSIC IMAGE CLASSIFICATION
+We provide ablation study and qualitative comparison to analyze the effectiveness of SoftMatch.1
+4.1 C LASSIC IMAGE CLASSIFICATION
 Setup . For the classic image classiﬁcation setting, we evaluate on CIFAR-10/100 (Krizhevsky et al.,
 2009), SVHN(Netzer et al., 2011), STL-10 (Coates et al., 2011) and ImageNet (Deng et al., 2009),
 with various numbers of labeled data, where class distribution of the labeled data is balanced. We use
-the WRN-28-2 (Zagoruyko & Komodakis, 2016) for CIFAR-10 and SVHN, WRN-28-8 100,
+the WRN-28-2 (Zagoruyko & Komodakis, 2016) for CIFAR-10 and SVHN, WRN-28-8 for CIFAR100,
  WRN-37-2 (Zhou et al., 2020) for STL-10, and ResNet-50 (He et al., 2016) for ImageNet. For
-all experiments, we use SGD optimizer with a momentum of 0.9, where the initial learning rate η0 0.03. We adopt the cosine learning rate annealing scheme to adjust the learning rate with
-a total training step of 220. The labeled batch size BLis set to 64 7 times of BLfor all datasets. We set mto0.999and divide the estimated variance ˆσtby
-4 2σof the Gaussian function. We record the EMA of model parameters for evaluation with a
+all experiments, we use SGD optimizer with a momentum of 0.9, where the initial learning rate η0
+is set to 0.03. We adopt the cosine learning rate annealing scheme to adjust the learning rate with
+a total training step of 220. The labeled batch size BLis set to 64and the unlabeled batch size BU
+is set to 7 times of BLfor all datasets. We set mto0.999and divide the estimated variance ˆσtby
+4for2σof the Gaussian function. We record the EMA of model parameters for evaluation with a
 momentum of 0.999. Each experiment is run with three random seeds on labeled data, where we
 report the top-1 error rate. More details on the hyper-parameters are shown in Appendix A.3.1.
-Results . SoftMatch obtains the state-of-the-art results on almost all settings in Table 2 3,
-except CIFAR-100 2,500 10,000 1,000 labels, where the results of
+Results . SoftMatch obtains the state-of-the-art results on almost all settings in Table 2 and Table 3,
+except CIFAR-100 with 2,500 and 10,000 labels and SVHN with 1,000 labels, where the results of
 SoftMatch are comparable to previous methods. Notably, FlexMatch exhibits a performance drop
 compared to FixMatch on SVHN, since it enrolls too many erroneous pseudo-labels at the beginning
  of the training that prohibits learning afterward. In contrast, SoftMatch surpasses FixMatch by
 1.48% on SVHN with 40 labels, demonstrating its superiority for better utilization of the pseudolabels.
- On more realistic datasets, CIFAR-100 400 labels, STL-10 40 labels, and ImageNet
+ On more realistic datasets, CIFAR-100 with 400 labels, STL-10 with 40 labels, and ImageNet
 with 10% labels, SoftMatch exceeds FlexMatch by a margin of 7.73%, 2.84%, and 1.33%, respectively.
- SoftMatch shows the comparable results to FlexMatch on CIFAR-100 2,500 10,000
+ SoftMatch shows the comparable results to FlexMatch on CIFAR-100 with 2,500 and 10,000
 labels, whereas ReMixMatch (Berthelot et al., 2019a) demonstrates the best results due to the Mixup
 (Zhang et al., 2017) and Rotation loss.
-1 4.1, Section 4.2, and Section 4.5 are conducted with TorchSSL (Zhang et al., 2021) and Section 4.3 are
+1All experiments in Section 4.1, Section 4.2, and Section 4.5 are conducted with TorchSSL (Zhang et al., 2021) and Section 4.3 are
 conducted with USB (Wang et al., 2022b) since it only supports NLP tasks back then. More recent results of SoftMatch are included in USB
 along its updates, refer https //github.com/Hhhhhhao/SoftMatch for details.
-6 2023 3 1 error rate
+6Published as a conference paper at ICLR 2023
+Table 3  Top1 error rate
 (%) on ImageNet. The
 best number is in bold.
-# Label 100 400 43.66 32.28 41.85 31.31 40.52 29.49 4 1 error rate (%) on CIFAR-10-LT and CIFAR-100-LT of
+# Label 100k 400k
+FixMatch 43.66 32.28
+FlexMatch 41.85 31.31
+SoftMatch 40.52 29.49Table 4  Top1 error rate (%) on CIFAR-10-LT and CIFAR-100-LT of
 5 different random seeds. The best number is in bold.
 Dataset CIFAR-10-LT CIFAR-100-LT
-Imbalanceγ 50 100 150 20 50 100 18.46 0.30 25.11 1.20 29.62 0.88 50.42 0.78 57.89 0.33 62.40 0.48 18.13 0.19 25.51 0.92 29.80 0.36 49.11 0.60 57.20 0.39 62.70 0.47 16.55 0.29 22.93 0.37 27.40 0.46 48.09 0.55 56.24 0.51 61.08 0.81 5 1 error rate (%) on text datasets of 3 different random seeds. Best numbers are in bold.
+Imbalanceγ 50 100 150 20 50 100
+FixMatch 18.46 0.30 25.11 1.20 29.62 0.88 50.42 0.78 57.89 0.33 62.40 0.48
+FlexMatch 18.13 0.19 25.51 0.92 29.80 0.36 49.11 0.60 57.20 0.39 62.70 0.47
+SoftMatch 16.55 0.29 22.93 0.37 27.40 0.46 48.09 0.55 56.24 0.51 61.08 0.81
+Table 5  Top1 error rate (%) on text datasets of 3 different random seeds. Best numbers are in bold.
 Datasets AG News DBpedia IMDb Amazon-5 Yelp-5
-# Labels 40 200 70 280 100 1000 1000 16.83 1.68 14.34 1.9 4.11 1.44 6.93 3.85 18.33 0.61 50.29 4.6 47.49 6.83 17.10 3.13 11.24 1.43 2.18 0.92 1.42 0.18 7.59 0.28 42.70 0.53 39.56 0.7 15.49 1.97 10.95 0.56 2.69 0.34 1.69 0.02 7.80 0.23 42.34 0.62 39.01 0.17 12.68 0.23 10.41 0.13 1.68 0.34 1.27 0.1 7.48 0.12 42.14 0.92 39.31 0.45 4.2 L ONG -TAILED IMAGE CLASSIFICATION
+# Labels 40 200 70 280 100 1000 1000
+UDA 16.83 1.68 14.34 1.9 4.11 1.44 6.93 3.85 18.33 0.61 50.29 4.6 47.49 6.83
+FixMatch 17.10 3.13 11.24 1.43 2.18 0.92 1.42 0.18 7.59 0.28 42.70 0.53 39.56 0.7
+FlexMatch 15.49 1.97 10.95 0.56 2.69 0.34 1.69 0.02 7.80 0.23 42.34 0.62 39.01 0.17
+SoftMatch 12.68 0.23 10.41 0.13 1.68 0.34 1.27 0.1 7.48 0.12 42.14 0.92 39.31 0.45
+4.2 L ONG -TAILED IMAGE CLASSIFICATION
 Setup . We evaluate SoftMatch on a more realistic and challenging setting of imbalanced SSL (Kim
 et al., 2020  Wei et al., 2021  Lee et al., 2021  Fan et al., 2022), where both the labeled and the
 unlabeled data exhibit long-tailed distributions. Following (Fan et al., 2022), the imbalance ratio γ
-ranges from 50to and to for CIFAR-10-LT and CIFAR-100-LT, respectively. Here, γis
+ranges from 50to150and20to100for CIFAR-10-LT and CIFAR-100-LT, respectively. Here, γis
 used to exponentially decrease the number of samples from class 0to classC(Fan et al., 2022). We
 compare SoftMatch with two strong baselines  FixMatch (Sohn et al., 2020) and FlexMatch (Zhang
 et al., 2021). All experiments use the same WRN-28-2 (Zagoruyko & Komodakis, 2016) as the
@@ -383,42 +436,43 @@ the algorithms. For Amazon-5 and Yelp-5, we randomly sample 50,000 samples per c
 training data to reduce the training time. We ﬁne-tune the pre-trained BERT-Base (Devlin et al.,
 2018) model for all datasets using UDA (Xie et al., 2020), FixMatch (Sohn et al., 2020), FlexMatch
 (Zhang et al., 2021), and SoftMatch. We use AdamW (Kingma & Ba, 2014  Loshchilov & Hutter,
-2017) optimizer with an initial learning rate of 1 5and the same cosine scheduler as image classiﬁcation
+2017) optimizer with an initial learning rate of 1e 5and the same cosine scheduler as image classiﬁcation
  tasks. All algorithms are trained for a total iteration of 218. The ﬁne-tuned model is directly
 used for evaluation rather than the EMA version. To reduce the GPU memory usage, we set both
 BLandBUto 16. Other algorithmic hyper-parameters stay the same as image classiﬁcation tasks.
 Details of the data splitting and the hyper-parameter used are in Appendix A.3.3.
 Results . The results on text datasets are shown in Table 5. SoftMatch consistently outperforms other
 methods, especially on the topic classiﬁcations tasks. For instance, SoftMatch achieves an error rate
-7 2023 0 50 100 150k
+7Published as a conference paper at ICLR 2023
+0k 50k 100k 150k
 Iter.0.00.20.40.60.8Error RateFixMatch
 FlexMatch
 SoftMatch
 (a) Eval. Error
-0 50 100 150k
+0k 50k 100k 150k
 Iter.0.00.20.40.60.81.0Quantity of Pseudo-LabelsFixMatch
 FlexMatch
 SoftMatch (b) Quantity
-0 50 100 150k
+0k 50k 100k 150k
 Iter.0.20.40.60.81.0Quality of Pseudo-LabelsFixMatch
 FlexMatch
 SoftMatch (c) Quality
-0 50 100 150k
+0k 50k 100k 150k
 Iter.0.00.20.40.60.81.0Quantity of Pseudo-LabelsFix. Best Cls.
 Flex. Best Cls.
 Soft. Best Cls.
 Fix. Worst Cls.
 Flex. Worst Cls.
 Soft. Worst Cls. (d) Cls. Quality
-Figure 2  Qualitative analysis of FixMatch, FlexMatch, and SoftMatch on CIFAR-10 250 labels.
+Figure 2  Qualitative analysis of FixMatch, FlexMatch, and SoftMatch on CIFAR-10 with 250 labels.
  (a) Evaluation error  (b) Quantity of Pseudo-Labels  (c) Quality of Pseudo-Labels  (d) Quality
 of Pseudo-Labels from the best and worst learned class. Quality is computed according to the underlying
  ground truth labels. SoftMatch achieves signiﬁcantly better performance.
-of12.68% on AG news with only 40 1.68% on DBpedia with 70 labels, surpassing the
+of12.68% on AG news with only 40 labels and 1.68% on DBpedia with 70 labels, surpassing the
 second best by a margin of 2.81% and0.5%respectively. On sentiment tasks, SoftMatch also shows
 the best results on Amazon-5 and IMDb, and comparable results to its counterpart on Yelp-5.
 4.4 Q UALITATIVE ANALYSIS
-In this section, we provide a qualitative comparison on CIFAR-10 250 labels of FixMatch
+In this section, we provide a qualitative comparison on CIFAR-10 with 250 labels of FixMatch
 (Sohn et al., 2020), FlexMatch (Zhang et al., 2021), and SoftMatch from different aspects, as shown
 in Fig. 2. We compute the error rate, the quantity, and the quality of pseudo-labels to analyze the
 proposed method, using the ground truth of unlabeled data that is unseen during training.
@@ -441,7 +495,7 @@ to the naive assumption on PMF as discussed before. Truncated Laplacian assumpti
 well on different settings, but truncated Gaussian demonstrates the most robust performance.
 Gaussian Parameter Estimation . SoftMatch estimates the Gaussian parameters µandσ2directly
 from the conﬁdence generated from all unlabeled data along the training. Here we compare it ( AllClass
- ) with two alternatives  (1) Fixed   which uses pre-deﬁned µandσ2 0.95 0.01. (2)
+ ) with two alternatives  (1) Fixed   which uses pre-deﬁned µandσ2of 0.95 and 0.01. (2)
 Per-Class   where a Gaussian for each class instead of a global Gaussian weighting function. As
 shown in Fig. 3(c), the inferior performance of Fixed justiﬁes the importance of adaptive weight
 adjustment in SoftMatch. Moreover, Per-Class achieves comparable performance with SoftMatch
@@ -452,22 +506,23 @@ SoftMatch with and without UA, denoted as all-class with UA and all-class withou
 Since the per-class estimation standalone can also be viewed as a way to achieve fair class utilization
 (Zhang et al., 2021), we also include it in comparison. Removing UA from SoftMatch has a slight
 performance drop. Besides, per-class estimation produces signiﬁcantly inferior results on SVHN.
-8 2023 0 50 100 150 200k
+8Published as a conference paper at ICLR 2023
+0k 50k 100k 150k 200k
 Iter.0.20.40.60.8Error RateˆpL(y)
 pL(y)
 u(C)
 (a) L.T. UA
-CIFAR-10 40 CIFAR-10 250 40
-Dataset Error Rate (%)Linear
+CIFAR-10 40 CIFAR-10 250 SVHN 40
+Dataset048121620Error Rate (%)Linear
 Quadratic
 Turn. Laplacian
 Turn. Gaussian (b) Weight. Func.
-CIFAR-10 40 CIFAR-10 250 40
-Dataset Error Rate (%)Fixed
+CIFAR-10 40 CIFAR-10 250 SVHN 40
+Dataset0246810Error Rate (%)Fixed
 Per-Class
 All-Class (c) Gau. Param.
-CIFAR-10 40 CIFAR-10 250 40
-Dataset Error Rate (%)Per-Class w/o UA
+CIFAR-10 40 CIFAR-10 250 SVHN 40
+Dataset0246810Error Rate (%)Per-Class w/o UA
 Per-Class w/ UA
 All-Class w/o UA
 All-Class w/ UA (d) UA
@@ -514,7 +569,7 @@ Gaussian weighting function and Uniform Alignment that overcomes the trade-off, 
 high quantity and quality of pseudo-labels during training. Extensive experiments demonstrate the
 effectiveness of our method on various tasks. We hope more works can be inspired in this direction,
 such as designing better weighting functions that can discriminate correct pseudo-labels better.
-9 2023
+9Published as a conference paper at ICLR 2023
 REFERENCES
 Eric Arazo, Diego Ortego, Paul Albert, Noel E O Connor, and Kevin McGuinness. Pseudo-labeling
 and conﬁrmation bias in deep semi-supervised learning. In 2020 International Joint Conference
@@ -561,7 +616,7 @@ networks. In International Conference on Machine Learning , pp. 1321 1330. PMLR,
 Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. Deep residual learning for image recognition.
  In Proceedings of the IEEE conference on computer vision and pattern recognition , pp.
 770 778, 2016.
-10 2023
+10Published as a conference paper at ICLR 2023
 Hanzhe Hu, Fangyun Wei, Han Hu, Qiwei Ye, Jinshi Cui, and Liwei Wang. Semi-supervised semantic
  segmentation via adaptive equalization learning. Advances in Neural Information Processing
 Systems , 34 22106 22118, 2021.
@@ -578,7 +633,8 @@ arXiv 1412.6980 , 2014.
 Alex Krizhevsky et al. Learning multiple layers of features from tiny images. 2009.
 Zhengfeng Lai, Chao Wang, Henrry Gunawan, Sen-Ching S Cheung, and Chen-Nee Chuah.
 Smoothed adaptive weighting for imbalanced semi-supervised learning  Improve reliability
-against unknown distribution data. In International Conference on Machine Learning , pp. 11828 11843. PMLR, 2022.
+against unknown distribution data. In International Conference on Machine Learning , pp. 11828 
+11843. PMLR, 2022.
 Dong-Hyun Lee et al. Pseudo-label  The simple and efﬁcient semi-supervised learning method for
 deep neural networks. In Workshop on challenges in representation learning, ICML , volume 3,
 pp. 896, 2013.
@@ -609,7 +665,7 @@ IEEE/CVF Conference on Computer Vision and Pattern Recognition , pp. 11557 11568
 Zhongzheng Ren, Raymond A. Yeh, and Alexander G. Schwing. Not all unlabeled data are equal 
 Learning to weight data in semi-supervised learning. In Neural Information Processing Systems
 (NeurIPS) , 2020.
-11 2023
+11Published as a conference paper at ICLR 2023
 Mehdi Sajjadi, Mehran Javanmardi, and Tolga Tasdizen. Regularization with stochastic transformations
  and perturbations for deep semi-supervised learning. Advances in neural information
 processing systems , 29 1163 1171, 2016.
@@ -657,7 +713,7 @@ Mingkai Zheng, Shan You, Lang Huang, Fei Wang, Chen Qian, and Chang Xu. Simmatch
  learning with similarity matching. arXiv preprint arXiv 2203.06915 , 2022.
 Tianyi Zhou, Shengjie Wang, and Jeff Bilmes. Time-consistent self-supervision for semi-supervised
 learning. In International Conference on Machine Learning , pp. 11523 11533. PMLR, 2020.
-12 2023
+12Published as a conference paper at ICLR 2023
 A A PPENDIX
 A.1 Q UANTITY -QUALITY TRADE -OFF
 In this section, we present the detailed deﬁnition and derivation of the quantity and quality formulation.
@@ -695,7 +751,7 @@ loss weight schemes implicitly relates to the PMF of p. While the ground truth l
 unknown in practice, we can still use it for theoretical analysis.
 In the following sections, we explicitly derive the sampling weighting function λ(p), probability
 mass function  λ(p), quantityf(p), and quality g(p)for each relevant method.
-13 2023
+13Published as a conference paper at ICLR 2023
 A.1.2 N AIVE PSEUDO -LABELING
 In naive pseudo-labeling (Lee et al., 2013), the pseudo-labels are directly used to the model itself.
 This is equivalent to set λ(p)to a ﬁxed value λmax, which is a hyper-parameter. We can write 
@@ -746,7 +802,7 @@ Conﬁdence thresholding introduces a ﬁltering mechanism, where the unlabeled 
  conﬁdence max( p)is above the pre-deﬁned threshold τis fully enrolled during training, and
 others being ignored (Xie et al., 2020  Sohn et al., 2020). The conﬁdence thresholding mechanism
 can be formulated by setting λ(p)as a step function - when the conﬁdence is above threshold, the
-14 2023
+14Published as a conference paper at ICLR 2023
 sample weight is set to λmax, and otherwise 0. We can derive 
 λ(p)  {λmax,ifmax( p) τ,
 0.0, otherwise.(21)
@@ -792,17 +848,20 @@ is more consistent to the actual distribution of prediction conﬁdence. Using t
 λ(p)  {λmax 
 2πσtφ(max( p µt,σt)),max( p) µt
 λmax, max( p) µt, (26)
-whereφ(x µ,σ)  1 2πσexp( (x µ)2 2σ2). Without loss of generality, we can assume max( pi) 
+whereφ(x µ,σ)  1 
+2πσexp( (x µ)2
+2σ2). Without loss of generality, we can assume max( pi) 
 µtfori [0,NU
 2], asµt 1
 NU NU
 imax( pi)(shown in Eq. (6)) and thus P(max( p) µt)   0.5.
-15 2023
+15Published as a conference paper at ICLR 2023
 Therefore, λ(p)is computed as follows 
 NU 
 iλ(pi)
  NU
-2 1λ(pi)  NU 
+2 
+i 1λ(pi)  NU 
 j NU
 2 1λ(pj)
  NU
@@ -813,47 +872,63 @@ j NU
 2 1λmax
  λmax 
  NU
-2 2 
-iexp( (max( pi) µt)2 2σ2
+2 NU
+2 
+iexp( (max( pi) µt)2
+2σ2
 t) 
  (27)
 Further,
 f(p)  1
 NUNU 
 iλ(pi)
- 1 2 1λ(pi)  NU 
+ 1
+NU 
+  NU
+2 
+i 1λ(pi)  NU 
 j NU
 2 1λ(pj) 
   
  λmax
 NU 
  NU
-2 2 
-jexp( (max( pj) µt)2 2σ2
+2 NU
+2 
+jexp( (max( pj) µt)2
+2σ2
 t) 
  
  λmax
 2 λmax
 NUNU
 2 
-jexp( (max( pj) µt)2 2σ2
+jexp( (max( pj) µt)2
+2σ2
 t)(28)
 Since max( pi) µtfori [0,NU
 2],
 exp( (1
-C µt)2 2σ2
-t)   exp( (max( pi) µt)2 2σ2
-t) 1 2exp( (1
-C µt)2 2σ2
+C µt)2
+2σ2
+t)   exp( (max( pi) µt)2
+2σ2
+t) 1
+NU
+2exp( (1
+C µt)2
+2σ2
 t)  NU
 2 
-iexp( (max( pi) µt)2 2σ2
+iexp( (max( pi) µt)2
+2σ2
 t) NU
 2
 λmax
 2 λmax
 2(1   exp( (1
-C µt)2 2σ2
+C µt)2
+2σ2
 t))  f(p) λmax
 Therefore, SoftMatch can guarantee at least half of the possible contribution to the ﬁnal loss, improving
  the utilization of unlabeled data. Besides, as σtis also estimated from max( p), the lower
@@ -864,9 +939,17 @@ With the derived λ(p), We can write the PDF  λ(p)in SoftMatch as
    
 2πσtφ(max( p) µt,σt)
 NU
-2 2 2πσtφ(max( p) µt,σt),max( p) µt
-1 2 2 2πσtφ(max( p) µt,σt),max( p) µt, (29)
-16 2023
+2  NU
+2
+i 
+2πσtφ(max( p) µt,σt),max( p) µt
+1
+NU
+2  NU
+2
+i 
+2πσtφ(max( p) µt,σt),max( p) µt, (29)
+16Published as a conference paper at ICLR 2023
 and further derive the quality of pseudo-labels in SoftMatch as 
 g(p)  NU 
 i1(ˆpi yu) λ(p)
@@ -878,7 +961,9 @@ kλ(pk)
   NU
 2 
 iγ(pi)λ(pi)  NU
-2 2 1γ(pj)λ(pj) 
+2 
+j NU
+2 1γ(pj)λ(pj) 
   
  NU
 2 
@@ -920,32 +1005,53 @@ Algorithm 1 SoftMatch algorithm.
 1 Input  Number of classes C, labeled batch{xi,yi}i [BL], unlabeled batch{ui}i [BU], and
 EMA momentum m.
 2 Deﬁne  pi p(y ω(ui))
-3 1 1H(yi,p(y ω(xi)))  ComputeLson labeled batch
-4 ˆµb 1 1max( pi)  Compute the mean of conﬁdence
-5 ˆσ2 1 1(max( pi) ˆµb)2 Compute the variance of conﬁdence
+3 Ls 1
+BL BL
+i 1H(yi,p(y ω(xi)))  ComputeLson labeled batch
+4 ˆµb 1
+BU BU
+i 1max( pi)  Compute the mean of conﬁdence
+5 ˆσ2 1
+BU BU
+i 1(max( pi) ˆµb)2 Compute the variance of conﬁdence
 6 ˆµt mˆµt 1  (1 m)ˆµb  Update EMA of mean
 7 ˆσ2
-t mˆσ2 1  (1 m)BU
-BU 1ˆσ2 8 1 9 λ(pi)  {
+t mˆσ2
+t 1  (1 m)BU
+BU 1ˆσ2
+b  Update EMA of variance
+8 fori  1 toBUdo
+9 λ(pi)  {
 exp(
- (max(UA( pi)) ˆµt)2 2ˆσ2
+ (max(UA( pi)) ˆµt)2
+2ˆσ2
 t)
 ,ifmax(UA( pi)) ˆµt,
 1.0, otherwise. Compute loss weight
-10 11 1 1λ(pi)H(ˆ pi,p(y Ω(ui)))  ComputeLuon unlabeled batch
-12 17 2023
+10 end for
+11 Lu 1
+BU BU
+i 1λ(pi)H(ˆ pi,p(y Ω(ui)))  ComputeLuon unlabeled batch
+12 Return Ls Lu
+17Published as a conference paper at ICLR 2023
 A.3 E XPERIMENT DETAILS
 A.3.1 C LASSIC IMAGE CLASSIFICATION
 We present the detailed hyper-parameters used for the classic image classiﬁcation setting in Table 6
 for reproduction. We use NVIDIA V100 for training of classic image classiﬁcation. The training
-time for CIFAR-10 3 days, whereas the training time for
-CIFAR-100 and STL-10 7 days.
+time for CIFAR-10 and SVHN on a single GPU is around 3 days, whereas the training time for
+CIFAR-100 and STL-10 is around 7 days.
 Table 6  Hyper-parameters of classic image classiﬁcation tasks.
 Dataset CIFAR-10 CIFAR-100 STL-10 SVHN ImageNet
-Model WRN-28-2 WRN-28-8 WRN-37-2 WRN-28-2 ResNet-50 5e-4 1e-3 5e-4 5e-4 3e-4 64 128 448 128 0.03
+Model WRN-28-2 WRN-28-8 WRN-37-2 WRN-28-2 ResNet-50
+Weight Decay 5e-4 1e-3 5e-4 5e-4 3e-4
+Labeled Batch size 64 128
+Unlabeled Batch size 448 128
+Learning Rate 0.03
 Scheduler η η0cos(7πk
 16K)
-SGD Momentum 0.9 0.999 0.999
+SGD Momentum 0.9
+Model EMA Momentum 0.999
+Prediction EMA Momentum 0.999
 Weak Augmentation Random Crop, Random Horizontal Flip
 Strong Augmentation RandAugment (Cubuk et al., 2020)
 A.3.2 L ONG -TAILED IMAGE CLASSIFICATION
@@ -954,53 +1060,64 @@ Adam optimizer instead. For faster training, WRN-28-2 is used for both CIFAR-10 
 NVIDIA V100 is used to train long-tailed image classﬁcation, and the training time is around 1 day.
 Table 7  Hyper-parameters of long-tailed image classiﬁcation tasks.
 Dataset CIFAR-10 CIFAR-100
-Model WRN-28-2 4e-5 64 128 0.002
+Model WRN-28-2
+Weight Decay 4e-5
+Labeled Batch size 64
+Unlabeled Batch size 128
+Learning Rate 0.002
 Scheduler η η0cos(7πk
 16K)
 Optimizer Adam
-Model EMA Momentum 0.999 0.999
+Model EMA Momentum 0.999
+Prediction EMA Momentum 0.999
 Weak Augmentation Random Crop, Random Horizontal Flip
 Strong Augmentation RandAugment (Cubuk et al., 2020)
 A.3.3 T EXT CLASSIFICATION
 For text classiﬁcation tasks, we random split a validation set from the training set of each dataset
-used. For IMDb and AG News, we randomly sample 1,000 2,500 data per-class respectively
+used. For IMDb and AG News, we randomly sample 1,000 data and 2,500 data per-class respectively
 as validation set, and other data is used as training set. For Amazon-5 and Yelp-5, we randomly
-sample 5,000 50,000 data per-class as validation set and training set respectively. For
-DBpedia, the validation set and training set consist of 1,000 10,000 samples per-class.
-18 2023 8. Note that for strong augmentation, we use backtranslation
+sample 5,000 data and 50,000 data per-class as validation set and training set respectively. For
+DBpedia, the validation set and training set consist of 1,000 and 10,000 samples per-class.
+18Published as a conference paper at ICLR 2023
+The training parameters used are shown in Table 8. Note that for strong augmentation, we use backtranslation
  similar to (Xie et al., 2020). We conduct back-translation ofﬂine before training, using
 EN-DE and EN-RU with models provided in fairseq (Ott et al., 2019). We use NVIDIA V100 to
 train all text classiﬁcation models, the total training time is around 20 hours.
 Table 8  Hyper-parameters of text classiﬁcation tasks.
 Dataset AG News DBpedia IMDb Amazom-5 Yelp-5
 Model Bert-Base
-Weight Decay 1e-4 16 16 1e-5
+Weight Decay 1e-4
+Labeled Batch size 16
+Unlabeled Batch size 16
+Learning Rate 1e-5
 Scheduler η η0cos(7πk
 16K)
-Model EMA Momentum 0.0 0.999
+Model EMA Momentum 0.0
+Prediction EMA Momentum 0.999
 Weak Augmentation None
 Strong Augmentation Back-Translation (Xie et al., 2020)
 A.4 E XTEND EXPERIMENT RESULTS
 In this section, we provide detailed experiments on the implementation of the sample weighting
 function in unlabeled loss, as shown in Table 9. One can observe most ﬁxed functions works surprisingly
- well on CIFAR-10 250 labels, yet Gaussian function demonstrate the best results on
-CIFAR-10 40 labels. On the SVHN with 40 labels, Linear and Quadratic function fails to learn
+ well on CIFAR-10 with 250 labels, yet Gaussian function demonstrate the best results on
+CIFAR-10 with 40 labels. On the SVHN with 40 labels, Linear and Quadratic function fails to learn
 while Laplacian and Gaussian function shows better performance. Estimating the function parameters
  from the conﬁdence and making the function truncated allow the model learn more ﬂexibly
 and yields better performance for both Laplacian and Gaussian function. We visualize the functions
 studied in Fig. 4, where one can observe the truncated Gaussian function is most reasonable by
 assigning diverse weights for samples whose conﬁdence is within its standard deviation.
-Table 9  Detailed results of different instantiation of λpon CIFAR-10 40 250 labels, and
-SVHN-10 40 labels.
+Table 9  Detailed results of different instantiation of λpon CIFAR-10 with 40 and 250 labels, and
+SVHN-10 with 40 labels.
 Method λ(p) Learnable CIFAR-10 40 CIFAR-10 250 SVHN-10 40
 Linear max(p) - 11.38 3.92 5.41 0.19 15.27 28.92
-Quadratic  (max( p) 1)2 1 - 12.44 5.67 5.94 0.22 84.11 1.84
+Quadratic  (max( p) 1)2  1 - 12.44 5.67 5.94 0.22 84.11 1.84
 Laplacian exp(
   max(p) µ 
 b)
 ,µ  1.0,b  0.3 - 13.29 3.33 5.24 0.16 12.77 10.33
 Gaussian exp(
- (max( p) µ)2 2σ2)
+ (max( p) µ)2
+2σ2)
 ,µ  1.0,σ  0.3 - 7.73 1.44 4.98 0.02 12.95 8.79
 Trun. Laplacian{
 exp(
@@ -1010,33 +1127,44 @@ b)
 1.0, otherwise.µ,b 5.30 0.09 5.14 0.20 3.12 0.30
 Trun. Gaussian{
 exp(
- (max( p) µ)2 2σ2)
+ (max( p) µ)2
+2σ2)
 ,ifmax(p) µ,
 1.0, otherwise.µ,σ 4.91 0.12 4.82 0.09 2.33 0.25
 A.5 E XTENDED ABLATION STUDY
 We provide the additional ablation study of other components of SoftMatch, including the EMA momentum
  parameter m, the variance range of truncated Gaussian function, and the target distribution
-of Uniform Alignment (UA), on CIFAR-10 250 labels.
-EMA momentum . We compare SoftMatch with momentum 0.99, 0.999, and 0.9999 10. A momentum of 0.999 shows the best results. While different momentum
+of Uniform Alignment (UA), on CIFAR-10 with 250 labels.
+EMA momentum . We compare SoftMatch with momentum 0.99, 0.999, and 0.9999 and present
+the results in Table 10. A momentum of 0.999 shows the best results. While different momentum
 does not affect the ﬁnal performance much, they have larger impact on convergence speed, where a
 smaller momentum value results in faster convergence yet lower accuracy and a larger momentum
 slows down the convergence.
-19 2023 0.0 0.2 0.4 0.6 0.8 1.0
+19Published as a conference paper at ICLR 2023
+0.0 0.2 0.4 0.6 0.8 1.0
 max(pi)0.00.20.40.60.81.0λ(pi)Linear
 Quad.
 Lap.
 Gau.
 Turn. Lap.
 Turn. Gau.
-Figure 4 10  Ablation of EMA
-momentum mon CIFAR-10 250 labels.
+Figure 4  Sample weighting function visualization
+Table 10  Ablation of EMA
+momentum mon CIFAR-10
+with 250 labels.
 Momentum Error Rate
-0.99 4.92 0.11 0.999 4.82 0.09 0.9999 4.86 0.12 11  Ablation of variance
+0.99 4.92 0.11
+0.999 4.82 0.09
+0.9999 4.86 0.12Table 11  Ablation of variance
  range in Gaussian function
- on CIFAR-10 250
+ on CIFAR-10 with 250
 labels.
 Variance Range Error Rate
-σ 4.97 0.13 2σ 4.82 0.09 3σ 4.84 0.15 12 10 250 labels.
+σ 4.97 0.13
+2σ 4.82 0.09
+3σ 4.84 0.15Table 12  Ablation of target
+distribution of UA on CIFAR10
+ with 250 labels.
 Target Dist. Error Rate
 pL(y) 4.83 0.12
 ˆpL(y) 4.90 0.23
@@ -1052,7 +1180,7 @@ the same results, whereas using the estimated ˆpL(y)(Berthelot et al., 2021) ha
 A.6 E XTEND ANALYSIS ON TRUNCATED GAUSSIAN
 In this section, we provide further visualization about the conﬁdence distribution of pseudo-labels,
 and the weighting function, similar to Fig. 1(a) but on CIFAR-10. More speciﬁcally, we plot the
-histogram of conﬁdence of pseudo-labels and of wrong pseudo-labels, from epoch 1 6. We select
+histogram of conﬁdence of pseudo-labels and of wrong pseudo-labels, from epoch 1 to 6. We select
 the ﬁrst 5 epochs because the difference is more signiﬁcant. Along with the histogram, we also
 plot the current weighting function over conﬁdence, as a visualization how the pseudo-labels over
 different conﬁdence interval are used in different methods.
@@ -1065,28 +1193,29 @@ A.7 E XTEND ANALYSIS ON UNIFORM ALIGNMENT
 In this section, we provide more explanation regarding the mechanism of Uniform Alignment (UA).
 UA is proposed to make the model learn more equally on each classes to reduce the pseudo-label
 imbalance/bias. To do so, we align the expected prediction probability to a uniform distribution
-20 2023 0.0 0.2 0.4 0.6 0.8 1.0
-Conﬁdence0.00.20.40.6 1, Acc  16.5%
+20Published as a conference paper at ICLR 2023
+0.0 0.2 0.4 0.6 0.8 1.0
+Conﬁdence0.00.20.40.6Percentage of SamplesEpoch 1, Acc  16.5%
 All
 Wrong
 0.0 0.2 0.4 0.6 0.8 1.0
-Conﬁdence0.00.10.20.30.40.5 2, Acc  20.4%
+Conﬁdence0.00.10.20.30.40.5Epoch 2, Acc  20.4%
 All
 Wrong
 0.0 0.2 0.4 0.6 0.8 1.0
-Conﬁdence0.00.10.20.30.40.50.6 3, Acc  37.8%
+Conﬁdence0.00.10.20.30.40.50.6Epoch 3, Acc  37.8%
 All
 Wrong
 0.5 0.6 0.7 0.8 0.9 1.0
-Conﬁdence0.00.20.40.6 4, Acc  45.7%
+Conﬁdence0.00.20.40.6Epoch 4, Acc  45.7%
 All
 Wrong
 0.5 0.6 0.7 0.8 0.9 1.0
-Conﬁdence0.00.20.40.60.8 5, Acc  57.3%
+Conﬁdence0.00.20.40.60.8Epoch 5, Acc  57.3%
 All
 Wrong
 0.5 0.6 0.7 0.8 0.9 1.0
-Conﬁdence0.00.20.40.60.8 6, Acc  59.1%
+Conﬁdence0.00.20.40.60.8Epoch 6, Acc  59.1%
 All
 Wrong
 0.00.20.40.60.81.0
@@ -1103,27 +1232,27 @@ Wrong
 λ(p)
 (a) FixMatch
 0.0 0.2 0.4 0.6 0.8 1.0
-Conﬁdence0.00.10.20.3 1, Acc  34.6%
+Conﬁdence0.00.10.20.3Percentage of SamplesEpoch 1, Acc  34.6%
 All
 Wrong
 0.0 0.2 0.4 0.6 0.8 1.0
-Conﬁdence0.00.10.20.30.40.50.6 2, Acc  59.3%
+Conﬁdence0.00.10.20.30.40.50.6Epoch 2, Acc  59.3%
 All
 Wrong
 0.0 0.2 0.4 0.6 0.8 1.0
-Conﬁdence0.00.20.40.6 3, Acc  68.1%
+Conﬁdence0.00.20.40.6Epoch 3, Acc  68.1%
 All
 Wrong
 0.5 0.6 0.7 0.8 0.9 1.0
-Conﬁdence0.00.20.40.6 4, Acc  71.6%
+Conﬁdence0.00.20.40.6Epoch 4, Acc  71.6%
 All
 Wrong
 0.5 0.6 0.7 0.8 0.9 1.0
-Conﬁdence0.00.20.40.6 5, Acc  78.5%
+Conﬁdence0.00.20.40.6Epoch 5, Acc  78.5%
 All
 Wrong
 0.5 0.6 0.7 0.8 0.9 1.0
-Conﬁdence0.00.20.40.60.8 6, Acc  82.7%
+Conﬁdence0.00.20.40.60.8Epoch 6, Acc  82.7%
 All
 Wrong
 0.00.20.40.60.81.0
@@ -1140,27 +1269,27 @@ Wrong
 λ(p)
 (b) FlexMatch
 0.0 0.2 0.4 0.6 0.8 1.0
-Conﬁdence0.00.10.20.3 1, Acc  28.1%
+Conﬁdence0.00.10.20.3Percentage of SamplesEpoch 1, Acc  28.1%
 All
 Wrong
 0.0 0.2 0.4 0.6 0.8 1.0
-Conﬁdence0.00.10.20.30.40.50.6 2, Acc  58.3%
+Conﬁdence0.00.10.20.30.40.50.6Epoch 2, Acc  58.3%
 All
 Wrong
 0.0 0.2 0.4 0.6 0.8 1.0
-Conﬁdence0.00.20.40.6 3, Acc  73.1%
+Conﬁdence0.00.20.40.6Epoch 3, Acc  73.1%
 All
 Wrong
 0.5 0.6 0.7 0.8 0.9 1.0
-Conﬁdence0.00.20.40.6 4, Acc  78.8%
+Conﬁdence0.00.20.40.6Epoch 4, Acc  78.8%
 All
 Wrong
 0.5 0.6 0.7 0.8 0.9 1.0
-Conﬁdence0.00.20.40.60.8 5, Acc  81.7%
+Conﬁdence0.00.20.40.60.8Epoch 5, Acc  81.7%
 All
 Wrong
 0.5 0.6 0.7 0.8 0.9 1.0
-Conﬁdence0.00.20.40.60.8 6, Acc  84.9%
+Conﬁdence0.00.20.40.60.8Epoch 6, Acc  84.9%
 All
 Wrong
 0.00.20.40.60.81.0
@@ -1180,7 +1309,14 @@ Figure 5  Histogram of conﬁdence of pseudo-labels, learned by (a) FixMatch  (b
 SoftMatch, for ﬁrst 6 epochs on CIFAR-10. The weighting function over conﬁdence of each method
 is shown as the blue curve. For FlexMatch, we plot the average threshold. SoftMatch presents better
 accuracy by utilizing pseudo-labels in a more efﬁcient way.
-1 5 10 0.50.60.70.80.91.0 0.86, std 0.05 1 5 10 0.50.60.70.80.91.0 0.87, std 0.03 1 5 10 0.04 0.020.000.020.04WeightDiﬀerence
+1 5 10
+Class Index0.50.60.70.80.91.0WeightBefore UA
+mean 0.86, std 0.05
+1 5 10
+Class Index0.50.60.70.80.91.0WeightAfter UA
+mean 0.87, std 0.03
+1 5 10
+Class Index 0.04 0.020.000.020.04WeightDiﬀerence
 Figure 6  Average weight for each class according to pseudo-label, for (a) before UA  and (b) after
 UA. We also include the difference of them in (c). UA helps to balance the average weight of each
 class.

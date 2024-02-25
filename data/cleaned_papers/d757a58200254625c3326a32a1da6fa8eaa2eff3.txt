@@ -96,12 +96,15 @@ neural networks for feature learning, such that generally relevant
  approaches as in [17, 18], our speech embedding model
 is designed to encode word- and phrase-like attributes. This is
 because dysarthric speech characteristics may vary with time
-and can lead to inconsistency in the predicted phones of a givenarXiv 2306.05446 1  [eess.AS]  8 2023Apple Confidential. Internal use only.  2020 Apple Inc.Detection LogicStore Reference Zi [128 x ti]Metadata Duration (ti) Phrase label (yi)
-10128dT frames @ 100 Hz dEmbedding MatrixSpeech Activity DetectionAudio ClipEnrollmentStreaming  Audio
+and can lead to inconsistency in the predicted phones of a givenarXiv 2306.05446v1  [eess.AS]  8 Jun 2023Apple Confidential. Internal use only.  2020 Apple Inc.Detection LogicStore Reference Zi [128 x ti]Metadata Duration (ti) Phrase label (yi)
+10128dT frames @ 100 Hz1dEmbedding MatrixSpeech Activity DetectionAudio ClipEnrollmentStreaming  Audio
 Output  Detection PredictionRun-time
 Phrases {p1,  , pP}Embedding ModelSpeech Segment Extractor
 Embedding ModelSpeech Segment Extractor DTW(Zi, Zj)(a) Phrase enrollment and run-time inference using Latent Phrase Matching.
-Audio Data AugmentationLog Mel SpectrogramConv D (k 1)Conv D(k 5, d i 1) w/ Weight NormLeaky ReLUConv D (k 1) w/ Weight NormLeaky ReLU Conv D (k 1) w/ Weight Normsilence[word]silence[word]silenceSigmoidFully-Connectedt 0 100 6 100 HzBinary Cross Entropy (per class and frame)
+Audio Data AugmentationLog Mel SpectrogramConv1D (k 1)Conv1D(k 5, d i 1) w/ Weight NormLeaky ReLUConv1D (k 1) w/ Weight NormLeaky ReLU Conv1D (k 1) w/ Weight Normsilence[word]silence[word]silenceSigmoidFully-Connectedt 0t Ttime x classes
+at 100 Hz
+6x blockstime x frequency
+at 100 HzBinary Cross Entropy (per class and frame)
 Clean
 speechAggressor
 audio (b) Speech Embedding Model
@@ -154,11 +157,11 @@ practices for large-scale CNN training [25] and is trained on
 subsets of the Multilingual Spoken Words Corpus (MSWC)
 [26]. The input to this model is 64-dimensional log melspectrograms
  with a frame rate of 100 Hz. The output is perframe
- keyword predictions at 100 300 common English
+ keyword predictions at 100 Hz for 300 common English
  words plus an extra label for speech activity detection.1
 The architecture consists of six blocks of dilated convolutions
-with the pattern Conv D(k 5, d i 1), LeakyReLU,
-Conv D(k 1), LeakyReLU for the i-th block where kis
+with the pattern Conv1D(k 5, d i 1), LeakyReLU,
+Conv1D(k 1), LeakyReLU for the i-th block where kis
 kernel size, dis dilation rate, and the receptive field is 850 ms.
 Each block has a residual connection, weight norm [27] in convolutional
  layers, and dropout during training. Fully connected
@@ -178,7 +181,8 @@ output is an embedding matrix Zialso with length tframes
 and with height f  128 . The speech activity detector label
 is used to truncate silence at the beginning and end of a clip.
 The speech activity detector is applied at both enrollment and
-1300 1000 3 11 letters. For early experiments we trained
+1300 words chosen from MSWC that had at least 1000 instances and
+various lengths from 3 to 11 letters. For early experiments we trained
 models with different languages, including German and Italian but results
  were similar to English-only regardless of the testing language.
 2The specific embedding layer was determined based on early experimentation
@@ -219,26 +223,29 @@ two topics freely. A Speech-Language Pathologist (SLP) listened
  to and graded the data to assess intelligibility and severity
 according to the Dysarthria Rating of Severity scale [28] which
 ranges from 1-5 (1  no detectable speech disorder, 2  obvious
-speech disorder with intelligible speech, 3 4  severe dysarthria with significant reduction in intelligibility,
+speech disorder with intelligible speech, 3  reduction in intelligibility
+ 4  severe dysarthria with significant reduction in intelligibility,
  and 5  minimal to no speech production). Our dataset
 only contains participants who have been graded 2-4, so in this
 work, we refer to 2 as mild, 3 as moderate, and 4 as severe.
 3.2. EasyCall Dataset
 We also use the EasyCall dataset [20] which contains recordings
-from 31 25 without dysathria.
-Each participant vocalized in Italian 20 46 2 8 sessions. For each participant, we only
+from 31 participants with dysathria and 25 without dysathria.
+Each participant vocalized in Italian 20 phrases and 46 words
+repeated over 2 to 8 sessions. For each participant, we only
 evaluated on phrases that had at least three repetitions across
 sessions. We found many clips were incorrectly truncated or
 had significant background speech from a non-participant and
 excluded these from our experiments as part of a QA process 
-in total we used 18411 21386 (86%) audio clips.3 4. Results
+in total we used 18411 of 21386 (86%) audio clips.3
+4. Results
 In our experiments, we use the Apple Speech Framework [29]
 as a baseline ASR system and define Pas all the phrases within
 our dataset. The WER of the ASR on our internal dataset is significantly
  correlated with dysarthria severity as seen in Figure
 3Please email the corresponding authors for specific filenames.
 Mild Moderate Sever e
-Y orkston dysarthria scale WERFigure 2  Per-participant Word Error Rates (WERs) of a consumer
+Y orkston dysarthria scale0255075100WERFigure 2  Per-participant Word Error Rates (WERs) of a consumer
  ASR model on our internal dataset. Severity is graded by
 an SLP using the Yorkston dysarthria scale. Significant Spearman s
  rank correlation ( r(30)   0 .76,p   . 001) support ASR
@@ -254,7 +261,7 @@ both in-domain and out-of-domain scenarios. In-domain experiments
  consider only spoken utterances within Pand evaluate
  phrase recognition using canonical classification metrics
 like recall and precision [30]. We report the in-domain performance
- metrics in Table 1 5 repeated trials. We observe
+ metrics in Table 1 based on 5 repeated trials. We observe
 that phrase recognition performance generally decreases with
 severity, however the disparity in performance is much higher
 for the ASR . LPM has significantly better recognition performance
@@ -263,7 +270,7 @@ for the ASR . LPM has significantly better recognition performance
 the frequency aggressor speech is falsely detected as one of the
 phrases within P. The aggressor speech used comes from the
 read passages and are exclusive to P. The FDRs for the ASR
-and LPM are respectively 0.0 0.34 0.22. ASR has a low
+and LPM are respectively 0.0 and 0.34  0.22. ASR has a low
 FDR since it is able to detect a larger vocabulary of words to
 discern between aggressor speech and enrolled phrases.
 To quantify variability in phrase recognition performance
@@ -285,11 +292,24 @@ the ASR baseline where a phrase is considered to be correctTable 1  Mean and sta
 detection metrics of baseline ASR system ( ASR ) and proposed
 LPM for 50 enrolled phrases.
 Models Severity Accuracy Precision Recall
-ASRmild 0.78 0.13 0.92 0.07 0.73 0.14 0.44 0.23 0.67 0.26 0.40 0.23 0.02 0.01 0.07 0.05 0.02 0.01 0.54 0.30 0.71 0.31 0.50 0.29 0.84 0.04 0.87 0.04 0.84 0.04 0.78 0.15 0.80 0.14 0.78 0.14 0.70 0.16 0.73 0.18 0.70 0.17 0.80 0.12 0.82 0.12 0.80 0.12 2  Mean and standard deviation of per-participant phrase
+ASRmild 0.78  0.13 0.92  0.07 0.73  0.14
+moderate 0.44  0.23 0.67  0.26 0.40  0.23
+severe 0.02  0.01 0.07  0.05 0.02  0.01
+all 0.54  0.30 0.71  0.31 0.50  0.29
+LPMmild 0.84  0.04 0.87  0.04 0.84  0.04
+moderate 0.78  0.15 0.80  0.14 0.78  0.14
+severe 0.70  0.16 0.73  0.18 0.70  0.17
+all 0.80  0.12 0.82  0.12 0.80  0.12
+Table 2  Mean and standard deviation of per-participant phrase
 detection accuracy conditioned on utterances recorded within
 the same or exclusive to training sessions.
 Models Severity Same (near) Same (far) Other
-ASRmild 0.80 0.18 0.81 0.18 0.80 0.18 0.52 0.25 0.45 0.25 0.46 0.25 0.00 0.01 0.01 0.01 0.02 0.01 0.76 0.29 0.76 0.19 0.75 0.17 0.88 0.09 0.79 0.23 0.81 0.13 0.94 0.10 0.80 0.22 0.68 0.25
+ASRmild 0.80  0.18 0.81  0.18 0.80  0.18
+moderate 0.52  0.25 0.45  0.25 0.46  0.25
+severe 0.00  0.01 0.01  0.01 0.02  0.01
+LPMmild 0.76  0.29 0.76  0.19 0.75  0.17
+moderate 0.88  0.09 0.79  0.23 0.81  0.13
+severe 0.94  0.10 0.80  0.22 0.68  0.25
 if the ASR can verbatim recognize the onboarded phrase. Results
  are shown in Table 3. In addition, we compare against a
 baseline using melspectrogram features as the phrase representation.
@@ -304,11 +324,12 @@ Spectral DTW baseline appears to overfit to environment conditions
 a Conformer-based ASR encoder [31] using ESPNet [32] that
 was trained on Librispeech, which yields very similar results
 to our KWS embeddings, albeit at much higher computational
-cost.4 4.2.2. Varying number of phrases
+cost.4
+4.2.2. Varying number of phrases
 To investigate the sensitivity of LPM to the number of unique
 enrolled phrases, denoted by n, the experiment in Section 4.1
 was repeated with various values of n [5, 10, 20, 30, 49].
-Forn 5 10 5
+Forn 5 we ran 10 trials and for other values of nwe ran 5
 trials. The distribution of the averaged per-participant metrics
 are plotted in Figure 3. The ASR does not rely on the training
 phrases and thus is independent of n. For moderate and severe,
@@ -320,10 +341,15 @@ with these speech patterns.
 with a baseline ASR system and variants of LPM using spectral
 features or KWS embeddings within the phrase representation.
 Data Subset ASR LPM Spec LPM KWS
-Control (word) 0.85 0.04 0.79 0.15 0.84 0.12
-Control (phrase) 0.87 0.07 0.90 0.11 0.95 0.09
-Dysarthria (word) 0.55 0.20 0.61 0.21 0.65 0.20
-Dysarthria (phrase) 0.63 0.26 0.72 0.21 0.82 0.16 5 10 20 30 49 00.250.500.751 3  Distribution of average per-participant accuracy of
+Control (word) 0.85  0.04 0.79  0.15 0.84  0.12
+Control (phrase) 0.87  0.07 0.90  0.11 0.95 0.09
+Dysarthria (word) 0.55  0.20 0.61  0.21 0.65  0.20
+Dysarthria (phrase) 0.63  0.26 0.72  0.21 0.82 0.16
+5 10 20 30 49
+Number of phrases00.250.500.751A ccuracyMethod
+ASR base
+LPM
+Figure 3  Distribution of average per-participant accuracy of
 the baseline ASR system and LPM for varying number of enrolled
  phrases.
 4.2.3. Varying Signal-to-Noise Ratios
@@ -341,7 +367,14 @@ than an ASR-based approach.
 Table 4  Mean and standard deviation of Precision of the baseline
  ASR and LPM in presence of additive background noise
 contrived synthetically with recorded household sounds.
-Models Severity 5 20 0.87 0.12 0.95 0.04 0.08 0.42 0.30 0.59 0.31 0.17 0.04 0.02 0.04 0.02 0.00 0.72 0.07 0.85 0.04 0.13 0.64 0.06 0.79 0.07 0.15 0.57 0.10 0.73 0.07 0.16 5. Conclusions
+Models Severity 5 dB 20 dB  
+ASRmild 0.87  0.12 0.95  0.04 0.08
+moderate 0.42  0.30 0.59  0.31 0.17
+severe 0.04  0.02 0.04  0.02 0.00
+LPMmild 0.72  0.07 0.85  0.04 0.13
+moderate 0.64  0.06 0.79  0.07 0.15
+severe 0.57  0.10 0.73  0.07 0.16
+5. Conclusions
 In this work we propose a personalized phrase recognition algorithm
  using query by example on latent representations of
 speech. We conducted a novel data collection that accounts
@@ -372,7 +405,8 @@ Factors in Computing Systems (CHI) , ser. CHI  23, 2023.
 [4] F. Xiong, J. Barker, Z. Yue, and H. Christensen,  Source domain
 data selection for improved transfer learning targeting dysarthric
 speech recognition,  in IEEE International Conference on Acoustics,
- Speech and Signal Processing (ICASSP) , 2020, pp. 7424 7428.
+ Speech and Signal Processing (ICASSP) , 2020, pp. 7424 
+7428.
 [5] J. R. Green, R. L. MacDonald, P.-P. Jiang, J. Cattiau, R. Heywood,
 R. Cave, K. Seaver, M. A. Ladewig, J. Tobin, M. P. Brenner et al. ,
  Automatic speech recognition of disordered speech  Personalized
@@ -387,7 +421,7 @@ F. Vieira, M. McNally, T. Charbonneau, M. Nollstadt, A. Hassidim,
  and Y . Matias,  Personalizing ASR for dysarthric and accented
  speech with limited data,  in INTERSPEECH , 2019.
 [8] M. K. Baskar, T. Herzig, D. Nguyen, M. Diez, T. Polzehl, L. Burget,
- and J. H. ˇCernock  y,  Speaker adaptation for Wav Vec2 based
+ and J. H. ˇCernock  y,  Speaker adaptation for Wav2Vec2 based
 dysarthric ASR,  in INTERSPEECH , 2022.
 [9] K. Tomanek, V . Zayats, D. Padfield, K. Vaillancourt, and F. Biadsy,
   Residual adapters for parameter-efficient ASR adaptation
@@ -429,7 +463,8 @@ International Conference on Acoustics, Speech and Signal Processing
  (ICASSP) , 2015, pp. 5236 5240.
 [20] R. Turrisi, A. Braccia, M. Emanuele, S. Giulietti, M. Pugliatti,
  M. Sensi, L. Fadiga, and L. Badino,  EasyCall corpus  A
-dysarthric speech dataset,  in INTERSPEECH , Aug 2021, pp. 41 45.
+dysarthric speech dataset,  in INTERSPEECH , Aug 2021, pp. 41 
+45.
 [21] F. Rudzicz, A. K. Namasivayam, and T. Wolff,  The TORGO
 database of acoustic and articulatory speech from speakers with
 dysarthria,  Language Resources and Evaluation , vol. 46, pp.
