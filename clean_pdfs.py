@@ -71,9 +71,15 @@ def replace_bounded_strings(text):
     return corrected_text
 
 
+def remove_short_lines(text: str) -> str:
+    lines = [line for line in text.split("\n") if len(line) > 20]
+    return "\n".join(lines)
+
+
 def process_text(text: str) -> str:
     text = remove_hyphens(text)
     text = remove_nonalphanumeric(text)
+    text = remove_short_lines(text)
     # text = replace_bounded_numbers(text)
     # text = replace_bounded_strings(text)
     return text
@@ -99,7 +105,7 @@ if __name__ == "__main__":
 
     start = time.time()
 
-    # clean_pdfs(parsed_papers_dir, cleaned_papers_dir)
-    clean_pdfs(parsed_other_dir, cleaned_other_dir)
+    clean_pdfs(parsed_papers_dir, cleaned_papers_dir)
+    # clean_pdfs(parsed_other_dir, cleaned_other_dir)
 
     print(f"Time to clean: {time.time() - start}")
