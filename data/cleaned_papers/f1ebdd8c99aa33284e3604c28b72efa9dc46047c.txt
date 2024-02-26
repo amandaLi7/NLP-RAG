@@ -1,0 +1,169 @@
+arXiv 2301.05562v1  [eess.AS]  13 Jan 2023MULTILINGUAL ALZHEIMER S DEMENTIA RECOGNITION THROUGH SP ONTANEOUS
+SPEECH  A SIGNAL PROCESSING GRAND CHALLENGE
+Saturnino Luz1, Fasih Haider1, Davida Fromm2, Ioulietta Lazarou3,
+Ioannis Kompatsiaris3and Brian MacWhinney2
+1Usher Institute, Edinburgh Medical School, The University of Edinburgh, UK
+2Department of Psychology, Carnegie Mellon University, USA
+3Information Technologies Institute, CERTH, Thermi-Thess aloniki, Greece
+This Signal Processing Grand Challenge (SPGC) targets a
+difﬁcult automatic prediction problem of societal and medi cal
+ relevance, namely, the detection of Alzheimer s Dementia
+ (AD). Participants were invited to employ signal proces sing
+ and machine learning methods to create predictive models
+ based on spontaneous speech data. The Challenge has
+been designed to assess the extent to which predictive model s
+built based on speech in one language (English) generalise t o
+another language (Greek). To the best of our knowledge no
+work has investigated acoustic features of the speech signa l in
+multilingual AD detection. Our baseline system used conven tional
+ machine learning algorithms with Active Data Representation
+ of acoustic features, achieving accuracy of 73.9 1%
+on AD detection, and 4.95 root mean squared error on cognitive
+Index Terms  Alzheimer s dementia detection, speech
+processing, speech biomarkers.
+Dementia is a category of neurodegenerative diseases that e ntail
+ a long-term and usually gradual decrease of cognitive
+functioning. As cost-effective and accurate biomarkers of
+neurodegeneration have been sought in the ﬁeld of dementia
+ research, speech-based  digital biomarkers  have emer ged
+as a promising possibility. While there has been much interest
+ in automated methods for cognitive impairment detectio n
+through speech by the signal processing and machine learning
+ communities [1], most of the proposed approaches have
+not investigated which speech features can be generalised a nd
+transferred across languages for AD prediction, and to the
+best of our knowledge no work has investigated acoustic features
+ of speech in multilingual AD detection. This SPGC,
+ ADReSS-M  Multilingual Alzheimer s Dementia Recognition
+ through Spontaneous Speech  targets this issue by deﬁn ing
+ prediction tasks whereby participants train their mode ls
+on English speech data and assess their models  performance
+on spoken Greek data. The models submitted to the challengefocus on acoustic or linguistic features of the speech signa l
+whose predictive power is preserved across languages.
+This SPGC aims to provide a platform for contributions
+and discussions on applying signal processing and machine
+learning methods for multilingual AD recognition, and stim ulate
+ the discussion of machine learning architectures, no vel
+signal processing features, feature selection and extract ion
+methods, and other topics of interest to the growing community
+ of researchers interested in investigating the connec tions
+between speech and dementia.
+2. THE PREDICTION TASKS
+The ADReSS-M challenge consists of the following tasks 
+(1) a classiﬁcation task, where the model will aim to distinguish
+ healthy control speech from AD/MCI speech, and
+(2) an MMSE score prediction (regression) task, where you
+create a model to infer the speaker s Mini Mental Status Examination
+ (MMSE) score based on speech data. Participants
+could choose to do one or both tasks. They were provided
+with a training set and, two weeks prior to the paper submission
+ deadline, with test sets on which to test their models. U p
+to ﬁve sets of results were allowed for scoring for each task
+per participant. All attempts had to be submitted together.
+This SPGC data sets were made available through DementiaBank1,
+ upon request. The training dataset consists of spontaneous
+ speech samples corresponding to audio recordings o f
+picture descriptions produced by cognitively normal subje cts
+and patients with an AD diagnosis, who were asked to describe
+ the Cookie Theft picture from the Boston Diagnostic
+Aphasia Examination test[2]. The participants were speakers
+ of English. The test set consists of spontaneous speech
+descriptions of a different picture, in Greek. The recordin gs
+were made in one of these languages. Participants were initially
+ allowed access only to the training data (in English) and
+some sample Greek data (8 recordings) for development purposes.
+1https //dementia.talkbank.org/The Greek recordings assess participants  verbal ﬂuency
+and mood using a picture that the participant describes whil e
+looking at it. The assessor ﬁrst shows the participant a pict ure
+representing a lion lying with a cub in the dessert while eating.
+ The assessor then asks the participants to give a verbal
+description of the picture in a few sentences.
+The training dataset was balanced with respect to age and
+gender in order to eliminate potential confounding and bias .
+As we employed a propensity score approach to matching we
+did not need to adjust for education, as it correlates with ag e
+and gender, which sufﬁce as an admissible for adjustment (se e
+[3, pp 348-352]). The dataset was checked for matching according
+ to scores deﬁned in terms of the probability of an
+instance being treated as AD given covariates age and gender
+estimated through logistic regression, and matching insta nces
+were selected. All standardized mean differences for the co variates
+ were below 0.1 and all standardized mean differenc es
+for squares and two-way interactions between covariates we re
+below 0.15, indicating adequate balance for those covariat es.
+The classiﬁcation task is evaluated in terms of accuracy,
+speciﬁcity, sensitivity and F1scores. For the regression task
+(MMSE prediction), the metrics used are the coefﬁcient of
+determination and root mean squared error. The ranking of
+submissions is based on accuracy scores for the classiﬁcation
+ task (task 1), and on RMSE scores for the MMSE score
+regression task (task 2).
+First we normalised the volume of audio ﬁles using ffmpeg 
+EBU R128 scanner ﬁlter. A sliding window of 1 s, with no
+overlap, was then applied to the audio, and eGeMAPS features
+ were extracted over these frames. The eGeMAPS feature
+ set [4] is a basic set of acoustic features designed to de tect
+ physiological changes in voice production. It contain s
+the F0 semitone, loudness, spectral ﬂux, MFCC, jitter, shim mer,
+ F1, F2, F3, alpha ratio, Hammarberg index and slope V0
+features, as well as their most common statistical function als,
+totalling 88 features per frame. Given the eGeMAPS features ,
+we applied the active data representation method (ADR) [5]
+to generate a frame level acoustic representation for each a udio
+ recording. The ADR method has been used previously
+to generate large scale time-series data representation. I t employs
+ self-organising mapping to cluster the original acou stic
+features and then computes second-order features over thes e
+clusters to extract new features [5]. This method is entirel y
+automatic in that no speech segmentation or diarisation inf ormation
+ is provided to the algorithm.
+For task 1, we employed a Na  ıve Bayes classiﬁer with
+kernel smoothing estimation. The ADR for feature extractio n
+was optimised using a grid search ( C  5,10,15,20,25).
+We achieved accuracies of 75.00% and 73.91% on sample
+and test data respectively using 15 2 ADR, age and genderfeatures per recording. On the test set, speciﬁcity was 79.2 %,
+precision was 75%, sensitivity was 68.2%, and F1was 71.4%.
+The feature to training audio ratio was 19 237.
+For the MMSE regression task (task 2), we employed
+a support vector machine (SVM) model with a RBF kernel
+with box constraint of 1, and sequential minimal optimizati on
+solver. The ADR for feature extraction was optimised using
+a grid search ( C  5,10,15,20,25). This model achieved
+a root mean squared error (RMSE) of 3.887 ( r  0.273)
+and4.955 (r  0.348) on sample and test data respectively
+using 25 2 ADR, age and gender features per recording. The
+feature to training audio recordings ratio was also 29 237.
+Spontaneous speech analysis has the potential to enable nov el
+applications for speech technology in longitudinal, unobtrusive
+ monitoring of cognitive health. By focusing on AD
+recognition using spontaneous speech, this SPGC investiga tes
+an alternative to neuropsychological and clinical evaluat ion
+approaches to AD detection and cognitive assessment. Furthermore,
+ the multilingual setting provided by this SPGC
+allows the investigation of features that might generalise
+across languages, extending the applicability of the model s.
+In keeping with the objectives of AD prediction evaluation,
+the ADReSS-M challenge provides a statistically matched
+data set so as to mitigate common biases often overlooked
+in evaluations of AD detection methods, including repeated
+occurrences of speech from the same participant, variation s in
+audio quality, and imbalances of gender, age and educationa l
+level. We hope this might serve as a benchmark for future
+research on multilingual AD assessment.
+[1] S. de la Fuente Garcia, C. Ritchie, and S. Luz,  Artiﬁcial
+intelligence, speech and language processing approaches
+to monitoring Alzheimer s disease  a systematic review, 
+Journal of Alzheimer s Disease , vol. 78, no. 4, 2020.
+[2] J. Becker, F. Boller, O. Lopez, J. Saxton, and K. McGonigle,
+  The natural history of Alzheimer s disease 
+Description of study cohort and accuracy of diagnosis, 
+Archives of Neurology , vol. 51, no. 6, pp. 585 594, 1994.
+[3] J. Pearl, Causality  Models, Reasoning, and Inference ,
+Cambridge University Press, 2nd edition, 2009.
+[4] F. Eyben et al.,  The Geneva minimalistic acoustic parameter
+ set for voice research and affective computing, 
+IEEE Trans Affect Computing , vol. 7, no. 2, 2016.
+[5] F. Haider, S. de la Fuente, and S. Luz,  An assessment
+ of paralinguistic acoustic features for detection of
+alzheimer s dementia in spontaneous speech,  IEEE J Sel
+Top Signal Process , vol. 14, no. 2, pp. 272 281, 2020.
