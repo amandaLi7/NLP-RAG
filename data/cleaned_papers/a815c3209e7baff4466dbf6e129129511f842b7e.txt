@@ -1,6 +1,7 @@
 Making Scalable Meta Learning Practical
-Sang Keun Choe1 2 3,5 1,4 1,5 1Carnegie Mellon University Stanford University UCSD Allen Institute for AI MBZUAI
-Abstract
+Sang Keun Choe1 Sanket Vaibhav Mehta1Hwijeen Ahn1Willie Neiswanger2
+Pengtao Xie3,5Emma Strubell1,4Eric Xing1,5
+1Carnegie Mellon University2Stanford University3UCSD4Allen Institute for AI5MBZUAI
 Despite its flexibility to learn diverse inductive biases in machine learning programs,
 meta learning ( i.e., learning to learn) has long been recognized to suffer from poor
 scalability due to its tremendous compute/memory costs, training instability, and
@@ -11,14 +12,14 @@ designed to flexibly support a broad range of adaptive optimizers in the base le
 of meta learning programs, while reducing computational burden by avoiding
 explicit computation of second-order gradient information, and exploiting efficient
 distributed training techniques implemented for first-order gradients. Evaluated on
-multiple large-scale meta learning benchmarks, SAMA showcases up to 1.7/4.8 2.0/3.8  decrease in memory consumption respectively
+multiple large-scale meta learning benchmarks, SAMA showcases up to 1.7/4.8  
+increase in throughput and 2.0/3.8  decrease in memory consumption respectively
 on single-/multi-GPU setups compared to other baseline meta learning algorithms.
 Furthermore, we show that SAMA-based data optimization leads to consistent
 improvements in text classification accuracy with BERT and RoBERTa large
 language models, and achieves state-of-the-art results in both small- and large-scale
 data pruning on image classification tasks, demonstrating the practical applicability
 of scalable meta learning across language and vision domains.
-1 Introduction
 Meta learning aims to learn the inductive biases (e.g. training data, neural architecture) of a machine
 learning program in such a way that a model trained with these inductive biases achieves optimal
 performance on user-specified objectives (e.g. fairness, quick generalization). This concept of meta
@@ -32,39 +33,27 @@ Following its versatility, numerous algorithms have been proposed to solve meta 
 them, gradient-based meta learning (GBML) has in particular gained considerable attention, due to
 its capability to optimize a wide range of high-dimensional inductive biases in an efficient manner.
 For example, MAML [ 14] finds optimal initialization weights (inductive bias) that achieve quick
-generalization to new tasks (objective), and L RW [ 54] optimizes training sample weights (inductive
+generalization to new tasks (objective), and L2RW [ 54] optimizes training sample weights (inductive
 bias) to achieve robustness against label noise (objective). However, the above benefits of GBML
 oftentimes get overshadowed by its poor scalability in practice, especially under the recent trend of
 large models [ 5,33,50], which arises due to several factors. First, many GBML algorithms [ 14,40,
 51] require inversion of a large Jacobian matrix, which suffers from both algorithmic instability as well
  Correspondence  sangkeuc@andrew.cmu.edu
-37th Conference on Neural Information Processing Systems (NeurIPS 2023).arXiv 2310.05674 2  [cs.LG]  23 2023Constant
-MemoryJacobian
+37th Conference on Neural Information Processing Systems (NeurIPS 2023).arXiv 2310.05674v2  [cs.LG]  23 Oct 2023Constant
 Inverse FreeAdaptive Optimizer
 Support(Efficient) Distributed
 Training SupportOverall
-Scalability
 Iterative Differentiation [14, 15, 42]          
 Recurrent Backpropagation [36]        
-T1 2[38, 41]        
+T1 T2[38, 41]        
 Neumann Series [40]      
 Conjugate Gradient [51]      
 SAMA (ours)          
-10 15 20 25
 GPU Memory Usage (GB)100150200250300350400Throughput (samples/s)betterNoisy Finetuning w/ BERT-base
-CG
-Neumann
-SAMA-NA
-SAMA
-SAMA (2 GPUs)
-SAMA (4 GPUs)
 0 50 100 150 200 250 300 350 400
 Parameter Count (M)01020304050Memory Usage (GB)
 A6000 Max Memory (48GB)
 Distill-RoBERTaRoBERTa-baseRoBERTa-largeContinued Pretraining w/ RoBERTa Variants
-CG
-Neumann
-SAMA
 Figure 1  Top  Table showing a scalability comparison. Bottom left  Plot of throughput vs memory of
 different GBML algorithms on the noisy finetuning of BERT-base experiment. SAMA achieves better
 memory/compute efficiency overall given a fixed model, and the gap further widens by distributing
@@ -94,7 +83,8 @@ that efficiently uses the communication-computation overlap trick [ 35]. Combini
 solutions, we develop SAMA, a holistic and practically ScalAbleMeta learning Algorithm.
 3.We evaluate the scalability and the overall performance of SAMA on a multitude of large-scale
 meta learning benchmarks involving large language models ( e.g., BERT [ 31] and RoBERTa [ 39])
-or large datasets ( e.g., ImageNet-1k [ 10]). Notably, SAMA showcases up to 1.7/4.8 2.0/3.8  decrease in memory consumption respectively on single-/multi-GPU
+or large datasets ( e.g., ImageNet-1k [ 10]). Notably, SAMA showcases up to 1.7/4.8  increase in
+throughput and 2.0/3.8  decrease in memory consumption respectively on single-/multi-GPU
 setups compared to other baseline meta learning algorithms. In addition, we observe that SAMAbased
  data optimization consistently leads to improvements in text classification accuracy with
 large language models, and achieves state-of-the-art results in both small-/large-scale data pruning,
@@ -103,17 +93,13 @@ demonstrating the initial potential of scalable meta learning.
 We begin by reviewing the basics of (gradient-based) meta learning in order to establish the key
 aspects that have limited its scalability. Mathematically, meta learning is commonly formulated as
 bilevel optimization as follows 
-λ   argmin
-λLmeta(Dmeta θ (λ))
-s.t. θ (λ)   argmin
-θLbase(Dbase θ, λ)
 where λ(respectively, θ)are the parameters of meta (base) learners, Dmeta (Dbase)are meta (base)
 datasets, and Lmeta (Lbase)are meta (base) loss functions. An important implication of the above
 formulation is that meta learning changes the task of finding the optimal inductive biases from
 designing heuristics to designing meta optimization problems. As an example, consider the problem
 of finding the optimal inductive bias for fair classification given class-imbalanced training data. A
 traditional approach to this problem is to use a heuristic that reweights training samples inversely
-proportional to class frequencies. On the contrary, L RW [ 54] designs a meta optimization problem
+proportional to class frequencies. On the contrary, L2RW [ 54] designs a meta optimization problem
 by curating a small number of class-balanced data for the meta dataset Dmeta and setting the meta
 learner λto be importance weights for all training data. In short, unlike heuristic-based methods
 that explicitly specify  how to learn,  meta learning methods only specify  what to learn  and let
@@ -125,12 +111,7 @@ dim(λ) 1) problems. Such an ability is essential given that the search space fo
 (e.g. importance weights for training data) can increase exponentially with recent large models and
 datasets. Concretely, GBML computes a meta gradient composed of two terms the best-response
 Jacobian and direct gradient with the chain rule, as follows 
- Lmeta
- λ  θ 
- λ {z}
 best-response Jacobian  Lmeta
- θ  {z}
-direct gradient(1)
 Since the direct gradient (teal) computation is straightforward with the underlying automatic differentiation
  library, the major challenge in GBML lies in computing the best-response Jacobian
 (purple), of which two common solutions are iterative differentiation [ 14,15,16,42] and implicit
@@ -140,15 +121,6 @@ iterative differentiation [19], both of which are vital in accomplishing our goa
 The gist of implicit differentiation is that it calculates the best-response Jacobian by leveraging
 Cauchy s Implicit Function Theorem (IFT) and re-interpreting the base optimization problem from
 the perspective of fixed-point iteration given an iterative solver u, as follows 
- θ 
- λ   u
- λ {z}
-meta Jacobian   u
- θ  {z}
-base Jacobian  1
-where(θ   lim
-t  θt
-θt θt 1 u(θt 1 λ)(2)
 While exact implicit differentiation requires solving the base optimization problem to convergence θ 
 by repeatedly applying an iterative solver u(e.g., SGD or Adam) to calculate base (blue) and meta
 (red) Jacobians, this is computationally impractical, especially in most large-scale learning settings.
@@ -173,8 +145,6 @@ the naive base Jacobian (blue) inversion in Eq. (2)isO(n3
 b). Since such cubic complexity is impractical
  even for small-sized base learners, practitioners typically utilize various linear systems techniques
 such as Neumann series [ 40] or conjugate gradient [ 51], and directly approximate  u
- θ   1 Lmeta
- θ .
 Given that the base Jacobian is a function of the Hessian matrix of the base optimization problem
 in GBML, these algorithms solve linear systems by iteratively performing Hessian-vector products.
 However, this Hessian-vector product computation contributes negatively to all three above limitations.
@@ -185,22 +155,12 @@ estimation of the Hessian due to mini-batch sampling [ 34]. Hence, meta gradient
 noisy Hessian-vector products can be biased, which may result in training instability. Finally, the
 most efficient distributed training features, such as communication-computation overlap [ 35], are
 designed for first-order gradients, rather than the higher-order gradients involved in Hessian-vector
-products.
 Solution A simple solution for avoiding the aforementioned issues stemming from base Jacobian
 inversion is to approximate the base Jacobian with an identity matrix as follows 
- Lmeta
- λ   u
- λ   u
- θ   1
-  Lmeta
- θ     u
- λ  Lmeta
- θ (3)
 Under the deep equilibrium model setting, Jacobian-free backpropagation [ 17] shows that such an
 approximation can be understood as preconditioning the original meta gradient. Our approximation
 also resembles approximating the Hessian as an identity matrix in one-step unrolling techniques ( i.e.
-T1 2) from [ 38,41]. While this approximation is exact when the iterative solver uis naive SGD
-where u  Lbase
+T1 T2) from [ 38,41]. While this approximation is exact when the iterative solver uis naive SGD
  θ, we note that the base Jacobian does not necessarily equate with the Hessian when
 an adaptive optimizer is used in base optimization (more detailed discussion on this issue is deferred
 to Sec. 3.2). Furthermore, their methods calculate the meta Jacobian at initialization θinstead of at
@@ -224,11 +184,6 @@ approximate θ with a small number of gradient steps, at which the above fixed p
 unlikely hold. Thus, the inconsistency between assumed and actual optimizers results in an incorrect
 meta gradient, which is a source of training instabilities and reduced performance in meta learning
 (as we demonstrate in Table 1).
-4 1 2
-Gradient
-synchronization
-w/
-comm-comp
 overlapFigure 2  The overall workflow of meta gradient computation with SAMA in the distributed data
 parallel setting. In detail, SAMA consists of three first-order backward passes performed with
 the underlying automatic differentiation engine, and one manual backward pass for algorithmic
@@ -236,49 +191,23 @@ adaptation for the adaptive optimizer. Gradient synchronization is performed onl
 backward pass with communication-computation overlap to minimize the communication bottleneck.
 Solution To take adaptive update rules into account, we propose to further expand a meta Jacobian
 term in Eq. (3) with the chain rule as follows 
- u
- λ  gbase
- λ  u
- gbase  2Lbase
- λ θ   u
- gbase
-   Lmeta
- λ    u
- λ  Lmeta
- θ    2Lbase
- λ θ   u
- gbase  Lmeta
- θ (4)
 where gbaseis base-gradient computed at convergence ( i.e. Lbase
  θ ). In short, we accomplish the
 algorithmic adaptation for any adaptive optimizer with the update rule uthrough the middle term
- u
  gbasein Eq. (4), which reduces to an identity matrix in the case of SGD. To analyze the adaptation
 cost, we note that parameter updates uin most optimizers are performed only with element-wise
 operations. Thus, the adaptation matrix is diagonal, for which computation/memory complexities are
 onlyO(nb). As a concrete example, we provide an adaptation matrix for the most popular Adam
 optimizer [32] in Appendix C.
 Furthermore, to reduce computation/memory complexities involving the costly second-order derivative 2Lbase
-
  λ θ , we instead perform the matrix-vector product with the central-difference method from
 DARTS [ 38] and the associative rule of matrix multiplication. All combined, we propose SAMA, a
 highly compute/memory efficient meta gradient algorithm for scalable meta learning, the formulation
 of which is as follows 
- Lmeta
- λ    2Lbase
- λ θ    u
- gbase  Lmeta
- θ  
-    Lbase (θ ,λ)
- λ  Lbase (θ ,λ)
- λ
-2ϵ(5)
 where θ  θ  ϵvwith the perturbation vector v  u
- gbase  Lmeta
  θ and the step size ϵ α
- v 2.
 We empirically observe that α  1.0works well across a multitude of tasks without further tuning.
-Finally, we notice that prevoius work in penalty-based bilevel optimization ( e.g. F SA [ 34] and
+Finally, we notice that prevoius work in penalty-based bilevel optimization ( e.g. F2SA [ 34] and
 BOME [ 37]) further uses the direct gradient Lmeta
  θ explicitly in the base level optimization to
 maximize the performance of the final base parameter θ on the meta objective. Given that our
@@ -305,8 +234,7 @@ strategy that performs first two backward passes locally on each device, and the
 by implementing the first two backward passes with torch.autograd.grad and the last one with
 torch.autograd.backward . The overall workflow diagram of SAMA is presented in Figure 2. To
 facilitate research in scalable meta learning, we provide our implementation of SAMA with the above
-communication optimization in Betty that only requires a one-line change in the configuration.
-4 Experiments
+communication optimization in Betty3that only requires a one-line change in the configuration.
 While few-shot learning has traditionally been the most popular application of meta learning, most
 recent large models such as GPT [ 5], ViT [ 13], and Whisper [ 50], provide few-shot generalization
 capability out of the box. Therefore, we in this work focus on another promising application of meta
@@ -339,18 +267,13 @@ Here, we attempt to alleviate this data quality issue in weak supervision by uti
 automatically optimize noisy training data guided by a small amount of clean data in the meta level.
 In detail, we use data reweighting [ 58] and label correction [ 70] as our data optimization operations,
 of which the bilevel optimization formulation is as follows 
-λ   (λ 
-r, λ 
-c)   argmin
 λr,λcL(Dclean θ (λr, λc))
 s.t.θ (λr, λc)   argmin
-θ1
- Dnoisy X
 (x,y) Dnoisyw(L λr)  L(f(x θ), c(x, y λc))
 where w(  λr)andc(  λc)are meta learners, respectively, for data reweighting and label correction.
 To evaluate the scaling efficiency of SAMA, we perform text classification with a BERT-base model
 3https //github.com/leopard-ai/betty
-6 110M parameters on multiple weak supervision datasets from the WRENCH benchmark [ 67].
+6with 110M parameters on multiple weak supervision datasets from the WRENCH benchmark [ 67].
 Furthermore, to study the effectiveness of our algorithmic adaptation strategy (Sec. 3.2), we conduct
 experiments with a variant of SAMA ( i.e., SAMA-NA) that does not include algorithmic adaptation,
 and present the experiment results in Table 1.
@@ -370,10 +293,9 @@ reweighting and label correction both lead to noticeable improvements over finet
 model across all benchmarks with the help of small additional clean data Dclean in the meta level.
 Second, given the superior performance of SAMA compared to SAMA-NA, we empirically verify
 the importance of algorithmic adaptation when an adaptive optimizer is used to train this Transformer
-base learner.
 GPUs Memory Throughput
-Neumann 1 26.0 82.9 1 28.4 82.1
-SAMA-NA 1 13.7 144.1 1 14.3 142.0 2 10.4 241.2 4 7.4 396.7 2 4 100 GPUs.Additionally, we compare compute/memory efficiency of
+Table 2  Memory and throughput analysis
+ on AGNews with 4 V100 GPUs.Additionally, we compare compute/memory efficiency of
 SAMA to that of two other implicit-differentiation-based
 meta learning algorithms, namely Neumann Series [ 40] and
 conjugate gradient [ 51]. For fair comparison, we evaluate
@@ -385,7 +307,7 @@ generally more compute/memory efficient than the baselines,
  (2) the cost of algorithmic adaptation for adaptive
 optimizers is marginal as expected, and (3) the efficiency
 gap further widens as we distribute compute/memory across multiple GPUs with our efficient DDP
-communication strategy. Since we were only able to conduct experiments with up to 4 100 GPUs
+communication strategy. Since we were only able to conduct experiments with up to 4 V100 GPUs
 due to the limited compute resources, exploring extremely large-scale GBML with larger GPU servers
 remains a promising future research direction. In Appendix F, we provide a more extensive ablation
 study for each component of SAMA, as well as compare test accuracy, GPU memory usage, and
@@ -401,11 +323,6 @@ transfer by reweighting samples from the continued pretraining task with meta le
 we adopt the auxiliary learning technique from TARTAN [ 11] and simplify the two-stage pretrainingfinetuning
  pipeline into a one-stage multitask learning pipeline with the reweighting scheme applied
 to the pretraining loss. The bilevel optimization formulation is as follows 
-λ   argmin
-λLft(Dft θ (λ))
-s.t.θ (λ)   argmin
-θLft(Dft θ)  1
- Dpt X
 x Dptw(x λ)  Lpt(x θ)
 7whereLft/Lftare finetuning/pretraining loss functions, Dft/Dptare finetuning/pretraining datasets,
 andw(  λ)is the data reweighting network. Following the experiment setup in TARTAN [ 11], we use
@@ -419,7 +336,8 @@ ChemProt HyperPartisan ACL-ARC SciERC Average
 Baseline 82.70 (0.45) 89.03 (2.25) 68.17 (2.52) 79.83 (0.89) 79.93
 DAPT [24] 84.17 (0.50) 87.23 (3.65) 71.84 (4.78) 80.42 (1.57) 80.92
 TARTAN-MT [11] 84.18 (0.30) 94.64 (0.91) 72.41 (1.94) 80.83 (0.71) 83.02
-SAMA (ours) 84.49 (0.13) 95.18 (0.03) 71.63 (1.68) 81.84 (0.08) 83.29 3  Experiment results for auxiliary learning with the continued pretraining task. Following
+SAMA (ours) 84.49 (0.13) 95.18 (0.03) 71.63 (1.68) 81.84 (0.08) 83.29
+Table 3  Experiment results for auxiliary learning with the continued pretraining task. Following
 [24], we report test micro-F1 for ChemProt and macro-F1 for the other datasets. The number in
 parentheses indicates the standard deviation for each experiment over 3 runs.
 As shown above, SAMA-based data optimization leads to improvements in downstream performance
@@ -447,25 +365,23 @@ enabling distributed training with our efficient communication strategy. Third, 
 of the prediction in addition to the loss value as an input to MWN to better estimate importance
 weight of each training data. Last, we use training data both in the base and the meta levels, assuming
 no additional validation data. A bilevel optimization formulation of our method is as follows 
-λ   argmin
-λL(Dtrain θ (λ))
-s.t.θ (λ)   argmin
-θ1
- Dtrain X
 (x,y) Dtrainw(L,U λ)  L(x, y θ)
 where w(  λ)is MWN that takes the loss value Land the uncertainty Uof the training sample (x, y)
 as an input and outputs the importance weight. Under this setup, we run meta learning with SAMA
-for 30 / 50 epochs respectively for ImageNet-1k / CIFAR-10 5 epochs. We compare our method to several popular
+for 30 / 50 epochs respectively for ImageNet-1k / CIFAR-10 and obtain the pruning metrics by
+averaging the importance weights of the last 5 epochs. We compare our method to several popular
 static/dynamic data pruning baselines, and present the results in Figure 3.
 As expected, GBML-based data pruning with SAMA not only outperforms heuristics-based data
 pruning but also works well across different dataset scales. Surprisingly, we observe that GBMLbased
- data pruning even leads to improvements in test accuracy at the pruning ratio of 0.1 0.2 80.0 0.1 0.2 0.3 0.4 0.940.950.960.970.980.991.00Relative Top-1 Accuracy
+ data pruning even leads to improvements in test accuracy at the pruning ratio of 0.1 and 0.2
+Pruning Ratio0.940.950.960.970.980.991.00Relative Top-1 Accuracy
 ImageNet-1k w/ ResNet-50
-Random
-EL N_1
-EL N_10 0.0 0.1 0.2 0.3 0.4 0.5 0.6 0.970.980.991.00Relative Top-1 Accuracy
-CIFAR-10 w/ ResNet-18 1[47] EL N 10[47] GradNd 10[47] DynaMS [63] SAMA (ours)
-Relative Search Time 0.16 1.65 1.65 0.16 0.46 3  Top Left  ImageNet-1k data pruning results with ResNet-50. Reported numbers are relative
+0.0 0.1 0.2 0.3 0.4 0.5 0.6
+Pruning Ratio0.970.980.991.00Relative Top-1 Accuracy
+CIFAR-10 w/ ResNet-18
+SAMAEL2N 1[47] EL2N 10[47] GradNd 10[47] DynaMS [63] SAMA (ours)
+Relative Search Time 0.16 1.65 1.65 0.16 0.46
+Figure 3  Top Left  ImageNet-1k data pruning results with ResNet-50. Reported numbers are relative
 accuracy compared to full training accuracy ( i.e., pruned_acc/full_acc). Accuracy for other baseline
 methods is obtained from DynaMS [ 63].Top Right  CIFAR-10 data pruning results with ResNet-18.
 Accuracy for other baseline methods is obtained from Deepcore [ 22].Bottom  Relative time spent in
@@ -477,8 +393,8 @@ compute/memory inefficiency has traditionally been the major bottleneck in GBML 
 also compare the relative search time for data pruning. Our result shows that SAMA demonstrates
 comparable or even shorter search time than heuristics-based methods. We also note that, while the
 original MWN [ 58] encounters the OOM error under our setup of batch_size 256, the throughput
-analysis with the reduced batch size reveals that efficient distributed training with SAMA on 4 15-20  speed up compared to the original MWN that lacks distributed training support.
-5 Related Work
+analysis with the reduced batch size reveals that efficient distributed training with SAMA on 4 GPUs
+achieves 15-20  speed up compared to the original MWN that lacks distributed training support.
 Algorithms Two major lines of research in gradient-based meta learning algorithms are iterative
 and implicit differentiation [ 19]. Iterative differentiation [ 14,15,16,42] computes meta gradients
 by differentiating through the optimization path and therefore requires saving all intermediate states
@@ -491,7 +407,6 @@ the optimization path. To compute base Jacobian inversion in implicit differenti
 variants have been proposed, each of which uses Neumann series [ 7,40], conjugate gradient [ 51],
 Nystrom method [ 25], and more. While generally being more compute/memory efficient than iterative
 differentiation, most existing implicit differentiation algorithms have poor scalability due to the issues
-studied in Sec. 3.
 Applications Meta learning has found many applications in machine learning including few-shot
 learning [ 14,51,71], neural architecture search [ 38,69], hyperparameter optimization [ 15,16,40,42],
 data optimization [ 21,54,58,70], and reinforcement learning [ 23,29,52], to name a few. Notably,
@@ -499,13 +414,12 @@ most of these applications share the underlying mathematical formulation of bile
 are conceptually related to optimal design and inductive/declarative programming paradigms.
 Systems Compared to algorithms and systems research, there are relatively fewer research efforts
 in meta learning systems. In an attempt to facilitate research in few-shot image classification,
-higher [20],learn learn [3], and TorchMeta [9] have been developed. However, due to their specific
+higher [20],learn2learn [3], and TorchMeta [9] have been developed. However, due to their specific
 focus on few-shot image classification, these libraries have not been actively used in other meta
 learning tasks, such as data optimization or neural architecture search. Recently, software libraries
 9for implicit differentiation including JaxOpt [4] and Betty [6], have been proposed. Given that Betty s
 software architecture is specifically designed to support various systems optimization for large-scale
 meta learning, we chose to implement SAMA in this framework.
-6 Conclusion
 In this paper, we strived to make scalable meta learning practical via both algorithmic and systems
 advancements. Towards this goal, we investigated diverse scaling bottlenecks in meta learning at a
 technical level and resolved them by developing SAMA. Tested on multiple benchmarks, SAMA
@@ -522,23 +436,19 @@ Limitations & Broader Impacts While SAMA has demonstrated significantly improved
 not test it on larger models with 1B  parameters due to a lack of computational resources. Meta
 learning itself is mostly value-neutral, but there is a chance that practitioners amplify the bias or
 toxicity of the machine learning programs by enforcing them in the meta objective.
-Acknowledgements
 We thank all the reviewers for their invaluable comments and feedback. We like to acknowledge CMU
 Workhorse and TIR group for providing compute resources for this work. EX and SKC acknowledge
 the support of NSF IIS2311990, NSF IIS2123952, NSF CNS2008248, NSF BCS2040381, NGA
-HM04762010002, NIGMS R GM140467, and Amazon 2023-5007107. WN was supported in part
-by NSF (#1651565), AFOSR (FA95501910024), ARO (W NF-21-1-0125), CZ Biohub, and Sloan
+HM04762010002, NIGMS R01GM140467, and Amazon 2023-5007107. WN was supported in part
+by NSF (#1651565), AFOSR (FA95501910024), ARO (W911NF-21-1-0125), CZ Biohub, and Sloan
 Fellowship. ES and SVM acknowledge the support in part by DSO National Laboratories.
-References
 [1]Amro Kamal Mohamed Abbas, Kushal Tirumala, Daniel Simig, Surya Ganguli, and Ari S
 Morcos. Semdedup  Data-efficient learning at web-scale through semantic deduplication. In
 ICLR 2023 Workshop on Mathematical and Empirical Understanding of Foundation Models ,
-2023.
 [2]Antreas Antoniou, Harrison Edwards, and Amos Storkey. How to train your MAML. In
 International Conference on Learning Representations , 2019.
 [3]Sébastien MR Arnold, Praateek Mahajan, Debajyoti Datta, Ian Bunner, and Konstantinos Saitas
-Zarkias. learn learn  A library for meta-learning research. arXiv preprint arXiv 2008.12284 ,
-2020.
+Zarkias. learn2learn  A library for meta-learning research. arXiv preprint arXiv 2008.12284 ,
 [4]Mathieu Blondel, Quentin Berthet, Marco Cuturi, Roy Frostig, Stephan Hoyer, Felipe LlinaresLópez,
  Fabian Pedregosa, and Jean-Philippe Vert. Efficient and modular implicit differentiation.
 Advances in neural information processing systems , 35 5230 5242, 2022.
@@ -565,14 +475,12 @@ an argument for end-task aware training as an alternative. In International Conf
 Learning Representations , 2022.
 [12] Guneet Singh Dhillon, Pratik Chaudhari, Avinash Ravichandran, and Stefano Soatto. A baseline
 for few-shot image classification. In International Conference on Learning Representations ,
-2020.
 [13] Alexey Dosovitskiy, Lucas Beyer, Alexander Kolesnikov, Dirk Weissenborn, Xiaohua Zhai,
 Thomas Unterthiner, Mostafa Dehghani, Matthias Minderer, Georg Heigold, Sylvain Gelly,
-Jakob Uszkoreit, and Neil Houlsby. An image is worth 16 16 words  Transformers for image
+Jakob Uszkoreit, and Neil Houlsby. An image is worth 16x16 words  Transformers for image
 recognition at scale. In International Conference on Learning Representations , 2021.
 [14] Chelsea Finn, Pieter Abbeel, and Sergey Levine. Model-agnostic meta-learning for fast adaptation
  of deep networks. In International conference on machine learning , pages 1126 1135.
-PMLR, 2017.
 [15] Luca Franceschi, Michele Donini, Paolo Frasconi, and Massimiliano Pontil. Forward and
 reverse gradient-based hyperparameter optimization. In International Conference on Machine
 Learning , pages 1165 1173. PMLR, 2017.
@@ -613,20 +521,16 @@ augmentation optimization. In Proceedings of the IEEE/CVF Winter Conference on A
 of Computer Vision , pages 2574 2583, 2022.
 [27] Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. Deep residual learning for image
 recognition. In Proceedings of the IEEE conference on computer vision and pattern recognition ,
-pages 770 778, 2016.
 [28] Yanping Huang, Youlong Cheng, Ankur Bapna, Orhan Firat, Dehao Chen, Mia Chen, HyoukJoong
  Lee, Jiquan Ngiam, Quoc V Le, Yonghui Wu, et al. Gpipe  Efficient training of giant
 neural networks using pipeline parallelism. Advances in neural information processing systems ,
-32, 2019.
 [29] Jan Humplik, Alexandre Galashov, Leonard Hasenclever, Pedro A Ortega, Yee Whye Teh, and
 Nicolas Heess. Meta reinforcement learning as task inference. arXiv preprint arXiv 1905.06424 ,
-2019.
 [30] Jared Kaplan, Sam McCandlish, Tom Henighan, Tom B Brown, Benjamin Chess, Rewon Child,
 Scott Gray, Alec Radford, Jeffrey Wu, and Dario Amodei. Scaling laws for neural language
 models. arXiv preprint arXiv 2001.08361 , 2020.
 [31] Jacob Devlin Ming-Wei Chang Kenton and Lee Kristina Toutanova. Bert  Pre-training of deep
 bidirectional transformers for language understanding. In Proceedings of NAACL-HLT , pages
-4171 4186, 2019.
 [32] Diederik P Kingma and Jimmy Ba. Adam  A method for stochastic optimization. arXiv preprint
 arXiv 1412.6980 , 2014.
 [33] Alexander Kirillov, Eric Mintun, Nikhila Ravi, Hanzi Mao, Chloe Rolland, Laura Gustafson,
@@ -670,11 +574,10 @@ networks. In International Conference on Learning Representations , 2017.
 [46] Adam Paszke, Sam Gross, Francisco Massa, Adam Lerer, James Bradbury, Gregory Chanan,
 Trevor Killeen, Zeming Lin, Natalia Gimelshein, Luca Antiga, et al. Pytorch  An imperative
 style, high-performance deep learning library. Advances in neural information processing
-systems , 32, 2019.
 [47] Mansheej Paul, Surya Ganguli, and Gintare Karolina Dziugaite. Deep learning on a data diet 
 Finding important examples early in training. Advances in Neural Information Processing
 Systems , 34 20596 20607, 2021.
-[48] Barak A Pearlmutter. Fast exact multiplication by the hessian. Neural computation , 6(1) 147 160, 1994.
+[48] Barak A Pearlmutter. Fast exact multiplication by the hessian. Neural computation , 6(1) 147 
 [49] Fabian Pedregosa. Hyperparameter optimization with approximate gradient. In International
 conference on machine learning , pages 737 746. PMLR, 2016.
 [50] Alec Radford, Jong Wook Kim, Tao Xu, Greg Brockman, Christine McLeavey, and Ilya
@@ -687,10 +590,8 @@ off-policy meta-reinforcement learning via probabilistic context variables. In I
 conference on machine learning , pages 5331 5340. PMLR, 2019.
 [53] Alexander J Ratner, Christopher M De Sa, Sen Wu, Daniel Selsam, and Christopher Ré. Data
 programming  Creating large training sets, quickly. Advances in neural information processing
-systems , 29, 2016.
 [54] Mengye Ren, Wenyuan Zeng, Bin Yang, and Raquel Urtasun. Learning to reweight examples
 for robust deep learning. In International conference on machine learning , pages 4334 4343.
-PMLR, 2018.
 [55] David E Rumelhart, Geoffrey E Hinton, and Ronald J Williams. Learning representations by
 back-propagating errors. nature , 323(6088) 533 536, 1986.
 [56] Christoph Schuhmann, Romain Beaumont, Richard Vencu, Cade W Gordon, Ross Wightman,
@@ -718,7 +619,6 @@ processing systems , 30, 2017.
 [63] Jiaxing Wang, Yong Li, Jingwei Zhuo, Xupeng Shi, WEIZHONG ZHANG, Lixing Gong, Tong
 Tao, Pengzhang Liu, Yongjun Bao, and Weipeng Yan. DynaMS  Dyanmic margin selection for
 efficient deep learning. In The Eleventh International Conference on Learning Representations ,
-2023.
 [64] Zirui Wang, Zihang Dai, Barnabás Póczos, and Jaime Carbonell. Characterizing and avoiding
 negative transfer. In Proceedings of the IEEE/CVF conference on computer vision and pattern
 recognition , pages 11293 11302, 2019.
@@ -781,33 +681,31 @@ the use of arbitrary optimizers at the base level via algorithmic adaptation.
 In this section, we discuss various experiment details such as hyperparameters, baselines, and
 compute resources used for our experiments in Section 4. Our experiment codes are available in the
 supplementary material as well as under the official Betty GitHub repository4.
-B.1 1000 iterations on TREC/SemEval/IMDB/ChemProt/Yelp/
+B.1 Noisy Finetuning of Large Language Models
+Hyperparameters We ran training for 1000 iterations on TREC/SemEval/IMDB/ChemProt/Yelp/
 AGNews datasets from the WRENCH benchmark [ 67], with a batch size of 32, a weak supervision
 algorithm of majority voting, and the hyperparameters in Table 4 below.
 model optimizer init_lr lr_scheduler wdecay dataset unroll step SAMA α
-Base BERT-base Adam 1e-5 0WRENCH train set
+Base BERT-base Adam 1e-5 cosine 0WRENCH train set
 (with majority voting)10 1.0
-Meta
-(Reweight)2-layer MLP Adam 1e-5 0 WRENCH dev set N/A N/A
-Meta
-(Correct)2-layer MLP Adam 1e-5 0 WRENCH dev set N/A N/A
+(Reweight)2-layer MLP Adam 1e-5 None 0 WRENCH dev set N/A N/A
+(Correct)2-layer MLP Adam 1e-5 None 0 WRENCH dev set N/A N/A
 Table 4  Hyperparameters for noisy finetuning of large language models experiments.
 Baselines We adopted naive finetuning and self-training ( i.e., COSINE [66]) approaches from the
 original WRENCH benchmark paper [67] as our baseline.
-Compute Resources We used 1 2080Ti GPU for the main experiment, and 4 100 GPUs for the throughput-memory analysis in Table 2 1.
-B.2 100 16, a maximum sequence
+Compute Resources We used 1 NVIDIA RTX 2080Ti GPU for the main experiment, and 4
+NVIDIA Tesla V100 GPUs for the throughput-memory analysis in Table 2 and Figure 1.
+B.2 Continued Pretraining of Large Language Models
+Hyperparameters We ran training for 100 epochs with a batch size of 16, a maximum sequence
 length of 256, and the hyperparameters in Table 5 below.
 model optimizer init_lr lr_scheduler wdecay dataset unroll step SAMA α
-Base
 (Downstream)RoBERTa-base Adam 2e-5linear decay   warmup linear
 (warmup proportion 0.6)0train split of
 ChemProt/HyperPartisan/
-ACL-ARC/SciERC10 0.3
-Base
 (Auxiliary)RoBERTa-base Adam 2e-5linear decay   warmup linear
 (warmup proportion 0.6)0train split of
 ChemProt/HyperPartisan/
-ACL-ARC/SciERC10 0.3 2-layer MLP Adam 1e-5 0train split of
+Meta 2-layer MLP Adam 1e-5 None 0train split of
 ChemProt/HyperPartisan/
 ACL-ARC/SciERCN/A N/A
 Table 5  Hyperparameters for continued pretraining of large language models experiments.
@@ -818,49 +716,45 @@ text classification task. We follow [ 24] (see Table 14 in the original paper) f
 finetuning hyperparameters. Alternatively, TARTAN-MT [ 11] performs masked language modeling
 with task specific data and downstream text classification training simultaneously in a multitask
 fashion through two different heads.
-Compute Resources We used 1 100 GPU for the main experiment, and 1 6000 GPU for the  memory vs model-size analysis  in Figure 1.
+Compute Resources We used 1 NVIDIA Tesla V100 GPU for the main experiment, and 1 NVIDIA
+RTX A6000 GPU for the  memory vs model-size analysis  in Figure 1.
 B.3 Scale-Agnostic Efficient Data Pruning
-Hyperparameters We ran meta learning for 30 256 6 below. After pruning data based on the meta learning result, we ran ImageNet-1 4https //github.com/leopard-ai/betty/tree/main/examples
-16 120 10 at epochs [40, 80] following the set up
-in DynaMS [63].
+Hyperparameters We ran meta learning for 30 epochs with a batch size of 256 and the configuration
+shown in Table 6 below. After pruning data based on the meta learning result, we ran ImageNet-1k
+4https //github.com/leopard-ai/betty/tree/main/examples
+16training for 120 epochs with the learning rate decayed by 10 at epochs [40, 80] following the set up
 model optimizer init_lr lr_scheduler wdecay dataset unroll step SAMA α
-Base ResNet-50 1e-1 1e-4 ImageNet-1 2 1.0 2-layer MLP Adam 1e-5 0 ImageNet-1k train set N/A N/A
+Base ResNet-50 SGD 1e-1 None 1e-4 ImageNet-1k train set 2 1.0
+Meta 2-layer MLP Adam 1e-5 None 0 ImageNet-1k train set N/A N/A
 Table 6  Hyperparameters for ImageNet-1k data pruning experiments
-For the CIFAR-10 data pruning experiment, we ran meta learning for 50 128, and configuration in Table 7 below. After pruning the data based on the meta learning result, we
-ran CIFAR-10 200 epochs with the cosine learning rate decay schedule following the
+For the CIFAR-10 data pruning experiment, we ran meta learning for 50 epochs with a batch size of
+128, and configuration in Table 7 below. After pruning the data based on the meta learning result, we
+ran CIFAR-10 training for 200 epochs with the cosine learning rate decay schedule following the
 setup in DeepCore [22].
 model optimizer init_lr lr_scheduler wdecay dataset unroll step SAMA α
-Base ResNet-18 1e-1 5e-4 CIFAR-10 2 1.0 2-layer MLP Adam 1e-5 0 CIFAR-10 train set N/A N/A
+Base ResNet-18 SGD 1e-1 None 5e-4 CIFAR-10 train set 2 1.0
+Meta 2-layer MLP Adam 1e-5 None 0 CIFAR-10 train set N/A N/A
 Table 7  Hyperparameters for CIFAR-10 data pruning experiments
-Baselines We adopt EL N [ 47], GraNd [ 47], DynaMS [ 63] as our baselines for the ImageNet k
+Baselines We adopt EL2N [ 47], GraNd [ 47], DynaMS [ 63] as our baselines for the ImageNet1k
  experiments and GraNd [ 47], forgetting [ 61], margin [ 8] for the CIFAR-10 experiments. In
-detail, EL N/GraND [ 47] respectively select samples with large L2-loss/gradient-norm values,
+detail, EL2N/GraND [ 47] respectively select samples with large L2-loss/gradient-norm values,
 forgetting [ 47] chooses samples that are frequently forgotten during training, and margin [ 8] chooses
 samples with least confidence. While these baselines are considered static pruning , DynaMS [ 63]
 falls under the category of dynamic pruning where data to be pruned change during training. Dynamic
 pruning may see the whole training data across different epochs, making a fair comparison difficult.
 Surprisingly, despite being a static pruning algorithm, SAMA-based data pruning still achieves a
 better performance than DynaMS.
-Compute Resources We used 4 100 GPUs for Imagenet-1 1 2080Ti GPU for CIFAR-10 experiments.
+Compute Resources We used 4 NVIDIA Tesla V100 GPUs for Imagenet-1k data pruning meta
+learning experiments and 1 NVIDIA RTX 2080Ti GPU for CIFAR-10 experiments.
 Additional Information We measured the uncertainty Uvia the difference between the predictions
 of the current model and the exponentially-moving-averaged model.
 17C Algorithmic Adaptation for Adam Optimizer
 Since the Adam optimizer [ 32] has been the most popular optimizer to train large models, exemplified
 by Transformers [ 68], here we provide the adaptation matrix for Adam. We denote the first and
 second moments of the gradient in Adam as mandvrespectively, and the learning rate as γ.
- uadam
- g  u
- g 
-γβ1m  (1 β1)gp
-β1v  (1 β1)g2 ϵ 
  γ(1 β1)β2v (1 β1)β2mg  (1 β1)ϵp
-β1v  (1 β1)g2
-p
-β1v  (1 β1)g2 p
-β1v  (1 β1)g2 2
  γ(1 β1)β2v (1 β1)β2mgp
-β1v  (1 β1)g2 p
-β1v  (1 β1)g2 2(because ϵ 1)
+β1v  (1 β1)g2 e 2(because ϵ 1)
 Adaptation matrices can be similarly derived for other adaptive optimizers.
 D The Effect of Scaling in Model-Agnostic Meta Learning
 Since the inception of MAML [ 14], a myriad of algorithms have been proposed to improve few-shot
@@ -875,13 +769,11 @@ SAMA to achieve improved scaling to larger networks with its superior memory/com
 We conduct preliminary experiments on the Omniglot 20-way 1-/5-shot tasks with the basic 4-layer
 CNN architecture, while varying the width (hidden size) of the networks to study the effect of the
 model size on the few-shot classification accuracy. The experiment results are provided in Figure 4
-below.
-2526272829210211
-Width (Hidden Size)90919293949596 20-Way 1-Shot w/ 4-layer CNN
-2526272829210211
-Width (Hidden Size)96.597.097.598.098.599.099.5100.0 20-Way 5-Shot w/ 4-layer CNN
+Width (Hidden Size)90919293949596Accuracy
+Omniglot 20-Way 1-Shot w/ 4-layer CNN
+Width (Hidden Size)96.597.097.598.098.599.099.5100.0Accuracy
+Omniglot 20-Way 5-Shot w/ 4-layer CNN
 Figure 4  Few-shot image classification accuracy on Omniglot 20-way 1-/5-shot tasks with varying
-network sizes.
 Interestingly, we observe that the increased model size leads to consistent improvements in few-shot
 classification accuracy. The important question following this observation is  can we apply scaling
 laws [ 30] from other tasks ( e.g., language modeling) to general meta learning beyond few-shot image
@@ -896,32 +788,26 @@ on the meta gradient Lmeta
 an identity matrix. As obtaining the closed-form solution of the Hessian is impossible in almost all
 deep learning problems, we study the soundness of the identity approximation of base Jacobian in the
 simpler  biased regression  setting [ 19], for which the bilevel optimization formulation is as follows 
-λ   arg min
-λ X w (λ) y  2
-w (λ)   arg min
-w Xw y 2 β w λ 2
 Given the above formulation, the closed-form solutions for the base Jacobian, the meta-gradient gλ,
 and the optimal meta solution λ are 
 1. Base Jacobian  XTX βI
 2.gλ β(XTX βI) 1(X TX w  X Ty ), where w   (XTX βI) 1(XTy βλ)
 3.λ   (ATA) 1ATb, where A βX (XTX βI) 1, b y  X (XTX βI) 1XTy
-We set β  0.15 100 meta updates, and measure 1) the cosine similarity between the
+We set β  0.15and perform 100 meta updates, and measure 1) the cosine similarity between the
 ground truth gλand the meta gradient obtained with our approximation (i.e. gSAMA ), and 2) the
 L2 distance between the current meta parameter λtand the optimal solution λ at each time step t.
 For a more thorough analysis, we also compute these two metrics for other meta gradient algorithms
 that explicitly approximate base Jacobian inverse with conjugate gradient and Neumann series. In
 Figure 5, we provide the metric obtained from all time steps.
-0 20 40 60 80 100 0.00.20.40.60.81.0 0 20 40 60 80 100 2 error w.r.t optimal solutionCG
-Neumann
-SAMA
+update steps0.00.20.40.60.81.0gradient cosine similarity
+update steps0123L2 error w.r.t optimal solutionCG
 Figure 5  Left  cos(gλ, gapprox ), where gλis a ground truth (i.e. closed-form) meta gradient, and
 gapprox is an approximate meta gradient obtained with various popular meta learning algorithms
 including SAMA. Right   λt λ  2, where λtis the meta parameter λaftertmeta updates.
 From Figure 5, it can be clearly seen that 1) while slightly less accurate than second-order algorithms
 like CG, SAMA still achieves a high directional alignment with the ground truth meta-gradient, and
 2) SAMA also achieves a stable convergence to the optimal solution at a comparable speed.
-5We used smaller βthan in the original paper [ 19] (1 0.1), to amplify the  non-identitiness  of the base
-Jacobian.
+5We used smaller βthan in the original paper [ 19] (1 vs 0.1), to amplify the  non-identitiness  of the base
 19F Extensive Ablation Study
 In this section, we perform an extensive ablation study that studies the effectiveness of each component
 in SAMA ( i.e. base Jacobian inverse, algorithmic adaptation for the adaptive optimizer, and efficient
@@ -933,21 +819,24 @@ Finetuning (no meta learning baseline) x x x 85.79 169.16 7.77
 Iterative Diff ( e.g. MAML) [14, 42] x x x 85.78 28.07 22.94
 Conjugate gradient ( e.g. iMAML) [51] x x x 86.78 65.14 22.03
 Neumann series [40] x x x 86.65 67.03 19.70
-DARTS (or T1 2) [38, 41] o x x 86.36 43.69 10.81
-SAMA-NA o x x 86.55 137.90 10.30 89.05 134.56 11.12
+DARTS (or T1 T2) [38, 41] o x x 86.36 43.69 10.81
+SAMA-NA o x x 86.55 137.90 10.30
+SAMA o o x 89.05 134.56 11.12
 SAMA (2 GPUs) o o o 88.85 226.27 8.00
-SAMA (4 GPUs) o o o 89.02 298.28 6.46 8  Ablation results on AGNews
+SAMA (4 GPUs) o o o 89.02 298.28 6.46
+Table 8  Ablation results on AGNews
 Base Jacobian Algo Adapt Distributed Accuracy Throughput Memory
 Finetuning (no meta learning baseline) x x x 78.16 144.39 6.60
 Iterative Diff ( e.g. MAML) [14, 42] x x x 80.25 24.24 22.03
 Conjugate gradient ( e.g. iMAML) [51] x x x 81.01 56.27 21.92
 Neumann series [40] x x x 79.92 57.85 19.75
-DARTS (or T1 2) [38, 41] o x x 80.47 37.53 10.35
-SAMA-NA o x x 81.92 117.86 9.93 84.31 116.94 10.84
+DARTS (or T1 T2) [38, 41] o x x 80.47 37.53 10.35
+SAMA-NA o x x 81.92 117.86 9.93
+SAMA o o x 84.31 116.94 10.84
 SAMA (2 GPUs) o o o 85.18 196.48 7.84
-SAMA (4 GPUs) o o o 84.19 263.74 6.39 9  Ablation results on IMDB
+SAMA (4 GPUs) o o o 84.19 263.74 6.39
+Table 9  Ablation results on IMDB
 From our extended ablation study, it can be seen that 1) an identity approximation of base Jacobian
 significantly improves memory/compute efficiency, 2) algorithmic adaptation improves meta learning
 performance at the minimal compute/memory cost, and 3) our communication-optimized distributed
 training further improves compute/memory efficiency.
-20

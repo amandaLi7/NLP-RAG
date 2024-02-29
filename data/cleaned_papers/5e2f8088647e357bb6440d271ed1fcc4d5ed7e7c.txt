@@ -1,11 +1,11 @@
-Proceedings of the 5th Clinical Natural Language Processing Workshop , pages 524 528 14, 2023 2023 Association for Computational Linguistics
-Care Lang at MEDIQA-Chat 2023  Fine-tuning Language Models for
+Proceedings of the 5th Clinical Natural Language Processing Workshop , pages 524 528
+July 14, 2023  2023 Association for Computational Linguistics
+Care4Lang at MEDIQA-Chat 2023  Fine-tuning Language Models for
 Classifying and Summarizing Clinical Dialogues 
-Amal Alqahtani1,2, Rana Salama1, Mona Diab1,3, Abdou Youssef1 1The George Washington University, DC, USA
+Amal Alqahtani1,2, Rana Salama1, Mona Diab1,3, Abdou Youssef1
+1The George Washington University, DC, USA
 2King Saud University, Riyadh, KSA
-3Meta AI, USA
 {amalqahtani,raref,mtdiab,ayoussef}@gwu.edu
-Abstract
 Summarizing medical conversations is one of
 the tasks proposed by MEDIQA-Chat to promote
  research on automatic clinical note generation
@@ -18,7 +18,6 @@ metrics including ROUGE, BERTScore and
 BLEURT. Among the fine-tuned models, FlanT5
  achieved the highest aggregated score for
 dialogue summarization.
-1 Introduction
 Clinical dialogue summarization has emerged as
 a crucial task in clinical natural language processing
  (NLP). In a clinical NLP dialogue between a
@@ -43,7 +42,7 @@ based on the context of the text, like medical histories,
  follow-ups, or current diagnoses.
 In this paper, we describe our submission to the
 MEDIQA-Chat shared task (Ben Abacha et al.,
-2023) the Dialogue Note Summarization task, taskA.
+2023) the Dialogue2Note Summarization task, taskA.
  We observe that from the conversation it is
  The first two authors contributed equally to this work.important to  (1) capture all the medical conditions
  and terminology described in the dialogue
@@ -58,34 +57,37 @@ of fine-tuning pre-trained language models, including
 effectiveness of pre-trained models on dialogues,
 clinical data, and general models.
 Section Header Train Validation
-ALLERGY 60 4 34 4 77 4 19 1 15 2 8 3 23 1
-FAMILY HISTORY/SOCIAL HISTORY 351 22 5 1 282 20 6 1 8 1 2 1 54 7 2 1 118 4 63 8 11 3 3 1 60 11 1201 100 1  Overview of Task A Section Headers used for
+EMERGENCY DEPARTMENT COURSE 8 3
+FAMILY HISTORY/SOCIAL HISTORY 351 22
+GYNECOLOGIC HISTORY 5 1
+HISTORY of PRESENT ILLNESS 282 20
+PAST MEDICAL HISTORY 118 4
+PAST SURGICAL HISTORY 63 8
+REVIEW OF SYSTEMS 60 11
+Table 1  Overview of Task A Section Headers used for
 dialogue classification.
 2 Shared Task and Dataset
 The MEDIQA-Chat 2023 proposed two shared
 tasks that are related to clinical note summarization
 and generation (Ben Abacha et al., 2023) 
-1.Dialogue Note Summarization Task  Given
+1.Dialogue2Note Summarization Task  Given
 a conversation between a doctor and patient,
 the task is to generate a clinical note summarizing
  the conversation with one or multiple
 note sections (e.g. Assessment, Past Medical
- History, Past Surgical History). This task Doctor   Have you had any surgeries in the past 
+ History, Past Surgical History). This task524Doctor   Have you had any surgeries in the past 
 Patient   Nope I have not.
-Doctor   Anything 
-Patient   No.
 Section Header  Past Surgical History
 Note/Summary  He has not had any previous surgery.
 Figure 1  An example of a doctor-patient dialogue, section
- header and summary.
 includes two subtasks on the generation of
 specific sections (subtask A) and full notes
 (subtask B) from doctor-patient conversations.
-2.Note Dialogue Generation Task  Given a
+2.Note2Dialogue Generation Task  Given a
 clinical note, the task is to generate a synthetic
 doctor-patient conversation related to the information
  described in the full clinical note.
-We participated on Dialogue Note (subtask A) .
+We participated on Dialogue2Note (subtask A) .
 In this task, given a conversation between a doctor
 and a patient, the goal is to produce 
 1.A section header which is one of twenty normalized
@@ -95,8 +97,6 @@ classify the type of conversation.
  into concise and condensed notes. The
 generated summaries should be tailored to the
 type of information required based on the section
- header.
-2.1 Dataset
 For this task, a doctor-patient conversations dataset
 is shared by (Ben Abacha et al., 2023). The dataset
 consists of transcripts of conversational dialogues
@@ -112,7 +112,6 @@ contains 200 conversations. Table 1 shows the section
  headers distributions over the dataset. Figure 1
 shows a snippet of the dataset for a doctor-patient
 conversation along with the section header and the
-summary.
 2.2 Evaluation Metric
 For task evaluation, an ensemble of metrics are
 used to ensure more comprehensive and accurate
@@ -139,7 +138,6 @@ metric can provide a more robust and reliable evaluation
  that takes into account both the lexical and
 semantic similarity between summaries and references,
  as well as the human judgments of quality.
-3 Approach
 For this submission, we fine-tuned a number of
 pre-trained language models for implicit classification
  of headers and note summarization. Since the
@@ -155,26 +153,23 @@ A key challenge in this task is to generate summaries
  based on the associated section header, this
 involves first classifying the dialogue into one of
 the 20 given headers and accordingly generating
-a summary. To tackle this challenge, we initially Model ROUGE-1 ROUGE-2 ROUGE-L Percision Recall F1 BLEU Agg.
-Validation Dataset Flan-T5 0.338 0.147 0.266 0.667 0.685 0.670 0.511 0.50
-Flan-T5 0.305 0.120 0.255 0.691 0.621 0.645 0.510 0.480
-Flan-T5 0.348 0.149 0.264 0.660 0.696 0.672 0.52 0.510 5 0.261 0.087 0.226 0.601 0.610 0.596 0.467 0.440 0.170 0.061 0.125 0.481 0.589 0.519 0.359 0.349
-BART-Large 0.248 0.106 0.168 0.511 0.698 0.580 0.561 0.463 0.250 0.107 0.169 0.518 0.689 0.581 0.550 0.460
-Test Dataset Flan-T5 0.344 0.155 0.280 0.671 0.685 0.672 0.508 0.508
-Flan-T5 0.332 0.140 0.283 0.689 0.644 0.485 0.492 0.508
-Flan-T5 0.3581 0.165 0.289 0.6701 0.70 0.678 0.514 0.517 2  Results of different models fine-tuned for Task A on Validation and Testing Dataset as generated by
+a summary. To tackle this challenge, we initially525Model ROUGE-1 ROUGE-2 ROUGE-L Percision Recall F1 BLEU Agg.
+Validation Dataset Flan-T5 Base 0.338 0.147 0.266 0.667 0.685 0.670 0.511 0.50
+Flan-T5 Large 0.305 0.120 0.255 0.691 0.621 0.645 0.510 0.480
+Flan-T5 SAMSum 0.348 0.149 0.264 0.660 0.696 0.672 0.52 0.510
+Clinical T5 0.261 0.087 0.226 0.601 0.610 0.596 0.467 0.440
+BioGPT 0.170 0.061 0.125 0.481 0.589 0.519 0.359 0.349
+BART-Large 0.248 0.106 0.168 0.511 0.698 0.580 0.561 0.463
+BioBART 0.250 0.107 0.169 0.518 0.689 0.581 0.550 0.460
+Test Dataset Flan-T5 Base 0.344 0.155 0.280 0.671 0.685 0.672 0.508 0.508
+Flan-T5 Large 0.332 0.140 0.283 0.689 0.644 0.485 0.492 0.508
+Flan-T5 SAMSum 0.3581 0.165 0.289 0.6701 0.70 0.678 0.514 0.517
+Table 2  Results of different models fine-tuned for Task A on Validation and Testing Dataset as generated by
 MediQA shared Task. The precision, recall and F1 scores are based on BERTScore. Agg. represents aggregated
 results. Best results per dataset are in Bold.
-Model %
-Flan-T5 28
-Flan-T5 49
-Flan-T5 30 5 43 23
-BART-Large 63 69 3  Results of Section Header Classification as a
+Table 3  Results of Section Header Classification as a
 percentage of correctly classified headers.
-Model Accuracy
-Flan-T5 0.565
-Flan-T5 0.375
-Flan-T5 0.345 4  Results of Section Header Classification for
+Table 4  Results of Section Header Classification for
 the Shared Task A from published results
 prepare the data to incorporate both the header and
 corresponding summary in the input data before
@@ -182,21 +177,17 @@ fine-tuning. We append labels to each dialogue
 to tag headers and summaries as follows  " Dialogue 
  Doctor  .. Patient ...  Header  header
  Summary  reference summary ".
-3.2 Model Variants
 We used a variant of different Sequence-toSequence
  models for our experiments including 
 T5(Raffel et al., 2020) a unified text-to-text language
  model. We used Flan-T5(Chung et al., 2022)
 that was further pre-trained on more tasks and
 languages. Different versions of this model includes,
- FLan-T5-base1, FLan-T5-large and FLanT5-SamSum3,
- a Flan-T5 model that is further pre https //huggingface.co/google/
-
-flan-t5-base
+ FLan-T5-base1, FLan-T5-large2and FLanT5-SamSum3,
+ a Flan-T5 model that is further pre1https //huggingface.co/google/
 2https //huggingface.co/google/
-flan-t5-large
 3https //huggingface.co/google/
-flan-t5-basetrained on the SAMSum dataset containing about
+flan-t5-basetrained on the SAMSum dataset4containing about
 16k messenger-like conversations with summaries.
 In addition to Clinical-T5 (Lu et al., 2022) which
 is a T5 model pre-trained on clinical text5
@@ -212,7 +203,7 @@ is a BART model pretained on biomedical data7.
 Evaluation is performed using the metrics described
  in (Ben Abacha et al., 2023) and mentioned
 in Section 2.2. The script provided in the shared
-task was used for evaluating the fine-tuned models.
+task8was used for evaluating the fine-tuned models.
 Evaluation was performed on the validation dataset
 only as the test dataset references are not available.
  Table 4 shows the results of our fine-tuned
@@ -223,18 +214,13 @@ ROUGE-L scores, in addition to BERTScore (precision,
 include the aggregated score. The Table also includes
  the final runs scores published by MEDIQAChat
  on the Test dataset. As shown in the table,
-Flan-T5-SAMSum out-performed all models ex https //huggingface.co/datasets/
-
-samsum
+Flan-T5-SAMSum out-performed all models ex4https //huggingface.co/datasets/
 5https //huggingface.co/luqh/
-ClinicalT5-base
 6https //huggingface.co/facebook/
-bart-large-xsum
 7https //huggingface.co/GanjinZero/
-biobart-large
 8https //github.com/abachaa/
 MEDIQA-Chat-2023/blob/main/scripts/
-evaluate_summarization.py cept on BLEU score. On average, Flan-T5 models
+evaluate_summarization.py526cept on BLEU score. On average, Flan-T5 models
 outperformed other models in header based summarization,
  they achieved higher scores in ROUGE
 and BERTScores. Although they didn t perform as
@@ -246,13 +232,11 @@ significantly less than Flan-T5 SAMSum. BioGPT
 achieved the least scores across all metrics and
 header classification. Given the best models from
 validation dataset evaluation, we submitted the 3
-Flan-T5 5
+Flan-T5 models that achieved the best scores  FlanT5
  SAMSum, Flan-T5 Large and Flan-T5 Base.
 Table 2 shows the accuracy results achieved on the
 test dataset for the submitted runs. The best submitted
- models are available on HuggingFace for
-results replication.
-5 Related Work
+ models are available on HuggingFace9for
 Automated note generation from doctor-patient
 conversations has been the subject of several recent
  studies in natural language processing and
@@ -274,7 +258,6 @@ these efforts aim to reduce the burden on healthcare
  providers by automating the tedious task of
 note-taking and ultimately improving the quality
 and accessibility of patient records.
-6 Conclusion
 We utilize several pre-trained models for Task A
 in MEDIQA-Chat shared task. The main objective
 of this task is to develop clinical dialogue summarization
@@ -298,7 +281,6 @@ records. Finally, since Flan-T5 SAMSum achieved
 the best results, we anticipate that further unsupervised
  training for the Flan-T5 language model with
 clinical dialogues would improve the results.
-Limitations
 Generating clinical notes or summaries of clinical
 conversations using NLP technology is a rapidly
 developing field with great potential. However,
@@ -320,8 +302,6 @@ is expected, therefore, the use of NLP models in
 such clinical settings must be performed with caution
  and under medical professionals  supervision
 to ensure the generated notes  accuracy and reliability.
-
-Ethics Statement
 When developing an automated system for clinical
 note generation from doctor-patient conversations,
 it is crucial to consider various ethical considerations.
@@ -330,7 +310,7 @@ confidentiality of patient information. The system
 must be designed to comply with regulations and
 guidelines for protecting patient data. Additionally,
 there must be explicit consent processes, ensuring
-that patients understand how their data will be used and allowing them to opt-out if desired. The system
+that patients understand how their data will be used527and allowing them to opt-out if desired. The system
 must also be developed fairly and transparent, ensuring
  it does not perpetuate biases or contribute to
 health disparities. Moreover, the system must be accurate
@@ -340,8 +320,6 @@ it is essential to approach the development of an automated
  system for clinical note generation with a
 solid ethical framework to ensure that it aligns with
 the highest standards of patient care and ethical
-conduct.
-References
 Asma Ben Abacha, Wen-wai Yim, Griffin Adams, Neal
 Snider, and Meliha Yetisgen. 2023. Overview of the
 mediqa-chat 2023 shared tasks on the summarization
@@ -371,7 +349,6 @@ Harris, Liam McGrath, Yue Pan, Joel Pinto, et al.
  conversations using sequence-to-sequence
 models. In Proceedings of the first workshop on natural
  language processing for medical conversations ,
-pages 22 30.
 Anirudh Joshi, Namit Katariya, Xavier Amatriain, and
 Anitha Kannan. 2020. Dr. summarize  Global summarization
  of medical dialogue by exploiting local
@@ -406,35 +383,29 @@ Kishore Papineni, Salim Roukos, Todd Ward, and WeiJing
 40th Annual Meeting of the Association for Computational
  Linguistics , pages 311 318, Philadelphia,
 Pennsylvania, USA. Association for Computational
-Linguistics.
 Colin Raffel, Noam Shazeer, Adam Roberts, Katherine
  Lee, Sharan Narang, Michael Matena, Yanqi
 Zhou, Wei Li, and Peter J. Liu. 2020. Exploring the
 limits of transfer learning with a unified text-to-text
 transformer. Journal of Machine Learning Research ,
-21(140) 1 67.
 Thomas Wolf, Lysandre Debut, Victor Sanh, Julien
 Chaumond, Clement Delangue, Anthony Moi, Pierric
  Cistac, Tim Rault, Rémi Louf, Morgan Funtowicz,
 et al. 2019. Huggingface s transformers  State-ofthe-art
  natural language processing. arXiv preprint
-arXiv 1910.03771 .
 Hongyi Yuan, Zheng Yuan, Ruyi Gan, Jiaxing Zhang,
 Yutao Xie, and Sheng Yu. 2022. BioBART  Pretraining
  and evaluation of a biomedical generative language
  model. In Proceedings of the 21st Workshop
 on Biomedical Language Processing , pages 97 109,
 Dublin, Ireland. Association for Computational Linguistics.
-
 Tianyi Zhang, Varsha Kishore, Felix Wu, Kilian Q.
 Weinberger, and Yoav Artzi. 2020. Bertscore  Evaluating
  text generation with bert.
 Yuhao Zhang, Daisy Yi Ding, Tianpei Qian, Christopher
  D Manning, and Curtis P Langlotz. 2018. Learning
  to summarize radiology findings. arXiv preprint
-arXiv 1809.04698 .
 Matthias Zuchowski and Aydan Göller. 2022. Speech
 recognition for medical documentation  an analysis
 of time, cost efficiency and acceptance in a clinical
 setting. British Journal of Healthcare Management ,
-28(1) 30 36.528

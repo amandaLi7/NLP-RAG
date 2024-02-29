@@ -1,13 +1,10 @@
 Learning to Generate Equitable Text in Dialogue
 from Biased Training Data
-Anthony Sicilia
 Intelligent Systems Program
 University of Pittsburgh
 anthonysicilia@pitt.eduMalihe Alikhani
 School of Computing and Information
 University of Pittsburgh
-malihe@pitt.edu
-Abstract
 The ingrained principles of fairness in a dialogue
  system s decision-making process and
 generated responses are crucial for user engagement,
@@ -39,7 +36,6 @@ game and, using this example, test our theory
 relative-performance of multiple algorithms in
 generating equitable text as measured by both
 human and automated evaluation.
-1 Introduction
 Machine learning models for text generation in dialogue
  have trouble learning the  long tail  of a data
 distribution  i.e., the data concepts not frequently
@@ -54,7 +50,7 @@ concepts in the long tail, and ultimately, learn inFigure
 consists of game dialogues where a question-player
 queries an answer-player to identify a secret goal object
 known only to the answer-player. Images containing
-men outnumber images with women 2 1, forming a
+men outnumber images with women 2 to 1, forming a
 "long tail" in the data distribution. In examples above,
 human annotations use visual (contextual) cues to agree
 on gender or balk when appropriate. Traditional algorithms
@@ -74,7 +70,7 @@ for understanding how machines learn to generate
  inequitable text and when this outcome can be
 avoided. To provide a strong technical foundation
 for equitable generation in dialogue, we build on
-theories of computational learning (Valiant, 1984 2307.04303 1  [cs.CL]  10 2023McAllester, 1998). Specifically, our theoretical
+theories of computational learning (Valiant, 1984 arXiv 2307.04303v1  [cs.CL]  10 Jul 2023McAllester, 1998). Specifically, our theoretical
 contributions are as follows 
 1.We define precise constraints that encapsulate
 diverse notions of equity in dialogue (Def. 3.1).
@@ -116,11 +112,16 @@ The remainder of the paper is organized as follows
 contributions including discussion of related work,
 a brief tutorial on the employed learning theoretic
  framework, and a few running examples used
-throughout the text    3 4 conducts
+throughout the text    3 provides our theoretical
+contributions including formulation of mathematical
+ notions of equity in text generation and theoretical
+ analysis of learning algorithms    4 conducts
 experiments which validate our theory in practice 
 and finally,   5 concludes the work. Code, data, and
 a python package will be made publicly available
-to promote further research.1 1https //github.com/anthonysicilia/equitable-dialogue-2 2.1 Learning Theory for Dialogue
+to promote further research.1
+1https //github.com/anthonysicilia/equitable-dialogue-2 Background and Related Work
+2.1 Learning Theory for Dialogue
 Recent proposals for the use of learning theory in
 dialogue are due to Sicilia and Alikhani (2022) who
 propose LEATHER .2Specifically, LEATHER is a formal
@@ -164,7 +165,7 @@ the distribution Pθ(C). In some cases, we will consider
  the joint distribution of both (goal) contexts
 and learned dialogues  i.e., of the random tuple
 (C,ˆD). We write ˆGθfor this joint distribution.
-ACL2023 2Learning Theory for Text-Gen erationFigure 2  Toy examples of visual (left) and educational (right) dialogues. Key learning-theoretic terms are labeled.
+2Learning Theory for Text-Gen erationFigure 2  Toy examples of visual (left) and educational (right) dialogues. Key learning-theoretic terms are labeled.
 A common inequity of dialogue systems is pictured (i.e., misidentifying gender).
 Test Function with Unknown Effects The final
 component is the test function (or simply test)h.
@@ -245,7 +246,8 @@ also make connections with learning theory to provide
 Indeed, ours is the first work to study bias in text
 generation using these insightful techniques from
 computational learning theory.
-3 3.1 Formal Definitions for Equity
+3 Formalizing Equity in Dialogue
+3.1 Formal Definitions for Equity
 In this part, we introduce some formal, mathematical
  notions of equity. We start with a general notion
 of equity in dialogue and show how this can be specialized
@@ -306,7 +308,7 @@ Muslims, than when its context is not specific to
 Muslims. Below, we formalize this intuition for
 equity with a mathematical constraint.
 Definition 3.1. (Score Parity) A contextualized
-dialogue distribution Gwith(C, D) Gand
+dialogue distribution3Gwith(C, D) Gand
 A A(C)satisfies score parity if
 E[s(D,0) A  0]   E[s(D,1) A  1] (2)
 where sis a scoring function s D   A   [0,1].
@@ -467,7 +469,6 @@ data because we use an expectation to quantify parity
 Small Test Divergence Implies Equity
 Theorem 3.1. Consider an equitable goal Gand
 leth s(the scoring function). Then,  (ˆGθ) ϵ
-whenever TDG(θ) ϵ/2.
 Simply, the above result indicates minimization
 ofTD with an equitable goal and appropriate test
 leads to an equitable learned dialogue distribution.Takeaways An important consequence of Thm.
@@ -547,24 +548,17 @@ learned from a finite space Θ. Other proof techniques
 Theorem 3.2. Consider an equitable goal Gwith
 associated test h. Suppose a sample of i.i.d. human
 data is collected S  ( Ci, Di)m
-i 1 ( Ci, Di) H.
 Suppose His context aware and preserves context.
 Then, for all δ  0, with probability at least 1 δ,
 for all θ,2β TDG(θ)is bounded above by
-1 1 h( Di, Ai) {z}
-human h(ˆD 
-i, Ai) {z}
-predicted  q
-log Θ  ln 2 /δ
-2m {z}
-data efficiency(11)
 where β  min aPr( A a).7
 For interpretation, we break down the upperbound
  on 2β TDG(θ)into two terms  (a) the
 difference in test output from the human dialogue
 to the predicted dialogue and (b) a data efficiency
 term dependent on the number of i.i.d samples m.
-6 0in Eq. (6), regardless of A.
+6Perfectly correct dialogue satisfies accuracy parity because
+ it satisfies s 0in Eq. (6), regardless of A.
 7Note, we also pose a technical requirement  pairwise independence
  must hold (conditional to the context) between
 the human dialogue, the predicted dialogue, and the protected
@@ -585,7 +579,7 @@ human data is biased. In other words
 LEATHER -based algorithms learn humanlikeness
  andequity, even on biased data.
 We only require the human data to be context-aware
-and preserve context (Defs. 3.4 3.5).
+and preserve context (Defs. 3.4 and 3.5).
 Data Efficiency The above interpretation of (a)
 is only valid if the data efficiency term (b) is also
 small. For interpretation, we consider the size of
@@ -604,10 +598,9 @@ augmentation can increase the size of (b) in learning
  bounds on test divergence,8or in other words 
 Augmenting training data to improve equity
  can reduce data-efficiency, and ultimately,
- model performance.
 Impact does depend on the augmentation strategy,
 so we study common proposals for equity, next.
-4 3, we conclude by outlining algorithmic
+In Section 3, we conclude by outlining algorithmic
 insights revealed by our theory. Next, we test these
 theories on the GuessWhat   game corpus.
 4.1 Dataset, Algorithms, and Evaluation
@@ -615,10 +608,15 @@ Unless otherwise noted, we use identical experimental
  settings, hyperparameters, etc. as Shekhar
 et al. (2019)  Sicilia and Alikhani (2022).
 8For discussion, see the pf. of Thm. 3.2 and remarks.acc ldiv qdiv repq  (F)TD (F) (M)TD (M)hum .eval.(F/M) 
-CL 55.9 10.7 14.3 58.2 52.6 28.8 23.7 33.5 52.0 / 72.0 56.9 12.7 16.0 47.5 29.1 27.2 14.7 29.7 68.0 / 64.0 58.0 12.2 14.8 43.8 35.8 28.9 2.3 30.7 66.0 / 66.0 1 100 epochs of pre-training and 100 epochs of self-play . Generally, objective is 0 100 point scale with exceptions denoted by up arrows. The first 4 metrics test human-likeness. The last 5 test equity.
+CL 55.9 10.7 14.3 58.2 52.6 28.8 23.7 33.5 52.0 / 72.0
+LEATHER 56.9 12.7 16.0 47.5 29.1 27.2 14.7 29.7 68.0 / 64.0
+DS 58.0 12.2 14.8 43.8 35.8 28.9 2.3 30.7 66.0 / 66.0
+Table 1  Comparison of algorithms after 100 epochs of pre-training and 100 epochs of self-play . Generally, objective is 0 on
+100 point scale with exceptions denoted by up arrows. The first 4 metrics test human-likeness. The last 5 test equity.
 Dataset Our dataset is the corpus for the GuessWhat  
  game proposed by De Vries et al. (2017).
-Gameplay is described in Figure 1 2. We
+Gameplay is described in Figure 1 and an example
+is shown as the visual dialogue in Figure 2. We
 also give a detailed description of the game rules
 in Appendix A.5. We use the original train/val.
 splits and provide statistics on this corpus in Appendix
@@ -696,14 +694,14 @@ apply an augmentation strategy to the test set (similar
 annotators focused on game success, we also incorporate
  additional human annotations. hum .eval.
 is % of model dialogues using gendered words correctly
- based on annotation (50 per method per an We
+ based on annotation (50 per method per an11We
  focus on accuracy parity because the dataset we consider
  is not likely to exhibit any significant parity issues in
 toxicity, sentiment, etc. Instead, the systemic biases in the
-data are most likely to impact accuracy parity.notator). Namely, two annotators were asked to
+data are most likely to impact accuracy parity.notator). Namely, two annotators12were asked to
 determine correctness of gendered word use, evaluating
  both incorrect usage as well as false negatives 
-i.e., where use would be appropriate/helpful.13 4.2 Results
+i.e., where use would be appropriate/helpful.13
 LEATHER produces human-like, equitable text.
 In Tab. 1, LEATHER improves upon CLin terms of
 both human-likeness andequity, across all metrics.
@@ -743,7 +741,7 @@ our experimental data. In experiments, this insight
 is reflected in comparing DSand the baseline. DS
 outperforms CLin Tab. 1 on all metrics but TD F .
 Test divergence models equity well. Finally, we
-recall test divergence is the key link between ex College
+recall test divergence is the key link between ex12College
  educated, native English speakers.
 13To prime responses, annotators were prompted with questions
  like  If any gendered words were used, were they used
@@ -760,8 +758,6 @@ at ranking equity of algorithms, since TD is predictive
  of all improvements from CLtoLEATHER .
 Again, our theoretical predictions match our empirical
  observations, highlighting the practical utilitiy
-of our theory.
-5 Conclusions
 In this paper, we provide a first in-depth study
 of equity in dialogue, formalizing mathematical
 notions of equity in dialogue and using computational
@@ -777,10 +773,7 @@ algorithms that achieve both equity and humanlikeness,
 useful in ranking the equity of algorithms. To promote
  further research, our code, data, and a python
 package will be made publicly available.14
-Acknowledgements
 The authors thank Amazon for their support during
-this project.
-Limitations
 While our theoretical work is broadly applicable to
 any protected attribute and any dialogue task, our
 empirical study has primarily tested gender bias
@@ -793,7 +786,7 @@ assumptions of our theory when using it to draw insights
 data bias changes, it is possible the assumptions of
 Thm. 3.2 may no longer be met. Users of our theory
  should take care in ensuring context-awareness
-14https //github.com/anthonysicilia/equitable-dialogueACL and
+14https //github.com/anthonysicilia/equitable-dialogueACL2023and
  context-preservation, for example, are reasonable
  assumptions on new data, prior to applying
 the insights of   3.3. Lastly, while all of our gender
@@ -802,7 +795,6 @@ a smaller subset come from annotators primed to
 judge correctness/equity of gender reference. So,
 more in-depth human evaluation can better support
 our theoretical results as well.
-Ethics Statement
 The goal of this paper is to present a theoretically
 grounded framework to mitigate bias in dialogue
 systems. Our theoretical and empirical techniques
@@ -820,11 +812,12 @@ Our human subject board approved our protocol.
 Human subjects participated voluntarily and were
 compensated according to the regulations approved
 by our human subject review board.
-References
 Su Lin Blodgett, Gilsinia Lopez, Alexandra Olteanu,
 Robert Sim, and Hanna Wallach. 2021. Stereotyping
 Norwegian salmon  An inventory of pitfalls in fairness
- benchmark datasets. In Proceedings of the 59 11th International Joint Conference
+ benchmark datasets. In Proceedings of the 59th
+Annual Meeting of the Association for Computational
+Linguistics and the 11th International Joint Conference
  on Natural Language Processing (Volume 1 
 Long Papers) , pages 1004 1015, Online. Association
 for Computational Linguistics.
@@ -857,31 +850,26 @@ Mayukh Das and Wolf Tilo Balke. 2022. Quantifying
  bias from decoding techniques in natural language
  generation. In Proceedings of the 29th International
  Conference on Computational Linguistics ,
-pages 1311 1323.
 Harm De Vries, Florian Strub, Sarath Chandar, Olivier
 Pietquin, Hugo Larochelle, and Aaron Courville.
 2017. Guesswhat   visual object discovery through
 multi-modal dialogue. In Proceedings of the IEEE
 Conference on Computer Vision and Pattern Recognition
- , pages 5503 5512.
 Jwala Dhamala, Varun Kumar, Rahul Gupta, Kai-Wei
 Chang, and Aram Galstyan. 2022. An analysis of
 the effects of decoding algorithms on fairness in
 open-ended language generation. arXiv preprint
-arXiv 2210.03826 .
 Jwala Dhamala, Tony Sun, Varun Kumar, Satyapriya
 Krishna, Yada Pruksachatkun, Kai-Wei Chang, and
 Rahul Gupta. 2021. Bold  Dataset and metrics for
 measuring biases in open-ended language generation.
  In Proceedings of the 2021 ACM Conference on
 Fairness, Accountability, and Transparency , pages
-862 872.
 Sanghamitra Dutta, Dennis Wei, Hazar Yueksel, Pin-Yu
 Chen, Sijia Liu, and Kush Varshney. 2020. Is there
 a trade-off between fairness and accuracy  a perspective
  using mismatched hypothesis testing. In International
  Conference on Machine Learning , pages
-2803 2813. PMLR.
 Joel Escudé Font and Marta R. Costa-jussà. 2019.
 Equalizing gender bias in neural machine translation
 with word embeddings techniques. In Proceedings of
@@ -898,14 +886,12 @@ InProceedings of the 2019 Conference of the North
 American Chapter of the Association for Computational
  Linguistics  Human Language Technologies,Volume 1 (Long and Short Papers) , pages 609 614,
 Minneapolis, Minnesota. Association for Computational
- Linguistics.
 Yue Guo, Yi Yang, and Ahmed Abbasi. 2022. Autodebias 
  Debiasing masked language models with
 automated biased prompts. In Proceedings of the
 60th Annual Meeting of the Association for Computational
  Linguistics (Volume 1  Long Papers) , pages
 1012 1023, Dublin, Ireland. Association for Computational
- Linguistics.
 Lisa Anne Hendricks, Kaylee Burns, Kate Saenko,
 Trevor Darrell, and Anna Rohrbach. 2018. Women
 also snowboard  Overcoming bias in captioning models.
@@ -914,7 +900,6 @@ Computer Vision (ECCV) , pages 771 787.
 Faisal Kamiran and Toon Calders. 2009. Classifying
 without discriminating. In 2009 2nd international
 conference on computer, control and communication ,
-pages 1 6. IEEE.
 Zachary Lipton, Yu-Xiang Wang, and Alexander Smola.
 2018. Detecting and correcting for label shift with
 black box predictors. In International conference on
@@ -928,17 +913,15 @@ David Madras, Elliot Creager, Toniann Pitassi, and
 Richard Zemel. 2018. Learning adversarially fair
 and transferable representations. In International
 Conference on Machine Learning , pages 3384 3393.
-PMLR.
 Andreas Maurer. 2004. A note on the pac bayesian
 theorem. arXiv preprint cs/0411099 .
 David A McAllester. 1998. Some pac-bayesian theorems.
  In Proceedings of the eleventh annual conference
- on Computational learning theory , pages 230 234.
+ on Computational learning theory , pages 230 
 Daniel McNamara, Cheng Soon Ong, and Robert C
 Williamson. 2019. Costs and benefits of fair representation
  learning. In Proceedings of the 2019
 AAAI/ACM Conference on AI, Ethics, and Society ,
-pages 263 270.
 Ninareh Mehrabi, Fred Morstatter, Nripsuta Saxena,
 Kristina Lerman, and Aram Galstyan. 2021. A survey
  on bias and fairness in machine learning. ACM
@@ -952,7 +935,6 @@ Kishore Papineni, Salim Roukos, Todd Ward, and WeiJing
 InProceedings of the 2018 Conference on Empirical
  Methods in Natural Language Processing , pages
 2799 2804, Brussels, Belgium. Association for Computational
- Linguistics.
 Liva Ralaivola, Marie Szafranski, and Guillaume
 Stempfel. 2010. Chromatic pac-bayes bounds for
 non-iid data  Applications to ranking and stationary
@@ -976,7 +958,6 @@ A framework for learning to generate human-like text
 in dialogue. In Findings of the Association for Computational
  Linguistics  AACL-IJCNLP 2022 , pages
 30 53, Online only. Association for Computational
-Linguistics.
 Leslie G Valiant. 1984. A theory of the learnable. Communications
  of the ACM , 27(11) 1134 1142.
 Xuan-Son Vu, Thanh-Son Nguyen, Duc-Trong Le, and
@@ -985,7 +966,6 @@ privacy and fairness awareness. In Proceedings of the
 28th International Conference on Computational Linguistics
  , pages 414 425, Barcelona, Spain (Online).
 International Committee on Computational Linguistics.
-
 Tianlu Wang, Xi Victoria Lin, Nazneen Fatema Rajani,
  Bryan McCann, Vicente Ordonez, and Caiming
 Xiong. 2020. Double-hard debias  Tailoring word
@@ -1004,7 +984,6 @@ InInternational conference on machine learning ,
 pages 325 333. PMLR.Han Zhao, Amanda Coston, Tameem Adel, and Geoffrey
  J Gordon. 2019. Conditional learning of fair representations.
  In International Conference on Learning
- Representations .
 Han Zhao and Geoff Gordon. 2019. Inherent tradeoffs
 in learning fair representations. Advances in neural
 information processing systems , 32.
@@ -1016,7 +995,6 @@ the North American Chapter of the Association for
 Computational Linguistics  Human Language Technologies,
  Volume 2 (Short Papers) , pages 15 20, New
 Orleans, Louisiana. Association for Computational
-Linguistics.
 Jieyu Zhao, Yichao Zhou, Zeyu Li, Wei Wang, and KaiWei
  Chang. 2018b. Learning gender-neutral word
 embeddings. In Proceedings of the 2018 Conference
@@ -1025,25 +1003,17 @@ on Empirical Methods in Natural Language Processing,
  for Computational Linguistics.A Proofs and Additional Technical Discussion
 A.1 Proof of Thm. 3.1
 Claim. Consider an equitable goal Gand let h s(the scoring function). Then,  (ˆGθ) ϵwhenever
-TDG(θ) ϵ/2.
 Proof. Suppose TDG(θ) ϵ, then we have
 ϵ E s(D, A) s(ˆD, A) 
- X
 a APr(A a) E[s(D, A) s(ˆD, A) A a](Law of Total Expectation)
- 1 2X
 a AE[s(D, A) s(ˆD, A) A a] (Balance of G)
- 1 2X
 a AE[s(D, A) s(ˆD, A) A a] (Jensen s Inequality)(12)
 Now, since Gis equitable we have there is some value xsuch that for all a  A, we have E[s(D, A) 
 A a]  x. Substituting and expanding the sum over A, we have
-X
 a AE[s(D, A) s(ˆD, A) A a] x E[s(ˆD,0)] x E[s(ˆD,1)]. (13)
 Next, we put together the previous two equations and utilize the definition of the absolute value to break
 the proof into cases. For ease of presentation, we let
 µ  min {E[s(ˆD,0)],E[s(ˆD,1)]}and M  max {E[s(ˆD,0)],E[s(ˆD,1)]}. (14)
-This gives
-2ϵ  
-     
      E[s(ˆD,0)] x E[s(ˆD,1)] x ifµ x,
 x E[s(ˆD,0)]   x E[s(ˆD,0)] ifM x,
 E[s(ˆD,0)] x x E[s(ˆD,1)] ifE[s(ˆD,0)] x E[s(ˆD,1)],
@@ -1055,22 +1025,13 @@ In the second case, we also have
 x E[s(ˆD,0)]   x E[s(ˆD,0)] M E[s(ˆD,0)]   M E[s(ˆD,1)]   M µ. (17)
 Thus, in all cases, we have 2ϵ  (ˆG), the desired result.
 A.2 Proof of Thm. 3.2
-A.2.1 Proof
 Claim. Consider an equitable goal Gwith associated test h. Suppose a sample of i.i.d. human data is
 collected S  ( Ci, Di)m
 i 1 ( Ci, Di) H. Suppose His context aware and preserves context. Then, for
 allδ  0, with probability at least 1 δ, for all θ,2β TDG(θ)is bounded above by
-1 1 h( Di, Ai) {z}
-human h(ˆD 
-i, Ai) {z}
-predicted  q
-log Θ  ln 2 /δ
-2m {z}
-data efficiency(18)
 where β  min aPr( A a),ˆD 
 i Pθ( C). As noted in the main text we also pose the requirement of
 pairwise independence  first, between D,ˆD, and Ain the definition of TDG(conditional to C)  second,
-between  Di,ˆD 
 i, and  Ai(again, conditional to the context  Ci).Proof. First, we enumerate some of the key assumptions for easy reference 
  (A1)  His context aware
  (A2)  His context preserving
@@ -1082,47 +1043,27 @@ Now, we consider decomposing the joint probability density Pr(D d,ˆD ˆd, A  a)
 importantly, is the joint density used to compute the expectation in TDG(θ).16To begin, we have
 Pr(D d,ˆD ˆd, A a)  X
 cPr(C c)Pr(D d,ˆD ˆd, A a C c)(Law of Total Exp.)
- X
 cPr(C c)Pr(D d C c)Pr(ˆD ˆd C c)Pr(A a C c)(A3)
- X
-cPr(C c)
 Pr( C c)Pr( C c)Pr(D d C c)Pr(ˆD ˆd C c)Pr(A a C c) ( 1 trick)
- X
-cPr(C c)
 Pr( C c)Pr( C c)Pr( D d  C c)Pr(ˆD ˆd C c)Pr(A a C c) (A1)
- X
-cPr(C c)
 Pr( C c)Pr( C c)Pr( D d  C c)Pr(ˆD  ˆd  C c)Pr(A a C c) (A4)
- X
-cPr(C c)
 Pr( C c)Pr( C c)Pr( D d  C c)Pr(ˆD  ˆd  C c)Pr( A a  C c) (A5)
- X
-cPr(C c)
 Pr( C c)Pr( C c)Pr( D d,ˆD  ˆd, A a  C c)(A3)(19)
 Further, we can relate the probability distributions for the contexts Cand Cthrough their implied attribute
 distributions via (A2)
-Pr(C c)  X
 aPr(C c A a)Pr(A a)(Law of Total Exp.)
- X
 aPr( C c  A a)Pr(A a)(A2)
- X
 aPr( C c  A a)Pr( A a) Pr(A a)
-Pr( A a)( 1 trick)
- X
-aPr( C c  A a)Pr( A a) 1 2β(balance of Gand def. of β)
- 1 2βPr( C c)(20)
+aPr( C c  A a)Pr( A a) 1
+2β(balance of Gand def. of β)
 Applying this to our previous outcome, we have
-X
-cPr(C c)
 Pr( C c)Pr( C c)Pr( D d,ˆD  ˆd, A a  C c)
- X
-c1 2βPr( C c)Pr( D d,ˆD  ˆd, A a  C c)
- 1 2βPr( D d,ˆD  ˆd, A a) (Law of Total Exp.) .(21)
+2βPr( C c)Pr( D d,ˆD  ˆd, A a  C c)
+2βPr( D d,ˆD  ˆd, A a) (Law of Total Exp.) .(21)
 15Here, we are using the same shorthand from the main text  e.g., in Def. 3.4.
 16We ignore Usince it is unused in this paper. The proof would be more complicated, but similar had we included U.Notice, the new joint density Pr( D d,ˆD  ˆd, A a)can be used to compute the expectation in
 TDH, while the previous joint density was used to compute the expectation in TDG. Both expectations
 have everywhere non-negative variables. So, ultimately, the relation between the joint densities gives 
-TDG(θ) 1 2βTDH(θ) (22)
 To complete the proof, we need to bound the true test divergence on the human data TDH(θ)with our
 observation TDS(θ). To do so, without using a test set, we need to apply a PAC learning bound for
 parameters selected from a finite hypothesis space (i.e., so that the result holds for any θlearned from Θ).
@@ -1136,9 +1077,6 @@ we compute test divergence. Although this distribution and the resulting test di
 the data-efficiency term will be effected equally.18For example, consider downsampling   a simple
 augmentation strategy used in the experiments. In this case, if one downsamples to achieve balance in
 the frequency of the protected attribute, the data efficiency term would change fromq
-log Θ  ln 2 /δ
-2mtoq
-log Θ  ln 2 /δ
 2αm, where αis fraction of data remaining after downsampling. In an ideal case, where there
 is only one protected attribute to consider during re-balancing, we have α  2βand the data efficiency
 is reduced by a factor of 1/ 2β, compared to no augmentation. The reader may notice LEATHER based
@@ -1157,7 +1095,6 @@ strategies, estimation error, etc., we leave formal comparison to future work an
 potential for worse data-efficiency of data augmentation strategies in the main text. Albeit, this hypothesis
 is confirmed in experiments throughout Section 4.2, and it should be noted our main argument here is that
 the data-efficiency of augmentation strategies needs to be considered, where it has previously not been in
-most literature.
 A.2.3 Assumption of Pairwise Independence
 As mentioned in the main text, the assumption of pairwise independence is not an overly strong assumption.
 Conditional to the context C, pairwise independence stipulates realizations of the random values D,ˆD,
@@ -1173,21 +1110,19 @@ parameter is still given by Hoeffding s Inequality, so the proof as a whole is u
 caused by data augmentation, whenever β  1/2γ2.after the image is known. The latter is not so intuitive, but independence of predictions on (test) outcomes
 and the outcomes themselves is common among many simple learning models (e.g., fixed effects linear
 regression) since the learned parameters are only dependent on the i.i.d. training outcomes.
-A.3 Labeling Scheme
 As noted, the labeling scheme for the protected attribute studied in the main text allows us to satisfy some
 of the key assumptions (on the human data) stipulated by Thm. 3.2  context awareness (Def. 3.4) and
 context preservation (Def. 3.5). To see this, we show that there exists an equitable goal according to score
 parity with scoring function defined in Eq. (6), and importantly, that this equitable goal is related to the
-human data as specified by Defs. 3.4 3.5. In turn, the existence of such an equitable goal implies
+human data as specified by Defs. 3.4 and 3.5. In turn, the existence of such an equitable goal implies
 that the human data and scoring function we study in the experiments does indeed satisfy Def. 3.4 and
-Def. 3.5.
 Construction of Goal To begin, consider some random variables (D, C, A )with the below constraints,
 and let ( D, C, A)correspond to random variables for the human data as before. These will be used to
 construct the equitable goal we have just previously discussed 
 Pr(D d C c)  Pr( D d  C c),
 Pr(C c A a)  Pr( C c  A a),
 Pr(A  0)   Pr(A  1).(23)
-Now, also assume Dis independent of Agiven C(that is, A in Thm. 3.2), so we can decompose the
+Now, also assume Dis independent of Agiven C(that is, A3in Thm. 3.2), so we can decompose the
 joint distribution of (D, C, A )according to our constraints 
 Pr(D d, C c, A a)  Pr(D d, C c A a)Pr(A a)
  Pr(D d C d, A a)Pr(C c A a)Pr(A a)
@@ -1195,36 +1130,30 @@ Pr(D d, C c, A a)  Pr(D d, C c A a)Pr(A a)
  Pr( D d  C c)Pr( C c  A a)Pr(A a)(Eq. 23 constraints)(24)
 Next, we verify there are distributions with this joint density with total probability summing to 1. To do
 this, we re-use the above expansion to arrive at 
-X
 d,c,aPr(D d, C c, A a)  X
 d,c,aPr( D d  C c)Pr( C c  A a)Pr(A a)
- 1 2X
 d,c,aPr( D d  C c)Pr( C c  A a)(assumed constraint on A)
-  1 2h
-x(1)   x(0)i
 (usex(a)as a shorthand for the sum over d, c)(25)
 Simultaneously, since ( D, C, A)already correspond to a distribution, we can use similar logic (i.e., LTE
 and conditional independence) to expand the sum over this distribution s joint density. In doing so, we
-must have
 1  Pr( A  0) x(0)   Pr( A  1) x(1)    a x(1)   b x(0) (defining shorthand) .(26)
 So, the density in Eq. (25) has total probability summing to 1 if there is a solution with a, b [0,1]and
-a b  1 1 1 2h
-x(1)   x(0)i
+a b  1to the following system 
 1  a x(1)   b x(0).(27)
 Ifa  b   1/2, there are solutions a, b [0,1]witha b  1 as long as x(1)   x(0), which is
 indeed true, since due to ( A3)x(a)can be re-written as a conditional joint probability over  Dand C.Figure 3  Statistics from the GuessWhat   dataset (De Vries et al., 2017).
 So,x(1)   x(0)   1 . Note, the other axioms of probabilities follow directly because the constraints
 only restrict the probabilities for (D, C, A )to existing (known) probability functions. Thus, we know a
 distribution satisfying the needed constraints in Eq. (23) exists. Specifically, a distribution related to the
-human data as specified by Defs. 3.4 3.5 exists, and we have shown the desired result.
+human data as specified by Defs. 3.4 and 3.5 exists, and we have shown the desired result.
 Equity of Goal Finally, it remains to see how the distribution corresponding to (D, C, A )is equitable.
 Score parity follows easily by definition of  A v( D). In particular, the test divergence on the human
 data is 0, so Eq. (22) implies the test divergence on the distribution of (D, C, A )is 0, and so Thm. 3.1
 implies the parity gap for the distribution of (D, C, A )is 0. Balance of the distribution of (D, C, A )also
 follows easily from the final constraint in Eq. (23), and so we are done.
-A.4 Downsampling
 The downsampling process for the DSalgorithm restricts to images which are determined to have either of
-the protected attributes   i.e., a  1 1 1 for both protected attributes.
+the protected attributes   i.e., a  1when Mis the protected attribute or a  1when Fis the protected
+attribute   such that there are an equal number of occurrences of a  1 for both protected attributes.
 That is, in the end result, the new training dataset has an equal number of occurrences where annotator
 consensus identified a male or a female, and all other images are thrown out. This is achieved through
 a simple randomized filtering approach. As noted, images without a  1for either protected attribute
@@ -1240,7 +1169,7 @@ we estimate less than 1/6th of the original dataset is used. Therefore, this ind
 to test our theoretical hypotheses on the impacts of data augmentation and data-inefficiency.
 Downsampling to create the equitable distribution is done in a similar manner, except   since we
 don t need to worry about inefficiency in model training any longer   a separate dataset is created for
-each protected attribute. So, there is one dataset with balanced occurrences of a  1 0when
+each protected attribute. So, there is one dataset with balanced occurrences of a  1anda  0when
 the protected attribute is M, and another dataset with balanced occurrences when the attribute is F.
 Importantly, because labeling scheme enforces our assumptions about context hold in the human data (see
 Appendix A.3), this should create an equitable goal.
@@ -1251,7 +1180,7 @@ our theoretical study is more generally applicable (i.e., beyond just this examp
 distribution and dialogue length are provided in Figure 3. After applying the labeling scheme and
 downsampling (as just described), our dataset consists of about 3200 (half with a  1) when Fis the
 20If we include images without labels, we cannot be sure of equal occurrence of both attributes.protected attribute and 6400 (half with a  1) when Mis the protected attribute. Note, this also indicates
-that the ratio of MtoFin the original dataset is about 2 1.
+that the ratio of MtoFin the original dataset is about 2 to 1.
 Gameplay An image and goal-object within the image are both randomly chosen. A question-player
 with access to the image asks yes/no questions to an answer-player who has access to both the image and
 goal-object. The question-player s goal is to identify the goal-object. The answer-player s goal is to reveal
@@ -1260,7 +1189,6 @@ answer-player converse until the question-player is ready to make a guess or at 
 been asked.21The question-player then guesses which object was the secret goal.
 A.6 Cooperative Learning
 Cooperative Learning generates questions ˆQiand object guess ˆObased on answer player answers Aias
-below 
 ˆO Gues α(Encβ(I,ˆD))
 ˆQi 1 QGen θ(Encβ(I,ˆQ1, A1, . . .ˆQi, Ai).(28)
 The neural-model QGen θis called the question-generator and the neural-model Gues αis called the objectguesser
@@ -1273,5 +1201,4 @@ to continue the learning process. The shared encoder is used to improve human-li
 Note, the change from Cooperative Learning (above) to Cooperative Learning with LEATHER simply
 incorporates additional human data during training the above model, instead of using only machinemachine
  dialogue. See Sicilia and Alikhani (2022) for more details on both approaches to cooperative
-learning.
 21By default, m  8following Shekhar et al. (2019).

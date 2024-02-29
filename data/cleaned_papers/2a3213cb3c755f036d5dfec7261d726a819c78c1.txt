@@ -1,8 +1,6 @@
 Muse  Text-To-Image Generation via Masked Generative Transformers
 Huiwen Chang*Han Zhang*Jarred Barber AJ Maschinot Jos e Lezama Lu Jiang Ming-Hsuan Yang
 Kevin Murphy William T. Freeman Michael Rubinstein Yuanzhen Li Dilip Krishnan 
-Google Research
-Abstract
 We present Muse, a text-to-image Transformer model that achieves state-of-the-art image generation performance
 while being signiﬁcantly more efﬁcient than diffusion or autoregressive models. Muse is trained on a masked
 modeling task in discrete token space  given the text embedding extracted from a pre-trained large language
@@ -11,12 +9,11 @@ models, such as Imagen and DALL-E 2, Muse is signiﬁcantly more efﬁcient due 
 requiring fewer sampling iterations  compared to autoregressive models, such as Parti, Muse is more efﬁcient
 due to the use of parallel decoding. The use of a pre-trained LLM enables ﬁne-grained language understanding,
 translating to high-ﬁdelity image generation and the understanding of visual concepts such as objects, their spatial
-relationships, pose, cardinality etc. Our 900M parameter model achieves a new SOTA on CC M, with an FID
-score of 6.06. The Muse 3 7.88 on zero-shot COCO evaluation, along
+relationships, pose, cardinality etc. Our 900M parameter model achieves a new SOTA on CC3M, with an FID
+score of 6.06. The Muse 3B parameter model achieves an FID of 7.88 on zero-shot COCO evaluation, along
 with a CLIP score of 0.32. Muse also directly enables a number of image editing applications without the need
 to ﬁne-tune or invert the model  inpainting, outpainting, and mask-free editing. More results are available at
 http //muse-model.github.io .
-1. Introduction
 Generative image models conditioned on text prompts have taken an enormous leap in quality and ﬂexibility in the last few
 years (Ramesh et al., 2022  Nichol et al., 2021  Saharia et al., 2022  Yu et al., 2022  Rombach et al., 2022  Midjourney,
 2022). This was enabled by a combination of deep learning architecture innovations (Van Den Oord et al., 2017  Vaswani
@@ -29,15 +26,15 @@ In this work, we present a new model for text-to-image synthesis using a masked 
 2020) large language model (LLM) encoder. In agreement with Imagen (Saharia et al., 2022), we ﬁnd that conditioning on a
 pre-trained LLM is crucial for photorealistic, high quality image generation. Our models (except for the VQGAN quantizer)
 are built on the Transformer (Vaswani et al., 2017) architecture.
-We have trained a sequence of Muse models, ranging in size from 632 3B parameters (for the image decoder 
+We have trained a sequence of Muse models, ranging in size from 632M parameters to 3B parameters (for the image decoder 
 the T5-XXL model has an additional 4.6B parameters). Each model consists of several sub-models (Figure 3)  First, we
 have a pair of VQGAN  tokenizer  models (Esser et al., 2021b), which can encode an input image to a sequence of discrete
-tokens as well as decode a token sequence back to an image. We use two VQGANs, one for 256 256 resolution ( low-res )
-and another for 512 512 resolution ( high-res ). Second, we have a base masked image model, which contains the bulk
+tokens as well as decode a token sequence back to an image. We use two VQGANs, one for 256x256 resolution ( low-res )
+and another for 512x512 resolution ( high-res ). Second, we have a base masked image model, which contains the bulk
 of our parameters. This model takes a sequence of partially masked low-res tokens and predicts the marginal distribution
 *Equal contribution Core contribution. Correspondence to  Huiwen Chang  huiwenchang@google.com  , Han Zhang  zhanghan@google.com
   , Dilip Krishnan  dilipkay@google.com  .
-1 2301.00704 1  [cs.CV]  2 2023Two cats doing research.
+1arXiv 2301.00704v1  [cs.CV]  2 Jan 2023Two cats doing research.
  Astronauts kicking a
 football in front of Eiffel tower.A fluffy baby sloth with a knitted hat trying to figure out a laptop, close up.
 Manhattan skyline made of bread.A large array of color-ful cupcakes, arranged on a maple table to spell MUSE.A storefront with 'Apollo' written on it, in front of Matterhorn Zermatt.
@@ -47,19 +44,19 @@ A storefront with 'Muse' written on it, in front of Matterhorn Zermatt. Three do
 A futuristic city with flying cars.
  A sheep in a wine glass.
 A surreal painting of a robot making coffee.Figure 1. Muse text-to-image generation ( 512 512resolution). Under each generated image, the corresponding caption is shown,
-exhibiting a variety of styles, captions and understanding. Each image was generated in 1.3 4 chip.
-for each masked token, conditioned on the unmasked tokens and a T XXL text embedding. Third, we have a  superres 
+exhibiting a variety of styles, captions and understanding. Each image was generated in 1.3s on a TPUv4 chip.
+for each masked token, conditioned on the unmasked tokens and a T5XXL text embedding. Third, we have a  superres 
 transformer model which translates (unmasked) low-res tokens into high-res tokens, again conditioned on T5-XXL text
 embeddings. We explain our pipeline in detail in Section 2.
 Compared to Imagen (Saharia et al., 2022) or Dall-E2 (Ramesh et al., 2022) which are built on cascaded pixel-space diffusion
 models, Muse is signiﬁcantly more efﬁcient due to the use of discrete tokens  it can be thought of as a discrete diffusion
 process with the absorbing state ( [MASK] ) (Austin et al., 2021). Compared to Parti (Yu et al., 2022), a state-of-the-art
 autoregressive model, Muse is more efﬁcient due to the use of parallel decoding. Based on comparisons on similar hardware
-(TPU-v4 chips), we estimate that Muse is more than 10x faster at inference time than either Imagen-3B or Parti-3 1.4 (Rombach et al., 2022) (see Section 3.2.2). All these comparisons are when images
-of the same size  either 256 256 512 512. Muse is also faster than Stable Diffusion (Rombach et al., 2022), in spite
+(TPU-v4 chips), we estimate that Muse is more than 10x faster at inference time than either Imagen-3B or Parti-3B models
+and3x faster than Stable Diffusion v1.4 (Rombach et al., 2022) (see Section 3.2.2). All these comparisons are when images
+of the same size  either 256 256or512 512. Muse is also faster than Stable Diffusion (Rombach et al., 2022), in spite
 of both models working in the latent space of a VQGAN. We believe that this is due to the use of a diffusion model in Stable
 2 Inpainting  Outpainting Mask-free Editing A funny big inflatable
-yellow duck
 On the ring of Saturn
 Hot air balloons A futuristic Streamline
 Moderne buildingInput Output
@@ -71,13 +68,12 @@ Diffusion v1.4 which requires a signiﬁcantly higher number of iterations at in
 The efﬁciency improvement of Muse, however, does notcome at a loss of generated image quality or semantic understanding
 of the input text prompt. We evaluate our output on multiple criteria, including CLIP score (Radford et al., 2021) and FID
 (Heusel et al., 2017). The former is a measure of image-text correspondence  and the latter a measure of image quality and
-diversity. Our 3 0.32 7.88 on the COCO (Lin et al., 2014)
+diversity. Our 3B parameter model achieves a CLIP score of 0.32 and an FID score of 7.88 on the COCO (Lin et al., 2014)
 zero-shot validation benchmark, which compares favorably with that of other large-scale text-to-image models (see Table 2).
 Our 632M(base) 268M(super-res) parameter model achieves a state of the art FID score of 6.06 when trained and evaluated
-on the CC M (Sharma et al., 2018) dataset, which is signiﬁcantly lower than all other reported results in the literature (see
+on the CC3M (Sharma et al., 2018) dataset, which is signiﬁcantly lower than all other reported results in the literature (see
 Table 1). We also evaluate our generations on the PartiPrompts (Yu et al., 2022) evaluation suite with human raters, who ﬁnd
-that Muse generates images better aligned with its text prompt 2.7 1.4 (Rombach et al.,
-2022).
+that Muse generates images better aligned with its text prompt 2.7x more often than Stable Diffusion v1.4 (Rombach et al.,
 Muse generates images that reﬂect different parts of speech in input captions, including nouns, verbs and adjectives.
 Furthermore, we present evidence of multi-object properties understanding, such as compositionality and cardinality, as
 3well image style understanding. See Figure 1 for a number of these examples and our website http //muse-model.
@@ -87,35 +83,16 @@ editing. More details are in Section 3. Our contributions are
 1.We present a state-of-the-art model for text-to-image generation which achieves excellent FID and CLIP scores
 (quantitative measures of image generation quality, diversity and alignment with text prompts).
 2.Our model is signiﬁcantly faster than comparable models due to the use of quantized image tokens and parallel
-decoding.
 3.Our architecture enables out-of-the-box, zero-shot editing capabilities including inpainting, outpainting, and mask-free
-editing.
-Masked
-High-Res Tokens
-VQ Tokenizer
-MaskSuperRes
-TransformerInput
-Image
-Masked
-TokensReconstructed
-Tokens
 VQ TokenizerText Encoder
-Base
 TransformerText EmbeddingText Prompt    A cat
-looking at a dog 
-Mask
-Reconstructed
 HighRes TokensInput Image
-Cross Entropy
-Loss
-Cross Entropy
-Loss x256 512 512 3. Muse Framework  We show the training pipeline for our model, with the T5-XXL pre-trained text encoder, base model and
+Figure 3. Muse Framework  We show the training pipeline for our model, with the T5-XXL pre-trained text encoder, base model and
 super-resolution model depicted on the three rows. The text encoder generates a text embedding that is used for cross-attention with
 image tokens for both base and super-res Transformer layers. The base model uses a VQ Tokenizer that is pre-trained on lower resolution
 (256 256) images and generates a 16 16latent space of tokens. This sequence is masked at a variable rate per sample and then the
 cross-entropy loss learns to predict the masked image tokens. Once the base model is trained, the reconstructed lower-resolution tokens
 and text tokens are passed into the super-res model that then learns to predict masked tokens at a higher resolution.
-2. Model
 Our model is built on a number of components. Here, we provide an overview of each of those components in the order
 of their training, while relegating many details of the architecture and parameters to the Appendix. Figure 3 provides an
 overview of the model architecture.
@@ -136,13 +113,12 @@ from a learned codebook. We build our encoder and decoder entirely with convolut
 from different resolutions. The encoder has several downsampling blocks to reduce the spatial dimension of the input, while
 the decoder has the corresponding number of upsampling blocks to map the latents back into original image size. Given an
 image of size H W, the encoded token is of size H/f W/f, with downsampling ratio f. We train two VQGAN models 
-one with downsampling ratio f  16 8. We obtain tokens for our base model
-using the f  16 256 256 pixel images, thus resulting in tokens with spatial size 16 16. We obtain
-the tokens for our super-resolution model using the f  8 512 512images, and the corresponding
+one with downsampling ratio f  16 and the other with downsampling ratio f  8. We obtain tokens for our base model
+using the f  16 VQGAN model on 256  256 pixel images, thus resulting in tokens with spatial size 16 16. We obtain
+the tokens for our super-resolution model using the f  8VQGAN model on 512 512images, and the corresponding
 token has spatial size 64 64. As mentioned in previous work (Esser et al., 2021b), the resulting discrete tokens after
 encoding capture higher-level semantics of the image, while ignoring low level noise. Furthermore, the discrete nature of
 these tokens allows us to use a cross-entropy loss at the output to predict masked tokens in the next stage.
-2.3. Base Model
 Our base model is a masked transformer(Vaswani et al., 2017  Devlin et al., 2018), where the inputs are the projected
 T5 embeddings and image tokens. We leave all the text embeddings unmasked and randomly mask a varying fraction of
 image tokens (see Section 2.6) and replace them with a special [MASK] token (Chang et al., 2022). We then linearly map
@@ -154,26 +130,7 @@ applied with the ground truth token label as the target. At training, the base m
 each step. However, for inference, mask prediction is performed in an iterative manner which signiﬁcantly increases quality.
 See Section 2.8 for details.
 2.4. Super-Resolution Model
-Text Embedding
-KV
-Low-Res
-Tokens
-Concat
-Embed
-Self
-Attention
-MLPEmbed
-Multi-axis
-Attention
-MLPQProject
-16 16 64 64
-Predicted
-High-Res Tokens
-32 8 64x Masked
-High-Res Tokens
-Cross
-Attention    
-LowRes 256 256 512x A high contrast portrait photo
+HighRes 512x512A high contrast portrait photo
 of a fluffy hamster wearing an
 orange beanie and sunglasses
 holding a sign that says "Let's PAINT "Text
@@ -187,9 +144,8 @@ We found that directly predicting 512 512resolution leads the model to focus on 
 semantics. As a result we found it beneﬁcial to use a cascade of models  ﬁrst a base model that generates a 16 16latent
 map (corresponding to a 256 256image), followed by a super-resolution model that upsamples the base latent map to a
 64 64latent map (corresponding to a 512 512image). The super-res model is trained after the base model has been
-5trained.
-As mentioned in Section 2.2, we trained two VQGAN models, one at 16 16 256 256spatial
-resolution, and the second at 64 64 512 512spatial resolution. Since our base model outputs
+As mentioned in Section 2.2, we trained two VQGAN models, one at 16 16latent resolution and 256 256spatial
+resolution, and the second at 64 64latent resolution and 512 512spatial resolution. Since our base model outputs
 tokens corresponding to a 16 16latent map, our super-resolution procedure learns to  translate  the lower-resolution
 latent map to the higher-resolution latent map, followed by decoding through the higher-resolution VQGAN to give the ﬁnal
 high-resolution image. This latent map translation model is also trained with text conditioning and cross-attention in an
@@ -201,22 +157,19 @@ layers while keeping the VQGAN encoder weights, codebook and transformers (i.e.,
 frozen. This allows us to improve our visual quality without re-training any of the other model components (because the
 visual token  language  stays ﬁxed). This is shown in Figure 13 in the Appendix, where we see that the ﬁnetuned decoder
 can reconstruct more sharper details in the store front. We also give details of the ﬁnetuned decoder architecture in the
-Appendix.
 2.6. Variable Masking Rate
 As was done in (Chang et al., 2022), we train our model with a variable masking rate based on a Cosine scheduling  for
 each training example, we sample a masking rate r [0,1]from a truncated arccos distribution with density function
-p(r)  2
-π(1 2) 1 2. This has an expected masking rate of 0.64, with a strong bias towards higher masking rates. The bias
+2. This has an expected masking rate of 0.64, with a strong bias towards higher masking rates. The bias
 towards higher masking rates makes the prediction problem harder. In contrast with autoregressive approaches, which learn
 conditional distributions P(xi x i)for some ﬁxed ordering of tokens, random masking with a variable masking ratio allows
 our models to learn P(xi xΛ)for arbitrary subsets of tokens Λ. This is not only critical for our parallel sampling scheme,
-but it also enables a number of zero-shot, out-of-the-box editing capabilities, such as shown in Figure 2 3.3.
+but it also enables a number of zero-shot, out-of-the-box editing capabilities, such as shown in Figure 2 and Section 3.3.
 2.7. Classiﬁer Free Guidance
 We employ classiﬁer-free guidance (CFG) (Ho & Salimans, 2022) to improve our generation quality and our text-image
 alignment. At training time, we remove text conditioning on 10% of samples chosen randomly (thus attention reduces to
 image token self-attention). At inference time, we compute a conditional logit ℓcand an unconditional logit ℓufor each
 masked token. We then form the ﬁnal logits ℓgby moving away from the unconditional logits by an amount t, the guidance
-scale  
 ℓg  (1   t)ℓc tℓu (1)
 Intuitively, CFG trades off diversity for ﬁdelity. Different from previous approaches, we reduce the hit to diversity by
 linearly increasing the guidance scale tthrough the sampling procedure. This allows the early tokens to be sampled more
@@ -230,21 +183,24 @@ tokens in a single forward pass. The key assumption underlying the effectiveness
 property that many tokens are conditionally independent given other tokens. Decoding is performed based on a cosine
 schedule (Chang et al., 2022) that chooses a certain ﬁxed fraction of the highest conﬁdence masked tokens that are to be
 predicted at that step. These tokens are then set to unmasked for the remainder of the steps and the set of masked tokens is
-appropriately reduced. Using this procedure, we are able to perform inference of 256 24 4096 8decoding steps in our super-resolution model, as compared to the 256 4096 steps
+appropriately reduced. Using this procedure, we are able to perform inference of 256tokens using only 24decoding steps in
+our base model and 4096 tokens using 8decoding steps in our super-resolution model, as compared to the 256 or 4096 steps
 required for autoregressive models (e.g. (Yu et al., 2022)) and hundreds of steps for diffusion models (e.g., (Rombach et al.,
 2022  Saharia et al., 2022)). We note that recent methods including progressive distillation (Salimans & Ho, 2022) and
-6 4 2 8 4 2 6 12 14 16 8 18 5. Inference samples. We visualize the evolution of masked tokens over the sequence of steps for the base model (left) and the
+6LowRes Generated Images HighRes Generated Images
+Step   4 Step   2 Step   8
+Step   4 Step   2 Step   6
+Step   12 Step   14 Step   16
+Figure 5. Inference samples. We visualize the evolution of masked tokens over the sequence of steps for the base model (left) and the
 super-res model (right). The super-res model, being conditioned on the low-res tokens, requires signiﬁcantly fewer sampling steps for
-convergence.
 better ODE solvers (Lu et al., 2022) have greatly reduced the sampling steps of diffusion models, but they have not been
 widely validated in large scale text-to-image generation. We leave the comparison to these faster methods in the future work,
 while noting that similar distillation approaches are also a possibility for our model.
-3. Results
-We train a number of base Transformer models at different parameter sizes, ranging from 600 3B parameters. Each
+We train a number of base Transformer models at different parameter sizes, ranging from 600M to 3B parameters. Each
 of these models is fed in the output embeddings from a T5-XXL model, which is pre-trained and frozen and consists of
-4.6B parameters. Our largest base model of 3 48Transformer layers with cross-attention from text
+4.6B parameters. Our largest base model of 3B parameters consists of 48Transformer layers with cross-attention from text
 to image and self-attention among image tokens. All base models share the same image tokenizer. We use a CNN model
-with ResNet blocks and a quantized codebook of size 8192 for the tokenization. Larger codebook sizes did not result in
+with19ResNet blocks and a quantized codebook of size 8192 for the tokenization. Larger codebook sizes did not result in
 performance improvements. The super-resolution model consists of 32multi-axis Transformer layers (Zhao et al., 2021)
 with cross-attention from concatenated text and image embedding to high resolution image and self-attention among high
 resolution image tokens. This model converts a sequence of tokens from one latent space to another  the ﬁrst latent space
@@ -252,7 +208,7 @@ being that of the base model tokenizer, a latent space of 16 16tokens, to that o
 tokens. After token conversion, the decoder for the higher resolution tokenizer is used to convert to the higher resolution
 image space. Further details of conﬁgurations are provided in the appendix.
 We train on the Imagen dataset consisting of 460M text-image pairs (Saharia et al., 2022). Training is performed for 1M
-steps, with a batch size of 512 512-core TPU-v4 chips (Jouppi et al., 2020). This takes about 1 week of training time.
+steps, with a batch size of 512 on 512-core TPU-v4 chips (Jouppi et al., 2020). This takes about 1 week of training time.
 We use the Adafactor optimizer (Shazeer & Stern, 2018) to save on memory consumption which allowed us to ﬁt a 3B
 parameter model without model parallelization. We also avoid performing exponential moving averaging (EMA) of model
 weights during training, again to save on TPU memory. In order to reap the beneﬁts of EMA, we checkpoint every 5000
@@ -271,15 +227,14 @@ Figure 6 demonstrates the ability of Muse to render words and phrases. Text gene
 generating most other objects. Instead of the model learning a mapping between an object name and its characteristics (e.g.,
 that  elephant  maps to  large ,  gray , and  peanut eating ), the virtual continuum of possible words and phrases demands
 that the model learn differently. It must instead learn a hierarchical understanding between phrases, words, and letters.
-The bottom left of Figure 6 7Cardinality Composition
+The bottom left of Figure 6 demonstrates that Muse uses the entirety of a text prompt when rendering instead of focusing
+7Cardinality Composition
 Three elephants standing on
 top of each other.Four wine bottles. A tiny football in front of
 three yellow tennis balls.Three small yellow boxes on
 a large blue box.A large present with a red ribbon
  to the left of a Christmas
 tree.Two baseballs to the left of
-three tennis balls.
-Style Text Rendering
 Portrait of a well-dressed raccoon,
  oil painting in the style
 of Rembrandt.A portrait of a man wearing
@@ -294,9 +249,7 @@ word  WOMBAT  written
 with thick colored grafﬁti letters
  on a white wall with dramatic
  splashes of paint.The saying  BE EXCELLENT
- TO EACH OTHER 
 written in a stained glass window.
-
 Usage of Entire Prompt Failure Text Classes
 An art gallery displaying
 Monet paintings. The art
@@ -314,24 +267,21 @@ The other has latter art of a
 heart.A cartoon of a dog saying  I
 see what you did there .Ten wine bottles. A basketball game between a
 team of four cats and a team
-of three dogs.
 Figure 6. Examples demonstrating text-to-image capabilities of Muse for various text properties. Top left  cardinality  top right 
 composition  middle left  style  middle right  text rendering  and bottom left  usage of the entire prompt. For all examples, 16instances
 per prompt were generated, and the one with the highest CLIP score (Radford et al., 2021) was chosen. Bottom right  examples of
 generated image failure in Muse for various text properties such as direct rendering of long phrases, high cardinalities, and multiple
-cardinalities.
-8 7. Comparing the same prompts across DALL-E2 (Ramesh et al., 2022) (left), Imagen (Saharia et al., 2022) (middle) and
-Muse (right).
+8Figure 7. Comparing the same prompts across DALL-E2 (Ramesh et al., 2022) (left), Imagen (Saharia et al., 2022) (middle) and
 9Approach Model Type Params FID CLIP
-VQGAN (Esser et al., 2021b) Autoregressive 600 28.86 0.20
-ImageBART (Esser et al., 2021a) Diffusion Autogressive 2.8 22.61 0.23
-LDM-4 (Rombach et al., 2022) Diffusion 645 17.01 0.24
-RQ-Transformer (Lee et al., 2022a) Autoregressive 654 12.33 0.26
-Draft-and-revise (Lee et al., 2022b) Non-autoregressive 654 9.65 0.26
-Muse(base model) Non-autoregressive 632 6.8 0.25
-Muse(base   super-res) Non-autoregressive 632 268 6.06 0.26 1. Quantitative evaluation on CC M (Sharma et al., 2018)  all models are trained and evaluated on CC M.
+VQGAN (Esser et al., 2021b) Autoregressive 600M 28.86 0.20
+ImageBART (Esser et al., 2021a) Diffusion Autogressive 2.8B 22.61 0.23
+LDM-4 (Rombach et al., 2022) Diffusion 645M 17.01 0.24
+RQ-Transformer (Lee et al., 2022a) Autoregressive 654M 12.33 0.26
+Draft-and-revise (Lee et al., 2022b) Non-autoregressive 654M 9.65 0.26
+Muse(base model) Non-autoregressive 632M 6.8 0.25
+Muse(base   super-res) Non-autoregressive 632M   268M 6.06 0.26
+Table 1. Quantitative evaluation on CC3M (Sharma et al., 2018)  all models are trained and evaluated on CC3M.
 Approach Model Type Params FID-30KZero-shot
-FID-30K
 AttnGAN (Xu et al., 2017) GAN 35.49 DM-GAN
  (Zhu et al., 2019) GAN 32.64 DF-GAN
  (Tao et al., 2020) GAN 21.42 DM-GAN
@@ -347,9 +297,9 @@ DALL-E 2 (Ramesh et al., 2022) Diffusion - 10.39
 Imagen-3.4B (Saharia et al., 2022) Diffusion - 7.27
 Parti-3B (Yu et al., 2022) Autoregressive - 8.10
 Parti-20B (Yu et al., 2022) Autoregressive 3.22 7.23
-Muse-3B Non-Autoregressive - 7.88 2. Quantitative evaluation of FID and CLIP score (where available) on MS-COCO (Lin et al., 2014) for 256 256image resolution.
+Muse-3B Non-Autoregressive - 7.88
+Table 2. Quantitative evaluation of FID and CLIP score (where available) on MS-COCO (Lin et al., 2014) for 256 256image resolution.
 Muse achieves a CLIP score of 0.32, higher than the score of 0.27 reported in Imagen. Other papers in the table above did not report a
-CLIP score.
 exclusively on only a few salient words. Finally, Figure 7 shows comparisons between Muse, Dall-E 2 (Ramesh et al., 2022),
 and Imagen (Saharia et al., 2022) for some select prompts, showing that Muse is at par with Imagen and qualitatively better
 than Dall-E2 for many prompts.
@@ -362,10 +312,11 @@ general, the ability of Muse to render the correct cardinalities of objects decr
 difﬁcult prompt type for Muse is ones with multiple cardinalities (e.g.,  four cats and a team of three dogs ). For such cases,
 Muse has a tendency to get at least one cardinality incorrect in its rendering.
 3.2. Quantitative Performance
-In Table 1 2, we show our performance against other methods on the CC M (Sharma et al., 2018) and COCO (Lin
+In Table 1 and Table 2, we show our performance against other methods on the CC3M (Sharma et al., 2018) and COCO (Lin
 et al., 2014) datasets as measured by Fr  echet Inception Distance (FID) (Heusel et al., 2017), which measures quality and
-diversity of samples, as well as CLIP (Radford et al., 2021) score, which measures image/text alignment. For the CC M
-100.320 0.322 0.324 0.326 0.328 0.330 0.332 7.98.08.18.28.38.48.58.6 8. CLIP vs. FID tradeoff curve. We perform
+diversity of samples, as well as CLIP (Radford et al., 2021) score, which measures image/text alignment. For the CC3M
+100.320 0.322 0.324 0.326 0.328 0.330 0.332
+CLIP7.98.08.18.28.38.48.58.6FIDFigure 8. CLIP vs. FID tradeoff curve. We perform
 sweeps of sampling parameters for a ﬁxed model, then
 plot the Pareto front.
 Figure 9. Percentage of prompts for which a human
@@ -373,11 +324,12 @@ rater consensus chose a model alignment preference.
 Contributions from speciﬁc numbers of rater consensuses
  are shown in different colors, while marginals
 over consensuses (   5, 4, and 3) are shown numerically.
-
-results, both Muse models were trained on CC M. The COCO results are zero-shot, using a model trained on the same
+results, both Muse models were trained on CC3M. The COCO results are zero-shot, using a model trained on the same
 dataset as Imagen (Saharia et al., 2022).
-Our 632M model achieves SOTA results on CC M, signiﬁcantly improving upon the state of the art in FID score, and also
-achieving state of the art CLIP score. Our 3 7.88 8.1achieved by the Parti-3B model which has a similar number of parameters. Our CLIP score of 0.32 0.29 achieved by Imagen (which is achieved when the FID is signiﬁcantly higher 20). For the FID of 7.27,
+Our 632M model achieves SOTA results on CC3M, signiﬁcantly improving upon the state of the art in FID score, and also
+achieving state of the art CLIP score. Our 3B model achieves an FID score of 7.88 which is slightly better than the score of
+8.1achieved by the Parti-3B model which has a similar number of parameters. Our CLIP score of 0.32 is higher than the
+CLIP score of 0.29 achieved by Imagen (which is achieved when the FID is signiﬁcantly higher 20). For the FID of 7.27,
 Imagen achieves a CLIP score of around 0.27 (see Figure 4 in (Saharia et al., 2022)).
 Our sampling algorithm (Section 2.8) has a number of hyperparameters, such as guidance scale, sampling temperature,
 whether or not to linearly increase guidance during sampling, etc. We perform evaluation sweeps over these parameters. We
@@ -398,7 +350,9 @@ speed. For each prompt, 16image instances were generated, and the one with the h
 2022). We required at least a 3rater consensus for results to be counted in favor of a particular model. From this analysis,
 we found that Muse was chosen as better aligned than Stable Diffusion for 70.6% of the prompts, Stable Diffusion was
 chosen as better aligned than Muse for 25.4%, and no rater consensus was chosen for 4%. These results are consistent with
-Muse having signiﬁcantly better caption matching capability (  2.7x). Figure 9 3,4, and all 5possible votes. Prompts for which all 5 1Choosing indifference makes sense when neither image is aligned with the text prompt and helps reduce statistical noise in the results.
+Muse having signiﬁcantly better caption matching capability (  2.7x). Figure 9 shows a breakdown of the rater results for
+rater consensuses of 3,4, and all 5possible votes. Prompts for which all 5raters said Muse had better alignment than Stable
+1Choosing indifference makes sense when neither image is aligned with the text prompt and helps reduce statistical noise in the results.
 11Diffusion are the larger contributor.
 In addition to measuring alignment, other works (Yu et al., 2022  Saharia et al., 2022) have also measured image realism,
 often via a rater question similar to,  Which image is more realistic  . However, we note that care must be taken with
@@ -408,18 +362,17 @@ model that does take the prompt into account during image generation. We propose
 between models of similar alignment. Since Muse is signiﬁcantly better aligned than Stable Diffusion, we did not assess
 realism via human raters. We consider this topic an area of open research.
 3.2.2. I NFERENCE SPEED Model Resolution Time
-Imagen 256 256 9.1 1024 1024 13.3s
+Imagen 1024 1024 13.3s
 LDM (50 steps) 512 512 3.7s
 LDM (250 steps) 512 512 18.5s
-Parti-3 256 256 6.4s
-Muse-3 256 256 0.5s
-Muse-3 512 512 1.3 3. Per-batch inference time for several models. Muse, Imagen,
+Parti-3B 256 256 6.4s
+Table 3. Per-batch inference time for several models. Muse, Imagen,
 and Parti were benchmarked internally on TPUv4 hardware. Stable
 Diffusion/LDM benchmark from (Lambda Labs, 2022), on A100
 GPUs. The  LDM (250 steps)  time comes from scaling the 50-step
-time by 5 250 2.In Table 3, we compare the inference time of Muse to
+time by 5  250 steps were used to achieve the FID in Table 2.In Table 3, we compare the inference time of Muse to
 several other popular models. We benchmarked Parti-3B,
-Imagen, and Muse-3 4 accelerators.
+Imagen, and Muse-3B internally on TPUv4 accelerators.
 For Stable Diffusion/LDM, we used the fastest reported
 benchmark (Lambda Labs, 2022), which was done on
 A100 GPUs. For Stable Diffusion, the TPU implementations
@@ -433,22 +386,20 @@ more parameters than Stable Diffusion/LDM). The speed
 advantage of Muse over Imagen is due to the use of discrete tokens and requiring fewer sampling iterations. The speed
 advantage of Muse over Parti is due to the use of parallel decoding. The speed advantage of Muse over Stable Diffusion is
 primarily attributable to requiring fewer sampling iterations.
-3.3. Image Editing
 By exploiting the fact that our model can condition on arbitrary subsets of image tokens, we can use the model out-of-the-box
 for a variety of image editing applications with no additional training or model ﬁne-tuning.
 3.3.1. T EXT-GUIDED INPAINTING /OUTPAINTING
 Our sampling procedure (Section 2.8) gives us text-guided inpainting and outpainting for free  we convert an input image
 into a set of tokens, mask out the tokens corresponding to a local region, and then sample the masked tokens conditioned
 on unmasked tokens and a text prompt. We integrate superresolution through a multi-scale approach  Given an image of
-size 512 512, we ﬁrst decimate it to 256 256 and convert both images to high- and low-res tokens. Then, we mask out
+size 512x512, we ﬁrst decimate it to 256x256 and convert both images to high- and low-res tokens. Then, we mask out
 the appropriate regions for each set of tokens. Next, we inpaint the low-res tokens using the parallel sampling algorithm.
 Finally, we condition on these low-res tokens to inpaint the high-res tokens using the same sampling algorithm. We show
-examples of this in Figure 2 10.
+examples of this in Figure 2 and Figure 10.
 3.3.2. Z ERO-SHOT MASK-FREE EDITING
 We use Muse in a zero-shot sense for mask-free image editing of real input images. This method works directly on the
 (tokenized) image and does not require  inverting  the full generative process, in contrast with recent zero-shot image
 editing techniques leveraging generative models (Gal et al., 2022b  Patashnik et al., 2021  Kim et al., 2022  Mokady et al.,
-2022).
 We ﬁrst convert an input image into visual tokens. Next, we iteratively mask and resample a random subset of tokens,
 conditioned on text prompts. We can think of this as being analogous to a Gibbs sampling procedure, where we ﬁx some
 tokens and resample others conditioned on them. This has the effect of moving the tokenized image into the typical set of
@@ -457,18 +408,14 @@ We perform the editing using the low-resolution base model, then perform superre
 12Original Masked San Francisco in
 the backgroundNew York City in
 the backgroundParis in the background
-
 Original Masked A cabin in the
-woodsAn old, beat up
 pickup truck.A horse tied to a
-post.
 Figure 10. Examples of text-guided inpainting. The mask is shown in the second column of each row. This behavior arises directly from
 the model with no ﬁne-tuning.
 editing prompt). In the examples (Figure 2, Figure 11), we resample 8% of the tokens per iteration for 100 iterations, with a
 guidance scale of 4. We also perform top- k(k  3) sampling on the token logits to prevent the process from diverging too
 much from the input. The iterative nature allows for control over the ﬁnal output. Figure 12 shows a few intermediate edits
-(without superres)  in this example, the user may prefer iteration 50 75 over the ﬁnal output.
-4. Related Work
+(without superres)  in this example, the user may prefer iteration 50 or 75 over the ﬁnal output.
 4.1. Image Generation Models
 Variational autoencoders (Van Den Oord et al., 2017) and Generative Adversarial Models (GANs) have shown excellent
 image generation performance with many variants proposed for both convolutional and Transformer architectures e.g.
@@ -489,23 +436,15 @@ does not always translate to a better performing text-to-image model.
 4.3. Large Language Models
 Our work leverages T5, a pre-trained large language model (LLM) that has been trained on multiple text-to-text tasks (Raffel
 et al., 2020). LLMs (including T5, BERT (Devlin et al., 2018), and GPT (Brown et al., 2020  Radford et al., 2019)) have
-13Input image
- Editing output
-A bottle of Pinot
-Grigio next to a
-glass of white wine
 and a cork.A croissant next to
-a latte with a ﬂower
 latte art.A dog. A brown rabbit. Bond Street.Input image
- Editing output
 A Shiba Inu A dog holding
-a football in its
 mouthA basket of oranges A photo of a cat
 yawningA photo of a vase
-of red roses
 Figure 11. Examples of zero-shot mask-free image editing, post superres. We see that the pose and overall structure of the image is
 maintained while changing some speciﬁc aspects of the object based on the text prompt.
-Input Iteration 25 50 75 100 12. Intermediate iterations producing one of the edits in Figure 11 (pre-superres)
+Input Iteration 25 Iteration 50 Iteration 75 Iteration 100
+Figure 12. Intermediate iterations producing one of the edits in Figure 11 (pre-superres)
 14been shown to learn powerful embeddings which enable few-shot transfer learning. We leverage this capacity in our model.
 All of the modern LLMs are trained on token prediction tasks (either autoregressive or not). The insights regarding the
 power of token prediction is leveraged in this work, where we apply a transformer to predict visual tokens.
@@ -513,7 +452,7 @@ power of token prediction is leveraged in this work, where we apply a transforme
 Leveraging paired text-image data is proving to be a powerful learning paradigm for representation learning and generative
 models. CLIP (Radford et al., 2021) and ALIGN (Jia et al., 2021) train models to align pairs of text and image embeddings,
 showing excellent transfer and few-shot capabilities. Imagen (Saharia et al., 2022) and Parti (Yu et al., 2022) use similar
-large scale text-image datasets (Schuhmann et al., 2021 2022) to learn how to predict images from text inputs, achieving
+large scale text-image datasets (Schuhmann et al., 2021  2022) to learn how to predict images from text inputs, achieving
 excellent results on FID and human evaluations. A key trick is the use of classiﬁer-free guidance (Ho & Salimans, 2022 
 Dhariwal & Nichol, 2021) that trades off diversity and quality.
 4.5. Image Editing with Generative Models
@@ -522,7 +461,6 @@ number of techniques have been developed on diffusion models to enable editing, 
 space (Gal et al., 2022a  Meng et al., 2021  Ruiz et al., 2022  Kawar et al., 2022  Brooks et al., 2022  Hertz et al., 2022 
 Mokady et al., 2022). Dreambooth (Ruiz et al., 2022) and Imagic (Kawar et al., 2022) involve ﬁne-tuning of the generative
 models. ImagenEditor (Wang et al., 2022) frames the editing task as text-guided image inpainting, and involves user
-speciﬁed masks.
 5. Discussion and Social Impact
 The Muse model conﬁrms the ﬁndings of (Saharia et al., 2022) that frozen large pretrained language models serve as
 powerful text encoders for text-to-image generation. We also tried in our initial experiments to learn a language model from
@@ -543,11 +481,9 @@ et al., 2021  Dulhanty, 2020  Scheuerman et al., 2021). Many of the commonly use
 social stereotypes and viewpoints (Prabhu & Birhane, 2020). Thus, it is quite feasible that training on such datasets simply
 ampliﬁes these biases and signiﬁcant additional research is required on how to mitigate such biases, and generate datasets
 that are free of them  this is a very important topic (Buolamwini & Gebru, 2018  Hendricks et al., 2018) that is out of the
-scope of this paper.
 Given the above considerations, we do not recommend the use of text-to-image generation models without attention to
 the various use cases and an understanding of the potential for harm. We especially caution against using such models for
 generation of people, humans and faces.
-Acknowledgements
 We thank William Chan, Chitwan Saharia, and Mohammad Norouzi for providing us training datasets, various evaluation
 codes and generous suggestions. Jay Yagnik, Rahul Sukthankar, Tom Duerig and David Salesin provided enthusiastic
 support of this project for which we are grateful. We thank Victor Gomes and Erica Moreira for infrastructure support, Jing
@@ -555,12 +491,11 @@ support of this project for which we are grateful. We thank Victor Gomes and Eri
 model speedup discussions, JD Velasquez for discussions and insights, Sarah Laszlo, Kathy Meier-Hellstern, and Rachel
 Stigler for assisting us with the publication process, Andrew Bunner, Jordi Pont-Tuset, and Shai Noy for help on internal
 demos, David Fleet, Saurabh Saxena, Jiahui Yu, and Jason Baldridge for sharing Imagen and Parti speed metrics.
-References
 Austin, J., Johnson, D. D., Ho, J., Tarlow, D., and van den Berg, R. Structured denoising diffusion models in discrete
 state-spaces. Advances in Neural Information Processing Systems , 34 17981 17993, 2021.
 Brock, A., Donahue, J., and Simonyan, K. Large scale gan training for high ﬁdelity natural image synthesis. arXiv preprint
 arXiv 1809.11096 , 2018.
-Brooks, T., Holynski, A., and Efros, A. A. Instructpix pix  Learning to follow image editing instructions. arXiv preprint
+Brooks, T., Holynski, A., and Efros, A. A. Instructpix2pix  Learning to follow image editing instructions. arXiv preprint
 arXiv 2211.09800 , 2022.
 Brown, T., Mann, B., Ryder, N., Subbiah, M., Kaplan, J. D., Dhariwal, P., Neelakantan, A., Shyam, P., Sastry, G., Askell, A.,
 et al. Language models are few-shot learners. Advances in neural information processing systems , 33 1877 1901, 2020.
@@ -575,15 +510,12 @@ understanding. arXiv preprint arXiv 1810.04805 , 2018.
 Dhariwal, P. and Nichol, A. Diffusion models beat gans on image synthesis. Advances in Neural Information Processing
 Systems , 34 8780 8794, 2021.
 Donahue, J. and Simonyan, K. Large scale adversarial representation learning. Advances in neural information processing
-systems , 32, 2019.
 Dulhanty, C. Issues in computer vision data collection  Bias, consent, and label taxonomy. Master s thesis, University of
-Waterloo, 2020.
 Esser, P., Rombach, R., Blattmann, A., and Ommer, B. Imagebart  Bidirectional context with multinomial diffusion for
 autoregressive image synthesis. Advances in Neural Information Processing Systems , 34 3518 3532, 2021a.
 Esser, P., Rombach, R., and Ommer, B. Taming transformers for high-resolution image synthesis. In Proceedings of the
 IEEE/CVF conference on computer vision and pattern recognition , pp. 12873 12883, 2021b.
 Franks, M. A. and Waldman, A. E. Sex, lies, and videotape  Deep fakes and free speech delusions. Md. L. Rev. , 78 892,
-2018.
 Gafni, O., Polyak, A., Ashual, O., Sheynin, S., Parikh, D., and Taigman, Y . Make-a-scene  Scene-based text-to-image
 generation with human priors, 2022. URL https //arxiv.org/abs/2203.13131 .
 Gal, R., Alaluf, Y ., Atzmon, Y ., Patashnik, O., Bermano, A. H., Chechik, G., and Cohen-Or, D. An image is worth one word 
@@ -655,7 +587,6 @@ imagery. In Proceedings of the IEEE/CVF International Conference on Computer Vis
 Paullada, A., Raji, I. D., Bender, E. M., Denton, E., and Hanna, A. Data and its (dis) contents  A survey of dataset
 development and use in machine learning research. Patterns , 2(11) 100336, 2021.
 Prabhu, V . U. and Birhane, A. Large image datasets  A pyrrhic win for computer vision  arXiv preprint arXiv 2006.16923 ,
-2020.
 Radford, A., Wu, J., Child, R., Luan, D., Amodei, D., Sutskever, I., et al. Language models are unsupervised multitask
 learners. OpenAI blog , 1(8) 9, 2019.
 Radford, A., Kim, J. W., Hallacy, C., Ramesh, A., Goh, G., Agarwal, S., Sastry, G., Askell, A., Mishkin, P., Clark, J.,
@@ -670,7 +601,6 @@ latents. arXiv preprint arXiv 2204.06125 , 2022.
 Rolfe, J. T. Discrete variational autoencoders. arXiv preprint arXiv 1609.02200 , 2016.
 Rombach, R., Blattmann, A., Lorenz, D., Esser, P., and Ommer, B. High-resolution image synthesis with latent diffusion
 models. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition , pp. 10684 10695,
-2022.
 Ruiz, N., Li, Y ., Jampani, V ., Pritch, Y ., Rubinstein, M., and Aberman, K. Dreambooth  Fine tuning text-to-image diffusion
 models for subject-driven generation. arXiv preprint arXiv 2208.12242 , 2022.
 Saharia, C., Chan, W., Saxena, S., Li, L., Whang, J., Denton, E., Ghasemipour, S. K. S., Ayan, B. K., Mahdavi, S. S.,
@@ -696,7 +626,6 @@ Proceedings of the 2021 ACM conference on fairness, accountability, and transpar
 Tao, M., Tang, H., Wu, F., Jing, X.-Y ., Bao, B.-K., and Xu, C. Df-gan  A simple and effective baseline for text-to-image
 synthesis, 2020. URL https //arxiv.org/abs/2008.05865 .
 Van Den Oord, A., Vinyals, O., et al. Neural discrete representation learning. Advances in neural information processing
-systems , 30, 2017.
 Vaswani, A., Shazeer, N., Parmar, N., Uszkoreit, J., Jones, L., Gomez, A. N., Kaiser, Ł., and Polosukhin, I. Attention is all
 you need. Advances in neural information processing systems , 30, 2017.
 Wang, S., Saharia, C., Montgomery, C., Pont-Tuset, J., Noy, S., Pellegrini, S., Onoe, Y ., Laszlo, S., Fleet, D. J., Soricut,
@@ -708,7 +637,6 @@ Xia, W., Zhang, Y ., Yang, Y ., Xue, J.-H., Zhou, B., and Yang, M.-H. Gan invers
 Analysis and Machine Intelligence , 2022.
 Xu, T., Zhang, P., Huang, Q., Zhang, H., Gan, Z., Huang, X., and He, X. Attngan  Fine-grained text to image generation
 with attentional generative adversarial networks. CoRR , abs/1711.10485, 2017. URL http //arxiv.org/abs/
-1711.10485 .
 Ye, H., Yang, X., Takac, M., Sunderraman, R., and Ji, S. Improving text-to-image synthesis using contrastive learning, 2021.
 URL https //arxiv.org/abs/2107.02423 .
 Yu, J., Li, X., Koh, J. Y ., Zhang, H., Pang, R., Qin, J., Ku, A., Xu, Y ., Baldridge, J., and Wu, Y . Vector-quantized image
@@ -721,42 +649,44 @@ Proceedings of the IEEE/CVF conference on computer vision and pattern recognitio
 https //arxiv.org/abs/2106.07631 .
 Zhou, Y ., Zhang, R., Chen, C., Li, C., Tensmeyer, C., Yu, T., Gu, J., Xu, J., and Sun, T. LAFITE  towards languagefree
  training for text-to-image generation. CoRR , abs/2111.13792, 2021. URL https //arxiv.org/abs/2111.
-13792 .
 Zhu, M., Pan, P., Chen, W., and Yang, Y . Dm-gan  Dynamic memory generative adversarial networks for text-to-image
 synthesis. In Proceedings of the IEEE/CVF conference on computer vision and pattern recognition , pp. 5802 5810, 2019.
-20A. Appendix.
 A.1. Base Model Conﬁgurations
-Our base model conﬁguration for our largest model of size 3 4.
-Conﬁguration Value
-Number of Transformer layers 48 2048 8192
+Our base model conﬁguration for our largest model of size 3B parameters is given in Table 4.
+Number of Transformer layers 48
+Transformer Hidden Dimension 2048
+Transformer MLP Dimension 8192
 Optimizer AdaFactor (Shazeer & Stern, 2018)
-Base learning rate 1e-4 0.045
-Optimizer momentum β1 0.9,β2 0.96 512
+Base learning rate 1e-4
+Optimizer momentum β1 0.9,β2 0.96
 Learning rate schedule cosine decay (Loshchilov & Hutter, 2017)
-Warmup steps 5000 1.5 4. Conﬁguration and training hyperparameters for base model.
+Table 4. Conﬁguration and training hyperparameters for base model.
 A.2. VQGAN Conﬁgurations
-Conﬁguration Value
-Perceptual loss weight 0.05 0.1 8192
+Perceptual loss weight 0.05
+Adversarial loss weight 0.1
 Optimizer Adam (Kingma & Ba, 2015)
-Discriminator learning rate 1e-4 1e-4 1e-4
-Optimizer momentum β1 0.9,β2 0.99 256
+Discriminator learning rate 1e-4
+Generator learning rate 1e-4
+Optimizer momentum β1 0.9,β2 0.99
 Learning rate schedule cosine decay (Loshchilov & Hutter, 2017)
-Warmup steps (Goyal et al., 2017) 10000 1 5. Conﬁguration and training hyperparameters for VQGAN.
+Warmup steps (Goyal et al., 2017) 10000
+Table 5. Conﬁguration and training hyperparameters for VQGAN.
 VQGAN Architecture   Our VQGAN architecture is similar to the previous work (Esser et al., 2021b). It consists of several
 residual blocks, downsample(encoder) and upsample (decoder) blocks. The main difference is that we remove the non-local
 block to make the encoder and decoder fully convolutional to support different image sizes. In the base VQGAN model, we
-apply 2 128. For the ﬁnetuned decoder, we apply 4 256.
+apply 2 residual blocks in each resolution and the base channel dimension is 128. For the ﬁnetuned decoder, we apply 4
+residual blocks in each resolution and we also make the base channel dimension to be 256.
 Input Image VQGAN Reconstruction Finetuned Decoder
 Figure 13. Visual example of the improvement from the ﬁne-tuned decoder (Section 2.5). Please zoom in by at least 200% to see the
 difference between the VQGAN reconstruction and the reconstruction with a ﬁnetuned decoder. We can see especially that ﬁne details
 such as the house number (bottom left), the storefront sign (middle) and the bars on the windows (right) are better preserved in the
-ﬁnetuned decoder.
 21A.3. Super Resolution Conﬁgurations
-Conﬁguration Value
-LowRes Encoder Transformer Layers 16 32 1024 4096
+LowRes Encoder Transformer Layers 16
+Number of Transformer layers 32
+Transformer Hidden Dimension 1024
+Transformer MLP Dimension 4096
 Optimizer AdaFactor (Shazeer & Stern, 2018)
-Base learning rate 1e-4 0.045
-Optimizer momentum β1 0.9,β2 0.96 512
+Base learning rate 1e-4
+Optimizer momentum β1 0.9,β2 0.96
 Learning rate schedule cosine decay (Loshchilov & Hutter, 2017)
-Warmup steps 5000 1 6. Conﬁguration and training hyperparameters for the Super-Resolution Model.
-22
+Table 6. Conﬁguration and training hyperparameters for the Super-Resolution Model.

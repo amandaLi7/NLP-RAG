@@ -2,8 +2,6 @@ FIXED INTER-NEURON COVARIABILITY INDUCES ADVERSARIAL ROBUSTNESS
 Muhammad A. Shah, Bhiksha Raj
 Language Technologies Institute
 Carnegie Mellon University
-Pittsburgh, PA
-ABSTRACT
 The vulnerability to adversarial perturbations is a major flaw of Deep
 Neural Networks (DNNs) that raises question about their reliability
 when in real-world scenarios. On the other hand, human perception,
@@ -24,8 +22,6 @@ recognition tasks, the models with a SCA layer achieved high accuracy,
 perceptron models to state-of-the-art Auto-PGD adversarial attacks
 without being trained on adversarially perturbed data .
 Index Terms  Adversarial Robustness, Deep Learning, Biologically
- inspired
-1. INTRODUCTION
 While Deep Neural Networks (DNNs) have advanced the state of the
 art in many fields of Artificial Intelligence (AI), their vulnerability
 to adversarial perturbation   subtle distortions that are semantically
@@ -96,7 +92,7 @@ conform to a fixed, but learned, covariability pattern.
 We evaluated the effectiveness of the SCA layers on image and
 sound classification tasks. For image classification we used MNIST
 [19] and Fashion-MNIST (FMNIST) [20], and for sound classification
- we used SpeechCommands [21]. Compared to a Multi-LayerarXiv 2308.03956 1  [cs.LG]  7 2023Perceptron (MLP), we find that the inter-neuron correlations in models
+ we used SpeechCommands [21]. Compared to a Multi-LayerarXiv 2308.03956v1  [cs.LG]  7 Aug 2023Perceptron (MLP), we find that the inter-neuron correlations in models
  with a SCA layer are more invariant to adversarial peturbations,
 thus indicating that the SCA layer does indeed make the inter-neuron
 covariance structure more inflexible as we intended. Furthermore,
@@ -112,7 +108,6 @@ on average the model with the SCA layer achieved an absolute improvement
 when the models were trained on adversarially perturbed data, with
 the SCA model achieving significantly higher accuracy on the clean
 and adversarially perturbed data on all datasets except MNIST.
-2. RELATED WORK
 Non-Biologically Inspired Methods for Robustness  Most of the
 proposed methods for making DNNs robust to adversarial perturbations
  are not inspired from biology but rather rely on machine learning
@@ -154,8 +149,6 @@ covariability structure matches the one learned during training.
 3. THE COVARIABILITY OF DNN ACTIVATIONS
 We hypothesize that the inflexible covariability structure of neuronal
 activations that is observed in the animal brain contributes to the
-(a)
- (b)
 Fig. 1   (a) The Frobenius norm of the change in the correlation matrix
  of the activations of neurons in the penultimate layer of a MLP
 trained on clean (ST) and adversarially perturbed (AT) FMNIST images
@@ -209,8 +202,6 @@ structure. If we consider covariability to be a linear relationship, like
 covariance, then gCwould simply be a linear projection. However,
 to allow for more complex inter-neuron interaction, in this paper we
 have decided to adopt the following non-linear form for gC 
-arg min
-ax ax ϕ(Wgax bg) 2 2 λ x Whax bh 2 2,(1)
 where ϕ ReLU ,Wg  Rda da,Wh  Rdx da,bg  Rda
 andbh  Rdx. The first term represents the distance between the
 activation and its projection onto C, while the second term represents
@@ -221,34 +212,33 @@ which axcarries no information about x, andλis a scalar that controls
 zero to prevent it from becoming the identity matrix and we perform
 the minimization using batch gradient descent. The exact sequence
 of operations performed by the SCA layer is shown in Algorithm 1.
-Algorithm 1 1 u f(x)
-2 1 3  ax ϕ(u)
-4  J   ax ϕ(Wgax bg) 2 2 λ x Whax bh 2 2 5  u ax η axJ
-6 7 ax ϕ(u)
-5. EVALUATION
+Algorithm 1 SCA Layer
+4  J   ax ϕ(Wgax bg) 2
 5.1. Experimental Setup
-5.1.1. Datasets
 We evaluate the performance of SCA layers on image and audio classification
  tasks. For image classification we use the MNIST [19]
-and Fashion MNIST (FMNIST) [20] datasets, which contain 60,000 28 28black-and-white images of handwritten digits and 10 types
+and Fashion MNIST (FMNIST) [20] datasets, which contain 60,000
+28 28black-and-white images of handwritten digits and 10 types
 of clothes, respectively. From both MNIST and FMNIST, we used
-45,000 images for training, 5000 10,000 for testing.
+45,000 images for training, 5000 for evaluation and 10,000 for testing.
  For the audio classification task we use a subset of SpeechCommands
- dataset [21], which contains about 40,000 1 second, 16 0 9. We use 31,000 recordings
- for training, 4,000 4,000 recordings
- for testing.
+ dataset [21], which contains about 40,000 1 second, 16KHz
+recordings of humans vocalizing digits 0 to 9. We use 31,000 recordings
+ for training, 4,000 recordings for validation and 4,000 recordings
 5.1.2. Data Preprocessing
 For the image datasets, we flatten the image into a vector, which is
-then normalized by subtracting 0.5 0.5. The audio
+then normalized by subtracting 0.5 and then dividing by 0.5. The audio
  data is pre-processed by first downsampling to 8KHz. Then 128
 Mel-Frequency Cepstral Coefficients (MFCCs) are computed from
-a log mel spectrogram having 512 64 32ms. By retaining only the first
-16 16 251 1s audio recording.
-The matrix is then flattened, and normalized by subtracting -0.96 9.2 (the mean and standard deviation computed
+a log mel spectrogram having 512 FFT points computed over a 64
+ms sliding window with a stride of 32ms. By retaining only the first
+16 MFCCs we obtain a 16 251matrix for each 1s audio recording.
+The matrix is then flattened, and normalized by subtracting -0.96
+and then dividing by 9.2 (the mean and standard deviation computed
 over the validation set).
 Fig. 2   Schematics of the MLP and SCA models. L.s are affine
 projections with the superscripts representing the output dimension.
-The output dimension of L is set to 384 in MLPs trained on MNIST
+The output dimension of L2is set to 384 in MLPs trained on MNIST
 and FMNIST, and to 2048 in MLPs trained on SpeechCommands.
 ϕ ReLU ,σ dropout  ϕ,Jis the loss from eq. (1).
 It is important to note here that the adversarial perturbations
@@ -257,19 +247,17 @@ are computed on and applied to the original input, prior to preprocessing.
  using PyTorch and torchaudio, and are fully differentiable,
 therefore the gradients can be propagated back to the original input
 and used to compute adversarial perturbations.
-5.1.3. Models
 We compare the performance of models containing SCA layers
 (SCA model) to MLP models having comparable architectures and
 number of parameters. The schematics of these models are shown
 in Figure 2. The SCA model performs T  16 optimization steps.
 The probability of dropout is set to 0.2 for all models.
 The models are optimized using the Adam optimizer using a
-learning rate of 0.001 256 100 epochs.
+learning rate of 0.001 and a batch size of 256 for up to 100 epochs.
 The learning rate is halved if the loss on the validation set does not
 decrease for 5 epochs, and if it does not decrease for 20 epochs the
 training is stopped early. All the results presented below are averaged
  over 5 trials with different random seeds.
-5.2. Results
 5.2.1. Analysis of Activation Covariability Structure
 To verify that SCA layers increase the invariance of the inter-neuron
 correlation structure we analyse the correlation between the activations
@@ -294,15 +282,20 @@ computed by running AutoAttack [22] with different bounds on the
 maximum ℓ norm of the perturbation.
 The accuracy achieved by the SCA models and the baseline
 MLPs under adversarial attack is shown in Table 1. We see that(a) MNIST
- (b) FMNIST
- (c) SpeechCommands
 Fig. 3   The Frobenius norm of the change in the correlation matrix of
 the penultimate layer activations from the SCA model and MLP due
 to the addition of adversarial perturbations of different ℓ norms.
 Model Perturbation Sizes ( ℓ )
-0.0 0.05 0.1 0.125 0.15 0.2 97.9 88.1 54.8 32.3 15.7 1.7 98.4 90.0 52.6 28.2 12.8 1.4 89.4 46.9 12.7 6.1 2.8 0.1 88.7 39.2 7.7 3.1 1.0 0.0
+0.0 0.05 0.1 0.125 0.15 0.2
+SCA 97.9 88.1 54.8 32.3 15.7 1.7
+MLP 98.4 90.0 52.6 28.2 12.8 1.4
+SCA 89.4 46.9 12.7 6.1 2.8 0.1
+MLP 88.7 39.2 7.7 3.1 1.0 0.0
 Perturbation Sizes ( ℓ )
-0.0 5e-5 1e-4 2.5e-4 5e-4 1e-3 90.1 45.1 32.2 10.3 2.4 0.5 88.2 38.4 20.7 3.7 0.8 0.1 0.05 1   The accuracy (%) achieved by MLP and the SCA models
+0.0 5e-5 1e-4 2.5e-4 5e-4 1e-3
+SCA 90.1 45.1 32.2 10.3 2.4 0.5 
+MLP 88.2 38.4 20.7 3.7 0.8 0.1
+Table 1   The accuracy (%) achieved by MLP and the SCA models
 on all the three datasets the SCA model is significantly more robust
 than the MLP to adversarial perturbations, achieving higher accuracy
  on perturbations of all sizes. Averaged across all perturbation
@@ -334,14 +327,22 @@ we find that the adversarially trained MLP performs better than the
 SCA model under large perturbations on MNIST. The fact that the
 SCA model is significantly more robust than the MLP on more complex
  datasets, particularly SpeechCommands, but not on the simplerModel Perturbation Sizes ( ℓ )
-0.0 0.2 0.3 0.325 0.35 0.375 96.9 88.0 70.4 56.3 29.9 7.9 94.7 85.8 74.9 64.6 34.4 11.0 70.4 51.5 35.1 22.4 7.0 2.3 67.8 53.5 42.4 10.6 3.1 1.3
+0.0 0.2 0.3 0.325 0.35 0.375
+SCA 96.9 88.0 70.4 56.3 29.9 7.9
+MLP 94.7 85.8 74.9 64.6 34.4 11.0 
+SCA 70.4 51.5 35.1 22.4 7.0 2.3 
+MLP 67.8 53.5 42.4 10.6 3.1 1.3
 Perturbation Sizes ( ℓ )
-0.0 1e-4 2.5e-4 5e-4 1e-3 2e-3 67.3 61.2 56.4 46.9 30.9 14.2 66.3 59.6 54.6 43.6 26.8 11.4 0.05 2   The accuracy achieved by adversarially trained MLP and
+0.0 1e-4 2.5e-4 5e-4 1e-3 2e-3
+SCA 67.3 61.2 56.4 46.9 30.9 14.2 
+MLP 66.3 59.6 54.6 43.6 26.8 11.4
+Table 2   The accuracy achieved by adversarially trained MLP and
 SCA models under adversarial perturbations of various ℓ norms.
 The norm of the perturbations used during training is 0.3 for MNIST
 and FMNIST models, and 2.4e-4 for the SpeechCommands models.
-Number of Steps
-1 2 4 8 16 89.3 89.5 89.8 89.1 89.5 35.8 35.8 35.7 40.3 49.3 3   The accuracy of SCA models with different number of
+clean 89.3 89.5 89.8 89.1 89.5
+perturbed 35.8 35.8 35.7 40.3 49.3
+Table 3   The accuracy of SCA models with different number of
 self-consistency optimizing steps ( T) on clean and adversarially perturbed
  data. The size of adversarial perturbations is set to 0.05.
 MNIST, may indicate that, under adversarial training, the utility of
@@ -354,7 +355,6 @@ and perturbed data is shown in Table 3. We observe that increasing
 Tdoes not impact clean accuracy but robustness significantly improves
  as Tis increased beyond 8. This indicates that the more selfconsistent
  the activations become the more robust the model gets.
-6. CONCLUSION
 In this paper we investigate the impact of the biological phenomenon
 of inflexible inter-neuron covariability on robustness to adversarial
 perturbation. To this end we develop the SCA layer, which as neural
@@ -386,7 +386,6 @@ adversarial robustness via randomized smoothing,  in International
 [5] Hadi Salman, Mingjie Sun, Greg Yang, Ashish Kapoor, and
 J Zico Kolter,  Denoised smoothing  A provable defense for
 pretrained classifiers,  NeurIPS , vol. 33, pp. 21945 21957,
-2020.
 [6] Muhammad A Shah and Bhiksha Raj,  Less is more  Training
  on low-fidelity images improves robustness to adversarial
 attacks,  in Submitted to ICLR. , 2023, under review.
@@ -410,12 +409,10 @@ model on mnist,  arXiv preprint arXiv 1805.09190 , 2018.
 [12] Dylan M Paiton, Charles G Frye, Sheng Y Lundquist, Joel D
 Bowen, Ryan Zarcone, and Bruno A Olshausen,  Selectivity
 and robustness of sparse coding networks,  Journal of vision ,
-2020.
 [13] Joel Dapello, Tiago Marques, Martin Schrimpf, Franziska
 Geiger, David Cox, and James J DiCarlo,  Simulating a primary
  visual cortex at the front of cnns improves robustness
 to image perturbations,  NeurIPS , vol. 33, pp. 13073 13087,
-2020.
 [14] Aditya Jonnalagadda, William Yang Wang, B.S. Manjunath,
 and Miguel Eckstein,  Foveater  Foveated transformer for image
  classification,  2022.
@@ -457,10 +454,8 @@ trade-off between robustness and accuracy,  in International
 conference on machine learning . PMLR, 2019, pp. 7472 7482.
 [26] Marc Fischer, Maximilian Baader, and Martin Vechev,  Certified
  defense to image transformations via randomized smoothing, 
- NeurIPS , 2020.
 [27] Aounon Kumar and Tom Goldstein,  Center smoothing  Certified
  robustness for networks with structured outputs,  NeurIPS ,
-2021.
 [28] Bai Li, Changyou Chen, Wenlin Wang, and Lawrence Carin,
  Certified adversarial robustness with additive noise,  Advances
  in neural information processing systems , vol. 32, 2019.

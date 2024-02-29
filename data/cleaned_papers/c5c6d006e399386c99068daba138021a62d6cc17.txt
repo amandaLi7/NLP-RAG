@@ -2,7 +2,6 @@ Transformed Protoform Reconstruction
 Young Min Kim andKalvin Chang andChenxuan Cui andDavid Mortensen
 Language Technologies Institute, Carnegie Mellon University
 {youngmik, kalvinc, cxcui, dmortens }@cs.cmu.edu
-Abstract
 Protoform reconstruction is the task of inferring
 how morphemes or words sounded in ancestral
 languages of a set of daughter languages. Meloni
@@ -10,7 +9,7 @@ languages of a set of daughter languages. Meloni
 Latin protoform reconstruction with an RNNbased
  encoder-decoder with attention model.
 We update their model with the state-of-the-art
-seq seq model the Transformer. Our model
+seq2seq model the Transformer. Our model
 outperforms their model on a suite of different
  metrics on two different datasets  Meloni
 et al. s Romance data of 8,000  cognates (spanning
@@ -19,7 +18,6 @@ et al. s Romance data of 8,000  cognates (spanning
 We also probe our model for potential phylogenetic
  signal contained in the model. Our code
 is publicly available1.
-1 Introduction
 Languages change over time and sometimes diverge
  into multiple daughter languages. The common
  ancestor of a set of genetically related languages
@@ -38,8 +36,8 @@ a common ancestor, to develop hypotheses about
 the types and chronologies of sound changes.
 This task is inherently data-constrained, especially
  for under-documented languages. Such data
- Equal contribution
-1https //github.com/cmu-llab/acl-2023 2In fact, the proto-language from which Romance languages
+1https //github.com/cmu-llab/acl-2023
+2In fact, the proto-language from which Romance languages
  like Spanish and Italian are descended is not identical
 to Classical Latin but is, rather, a closely related and sparsely
 attested language sometimes called Proto-Romance or Vulgar
@@ -53,17 +51,13 @@ Table 1  Sound correspondences in West Germanic Languages
 scarcity makes it a particularly difficult task for
 contemporary neural network architectures such as
 the Transformer (Vaswani et al., 2017), which are
-data hungry.
 The contributions of this paper are as follows 
  Application of the Transformer architecture
 to the protoform reconstruction task, achieving
  state of the art performance, contrary to
-expectation.
  Expansion of prior digital versions of H  ou
 (2004) s Chinese dataset to include a total of
-804 39 modern varieties
-and Middle Chinese.
-2 Related Work
+804 cognate sets across 39 modern varieties
 Applying machine learning to protoform reconstruction
  is not new. Bouchard-C ˆot e et al. (2013)
 learn an unsupervised protoform reconstruction
@@ -79,7 +73,7 @@ on a bigram language model of Latin, making their
 model technically not unsupervised.
 List et al. (2022) apply an SVM classifier to
 supervised reconstruction by treating sound correspondences
- as training examples. Note that therearXiv 2307.01896 2  [cs.CL]  6 2023were no word boundaries in the input matrix  that
+ as training examples. Note that therearXiv 2307.01896v2  [cs.CL]  6 Jul 2023were no word boundaries in the input matrix  that
 is, all sound correspondences across the training
 set are flattened into one matrix. Furthermore, each
 language has an independent phonemic inventory.
@@ -94,18 +88,19 @@ of 3,218 complete cognate sets spanning Latin (the
 proto-language) and 5 Romance languages  Romanian,
  French, Italian, Spanish, Portuguese.
 Meloni et al. (2021) employ a GRU-based
-seq seq approach (Cho et al., 2014) to Latin protoform
+seq2seq approach (Cho et al., 2014) to Latin protoform
  reconstruction and achieve state-of-the-art
 character edit distances. They extend Dinu and
 Ciobanu (2014) s Romance data using data from
-Wiktionary for a total of 8,799 5 Romance languages plus Latin in both orthographic
+Wiktionary for a total of 8,799 cognate sets across
+5 Romance languages plus Latin in both orthographic
  and phonetic (IPA) representations. In their
 model, all entries comprising the cognate set are
 concatenated together in a fixed order to form a
 training example. Chang et al. (2022) applied Meloni
  et al. (2021) s architecture to the reconstruction
-of Middle Chinese on a dataset of 5000 8 languages they compiled from Wiktionary.3
-
+of Middle Chinese on a dataset of 5000  cognate
+sets spanning 8 languages they compiled from Wiktionary.3
 Fourrier (2022) compares statistical machine
 translation, RNN, and Transformer architectures
 for protoform reconstruction, but they evaluate
@@ -119,10 +114,11 @@ target language and is trained on bilingual pairs for
 protoform reconstruction (e.g. Italian-Latin and
 Spanish-Latin), unlike comparative reconstruction.
 In contrast, we encode the entire cognate set consisting
- of multiple daughter languages (5 39 for Chinese) and predict the
+ of multiple daughter languages (5 for the
+Romance dataset  39 for Chinese) and predict the
 corresponding protoform.
-3 21,000 cognate sets, but
-only 5000 3 daughter entries and were used as
+3The original dataset contains 21,000 cognate sets, but
+only 5000  had at least 3 daughter entries and were used as
 input to the model.3 Datasets
 We train and test our model on Romance and Sinitic
 (Chinese) language datasets. For Romance languages,
@@ -148,11 +144,11 @@ thus have to rely on Baxter and Sagart (2014) s
 reconstructions of forms corresponding to 4,967
 Chinese characters. We scraped Wiktionary to obtain
  H  ou (2004) s phonetic representations of their
-modern reflexes.4 804 39 modern Sinitic languages
+modern reflexes.4The resulting dataset contains
+804 cognate sets of 39 modern Sinitic languages
 and the corresponding reconstructed Middle Chinese
  word. List (2021) s version previously had
-894 15 varieties.
-4 Model
+894 cognate sets across 15 varieties.
 We propose a Transformer-based encoder-decoder
 architecture (Vaswani et al., 2017) because such
 models have produced state-of-the-art results on
@@ -181,8 +177,6 @@ sequence but not across daughter sequences, positional
 positional encoding, an additive language embedding
  is applied to the token embeddings to differentiate
  between input tokens of different daughter
-languages.
-5 5.1 Baselines
 We compare our Transformer model to a variety
 of baselines. For Meloni et al. (2021), we use
 Chang et al. (2022) s PyTorch re-implementation
@@ -207,8 +201,6 @@ Appendix (Table 7), both of which include vowel
 length. Observe that these results are worse than
 those obtained on the full set, suggesting that the
 RNN and Transformer are dependent on a wealth
-of training data.
-5.2 Preprocessing
 In all our datasets, we merge diacritics to their base
 segments to form a multi-character token. For instance,
  the sequence [t,h] is concatenated to [th].
@@ -217,7 +209,8 @@ This ensures that phonemes are treated as one token.
 tones) are treated as one token. When multiple pronunciation
  variants are listed for a single Chinese
 character, we arbitrarily pick the first one.
-6 6.1 Evaluation criteria
+6 Results and Discussion
+6.1 Evaluation criteria
 We evaluate the predicted protoforms using edit
 distance (Levenshtein et al., 1966), normalized edit
 distance (edit distance normalized by the length of
@@ -238,17 +231,16 @@ dissimilar, 1  similar). With the exception of character
  and phoneme edit distance, the metrics enable
 fair comparison across different language families,
 which will differ in the average word length.
-6.2 3 shows that our model consistently has the
+Table 3 shows that our model consistently has the
 best performance on all datasets with regards to
 most metrics. The results were averaged across
 10 runs. Out of all datasets, our model performs
 best on the Rom-orth dataset, where we achieve
 a 6.55% decrease in phoneme edit distance and aLanguage Family Source # varieties Cognate sets Proto-language
 Rom-phon Dinu and Ciobanu (2014), 5 8,799 Latin
-Meloni et al. (2021)
 Rom-orth Dinu and Ciobanu (2014), 5 8,799 Latin
-Meloni et al. (2021)
-Sinitic (Chinese) H  ou (2004) 39 804 2  Statistics on both datasets used in our experiments. # varieties refers to the number of daughter varieties.
+Sinitic (Chinese) H  ou (2004) 39 804 Middle Chinese
+Table 2  Statistics on both datasets used in our experiments. # varieties refers to the number of daughter varieties.
 Figure 2  A gold phylogeny of Romance (left) compared with those derived by probing the RNN model (middle)
 and the Transformer model (right) on Rom-phon.
 1.41p.p improvement in accuracy relative to the
@@ -259,7 +251,6 @@ distance and a 4.03p.p increase in accuracy. For
 reproducibility, results on the publicly available
 portion of the Rom-phon and Rom-orth datasets
 are provided in Table 7 in the Appendix.
-6.3 Analysis
 We observe that the BCFS is relatively high for the
 Romance non-neural baselines compared to those
 of the Chinese ones. This suggests that the sound
@@ -267,7 +258,6 @@ changes in the Romance datasets are more regular
 than that of Chinese, which corroborates List et al.
 (2014) s results that more than half of the Chinese
 characters in their dataset could not be explained
-by a tree model.
 We examine the errors made by the Transformer
 model on the Rom-phon datasest. Substitutions
 constitute around 61% of the errors made by the
@@ -283,10 +273,8 @@ We observe that other common substitution errors
  phonetic features. This demonstrates that al-though no explicit phonetic information is fed directly
  into the model, the model makes mistakes
 motivated by phonetic similarity, like Meloni et al.
-(2021).
 We do not observe notable differences in the
 error statistics between the Transformer and the
-RNN.
 6.4 Language relatedness
 Inspired by Fourrier (2022), we probe our model
 for diachronic information on how genetically related
@@ -300,7 +288,6 @@ use sklearn (Pedregosa et al., 2011) s implementation
 on the distance matrix. We take a consensus of
 the dendrograms from 10 different runs using the
 consense program from PHYLIP (Felsenstein,
-2013).
 As we see in Figure 2, the Transformer captures
  more of the phylogenetic relationships among
 the languages correctly for the Rom-phon dataset.
@@ -308,7 +295,8 @@ Indeed, the Generalized Quartet Distance (GQD)
 (Sand et al., 2013  Pompei et al., 2011  Rama et al.,
 2018) between the gold and predicted tree, calculated
  using quartetDist from the tqDist library
-(Sand et al., 2014), is 0.4 0.8 for the RNN. See Figure 5 in the Appendix forDataset Model PED  NPED  Acc %  FER BCFS  
+(Sand et al., 2014), is 0.4 for the Transformer but
+0.8 for the RNN. See Figure 5 in the Appendix forDataset Model PED  NPED  Acc %  FER BCFS  
 Sinitic Random daughter (Chang et al.,
 2022)3.7702 0.8405 0% 0.2893 0.2748
 Majority constituent (Chang et al.,
@@ -328,11 +316,12 @@ Transformer (present work) 0.9027 0.1146 53.16% 0.0378 0.8421
 Rom-orth Random daughter (Chang et al.,
 2022)4.2567 0.4854 2.97%   0.5147
 CorPaR   Ini (List et al., 2022) 0.9531 0.1160 47.23%   0.8400
-SVM   PosStr (List et al., 2022) 0.8988 0.1105 50.43%   0.8501 0.5958 0.0772 69.74 %   0.8913
-Transformer (present work) 0.5568 0.0724 71.15%   0.8994 3  Evaluation of models and baselines using various metrics, averaged across 10 runs (same hyperparameters,
+SVM   PosStr (List et al., 2022) 0.8988 0.1105 50.43%   0.8501
+RNN 0.5958 0.0772 69.74 %   0.8913
+Transformer (present work) 0.5568 0.0724 71.15%   0.8994
+Table 3  Evaluation of models and baselines using various metrics, averaged across 10 runs (same hyperparameters,
 different seeds). Because Rom-orth is not in IPA, character edit distance is used instead of PED, and we cannot
 accurately calculate FER. See Section 6.1 for an explanation of each evaluation metric. See Table 4 for the standard
-deviation values.
 the results of the orthographic dataset.
 Since the Romance dataset only includes 5
 daughter languages, our results are insufficient
@@ -347,12 +336,10 @@ of daughter languages, would be acceptable justification
 criterion for phylogenetic inference in historical
 linguistics (Campbell, 2013) or if the model is
 learning superficial phonetic similarity.
-7 Conclusion
 By showing that Transformers can outperform previous
  architectures in protoform reconstruction despite
  the inherent data scarcity of the task, our work
 motivates future research in this area to take fulladvantage of the recent advancements in the Transformer
- space.
 Accurate supervised reconstruction can help predict
  protoforms for cognate sets where linguists
 have not reconstructed one yet. Future work could
@@ -363,8 +350,6 @@ reconstruct proto-languages whose linguist reconstructions
 leverage the abundance of work in unsupervised
 NMT to adapt our Transformer model for the unsupervised
  setting, a more realistic scenario for the
-historical linguist.
-Limitations
 One limitation of our work is that the RNN (Meloni
 et al., 2021) actually outperforms our Transformer
 on the Chinese dataset in Chang et al. (2022). In addition,
@@ -405,9 +390,8 @@ primarily through graffiti and other informal inscriptions.
 not exhaustive. As a result, it is difficult to find
 a dataset like Meloni et al. (2021) with thousands
 of such ancestor forms. We are also limited to the
-faithfulness of espeak-ng s Latin G P, from which
+faithfulness of espeak-ng s Latin G2P, from which
 Meloni et al. (2021) obtain their phonetic Romance
-dataset.
 For most language families, protoforms are not
 attested. In fact, as the term is often used, protoform
  refers to a form that is inferred only through
@@ -422,7 +406,6 @@ a bug in our implementation, Ying Chen for writing
 the code for the baselines, and Brendon Boldt and
 Graham Neubig for providing useful feedback for
 the first iteration of our paper.
-References
 Enrique Amig  o, Julio Gonzalo, Javier Artiles, and Felisa
  Verdejo. 2009. A comparison of extrinsic clustering
  evaluation metrics based on formal constraints.
@@ -431,7 +414,6 @@ William H Baxter and Laurent Sagart. 2014. Old Chinese
  A new reconstruction . Oxford University Press.
 Lukas Biewald. 2020. Experiment tracking with
 weights and biases. Software available from
-wandb.com.
 Alexandre Bouchard-C ˆot e, Dan Klein, and Michael Jordan.
  2008. Efficient inference in phylogenetic indel
 trees. In Advances in Neural Information Processing
@@ -489,7 +471,6 @@ word forms. arXiv preprint arXiv 2211.08684 .
 侯精一J ıngy ı H ou, editor. 2004. Xi and ai H  anyˇu
 f angy  an y ınk u代方言音[Phonological database
 of Chinese dialects] . Sh  angh ˇai Ji aoy u上海教育,
-Sh angh ˇai上海.
 John D. Lafferty, Andrew McCallum, and Fernando
 C. N. Pereira. 2001. Conditional random fields 
 Probabilistic models for segmenting and labeling sequence
@@ -505,7 +486,6 @@ Johann-Mattis List. 2019. Beyond edit distances  Comparing
 Linguistics , 45(3-4) 247 258.
 Johann-Mattis List. 2021. CLDF dataset derived from
 H ou s  Phonological Database of Chinese Dialects 
-from 2004 . Zenodo.
 Johann-Mattis List, Robert Forkel, and Nathan Hill.
 2022. A new framework for fast automated phonological
  reconstruction using trimmed alignments and
@@ -529,7 +509,6 @@ Panphon  A resource for mapping IPA segments
 to articulatory feature vectors. In Proceedings of
 COLING 2016, the 26th International Conference on
 Computational Linguistics  Technical Papers , pages
-3475 3484.
 Jerry L. Norman and W. South Coblin. 1995. A new
 approach to Chinese historical linguistics. Journal of
 the American Oriental Society , 115(4) 576 584.
@@ -544,20 +523,17 @@ R. Weiss, V . Dubourg, J. Vanderplas, A. Passos,
 D. Cournapeau, M. Brucher, M. Perrot, and E. Duchesnay.
  2011. Scikit-learn  Machine learning in
 Python. Journal of Machine Learning Research ,
-12 2825 2830.
 Simone Pompei, Vittorio Loreto, and Francesca Tria.
 2011. On the accuracy of language trees. PloS one ,
-6(6) e20109.
 Taraka Rama, Johann-Mattis List, Johannes Wahle, and
 Gerhard J  ager. 2018. Are automatic methods for
 cognate detection good enough for phylogenetic reconstruction
  in historical linguistics  arXiv preprint
-arXiv 1804.05416 .
 Andreas Sand, Morten K. Holt, Jens Johansen,
 Gerth Stølting Brodal, Thomas Mailund, and Christian
  N. S. Pedersen. 2014. tqDist  a library for computing
  the quartet and triplet distances between binary
- or general trees. Bioinformatics , 30(14) 2079 2080.
+ or general trees. Bioinformatics , 30(14) 2079 
 Andreas Sand, Morten K Holt, Jens Johansen, Rolf
 Fagerberg, Gerth Stølting Brodal, Christian NS Pedersen,
  and Thomas Mailund. 2013. Algorithms for
@@ -567,7 +543,6 @@ Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob
 Uszkoreit, Llion Jones, Aidan N Gomez, Łukasz
 Kaiser, and Illia Polosukhin. 2017. Attention is all
 you need. Advances in neural information processing
-systems , 30.
 Joe H Ward Jr. 1963. Hierarchical grouping to optimize
  an objective function. Journal of the American
 statistical association , 58(301) 236 244.A Training
@@ -577,7 +552,7 @@ conduct hyperparameter searches using WandB
 (Biewald, 2020) and use early stopping, picking
 the epoch with lowest edit distance on validation
 data. All experiments are performed on a Ubuntu
-server with 4 20 CPUs. For both the
+server with 4 GPUs and 20 CPUs. For both the
 RNN and the Transformer, Meloni et al. (2021) s
 dataset takes less than 7 GPU hours to run, while
 H ou (2004) takes less than 1 GPU hour. For the
@@ -589,10 +564,8 @@ and the Transformer has around 818,640 parameters.
  For the Chinese dataset, the RNN has around
 216,819 parameters, while the Transformer has
 around 2,010,967 parameters.
-B Hyper-parameters
-Refer to Table 5 6 for the best hyperparameters
+Refer to Table 5 and Table 6 for the best hyperparameters
  we found during hyperparameter search
-via WandB.
 C Supplementary Results
 In order to compare our model to earlier work, we
 used the Rom-phon and Rom-orth datasets from
@@ -604,39 +577,45 @@ available subset of Meloni et al. (2021) s dataset,
 which is presented in Table 7.
 Phylogenetic trees for Chinese were also extracted
  from the RNN and Transformer models.
-These are shown in Figures 3 4. We also plot
+These are shown in Figures 3 and 4. We also plot
 the dendrograms derived from the Rom-orto dataset
-in Figure 5.Figure 3 10 runs of the Transformer for the Chinese dataset.
-Figure 4 10 5  A gold phylogeny of Romance (left) compared with those derived by probing the RNN model (middle)
+in Figure 5.Figure 3  Consensus tree of the dendrograms from the 10 runs of the Transformer for the Chinese dataset.
+Figure 4  Consensus tree of the dendrograms from the 10 runs of the RNN for the Chinese datasetFigure 5  A gold phylogeny of Romance (left) compared with those derived by probing the RNN model (middle)
 and the Transformer model (right) on Rom-orth. GQD is 0.4 for both models.
 Dataset Model PED   NPED   Acc %   FER  BCFS  
-Sinitic Random
-daughter3.7702 0.8405 0% 0.2893 0.2748 3.5031 0.7806 0% 0.2013 0.3695 3.2795 0.7278 0% 0.3972 0.3332 1.6894 0.3692 15.52% 0.1669 0.5418 1.0720 0.05360.2432 0.012135.47%  
-1.40%0.0896 0.00420.6747 0.0166
-Transformer
-(present
-work)0.9814 0.04370.2204 0.009339.50%  
-3.02%0.0857 0.00570.6971 0.0102
-Rom-phon Random
-daughter6.1534 0.6914 0.06% 0.6264 0.4016 1.6847 0.1978 22.18% 0.0728 0.7403 1.5787 0.1861 24.69% 0.0713 0.7610 0.9670 0.01630.1229 0.002052.09%  
-0.59%0.0385 0.00110.8293 0.0024
-Transformer
-(present
-work)0.9027 0.01940.1146 0.002153.16%  
-0.66%0.0378 0.00110.8421 0.0029
-Rom-orth Random
-daughter4.2567 0.4854 2.97%   0.5147 0.9531 0.1160 47.23%   0.8400 0.8988 0.1105 50.43%   0.8501 0.5958 0.00830.0772 0.001369.74 %  
-0.23%  0.8913 0.0016
-Transformer
-(present
-work)0.5568 0.00860.0724 0.001371.15%  
-0.38 %  0.8994 0.0015 4  Evaluation of models and baselines using various metrics, averaged across 10 runs (same hyperparameters,
+daughter3.7702 0.8405 0% 0.2893 0.2748
+constituent3.5031 0.7806 0% 0.2013 0.3695
+CorPaR 3.2795 0.7278 0% 0.3972 0.3332
+ 0.3692 15.52% 0.1669 0.5418
+daughter6.1534 0.6914 0.06% 0.6264 0.4016
+ PosIni1.6847 0.1978 22.18% 0.0728 0.7403
+ 0.1861 24.69% 0.0713 0.7610
+daughter4.2567 0.4854 2.97%   0.5147
+CorPaR  Ini 0.9531 0.1160 47.23%   0.8400
+ 0.1105 50.43%   0.8501
+Table 4  Evaluation of models and baselines using various metrics, averaged across 10 runs (same hyperparameters,
 different seeds), with standard deviations. Because Rom-orth is not in IPA, character edit distance is used instead of
 PED, and we cannot accurately calculate FER. See Section 6.1 for an explanation of each evaluation metric.Romance (phon & orth) Sinitic
-learning rate 0.00013 0.0007487 3 2 3 5 128 128 8 8 128 647 0.202 0.1708861 200 200 50 32 0 0.0000001 1 32 5  Hyper-parameters used in training the Transformer
-
+learning rate 0.00013 0.0007487
+num encoder layers 3 2
+num decoder layers 3 5
+embedding size 128 128
+dim feedforward 128 647
+dropout 0.202 0.1708861
+training epochs 200 200
+weight decay 0 0.0000001
+Table 5  Hyper-parameters used in training the Transformer
 Romance-phon Romance-orth Sinitic
-learning rate 0.00055739 0.000964 0.000864 1 1 1 1 1 1 107 51 78 185 130 73 147 111 136 0.1808 0.323794 0.321639 181 193 237 15 15 15 8 8 4 6  Hyper-parameters used in training the RNNDataset Model PED  NPED  Acc %  FER BCFS  
+learning rate 0.00055739 0.000964 0.000864
+num encoder layers 1 1 1
+num decoder layers 1 1 1
+embedding size 107 51 78
+hidden size 185 130 73
+dim feedforward 147 111 136
+dropout 0.1808 0.323794 0.321639
+training epochs 181 193 237
+warmup epochs 15 15 15
+Table 6  Hyper-parameters used in training the RNNDataset Model PED  NPED  Acc %  FER BCFS  
 Rom-phon Random daughter (Chang et al.,
 2022)7.1880 0.8201 0% 1.1396 0.3406
 CorPaR   Ini (List et al., 2022) 2.0885 0.2491 14.29% 0.0874 0.6799
@@ -649,6 +628,6 @@ CorPaR   PosStrIni (List et al.,
 2022)1.8313 0.2001 18.89%   0.7227
 SVM   PosStr (List et al., 2022) 1.6995 0.1867 21.66%   0.7454
 RNN (Meloni et al., 2021) 1.3189 0.1505 38.89%   0.7742
-Transformer (present work) 1.1622 0.1343 45.53%   0.7989 7  Evaluation of models and baselines with various metrics on Meloni et al. (2021) s Romance datasets, where
+Transformer (present work) 1.1622 0.1343 45.53%   0.7989
+Table 7  Evaluation of models and baselines with various metrics on Meloni et al. (2021) s Romance datasets, where
 all entries from Dinu and Ciobanu (2014) are removed, for 1 run (using the hyperparameters of the best run on the
-full dataset)

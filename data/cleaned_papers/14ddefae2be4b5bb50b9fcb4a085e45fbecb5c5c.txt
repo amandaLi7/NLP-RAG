@@ -1,9 +1,10 @@
 Modeling Empathic Similarity in Personal Narratives
-Jocelyn Shen Maarten Sap2,3Pedro Colon-Hernandez1 1 1Massachusetts Institute of Technology, Cambridge, MA, USA
+Jocelyn Shen1Maarten Sap2,3Pedro Colon-Hernandez1
+Hae Won Park1Cynthia Breazeal1
+1Massachusetts Institute of Technology, Cambridge, MA, USA
 2Carnegie Mellon University, Pittsburgh, PA, USA
 3Allen Institute for Artificial Intelligence, Seattle, WA, USA
 joceshen@mit.edu, maartensap@cmu.edu, {pe25171, haewon, cynthiab}@mit.edu
-Abstract
 The most meaningful connections between people
  are often fostered through expression of
 shared vulnerability and emotional experiences
@@ -35,7 +36,6 @@ significantly more with stories retrieved by our
 model. Our work has strong implications for
 the use of empathy-aware models to foster human
  connection and empathy between people.
-1 Introduction
 Through personal experience sharing, humans are
 able to feel the sting of another person s pain and
 the warmth of another person s joy. This process
@@ -45,12 +45,12 @@ prosocial actions in the world (Coke et al., 1978
 Morelli et al., 2015  Vinayak and Judge, 2018  Cho
 and Jeon, 2019). Today, there is more visibility into
 the lives of others than ever before, yet loneliness
-and apathy are widespread (Buecker et al., 2021 1  Examples of empathically similar and dissimilar
+and apathy are widespread (Buecker et al., 2021 
+Figure 1  Examples of empathically similar and dissimilar
  stories. Highlighted are the features of our empathic
  similarity framework (main event, emotion, and
 moral/takeaway). Narrator A and B are more likely to
 empathize with one another over their shared feelings
-of isolation.
 Konrath, 2013  Konrath et al., 2011). While these
 challenges cannot be solved with technology alone,
 AI systems can be developed to bolster emotional
@@ -75,7 +75,7 @@ will likely not empathize with Narrator C, despite
 both stories having higher semantic similarity.
 We operationalize empathic similarity around
 alignment in three features of a personal story
-(highlighted in Figure 1)  its main event , itsemo-arXiv 2305.14246 2  [cs.CL]  6 2023tional reaction , and its overall moral or story takeaway
+(highlighted in Figure 1)  its main event , itsemo-arXiv 2305.14246v2  [cs.CL]  6 Dec 2023tional reaction , and its overall moral or story takeaway
  (Hodges et al., 2010  Morelli et al., 2017 
 Krebs, 1976  Wondra and Ellsworth, 2015  Bal
 and Veltkamp, 2013  Walker and Lombrozo, 2017 
@@ -90,7 +90,8 @@ A and B both experience loneliness, even though
 their actual situations are different (living in a small
 town versus working at a company).
 To enable machines to model empathic similarity,
- we introduce EMPATHIC STORIES ,1 1,500 personal stories, with crowdsourced annontations
+ we introduce EMPATHIC STORIES ,1a corpus
+of 1,500 personal stories, with crowdsourced annontations
  of the free-text summaries of the main
 event, emotion, and moral of the stories, as well as
 an empathic similarity score between 2,000 pairs
@@ -115,7 +116,6 @@ our framework, dataset, and model towards fostering
  meaningful human-human connections by
 enabling NLP systems to reason about complex
 interpersonal social-emotional phenomena.
-2 Related Work
 Document similarity is a well-defined task in NLP
 (Salton et al., 1997  Damashek, 1995  Deerwester
 et al., 1990  Landauer and Dumais, 1997), but
@@ -185,7 +185,6 @@ empathy ( 3.1) and draw on empathy definitions
 relevant for the NLP domain (Lahnala et al., 2022b).
 Then, we introduce our framework for modeling
 empathic similarity of stories and its three defining
-features ( 3.2).
 3.1 Background on Empathy and Stories
 Empathy, broadly defined as the ability to feel or
 understand what a person is feeling, plays a crucial
@@ -255,7 +254,6 @@ as the moral of the story (Walker and Lombrozo,
 around ). In studying fictional narratives, prior
 work has found that people can empathize with the
 takeaway of a story, despite its fictional nature (Bal
-and Veltkamp, 2013).
 4 E MPATHIC STORIES Dataset
 We introduce EMPATHIC STORIES , a corpus of personal
  stories containing 3,568 total annotations.
@@ -269,8 +267,9 @@ Appendix D. In Appendix H, we show that using
 LLMs for human annotation is not viable for our
 task.Figure 2  Overview of annotation pipeline starting with (a) individual story event, emotion, and moral to (b) using
 these annotations to sample balanced story pairs and (c) rating empathic similarity scores
-# sents # words
-Story 13.17 235.14 1.48 32.51 2.39 46.08 1.38 31.35 1 4.1 Data Sources
+Main Event 1.48 32.51
+Emotional Reaction 2.39 46.08
+Table 1  Story and annotation statistics
 We collect a diverse set of stories from sources including
  social media sites, spoken narratives, and
 crowdsourced stories. We take approximately 500
@@ -278,9 +277,8 @@ stories from each of the following sources (for a
 full breakdown see Appendix F). These sources
 contain English-written stories revolving around
 deep emotional experiences and open-ended conversation
- starters.
 (1) Online Personal Stories. We scrape
-stories from subreddits about personal experiences
+stories from subreddits2about personal experiences
  ( r/offmychest ,r/todayiamhappy , and
 r/casualconversation ). We also include a small set
 of stories from a public college confessions forum.
@@ -338,21 +336,10 @@ scores are more likely to be chosen.
 Annotation Procedure With the sampled story
 pairs, we released an annotation task on AmazonAnnotation PPA KA
 Empathic similarityOverall .80 .14
-Train .79 .14
-Dev .81 .11
-Test .83 .17
 Event similarityOverall .86 .27
-Train .86 .26
-Dev .84 .25
-Test .87 .30
 Emotion similarityOverall .83 .23
-Train .83 .23
-Dev .79 .15
-Test .84 .25
 Moral similarityOverall .80 .19
-Train .80 .18
-Dev .80 .14
-Test .82 .20 3  Similarity agreement scores (PPA   pairwise
+Table 3  Similarity agreement scores (PPA   pairwise
 percent agreement, KA   Krippendorff s Alpha)
 MTurk, asking workers to read pairs of stories and
 rate various aspects of empathic similarity between
@@ -383,7 +370,7 @@ a 4-point Likert scale (1   strongly disagree, 4
 each other), (2) similarity in the main events, (3)
 emotions, and (4) morals of the stories.
 Agreement We aggregate annotations by averaging
-between the 2 raters. Agreement scores for empa By
+between the 2 raters. Agreement scores for empa3By
  comparing the cosine similarity of human annotated
 event, emotion, and moral to the ChatGPT summarized stories,
  we find that there is high semantic overlap of the human
@@ -402,7 +389,8 @@ affect-driven annotation tasks (Sap et al., 2017
 Rashkin et al., 2018). Given the difficulty of our
 task (reading longer stories and projecting the mental
  state of 2 characters), our agreement is in line
-with prior work, which achieve around 0.51 - 0.91 0.29 - 0.34 KA.
+with prior work, which achieve around 0.51 - 0.91
+PPA and 0.29 - 0.34 KA.
 5 Modeling Empathic Similarity
 To enable the retrieval and analysis of empathically
 similar stories, we design a task detailed below. In
@@ -410,8 +398,6 @@ Appendix B, we also propose an auxiliary reasoning
  task to automatically extract event, emotion,
 and moral features from stories, which could be
 used in future work to quickly generate story annotations.
-
-5.1 Task Formulation
 Our ultimate retrieval task is given a query
 story Qand selects a story Sifrom a set
 ofNstories {S1, S2, ..., S N}such that i 
@@ -424,7 +410,6 @@ is, given a story pair ( S1,S2), return a similarity
  score sim(fθ(Si), fθ(Q))such that sim( , )is
 large for empathically similar stories and small for
 empathically dissimilar stories.
-5.2 Models
 We propose finetuning LLMs to learn embeddings
 that capture empathic similarity using cosine distance,
  for efficient retrieval at test time. In contrast,
@@ -434,10 +419,18 @@ very large language models (e.g., GPT-3 and ChatGPT),
 across a variety of tasks (Brown et al., 2020). However,
  in a real deployment setting, retrieval through
 prompting every possible pair of stories is expensive
- and inefficient.Model r ρ Acc P R F 1 1 τrank ρrank
-SBERT 30.93 29.86 62.75 57.81 90.24 70.48 57.92 17.46 18.74 35.93 35.21 64.75 58.68 90.73 71.26 57.43 17.59 18.98 10.24 11.54 57.00 52.19 99.02 68.35 49.51 7.56 9.28 34.20 34.43 64.75 58.2 88.29 70.16 65.84 24.68 26.55
-GPT-3 3.24 2.79 51.25 51.25 100 67.77 90.59 0.33 0.79 5 4.94 6.71 51.25 51.27 98.54 67.45 72.77 -4.8 -5.33 19.56 20.16 56.25 55.24 77.07 64.36 80.69 13.48 14.10 5 27.75 28.07 63.25 60.43 81.95 69.57 85.15 21.27 22.10 4  Model performance for empathic similarity prediction task across correlation, accuracy, and retrieval
-metrics. r  Pearson s correlation, ρ  Spearman s correlation, Acc   accuracy, P  precision, R  recall, Pk 1 1,τrank   Kendall Tau of ranking and ρrank   Spearman of ranking. Note that all scores
+ and inefficient.Model r ρ Acc P R F 1 Pk 1 τrank ρrank
+SBERT 30.93 29.86 62.75 57.81 90.24 70.48 57.92 17.46 18.74
+  finetuning 35.93 35.21 64.75 58.68 90.73 71.26 57.43 17.59 18.98
+BART 10.24 11.54 57.00 52.19 99.02 68.35 49.51 7.56 9.28
+  finetuning 34.20 34.43 64.75 58.2 88.29 70.16 65.84 24.68 26.55
+GPT-3 3.24 2.79 51.25 51.25 100 67.77 90.59 0.33 0.79
+  5 examples 4.94 6.71 51.25 51.27 98.54 67.45 72.77 -4.8 -5.33
+ChatGPT 19.56 20.16 56.25 55.24 77.07 64.36 80.69 13.48 14.10
+  5 examples 27.75 28.07 63.25 60.43 81.95 69.57 85.15 21.27 22.10
+Table 4  Model performance for empathic similarity prediction task across correlation, accuracy, and retrieval
+metrics. r  Pearson s correlation, ρ  Spearman s correlation, Acc   accuracy, P  precision, R  recall, Pk 1 
+precision at kwhere kis 1,τrank   Kendall Tau of ranking and ρrank   Spearman of ranking. Note that all scores
 are multiplied by 100 for easier comparison, and the maximum for each metric is 100. In bold is the best performing
 and underlined is the second-best performing condition for the metric.
 Baseline Models. We compare performance to
@@ -450,11 +443,13 @@ ability to distinguish empathically similar stories
 by using a k-shot prompting setup as done in Sap
 et al. (2022)  Brown et al. (2020). For the query
 story pair, we ask for an empathic similarity score
-from 1-4. We compare across k  0 5 examples from the training set. We also
+from 1-4. We compare across k  0examples and
+k  5 examples from the training set. We also
 evaluate these models  ability to generate humanlike
  main event, emotion description, and moral
 summaries for each story. Again, we use a k-shot
-prompting setup, comparing across k  0 10 examples. See Appendix G and Appendix
+prompting setup, comparing across k  0 and
+k  10 examples. See Appendix G and Appendix
 C for prompts used and finetuning details.
 Empathy Similarity Prediction. We propose a biencoder
  architecture finetuned with mean-squared
@@ -471,7 +466,7 @@ To evaluate the quality of empathic similarity predictions,
  correlations between the cosine similarity of
 the sentence embeddings and the gold empathic
 similarity labels. Next, we bin scores into binary
-similar/dissimilar categories (  2.5 2.5respectively)
+similar/dissimilar categories (  2.5and 2.5respectively)
  compute the accuracy, precision, recall,
  and F1 scores. Finally, we compute a series
 of retrieval-based metrics including precision atk  1 (what proportion of the top-ranked stories
@@ -479,7 +474,6 @@ by our model are the top-ranked story as rated by
 human annotators), Kendall s Tau (Abdi, 2007),
 and Spearman s correlation (Schober et al., 2018)
 for the ranking of the stories (how close the overall
-rankings are).
 Shown in Table 4, our results indicate that finetuning
  SBERT and BART with EMPATHIC STORIES
  results in performance gains across all metrics.
@@ -502,7 +496,6 @@ While GPT-3 and ChatGPT have high performance
  on the precision at kretrieval metric, in
 practice, it is not feasible to prompt the models
 with every pair of stories in the retrieval corpus.
-7 User Study
 Prior work s versions of human evaluations (Zhou
 and Jurgens, 2020  Bao et al., 2021  Sharma et al.,
 2020) are humans verifying or ranking model outputs
@@ -523,8 +516,8 @@ our dataset was used to develop the empathic similarity
 the real-world. Our hypothesis is  Users will empathize
  more with stories retrieved by our model
 (BART finetuned on EMPATHIC STORIES ) than stories
- retrieved by SBERT.
-7.1 150 participants from Prolific.
+7.1 Participants and Recruitment
+We recruited a pool of 150 participants from Prolific.
  Participants were primarily women (58%,
 38% men, 3% non-binary, 1% undisclosed) and
 white (73%, 8% Black, 9% other or undisclosed,
@@ -532,8 +525,7 @@ white (73%, 8% Black, 9% other or undisclosed,
 American). The mean age for participants was
 37 (s.d. 11.6), and participants on average said
 they would consider themselves empathetic people
-(mean 4.3, s.d. 0.81 1-5).
-7.2 Study Protocol
+(mean 4.3, s.d. 0.81 for Likert scale from 1-5).
 Participants rated their mood, wrote a personal
 story, then rated their empathy towards the stories
  retrieved by the baseline and proposed models.
@@ -547,7 +539,7 @@ link to the interface during the study. The interface
  connects to a server run on a GPU machine
 Figure 4  Breakdown of empathy dimensions for the
 story retrieved by our model vs. SBERT
-(4x Nvidia A s, 256GB of RAM, and 64 cores),
+(4x Nvidia A40s, 256GB of RAM, and 64 cores),
 which retrieves story responses in real time.
 Writing Prompts and Stories Retrieved. We
 carefully designed writing prompts to present to
@@ -563,7 +555,6 @@ performing model on the empathic similarity task
 (BART   finetuning). In Condition 2, participants
 read a story retrieved by SBERT. For both models,
 we select the best response that minimizes cosine
-distance.
 Measures. To measure empathy towards each
 story, we used a shortened version of the State
 Empathy Survey (Shen, 2010), which contains 7
@@ -574,7 +565,8 @@ of situational empathy. We also ask users to provide
 a free-text explanation of whether and why they
 found the retrieved story empathically resonant, to
 gain qualitative insights into their experience.
-7.3 3, we found
+7.3 Effects on Empathy
+With our results shown in Figure 3, we found
 through a paired t-test ( N  150 ) that users significantly
  empathized more with stories retrieved
 by our model finetuned on EMPATHIC STORIES
@@ -629,7 +621,6 @@ own. Kind of a  started from the bottom, now we re
 here  vibe, which I love to see  and I can relate to
 the feelings of abandonment and regret expressed.  
 8 Future Directions for Empathic
-Similarity
 In summary, few prior works on text-based empathy
  have looked at modeling empathy in two-way
 interpersonal settings for human-to-human connection,
@@ -653,16 +644,13 @@ more in conversational AI
 and better understand translating experiencesin ways that preserve empathic meaning
  Better understand cognitive insights, such as
 linguistic patterns of emotion-driven communication
-
  Applications and building interactions that foster
  story sharing across geographic, ethnic,
 and cultural bridges, such as developing better
 social media recommendation or personalization.
-
 We encourage future works to explore these directions
  in developing more human-centered approaches
  for interactions with NLP systems.
-9 Conclusion
 This work explores how we can model empathic
 resonance between people s personal experiences.
 We focused specifically on unpacking empathy in
@@ -712,7 +700,6 @@ dataset, and we found that important features will
 still present in the summaries. Future work could
 use our human experimental setup to collect first
 person labels over the entire stories, rather than the
-automatic summaries.
 Another limitation of our modeling approach
 is that our finetuned model takes in data that captures
  empathic relations across our framework of
@@ -736,7 +723,6 @@ our model might perform well in this one-shot interaction
 last empathic effects of reading stories retrieved by
 the model and measure changes in a user s longer
 term empathy, mood, and feelings of connection.
-Ethics Statement
 While such a system might foster empathy and connectedness,
  it is important to consider the potential
 harms brought about by this work. As with many
@@ -745,7 +731,6 @@ recommenders, our model is susceptible to algorithmic
 as creating an echo chamber for homogeneous perspectives
  (Kirk et al., 2023). Embedding diversity
 in the recommended stories is important in bothbroadening the perspective of users and preventing
-biases.
 Many social platforms struggle with the issue
 of content moderation and content safety. In its
 proposed state, our model does not do anything to
@@ -764,7 +749,6 @@ with Oren Etzioni (2018) s three rules of AI, we
 also discourage presenting humans with machinegenerated
  stories without disclosing that the story
 is written by an AI author.
-Acknowledgements
 We would like to thank all of our participants, annotators,
  and teammates for their invaluable contributions
  to this project. Special thanks to Sharifa
@@ -775,7 +759,6 @@ paper feedback. This work was supported by an
 NSF GRFP under Grant No. 2141064 and the IITP
 grant funded by the Korean Ministry of Science
 and ICT No.2020-0-00842.
-References
 Hervé Abdi. 2007. The kendall rank correlation coefficient.
  Encyclopedia of Measurement and Statistics.
 Sage, Thousand Oaks, CA , pages 508 510.
@@ -793,17 +776,16 @@ Satanjeev Banerjee and Alon Lavie. 2005. Meteor  An
 automatic metric for mt evaluation with improved correlation
  with human judgments. In Proceedings of
 the acl workshop on intrinsic and extrinsic evaluationmeasures for machine translation and/or summarization,
- pages 65 72.
 Jiajun Bao, Junjie Wu, Yiming Zhang, Eshwar Chandrasekharan,
  and David Jurgens. 2021. Conversations
  Gone Alright  Quantifying and Predicting
 Prosocial Outcomes in Online Conversations. In Proceedings
- of the Web Conference 2021 , pages 1134 1145, Ljubljana Slovenia. ACM.
+ of the Web Conference 2021 , pages 1134 
+1145, Ljubljana Slovenia. ACM.
 Clara Berridge, Yuanjin Zhou, Julie M. Robillard, and
 Jeffrey Kaye. 2023. Companion robots to mitigate
 loneliness among older adults  Perceptions of benefit
 and possible deception. Frontiers in Psychology ,
-14 1106633.
 Antoine Bosselut, Hannah Rashkin, Maarten Sap, Chaitanya
  Malaviya, Asli Celikyilmaz, and Yejin Choi.
 2019. COMET  Commonsense Transformers for Automatic
@@ -813,7 +795,6 @@ Hana Boukricha, Ipke Wachsmuth, Maria Nella Carminati,
 Model of Empathy  Empirical Evaluation. In 2013
 Humaine Association Conference on Affective Computing
  and Intelligent Interaction , pages 1 6, Geneva,
-Switzerland. IEEE.
 Guilherme Brockington, Ana Paula Gomes Moreira,
 Maria Stephani Buso, Sérgio Gomes da Silva, Edgar
 Altszyler, Ronald Fischer, and Jorge Moll. 2021. Storytelling
@@ -837,12 +818,11 @@ Susanne Buecker, Marcus Mund, Sandy Chwastek,
 Melina Sostmann, and Maike Luhmann. 2021. Is
 loneliness in emerging adults increasing over time  A
 preregistered cross-temporal meta-analysis and systematic
- review. Psychological Bulletin , 147 787 805.
+ review. Psychological Bulletin , 147 787 
 Rijul Chaturvedi, Sanjeev Verma, Ronnie Das, and Yogesh
  K. Dwivedi. 2023. Social companionship with
 artificial intelligence  Recent trends and future avenues.
  Technological Forecasting and Social Change ,
-193 122634.
 Snigdha Chaturvedi, Shashank Srivastava, and Dan
 Roth. 2018. Where Have I Heard This Story Before 
  Identifying Narrative Similarity in Movie Remakes.
@@ -850,15 +830,12 @@ Roth. 2018. Where Have I Heard This Story Before
 Computational Linguistics  Human Language Technologies,
  Volume 2 (Short Papers) , pages 673 678,
 New Orleans, Louisiana. Association for Computational
- Linguistics.
 Eun Cho and Soohyun Jeon. 2019. The role of empathy
  and psychological need satisfaction in pharmacy
 students  burnout and well-being. BMC Medical Education
- , 19(1) 43.
 Jay S. Coke, C. Daniel Batson, and Katherine McDavis.
 1978. Empathic mediation of helping  A two-stage
 model. Journal of Personality and Social Psychology ,
-36(7) 752 766.
 Marc Damashek. 1995. Gauging Similarity with nGrams 
  Language-Independent Categorization of
 Text. Science , 267(5199) 843 848. Publisher  American
@@ -866,12 +843,11 @@ Text. Science , 267(5199) 843 848. Publisher  American
 Scott Deerwester, Susan T. Dumais, George W. Furnas,
 Thomas K. Landauer, and Richard Harshman. 1990.
 Indexing by latent semantic analysis. Journal of the
-American Society for Information Science , 41(6) 391 407.
+American Society for Information Science , 41(6) 391 
 Jacob Devlin, Ming-Wei Chang, Kenton Lee, and
 Kristina Toutanova. 2019. BERT  Pre-training
 of Deep Bidirectional Transformers for Language
 Understanding. arXiv 1810.04805 [cs] . ArXiv 
-1810.04805.
 Karthik Dinakar, Birago Jones, Henry Lieberman, Rosalind
  Picard, Carolyn Rose, Matthew Thoman, and
 Roi Reichart. 2012. You Too   Mixed-Initiative LDA
@@ -881,7 +857,7 @@ and Social Media , 6(1) 74 81.
 Sarah Fabi, Lydia Anna Weber, and Hartmut Leuthold.
 2019. Empathic concern and personal distress depend
  on situational but not dispositional factors.
-PLoS ONE , 14(11) e0225102 0225102.
+PLoS ONE , 14(11) e0225102 e0225102.
 Fabrizio Gilardi, Meysam Alizadeh, and Maël Kubli.
 2023. ChatGPT Outperforms Crowd-Workers for
 Text-Annotation Tasks. ArXiv 2303.15056 [cs].
@@ -892,7 +868,6 @@ diffusion. PNAS Nexus , 2(3) pgad041.
 Melanie C. Green and Timothy C. Brock. 2000. The
 role of transportation in the persuasiveness of public
 narratives. Journal of Personality and Social Psychology
- , 79(5) 701 721.
 Maarten Grootendorst. 2020. Keybert  Minimal keyword
  extraction with bert.
 Laura Hanu and Unitary team. 2020. Detoxify. Github.
@@ -923,12 +898,10 @@ Sara Konrath. 2013. The Empathy Paradox
  Increasing Disconnection in the Age
 of Increasing Connection. https //www.igiglobal.com/chapter/content/www.igi-
 global.com/chapter/content/70356.
-
 Sara H. Konrath, Edward H. O Brien, and Courtney
 Hsing. 2011. Changes in Dispositional Empathy
 in American College Students Over Time  A MetaAnalysis.
  Personality and Social Psychology Review ,
-15(2) 180 198.
 Dennis Krebs. 1976. Empathy and altruism. Journal of
 Personality and Social Psychology , 32(6) 1134.
 Shiro Kumano, Ryo Ishii, and Kazuhiro Otsuka. 2017.
@@ -943,7 +916,6 @@ CAISA at WASSA 2022  Adapter-Tuning for Empathy
  on Computational Approaches to Subjectivity,
 Sentiment & Social Media Analysis , pages 280 285,
 Dublin, Ireland. Association for Computational Linguistics.
-
 Allison Lahnala, Charles Welch, David Jurgens, and Lucie
  Flek. 2022b. A Critical Reflection and Forward
 Perspective on Empathy and Natural Language Processing.
@@ -953,8 +925,8 @@ Abu Dhabi, United Arab Emirates. Association for
 Computational Linguistics.Thomas K. Landauer and Susan T. Dumais. 1997. A
 solution to Plato s problem  The latent semantic analysis
  theory of acquisition, induction, and representation
- of knowledge. Psychological Review , 104 211 240. Place  US Publisher  American Psychological
-Association.
+ of knowledge. Psychological Review , 104 211 
+240. Place  US Publisher  American Psychological
 Mike Lewis, Yinhan Liu, Naman Goyal, Marjan
 Ghazvininejad, Abdelrahman Mohamed, Omer Levy,
 Ves Stoyanov, and Luke Zettlemoyer. 2019. BART 
@@ -968,7 +940,6 @@ Chambers  Characterizing Gab, an Unmoderated
 Social System. In 2018 IEEE/ACM International
 Conference on Advances in Social Networks Analysis
  and Mining (ASONAM) , pages 515 522. ISSN 
-2473-991X.
 Chin-Yew Lin. 2004. ROUGE  A Package for Automatic
  Evaluation of Summaries. In Text Summarization
  Branches Out , pages 74 81, Barcelona, Spain.
@@ -978,11 +949,9 @@ A Similarity Measure for Text Classification and
 Clustering. IEEE Transactions on Knowledge and
 Data Engineering , 26(7) 1575 1590.
 Dan P McAdams. 2007. The Life Story Interview   II.
-page 5.
 Sylvia A. Morelli, Matthew D. Lieberman, and Jamil
 Zaki. 2015. The Emerging Study of Positive Empathy.
  Social and Personality Psychology Compass ,
-9(2) 57 68.
 Sylvia A. Morelli, Desmond C. Ong, Rucha Makati,
 Matthew O. Jackson, and Jamil Zaki. 2017. Empathy
  and well-being correlate with centrality in different
@@ -995,7 +964,6 @@ Jennifer Chu-Carroll. 2020. GLUCOSE  GeneraLized
 Proceedings of the 2020 Conference on Empirical
 Methods in Natural Language Processing (EMNLP) ,
 pages 4569 4586, Online. Association for Computational
- Linguistics.
 Dong Nguyen, Dolf Trieschnigg, and Mariët Theune.
 2014. Using Crowdsourcing to Investigate Perception
  of Narrative Similarity. In Proceedings of the
@@ -1010,7 +978,6 @@ Oren Etzioni. 2018. Three rules of Artificial Intelligence.Kishore
 the 40th Annual Meeting of the Association for Computational
  Linguistics , pages 311 318, Philadelphia,
 Pennsylvania, USA. Association for Computational
-Linguistics.
 Alec Radford, Jeffrey Wu, Rewon Child, David Luan,
 Dario Amodei, and Ilya Sutskever. Language Models
 are Unsupervised Multitask Learners.
@@ -1022,19 +989,16 @@ the Association for Computational Linguistics (Volume
  1  Long Papers) , pages 2289 2299, Melbourne,
 Australia. Association for Computational Linguistics.
 Hannah Rashkin, Maarten Sap, Emily Allaway, Noah A.
-Smith, and Yejin Choi. 2019. Event Mind  Commonsense
+Smith, and Yejin Choi. 2019. Event2Mind  Commonsense
  Inference on Events, Intents, and Reactions.
-
 Nils Reimers and Iryna Gurevych. 2019. SentenceBERT 
  Sentence Embeddings using Siamese BERTNetworks.
-
 Mahnaz Roshanaei, Christopher Tran, Sylvia Morelli,
 Cornelia Caragea, and Elena Zheleva. 2019. Paths
 to Empathy  Heterogeneous Effects of Reading Personal
  Stories Online. In 2019 IEEE International
 Conference on Data Science and Advanced Analytics
  (DSAA) , pages 570 579, Washington, DC, USA.
-IEEE.
 Paul Rottger, Bertie Vidgen, Dirk Hovy, and Janet Pierrehumbert.
  2022. Two Contrasting Data Annotation
 Paradigms for Subjective NLP Tasks. In Proceedings
@@ -1042,7 +1006,6 @@ of the 2022 Conference of the North American Chapter
  of the Association for Computational Linguistics 
  Human Language Technologies , pages 175 190,
 Seattle, United States. Association for Computational
-Linguistics.
 Mary Fabiola Sagayaraj, Ignisha Rajathi George,
 R. Vedhapriyavadhana, and L. R. Priya. 2022. Artificial
  Intelligence to Combat the Sting of the Pandemic
@@ -1054,7 +1017,6 @@ disentangling them into narrative clause types.
 Gerard Salton, Amit Singhal, Mandar Mitra, and Chris
 Buckley. 1997. Automatic text structuring and summarization.
  Information Processing & Management ,
-33(2) 193 207.
 Maarten Sap, Dallas Card, Saadia Gabriel, Yejin Choi,
 and Noah A. Smith. 2019a. The Risk of Racial Bias
 in Hate Speech Detection. In Proceedings of the
@@ -1072,31 +1034,28 @@ Maarten Sap, Ronan Le Bras, Emily Allaway, Chandra
 Brendan Roof, Noah A. Smith, and Yejin Choi.
 2019b. ATOMIC  An Atlas of Machine Commonsense
  for If-Then Reasoning. Proceedings of the
-AAAI Conference on Artificial Intelligence , 33 3027 3035.
+AAAI Conference on Artificial Intelligence , 33 3027 
 Maarten Sap, Ronan LeBras, Daniel Fried, and Yejin
 Choi. 2022. Neural Theory-of-Mind  On the Limits
 of Social Intelligence in Large LMs.
 Maarten Sap, Marcella Cindy Prasettio, Ari Holtzman,
 Hannah Rashkin, and Yejin Choi. 2017. Connotation
  Frames of Power and Agency in Modern Films.
-page 6.
 Maarten Sap, Hannah Rashkin, Derek Chen, Ronan
 LeBras, and Yejin Choi. 2019c. SocialIQA  Commonsense
  Reasoning about Social Interactions.
 Patrick Schober, Christa Boer, and Lothar A Schwarte.
 2018. Correlation coefficients  appropriate use and
-interpretation. Anesthesia & analgesia , 126(5) 1763 1768.
+interpretation. Anesthesia & analgesia , 126(5) 1763 
 Ashish Sharma, Adam S. Miner, David C. Atkins, and
 Tim Althoff. 2020. A Computational Approach to
 Understanding Empathy Expressed in Text-Based
 Mental Health Support.
 Lijiang Shen. 2010. On a Scale of State Empathy During
  Message Processing. Western Journal of Communication
- , 74(5) 504 524.
 Seema Vinayak and Jotika Judge. 2018. Resilience and
 Empathy as Predictors of Psychological Wellbeing
 among Adolescents. International Journal of Health
-Sciences , (4) 10.
 Kiran V odrahalli, Po-Hsuan Chen, Yingyu Liang,
 Christopher Baldassano, Janice Chen, Esther Yong,
 Christopher Honey, Uri Hasson, Peter Ramadge, Kenneth
@@ -1107,7 +1066,6 @@ Caren M. Walker and Tania Lombrozo. 2017. Explaining
  the moral of the story. Cognition , 167 266 281.
 Zhilin Wang, Anna Jafarpour, and Maarten Sap. 2022.
 Uncovering Surprising Event Boundaries in Narratives.
- page 12.
 Peter West, Chandra Bhagavatula, Jack Hessel, Jena D.
 Hwang, Liwei Jiang, Ronan Le Bras, Ximing
  Lu, Sean Welleck, and Yejin Choi. 2022.Symbolic Knowledge Distillation  from General
@@ -1116,11 +1074,9 @@ ArXiv 2110.07178 [cs].
 Joshua D. Wondra and Phoebe C. Ellsworth. 2015.
 An appraisal theory of empathy and other vicarious
  emotional experiences. Psychological Review ,
-122(3) 411 428.
 Kevin Wright. 2002. Motives for communication within
 on-line support groups and antecedents for interpersonal
  use. Communication Research Reports ,
-19(1) 89 98.
 Tianyi Zhang, Varsha Kishore, Felix Wu, Kilian Q.
 Weinberger, and Yoav Artzi. 2020. BERTScore 
 Evaluating Text Generation with BERT.
@@ -1129,7 +1085,6 @@ Empathy in Online Communities. In Proceedings of
 the 2020 Conference on Empirical Methods in Natural
  Language Processing (EMNLP) , pages 609 626,
 Online. Association for Computational Linguistics.A Understanding Aspects of Empathic
-Similarity
 Figure 6  Comparing the empathic similarity and semantic
  similarity core distributions
 Before training any models to learn empathic
@@ -1142,7 +1097,6 @@ to empathy. The question we aim to answer through
 our analysis of the text is what qualities of personal
 experiences people resonate with most and how
 does this relate to the personal experience they self
-disclose.
 First, we look at the correlation between humanrated
  similarity in event, emotion, and moral of the
 stories to the empathic similarity rating. We show
@@ -1165,15 +1119,33 @@ the distributions of similarity scores are different
  for human-rated empathic similarity scores as
 compared to semantic similarity scores obtained
 from SBERT. Semantic similarity of stories isFeature r ρ
-Similarity in Main Event 0.69 0 .69 0.65 0 .65 0.76 0 .76 5  Correlation between similarity scores for individual
+Similarity in Main Event 0.69 0 .69
+Similarity in Emotion Description 0.65 0 .65
+Similarity in Moral 0.76 0 .76
+Table 5  Correlation between similarity scores for individual
  features compared to overall empathic similarity
 score. r Pearson s correlation coefficient. ρ Spearman s
  correlation coefficient.
 Feature Model BLEU ROUGE METEOR BertScore
-EventBART 1.16 16.87 21.26 13.30 9.56 32.72 29.14 39.79
-GPT-3 1.40 24.77 26.31 33.39 10 7.72 32.22 23.60 36.84 1.85 25.35 25.36 34.93 10 7.23 30.02 32.81 37.59 0.40 15.73 16.95 6.53 2.08 26.61 23.54 26.24
-GPT-3 1.56 22.37 27.90 21.28 10 0.08 21.09 12.08 19.97 1.66 23.21 29.62 22.19 10 1.09 25.43 27.67 26.46 0.02 11.78 15.52 0.40 13.77 33.52 29.66 32.26
-GPT-3 5.86 28.10 27.87 31.64 10 4.38 28.63 18.97 28.15 4.45 25.03 26.16 30.99 10 6.63 27.91 27.51 33.97 6  Quality of event, emotion, and moral summaries
+EventBART 1.16 16.87 21.26 13.30
+  finetuning 9.56 32.72 29.14 39.79
+GPT-3 1.40 24.77 26.31 33.39
+  10 examples 7.72 32.22 23.60 36.84
+ChatGPT 1.85 25.35 25.36 34.93
+  10 examples 7.23 30.02 32.81 37.59
+EmotionBART 0.40 15.73 16.95 6.53
+  finetuning 2.08 26.61 23.54 26.24
+GPT-3 1.56 22.37 27.90 21.28
+  10 examples 0.08 21.09 12.08 19.97
+ChatGPT 1.66 23.21 29.62 22.19
+  10 examples 1.09 25.43 27.67 26.46
+MoralBART 0.02 11.78 15.52 0.40
+  finetuning 13.77 33.52 29.66 32.26
+GPT-3 5.86 28.10 27.87 31.64
+  10 examples 4.38 28.63 18.97 28.15
+ChatGPT 4.45 25.03 26.16 30.99
+  10 examples 6.63 27.91 27.51 33.97
+Table 6  Quality of event, emotion, and moral summaries
  across models. Scores are multiplied by 100 for
 readability, and the max. for each metric is 100.
 weakly positively correlated with empathic similarity
@@ -1187,7 +1159,7 @@ similarity, but might not capture relationships between
 B Empathy Reasoning Task
 Empathy Reasoning Task Definition. Given a
 story context c, we finetune a sequence-to-sequence
-(seq seq) model to generate an event ( v), emotion
+(seq2seq) model to generate an event ( v), emotion
  (e), and moral ( m), concatenating annotated
 summaries to construct the gold label and modeling
  p(v, e, m  c) (Kim et al., 2022). The model
@@ -1212,12 +1184,14 @@ C Finetuned Model Training Details
 We use a 75 5 20 train dev. test split on both individual
  stories and pairs of stories. For the empathic
 similarity prediction task, we use learning rates of
-1e-6 5e-6 for SBERT and BART respectively,
+1e-6 and 5e-6 for SBERT and BART respectively,
 and a linear scheduler with warmup. For the empathic
  reasoning task, we use a learning rate of
-1e-5. For both tasks, we use a batch size of 8 30-50 epochs, monitoring correlation
+1e-5. For both tasks, we use a batch size of 8 and
+finetune for 30-50 epochs, monitoring correlation
 and validation loss to select the best-performing
-models. We trained all models on 4 256 64 cores, and all model
+models. We trained all models on 4x Nvidia A40s
+with 256GB of RAM and 64 cores, and all model
 training times were under 12 hours.
 D Data Pre-Processing
 For all of the data sources, we remove stories that
@@ -1240,14 +1214,12 @@ corrected overt grammatical errors as well as references
  to the platform the story was shared on
 (e.g. addressing Redditors). Our final set of stories
  contains 1,568 curated, high-quality personal
-narratives.
 E Story and Annotation Themes
 Below we show the top themes across each story s
 emotion (Table 7) and moral (Table 8) annotations.Note that we did not include topics for the events
 since these were similar to Table 2. To identify
 these topics, we use Latent Dirichlet Allocation
 (LDA) and KeyBERT on the clusters (Grootendorst,
-2020).
 Topic Keywords % Stories
 depression melancholy, depression, unhappy 28.95%
 happiness and satisfaction happiness, satisfaction, overwhelmed 20.92%
@@ -1258,7 +1230,6 @@ gratitude gratitude, generosity, happiness 9.31%
 desire desire, passion, youth 6.12%
 grief grief, sober, lifestyle 3.89%
 Table 7  Themes across emotion descriptions of the
-stories.
 Topic Keywords % Stories
 motivation and encouragement motivation, success, achieving 40.31%
 overcoming and resilience overcome, resilient, rehab 25.57%
@@ -1269,30 +1240,28 @@ F Collected Stories Breakdown
 A breakdown of the amount of stories per source
 can be found in Table 9.
 Data Source Number of Stories
-Hippocorpus 483 476
+Road Trip Narratives 476
 Reddit - Today I Am Happy 198
 Reddit-Casual Conversations 195
 Reddit-Off My Chest 162
-Facebook - [Redacted] Confessions 54 9  Breakdown of retrieved stories per data source.
+Facebook - [Redacted] Confessions 54
+Table 9  Breakdown of retrieved stories per data source.
 G GPT-3 and ChatGPT Prompts
 Below are prompts we fed to GPT-3 and ChatGPT
 for our few-shot baselines. Note that in addition to
 the prompts, we provided sampled examples from
-our training corpus.
  Event summary  What is the main event being
  described in the story  Response must be
-at least 1 50-1000 characters
-including spaces.
+at least 1 sentence and 50-1000 characters
  Emotion summary  Describe the emotions
 the narrator feels before and after the main
 event and why they feel this way. Answer as
 though you were explaining how the narrator
  felt to someone who knew nothing about
-the situation. Response must be at least 2 150-1000 characters including
-spaces.
+the situation. Response must be at least 2sentences and 150-1000 characters including
  Moral summary  What is the high-level
 lesson or takeaway (ie. moral) of the story 
-Response must be at least 1 1001000
+Response must be at least 1 sentence and 1001000
  characters including spaces.
  Empathic similarity  Rate the extent to
 which you agree with the statement "the narrators
@@ -1311,7 +1280,6 @@ and vice versa). Give your answer on a scale
 from 1-4 (1 - not at all, 2 - not so much, 3 very
  much, 4 - extremely)
 H Using LLMs as a Proxy for Human
-Annotations
 Recent works raise the question of whether LLMs
 can be used to proxy human annotations (Gilardi
 et al., 2023). The motivation behind this method is
@@ -1334,10 +1302,15 @@ low performance across all four metrics.
 H.2 Paired Story Annotation
 We feed the same prompt given to human annotators
  into ChatGPT, asking for a Likert score fromSummary BLEU ROUGE METEOR BertScore
-Main Event 2.86 26.37 28.20 36.53 1.43 23.01 28.87 23.36 7.67 27.64 27.33 33.24 10  Quality of ChatGPT story empathy reasoning
+Main Event 2.86 26.37 28.20 36.53
+Emotion Description 1.43 23.01 28.87 23.36
+Moral 7.67 27.64 27.33 33.24
+Table 10  Quality of ChatGPT story empathy reasoning
 annotations (scores are multiplied by 100 for readability,
 and the maximum for each metric is 100)
-Figure 7 1-4 for the empathic similarity between two stories.
+Figure 7  Comparing the empathic similarity score distributions
+ between ChatGPT and human labels
+1-4 for the empathic similarity between two stories.
  The Spearman s correlation between human
 and ChatGPT generated labels is 0.22 ( p  0.001),
 indicating weakly positive correlation between human

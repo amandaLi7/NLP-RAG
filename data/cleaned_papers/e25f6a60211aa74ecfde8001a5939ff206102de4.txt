@@ -1,4 +1,3 @@
-1
 End-to-End Speech Recognition  A Survey
 Rohit Prabhavalkar, Member, IEEE, Takaaki Hori, Senior Member, IEEE, Tara N. Sainath, Fellow, IEEE,
 Ralf Schl  uter, Senior Member, IEEE, and Shinji Watanabe, Fellow, IEEE
@@ -7,24 +6,23 @@ Abstract  In the last decade of automatic speech recognition
 considerable reductions in word error rate of more than 50%
 relative, compared to modeling without deep learning. In the
 wake of this transition, a number of all-neural ASR architectures
-have been introduced. These so-called end-to-end (E E) models
+have been introduced. These so-called end-to-end (E2E) models
 provide highly integrated, completely neural ASR models, which
 rely strongly on general machine learning knowledge, learn more
 consistently from data, with lower dependence on ASR domainspecific
  experience. The success and enthusiastic adoption of deep
 learning, accompanied by more generic model architectures has
-led to E E models now becoming the prominent ASR approach.
-The goal of this survey is to provide a taxonomy of E E ASR
+led to E2E models now becoming the prominent ASR approach.
+The goal of this survey is to provide a taxonomy of E2E ASR
 models and corresponding improvements, and to discuss their
 properties and their relationship to classical hidden Markov
 model (HMM) based ASR architectures. All relevant aspects
-of E E ASR are covered in this work  modeling, training,
+of E2E ASR are covered in this work  modeling, training,
 decoding, and external language model integration, discussions of
 performance and deployment opportunities, as well as an outlook
 into potential future developments.
 Index Terms  end-to-end, automatic speech recognition.
-I. I NTRODUCTION
-The classical statistical architecture decomposes an automatic
+The classical1statistical architecture decomposes an automatic
  speech recognition (ASR) system into four main components 
  acoustic feature extraction from speech audio signals,
 acoustic modeling, language modeling and search based on
@@ -61,7 +59,7 @@ speech processing models for more generic machine learning
 approaches to sequence-to-sequence processing   akin to how
 statistical approaches to natural language processing have
 come to replace more linguistically oriented models. For these
-all-neural approaches recently the term end-to-end (E E) [14],
+all-neural approaches recently the term end-to-end (E2E) [14],
 [17], [18], [19] has been established. Therefore, first of all
 an attempt to define the term end-to-end in the context of
 ASR is due in this survey. According to the Cambridge
@@ -75,10 +73,10 @@ task-specific evaluation measure, i.e., usually label (word,
 character, subword, etc.) error rate . While this definition
 suffices for the present discussion, we note that such an
 idealized definition hides many nuances involved in the term
-E E and lacks distinctiveness  we elaborate on some of these
+E2E and lacks distinctiveness  we elaborate on some of these
 nuances in Sec. II to discuss the various connotations of the
-term E E in the context of ASR.
-What are potential benefits of E E approaches to ASR 
+term E2E in the context of ASR.
+What are potential benefits of E2E approaches to ASR 
 The primary objective when developing an ASR systems is to
 minimize the expected word error rate  secondary objectives
 are to reduce time and memory complexity of the resulting
@@ -101,64 +99,63 @@ available. Also, secondary knowledge sources may themselves
 be erroneous  avoiding these may improve models trained
 directly from data, provided that sufficient amounts of taskspecific
  training data are available.
-With the current surge of interest in E E ASR models and anThis article has been accepted for publication in IEEE/ACM Transactions on Audio, Speech and Language Processing. This is the author's version which has not been fully edited and
-content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/2
+With the current surge of interest in E2E ASR models and anThis article has been accepted for publication in IEEE/ACM Transactions on Audio, Speech and Language Processing. This is the author's version which has not been fully edited and
+content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283
+This work is licensed under a Creative Commons Attribution 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/2
 increasing diversity of corresponding work, the authors of this
 review think it is time to provide an overview of this rapidly
 evolving domain of research. The goal of this survey is to
 provide an in-depth overview of the current state of research
-on E E ASR systems, covering all relevant aspects of E E
-ASR, with a contrastive discussion of the different E E and
+on E2E ASR systems, covering all relevant aspects of E2E
+ASR, with a contrastive discussion of the different E2E and
 classical ASR architectures.
-This survey of E E speech recognition is structured as follows.
- Sec. II discusses the nuances in the term E E as it applies
-to ASR. Sec. III describes the historical evolution of E E
+This survey of E2E speech recognition is structured as follows.
+ Sec. II discusses the nuances in the term E2E as it applies
+to ASR. Sec. III describes the historical evolution of E2E
 speech recognition, with specific focus on the input-output
-alignment and an overview of prominent E E ASR models.
-Sec. IV discusses improvements of the basic E E models,
-including E E model combination, training loss functions,
+alignment and an overview of prominent E2E ASR models.
+Sec. IV discusses improvements of the basic E2E models,
+including E2E model combination, training loss functions,
 context, encoder/decoder structures and endpointing. Sec. V
-provides an overview of E E ASR model training. Decoding
-algorithms for the different E E approaches are discussed
+provides an overview of E2E ASR model training. Decoding
+algorithms for the different E2E approaches are discussed
 in Sec. VI. Sec. VII discusses the role and integration of
-(separate) language models in E E ASR. Sec. VIII reviews
-experimental comparisons of the different E E as well as
+(separate) language models in E2E ASR. Sec. VIII reviews
+experimental comparisons of the different E2E as well as
 classical ASR approaches. Sec. IX provides an overview of
-applications of E E ASR. Sec. X investigates future directions
-of E E research in ASR, before concluding in Sec. XI. Finally,
+applications of E2E ASR. Sec. X investigates future directions
+of E2E research in ASR, before concluding in Sec. XI. Finally,
 we note that this survey paper also includes comparative
-discussions between novel E E models and classical HMMbased
+discussions between novel E2E models and classical HMMbased
  ASR approaches in terms of various aspects  most
 sections end with a summarization of the relationship between
-E E models and HMM-based ASR approaches in relation to
+E2E models and HMM-based ASR approaches in relation to
 the topics covered within the respective sections.
-II. D ISTINCTIVENESS OF THE TERM E E
-As noted in Sec. I the term E E provides an idealized
+II. D ISTINCTIVENESS OF THE TERM E2E
+As noted in Sec. I the term E2E provides an idealized
 definition of ASR systems, and can benefit from a more
 detailed discussion based on the following perspectives.
-a) Joint Modeling  In terms of ASR, the E E property
+a) Joint Modeling  In terms of ASR, the E2E property
 can be interpreted as considering all components of an ASR
 system jointly as a single computational graph. Even more so,
-the common understanding of E E in ASR is that of a single
+the common understanding of E2E in ASR is that of a single
 joint modeling approach that does not necessarily distinguish
 separate components, which may also mean dropping the
 classical separation of ASR into an acoustic model and a
-language model. However, in practice E E ASR systems are
+language model. However, in practice E2E ASR systems are
 often combined with external language models trained on textonly
  data, which weakens the end-to-end nature of the system
-to some extent.
-b) Joint Training  In terms of model training, E E can
+b) Joint Training  In terms of model training, E2E can
 be interpreted as estimating all parameters, of all components
 of a model jointly using a single objective function that is
 consistent with the task at hand, which in case of ASR means
 minimizing the expected word error rate2. However, the term
 lacks distinctiveness here, as classical and/or modular ASR
 model architectures also support joint training with a single
-objective.
 2Note that this does not necessarily require Bayes Risk training, as standard
 training criteria like cross entropy, maximum mutual information and maximum
  likelihood in case of classical ASR models asymptotically guarantee
-optimal performance in the sense of Bayes decision rule, also [23], [24].c) Training from Scratch  The E E property can also be
+optimal performance in the sense of Bayes decision rule, also [23], [24].c) Training from Scratch  The E2E property can also be
 interpreted with respect to the training process itself, by requiring
  training from scratch , avoiding external knowledge like
 prior alignments or initial models pre-trained using different
@@ -168,7 +165,7 @@ explicit modularity, including self-supervised learning [25] or
 joint training of front-end and speech recognition models [26].
 Especially in case of limited amounts of target task training
 data, utilizing large pretrained models is important to obtain
-performant E E ASR systems.
+performant E2E ASR systems.
 d) Avoiding Secondary Knowledge Sources  For ASR,
 standard secondary knowledge sources are pronunciation lexica
  and phoneme sets, as well as phonetic clustering, which
@@ -177,17 +174,17 @@ classification and regression trees (CART) [27]. Secondary
 knowledge sources and separately trained components may
 introduce errors, might be inconsistent with the overall training
 objective and/or may generate additional cost. Therefore, in
-an E E approach, these would be avoided. Standard joint
-training of an E E model requires using a single kind of
+an E2E approach, these would be avoided. Standard joint
+training of an E2E model requires using a single kind of
 training data, which in case of ASR would be transcribed
 speech audio data. However, in ASR often even larger amounts
 of text-only data, as well as optional untranscribed speech
-audio are available. One of the challenges of E E modeling
+audio are available. One of the challenges of E2E modeling
 therefore is how to take advantage of text-only and audio-only
 data jointly without introducing secondary (pretrained) models
 and/or training objectives [28], [29].
 e) Direct Vocabulary Modeling  Avoiding pronunciation
-lexica and corresponding subword units leave E E recognition
+lexica and corresponding subword units leave E2E recognition
 vocabularies to be derived from whole word or character
 representations. Whole word models [30], according to Zipf s
 law [31], would require unrealistically high amounts of transcribed
@@ -195,10 +192,10 @@ law [31], would require unrealistically high amounts of transcribed
 be attainable for many tasks. On the other hand, methods
 to generate subword vocabularies based on characters, like
 the currently popular byte pair encoding (BPE) approach
-[32], might be seen as secondary approaches outside the E E
+[32], might be seen as secondary approaches outside the E2E
 objective, even more so if acoustic data is considered for
 subword derivation [33], [34], [35], [36].
-f) Generic Modeling  Finally, E E modeling also requires
+f) Generic Modeling  Finally, E2E modeling also requires
  genericity of the underlying modeling  task-specific
 constraints are learned completely from data, in contrast to
 task-specific knowledge which influences the modeling of
@@ -207,28 +204,28 @@ monotonicity constraint in ASR may be learned completely
 from data in an end-to-end fashion (e.g., in attention-based
 approaches [16]), or it may directly be implemented, as in
 classical HMM structures. However, model constraints may
-be considered by way of regularization in E E ASR model
+be considered by way of regularization in E2E ASR model
 training, and can thus provide an alternative way to introduce
 task-specific knowledge.
 g) Single-Pass Search  In terms of the recognition/search
-problem, the E E property can be interpreted as integrating all
+problem, the E2E property can be interpreted as integrating all
 components (models, knowledge sources) of an ASR system
 before coming to a decision. This is in line with Bayes 
 decision rule, which exactly requires a single global decision
 integrating all available knowledge sources, which is supportedThis article has been accepted for publication in IEEE/ACM Transactions on Audio, Speech and Language Processing. This is the author's version which has not been fully edited and
-content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/3
-by both classical ASR models as well as E E models. On
+content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283
+This work is licensed under a Creative Commons Attribution 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/3
+by both classical ASR models as well as E2E models. On
 the other hand, multipass search is not only exploited by
-classical ASR models, but also by E E ASR models, the
+classical ASR models, but also by E2E ASR models, the
 most prominent case here being (external) language model
-rescoring.
-All in all, we need to conclude that a)  E E  does not
+All in all, we need to conclude that a)  E2E  does not
 provide a clear distinction between classical and novel, socalled
- E E models, and b) the E E property often is weakened
+ E2E models, and b) the E2E property often is weakened
 in practice, leaving the term as a more general, idealized
 perspective on ASR modeling.
-III. A T AXONOMY OF E E M ODELS IN ASR
-Before we derive a taxonomy of E E ASR modeling
+III. A T AXONOMY OF E2E M ODELS IN ASR
+Before we derive a taxonomy of E2E ASR modeling
 approaches, we first introduce our notation. We denote the
 input speech utterance as X, which we assume has been parameterized
  into D-dimensional acoustic frames (e.g., log-mel
@@ -239,42 +236,37 @@ C  (c1,   , cL), where each label cj  C. Our description is
 agnostic to the specific representation used for decomposing
 the word sequence into labels  popular choices include characters,
  words, or sub-word sequences (e.g., BPE [32], wordpieces
- [37]).
 ASR may be viewed as a sequence classification problem
 which maps a variable length input, X, into an output,
 C, of unknown length. Following Bayes  decision rule, any
 statistical approach to ASR must determine how to model the
 word sequence posterior probability, P(C X). Thus, a natural
-taxonomy of E E ASR modeling can be based on the various
+taxonomy of E2E ASR modeling can be based on the various
 strategies for modeling this word sequence posterior  i.e., how
 the alignment problem between input and output sequence is
 handled  and, how sequence modeling is decomposed to the
 level of individual input vectors xt and/or output labels cl.
 We find that it is useful to distinguish implicit and explicit
 modeling approaches, based on the modeling of the sequenceto-sequence
- alignment 
 a) Explicit Alignment Modeling  does not necessarily
 refer to the determination of a single unique alignment, but
 instead introduces an explicit alignment modeled as a latent
-variable, A 
-P(C X)  X
-AP(C, A X)
 b) Implicit Alignment Modeling  does not introduce a
 latent alignment variable, but models the label sequence posterior
- P(C X)directly.
 Explicit alignment modeling approaches can mainly be
 distinguished by their choice of latent variable  these can be
 encoded in terms of valid emission paths in corresponding
 finite state automata (FSA) [38] which relate the input and
 output sequences   the approach taken in our article. Typically,
 latent variables in explicit alignment modeling in transducer
-E E models introduce extensions to the output label set
+E2E models introduce extensions to the output label set
 with different forms of continuation labels (including, but not
-limited to so-called blank labels).3 3For example, these extensions may also include explicit duration variables,
+limited to so-called blank labels).3
+3For example, these extensions may also include explicit duration variables,
 leading to segmental models [39]. Such models can be rewritten into equivalent
  transducer models [40], and vice-versa.A. Encoder and Decoder Modules
 Irrespective of the alignment modeling approach, following
-the notation introduced in [41], it is useful to view all E E
+the notation introduced in [41], it is useful to view all E2E
 ASR models as being composed of an encoder module and
 adecoder module. The encoder module, denoted H(X),
 maps an input acoustic frame sequence, X, of length T 
@@ -282,42 +274,35 @@ into a higher-level representation, H(X)   (h1,   ,hT)of
 length T(typically T T ). Note that the encoder output is
 independent of the hypothesized label sequence. The decoder
 module models the label sequence posterior on top of the
-encoder output 
-P(C X)  P 
-CH(X) 
 Thus, we may distinguish different approaches based upon
 how the output label sequence distribution (including potential
 latent variables resulting from the alignment modeling) are decomposed
  into individual label (and alignment) contributions 
 these may occur per output label position, per encoder frame
 position, or combinations thereof 
-P 
-C[, A]H(X) 
- LY
-i 1P 
-ci[, ai]ci 1 1[, ai 1 1], vi(ci 1 1[, ai 1 1], H(X)) 
-where the notation mi 1 1 1previous instances of the variables m  and,
-vi(ci 1 1[, ai 1 1], H(X))denotes a context-vector that provides
+where the notation mi 1
+1 corresponds to the sequence
+ofi 1previous instances of the variables m  and,
+1], H(X))denotes a context-vector that provides
 the connection between encoder output, H(X), and the label
  output position, i. In general the context vector may
 depend on the label context (and possibly the latent variable
  context, for explicit alignment modeling approaches).
 Apart from the underlying alignment model and corresponding
 output label decomposition, decoder modules differ in terms
-of the assumptions on their label context ci 1 1 (and their
-latent variable context ai 1 1), which correspond to different
+of the assumptions on their label context ci 1
+latent variable context ai 1
+1), which correspond to different
 conditional independence assumptions, and by their access to
 the encoder output. For example, the local posterior may only
 depend on a single encoder frame output (i.e., with the context
 vector being reduced to a single encoder frame s output) 
-vi 
-ci 1 1, H(X) 
  hti(X). As we shall see in detail in the
 following sections, the simplest case of an encoder framelevel
  decomposition (with L T, and ti i) corresponds to
 CTC [13]  AED models [16] and their variants maintain the
 full dependency of the context vector.
-Finally, different E E models can also be distinguished by
+Finally, different E2E models can also be distinguished by
 the specific modeling choices that are involved in the design
 of the neural network used to implement the encoder and the
 decoder. These might involve feed-forward neural networks,
@@ -325,14 +310,15 @@ convolutional neural networks, recurrent neural networks (either
  uni-directional or bi-directional) [42], attention [43],
 and various combinations thereof (e.g., transformers [44] or
 conformers [45]). These modeling choices and corresponding
-training methods can be applied across E E ASR models and
-therefore do not enter the taxonomy of E E ASR models
+training methods can be applied across E2E ASR models and
+therefore do not enter the taxonomy of E2E ASR models
 discussed here. However, specific choices will be discussed as
-part of the exemplary E E ASR models presented in Sec. VIII
+part of the exemplary E2E ASR models presented in Sec. VIII
 and Sec. IX and.This article has been accepted for publication in IEEE/ACM Transactions on Audio, Speech and Language Processing. This is the author's version which has not been fully edited and
-content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/4
+content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283
+This work is licensed under a Creative Commons Attribution 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/4
 B. Explicit Alignment Modeling Approaches
-Early E E modeling approaches modeled alignments explicitlythrough
+Early E2E modeling approaches modeled alignments explicitlythrough
  a latent variable, which is marginalized out (possibly,
  approximately) during training and inference. Examples
 of this family of approaches include connectionist temporal
@@ -353,12 +339,10 @@ a specific training example, (X, C), each of these models
 defines a set of valid alignments , denoted by A(T,C), and
 define the conditional distribution P(C X)by marginalizing
 over all valid alignment sequences 
-P(C X)  X
 AP(C A, H(X))P(A H(X))
- X
 A A(T  H(X) ,C)P(A H(X)) (1)
 where, by definition P(C A, H(X))   1 if and only if A 
-A(T,C)and otherwise.4We discuss the specific formulations
+A(T,C)and0otherwise.4We discuss the specific formulations
 of each of these models in the subsequent sections.
 1) Connectionist Temporal Classification (CTC)  Connectionist
  Temporal Classification (CTC) was proposed by Graves
@@ -367,16 +351,13 @@ tokens to a corresponding sequence of output tokens. CTC explicitly
  models alignments between the encoder output, H(X),
 and the label sequence, C, by introducing a special  blank  label,
  denoted by  b  Cb C {  b }. An alignment, A  C 
-b, is
 thus a sequence of labels in Cor b .5Given a specific training
 example, (X, C), we denote the set of all valid alignments,
-ACTC
 (X,C) {A  (a1, a2, . . . , a T)}, such that each at  Cb
 with the additional constraint that Ais identical to Cafter first
 collapsing consecutive identical labels, and then removing all
 blank symbols. For example, if T  10 , and C  (s,e,e),
 thenA  (s, b , b ,e,e, b ,e,e, b , b )  ACTC
-(X,C), as
 illustrated in Figure 1. As can be seen in this example, repeated
 labels in the output can be represented by intervening blanks.
 Following Eq. (1), CTC defines the posterior probability
@@ -384,34 +365,14 @@ of the label sequence Cconditioned on the input, X, by
 4This is equivalent to the assumption that the mapping from an alignment
 Ato a label sequence Cis unique, by definition.5S denotes a Kleene
 closure  the set of all possible sequences composed of tokens in the set S.
-Time s e e
- b 
- b   b   b   b 
-s e e
- b 
- b 
- b  s e e
- b   b   b 
 e Fig. 1. Example alignment sequence for a CTC model with the target
 sequence C  (s,e,e)(right), alongside a (non-deterministic) finite state
 automaton (FSA) [38] (left) representing the set of all valid alignment paths.
-Encoder H(X)
-Softmax
 Fig. 2. A representation of the CTC model consisting of an encoder which
 maps the input speech into a higher-level representation, and a softmax layer
 which predicts frame-level probabilities over the set of output labels and blank.
 marginalizing over all possible CTC alignments as 
-PCTC(C X)  X
-A ACTC
-(X,C )P(A H(X))
- X
-A ACTC
-(X,C )TY
 t 1P(at at 1,   , a1, H(X))
- X
-A ACTC
-(X,C )TY
-t 1P(at ht) (2)
 Critically, as can be seen in Eq. (2), CTC makes a strong
 independence assumption that the model s output at time tis
 conditionally independent of the outputs at other timesteps,
@@ -428,12 +389,8 @@ label either blank,  b , or one of the targets in C.
 2) Recurrent Neural Network Transducer (RNN-T)  The
 Recurrent Neural Network Transducer (RNN-T) [14], [48] was
 proposed by Graves as an improvement over the basic CTCThis article has been accepted for publication in IEEE/ACM Transactions on Audio, Speech and Language Processing. This is the author's version which has not been fully edited and
-content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/5
-Encoder H(X)
-Softmax
-Joint Network
-Prediction
-Network
+content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283
+This work is licensed under a Creative Commons Attribution 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/5
 Fig. 3. An RNN-T Model [14], [48] consists of an encoder which transforms
 the input speech frames into a high-level representation, and a predictionnetwork
  which models the sequence of non-blank labels that have been
@@ -441,16 +398,9 @@ output previously. The prediction network output, pit, represents the output
 after producing the previous non-blank label sequence c1, . . . , c it. The
 joint network produces a probability distribution over the output symbols
 (augmented with blank) given the prediction network state and a specific
-encoded frame.
-Time s e e
- sos   b 
- b 
- b 
- b  s e e
 Fig. 4. Example alignment sequence (right) for an RNN-T model with the
 target sequence C  (s,e,e). Horizontal transitions in the image correspond
 to blank outputs. The FSA (left) represents the set of all valid RNN-T
-alignment paths.
 model [13], by removing some of the conditional independence
  assumptions that we discussed previously. The RNNT
  model, which is depicted in Figure 3, is best understood
@@ -465,48 +415,29 @@ slightly different interpretation  for each input encoder frame,
 ht, the RNN-T model outputs a sequence of zero or more
 symbols in Cwhich are terminated by a single blank symbol.
 Thus, we may define the set of all valid alignment sequences
- in RNN-T as  ARNNT
 (X,C) {A  (a1, a2,   , aT L)},
 the set of all sequences of T Lsymbols in C 
-b, which
 are identical to Cafter removing all blanks. Finally, for a
 given output position τ, let iτdenote the number of nonblank
  labels in the partial sequence (a1,   , aτ 1). Thus, the
 number of blanks in the partial sequence (a1,   , aτ 1)is
 τ iτ 1. For example, if T  7, and C  (s,e,e),thenA  ( b ,s, b , b , b ,e,e, b , b , b )  ARNNT
-(X,C).
 Note that, unlike the CTC model, repeated labels in the output
 require no special treatment as illustrated in Figure 4, where,
-i1 2 0 3 4 1 10 3  etc.
+i1 i2  0 i3 i4  1 i10  3  etc.
 We may then define the posterior probability P(C X)as
-before 
-PRNNT(C X)  X
-A ARNNT
-(X,C )P(A H(X))
- X
-A ARNNT
-(X,C )T LY
 τ 1P(aτ aτ 1, . . . , a 1, H(X))
- X
-A ARNNT
-(X,C )T LY
 τ 1P(aτ ciτ, ciτ 1, . . . , c 0,hτ iτ)
-(3)
- X
-A ARNNT
-(X,C )T LY
-τ 1P(aτ piτ,hτ iτ)
 where, P  (p1,   ,pL)represents the output of the prediction
  network depicted in Figure 3 which summarizes the sequence
  of previously predicted non-blank labels, implemented
 as another neural network  pj NN(  c0, . . . , c j 1), where
-c is a special start-of-sentence label,  sos . Thus, as can be
+c0is a special start-of-sentence label,  sos . Thus, as can be
 seen in Eq. (2), RNN-T reduces some of the independence
 assumptions in CTC since the output at time t is conditionally
 dependent on the sequence of previous non-blank predictions,
 but is independent of the specific choice of alignment (i.e.,
 the choice of the frames at which the non-blank tokens were
-emitted).
 Our presentation of RNN-T alignments considers the
  canonical  case. In principle, however, the model can encode
 the same set of conditional independence assumptions in
@@ -531,17 +462,11 @@ output a single label   either blank, or non-blank   before
 advancing to the next frame  unlike CTC (but as in RNNT)
  the model only outputs a single instance of each nonblank
  label. More specifically, the set of valid alignments,
-ARNA
 (X,C)  (a1,   , aT), in the RNA model consist of length T
-sequences in C 
 bwith exactly T Lblank symbols, and which
 are identical to Cafter removing all blanks. Thus, the blankThis article has been accepted for publication in IEEE/ACM Transactions on Audio, Speech and Language Processing. This is the author's version which has not been fully edited and
-content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/6
-Encoder H(X)
-Softmax
-Joint Network
-Prediction
-Network
+content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283
+This work is licensed under a Creative Commons Attribution 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/6
 Fig. 5. An RNA Model [46] resembles the RNN-T model [14], [48] in
 terms of the model structure. However, this model is only permitted to output
 a single label   either blank, or non-blank   in a single frame. Unlike
@@ -549,11 +474,6 @@ RNN-T, the prediction network state in the RNA model, qt 1, depends on
 the entire alignment sequence at 1, . . . , a 1. The joint network produces a
 probability distribution over the output symbols (augmented with blank) given
 the prediction network state and a specific encoded frame.
-Time s e e
- sos   b 
- b 
- b 
- b  s e e
 Fig. 6. Example alignment sequence (right) for an RNA model with the
 target sequence C  (s,e,e). Horizontal transitions in the image correspond
 to blank outputs  diagonal transitions correspond to outputting a non-blank
@@ -570,19 +490,8 @@ and simplifies the decoding process, by limiting the number
 of model expansions at each frame (in constrast to RNN-T
 decoding). For example, if T  8, and C  (s,e,e), then
 A  ( b ,s, b ,e, b , b ,e, b )  ARNA
-(X,C)as illustrated
-in Figure 6.
 The RNA posterior probability, P(C X), is defined as 
-PRNA(C X)  X
-A ARNA
-(X,C )P(A H(X))
- X
-A ARNA
-(X,C )TY
 t 1P(at at 1, . . . , a 1, H(X))
- X
-A ARNA
-(X,C )TY
 t 1P(at qt 1,ht) (4)where, as before itdenotes the number of non-blank symbols
  in the partial alignment sequence (a1, . . . , a t 1), and
 qt 1 NN(  at 1,   , a1)represents the output of a neural
@@ -605,12 +514,11 @@ the RNA model by employing two RNNs when defining the
 state  a slow RNN (which corresponds to the sequence of
 previously predicted non-blank labels), and a fast RNN (which
 also conditions on the frames at which the non-blank labels
-were output).
 C. Implicit Alignment Modeling Approaches
 One of the main benefits of the explicit alignment approaches
  such as CTC, RNN-T, or RNA is that they result in
 ASR models that are easily amenable to frame-synchronous
-decoding In this section, we discuss the attention-based
+decoding6In this section, we discuss the attention-based
 encoder-decoder (AED) models (also known as, listen-attendand-spell
  (LAS)) [15], [16], [53], which employs the attention
 mechanism [43] to implicitly identify and model the portions
@@ -622,7 +530,6 @@ attention mechanism [43] to learn a correspondence between
 the entire acoustic sequence and the individual labels. Such
 models support label-synchronous decoding, meaning that
 during inference, each hypothesis in the beam is expanded
-by 1 label.
 In the explicit alignment approaches presented in Section
  III-B, during inference, the model continues to output
 symbols until it has processed the final frame at which point
@@ -639,10 +546,8 @@ the AED model, depicted in Figure 7, consists of an encoder
 6By frame-synchronous decoding, we refer to the ability of the model to
 produce output label for each input frame of speech. Models such as CTC,
 RNN-T, or RNA, support frame-synchronous decoding.This article has been accepted for publication in IEEE/ACM Transactions on Audio, Speech and Language Processing. This is the author's version which has not been fully edited and
-content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/7
-Softmax
-Decoder Attention
-Encoder H(X)
+content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283
+This work is licensed under a Creative Commons Attribution 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/7
 Fig. 7. An attention-based encoder decoder (AED) model [15], [16], [53].
 The output distribution is conditioned on the decoder state, si(which
 summarizes the previously decoded symbols), and the context vector, vi
@@ -657,17 +562,14 @@ we denote by Ce  (c1, . . . , c L, eos ), the ground-truth
 symbol sequence of length (L  1) augmented with the  eos 
 symbol. AED models compute the conditional probability of
 the output sequence augmented with the  eos symbol as 
-P(Ce X)  P(Ce H(X))
- L 1 1P(ci ci 1, . . . , c 0  sos , H(X))
- L 1 1P(ci ci 1, . . . , c 0  sos ,vi)
- L 1 1P(ci si,vi) (5)
+i 1P(ci ci 1, . . . , c 0  sos , H(X))
+i 1P(ci ci 1, . . . , c 0  sos ,vi)
 where, vicorresponds to a context vector , which summarizes
 the relevant portions of the encoder output, H(X), given
 the sequence of previous predictions ci 1, . . . , c 0  and, si
 corresponds to the corresponding decoder state after outputting
 the sequence of previous symbols, which is produced by
 updating the decoder state based on the previous context vector
-and output label 
 si Decoder (vi 1,si 1, ci 1)
 The symbol c0  sos is a special start-of-sentence symbol
 which serves as the first input to the attention-based decoder
@@ -675,7 +577,6 @@ before it has produced any outputs. As can be seen in Eq. (5),
 an important benefit of AED models over models such as
 CTC or RNN-T is that they do not make any independence
 assumptions between model outputs and the input acoustics,
-Time s e
 e  eos  Fig. 8. Unlike models such as RNN-T or CTC, AED models do not have
 explicit alignment. However, it is possible to interpret the attention weights
 αt,ifor a particular output symbol cias an alignment weight which is
@@ -684,7 +585,6 @@ representation, the size of the circle and the darkness level are proportional
 to the corresponding attention weights  thus the total probability mass is the
 same for each row. As illustrated above, the first few frames correspond to
 the first symbol c1 s, while the latter frames correspond to the second  e  
-c3 e.
 and are thus more general than the implicit alignment models,
 while being considerably easier to train and implement since
 we do not have to explicitly marginalize over all possible
@@ -694,7 +594,6 @@ decoded partial alignment in explicit alignment models) are
 not revised as the decoding proceeds. Stated another way,
 while the encoder processing H(X)might be bi-directional,
 the decoding process in AED models reveals a left-right
-asymmetry [55].
 1) Computing the Context Vector in AED Models  As
 we mentioned before, the context vector, vi, is computed
 by employing the attention mechanism [43]. The central
@@ -705,7 +604,6 @@ defines a score between the model state after outputting
 i 1previous symbols, and each of the encoded frames in
 H(X). These scores can then be normalized using the softmax
 function to define a set of weights corresponding to each ht
-as 
 αt,i exp{atten(ht,si)}PT
 t  1exp{atten(ht ,si)}
 Intuitively, the weight αt,irepresents the relevance of a
@@ -713,8 +611,6 @@ particular encoded frame htwhen outputting the next symbol
 ci, after the model has already output the symbols c1, . . . , c i 1,
 as illustrated in Figure 8. The context vector summarizes the
 encoder output based on the computed attention weights 
-vi X
-tαt,iht
 A number of possible attention mechanisms have been
 explored in the literature  the most common forms are called
  content-based attention , which include dot-product attention
@@ -725,7 +621,8 @@ consider location information, i.e., it is determined by only the
 content, independent of the position. This can lead to incorrect
 attention weights with a large discrepancy against the previous
 steps. Thus, location-based attention atten (si,fi,j)has beenThis article has been accepted for publication in IEEE/ACM Transactions on Audio, Speech and Language Processing. This is the author's version which has not been fully edited and
-content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/8
+content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283
+This work is licensed under a Creative Commons Attribution 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/8
 proposed [15], where fi,jis a convolutional feature vector
 extracted from αi 1, the attention weights in the previous step.
 The hybrid attention, i.e., a combination of the content- and
@@ -738,21 +635,15 @@ attention, but also takes location information into account
 through positional encoding. Apart from the specific choice
 of the attention mechanism, a common technique to improve
 performance involves the use of multiple independent attention
-heads   v1
-i, . . . ,vK
 i  which are then concatenated together
 to obtain the final context vector vi  
-v1
-i . . . vK
-i 
-, in
 the so-called multi-head attention approach [44], or indeed
 by stacking together multiple attention-based layers in the
 transformer decoder presented by Vaswani et al. [44].
 D. From Implicit to Explicit Alignment Modeling
 AED models, which make no conditional independence
 assumptions, are extremely powerful, often outperforming
-explicit alignment E E approaches such as CTC, or RNNT
+explicit alignment E2E approaches such as CTC, or RNNT
  [41]. However, these models also have some significant
 disadvantages, most notably that the models are typically nonstreaming 
  i.e., the models must process all acoustic frames
@@ -779,14 +670,10 @@ to be computed over a subset of frames to allow for streaming
 decoding. In the context of our presentation, it is easiest to
 think of these models as consisting of an underlying alignment
 (whether known or unknown) which can be used to perform
-streaming inference.
 The Neural Transducer (NT) [59] explicitly partitions the input
  encoder frames into TWnon-overlapping chunks of length
-W HW
 1  [h1, . . . ,hW]     HW
 TW  [hTW 1, . . . ,hTWW],
-where TW  T
-W 
 , and ht 0ift   T . Unlike the AED
 model which examines all encoded frames when computing
 the context vector, the NT model is restricted to process
@@ -840,7 +727,7 @@ variants  Zeyer et al. [67] study the related decoding and the
 relevance of segment length modeling, leading to improved
 generalization towards long sequences. Segmental attention
 models are related to transducer models [68]. However, segmental
- E E ASR models are not limited to be realized based
+ E2E ASR models are not limited to be realized based
 on the attention mechanism and may not only be related to a
 direct HMM [39], but have also been shown to be equivalent
 to neural transducer modeling [40], thus even providing a clear
@@ -848,13 +735,14 @@ relation between duration modeling and blank probabilities.
 Relationship to Classical ASR
 In classical ASR models, these frame-level alignments can
 be modeled with HMMs while using generative GMMs orThis article has been accepted for publication in IEEE/ACM Transactions on Audio, Speech and Language Processing. This is the author's version which has not been fully edited and
-content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/9
+content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283
+This work is licensed under a Creative Commons Attribution 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/9
 neural networks to model the output distribution of acoustic
  frames  frame-level alignments to train neural network
 acoustic models may be obtained by force-alignment from a
 base GMM-HMM systems, but direct sequence training not
 requiring initial alignments is also possible [69].
-E E models introduce alternative alignment modeling approaches
+E2E models introduce alternative alignment modeling approaches
  to ASR. While the attention mechanism provides
 a qualitatively novel approach to map acoustic observation
 sequences to label sequences, transducer approaches [13], [14],
@@ -864,7 +752,7 @@ topology, including marginalization over alignments [71], [72],
 [73]. CTC models can also be employed in an HMM-like fashion
  during decoding [74]. Moreover, transducer approaches are
 equivalent to segmental models/direct HMM [40].
-Another prominent feature of E E systems besides the
+Another prominent feature of E2E systems besides the
 alignment property is their direct character-level modeling
 avoiding phoneme-based modeling and pronunciation lexica
 [19], [75], [74], [16], [76], [77], [78], [79], [80], [81], [82],
@@ -872,20 +760,18 @@ with some even heading for whole-word modeling [76], [30].
 However, character-level modeling also is viable with classical
 hybrid HMM architectures [83] and has been shown to work
 even with standard HMM models w/o neural networks [84].
-IV. A RCHITECTURE IMPROVEMENTS TO BASIC E E
-MODELS
+IV. A RCHITECTURE IMPROVEMENTS TO BASIC E2E
 In this section, we describe various algorithmic changes
-to vanilla E E models which are critical in order to obtain
+to vanilla E2E models which are critical in order to obtain
 improved performance over classical ASR systems. First, we
 describe various ways of combining different complementary
-E E models to improve performance. Next, we introduce
+E2E models to improve performance. Next, we introduce
 ways to incorporate context into these models to improve
 performance on rare proper noun entities. We then describe
 improved encoder and decoder architectures that take better
 advantage of the many cores on specialized architectures such
 as tensor processing units (TPUs) [85]. Finally, we discuss how
-to improve the latency of the model through an integrated E E
-endpointer.
+to improve the latency of the model through an integrated E2E
 A. Combinations of Models
 Different end-to-end models are complementary, and there
 have been numerous attempts at combining these methods.
@@ -924,7 +810,7 @@ Contextual biasing to a specific domain, including a user s
 song names, app names and contact names, is an important
  component of any production-level automatic speech
 recognition (ASR) system. Contextual biasing is particularly
-challenging in E E models because these models typically
+challenging in E2E models because these models typically
 retain only a small list of candidates during beam search, and
 tend to perform poorly when recognizing words that are seen
 infrequently during training (typically named entities), which
@@ -933,7 +819,7 @@ approaches in the literature to incorporate context.
 One approach, known as shallow-fusion contextual biasing
  [92], constructs a stand-alone weighted finite state transducer
  (FST) representing the biasing phrases. The scores from
-the biasing FST are interpolated with the scores of the E E
+the biasing FST are interpolated with the scores of the E2E
 model during beam search, with special care taken to ensure
 we do not over- or under-bias phrases. An alternate approach
 proposes to inject biasing phrases into the model in an allneural
@@ -951,13 +837,14 @@ state vectors obtained from a sub network (this sub-network
 is called a sequence-summary network).
 C. Encoder and Decoder Structure
 There have been improvements to encoder architectures
-of E E models over time. The first end-to-end models used
+of E2E models over time. The first end-to-end models used
 long short-term memory recurrent neural networks (LSTMs),
 for both the encoder and decoder. The main drawback of
 these sequential models is that each frame depends on the
 computation from the previous frame, and therefore multiple
 frames cannot be batched in parallel.This article has been accepted for publication in IEEE/ACM Transactions on Audio, Speech and Language Processing. This is the author's version which has not been fully edited and
-content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/10
+content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283
+This work is licensed under a Creative Commons Attribution 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/10
 With the improvement of hardware, specifically on-device
 Edge Tensor Processing Units (TPUs), with thousands of
 cores, architectures that can better take advantage of the
@@ -969,13 +856,12 @@ in LSTMs was explored in Transformers for ASR [98],
 known as Conformer [45], or multi-layer perceptron [101],
 was also explored. Both Transformer and Conformer have
 shown competitive performance to LSTMs on many tasks
-[102], [103].
 On the decoder side, research for transducer models has
 shown that a large LSTM decoder can be replaced with a simple
  embedding lookup table, that attends to only a few previous
 tokens from the model [47], [104], [105], [106], [107]. This
-demonstrates that most of the power of the E E model is in
-the encoder, which has been a consistent theme of both E E
+demonstrates that most of the power of the E2E model is in
+the encoder, which has been a consistent theme of both E2E
 as well as classical hybrid HMM models. However, improved
 decoder modeling may also be effective depending on the
 specific downstream task. Research has shown that extended
@@ -1006,26 +892,22 @@ models have shown improved latency and WER trade-off
 by having the endpointing decision predicted as part of the
 model. Furthermore, [114], [115] explored using the CTC
 blank symbol for endpoint detection.
-V. T RAINING E E M ODELS
-In general, training of E E models follows deep learning
+V. T RAINING E2E M ODELS
+In general, training of E2E models follows deep learning
  schemes [116], [117], with specific consideration of the
 sequential structure and the latent alignment problem to be
-handled in ASR. E E ASR models may be trained end-toend,
+handled in ASR. E2E ASR models may be trained end-toend,
  notwithstanding potential elaborate training schedulesand extensive data augmentation. Part of the appeal of endto-end
  models is that they do not assume conditional independence
  between the input frames. Given a training set
-T {(Xn, Cn)}N
 n 1, the training criterion Lto be minimized
 can be written as  L  PN
 n 1logP(Cn Xn)(which is
 equivalent to maximizing the total conditional log-likelihood).
 A. Alignment in Training
-E E models such as RNN-T and CTC introduce an additional
+E2E models such as RNN-T and CTC introduce an additional
  blank token  b for alignment. Therefore optimization
 implies marginalizing across all alignments, as follows 
-Lex  NX
-n 1X
-AnlogP(Cn, An Xn)
 This requires the forward-backward algorithm [118], [119] for
 efficient computation of the training criterion and its gradient,
 with minor modifications for CTC, RNN-T, and RNA models,
@@ -1034,20 +916,17 @@ as well as classical (full-sum) hybrid ANN/HMMs corresponding
 models. In comparison, AED models are based on implicit
 alignment modeling approaches, and the training criterion does
 not have a latent variable Afor explicit alignment as 
-Lim  NX
-n 1logP(Cn Xn)
 We refer the interested reader to the individual papers for
 further details on the training algorithms [13], [14], [15], [16],
 [46], [48], [53], [71], [120]. As shown in Section III-A, in both
 explicit and implicit alignment cases, P(C X)is factorized
 with respect to input time tand output position i, respectively,
 and the factorized distribution is conditioned on the label
-context ci 1 1, except for CTC. For example, in the AED case 
-logP(C X)  PL
-i 1logP(ci X, ci 1 1). During training, we
+1, except for CTC. For example, in the AED case 
+1). During training, we
 use a teacher-forcing technique where the ground truth history
 is used as a label context.
-As part of the training procedure, all E E as well as classical
+As part of the training procedure, all E2E as well as classical
 hidden Markov models for ASR provide mechanisms to solve
 the underlying sequence alignment problem - either explicitly
 via corresponding latent variables, as in CTC, RNN-T or RNA,
@@ -1056,12 +935,12 @@ Also, the distinction between speech and silence needs to be
 considered, which may be handled explicitly by introducing
 silence as a latent label (hybrid ANN/HMM), or implicitly
 by not labeling silence at all, as currently is the standard in
-virtually all E E models.
-E E models also may take advantage of hierarchical training
+virtually all E2E models.
+E2E models also may take advantage of hierarchical training
 schedules. These schedules may comprise several separate
 training passes and explicit, initially generated alignments that
 are kept fixed for some Viterbi-style [121], [122], [123] training
- epochs before re-enabling E E-style full-sum training that
+ epochs before re-enabling E2E-style full-sum training that
 marginalizes over all possible alignments. Such an alternative
 approach is employed by Zeyer et al. [52], where an initial
 full-sum RNN-T model is used to generate an alignment and
@@ -1069,9 +948,10 @@ continue with framewise cross-entropy training. This greatly
 simplifies the training process by replacing the summation
 over all possible alignments in Eq. (4) by a single term corresponding
  to the alignment sequence generated. Recently, aThis article has been accepted for publication in IEEE/ACM Transactions on Audio, Speech and Language Processing. This is the author's version which has not been fully edited and
-content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/11
+content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283
+This work is licensed under a Creative Commons Attribution 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/11
 similar procedure has been introduced in [124] also employing
-E E models, only. In this work, CTC is used to initialize
+E2E models, only. In this work, CTC is used to initialize
 the training and to generate an initial alignment, followed by
 intermediate Viterbi-style RNN-T training and final full-sum
 fine tuning, which improved convergence compared to fullsum-only
@@ -1085,14 +965,14 @@ training which is usually called peaky behavior can be found
 in [125] and references therein. Laptev et al. [126] even
 introduces a CTC variant without non-blank loop transitions.
 B. Training with External Language Models
-E E ASR models generally are normalized on sequence
+E2E ASR models generally are normalized on sequence
 level. Therefore, sequence training with the maximum mutual
 information criterion [127] is the same as standard cross entropy/conditional
  likelihood training. However, once external
 language models are included in the training phase, sequence
 normalization needs to be included explicitly, leading to MMI
 sequence discriminative training. This has been exploited as
-a further approach to combine E E models with external
+a further approach to combine E2E models with external
 language models trained on text-only data during the training
 phase itself [128], [129], [130].
 C. Minimum Word Error Rate Training
@@ -1101,19 +981,12 @@ word error rate (WER), there has been a growing number of
 research studies that incorporate this into the objective function
 by minimizing the model-based expectation of the number of
 word errors, as follows 
-Lmwer NX
-n 1X
-C nW(Cn, C 
-n)P(C 
-n Xn)
-where W(Cn, C 
 n)is the word error count in a hypothesis
-C 
 ngiven a reference Cn, and n is an index which iterates over
 the entire training set. These methods, known as sequence
 or discriminative training, have shown great improvements
 for classical ASR [131], [132], [133], [134], [135], and have
-since been explored in E E models. Typically these losses
+since been explored in E2E models. Typically these losses
 are constructed by running in  beam-search  mode rather than
 teacher-forcing mode, and construct a loss from the errors
 made from the candidate hypotheses in the beam. Thus, this
@@ -1134,9 +1007,7 @@ programming algorithm. Finally, another body of research with
 sequence training introduce a separate external language model
 at training time [142], which can also be done efficiently via
 approximate lattice recombination [129] and also lattice-free
-approaches [130].
-D. Pretraining
-All E E models as well as classical hidden Markov models
+All E2E models as well as classical hidden Markov models
 for ASR provide holistic models that in principle enable training
  from scratch. However, many strategies exist to initialize
 and guide the training process to reach optimal performance
@@ -1150,7 +1021,7 @@ untranscribed audio, large-scale semi-supervised data and/or
 multilingual data [149], [150], [151], [152], [153], [154],
 [155], [156], [157], [158], [159], [160] would deserve a
 self-contained survey and they are applicable for hybrid
-DNN/HMM and E E approaches likewise   they will not be
+DNN/HMM and E2E approaches likewise   they will not be
 further discussed here.
 E. Training Schedules and Curricula
 Dedicated training schedules have been developed to guide
@@ -1163,7 +1034,6 @@ power decay, etc.) [165]  learning rate warm-up [44]  warm
 restarts/cosine annealing [166]  weight decay versus gradually
 decreasing batch size [167]  fine-tuning [168] or populationbased
  training [169]  etc. For a survey of meta learning
-cf. [170].
 Sequence learning approaches also consider curriculum
 learning [171], [172], e.g., by considering short sequences
 first [173], [174]  interim increase of sub-sampling [147]
@@ -1180,7 +1050,8 @@ Investing more training epochs seems to provide improvements
 reported to help [102]. For a discussion of the double descent
 effect and its relation to the amount of training data, label
 noise and early stopping cf. [181].This article has been accepted for publication in IEEE/ACM Transactions on Audio, Speech and Language Processing. This is the author's version which has not been fully edited and
-content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/12
+content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283
+This work is licensed under a Creative Commons Attribution 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/12
 Regularization strongly contributes to training performance 
 e.g., L2 and weight decay [182], [166]  weight noise [183] 
 adaptive mean L1/L2 [184]  gradient noise [185]  dropout
@@ -1189,9 +1060,7 @@ adaptive mean L1/L2 [184]  gradient noise [185]  dropout
 label smoothing [194]  scheduled sampling [195]  auxiliary
 loss [194], [196]  variable backpropagation through time [197],
 [198]  mixup [199]  increased frame rate [180]  or, batch
-normalization [200].
-G. Data Augmentation
-Training of E E ASR models also benefit from data augmentation
+Training of E2E ASR models also benefit from data augmentation
  methods, which might also be viewed as regularization
  methods. However, their diversity and impact on
 performance justifies a separate overview.
@@ -1203,16 +1072,15 @@ injection [204], SpecAugment [205], or semantic mask [206].
 Also, text-only data may be used to generate data using textto-speech
  (TTS) on feature [207] or signal level [208]. In a
 comparison of the effect of TTS-based data augmentation on
-different E E ASR architectures in [208], AED seemed to be
+different E2E ASR architectures in [208], AED seemed to be
 the only architecture that appeared to benefit significantly from
-the TTS data.
 In a recent study [174] and corresponding follow-up work
 [180], many of the regularization and data augmentation
 methods listed here have been exploited jointly leading to
 state-of-the-art performance on the Switchboard task for a
 single-headed AED model.
 Relationship to Classical ASR
-E E systems attempt to define ASR models that integrate
+E2E systems attempt to define ASR models that integrate
 all knowledge sources into a single global joint model that
 does not utilize secondary knowledge sources and avoids the
 classical separation into acoustic and language models. These
@@ -1220,7 +1088,6 @@ global joint models are completely trained from scratch using
 a single global training criterion based on a single kind of
 (transcribed) training data and thus require less ASR domainspecific
  knowledge provided sufficient amounts of training
-data are available.
 While standard hybrid ANN/HMM training for ASR using
 frame-wise cross entropy already is discriminative, it is not
 yet sequence discriminative, requires prior alignments and
@@ -1228,7 +1095,7 @@ also lacks consideration of an (external) language model
 during training. However, these potential shortcomings may
 be remedied by using sequence discriminative training criteria
 [127] and lattice-free training approaches [69].
-In contrast to strict E E systems, the classical ASR architecture
+In contrast to strict E2E systems, the classical ASR architecture
  includes the use of secondary knowledge sources
 beyond the primary training data, i.e. (transcribed) speech
 audio for acoustic model training, and textual data for language
@@ -1240,7 +1107,6 @@ a lexicon not reflecting the actual pronunciations observed.
 Therefore, for large enough training resources, secondary
 knowledge sources might become obsolete [209], or even
 harmful, in case of erroneous information introduced [210],
-[211].
 Classical ASR models usually are trained successively, with
 knowledge derived from models trained earlier injected into
 later training stages, e.g. in the form of HMM state alignments.
@@ -1263,11 +1129,11 @@ The classification and regression trees (CART) approach is
 used to cluster triphone HMM states [27], [218]. More recent
  approaches proposed clustering within a neural network
 modeling framework, while still retaining secondary clustering
-objectives [219], [213]. However, also in E E approaches
+objectives [219], [213]. However, also in E2E approaches
 secondary objectives are used, most prominently for subword
 generation, e.g. via byte-pair encoding [32]. Also, available
 pronunciation lexica can be utilized indirectly for assisting
-subword generation for E E systems [35], [36], which are
+subword generation for E2E systems [35], [36], which are
 shown to outperform byte-pair encoding. Within classical ASR
 systems, phonetic clustering also can be avoided completely
 by modeling phonemes in context directly [220].
@@ -1283,29 +1149,22 @@ using SpecAugment [224] and text-to-speech (TTS) [29].
 SpecAugment also is shown to improve classical hybrid HMM
 models [225]. TTS on the other hand considerably improved
 attention-based encoder-decoder models trained on limited
-resources, but did not reach the performance of other E E
+resources, but did not reach the performance of other E2E
 approaches or hybrid HMM models, which in turn were not
 considerably improved by TTS [208]. Multilingual approaches
 also help improve ASR development for low resource tasks,
-again both for classical [226], as well as for E E systems
+again both for classical [226], as well as for E2E systems
 [227], [228].This article has been accepted for publication in IEEE/ACM Transactions on Audio, Speech and Language Processing. This is the author's version which has not been fully edited and
-content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/13
-VI. D ECODING E E M ODELS
+content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283
+This work is licensed under a Creative Commons Attribution 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/13
+VI. D ECODING E2E M ODELS
 This section describes several decoding algorithms for endto-end
  speech recognition. The basic decoding algorithm of
 end-to-end ASR tries to estimate the most likely sequence ˆC
 among all possible sequences, as follows 
-ˆC  arg max
-C U P(C X)
 The following section describes how to obtain the recognition
-result ˆC.
-A. Greedy Search
 The Greedy search algorithm is mainly used in CTC, which
 ignores the dependency of the output labels as follows 
-ˆA TY
-t 1 
-arg max
-atP(at X) 
 where atis an alignment token introduced in Section III-B1.
 The original character sequence is obtained by converting
 alignment token sequence ˆAto the corresponding token sequence
@@ -1313,7 +1172,6 @@ alignment token sequence ˆAto the corresponding token sequence
 over input frame t, yielding fast decoding [13], [229], although
 the lack of the output dependency causes relatively poor
 performance than the attention and RNN-T based methods in
-general.
 CTC s fast decoding is further boosted with transformer
 [44], [98], [102] and its variants [45], [103] since their entire
 computation across the frames is parallelized [190], [230].
@@ -1327,21 +1185,17 @@ by using Intel(R) Xeon(R) Silver 4114 CPU, 2.20GHz. The
 paper also shows that the degradation of the non-autoregressive
 models from the attention/RNN-T methods with beam search
 is not extremely large (19.7% with self-conditioned CTC [234]
-versus 18.5 18.9% with AED and RNN-T, respectively).
+versus 18.5 and 18.9% with AED and RNN-T, respectively).
 The greedy search algorithm is also used as approximate
 decoding for both implicit and explicit alignment modeling
 approaches, including AED, RNA, CTC, and RNN-T, as
-follows 
-ˆci  arg max
-ciP(ci ˆC1 1, X)fori  1, . . . , N
-ˆat  arg max
-atP(at ˆA1 1, X)fort  1, . . . , T
+ciP(ci ˆC1 i 1, X)fori  1, . . . , N
+atP(at ˆA1 t 1, X)fort  1, . . . , T
 The greedy search algorithm does not consider alternate
 hypotheses in a sequence compared with the beam search
 algorithm described below. However, it is known that the
 degradation of the greedy search algorithm is not very large
 [16], [46], especially when the model is well trained in
-matched conditions8.
 7The ratio of the actual decoding time to the duration of the input speech.
 8On the other hand, in the AED models, increasing the search space does
 not consistently improve the speech recognition performance [77], [236]   a
@@ -1351,8 +1205,6 @@ consider a subset of possible hypotheses  Camong all possible
 hypotheses U during decoding, i.e.,  C   U . A predicted
 output sequence ˆCis selected among a hypothesis subset  C
 instead of all possible hypotheses U , i.e.,
-ˆC  arg max
-C  CP(C X) (6)
 The beam search algorithm is to find a set of possible hypotheses
   C, which can include promising hypotheses efficiently
 by avoiding the combinatorial explosion encountered with all
@@ -1365,14 +1217,15 @@ output token i. The following sections describe these two
 algorithms in more detail.
 C. Label Synchronous Beam Search
 Suppose we have a set of partial hypotheses up to (i 1)th
-token  C1 1. A set of all possible partial hypotheses up to ith
-tokenC1 1 1 1 i {( C1 1, ci c)}c U (7)
-The number of hypotheses  C1 1 1     U  , at
+token  C1 i 1. A set of all possible partial hypotheses up to ith
+tokenC1 iis expanded from  C1 i 1as follows 
+C1 i {( C1 i 1, ci c)}c U (7)
+The number of hypotheses  C1 i would be   C1 i 1     U  , at
 most. The beam search algorithm prunes the low probability
 score hypotheses from C1 iand only keeps a certain number
 (beam size  ) of hypotheses at iamong C1 i. This pruning
 step is represented as follows 
- C1 1 1 iP(C1 i X),where   C1 i     (8)
+ C1 i  NBEST C1 i C1 iP(C1 i X),where   C1 i     (8)
 Note that NBEST(  )is an operation to extract top  hypotheses
  in terms of the probability score P(C1 i X)computed from
 an end-to-end neural network, or a fusion of multiple scores
@@ -1397,7 +1250,8 @@ respectively. Thus, the label synchronous beam search requires
 heuristics to limit the output sequence length to avoid extremely
  long/short output sequences. Usually, the minimum
 and maximum length thresholds are determined proportionallyThis article has been accepted for publication in IEEE/ACM Transactions on Audio, Speech and Language Processing. This is the author's version which has not been fully edited and
-content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/14
+content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283
+This work is licensed under a Creative Commons Attribution 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/14
 to the input frame length  X with tunable parameters ρminand
 ρmaxasLmin  ρmin X  , Lmax  ρmax X  . Although these
 are quite intuitive ways to control the length of a hypothesis,
@@ -1464,7 +1318,6 @@ used in both RNN-T [100], [250], [251] and AED [61], [252],
 implicit alignment modeling approaches, including AED, since
 it can provide block-wise monotonic alignment constraint
 between the input feature and output label, and realize blockwise
- streaming decoding.
 F . Model Fusion during Decoding
 Similar to the classical HMM-based beam search, we combine
  various scores obtained from different modules, including
@@ -1478,7 +1331,7 @@ LM shallow fusion  As discussed in Sec. VII, various neural
 LMs can be integrated with end-to-end ASR. The most simple
 integration is based on LM shallow fusion [255][256][257], as
 discussed in Sec. VII-B1, which (log-) linearly adds the LM
-score Plm(C1 i)to E E ASR scores P(C1 i X)during beam
+score Plm(C1 i)to E2E ASR scores P(C1 i X)during beam
 search in Eq. (8) as follows 
 logP(C1 i X) logP(C1 i X)  γlogPlm(C1 i)
 where γis a language model weight. Of course, we can
@@ -1490,7 +1343,6 @@ modeling approaches, e.g., CTC, RNN-T, and label-dependent
 score functions, P(ci  ), used implicit alignment modeling
 approaches, e.g., AED, language model, we have to deal with
 the mismatch between the frame and label time indices tand
-i, respectively.
 In the time-synchronous beam search, this fusion is performed
  by incorporating the language model score in the
 label transition state [70], [22], [258]. [247] also combines
@@ -1504,7 +1356,8 @@ hypothesis label sequence. CTC/attention joint decoding [86]
 is a typical example, where the CTC score is computed
 by marginalizing all possible alignments based on the CTC
 forward algorithm [229]. This approach eliminates the wrongThis article has been accepted for publication in IEEE/ACM Transactions on Audio, Speech and Language Processing. This is the author's version which has not been fully edited and
-content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/15
+content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283
+This work is licensed under a Creative Commons Attribution 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/15
 alignment issues and difficulties of finding the correct end of
 sentences in the label-synchronous beam search [86].
 Note that the model fusion method during beam search can
@@ -1536,7 +1389,6 @@ the prefix tree representation, while [239], [261] uses lookahead
  word probabilities to predict next characters instead of
 using the character-based LM. The prefix tree representation
 is also used for the sub-word token unit case [262], [263].
-H. Multi-pass Fusion
 The previous fusion methods are performed during the
 beam search, which enables a one-pass algorithm. The popular
 alternative methods are based on multi-pass algorithms where
@@ -1582,103 +1434,100 @@ to sequence task, and it can be used for attention-based end-toend
 ESPRESSO12[261], LINGVO [271], and, RETURNN13[272]
 also support the vectorized beam search algorithm.
 Relationship to Classical ASR
-One of the most prominent properties shared between E E
+One of the most prominent properties shared between E2E
 and classical statistical ASR systems is the use of a singlepass
  decoding strategy, which integrates all knowledge sources
 involved (models, components), before coming to a final
 decision [123]. This includes the use of full label context
-dependency both for E E systems [229], [51], [77], [273],
+dependency both for E2E systems [229], [51], [77], [273],
 [174], [262], [274], [275], as well as classical systems via fullcontext
  language models [276], [244], [245], [277]. In classical
 ASR systems, even HMM alignment path summation may be
-retained in search [278]. Both E E as well as classical ASR
+retained in search [278]. Both E2E as well as classical ASR
 systems employ beam search in decoding. However, compared
-to classical search approaches, E E beam search usually is
-highly simplified with very small beam sizes around 1 100[15], [16], [77], [147]. Very small beam sizes also partly
-mask a length bias exhibited by E E attention-based encoderdecoder
+to classical search approaches, E2E beam search usually is
+highly simplified with very small beam sizes around 1to
+100[15], [16], [77], [147]. Very small beam sizes also partly
+mask a length bias exhibited by E2E attention-based encoderdecoder
  models [279], [280], thus trading model errors against
 search errors [281]. An overview of approaches to handle the
 length bias beyond using small beam sizes in ASR is presented
-in [236].
 Many classical ASR search paradigms are based on multipass
  approaches that successively generate search space
 representations applying increasingly complex acoustic and/or
 language models [282], [283], [243]. However, multipass
-strategies also are employed using E E models, which however
- softens the E E concept. Decoder model combination is
+strategies also are employed using E2E models, which however
+ softens the E2E concept. Decoder model combination is
 pursued in a two-pass approach, while even retaining latency
 constraints as in [87]. Further multipass approaches include
-E E adaptation approaches [284], [285], [286], [287].
-9https //www.tensorflow.org/api docs/python/tf/contrib/seq seq/BeamSearchDecoder
+E2E adaptation approaches [284], [285], [286], [287].
+9https //www.tensorflow.org/api docs/python/tf/contrib/seq2seq/BeamSearchDecoder
 10https //github.com/pytorch/fairseq/blob/master/fairseq/sequence
-generator.py https //github.com/espnet/espnet
+generator.py11https //github.com/espnet/espnet
 12https //github.com/freewym/espresso
 13https //github.com/rwth-i6/returnnThis article has been accepted for publication in IEEE/ACM Transactions on Audio, Speech and Language Processing. This is the author's version which has not been fully edited and
-content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/16
-VII. LM I NTEGRATION
-This section discusses language models (LMs) used for E E
+content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283
+This work is licensed under a Creative Commons Attribution 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/16
+This section discusses language models (LMs) used for E2E
 ASR. Hybrid ASR systems have long been using a pretrained
-LM [2], whereas most end-to-end (E E) ASR systems employ
-a single E E model that includes a network component acting
+LM [2], whereas most end-to-end (E2E) ASR systems employ
+a single E2E model that includes a network component acting
 as an LM.14For example, the prediction network of RNNT
  and the decoder network of AED models take on the role
-of a LM covering label back-histories. Therefore, E E ASR
+of a LM covering label back-histories. Therefore, E2E ASR
 does not seem to require external LMs. Nevertheless, many
 studies have demonstrated that external LMs help improve the
-recognition accuracy in E E ASR.
-There are presumably three reasons that E E ASR still
+recognition accuracy in E2E ASR.
+There are presumably three reasons that E2E ASR still
 requires an external LM 
-a) Compensation for poor generalization  E E models
+a) Compensation for poor generalization  E2E models
 need to learn a more complicated mapping function than
 classical modular-based models such as acoustic models. Consequently,
- E E models tend to face overfitting problems if
+ E2E models tend to face overfitting problems if
 the amount of training data is not sufficient. Pretrained LMs
 potentially compensate for the less generalized predictions
-made by E E models.
-b) Use of external text data  E E models need to be
+b) Use of external text data  E2E models need to be
 trained using paired speech and text data, while LMs can
 be trained with only text data. Generally, text data can be
 collected more easily than the paired data. The training speed
-of an LM is also faster than that of E E models for the same
+of an LM is also faster than that of E2E models for the same
 number of sentences. Accordingly, the LM can be improved
 more effectively with external text data, providing additional
 performance gain to the ASR system.
 c) Domain adaptation  Domain adaptation helps improve
- recognition accuracy when the E E model is applied
-to a specific domain. However, domain adaptation of the E E
+ recognition accuracy when the E2E model is applied
+to a specific domain. However, domain adaptation of the E2E
 model requires a certain amount of paired data in the target
 domain. Also, when multiple domains are assumed, it may be
-costly to maintain multiple E E models for the domains the
+costly to maintain multiple E2E models for the domains the
 system supports. If a pretrained LM for the target domain is
 available, it may more easily improve recognition accuracy for
 domain-specific words and speaking styles without updating
-the E E model.
-This section reviews various types of LMs used for E E
-ASR and fusion techniques to integrate LMs into E E models.
-A. Language Models
+This section reviews various types of LMs used for E2E
+ASR and fusion techniques to integrate LMs into E2E models.
 The LMs provide a prior probability distribution, P(C). If
 the sentence, C, can be decomposed into a sequence of tokens
 such as characters, subwords, and single words, the probability
 distribution can be computed based on the chain rule as 
-P(C)  L 1 1P(ci c0 1)
-where cidenotes the i-th token of C, and c0 1 0, c1, . . . , c i 1, assuming c0 1  eos .
-Most LMs are designed to provide the conditional probabilityP(ci c0 1),
+where cidenotes the i-th token of C, and c0 i 1represents
+token sequence c0, c1, . . . , c i 1, assuming c0  sos and
+Most LMs are designed to provide the conditional probabilityP(ci c0 i 1),
  i.e., they are modeled to predict the next token
 14In the simplest case of a CTC model as in Fig. 2, the included LM
 component however is limited to a label prior without label context.given a sequence of the preceding tokens. We briefly review
 such LMs focusing on the different techniques to represent
-each token, ci, and back-history, c0 1.
+each token, ci, and back-history, c0 i 1.
 1) N-gram LM  N-gram LMs have long been used for
-ASR [2]. Early E E systems in [53], [74], [77] also employed
+ASR [2]. Early E2E systems in [53], [74], [77] also employed
 anN-gram LM. The N-gram models rely on the Markov
 assumption that the probability distribution of the next token
-depends only on the previous N 1tokens, i.e., P(ci c0 1) 
-P(ci ci N 1 1), where Nis typically 3 5 for word-based
+depends only on the previous N 1tokens, i.e., P(ci c0 i 1) 
+P(ci ci N 1 i 1), where Nis typically 3 to 5 for word-based
 models and higher for sub-word and character-based models.
 The maximum likelihood estimates of N-gram probabilities
 are determined based on the counts of Nsequential tokens in
 the training data set as 
-P(ci ci N 1 1)  K(ci N 1, . . . , c i)P
+P(ci ci N 1 i 1)  K(ci N 1, . . . , c i)P
 ciK(ci N 1, . . . , c i)
 where, K( )denotes the count of each token sequence. Since
 the data size is finite, it is important to apply a smoothing
@@ -1689,7 +1538,6 @@ e.g., (N 1)-gram models, according to the magnitude of
 the count [288]. However, since the N-gram probabilities
 still rely on the discrete representation of each token and the
 history, they suffer from data sparsity problems, leading to
-poor generalization.
 The advantage of the N-gram models is their simplicity,
 although they underperform state-of-the-art neural LMs. In the
 training, the main step is to just count the Ntuples in the data
@@ -1700,8 +1548,7 @@ can be attached to a decoding graph, e.g., WFST, in advance.
 was proposed in [9], which estimates N-gram probabilities
 using a neural network. The network accepts N 1tokens,
 and predicts the next token as 
-P(ci ci N 1 1)   softmax( Wohi bo)
-hi  tanh( Whei bh)
+P(ci ci N 1 i 1)   softmax( Wohi bo)
 ei  concat( E(ci N 1), . . . , E (ci 1))
 where WoandWhare weight matrices, and boandbhare
 bias vectors. E(y)provides an embedding vector of c, and
@@ -1721,7 +1568,8 @@ better smoothing effect than the count-based one used for Ngram
  LMs, FNN-LM can provide a better generalization than
 15We omit the optional direct connection from the embedding layer to the
 softmax layer in [9] for simplicity.This article has been accepted for publication in IEEE/ACM Transactions on Audio, Speech and Language Processing. This is the author's version which has not been fully edited and
-content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/17
+content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283
+This work is licensed under a Creative Commons Attribution 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/17
 N-gram LMs for predicting the next token. Neural networkbased
  LMs basically utilize this type of representation.
 3) RNN-LM  A recurrent neural network (RNN) LM was
@@ -1729,7 +1577,6 @@ introduced to exploit longer contextual information over N
 1previous tokens using recurrent connections [289]. Unlike
 FNN-LM, the hidden vector is computed as 
 hi  recurrence( ei, hi 1)
-ei E(ci 1)
 where, recurrence( ei, hi 1)represents a recursive function,
 which accepts previous hidden vector hi 1with input ei, and
 outputs next hidden vector hi. In the case of simple (Elmantype)
@@ -1750,19 +1597,13 @@ With this mechanism, RNN-LMs outperform other N-grambased
 have also been applied to LMs [291], [292], [293]. ConvLM
 [292] replace the recurrent connections used in RNN-LMs
 with gated temporal convolutions. The hidden vector is computed
- as
-hi h 
-i σ(gi)
-h 
-i ei k 1 1 i V c
 where  is element-wise multiplication,  is a temporal
 convolution operation, and kis the patch size. σ(gi)represents
 a gating function of convoluted activation h 
-i, and is modeled
 as a sigmoid function. WandVare matrices for convolution
 andbandcare bias vectors. The convolution and gating blocks
 are typically stacked multiple times with residual connections.
-In [293], a ConvLM with 14 blocks has been applied for E E
+In [293], a ConvLM with 14 blocks has been applied for E2E
 ASR. Similar to FNN-LM, ConvLM allow us to use only a
 fixed history size, but they are more parameter efficient and
 easier to utilize longer histories than the FNN-LM by stacking
@@ -1775,11 +1616,6 @@ with a large training data set.
 applied to LMs [295] and used for ASR [102], [296], where
 the LMs are designed as a Transformer decoder without any
 inputs from other modules such as encoders. The hidden vector
-is computed as 
-hi  FFN( h 
-i)  h 
-i
-h 
 i  MHA( ei, e1 i, e1 i)  eiwhere FFN( )andMHA(  , , )denote a feed forward network
 and a multi-head attention module, respectively. The multihead
  attention and feed-forward blocks are typically stacked
@@ -1801,57 +1637,55 @@ back-propagation through time (BPTT) algorithm [298]. Compressive
 even longer contextual information by incorporating a compression
  step to keep older, but important, information in a
 fixed-size memory network.
-B. Fusion Approaches
 There are several ways to incorporate an external LM into
-E E ASR, called LM fusion . Their purpose is to improve the
-recognition accuracy of E E ASR by leveraging the benefits
+E2E ASR, called LM fusion . Their purpose is to improve the
+recognition accuracy of E2E ASR by leveraging the benefits
 of the external LM described in the first part of this section.
 However, there can be a mismatch in the prediction between
-the E E model and the LM when trained on different data
+the E2E model and the LM when trained on different data
 sets, and therefore the LM may not collaborate well with
-the E E model. Researchers have investigated various LM
+the E2E model. Researchers have investigated various LM
 fusion approaches to reduce the mismatch between models
 in different situations.
 1) Shallow Fusion  Shallow fusion is the most popular
-approach to combine the pretrained E E model and LM in
+approach to combine the pretrained E2E model and LM in
 the inference time. As we described in Sec. VI-F, shallow
-fusion simply combines the E E and LM scores by a loglinear
- combination as
+fusion simply combines the E2E and LM scores by a loglinear
 Score( C X)   log P(C X)  γlogP(C) (9)
 where γis a scaling factor for the LM [255][256][257]. The
 advantage of this approach is that it is easy and effective when
 there are no major mismatches between the source and target
-domains.
 2) Deep Fusion  Deep fusion [300] is an approach to
-combine an LM with an E E model using a joint network.
-Given a pretrained E E model and an LM, all the network
+combine an LM with an E2E model using a joint network.
+Given a pretrained E2E model and an LM, all the network
 parameters are fine-tuned jointly so that the models collaborate
 better to improve the recognition accuracy, where the joint
-network is used to combine the E E and LM states through
+network is used to combine the E2E and LM states through
 a gating mechanism that controls the contribution of the LM
 according to the current state.
 3) Cold fusion  Cold fusion [301] is another approach to
-combine a pretrained LM like deep fusion, but the E E model
-is learned while freezing the LM parameters. Since the E E
+combine a pretrained LM like deep fusion, but the E2E model
+is learned while freezing the LM parameters. Since the E2E
 model is aware of the LM throughout training, it learns to use
 the LM to reduce language specific information and captureThis article has been accepted for publication in IEEE/ACM Transactions on Audio, Speech and Language Processing. This is the author's version which has not been fully edited and
-content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/18
+content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283
+This work is licensed under a Creative Commons Attribution 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/18
 only the relevant information to map the source to the target
-sequence. This mechanism reduces the role of LM in the E E
+sequence. This mechanism reduces the role of LM in the E2E
 model and alleviates the language bias of the training data.
-Accordingly, the E E model becomes more robust to domain
+Accordingly, the E2E model becomes more robust to domain
 mismatches between the training data and the target domain.
 Unlike deep fusion, cold fusion makes it possible to combine
-the E E model with a pretrained LM for the target domain,
+the E2E model with a pretrained LM for the target domain,
 improving the recognition accuracy. Component fusion [302]
 extends cold fusion to use a pretrained LM with transcriptions
-of the training data for the E E model, more focusing on
+of the training data for the E2E model, more focusing on
 reducing the bias of the training data.
 4) Internal LM Estimation  There is another approach to
 reduce language bias in training data through shallow fusion.
 The language bias is a problem when a big domain mismatch
 exists between the source domain (training data) and the target
-domain (test data) because the E E model scores are strongly
+domain (test data) because the E2E model scores are strongly
 dependent on the language priors in the source domain. To
 remove such a bias from the score, we can explicitly estimate
 the LM that represents the language priors, called Internal LM ,
@@ -1863,7 +1697,7 @@ domains, respectively. γφandγτare their scaling factors. Subtracting
 acoustic probability density Pφ(X C)because Pφ(X C) 
 Pφ(C X)/Pφ(C)is satisfied for fixed X, where the ASR
 score can be seen as a classical hybrid ASR system. Accordingly,
- the subtracted E E model score plays a role of
+ the subtracted E2E model score plays a role of
 acoustic model and makes it more domain independent in
 terms of language, achieving a higher recognition accuracy
 in combination with the external LM Pτ(C).
@@ -1884,23 +1718,22 @@ vector can be estimated by averaging encoder states or context
 vectors, or by a small LSTM predicting the context vector
 based on the decoder label context, only. These techniques to
 estimate the internal LM were also evaluated for RNN-T in
-[305].
 C. Use of Large-scale Pretrained LMs
 In recent years, LMs trained with large-scale text data are
 available for different NLP tasks. BERT [306] and GPT-2
 [307] are representative models based on Transformer LMs.
-Such LMs have also been applied to E E ASR systems in
+Such LMs have also been applied to E2E ASR systems in
 different ways, e.g., N-best rescoring [308] and dialog context
 embedding [309].Relationship to Classical ASR
 The architecture of classical ASR systems provides a separation
  between the acoustic model and the language model.
-In contrast to this, E E models avoid this separation and
+In contrast to this, E2E models avoid this separation and
 define a joint model. While this allows for training with a
 single objective, it limits training of the (implicit) prior to
 the transcriptions of the audio training data. To exploit further
 text-only training data, usually a separate LM is combined with
-E E models, nonetheless. However, due to the implicit prior
-of E E models, i.e. the internal language model, combination
+E2E models, nonetheless. However, due to the implicit prior
+of E2E models, i.e. the internal language model, combination
 with separate language models is not straightforward and
 requires corresponding internal language model estimation
 and compensation approaches, e.g. [303], [47], [304], [128],
@@ -1914,7 +1747,7 @@ model perplexity, is observed to correlate well with word error
 rate [311], [312], [313], [314]. Furthermore, discriminative
 approaches to language modeling [315] may be viewed as a
 step towards joint modeling.
-VIII. O VERALL PERFORMANCE TRENDS OF E E
+VIII. O VERALL PERFORMANCE TRENDS OF E2E
 APPROACHES IN COMMON BENCHMARKS
 This section summarizes various techniques with the common
  ASR benchmarks based on switchboard (SWBD) [316]
@@ -1923,8 +1756,8 @@ trajectory of the techniques developed in end-to-end ASR. We
 choose these two databases because they are widely used in
 speech and machine learning communities and cover spontaneous
  (SWBD) and read speech (Librispeech) speaking styles.
-Figures 9 10 show that the performance improvement
-relative to the initial works [147], [79] based on the E E
+Figures 9 and 10 show that the performance improvement
+relative to the initial works [147], [79] based on the E2E
 models is significant, and the error rates of all tasks become
 less than half of the original error rates 16
 Although the overall trends show that the ASR performance
@@ -1944,60 +1777,42 @@ learning [320], [321]. These techniques utilize a considerable
 16For readers who want to know the latest update of these
 benchmarks can also check https //github.com/syhw/wer arewe and
 https //github.com/thu-spmi/ASR-Benchmarks/blob/main/README.md.This article has been accepted for publication in IEEE/ACM Transactions on Audio, Speech and Language Processing. This is the author's version which has not been fully edited and
-content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/19
-AEDAED
-AEDHMM
-AED
-AEDAED
-AED
-AED
-AED
-AED
-AEDWER (%)
-01020304050 1/1/2017 1/1/2018 1/1/2019 1/1/2020 1/1/2021swb chm
-Fig. 9. E E ASR performance improvement in the switchboard task.
-AED
-AEDAEDAEDAED
-AEDAED
-AED
-AED
+content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283
+This work is licensed under a Creative Commons Attribution 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/19
+1/1/2017 1/1/2018 1/1/2019 1/1/2020 1/1/2021swb chm
+Fig. 9. E2E ASR performance improvement in the switchboard task.
 transducer ContextNet Transducer
-CTC
-HMM
-AEDtransducer
-transformerWER (%)
-051015 1/1/2019 7/1/2019 1/1/2020 7/1/2020 1/1/2021 7/1/2021test_clean test_other
-Fig. 10. E E ASR performance improvement in the Librispeech task.
+1/1/2019 7/1/2019 1/1/2020 7/1/2020 1/1/2021 7/1/2021test_clean test_other
+Fig. 10. E2E ASR performance improvement in the Librispeech task.
 amount of unlabeled in-domain speech data (e.g., Libri-light
-60K hours [322]).
 Relationship to Classical ASR
 Speech recognition research has always been pushed by
 international evaluation campaigns (e.g. as lead by NIST)
 and corresponding benchmark tasks. The competition between
-classical and E E approaches is nicely reflected in the widely
+classical and E2E approaches is nicely reflected in the widely
 used Librispeech [317] and Switchboard [316] tasks, showing
-that E E models gain momentum. As shown in Figure 10,
+that E2E models gain momentum. As shown in Figure 10,
 on Librispeech, the current best-published classical hybrid
 systems range around 2.3% (test-clean) and 4.9% (test-other)
 word error rate [323], [222], while there already are a number
-of E E systems providing similar performance [224], [205],
-[320], [206], with some E E systems clearly outperforming
+of E2E systems providing similar performance [224], [205],
+[320], [206], with some E2E systems clearly outperforming
 former state-of-the-art results with word error rates down to
 1.8% (test-clean) and 3.7% (test-other) [324] with similar
 results reported in [45], [97]. Merging insights from classical
 HMM-based and monotonic RNN-T provided similarly well
 results with a limited training budget [124]. Finally, when
 trained on Switchboard 300h, the current best result, obtained
-with an E E system [180] is 5.4%compared to 6.6%word
+with an E2E system [180] is 5.4%compared to 6.6%word
 error rate for the best hybrid system result [325] on the
-HUB5 00 Switchboard test set, in Figure 9IX. D EPLOYMENT OF E E M ODELS
+HUB5 00 Switchboard test set, in Figure 9IX. D EPLOYMENT OF E2E M ODELS
 Many of the ideas discussed in this paper have been
 explored by various industry research labs [326], [327], [328],
 [329], [330], [331], [265], inter alia . In this section, we
 review the development of on-device production-level systems
 at Google as a typical case study for deployment.
-The first streaming E E model, deployed to production,
-was launched in 2019 4 smartphone [22], [332].
+The first streaming E2E model, deployed to production,
+was launched in 2019 for the Pixel 4 smartphone [22], [332].
 This model used a streaming RNN-T first-pass system, while
 re-scoring first-pass hypotheses with an AED system in the
 second pass. In addition, FST-based contextual biasing [92]
@@ -2010,8 +1825,8 @@ time between when the user speaks, and when words appear
 on the device). This included advancements such as end-to-end
 endpointing [113] to encourage faster microphone closing  as
 well as FastEmit [91] to encourage the model to emit tokens
-earlier.
-Finally, in 2021 6 smartphone [334], to take advantage of the tensor
+Finally, in 2021 the model was further improved for the
+Pixel 6 smartphone [334], to take advantage of the tensor
 processing unit (TPU) [85] on the device. Improvements
 include the use of conformer layers for the encoder [45]  a
 small embedding prediction network for the decoder [104]  a
@@ -2020,47 +1835,46 @@ and, a neural LM re-scorer to help improve accuracy long-tail
 named entities. This model is the best ASR system that Google
 has released to date, both in terms of quality and latency.
 X. A REAS FOR FUTURE WORK
-Currently, E E models dominate the academic debate on
+Currently, E2E models dominate the academic debate on
 ASR. However, at least partly, this is not (yet ) reflected
-in the corresponding commercial deployment of E E ASR
-architectures. E E models are not yet the perfect match for
+in the corresponding commercial deployment of E2E ASR
+architectures. E2E models are not yet the perfect match for
 all ASR conditions and further research is needed to take full
-advantage of the benefits of E E modeling.
-E E models seem to perform really well when training data
+advantage of the benefits of E2E modeling.
+E2E models seem to perform really well when training data
 is abundant, while not scaling well to low-resource conditions.
 Similarly, domain change requires a flexible exchange of language
  models, which is natural for classical ASR models based
 on a separation of acoustic and language models. Ongoing
-research on the use of external language models in E E models
+research on the use of external language models in E2E models
 and internal language model estimation already is promising,
 but can be expected to see further improvements.
-Top E E ASR systems usually require orders of magnitude
+Top E2E ASR systems usually require orders of magnitude
 more training epochs than comparable classical ASR systems,
 and further research into efficient and robust optimization and
 training schedules is needed.
-The high level of integration of E E models also involves a
+The high level of integration of E2E models also involves a
 loss in modularity, which might support the explainability and
 reusability of models. Also, more efficient training schedules
 might take advantage of modularity. One assumed advantage
-of E E models is that everything is trained from data and
+of E2E models is that everything is trained from data and
 secondary knowledge sources (e.g. pronunciation lexica and
 phoneme sets) are avoided. However, rare events, like rareThis article has been accepted for publication in IEEE/ACM Transactions on Audio, Speech and Language Processing. This is the author's version which has not been fully edited and
-content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/20
+content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283
+This work is licensed under a Creative Commons Attribution 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/20
 words in ASR still provide a challenge, which needs further
-research.
 With the missing separation of acoustic and language models,
  the question arises of how to exploit text-only resources in
-E E model training - do we foresee solutions beyond training
+E2E model training - do we foresee solutions beyond training
 data generation using TTS  We note that a number of recent
 works have explored approaches to combine speech and text
 modalities by attempting to implicitly or explicitly map them
 into a shared space [159], [335], [336], [337], [338], [339],
-[340], [341]. Furthermore, high-performance E E solutions
+[340], [341]. Furthermore, high-performance E2E solutions
 exist for both discriminative problems like ASR, as well as
 generative problems like TTS, how can both be exploited
 jointly to support semi-supervised training based on text-only
 and/or audio-only data on top of transcribed speech audio [28],
-[342] 
 For AED architectures, we observe a length bias, which
 complicates the decoding process. Although many heuristics
 are known to tackle length bias in AED, we are still missing
@@ -2068,21 +1882,20 @@ a well-founded explanation for it, as well as a corresponding
 remedy of the original model.
 Other open research problems include speaker adaptation
 and robustness to recording conditions, especially in mismatch
-situations. The E E principle also provides a promising candidate
- to solve multichannel ASR by providing an E E solution
+situations. The E2E principle also provides a promising candidate
+ to solve multichannel ASR by providing an E2E solution
 jointly tackling the source separation, speaker diarization and
 speech recognition problem [343], [26].
-Finally, we need to investigate, if E E is a suitable guiding
-principle, and how different E E ASR models relate to each
+Finally, we need to investigate, if E2E is a suitable guiding
+principle, and how different E2E ASR models relate to each
 other as well as to classical ASR approaches. The most
 important guiding principle of ASR research and development
 has been performance, and ASR has been boosted strongly
 by widely used benchmark tasks and international evaluation
-campaigns. With the current diversity of classical and E E
+campaigns. With the current diversity of classical and E2E
 models, we also need to resolve the question of what constitutes
  state-of-the-art in ASR today, and can we expect a
 common state-of-the-art ASR architecture in the future 
-XI. C ONCLUSIONS
 In this work, we presented a detailed overview of end-toend
  approaches to ASR. Such models, which have grown in
 popularity over the last few years, propose to use highly integrated
@@ -2101,19 +1914,15 @@ contemporaneous overview article on end-to-end ASR [344],
 which offers a complementary perspective to our own. In
 particular, readers of [344] may find a more detailed exposition
 on the choice of encoder structure, and the applications of
-E E approaches to allied ASR areas (e.g., multi-speakerrecognition  multilingual ASR  adaptation to new application
+E2E approaches to allied ASR areas (e.g., multi-speakerrecognition  multilingual ASR  adaptation to new application
 domains, and speakers  etc.), which we do not cover due to
-space limitations.
-ACKNOWLEDGMENT
 The authors would like to thank Julian Dierkes, Yifan Peng,
 Zolt an T  uske, Albert Zeyer, and Wei Zhou for their help on
 refining our manuscript.
-REFERENCES
 [1] T. Bayes,  An Essay Towards Solving a Problem in the Doctrine of
 Chances,  Philosophical Transactions of the Royal Society of London ,
 vol. 53, pp. 370 418, 1763.
 [2] F. Jelinek, Statistical Methods for Speech Recognition . Cambridge,
-MA  MIT Press, 1997.
 [3] L. R. Rabiner,  A Tutorial on Hidden Markov Models and Selected
 Applications in Speech Recognition,  Proc. of the IEEE , vol. 77, no. 2,
 pp. 257 286, Feb. 1989.
@@ -2124,7 +1933,6 @@ Context-Dependent Deep Neural Networks,  in Proc. Interspeech ,
 Florence, Italy, Aug. 2011, pp. 437 440.
 [6] V . Fontaine, C. Ris, and H. Leich,  Nonlinear Discriminant Analysis for
 Improved Speech Recognition,  in Proc. Eurospeech , Rhodes, Greece,
-Sep. 1997, pp. 1 4.
 [7] H. Hermansky, D. Ellis, and S. Sharma,  Tandem connectionist Feature
 Extraction for Conventional HMM Systems,  in Proc. IEEE ICASSP ,
 vol. 3, Istanbul, Turkey, Jun. 2000, pp. 1635 1638.
@@ -2133,7 +1941,6 @@ Prediction Based on Neural Networks,  in Proc. IEEE ICASSP , Glasglow,
  UK, May 1989, pp. 731 734.
 [9] Y . Bengio, R. Ducharme, and P. Vincent,  A Neural Probabilistic
 Language Model,  in Proc. NIPS , vol. 13, Denver, CO, Nov. 2000,
-pp. 932 938.
 [10] H. Schwenk and J.-L. Gauvain,  Connectionist Language Modeling
 for Large V ocabulary Continuous Speech Recognition,  in Proc. IEEE
 ICASSP , Orlando, FL, May 2002, pp. 765 768.
@@ -2147,7 +1954,6 @@ ASRU , Scottsdale, AZ, Dec. 2015, pp. 30 36.
 [13] A. Graves, S. Fern  andez, F. Gomez, and J. Schmidhuber,  Connectionist
  temporal classification  labelling unsegmented sequence data with
 recurrent neural networks,  in Proc. ICML , Pittsburgh, PA, Jun. 2006,
-pp. 369 376.
 [14] A. Graves,  Sequence Transduction with Recurrent Neural Networks, 
 inProc. ICML , Edinburgh, Scotland, Jun. 2012, Workshop on Representation
  Learning, arXiv 1211.3711.
@@ -2157,7 +1963,6 @@ vol. 28, Laval, Que  ebec, Canada, Dec. 2015, pp. 577 585.
 [16] W. Chan, N. Jaitly, Q. Le, and O. Vinyals,  Listen, Attend and
 Spell  A Neural Network for Large V ocabulary Conversational Speech
 Recognition,  in Proc. IEEE ICASSP , Shanghai, China, Mar. 2016, pp.
-4960 4964.
 [17] P. Liang, A. Bouchard-C ˆot e, D. Klein, and B. Taskar,  An End-toEnd
  Discriminative Approach to Machine Translation,  in Proc. ACL ,
 Sydney, Australia, Jul. 2006, p. 761 768.
@@ -2166,32 +1971,30 @@ and P. Kuksa,  Natural Language Processing (Almost) from Scratch,
 Journal of Machine Learning Research , vol. 12, pp. 2493 2537, 2011.
 [19] A. Graves and N. Jaitly,  Towards End-to-End Speech Recognition
 with Recurrent Neural Networks,  in Proc. ICML , Beijing, China, Jun.
-2014, pp. 1764 1772.
 [20]  Cambridge Dictionary,  https //dictionary.cambridge.org/dictionary/
 english/end-to-end, accessed  2020-02-21.
 [21] R. Pang, T. N. Sainath, R. Prabhavalkar, S. Gupta, Y . Wu, S. Zhang, and
 C.-c. Chiu,  Compression of End-to-End Models,  in Proc. Interspeech ,
 Hyderabad, India, Sep. 2018, pp. 27 31.This article has been accepted for publication in IEEE/ACM Transactions on Audio, Speech and Language Processing. This is the author's version which has not been fully edited and
-content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/21
+content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283
+This work is licensed under a Creative Commons Attribution 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/21
 [22] Y . He, T. N. Sainath, R. Prabhavalkar, I. McGraw, R. Alvarez, D. Zhao,
 D. Rybach, A. Kannan, Y . Wu, R. Pang, Q. Liang, D. Bhatia, Y . Shangguan,
  B. Li, G. Pundak, K. C. Sim, T. Bagby, S.-y. Chang, K. Rao, and
 A. Gruenstein,  Streaming End-to-End Speech Recognition for Mobile
-Devices,  in Proc. IEEE ICASSP , Brighton, UK, May 2019, pp. 6381 6385.
+Devices,  in Proc. IEEE ICASSP , Brighton, UK, May 2019, pp. 6381 
 [23] R. Schl  uter and H. Ney,  Model-based MCE Bound to the True Bayes 
 Error,  IEEE Signal Processing Letters , vol. 8, no. 5, pp. 131 133, May
-2001.
 [24] H. Ney,  On the Relationship between Classification Error Bounds
 and Training Criteria in Statistical Pattern Recognition,  in Iberian
 Conference on Pattern Recognition and Image Analysis (IbPRIA) ,
 Puerto de Andratx, Spain, Jun. 2003, pp. 636 645.
-[25] A. Baevski, Y . Zhou, A. Mohamed, and M. Auli,  wav vec 2.0  A
+[25] A. Baevski, Y . Zhou, A. Mohamed, and M. Auli,  wav2vec 2.0  A
 Framework for Self-Supervised Learning of Speech Representations, 
-inProc. NeurIPS , Vancouver, BC, Canada, Dec. 2020, pp. 12 449 12 460.
+inProc. NeurIPS , Vancouver, BC, Canada, Dec. 2020, pp. 12 449 
 [26] X. Chang, W. Zhang, Y . Qian, J. Le Roux, and S. Watanabe,  MIMOSpeech 
  End-to-End Multi-Channel Multi-Speaker Speech Recognition, 
  in Proc. IEEE ASRU . Sentosa, Singapore  IEEE, Dec. 2019,
-pp. 237 244.
 [27] L. Breiman, J. Friedman, C. Stone, and R. Olshen, Classication and
 Regression Trees . Belmont, CA  Taylor & Francis, 1984.
 [28] A. Tjandra, S. Sakti, and S. Nakamura,  Listening While Speaking 
@@ -2215,7 +2018,6 @@ Aug. 2015, pp. 1715 1725.
 selection and target decomposition for sequence labelling,  in Proc.
 ICML , ser. Proceedings of Machine Learning Research, D. Precup
 and Y . W. Teh, Eds., vol. 70. PMLR, Aug. 2017, pp. 2188 2197,
-arXiv 1703.00096.
 [35] H. Xu, S. Ding, and S. Watanabe,  Improving End-to-End Speech
 Recognition with Pronunciation-Assisted Sub-Word Modeling,  in
 Proc. IEEE ICASSP , Brighton, UK, Sep. 2019, pp. 7110 7114.
@@ -2226,18 +2028,15 @@ inProc. Interspeech , Brno, Czechia, Aug. 2021, pp. 2886 2890.
 inProc. IEEE ICASSP , Kyoto, Japan, Mar. 2012, pp. 5149 5152.
 [38] M. Mohri, F. Pereira, and M. Riley,  Weighted Finite-State Transducers
 in Speech Recognition,  Computer Speech & Language , vol. 16, no. 1,
-pp. 69 88, 2002.
 [39] E. Beck, M. Hannemann, P. Doetsch, R. Schl  uter, and H. Ney,
  Segmental Encoder-Decoder Models for Large V ocabulary Automatic
 Speech Recognition,  in Proc. Interspeech , Hyderabad, India, Sep.
-2018.
 [40] W. Zhou, A. Zeyer, A. Merboldt, R. Schl  uter, and H. Ney,  Equivalence
 of Segmental and Neural Transducer Modeling  A Proof of Concept, 
 inProc. Interspeech , Brno, Czechia, Aug. 2021, pp. 2891 2895.
 [41] R. Prabhavalkar, K. Rao, T. N. Sainath, B. Li, L. Johnson, and
 N. Jaitly,  A Comparison of Sequence-to-Sequence Models for Speech
 Recognition,  in Proc. Interspeech , Stockhol, Sweden, Aug. 2017, pp.
-939 943.
 [42] S. Hochreiter and J. Schmidhuber,  Long Short-Term Memory,  Neural
 Computation , vol. 9, no. 8, pp. 1735 1780, 1997.
 [43] D. Bahdanau, K. Cho, and Y . Bengio,  Neural Machine Translation by
@@ -2282,7 +2081,7 @@ J. Riesa, A. Rudnick, O. Vinyals, G. Corrado, M. Hughes, and J. Dean,
  Google s Neural Machine Translation System  Bridging the Gap Between
  Human and Machine Translation,  Oct. 2016, arXiv 1609.08144.
 [55] M. Mimura, S. Sakai, and T. Kawahara,  Forward-Backward Attention
-Decoder,  in Proc. Interspeech , Hyderabad, India, Sep. 2018, pp. 2232 2236.
+Decoder,  in Proc. Interspeech , Hyderabad, India, Sep. 2018, pp. 2232 
 [56] A. Graves,  Generating Sequences with Recurrent Neural Networks, 
 Aug. 2013, arXiv 1308.0850.
 [57] J. Hou, S. Zhang, and L.-R. Dai,  Gaussian Prediction Based Attention
@@ -2321,7 +2120,8 @@ Attention Variants,  Mar. 2021, arXiv 2103.16710.
 [67] A. Zeyer, R. Schmitt, W. Zhou, R. Schl  uter, and H. Ney,  Monotonic
 Segmental Attention for Automatic Speech Recognition,  in Proc. IEEE
 SLT, Doha, Qatar, Jan. 2023, arXiv 2210.14742.This article has been accepted for publication in IEEE/ACM Transactions on Audio, Speech and Language Processing. This is the author's version which has not been fully edited and
-content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/22
+content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283
+This work is licensed under a Creative Commons Attribution 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/22
 [68] Z. Tian, J. Yi, Y . Bai, J. Tao, S. Zhang, and Z. Wen,  Synchronous
 Transformers for End-to-End Speech Recognition,  in Proc. IEEE
 ICASSP , Barcelona, Spain, May 2020, arXiv 1912.02958.
@@ -2330,12 +2130,10 @@ X. Na, Y . Wang, and S. Khudanpur,  Purely Sequence-Trained Neural
 Networks for ASR Based on Lattice-Free MMI,  in Proc. Interspeech
  . San Francisco, CA  ISCA, Sep. 2016, pp. 2751 2755, DOI 
 10.21437/Interspeech.2016-595.
-[70] R. Collobert, C. Puhrsch, and G. Synnaeve,  Wav Letter  An Endto-End
+[70] R. Collobert, C. Puhrsch, and G. Synnaeve,  Wav2Letter  An Endto-End
  Convnet-Based Speech Recognition System,  Sep. 2016,
-arXiv 1609.03193.
 [71] P. Haffner,  Connectionist Speech Recognition with a Global MMI
 Algorithm,  in Proc. Eurospeech , Berlin, Germany, Dec. 1993, pp.
-1929 1932.
 [72] A. Zeyer, E. Beck, R. Schl  uter, and H. Ney,  CTC in the Context of
 Generalized Full-Sum HMM Training,  in Proc. Interspeech , Stockholm,
  Sweden, Aug. 2017, pp. 944 948.
@@ -2353,7 +2151,6 @@ R. Prenger, S. Satheesh, S. Sengupta, A. Coates, and A. Y . Ng,
 [76] L. Lu, X. Zhang, and S. Renals,  On Training the Recurrent Neural
 Network Encoder-Decoder for Large V ocabulary End-to-End Speech
 Recognition,  in Proc. IEEE ICASSP , Shanghai, China, Mar. 2016, pp.
-5060 5064.
 [77] J. Chorowski and N. Jaitly,  Towards Better Decoding and Language
 Model Integration in Sequence to Sequence Models,  in Proc. Interspeech
  , Stockhol, Sweden, Aug. 2017, pp. 523 527.
@@ -2363,13 +2160,11 @@ Orleans, LA, Mar. 2017, pp. 4845 4849.
 [79] S. Toshniwal, H. Tang, L. Lu, and K. Livescu,  Multitask Learning
 with Low-Level Auxiliary Tasks for Encoder-Decoder based Speech
 Recognition,  in Proc. Interspeech , Stockholm, Sweden, Aug. 2017,
-arXiv 1704.01631.
 [80] A. Renduchintala, S. Ding, M. Wiesner, and S. Watanabe,  MultiModal
  Data Augmentation for End-to-End ASR,  in Proc. Interspeech ,
 Hyderabad, India, Mar. 2018, pp. 2394 2398.
 [81] S. Sabour, W. Chan, and M. Norouzi,  Optimal Completion Distillation
 for Sequence Learning,  in Proc. ICLR , New Orleans, LA, May 2019,
-arXiv 1810.01398.
 [82] C. Weng, J. Cui, G. Wang, J. Wang, C. Yu, D. Su, and D. Yu,
  Improving Attention Based Sequence-to-Sequence Models for End-toEnd
  English Conversational Speech Recognition,  in Proc. Interspeech ,
@@ -2389,7 +2184,6 @@ Toronto, Ontario, Canada, Jun. 2017, pp. 1 12.
 [86] S. Watanabe, T. Hori, S. Kim, J. R. Hershey, and T. Hayashi,  Hybrid
 CTC Attention Architecture for End-to-End Speech Recognition, 
 IEEE Journal of Selected Topics in Signal Processing , vol. 11, no. 8,
-pp. 1240 1253, 2017.
 [87] T. N. Sainath, R. Pang, D. Rybach, Y . He, R. Prabhavalkar, W. Li,
 M. Visontai, Q. Liang, T. Strohman, Y . Wu, I. McGraw, and C. ChungCheng,
   Two-Pass End-to-End Speech Recognition,  in Proc. Interspeech
@@ -2413,10 +2207,10 @@ Interspeech , Graz, Austria, Sep. 2019, pp. 1418 1422.
  Deep Context  End-to-end Contextual Speech Recognition,  in Proc.
 IEEE SLT , Athens, Greece, Dec. 2018, pp. 418 425.
 [94] S. Kim and F. Metze,  Dialog-Context Aware End-to-End Speech
-Recognition,  in Proc. IEEE SLT , Athens, Greece, Dec. 2018, pp. 434 440.
+Recognition,  in Proc. IEEE SLT , Athens, Greece, Dec. 2018, pp. 434 
 [95] A. Bruguier, R. Prabhavalkar, G. Pundak, and T. N. Sainath,  Phoebe 
 Pronunciation-Aware Contextualization for End-to-End Speech Recognition, 
- in Proc. IEEE ICASSP , Brighton, UK, May 2019, pp. 6171 6175.
+ in Proc. IEEE ICASSP , Brighton, UK, May 2019, pp. 6171 
 [96] M. Delcroix, S. Watanabe, A. Ogawa, S. Karita, and T. Nakatani,
  Auxiliary Feature Based Adaptation of End-to-End ASR Systems, 
 inProc. Interspeech , Hyderabad, India, Sep. 2018, pp. 2444 2448.
@@ -2451,7 +2245,6 @@ Boosted by Conformer,  in Proc. IEEE ICASSP . Toronto, Ontario,
 Canada  IEEE, Jun. 2021, pp. 5874 5878.
 [104] R. Botros, T. Sainath, R. David, E. Guzman, W. Li, and Y . He,  Tied &
 Reduced RNN-T Decoder,  in Proc. Interspeech , Brno, Czechia, Sep.
-2021, pp. 4563 4567.
 [105] M. Ghodsi, X. Liu, J. Apfel, R. Cabrera, and E. Weinstein,  RNNTransducer
  with Stateless Prediction Network,  in Proc. IEEE ICASSP ,
 Barcelona, Spain, May 2020, pp. 7049 7053.
@@ -2469,7 +2262,8 @@ ICASSP , Singapore, May 2022, pp. 8132 8136, arXiv 2110.01500.
 J. Emond, T. Strohman, B. Ramabhadran, W. R. Huang et al. ,  Modular
 Hybrid Autoregressive Transducer,  in Proc. IEEE SLT , Doha, Qatar,
 Jan. 2023, pp. 197 204, https //arXiv 2210.17049.This article has been accepted for publication in IEEE/ACM Transactions on Audio, Speech and Language Processing. This is the author's version which has not been fully edited and
-content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/23
+content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283
+This work is licensed under a Creative Commons Attribution 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/23
 [110] T. Wang, L. Zhou, Z. Zhang, Y . Wu, S. Liu, Y . Gaur, Z. Chen, J. Li, and
 F. Wei,  VioLA  Unified Codec Language Models for Speech Recognition,
  Synthesis, and Translation,  May 2023, arXiv 2305.16107.
@@ -2486,7 +2280,6 @@ Proc. IEEE ICASSP , Barcelona, Spain, May 2020, pp. 6069 6073.
 [114] T. Yoshimura, T. Hayashi, K. Takeda, and S. Watanabe,  End-ToEnd
  Automatic Speech Recognition Integrated with CTC-Based V oice
 Activity Detection,  in Proc. IEEE ICASSP , Barcelona, Spain, May
-2020, pp. 6999 7003.
 [115] Y . Fujita, T. Wang, S. Watanabe, and M. Omachi,  Toward Streaming
  ASR with Non-Autoregressive Insertion-Based Model,  in Proc.
 Interspeech , Brno, Czechia, Sep. 2021, pp. 3740 3744.
@@ -2522,7 +2315,6 @@ New WFST Topologies,  in Proc. Interspeech , Incheon, Korea, sep
 [127] X. He, L. Deng, and W. Chou,  Discriminative Learning in Sequential
 Pattern Recognition   A Unifying Review for Optimization-Oriented
 Speech Recognition,  IEEE Signal Processing Magazine , vol. 25, no. 5,
-pp. 14 36, 2008.
 [128] M. Zeineldeen, A. Glushko, W. Michel, A. Zeyer, R. Schl  uter, and
 H. Ney,  Investigating Methods to Improve Language Model Integration
  for Attention-Based Encoder-Decoder ASR Models,  in Proc.
@@ -2530,7 +2322,6 @@ Interspeech , Brno, Czechia, Aug. 2021, pp. 2856 2860.
 [129] N.-P. Wynands, W. Michel, J. Rosendahl, R. Schl  uter, and H. Ney,
  Efficient Sequence Training of Attention Models using Approximative
  Recombination,  in Proc. IEEE ICASSP , Singapore, May 2022,
-arXiv 2110.09245.
 [130] Z. Yang, W. Zhou, R. Schl  uter, and H. Ney,  Lattice-Free Sequence
 Discriminative Training for Phoneme-based Neural Transducers,  in
 Proc. IEEE ICASSP , Rhodes, Greece, Jun. 2023, arXiv 2212.04325.
@@ -2553,7 +2344,6 @@ Magazine , vol. 29, no. 6, pp. 58 69, Nov. 2012.
 [136] W. Michel, R. Schl  uter, and H. Ney,  Comparison of Lattice-Free and
 Lattice-Based Sequence Discriminative Training Criteria for LVCSR, 
 inProc. Interspeech , Graz, Austria, Sep. 2019, pp. 1601 1605,
-arXiv 1907.01409.
 [137] R. Prabhavalkar, T. N. Sainath, Y . Wu, P. Nguyen, Z. Chen, C.-C. Chiu,
 and A. Kannan,  Minimum Word Error Rate Training for AttentionBased
  Sequence-to-Sequence Models,  in Proc. IEEE ICASSP , Calgary,
@@ -2577,7 +2367,7 @@ Canada  IEEE, Apr. 2018, pp. 5839 5843.
 Local and Global Log-Linear Combination,  in Proc. Interspeech ,
 Shanghai, China, Oct. 2020, pp. 3605 3609, arXiv 2005.10049.
 [143] G. E. Hinton, S. Osindero, and Y .-W. Teh,  A Fast Learning Algorithm
-for Deep Belief Nets,  Neural Computation , vol. 18, no. 7, pp. 1527 1554, Jul. 2006.
+for Deep Belief Nets,  Neural Computation , vol. 18, no. 7, pp. 1527 
 [144] Y . Bengio, P. Lamblin, D. Popovici, and H. Larochelle,  Greedy LayerWise
  Training of Deep Networks,  in Proc. NIPS , Barcelona, Spain,
 Dec. 2006, pp. 153 160.
@@ -2593,13 +2383,12 @@ of End-to-End Attention Models for Speech Recognition,  in Proc.
 Interspeech , Hyderabad, India, Sep. 2018, pp. 7 11.
 [148] A. Zeyer, A. Merboldt, R. Schl  uter, and H. Ney,  A Comprehensive
 Analysis on Attention Models,  in Proc. NIPS , Montreal, Canada, Dec.
-2018.
-[149] Y . Chung, C. Wu, C. Shen, H. Lee, and L. Lee,  Audio Word Vec 
+[149] Y . Chung, C. Wu, C. Shen, H. Lee, and L. Lee,  Audio Word2Vec 
 Unsupervised Learning of Audio Segment Representations using
 Sequence-to-sequence Autoencoder,  in Proc. Interspeech , San Francisco,
  CA, Sep. 2016, arXiv 1603.00982.
 [150] Y .-C. Chen, S.-F. Huang, H.-y. Lee, Y .-H. Wang, and C.-H. Shen,  Audio
- Word vec  Sequence-to-Sequence Autoencoding for Unsupervised
+ Word2vec  Sequence-to-Sequence Autoencoding for Unsupervised
 Learning of Audio Segmentation and Representation,  IEEE/ACM
 Transactions on Audio, Speech, and Language Processing , vol. 27,
 no. 9, pp. 1481 1493, 2019, DOI  10.1109/TASLP.2019.2922832.
@@ -2610,7 +2399,6 @@ Brisbane, Australia, Sep. 2008, pp. 2711 2714.
 Cross- and Multilingual MLP features under matched and mismatched
 acoustical conditions,  in IEEE International Conference on Acoustics,
 Speech, and Signal Processing , Vancouver, Canada, May 2013, pp.
-7349 7353.
 [153] S. Zhou, S. Xu, and B. Xu,  Multilingual End-to-End Speech Recognition
  with a Single Transformer on Low-Resource Languages,  Jun.
 2018, arXiv 1806.05059.
@@ -2621,14 +2409,15 @@ Minneapolis, MN, Jun. 2019, arXiv 1904.02210.
  Large-scale end-to-end multilingual speech recognition and language
 identification with multi-task learning,  in Proc. Interspeech , Shanghai,
 China, Oct. 2020, pp. 1037 1041.This article has been accepted for publication in IEEE/ACM Transactions on Audio, Speech and Language Processing. This is the author's version which has not been fully edited and
-content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/24
+content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283
+This work is licensed under a Creative Commons Attribution 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/24
 [156] V . Pratap, A. Sriram, P. Tomasello, A. Hannun, V . Liptchinsky, G. Synnaeve,
  and R. Collobert,  Massively Multilingual ASR  50 Languages,
 1 Model, 1 Billion Parameters,  in Proc. Interspeech , Shanghai, China,
 Oct. 2020, arXiv 2007.03001.
 [157] B. Li, R. Pang, T. N. Sainath, A. Gulati, Y . Zhang, J. Qin, P. Haghani,
 W. R. Huang, M. Ma, and J. Bai,  Scaling End-to-End Models for
-Large-Scale Multilingual ASR,  in Proc. IEEE ASRU , 2021, pp. 1011 1018.
+Large-Scale Multilingual ASR,  in Proc. IEEE ASRU , 2021, pp. 1011 
 [158] Y . Zhang, D. S. Park, W. Han, J. Qin, A. Gulati, J. Shor, A. Jansen,
 Y . Xu, Y . Huang, S. Wang, Z. Zhou, B. Li, M. Ma, W. Chan,
 J. Yu, Y . Wang, L. Cao, K. C. Sim, B. Ramabhadran, T. N. Sainath,
@@ -2636,7 +2425,6 @@ F. Beaufays, Z. Chen, Q. V . Le, C.-C. Chiu, R. Pang, and Y . Wu,
  BigSSL  Exploring the frontier of large-scale semi-supervised learning
 for automatic speech recognition,  IEEE Journal of Selected Topics
 in Signal Processing , vol. 16, no. 6, pp. 1519 1532, oct 2022,
-arXiv 2109.13226.
 [159] Z. Chen, Y . Zhang, A. Rosenberg, B. Ramabhadran, P. J. Moreno,
 A. Bapna, and H. Zen,  MAESTRO  Matched Speech Text Representations
  through Modality Matching,  in Proc. Interspeech , Incheon,
@@ -2653,14 +2441,11 @@ for SGD Training of Deep Neural Networks,  in Proc. IEEE ICASSP .
 Queensland, Australia  IEEE, Apr. 2015, pp. 4974 4978.
 [163] S. Renals, N. Morgan, H. Bourlard, C. Wooters, and P. Kohn,  Connectionist
  Speech Recognition  Status and Prospects,  ICSI, 1991, Tech.
-Rep. TR-OI-070.
 [164] D. Johnson, D. Ellis, C. Oei, C. Wooters, and P. Faerber,  QuickNet, 
 ICSI, Berkeley, 2004. [Online]. Available  http //www.icsi.berkeley.
-edu/Speech/qn.html
 [165] A. Senior, G. Heigold, M. Ranzato, and K. Yang,  An Empirical Study
 of Learning Rates in Deep Neural Networks for Speech Recognition, 
 inProc. IEEE ICASSP . Vancouver, BC, Canada  IEEE, May 2013,
-pp. 6724 6728.
 [166] I. Loshchilov and F. Hutter,  Decoupled Weight Decay Regularization, 
 inProc. ICLR , New Orleans, LA, May 2019, arXiv 1711.05101.
 [167] S. L. Smith, P.-J. Kindermans, C. Ying, and Q. V . Le,  Don t Decay the
@@ -2668,7 +2453,6 @@ Learning Rate, Increase the Batch Size,  in Proc. ICLR , New Orleans,
 LA, May 2018, arXiv 1711.00489.
 [168] J. Howard and S. Ruder,  Universal Language Model Fine-Tuning for
 Text Classification,  in Proc. ACL , Melbourne, Australia, Jun. 2018,
-pp. 328 339.
 [169] M. Jaderberg, V . Dalibard, S. Osindero, W. M. Czarnecki, J. Donahue,
 A. Razavi, O. Vinyals, T. Green, I. Dunning, K. Simonyan, C. Fernando,
  and K. Kavukcuoglu,  Population Based Training of Neural
@@ -2681,7 +2465,6 @@ Importance of Starting Small,  Cognition , vol. 48, no. 1, pp. 71 99,
 1993, DOI  10.1016/0010-0277(93)90058-4.
 [172] Y . Bengio, J. Louradour, R. Collobert, and J. Weston,  Curriculum
 Learning,  in Proc. ICML , Montreal, Quebec, Canada, Jun. 2009, p.
-41 48.
 [173] D. Amodei, R. Anubhai, E. Battenberg, C. Case, J. Casper, B. Catanzaro,
  J. Chen, M. Chrzanowski, A. Coates, G. Diamos, E. Elsen,
 J. Engel, L. Fan, C. Fougner, T. Han, A. Hannun, B. Jun, P. LeGresley,
@@ -2693,16 +2476,15 @@ NY, Jun. 2016, pp. 173 182.
 [174] Z. T  uske, G. Saon, K. Audhkhasi, and B. Kingsbury,  Single Headed
 Attention Based Sequence-to-Sequence Model for State-of-the-Art
 Results on Switchboard,  in Proc. Interspeech , Shanghai, China, Oct.
-2020, pp. 551 555.
 [175] W. Zhang, X. Chang, Y . Qian, and S. Watanabe,  Improving Endto-End
  Single-Channel Multi-Talker Speech Recognition,  IEEE/ACM
-Trans. Audio, Speech, and Language Processing , vol. 28, pp. 1385 1394, 2020.[176] B. Polyak,  Some Methods of Speeding up the Convergence of
+Trans. Audio, Speech, and Language Processing , vol. 28, pp. 1385 
+1394, 2020.[176] B. Polyak,  Some Methods of Speeding up the Convergence of
 Iteration Methods,  USSR Computational Mathematics and Mathematical
  Physics , vol. 4, no. 5, pp. 1 17, 1964, DOI  10.1016/00415553(64)90137-5.
-
 [177] Y . Nesterov,  A method of solving a convex programming problem
-with convergence rate O(1 2), Soviet Mathematics Doklady , vol. 27,
-pp. 372 376, 1983.
+with convergence rate O(1
+k2), Soviet Mathematics Doklady , vol. 27,
 [178] I. Sutskever, J. Martens, G. Dahl, and G. Hinton,  On the Importance
 of Initialization and Momentum in Deep Learning,  in Proc. ICML ,
 Atlanta, GA, Jun. 2013, pp. 1139 1147.
@@ -2719,7 +2501,7 @@ Generalization,  in Neural Information Processing Systems (NIPS) ,
 Denver, CO, Dec. 1991, pp. 950 957.
 [183] A. F. Murray and P. J. Edwards,  Enhanced MLP Performance and
 Fault Tolerance Resulting from Synaptic Weight Noise during Training, 
- IEEE Transactions on Neural Networks , vol. 5, no. 5, pp. 792 802, Sep. 1994.
+ IEEE Transactions on Neural Networks , vol. 5, no. 5, pp. 792 
 [184] A. Graves,  Practical Variational Inference for Neural Networks, 
 Advances in Neural Information Processing Systems , vol. 24, 2011.
 [185] A. Neelakantan, L. Vilnis, Q. V . Le, I. Sutskever, L. Kaiser, K. Kurach,
@@ -2731,7 +2513,6 @@ R. R. Salakhutdinov,  Improving Neural Networks by Preventing CoAdaptation
 [187] A. Krizhevsky, I. Sutskever, and G. E. Hinton,  ImageNet Classification
 with Deep Convolutional Neural Networks,  in Advances in Neural
 Information Processing Systems (NIPS) , vol. 25, Lake Tahoe, NV , Dec.
-2012.
 [188] Y . Gal and Z. Ghahramani,  Dropout as a Bayesian Approximation 
 Representing Model Uncertainty in Deep Learning,  in Proc. ICML ,
 New York City, NY, Jun. 2016, pp. 1050 1059.
@@ -2746,7 +2527,6 @@ Vision , Amsterdam, Netherlands, Oct. 2016, pp. 646 661.
 Canada, Jun. 2021, pp. 6224 6228.
 [192] L. Wan, M. Zeiler, S. Zhang, Y . Le Cun, and R. Fergus,  Regularization
 of Neural Networks using DropConnect,  in Proc. ICML , 2013, pp.
-1058 1066.
 [193] D. Krueger, T. Maharaj, J. Kram  ar, M. Pezeshki, N. Ballas, N. R. Ke,
 A. Goyal, Y . Bengio, A. Courville, and C. Pal,  Zoneout  Regularizing
 RNNs by Randomly Preserving Hidden Activations,  in Proc. ICLR ,
@@ -2754,10 +2534,8 @@ Toulon, France, Apr. 2017, arXiv 1606.01305.
 [194] C. Szegedy, V . Vanhoucke, S. Ioffe, J. Shlens, and Z. Wojna,  Rethinking
  the Inception Architecture for Computer Vision,  in IEEE Conf. on
 Computer Vision and Pattern Recognition , Las Vegas, NV, Jun. 2016,
-pp. 2818 2826.
 [195] S. Bengio, O. Vinyals, N. Jaitly, and N. Shazeer,  Scheduled Sampling
 for Sequence Prediction with Recurrent Neural Networks,  Proc. NIPS ,
-vol. 28, Dec. 2015.
 [196] T. Trinh, A. Dai, T. Luong, and Q. Le,  Learning Longer-Term Dependencies
  in RNNs with Auxiliary Losses,  in Proc. ICML , Stockholm,
 Sweden, Jul. 2018, pp. 4965 4974.
@@ -2770,19 +2548,18 @@ Language Modeling at Multiple Scales,  Mar. 2018, arXiv 1803.08240.
 Data Augmentation for Low-resource Automatic Speech Recognition, 
 inProc. IEEE ICASSP . Toronto, Ontario, Canada  IEEE, Jun. 2021,
 pp. 7008 7012.This article has been accepted for publication in IEEE/ACM Transactions on Audio, Speech and Language Processing. This is the author's version which has not been fully edited and
-content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/25
+content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283
+This work is licensed under a Creative Commons Attribution 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/25
 [200] S. Ioffe and C. Szegedy,  Batch Normalization  Accelerating Deep
 Network Training by Reducing Internal Covariate Shift,  in Proc.
 ICML , Lille, France, Jul. 2015, pp. 448 456.
 [201] N. Kanda, R. Takeda, and Y . Obuchi,  Elastic Spectral Distortion for
 Low Resource Speech Recognition with Deep Neural Networks,  in
-Proc. IEEE ASRU , Olomouc, Czech Republic, Dec. 2013, pp. 309 314.
+Proc. IEEE ASRU , Olomouc, Czech Republic, Dec. 2013, pp. 309 
 [202] T. Ko, V . Peddinti, D. Povey, and S. Khudanpur,  Audio Augmentation
 for Speech Recognition,  in Proc. Interspeech , Dresden, Germany, Sep.
-2015.
 [203] N. Jaitly and G. E. Hinton,  V ocal Tract Length Perturbation (VTLP)
 Improves Speech Recognition,  in Proc. ICML , vol. 117, Jun. 2013,
-p. 21.
 [204] G. Saon, Z. T  uske, K. Audhkhasi, and B. Kingsbury,  Sequence Noise
 Injected Training for End-to-End Speech Recognition,  in Proc. IEEE
 ICASSP , Brighton, England, May 2019, pp. 6261 6265.
@@ -2792,11 +2569,9 @@ ICASSP , Brighton, UK, May 2019, pp. 6879 6883.
 [206] C. Wang, Y . Wu, Y . Du, J. Li, S. Liu, L. Lu, S. Ren, G. Ye, S. Zhao, and
 M. Zhou,  Semantic Mask for Transformer Based End-to-End Speech
 Recognition,  in Proc. Interspeech , Shanghai, China, Oct. 2020, pp.
-971 975.
 [207] T. Hayashi, S. Watanabe, Y . Zhang, T. Toda, T. Hori, R. Astudillo,
 and K. Takeda,  Back-Translation-Style Data Augmentation for Endto-End
  ASR,  in Proc. IEEE SLT . Athens, Greece  IEEE, Dec. 2018,
-pp. 426 433.
 [208] N. Rossenbach, M. Zeineldeen, B. Hilmes, R. Schl  uter, and H. Ney,
  Comparing the Benefit of Synthetic Training Data for Various Automatic
  Speech Recognition Architectures,  in Proc. IEEE ASRU ,
@@ -2826,17 +2601,17 @@ IEEE/ACM Trans. Audio, Speech, and Language Processing , vol. 26,
 no. 11, pp. 1949 1961, 2018.
 [215] H. Soltau, B. Kingsbury, L. Mangu, D. Povey, G. Saon, and G. Zweig,
  The IBM 2004 Conversational Telephony System for Rich Transcription, 
- in Proc. IEEE ICASSP , Philadelphia, PA, Mar. 2005, pp. 205 208.
+ in Proc. IEEE ICASSP , Philadelphia, PA, Mar. 2005, pp. 205 
 [216] H. Hadian, D. Povey, H. Sameti, J. Trmal, and S. Khudanpur,
  Improving LF-MMI Using Unconstrained Supervisions for ASR, 
 inProc. IEEE SLT , Athens, Greece, Dec. 2018, pp. 43 47, DOI 
 10.1109/SLT.2018.8639684.
 [217] N. Kanda, Y . Fujita, and K. Nagamatsu,  Lattice-Free State-Level Minimum
  Bayes Risk Training of Acoustic Models,  in Proc. Interspeech ,
-B. Yegnanarayana, Ed. Hyderabad, India  ISCA, Sep. 2018, pp. 2923 2927, DOI  10.21437/Interspeech.2018-79.
+B. Yegnanarayana, Ed. Hyderabad, India  ISCA, Sep. 2018, pp. 2923 
+2927, DOI  10.21437/Interspeech.2018-79.
 [218] S. J. Young and P. C. Woodland,  The Use of State Tying in Continuous
 Speech Recognition,  in Proc. Eurospeech , Berlin, Germany, Dec.
-1993, pp. 2203 2206.
 [219] S. Wiesler, G. Heigold, M. Nußbaum-Thom, R. Schl  uter, and H. Ney,
  A Discriminative Splitting Criterion for Phonetic Decision Trees, 
 inProc. Interspeech , Makuhari, Japan, Sep. 2010, pp. 54 57, one of
@@ -2845,11 +2620,9 @@ shortlist for Best Student Paper Award.
 Hybrid HMM Acoustic Modeling,  Apr. 2021, arXiv 2104.02387.
 [221] M. Zeineldeen, A. Zeyer, W. Zhou, T. Ng, R. Schl  uter, and H. Ney,
  A Systematic Comparison of Grapheme-Based vs. Phoneme-BasedLabel Units for Encoder-Decoder-Attention Models,  Nov. 2020,
-arXiv 2005.09336.
 [222] C. L  uscher, E. Beck, K. Irie, M. Kitza, W. Michel, A. Zeyer,
 R. Schl  uter, and H. Ney,  RWTH ASR Systems for LibriSpeech 
 Hybrid vs Attention,  in Proc. Interspeech , Graz, Austria, Sep. 2019,
-pp. 231 235.
 [223] D. Park, Y . Zhang, Y . Jia, W. Han, C.-C. Chiu, B. Li, Y . Wu, and Q. Le,
  Improved Noisy Student Training for Automatic Speech Recognition, 
 inProc. Interspeech , Shanghai, China, Oct. 2020, pp. 2817 2821.
@@ -2877,11 +2650,9 @@ Interspeech , Graz, Austria, Sep. 2019, pp. 2130 2134.
 [229] A. Graves,  Connectionist Temporal Classification,  in Supervised
 Sequence Labelling with Recurrent Neural Networks . Heidelberg,
 Germany  Springer, 2012, ch. Connectionist Temporal Classification,
-pp. 61 93.
 [230] Y . Higuchi, S. Watanabe, N. Chen, T. Ogawa, and T. Kobayashi,
  Mask CTC  Non-Autoregressive End-to-End ASR with CTC and
 Mask Predict,  in Proc. Interspeech , Shanghai, China, Oct. 2020, pp.
-3655 3659.
 [231] W. Chan, C. Saharia, G. Hinton, M. Norouzi, and N. Jaitly,  Imputer 
 Sequence Modelling via Imputation and Dynamic Programming,  in
 Proc. ICML . PMLR, Jul. 2020, pp. 1403 1413.
@@ -2893,7 +2664,7 @@ Interspeech , Shanghai, China, Oct. 2020, pp. 3660 3664.
 May 2020, pp. 6079 6083.
 [234] J. Nozaki and T. Komatsu,  Relaxing the Conditional Independence
 Assumption of CTC-Based ASR by Conditioning on Intermediate
-Predictions,  in Proc. Interspeech , Brno, Czechia, Sep. 2021, pp. 3735 3739.
+Predictions,  in Proc. Interspeech , Brno, Czechia, Sep. 2021, pp. 3735 
 [235] Y . Higuchi, N. Chen, Y . Fujita, H. Inaguma, T. Komatsu, J. Lee,
 J. Nozaki, T. Wang, and S. Watanabe,  A Comparative Study on NonAutoregressive
  Modelings for Speech-to-Text Generation,  in Proc.
@@ -2904,10 +2675,8 @@ inProc. Interspeech , Shanghai, China, Oct. 2020, pp. 1768 1772.
 [237] P. Koehn and R. Knowles,  Six Challenges for Neural Machine Translation, 
  in First Workshop on Neural Machine Translation . Vancouver,
 BC, Canada  Association for Computational Linguistics, Aug. 2017,
-pp. 28 39.
 [238] Z. Tu, Z. Lu, Y . Liu, X. Liu, and H. Li,  Modeling Coverage for Neural
 Machine Translation,  in Proc. ACL , Berlin, Germany, May 2016, pp.
-76 85.
 [239] T. Hori, J. Cho, and S. Watanabe,  End-to-End Speech Recognition
  with Word-Based RNN Language Models,  in Proc. IEEE SLT .
 Athens, Greece  IEEE, Dec. 2018, pp. 389 396.
@@ -2919,16 +2688,16 @@ Claypool Publishers, 2013.
 [242] R. Haeb-Umbach and H. Ney,  Improvements in Beam Search for
 10000-Word Continuous-Speech Recognition,  IEEE Transactions on
 Speech and Audio Processing , vol. 2, no. 2, pp. 353 356, 1994.This article has been accepted for publication in IEEE/ACM Transactions on Audio, Speech and Language Processing. This is the author's version which has not been fully edited and
-content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/26
+content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283
+This work is licensed under a Creative Commons Attribution 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/26
 [243] H. Ney and S. Ortmanns,  Progress in Dynamic Programming Search
 for LVCSR,  Proc. of the IEEE , vol. 88, no. 8, pp. 1224 1240, Aug.
 2000, http //dx.doi.org/10.1109/5.880081.
 [244] T. Hori, Y . Kubo, and A. Nakamura,  Real-Time One-Pass Decoding
 with Recurrent Neural Network Language Model for Speech Recognition, 
- in Proc. IEEE ICASSP , Florence, Italy, May 2014, pp. 6364 6368.
+ in Proc. IEEE ICASSP , Florence, Italy, May 2014, pp. 6364 
 [245] E. Beck, W. Zhou, R. Schl  uter, and H. Ney,  LSTM Language Models
 for LVCSR in First-Pass Decoding and Lattice-Rescoring,  Jul. 2019,
-arXiv 1907.01030.
 [246] G. Saon, Z. T  uske, and K. Audhkhasi,  Alignment-Length Synchronous
  Decoding for RNN Transducer,  in Proc. IEEE ICASSP ,
 Barcelona, Spain, May 2020, pp. 7804 7808.
@@ -2946,7 +2715,6 @@ Spain  IEEE, May 2020, pp. 6074 6078.
 ASR with Improved Beam Search,  Nov. 2019, arXiv 1911.01629.
 [251] L. Lu, C. Liu, J. Li, and Y . Gong,  Exploring Transformers for LargeScale
  Speech Recognition,  in Proc. Interspeech , Shanghai, China, Oct.
-2020, pp. 5041 5045.
 [252] T. Wang, Y . Fujita, X. Chang, and S. Watanabe,  Streaming End-toEnd
  ASR Based on Blockwise Non-Autoregressive Models,  in Proc.
 Interspeech , Brno, Czechia, Sep. 2021, pp. 3755 3759.
@@ -2963,7 +2731,6 @@ Orleans, LA  IEEE, Mar. 2017, pp. 5720 5724.
 [256] T. Hori, S. Watanabe, Y . Zhang, and W. Chan,  Advances in Joint CTCAttention
  Based End-to-End Speech Recognition with a Deep CNN
 Encoder and RNN-LM,  in Proc. Interspeech , Stockhol, Sweden, Aug.
-2017, pp. 949 953.
 [257] A. Kannan, Y . Wu, P. Nguyen, T. N. Sainath, Z. Chen, and
 R. Prabhavalkar,  An Analysis of Incorporating an External Language
  Model into a Sequence-to-Sequence Model,  in Proc. IEEE
@@ -2972,14 +2739,12 @@ ICASSP , Calgary, Alberta, Canada, Apr. 2018, pp. 5824 5828, DOI
 [258] G. Saon, Z. T  uske, D. Bolanos, and B. Kingsbury,  Advancing
 RNN Transducer Technology for Speech Recognition,  in Proc. IEEE
 ICASSP . Toronto, Ontario, Canada  IEEE, Jun. 2021, pp. 5654 5658,
-arXiv 2103.09935.
 [259] H. Seki, T. Hori, S. Watanabe, N. Moritz, and J. Le Roux,  Vectorized
 Beam Search for CTC-Attention-Based Speech Recognition,  in Proc.
 Interspeech , Brighton, UK, May 2019, pp. 3825 3829.
 [260] T. Hori, S. Watanabe, and J. R. Hershey,  Multi-Level Language
 Modeling and Decoding for Open V ocabulary End-to-End Speech
 Recognition,  in Proc. IEEE ASRU . Okinawa, Japan  IEEE, Dec.
-2017, pp. 287 293.
 [261] Y . Wang, T. Chen, H. Xu, S. Ding, H. Lv, Y . Shao, N. Peng, L. Xie,
 S. Watanabe, and S. Khudanpur,  Espresso  A Fast End-to-End Neural
 Speech Recognition Toolkit,  in Proc. IEEE ASRU , Sentosa, Singapore,
@@ -3011,14 +2776,12 @@ S. Ghemawat, G. Irving, M. Isard, M. Kudlur, J. Levenberg, R. Monga,
 S. Moore, D. G. Murray, B. Steiner, P. Tucker, V . Vasudevan, P. Warden,
 M. Wicke, Y . Yu, and X. Zheng,  TensorFlow  A system for LargeScale
  Machine Learning,  in Proc. OSDI , Savannah, GA, Nov. 2016,
-pp. 265 283.
 [270] M. Ott, S. Edunov, A. Baevski, A. Fan, S. Gross, N. Ng, D. Grangier,
 and M. Auli,  FAIRSEQ  A Fast, Extensible Toolkit for Sequence
 Modeling,  in Proc. NAACL , Minneapolis, MN, Jun. 2019, pp. 48 53.
 [271] J. Shen, P. Nguyen, Y . Wu, Z. Chen, M. X. Chen, Y . Jia, A. Kannan,
 T. Sainath, Y . Cao, C.-C. Chiu et al. ,  Lingvo  a Modular and
 Scalable Framework for Sequence-to-Sequence Modeling,  Feb. 2019,
-arXiv 1902.08295.
 [272] P. Doetsch, A. Zeyer, P. V oigtlaender, I. Kulikov, R. Schl  uter, and
 H. Ney,  RETURNN  The RWTH Extensible Training Framework for
 Universal Recurrent Neural Networks,  in Proc. IEEE ICASSP . New
@@ -3032,15 +2795,12 @@ May 2019, pp. 6246 6250.
 [275] P. Bahar, N. Makarov, A. Zeyer, R. Sch  uter, and H. Ney,  Exploring
 a Zero-Order Direct HMM Based on Latent Attention for Automatic
 Speech Recognition,  in Proc. IEEE ICASSP , Barcelona, Spain, May
-2020, pp. 7854 7858.
 [276] Z. Huang, G. Zweig, and B. Dumoulin,  Cache Based Recurrent
 Neural Network Language Model Inference for First Pass Speech
 Recognition,  in Proc. IEEE ICASSP , Florence, Italy, May 2014, pp.
-6354 6358.
 [277] J. Jorge, A. Gim  enez, J. Iranzo-S  anchez, J. Civera, A. Sanchis, and
 A. Juan,  Real-Time One-Pass Decoder for Speech Recognition Using
 LSTM Language Models,  in Proc. Interspeech , Graz, Austria, Sep.
-2019, pp. 3820 3824.
 [278] W. Zhou, R. Schl  uter, and H. Ney,  Full-Sum Decoding for Hybrid
 HMM Based Speech Recognition Using LSTM Language Model,  in
 Proc. IEEE ICASSP , Barcelona, Spain, May 2020, pp. 7834 7838.
@@ -3048,7 +2808,7 @@ Proc. IEEE ICASSP , Barcelona, Spain, May 2020, pp. 7834 7838.
 and a Case for Global Conditioning,  in Proc. EMNLP , Austin, TX,
 Nov. 2016, pp. 1516 1525.
 [280] K. Murray and D. Chiang,  Correcting Length Bias in Neural Machine
-Translation,  in Proc. WMT , Brussels, Belgium, Oct. 2018, pp. 212 223.
+Translation,  in Proc. WMT , Brussels, Belgium, Oct. 2018, pp. 212 
 [281] F. Stahlberg and B. Byrne,  On NMT Search Errors and Model Errors 
 Cat Got Your Tongue   in Proc. EMNLP . Hong Kong, China 
 Association for Computational Linguistics, Nov. 2019, pp. 3354 3360.
@@ -3058,17 +2818,17 @@ Toward a Solution to the Decoding Problem,  IEEE Signal Processing
 Magazine , vol. 16, no. 5, pp. 84 107, 1999.
 [283] L. Nguyen and R. Schwartz,  Single-Tree Method for GrammarDirected
  Search,  in Proc. IEEE ICASSP , vol. 2, Phoenix, AZ, Mar.
-1999, pp. 613 616.
 [284] L. Sarı, N. Moritz, T. Hori, and J. Le Roux,  Unsupervised Speaker
 Adaptation using Attention-based Speaker Memory for End-to-End
-ASR,  in Proc. IEEE ICASSP , Barcelona, Spain, May 2020, pp. 2 6.
+ASR,  in Proc. IEEE ICASSP , Barcelona, Spain, May 2020, pp. 2 
 [285] F. Weninger, J. Andr  es-Ferrer, X. Li, and P. Zhan,  Listen, Attend,
 Spell and Adapt  Speaker Adapted Sequence-to-Sequence ASR,  in
 Proc. Interspeech . Graz, Austria  ISCA, Sep. 2019, pp. 3805 3809.
 [286] Z. Meng, Y . Gaur, J. Li, and Y . Gong,  Speaker Adaptation for
 Attention-Based End-to-End Speech Recognition,  in Proc. Interspeech
  . Graz, Austria  ISCA, Sep. 2019, pp. 241 245.This article has been accepted for publication in IEEE/ACM Transactions on Audio, Speech and Language Processing. This is the author's version which has not been fully edited and
-content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/27
+content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283
+This work is licensed under a Creative Commons Attribution 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/27
 [287] N. Tomashenko and Y . Est  eve,  Evaluation of Feature-Space Speaker
 Adaptation for End-to-End Acoustic Models,  in Proc. LREC .
 Miyazaki, Japan  ELRA, May 2018, pp. 3163 3170.
@@ -3080,17 +2840,14 @@ Jun. 1996, pp. 310 318.
  , Makuhari, Japan, Sep. 2010, pp. 1045 1048.
 [290] M. Sundermeyer, R. Schl  uter, and H. Ney,  LSTM Neural Networks for
 Language Modeling,  in Proc. Interspeech , Portland, OR, Sep. 2012,
-pp. 194 197.
 [291] N.-Q. Pham, G. Kruszewski, and G. Boleda,  Convolutional Neural
 Network Language Models,  in Proc. EMNLP , Austin, TX, Nov. 2016,
-pp. 1153 1162.
 [292] Y . N. Dauphin, A. Fan, M. Auli, and D. Grangier,  Language Modeling
 with Gated Convolutional Networks,  in Proceedings of the 34th
 International Conference on Machine Learning-Volume 70 . JMLR.
 org, 2017, pp. 933 941.
 [293] N. Zeghidour, Q. Xu, V . Liptchinsky, N. Usunier, G. Synnaeve, and
 R. Collobert,  Fully Convolutional Speech Recognition,  Feb. 2018,
-arXiv 1812.06864.
 [294] T. Likhomanenko, G. Synnaeve, and R. Collobert,  Who needs words 
 lexicon-free speech recognition,  in Proc. Interspeech , Graz, Austria,
 Sep. 2019, pp. 3915 3919, arXiv 1904.04479.
@@ -3099,7 +2856,6 @@ Sep. 2019, pp. 3915 3919, arXiv 1904.04479.
 vol. 33, Honolulu, Hawaii, Feb. 2019, pp. 3159 3166.
 [296] K. Irie, A. Zeyer, R. Schl  uter, and H. Ney,  Language Modeling with
 Deep Transformers,  in Proc. Interspeech , Graz, Austria, Sep. 2019,
-pp. 3905 3909.
 [297] Z. Dai, Z. Yang, Y . Yang, J. G. Carbonell, Q. Le, and R. Salakhutdinov,
  Transformer-XL  Attentive Language Models Beyond a Fixed-Length
 Context,  in Proc. ACL , Florence, Italy, Jul. 2019, pp. 2978 2988.
@@ -3108,12 +2864,12 @@ to Do It,  Proc. of the IEEE , vol. 78, no. 10, pp. 1550 1560, 1990,
 DOI  10.1109/5.58337.
 [299] J. W. Rae, A. Potapenko, S. M. Jayakumar, and T. P. Lillicrap,
  Compressive Transformers for Long-Range Sequence Modelling, 
-Advances in Neural Information Processing Systems , vol. 33, pp. 6154 6158, 2020.
+Advances in Neural Information Processing Systems , vol. 33, pp. 6154 
 [300] C. Gulcehre, O. Firat, K. Xu, K. Cho, L. Barrault, H.-C. Lin,
 F. Bougares, H. Schwenk, and Y . Bengio,  On Using Monolingual
 Corpora in Neural Machine Translation,  Jun. 2015, arXiv 1503.03535.
 [301] A. Sriram, H. Jun, S. Satheesh, and A. Coates,  Cold Fusion  Training
-Seq Seq Models Together with Language Models,  in Proc. Interspeech
+Seq2Seq Models Together with Language Models,  in Proc. Interspeech
  , Hyderabad, India, Sep. 2018, pp. 387 391.
 [302] C. Shan, C. Weng, G. Wang, D. Su, M. Luo, D. Yu, and L. Xie,
  Component Fusion  Learning Replaceable Language Model Component
@@ -3121,7 +2877,7 @@ Seq Seq Models Together with Language Models,  in Proc. Interspeech
 ICASSP . Brighton, UK  IEEE, May 2019, pp. 5361 5635.
 [303] E. McDermott, H. Sak, and E. Variani,  A Density Ratio Approach to
 Language Model Fusion in End-To-End Automatic Speech Recognition, 
- in Proc. IEEE ASRU , Sentosa, Singapore, Dec. 2019, pp. 434 441.
+ in Proc. IEEE ASRU , Sentosa, Singapore, Dec. 2019, pp. 434 
 [304] Z. Meng, S. Parthasarathy, E. Sun, Y . Gaur, N. Kanda, L. Lu, X. Chen,
 R. Zhao, J. Li, and Y . Gong,  Internal Language Model Estimation
 for Domain-Adaptive End-to-End Speech Recognition,  in Proc. IEEE
@@ -3144,20 +2900,16 @@ Speech Recognition for Conversational-Context Fusion,  in Proc. ACL ,
 Florence, Italy, Jul. 2019, pp. 1131 1141.[310] A. Zeyer, A. Merboldt, W. Michel, R. Schl  uter, and H. Ney,  Librispeech
  Transducer Model with Internal Language Model Prior Correction, 
  in Proc. Interspeech , Brno, Czech Republic, Apr. 2021, pp.
-2052 2056.
 [311] L. R. Bahl, F. Jelinek, and R. L. Mercer,  A Maximum Likelihood
 Approach to Continuous Speech Recognition,  IEEE Transactions on
 Pattern Analysis and Machine Intelligence , vol. 5, no. 2, pp. 179 190,
-Mar. 1983.
 [312] J. Makhoul and R. Schwartz,  State of the Art in Continuous Speech
 Recognition,  Proc. NAS , vol. 92, no. 22, pp. 9956 9963, Oct. 1995.
 [313] D. Klakow and J. Peters,  Testing the Correlation of Word Error Rate
 and Perplexity,  Speech Communication , vol. 38, no. 1, pp. 19 28,
-2002.
 [314] M. Sundermeyer, H. Ney, and R. Schl  uter,  From Feedforward to Recurrent
  LSTM Neural Networks for Language Modeling,  IEEE/ACM
 Trans. Audio, Speech, and Language Processing , vol. 23, no. 3, pp.
-517 529, Mar. 2015.
 [315] T. Hori, C. Hori, S. Watanabe, and J. R. Hershey,  Minimum Word
 Error Training of Long Short-Term Memory Recurrent Neural Network
 Language Models for Speech Recognition,  in Proc. IEEE ICASSP ,
@@ -3175,7 +2927,6 @@ IEEE ASRU , Sentosa, Singapore, Dec. 2019, pp. 8 15.
 and A. Mohamed,  HuBERT  Self-Supervised Speech Representation
 Learning by Masked Prediction of Hidden Units,  IEEE/ACM Trans.
 Audio, Speech, and Language Processing , vol. 19, pp. 3451 3460,
-2021.
 [320] G. Synnaeve, Q. Xu, J. Kahn, E. Grave, T. Likhomanenko, V . Pratap,
 A. Sriram, V . Liptchinsky, and R. Collobert,  End-to-End ASR  from
 Supervised to Semi-Supervised Learning with Modern Architectures, 
@@ -3192,14 +2943,11 @@ ICASSP , Barcelona, Spain, May 2020, pp. 7669 7673.
 H. Huang, A. Tjandra, X. Zhang, F. Zhang, C. Fuegen, G. Zweig,
 and M. L. Seltzer,  Transformer-Based Acoustic Modeling for Hybrid
 Speech Recognition,  in Proc. IEEE ICASSP , Barcelona, Spain, May
-2020, pp. 6874 6878.
 [324] K. Kim, F. Wu, Y . Peng, J. Pan, P. Sridhar, K. J. Han, and
 S. Watanabe,  E-branchformer  Branchformer with enhanced merging
 for speech recognition,  in Proc. IEEE SLT , Doha, Qatar, Jan. 2023,
-arXiv 2210.00077.
 [325] M. Kitza, P. Golik, R. Schl  uter, and H. Ney,  Cumulative Adaptation for
 BLSTM Acoustic Models,  in Interspeech , Graz, Austria, Sep. 2019,
-pp. 754 758.
 [326] C.-C. Chiu, T. N. Sainath, Y . Wu, R. Prabhavalkar, P. Nguyen,
 Z. Chen, A. Kannan, R. J. Weiss, K. Rao, E. Gonina, N. Jaitly, B. Li,
 J. Chorowski, and M. Bacchiani,  State-of-the-Art Speech Recognition
@@ -3212,11 +2960,13 @@ Proc. IEEE ASRU , Sentosa, Singapore, Dec. 2019, pp. 956 963.
 [328] J. Li, R. Zhao, Z. Meng, Y . Liu, W. Wei, S. Parthasarathy, V . Mazalov,
 Z. Wang, L. He, S. Zhao et al. ,  Developing RNN-T Models Surpassing
 High-Performance Hybrid Models with Customization Capability,  in
-Proc. Interspeech , Shanghai, China (virtual), Oct. 2020, pp. 3590 3594, arXiv 2007.15188.
+Proc. Interspeech , Shanghai, China (virtual), Oct. 2020, pp. 3590 
+3594, arXiv 2007.15188.
 [329] R. Hsiao, D. Can, T. Ng, R. Travadi, and A. Ghoshal,  Online
 Automatic Speech Recognition with Listen, Attend and Spell Model, 
 IEEE Signal Processing Letters , vol. 27, pp. 1889 1893, 2020.This article has been accepted for publication in IEEE/ACM Transactions on Audio, Speech and Language Processing. This is the author's version which has not been fully edited and
-content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/28
+content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283
+This work is licensed under a Creative Commons Attribution 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/28
 [330] Y . Shi, Y . Wang, C. Wu, C.-F. Yeh, J. Chan, F. Zhang, D. Le, and
 M. Seltzer,  Emformer  Efficient Memory Transformer based Acoustic
 Model for Low Latency Streaming Speech Recognition,  in Proc. IEEE
@@ -3251,7 +3001,6 @@ Pre-Training,  Oct. 2021, arXiv 2110.10329.
 [336] A. Bapna, C. Cherry, Y . Zhang, Y . Jia, M. Johnson, Y . Cheng,
 S. Khanuja, J. Riesa, and A. Conneau,  mSLAM  Massively Multilingual
  Joint Pre-Training for Speech and Text,  Feb. 2022,
-arXiv 2202.01374.
 [337] Y . Tang, H. Gong, N. Dong, C. Wag, W. Hsu, J. Gu, A. Baevski, X. Li,
 A. Mohamed, M. Auli, and J. Pino,  Unified Speech-Text Pre-training
 for Speech Translation and Recognition,  in Proc. ACL , Dublin, Ireland,
@@ -3263,7 +3012,6 @@ Jun. 2021, pp. 1897 1907, arXiv 2010.02295.
 Q. Li, Y . Zhang, Z. Wei, Y . Qian, J. Li, and F. Wei,  SpeechT5 
 Unified-Modal Encoder-Decoder Pre-Training for Spoken Language
 Processing,  in Proc. ACL , Dublin, Ireland, May 2022, pp. 5723 5738,
-arXiv 2110.07205.
 [340] S. Thomas, H. J. Kuo, B. Kingsbury, and G. Saon,  Towards Reducing
 the Need for Speech Training Data to Build Spoken Language Understanding
  Systems,  in Proc. IEEE ICASSP , Singapore, May 2022, pp.
@@ -3271,18 +3019,15 @@ the Need for Speech Training Data to Build Spoken Language Understanding
 [341] T. N. Sainath, R. Prabhavalkar, A. Bapna, Y . Zhang, Z. Huo, Z. Chen,
 B. Li, W. Wang, and T. Strohman,  JOIST  A joint speech and text
 streaming model for ASR,  in Proc. IEEE SLT , Doha, Qatar, Jan. 2023,
-arXiv 2210.07353.
 [342] T. Hori, R. Astudillo, T. Hayashi, Y . Zhang, S. Watanabe, and
 J. Le Roux,  Cycle-Consistency Training for End-to-End Speech
 Recognition,  in Proc. IEEE ICASSP , Brighton, UK, May 2019, pp.
-6271 6275.
 [343] T. Ochiai, S. Watanabe, T. Hori, and J. R. Hershey,  Multichannel
 End-to-End Speech Recognition,  in Proc. ICML . Sydney, Australia 
 PMLR, Aug. 2017, pp. 2632 2641.
 [344] J. Li,  Recent Advances in End-to-End Automatic Speech Recognition, 
  APSIPA Trans. on Signal and Information Processing , vol. 11,
 no. 1, Nov. 2021, DOI  10.1561/116.00000050, arXiv 2111.01690.PLACE
-PHOTO
 HERERohit Prabhavalkar Rohit Prabhavalkar received
 his PhD in Computer Science and Engineering from
 The Ohio State University, USA, in 2013. Following
@@ -3294,28 +3039,24 @@ which can run efficiently on mobile devices, and on
 developing improved end-to-end automatic speech
 recognition systems. Rohit has co-authored over 50
 refereed papers, which have received two best paper
-awards (ASRU 2017 2018). He currently serves as a member of the
+awards (ASRU 2017  ICASSP 2018). He currently serves as a member of the
 IEEE Speech and Language Processing Technical Committee (2018 2024),
 and as an Associate Editor of the IEEE/ACM Transactions on Audio, Speech,
 and Language Processing.
-PLACE
-PHOTO
 HERETakaaki Hori received his PhD degree in system
 and information engineering from Yamagata University,
- Yonezawa, Japan, in 1999. From 1999 2015, he had been engaged in researches on speech
+ Yonezawa, Japan, in 1999. From 1999 to
+2015, he had been engaged in researches on speech
 recognition and spoken language processing at Cyber
  Space Laboratories and Communication Science
 Laboratories in Nippon Telegraph and Telephone
-(NTT) Corporation, Japan. From 2015 2021,
+(NTT) Corporation, Japan. From 2015 to 2021,
 he was a Senior Principal Research Scientist at
 Mitsubishi Electric Research Laboratories (MERL),
 USA. He is currently a Machine Learning Researcher
  at Apple. His research interests include automatic speech recognition,
 spoken language understanding, and language modeling. He served as a
 member of the IEEE Speech and Language Processing Technical Committee
-(2020 2022).
-PLACE
-PHOTO
 HERETara Sainath received her PhD in Electrical Engineering
  and Computer Science from MIT in 2009.
 The main focus of her PhD work was in acoustic
@@ -3323,16 +3064,16 @@ modeling for noise robust speech recognition. After
 her PhD, she spent 5 years at the Speech and
 Language Algorithms group at IBM T.J. Watson Research
  Center, before joining Google Research. She
-has served as a Program Chair for ICLR in 2017 2018. Also, she has co-organized numerous special
+has served as a Program Chair for ICLR in 2017 and
+2018. Also, she has co-organized numerous special
 sessions and workshops, including Interspeech 2010,
-ICML 2013, Interspeech 2016 2017. In
+ICML 2013, Interspeech 2016 and ICML 2017. In
 addition, she is a member of the IEEE Speech and Language Processing
 Technical Committee (SLTC) as well as the Associate Editor for IEEE/ACM
 Transactions on Audio, Speech, and Language Processing.
-PLACE
-PHOTO
 HERERalf Schl  uter Ralf Schl  uter received his Dr.rer.nat.
-degree in Computer Science in 2000 2019, both at RWTH Aachen
+degree in Computer Science in 2000 and habilitated
+in Computer Science in 2019, both at RWTH Aachen
 University. In May 1996, Ralf Schl  uter joined the
 Computer Science Department at RWTH Aachen
 University, where he currently is Lecturer and
@@ -3344,22 +3085,23 @@ Aachen as Senior Researcher. His research interests
 cover sequence classification, specifically all aspects of automatic speech
 recognition, decision theory, stochastic modeling, and signal analysis. Ralf
 served as Subject Editor for Speech Communication (2013-2019).This article has been accepted for publication in IEEE/ACM Transactions on Audio, Speech and Language Processing. This is the author's version which has not been fully edited and
-content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/29
-PLACE
-PHOTO
+content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283
+This work is licensed under a Creative Commons Attribution 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/29
 HEREShinji Watanabe is an Associate Professor at
 Carnegie Mellon University, Pittsburgh, PA. He received
  his B.S., M.S., and Ph.D. (Dr. Eng.) degrees
 from Waseda University, Tokyo, Japan. He was a
 research scientist at NTT Communication Science
-Laboratories, Kyoto, Japan, from 2001 2011, a
+Laboratories, Kyoto, Japan, from 2001 to 2011, a
 visiting scholar at Georgia institute of technology,
 Atlanta, GA, in 2009, and a senior principal research
 scientist at Mitsubishi Electric Research Laboratories
- (MERL), Cambridge, MA USA from 2012 2017. Before Carnegie Mellon University, he was
+ (MERL), Cambridge, MA USA from 2012 to
+2017. Before Carnegie Mellon University, he was
 an associate research professor at Johns Hopkins University, Baltimore,
-MD, USA, from 2017 2020. His research interests include automatic
+MD, USA, from 2017 to 2020. His research interests include automatic
 speech recognition, speech enhancement, spoken language understanding, and
 machine learning for speech and language processing. He is an IEEE and
 ISCA Fellow.This article has been accepted for publication in IEEE/ACM Transactions on Audio, Speech and Language Processing. This is the author's version which has not been fully edited and
-content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/
+content may change prior to final publication. Citation information  DOI 10.1109/TASLP.2023.3328283
+This work is licensed under a Creative Commons Attribution 4.0 License. For more information, see https //creativecommons.org/licenses/by/4.0/

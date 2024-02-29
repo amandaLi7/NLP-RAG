@@ -4,7 +4,6 @@ Minnan Luo Yejin Choi  Yulia Tsvetkov
 University of Notre Dame , University of Washington 
 Xi an Jiaotong University , Allen Institute for AI 
 ztan3@nd.edu  shangbin@cs.washington.edu
-Abstract
 Twitter bot detection is vital in combating misinformation
  and safeguarding the integrity of
 social media discourse. While malicious bots
@@ -42,18 +41,11 @@ should be taken into account for content moderation
  and social media policy making. The
 implementation of BotPercent is available at
 https //github.com/TamSiuhin/BotPercent.
-1 Introduction
 Twitter accounts controlled by automated programs,
  also known as Twitter bots, have become
 a widely recognized, concerning, and studied phenomenon
  (Ferrara et al., 2016a  Aiello et al., 2012).
 *These authors contributed equally to this work.
-Community Analysis
-Community Analysis
- Individual Analysis
-Individual Analysis
-Community
-Community
 Figure 1  Beyond individual bot detection, our work
 proposes a socially contextualized community-level bot
 detection and analysis of bot populations within different
@@ -83,7 +75,7 @@ essential for accurate detection, with major implications
 users. From the platform side, it can allow decisionmakers
  to efficiently distribute content moderation
 resources among communities, as well as inform
-community members about the risks of inauthen-arXiv 2302.00381 2  [cs.SI]  19 2023tic content. From a user perspective, it can enhance
+community members about the risks of inauthen-arXiv 2302.00381v2  [cs.SI]  19 Oct 2023tic content. From a user perspective, it can enhance
  awareness of potential opinion manipulation
 by clearly indicating the anticipated level of inauthentic
  content within a social network. Finally,
@@ -144,7 +136,7 @@ Twitter communities of varying sizes and contexts,
 including political groups, news-sharing communities,
  celebrity-centric cliques, and more. We find
 that (1) around 8-14% of interactions with Elon
-Musk s Twitter poll to reinstate Donald Trump
+Musk s Twitter poll1to reinstate Donald Trump
 were carried out by bots  (2) online communities
 that focus on politics and cryptocurrency are witnessing
  an elevated level of bot interference  (3)
@@ -167,7 +159,6 @@ community-level bot detection which provides better
  aggregated estimates of bot populations within
 social networks, leading to new findings while
 avoiding the privacy risks of tracking individual
-accounts.
 2BotPercent Methodology
 We propose BotPercent , a novel system for
 community-level Twitter bot detection. As illustrated
@@ -176,120 +167,50 @@ models on a mixture of datasets, then leverages confidence
  calibration to perform unbiased bot percentage
  estimation, and finally combines predictions
 with learnable weights.
-2.1 1https //twitter.com/elonmusk/status/
-1593767953706921985 8.46%
-Bot8.46%
-Human91.54%
-Human91.54%
-Bot8.46%
-Human91.54%
-Bot8.46%
-Human91.54%
-Twitter API
-Twitter API
-Data
-Collection
-Twitter
-Community
-Twitter
-Community
-Twitter
-Community
-Bot8.46%
-Human91.54%
-Twitter API
-Data
-Collection
-Twitter
-Community
-Bot8.46%
-Human91.54%
-Twitter API
-Data
-Collection
-Twitter
-Community
-Twitter
-Data Collection
-Twitter
-Data Collection
-Twitter
-Data Collection
-Model
-Selection
-Model
-Selection
-Model
-Selection
+Motivated by the fact that different types of bot
+detection models have their strengths and weaknesses
+ in the face of customized bots in different
+1https //twitter.com/elonmusk/status/
+1593767953706921985Bot8.46%
 Feature -Based Models
-Bot humanBot
-Bot humanBot
 Bot humanBotFeature -Based Models
-Bot humanBot
-Text-Based Models
-Language
- Model
-Language
- Model
 Jim him Acosta with agree
  Jim him Acosta with agree
-Language
- Model
 Jim him Acosta with agree
-Text-Based Models
-Language
- Model
 Jim him Acosta with agree
-Graph -Based Models
 Graph Neural NetworkGraph Neural NetworkGraph Neural Network
 Graph Neural NetworkGraph Neural NetworkGraph Neural Network
-Graph Neural Network
-Graph Neural Network
-Graph -Based Models
-Graph Neural Network
-Graph Neural Network
 Feature -Based Models
-Bot humanBot
-Text-Based Models
-Language
- Model
 Jim him Acosta with agree
-Graph -Based Models
-Graph Neural Network
-Graph Neural Network
-Ʃ Ʃ Calibration
-Calibration
 System Training Inference
 CombinationFeature Data
-1,356 452 Followers@user123 2022 2022 1,356 452 Followers@user123 2022 219 82.9 2009 2009@user1 219 82.9 2009@user1 1,356 452 Followers@user123 2022 219 82.9 2009@user Feature Data
-1,356 452 Followers@user123 2022 219 82.9 2009@user1
-Text Data
+452 Followers@user123
+452 Followers@user123
+Joined June 2009@user1
+Joined June 2009@user1
+452 Followers@user123
+Joined June 2009@user1Feature Data
+452 Followers@user123
+Joined June 2009@user1
 Jim Acosta said that Fox News is a
  b***s *** factory   Raise your  
 if you agree with him.user A
    Dec 15 @usera user A
-   Dec 15 @usera
-97 97 29 29 34 34 97 29 34Jim Acosta said that Fox News is a
+ 34Jim Acosta said that Fox News is a
  b***s *** factory   Raise your  
 if you agree with him.user A
-   Dec 15 @usera
-97 29 34
 Jim Acosta said that Fox News is a
  b***s *** factory   Raise your  
 if you agree with him.user A
-   Dec 15 @usera
-97 29 34Text Data
 Jim Acosta said that Fox News is a
  b***s *** factory   Raise your  
 if you agree with him.user A
-   Dec 15 @usera
-97 29 34 1,356 452 Followers@user123 2022 219 82.9 2009@user1
-Text Data
+452 Followers@user123
+Joined June 2009@user1
 Jim Acosta said that Fox News is a
  b***s *** factory   Raise your  
 if you agree with him.user A
-   Dec 15 @usera
-97 29 34 2  Overview of BotPercent .BotPercent first trains multiple models on merged datasets and then uses
+Figure 2  Overview of BotPercent .BotPercent first trains multiple models on merged datasets and then uses
 confidence calibration to conduct accurate bot percentage estimation. Finally, it combines the predictions with
 learnable weights to obtain the final result.
 communities (Sayyadiharikandeh et al., 2020), we
@@ -309,7 +230,7 @@ construct a comprehensive feature-based model as
 part of BotPercent , we summarize features introduced
  in existing feature-based models and obtain
 a more comprehensive feature set consisting of
-12 14 derived user features. Following
+12 direct and 14 derived user features. Following
 previous works (Yang et al., 2020  Knauth, 2019),
 BotPercent leverages random forest (Ho, 1995)
 and AdaBoost (Freund and Schapire, 1997) as two
@@ -324,8 +245,6 @@ malicious content (Wei and Nguyen, 2019). Similarly,
  models to encode user descriptions and 20
 latest tweets while using a linear layer Linear forclassification 
 pt  Linear([LM( {ti}Lt
-i 1)  LM({di}Ld
-i 1)]),
 where pt R1 2denotes the prediction logits, [    ]
 denotes vector concatenation, tianddirepresent
 tweet and user description tokens respectively, and
@@ -348,20 +267,13 @@ these models take into account the intrinsic heterogeneity
  bot detection performance (Feng et al., 2022b).
 The message-passing paradigm of these models
 could be summarized as 
-h(l)
-i  Agg .(l)
  j Ni, e E(i,j)(Extr .(l)(h(l 1)
-i,h(l 1)
-j,e)),
-where h(l)
 idenotes the i-th user s representation
 in the l-th GNN layer, Nirepresents the neighbor
 nodes of user i, andE(i, j)denotes all the edgesfrom user jtoi.Extr.(l)represents the neighbor
  information extractor in i-th layer, which extracts
  user information from source user s representation
- h(l 1)
 j, with the target user representation
-h(l 1)
 i and the edge ebetween two users as propagated
  message. Agg.(l)gathers the neighborhood
 information of source users via aggregation operators.
@@ -383,10 +295,8 @@ to capture the diverse interaction patterns between
 multi-faceted bots and users.
 After modeling the Twitter network with Llayers
  of GNNs, we obtain the representation h(L)
-ifor
 useri.BotPercent then employs a linear layer
 for two-way classification as pg  Linear( h(L)
-i).
 Graph-based approaches are optimized with cross
 entropy loss function.
 A unique challenge of employing graph-based
@@ -400,21 +310,16 @@ et al. (2021), we use knowledge distillation (Hinton
 et al., 2015) to transfer the knowledge of graphbased
  detectors to efficient linear layers. The distillation
  training loss could be written as 
-Ld λX
 v VCE(ˆyv, yv)   (1  λ)X
-v VKL(ˆyv  pv
-g),
 where Vdenotes a batch of users, CEdenotes
 the cross entropy loss, KL denotes the KLdivergence,
  λis a hyperparameter, ˆyv,pv
-g, and yv
 denotes the prediction of the linear layer, GNNs,
 and the ground truth label. In this way, stateof-the-art
  graph-based approaches are distilled
 into high-quality linear layers that serve as proxies
  for the computation-heavy GNNs, improvingBotPercent  s efficiency and scalability for the
 large-scale real-time analysis of social network
-communities.
 2.2 Confidence Calibration
 Existing bot detection models generally leverage
 one dataset as training data, and existing datasets
@@ -462,50 +367,41 @@ et al., 2017), CRESCI -17(Cresci et al., 2017), MIDTERM 18(Yang
  et al., 2020), CRESCI -STOCK -18 (Cresci et al.,
 2018, 2019), CRESCI -RTBUST -19 (Mazza et al., 2019),
 BOTOMETER -FEEDBACK -19(Yang et al., 2019), TWIBOT-20
-(Feng et al., 2021b), and T WIBOT-22 (Feng et al., 2022b)./uni00000014/uni00000013/uni00000008 /uni00000016/uni00000013/uni00000008 /uni00000018/uni00000013/uni00000008 /uni a/uni00000013/uni00000008 /uni c/uni00000013/uni00000008
-/uni a/uni00000052/uni f/uni00000047/uni00000014/uni00000013/uni00000008/uni00000016/uni00000013/uni00000008/uni00000018/uni00000013/uni00000008/uni a/uni00000013/uni00000008/uni c/uni00000013/uni00000008/uni00000033/uni00000055/uni00000048/uni00000047/uni c/uni00000046/uni00000057/uni c/uni00000052/uni00000051/uni00000029/uni00000048/uni00000044/uni00000057/uni00000058/uni00000055/uni00000048
-/uni c/uni00000044/uni00000051/uni a/uni00000003/uni00000048/uni00000057/uni00000003/uni00000044/uni f/uni00000011
-/uni00000025/uni00000052/uni00000057/uni b/uni00000058/uni00000051/uni00000057/uni00000048/uni00000055
-/uni a/uni00000055/uni00000052/uni00000058/uni00000051/uni00000047/uni00000003/uni00000037/uni00000055/uni00000058/uni00000057/uni b
-/uni00000014/uni00000013/uni00000008 /uni00000016/uni00000013/uni00000008 /uni00000018/uni00000013/uni00000008 /uni a/uni00000013/uni00000008 /uni c/uni00000013/uni00000008
-/uni a/uni00000052/uni f/uni00000047/uni00000037/uni00000048/uni b/uni00000057
+(Feng et al., 2021b), and T WIBOT-22 (Feng et al., 2022b)./uni00000014/uni00000013/uni00000008 /uni00000016/uni00000013/uni00000008 /uni00000018/uni00000013/uni00000008 /uni0000001a/uni00000013/uni00000008 /uni0000001c/uni00000013/uni00000008
+/uni0000002a/uni00000052/uni0000004f/uni00000047/uni00000014/uni00000013/uni00000008/uni00000016/uni00000013/uni00000008/uni00000018/uni00000013/uni00000008/uni0000001a/uni00000013/uni00000008/uni0000001c/uni00000013/uni00000008/uni00000033/uni00000055/uni00000048/uni00000047/uni0000004c/uni00000046/uni00000057/uni0000004c/uni00000052/uni00000051/uni00000029/uni00000048/uni00000044/uni00000057/uni00000058/uni00000055/uni00000048
+/uni0000003c/uni00000044/uni00000051/uni0000004a/uni00000003/uni00000048/uni00000057/uni00000003/uni00000044/uni0000004f/uni00000011
+/uni00000025/uni00000052/uni00000057/uni0000002b/uni00000058/uni00000051/uni00000057/uni00000048/uni00000055
+/uni0000002a/uni00000055/uni00000052/uni00000058/uni00000051/uni00000047/uni00000003/uni00000037/uni00000055/uni00000058/uni00000057/uni0000004b
+/uni00000014/uni00000013/uni00000008 /uni00000016/uni00000013/uni00000008 /uni00000018/uni00000013/uni00000008 /uni0000001a/uni00000013/uni00000008 /uni0000001c/uni00000013/uni00000008
+/uni0000002a/uni00000052/uni0000004f/uni00000047/uni00000037/uni00000048/uni0000005b/uni00000057
 /uni00000035/uni00000052/uni00000025/uni00000028/uni00000035/uni00000037/uni00000044
-/uni f/uni00000032/uni00000025/uni00000032
-/uni a/uni00000055/uni00000052/uni00000058/uni00000051/uni00000047/uni00000003/uni00000037/uni00000055/uni00000058/uni00000057/uni b
-/uni00000014/uni00000013/uni00000008 /uni00000016/uni00000013/uni00000008 /uni00000018/uni00000013/uni00000008 /uni a/uni00000013/uni00000008 /uni c/uni00000013/uni00000008
-/uni a/uni00000052/uni f/uni00000047/uni a/uni00000055/uni00000044/uni00000053/uni b
-/uni00000035/uni a/uni00000037
-/uni00000025/uni00000052/uni00000057/uni00000035/uni a/uni00000026/uni00000031
-/uni a/uni00000055/uni00000052/uni00000058/uni00000051/uni00000047/uni00000003/uni00000037/uni00000055/uni00000058/uni00000057/uni b
-/uni00000014/uni00000013/uni00000008 /uni00000016/uni00000013/uni00000008 /uni00000018/uni00000013/uni00000008 /uni a/uni00000013/uni00000008 /uni c/uni00000013/uni00000008
-/uni a/uni00000052/uni f/uni00000047/uni00000030/uni00000058/uni f/uni00000057/uni c/uni00000010/uni00000030/uni00000052/uni00000047/uni00000048/uni f
+/uni0000002f/uni00000032/uni00000025/uni00000032
+/uni0000002a/uni00000055/uni00000052/uni00000058/uni00000051/uni00000047/uni00000003/uni00000037/uni00000055/uni00000058/uni00000057/uni0000004b
+/uni00000014/uni00000013/uni00000008 /uni00000016/uni00000013/uni00000008 /uni00000018/uni00000013/uni00000008 /uni0000001a/uni00000013/uni00000008 /uni0000001c/uni00000013/uni00000008
+/uni0000002a/uni00000052/uni0000004f/uni00000047/uni0000002a/uni00000055/uni00000044/uni00000053/uni0000004b
+/uni00000035/uni0000002a/uni00000037
+/uni00000025/uni00000052/uni00000057/uni00000035/uni0000002a/uni00000026/uni00000031
+/uni0000002a/uni00000055/uni00000052/uni00000058/uni00000051/uni00000047/uni00000003/uni00000037/uni00000055/uni00000058/uni00000057/uni0000004b
+/uni00000014/uni00000013/uni00000008 /uni00000016/uni00000013/uni00000008 /uni00000018/uni00000013/uni00000008 /uni0000001a/uni00000013/uni00000008 /uni0000001c/uni00000013/uni00000008
+/uni0000002a/uni00000052/uni0000004f/uni00000047/uni00000030/uni00000058/uni0000004f/uni00000057/uni0000004c/uni00000010/uni00000030/uni00000052/uni00000047/uni00000048/uni0000004f
 /uni00000025/uni00000052/uni00000057/uni00000025/uni00000058/uni00000056/uni00000057/uni00000048/uni00000055
 /uni00000025/uni00000052/uni00000057/uni00000052/uni00000050/uni00000048/uni00000057/uni00000048/uni00000055
-/uni a/uni00000055/uni00000052/uni00000058/uni00000051/uni00000047/uni00000003/uni00000037/uni00000055/uni00000058/uni00000057/uni b
-/uni00000014/uni00000013/uni00000008 /uni00000016/uni00000013/uni00000008 /uni00000018/uni00000013/uni00000008 /uni a/uni00000013/uni00000008 /uni c/uni00000013/uni00000008
-/uni a/uni00000052/uni f/uni00000047/uni00000025/uni00000052/uni00000057/uni00000033/uni00000048/uni00000055/uni00000046/uni00000048/uni00000051/uni00000057
+/uni0000002a/uni00000055/uni00000052/uni00000058/uni00000051/uni00000047/uni00000003/uni00000037/uni00000055/uni00000058/uni00000057/uni0000004b
+/uni00000014/uni00000013/uni00000008 /uni00000016/uni00000013/uni00000008 /uni00000018/uni00000013/uni00000008 /uni0000001a/uni00000013/uni00000008 /uni0000001c/uni00000013/uni00000008
+/uni0000002a/uni00000052/uni0000004f/uni00000047/uni00000025/uni00000052/uni00000057/uni00000033/uni00000048/uni00000055/uni00000046/uni00000048/uni00000051/uni00000057
 /uni00000025/uni00000052/uni00000057/uni00000033/uni00000048/uni00000055/uni00000046/uni00000048/uni00000051/uni00000057
-/uni a/uni00000055/uni00000052/uni00000058/uni00000051/uni00000047/uni00000003/uni00000037/uni00000055/uni00000058/uni00000057/uni bFigure 3  Predicted bot percentages on resampled communities from the TwiBot-22 benchmark that simulate
+/uni0000002a/uni00000055/uni00000052/uni00000058/uni00000051/uni00000047/uni00000003/uni00000037/uni00000055/uni00000058/uni00000057/uni0000004bFigure 3  Predicted bot percentages on resampled communities from the TwiBot-22 benchmark that simulate
 imbalanced settings, with bot percentages ranging from 10% to 90%. BotPercent consistently yields accurate
 population estimations, while baselines severely under- or over-estimate bot populations across Twitter communities.
 10%20%30%Bot Percentage40%50%60%70%70%80%90%
 10%20%30%Bot Percentage40%50%60%70%70%80%90%
-Feature
-Graph
 BotPercentSystemText Feature
-Graph
-BotPercentSystemText
-Figure 4 10 balanced community
+Figure 4  BotPercent and existing models  communitylevel
+ bot population estimation for the 10 balanced community
  datasets in TwiBot-22 (ground truth is 50% for
 all communities). BotPercent is significantly more accurate
  for all communities analyzed.
 through weighted summation 
-p 1 1argmax{0,1} 
- {f,t,g}X
-jKjX
-k 1αjk pi
-jk 
- 
 whereDdenotes the number of accounts in a given
 Twitter community, f, t, g respectively denote
 feature-, text-, and graph-based approaches, Kj
@@ -516,7 +412,9 @@ thek-th sub-model under category j, which is optimized
 on the validation set with weights of sub-models
 kept frozen. The resulting pis the BotPercent  s
 bot population estimation for a community.
-3 3.1 10 Twitter communities presented
+3.1 Balanced Twitter Communities
+We first evaluate BotPercent in balanced settings
+by leveraging the 10 Twitter communities presented
  in a recent TwiBot-22 benchmark (Feng
 et al., 2022b). Each community contains 10,000
 users with an even split between genuine users andbots. As a result, the correct estimation of Twitter
@@ -528,7 +426,9 @@ be 50%. We conduct community-level bot detection
  et al., 2018), RoBERTa (Liu et al., 2019b),
 BotRGCN (Feng et al., 2021c), RGT (Feng et al.,
 2022a), Botometer (Yang et al., 2022a), and BotBuster
- (Ng and Carley, 2022)3. Figure 4 10 populations
+ (Ng and Carley, 2022)3. Figure 4 shows
+thatBotPercent is significantly more accurate at
+predicting the true bot percentage for the 10 populations
  analyzed, including state-of-the-art individual
 bot detection methods such as RGT. In addition,
 feature- and text-based methods generally underestimate
@@ -557,77 +457,19 @@ confidence calibration s effectiveness for accurate
 bot percentage estimation.
 3Baseline details are presented in Appendix O.Crypto currency Crypto currency EntertainmentEntertainment TechTech EnvironmentEnvironment SportsSportsBot Percentage
 0%10%20%30%40%50%Bot Percentage
-0%10%20%30%40%50%
-Follower Count106107108 106107108 0%10%20%30%40%50%
 Follower Count106107108
-@VitalikButerin
+Follower Count106107108
+Follower Count106107108
 39.64%@VitalikButerin
 39.64%@realDonaldTrump
 13.89%@realDonaldTrump
-13.89%
-@ladygaga
-7.48%@ladygaga
-7.48%
-@BillGates
-12.23%@BillGates
-12.23%
-@KingJames
-8.60%@KingJames
-8.60%@JoeBiden
-10.64%@JoeBiden
-10.64%
-@StephenCurry30 9.26%@StephenCurry30 9.26%@GretaThunberg
-10.37%@GretaThunberg
-10.37%@aantonop
-45.69%@aantonop
-45.69%
-@ethereumJoseph
 23.27%@ethereumJoseph
-23.27%
-@billmckibben
-6.97%@billmckibben
-6.97%@TeamMessi
-7.85%@TeamMessi
-7.85%@Cobratate
-14.90%@Cobratate
-14.90%@JeffBezos
-20.10%@JeffBezos
-20.10%
-@benshapiro
-8.57%@benshapiro
-8.57%@SpeakerPelosi
-10.66%@SpeakerPelosi
-10.66%
-@rogerfederer
-4.35%@rogerfederer
-4.35%@iamcardib
-6.87%@iamcardib
-6.87%
-@katyperry
-2.67%@katyperry
-2.67%@rihanna
-7.45%@rihanna
-7.45%
-@elonmusk
-20.56%@elonmusk
-20.56%
-@BarackObama
-9.13%@BarackObama
-9.13%@taylorswift13 9.40%@taylorswift13 9.40%PoliticsPolitics
-@Cristiano
-4.75%@Cristiano
-4.75%@SBF_FTX
-20.77%@SBF_FTX
-20.77%
-@SpeakerMcCarthy
+9.40%PoliticsPolitics
 8.39%@SpeakerMcCarthy
-8.39%
-@neymarjr
-1.93%@neymarjr
-1.93%@neymarjr
 1.93%Figure 5  Bot percentage within the comment sections of celebrities from different interest domains. Celebritycentric
  communities in cryptocurrency, tech, and politics are generally witnessing a larger extent of bot manipulation.
-4 3 demonstrates that BotPercent achieves
+4 Analysis of Twitter Bots
+Section 3 demonstrates that BotPercent achieves
 state-of-the-art performance on community-level
 bot detection and produces well-calibrated bot percentage
  estimation for diverse Twitter communities.
@@ -641,11 +483,11 @@ result, we investigate the bot percentage in these
 comment sections and understand the extent to
 which celebrity-centric and news-sharing groups
 are compromised by Twitter bots.
-4.1.1 28 6 interest domains 
+We examine 28 celebrities from 6 interest domains 
 sports, entertainment, tech, politics, crypto, and
 environmentalism. We collect all accounts that
 commented on these users  tweets from December
- 23 31st, 2022. Results show that the bot
+ 23rd to 31st, 2022. Results show that the bot
 percentage in the comment sections of cryptocurrency
  celebrities is significantly higher than in other
 domains, and the bot percentage in tech is also generally
@@ -660,42 +502,16 @@ domains, particularly cryptocurrency and technology.
 bot impacts beyond politics, with implications for
 financial fraud, market manipulation, and more.
 Political LeaningBot Percentage
--56%8%10%12%
 -3 -1 1 3 5 left lean left center right lean right
 Political LeaningBot Percentage
--56%8%10%12%
--3 -1 1 3 5 7.93%New York Times
-7.93%Washington Post
-8.59%Washington Post
-8.59%Huffington Post
-9.50%Huffington Post
-9.50%
-6.98%Reuters
+-3 -1 1 3 5 left lean left center right lean right
 6.98%ReutersAssociated Press
 8.20%Associated Press
-8.20%
-The Hill
-8.16%The Hill
-8.16%CNN
-9.68%CNN
-9.68%USA Today
-9.55%USA Today
 9.55% Washington Times
 9.33%Washington Times
-9.33%
-Breitbart News
-10.05%Breitbart News
-10.05%Fox News
-10.64%Fox News
-10.64%
-New York Post
-8.43%New York Post
-8.43%Daily Kos
-10.11%Daily Kos
 10.11%Figure 6  Bot percentage within the comment sections
 of news media with respect to their political leaning.
 Bot interference is higher in more partisan news media.
-4.1.2 News Media
 With the advent of online social networks, traditional
  news media have also used social media
 to report on current events and provide political
@@ -707,7 +523,7 @@ amplification or rebuttal, which could in turn cloud
 the judgment of social media users. To this end,
 we select the official Twitter accounts of news media
  with different political leanings as evaluated by
-AllSides.4 6, there is a strong
+AllSides.4As shown in Figure 6, there is a strong
 correlation between the political stance of news
 media and the percentage of bot accounts in their
 Twitter account s comment section. Specifically,
@@ -715,131 +531,13 @@ centrist news media generally have the lowest proportion
  of bot accounts in their comment section.
 As the political stance becomes more polarized,
 4https //www.allsides.comRoe v. Wade
-10%
-7.5%
-5%
-2.5%
-0%10%
-7.5%
-5%
-2.5%
-0%4.83%
-2022 10%
-7.5%
-5%
-2.5%
-0%4.83%
-2022Roe v. Wade
-10%
-7.5%
-5%
-2.5%
-0%4.83%
-2022Roe v. Wade
-10%
-7.5%
-5%
-2.5%
-0%4.83%
-2022 10%
-7.5%
-5%
-2.5%
-0%10%
-7.5%
-5%
-2.5%
-0%8.73%
-2015 2016 10%
-7.5%
-5%
-2.5%
-0%8.73%
-2015 2016 10%
-7.5%
-5%
-2.5%
-0%8.73%
-2015 2016 10%
-7.5%
-5%
-2.5%
-0%8.73%
-2015 2016 8.71%
-201710%
-7.5%
-5%
-2.5%
-0%10%
-7.5%
-5%
-2.5%
-0%
-8.71%
-201710%
-7.5%
-5%
-2.5%
-0%Muslim ban
-8.71%
-201710%
-7.5%
-5%
-2.5%
-0%Muslim ban
-8.71%
-201710%
-7.5%
-5%
-2.5%
-0%
-2016 2012 2014 2018 2020 20220%30%
-25%
-20%
+2015 2016Paris Agreement
+2015 2016Paris Agreement
+Year2012 2014 2018 2020 20220%30%
 15% Bot Percentage10%
-5%
-Roe v. Wade
-10%
-7.5%
-5%
-2.5%
-0%4.83%
-2022 10%
-7.5%
-5%
-2.5%
-0%8.73%
-2015 2016 8.71%
-201710%
-7.5%
-5%
-2.5%
-0%
-2016 2012 2014 2018 2020 20220%30%
-25%
-20%
+Year2012 2014 2018 2020 20220%30%
 15% Bot Percentage10%
-5%
-Economy
-Healthcare
-Crime
-Supreme Court
-Immigration
-Gun Policy
-Foreign Policy
-Abortion
-Racism
-Climate Change
-Economy
-Healthcare
-Crime
-Supreme Court
-Immigration
-Gun Policy
-Foreign Policy
-Abortion
-Racism
-Climate ChangeFigure 7 11 important political issues of the past decade. Bot activity is highly
+Climate ChangeFigure 7  Temporal bot percentage trend in 11 important political issues of the past decade. Bot activity is highly
 correlated with major socio-political events such as Trump s Muslim ban and Roe v. Wade  overturning leaks.
 the proportion of bot accounts increases, and bot
 percentage within the comment sections of rightleaning
@@ -852,7 +550,6 @@ partisan political stances are more susceptible to
 manipulation from bot accounts. This suggests that
 social media users should practice more caution
 when reading and interacting with hyperpartisan
-online news media.
 4.2 Bot Population Changes through Time
 Twitter and social media in general have become
 an important medium for political discourse. Worryingly,
@@ -865,7 +562,8 @@ keywords presented in Flores-Saviaga et al. (2022)
 to search for tweets posted during different time periods
  and analyze the corresponding Twitter users.
 For each political topic, we collect tweets from
-1000 2012 2022. As shown in Figure
+1000 users per quarter in the past decade from January
+ 2012 to December 2022. As shown in Figure
  7, the proportion of bot accounts changes in
 line with major socio-political events. For example,
  the spikes in bot participation regarding immigration
@@ -876,10 +574,10 @@ Muslim ban (Pierce and Meissner, 2017). Bots discussing
 and signing of the Paris Agreement, and the sudden
  spike regarding abortion in early 2022 could be
 attributed to the Supreme Court leaks concerning
-/uni00000035/uni00000048/uni c/uni00000051/uni00000056/uni00000057/uni00000044/uni00000057/uni00000048/uni00000003/uni00000037/uni00000055/uni00000058/uni00000050/uni00000053 /uni00000030/uni00000058/uni00000056/uni e/uni00000003/uni00000036/uni00000057/uni00000048/uni00000053/uni00000003/uni00000027/uni00000052/uni a/uni00000051/uni00000019/uni00000008/uni b/uni00000008/uni00000014/uni00000013/uni00000008/uni00000014/uni00000015/uni00000008/uni00000014/uni00000017/uni00000008/uni00000014/uni00000019/uni00000008/uni00000025/uni00000052/uni00000057/uni00000003/uni00000033/uni00000048/uni00000055/uni00000046/uni00000048/uni00000051/uni00000057/uni00000044/uni a/uni00000048/uni f/uni c/uni e/uni00000048 /uni00000055/uni00000048/uni00000057/uni a/uni00000048/uni00000048/uni00000057 /uni00000046/uni00000052/uni00000050/uni00000050/uni00000048/uni00000051/uni00000057
-/uni00000014/uni00000015/uni00000011/uni00000016/uni b/uni00000008/uni00000014/uni00000017/uni00000011/uni b/uni00000019/uni00000008
-/uni c/uni00000011/uni00000016/uni00000017/uni00000008/uni c/uni00000011/uni a/uni00000019/uni00000008/uni00000014/uni00000017/uni00000011/uni00000016/uni b/uni00000008
-/uni00000014/uni00000014/uni00000011/uni a/uni a/uni Figure 8  Bot percentage among users that interacted
+/uni00000035/uni00000048/uni0000004c/uni00000051/uni00000056/uni00000057/uni00000044/uni00000057/uni00000048/uni00000003/uni00000037/uni00000055/uni00000058/uni00000050/uni00000053 /uni00000030/uni00000058/uni00000056/uni0000004e/uni00000003/uni00000036/uni00000057/uni00000048/uni00000053/uni00000003/uni00000027/uni00000052/uni0000005a/uni00000051/uni00000019/uni00000008/uni0000001b/uni00000008/uni00000014/uni00000013/uni00000008/uni00000014/uni00000015/uni00000008/uni00000014/uni00000017/uni00000008/uni00000014/uni00000019/uni00000008/uni00000025/uni00000052/uni00000057/uni00000003/uni00000033/uni00000048/uni00000055/uni00000046/uni00000048/uni00000051/uni00000057/uni00000044/uni0000004a/uni00000048/uni0000004f/uni0000004c/uni0000004e/uni00000048 /uni00000055/uni00000048/uni00000057/uni0000005a/uni00000048/uni00000048/uni00000057 /uni00000046/uni00000052/uni00000050/uni00000050/uni00000048/uni00000051/uni00000057
+/uni00000014/uni00000015/uni00000011/uni00000016/uni0000001b/uni00000008/uni00000014/uni00000017/uni00000011/uni0000001b/uni00000019/uni00000008
+/uni0000001c/uni00000011/uni00000016/uni00000017/uni00000008/uni0000001c/uni00000011/uni0000001a/uni00000019/uni00000008/uni00000014/uni00000017/uni00000011/uni00000016/uni0000001b/uni00000008
+/uni00000014/uni00000014/uni00000011/uni0000001a/uni0000001a/uni00000008Figure 8  Bot percentage among users that interacted
 with the two social media moderation votes held by Elon
 Musk. These votes witnessed substantial interference
 from Twitter bots, casting doubt on Elon Musk s  V ox
@@ -894,73 +592,26 @@ in response to major socio-political events, suggesting
  that content moderators and day-to-day users
 should practice extra caution when moderating and
 engaging in discussions of emerging events.
-4.3 2022, he
+4.3 Bot Presence in Content Moderation Votes
+Since Elon Musk s takeover of Twitter in 2022, he
 has held numerous votes on his personal account,
 with two of them having consequential content
 moderation outcomes  one vote to decide whether
-to reinstate Donald Trump on Twitter and another
+to reinstate Donald Trump5on Twitter and another
 vote to decide whether Musk should step down as
 Twitter CEO.6While the policy of direct democracy
  for content moderation seems straightforward,
 5https //twitter.com/elonmusk/status/
-1593767953706921985 6https //twitter.com/elonmusk/status/
-1604617643973124097 5.28%
-Nigeria
-5.28%
-Brazil
-10.71%
-Brazil
-10.71%
-Argentina
-4.51%
-Argentina
-4.51%
-UK
-10.32%
-UK
-10.32%
-South Africa
-7.82%
-South Africa
-7.82%
-South Korea
-6.36%
-South Korea
-6.36%
-India
-9.17%
-India
-9.17%
-14.26%USA
-14.26%USA
-13.42%
-Australia
-13.42%
-Australia16%
-12%
-8%
-4%
-16%
-12%
-8%
-4%
-Canada
-12.15%
-Canada
-12.15%
-France
-5.38%
-France
-5.38%
+6https //twitter.com/elonmusk/status/
+1604617643973124097Nigeria
 Figure 9  Bot populations within the political landscapes of different countries. The United States has the highest
 percentage of bots in the political community, while bot populations in English-speaking countries are generally
-above average.
 it has numerous concerns, one of them being the
 interference from malicious actors through Twitter
 bots. We investigate the bot percentage in users
 that retweeted, commented, or liked the two votes
 (the specific voting data is not publicly available).
-Figure 8 8% to 14% of users that interacted
+Figure 8 shows that  8% to 14% of users that interacted
  with the two content moderation votes are
 bots. Given the close results of both votes (51.8%
 v. 48.2%, 57.5 % v. 42.5%), this suggests that
@@ -968,7 +619,6 @@ bots could have changed the outcome, putting into
 question the validity of the  V ox Populi, V ox Dei 
 principle of social media moderation.
 5 Bot Population in Different Countries 
-Politics
 Existing research on the Twitter bot population
 mostly focuses on bots in U.S. politics (Bessi and
 Ferrara, 2016  Yang et al., 2020) while neglecting
@@ -987,16 +637,16 @@ countries also witness higher levels of bot interference.
 political communities of Argentina, France, and
 Nigeria are the lowest, indicating a more genuine
 and authentic political discourse. These results
-again reaffirm that Twitter bots have spatial pat Country
+again reaffirm that Twitter bots have spatial pat7Country
  border source  https //www.
 naturalearthdata.com/MethodIndividual Community
 Accuracy F1-score Bot %
-BotPercent 0.731 0.726 3.9%
--W/O FEAT -BASED MODELS 0.649 0.698 15.2%
--W/O TEXT -BASED MODELS 0.627 0.701 9.3%
+BotPercent 0.731 0.726  3.9%
+-W/O FEAT -BASED MODELS 0.649 0.698  15.2%
+-W/O TEXT -BASED MODELS 0.627 0.701  9.3%
 -W/O GRAPH -BASED MODELS 0.659 0.639 -33.8%
--W/O CALIBRATION 0.653 0.693 23.8%
--MEAN POOLING AS COMB . 0.708 0.711 7.05%
+-W/O CALIBRATION 0.653 0.693  23.8%
+-MEAN POOLING AS COMB . 0.708 0.711  7.05%
 Table 1  Ablation study of BotPercent .Bold indicates
 the best performance, underline indicates the second
 best. In community-level bot detection, we compare
@@ -1008,7 +658,6 @@ and positive percentages indicating an overestimation.
 terns across the whole Twitter network, while the
 impact of malicious Twitter bots in countries other
 than the U.S. warrants further research.
-6 Ablation Study
 AsBotPercent outperforms various baselines in
 community-level bot detection tasks, we investigate
 the impact of each module in BotPercent to verify
@@ -1026,7 +675,6 @@ detection performance. Finally, the communitylevel
  bot detection performance dropped dramatically
  without confidence calibration, indicatingthat confidence calibration plays an essential role
 in accurate bot percentage estimation.
-7 Related Work
 Existing Twitter bot detection models mainly fall
 into feature-based, text-based, and graph-based.
 Feature-based bot detection methods extract
@@ -1101,8 +749,6 @@ With great implications for both platform moderators
 community-level system BotPercent with multidataset
  training and the largest model ensemble to
 estimate the Twitter bot populations from groups
-to crowds.
-8 Conclusion
 We propose BotPercent , a multi-dataset multimodel
  Twitter bot detection system for estimating
  the Twitter bot populations from groups to
@@ -1125,7 +771,8 @@ We identify three key limitations. Firstly, due to
 the limitations of the Twitter API, our estimation
 of Twitter bot populations is sometimes limited in
 scale and information completeness. For instance,
-Twitter API limits the tweet lookup rate to 900 15 minutes, and we do not have access to user information
+Twitter API limits the tweet lookup rate to 900 per
+15 minutes, and we do not have access to user information
  that participated in Twitter votes. However,
 our work presents BotPercent and a series of bot
 analysis proposals that are compatible with better
@@ -1139,7 +786,6 @@ structure information in the inference stage. Finally,
 start circumstance, where users who have not engaged
  with the platform for a long enough time are
 more likely to be identified as bot accounts.
-Ethics Statement
 We envision BotPercent as a large-scale prescreening
  tool and not as an ultimate decision
 maker. Importantly, BotPercent and any other automatic
@@ -1158,7 +804,6 @@ et al., 2022) in decision-making. We leave to future
 work on how to incorporate the bias detection and
 mitigation techniques developed in ML research in
 bot detection systems.
-Acknowledgements
 We thank the reviewers and area chair for their comments
  and feedback. This research is supported
 in part by the Office of the Director of National
@@ -1166,7 +811,7 @@ Intelligence (ODNI), Intelligence Advanced Research
  Projects Activity (IARPA), via the HIATUS
 Program contract #2022-22072200004. This material
  is funded by the DARPA Grant under Contract
- No. HR C0124. We also gratefullyacknowledge support from NSF CAREER Grant
+ No. HR001120C0124. We also gratefullyacknowledge support from NSF CAREER Grant
 No. IIS2142739, and the Alfred P. Sloan Foundation
  Fellowship. The views and conclusions contained
  herein are those of the authors and should not
@@ -1176,7 +821,6 @@ IARPA, or the U.S. Government. The U.S. Government
  is authorized to reproduce and distribute
 reprints for governmental purposes notwithstanding
  any copyright annotation therein.
-References
 Wasim Ahmed, Francesc López Seguí, Josep VidalAlaball,
  Matthew S Katz, et al. 2020. Covid-19 and
 the  film your hospital  conspiracy theory  social
@@ -1202,7 +846,6 @@ Emily M Bender, Timnit Gebru, Angelina McMillanMajor,
 dangers of stochastic parrots  Can language models
 be too big  In Proceedings of the 2021 ACM Conference
  on Fairness, Accountability, and Transparency ,
-pages 610 623.
 Alessandro Bessi and Emilio Ferrara. 2016. Social
 bots distort the 2016 us presidential election online
 discussion. First monday , 21(11-7).
@@ -1210,7 +853,6 @@ Samantha Bradshaw, Bence Kollanyi, Clementine Desigaud,
  and Gillian Bolsover. 2017. Junk news and
 bots during the french presidential election  What are
 french voters sharing over twitter  Technical report,
-COMPROP Data Memo.
 Chiyu Cai, Linjing Li, and Daniel Zeng. 2017. Detecting
  social bots by jointly modeling deep behavior
 and content information. In Proceedings of the 2017
@@ -1221,7 +863,7 @@ Marinella Petrocchi, and Fabio Saracco. 2020. Therole of bot squads in the polit
 twitter. Communications Physics , 3(1) 1 15.
 Nikan Chavoshi, Hossein Hamooni, and Abdullah
 Mueen. 2016. Debot  Twitter bot detection via
-warped correlation. In 2016 16th International
+warped correlation. In 2016 IEEE 16th International
 Conference on Data Mining (ICDM) , pages 817 822.
 IEEE Computer Society.
 Stefano Cresci. 2020. A decade of social bot detection.
@@ -1245,26 +887,24 @@ Stefano Cresci, Fabrizio Lillo, Daniele Regoli, Serena
 Tardelli, and Maurizio Tesconi. 2019. Cashtag piggybacking 
  Uncovering spam and bot activity in stock
 microblogs on twitter. ACM Transactions on the Web
-(TWEB) , 13(2) 1 27.
 Limeng Cui, Haeseung Seo, Maryam Tabar, Fenglong
 Ma, Suhang Wang, and Dongwon Lee. 2020. Deterrent 
  Knowledge guided graph attention network for
 detecting healthcare misinformation. In Proceedings
 of the 26th ACM SIGKDD international conference
-on knowledge discovery & data mining , pages 492 502.
+on knowledge discovery & data mining , pages 492 
 Ashkan Dehghan, Kinga Siuta, Agata Skorupka, Akshat
  Dubey, Andrei Betlen, David Miller, Wei Xu,
 Bogumil Kaminski, and Pawel Pralat. 2022. Detecting
  bots in social-networks using node and structural
-embeddings.
 Yushun Dong, Ninghao Liu, Brian Jalaian, and Jundong
 Li. 2022. Edits  Modeling and mitigating data bias
 for graph neural networks. In Proceedings of the
 ACM Web Conference 2022 , pages 1259 1269.
 David Duki  c, Dominik Ke ˇca, and Dominik Stipi  c. 2020.
 Are you human  detecting bots on twitter using bert.
-In2020 7th International Conference on Data
-Science and Advanced Analytics (DSAA) , pages 631 636. IEEE.
+In2020 IEEE 7th International Conference on Data
+Science and Advanced Analytics (DSAA) , pages 631 
 Juan Echeverrıa, Emiliano De Cristofaro, Nicolas
 Kourtellis, Ilias Leontiadis, Gianluca Stringhini, and
 Shi Zhou. 2018. Lobo  Evaluation of generalization
@@ -1281,7 +921,6 @@ Wenqian Zhang, Zhenyu Lei, Shujie Yang, et al.
 2022b. Twibot-22  Towards graph-based twitter bot
 detection. In Thirty-sixth Conference on Neural Information
  Processing Systems Datasets and Benchmarks
- Track .
 Shangbin Feng, Herun Wan, Ningnan Wang, Jundong
 Li, and Minnan Luo. 2021a. Satar  A self-supervised
 approach to twitter account representation learning
@@ -1293,19 +932,16 @@ Li, and Minnan Luo. 2021b. Twibot-20  A comprehensive
  twitter bot detection benchmark. In Proceedings
  of the 30th ACM International Conference
 on Information & Knowledge Management , pages
-4485 4494.
 Shangbin Feng, Herun Wan, Ningnan Wang, and Minnan
  Luo. 2021c. Botrgcn  Twitter bot detection with
 relational graph convolutional networks. In Proceedings
  of the 2021 IEEE/ACM International Conference
 on Advances in Social Networks Analysis and Mining ,
-pages 236 239.
 Emilio Ferrara. 2020. What types of covid-19 conspiracies
  are populated by twitter bots  First Monday .
 Emilio Ferrara, Onur Varol, Clayton Davis, Filippo
 Menczer, and Alessandro Flammini. 2016a. The
 rise of social bots. Communications of the ACM ,
-59(7) 96 104.
 Emilio Ferrara, Wen-Qiang Wang, Onur Varol, Alessandro
  Flammini, and Aram Galstyan. 2016b. Predicting
 online extremism, content adopters, and interaction
@@ -1318,7 +954,6 @@ Claudia Flores-Saviaga, Shangbin Feng, and Saiph Savage.
  2022. Datavoidant  An ai system for addressing
  political data voids on social media. Proceedings
  of the ACM on Human-Computer Interaction ,
-6(CSCW2) 1 29.
 Michelle Forelle, Phil Howard, Andrés MonroyHernández,
  and Saiph Savage. 2015. Political bots
 and the manipulation of public opinion in venezuela.
@@ -1335,7 +970,6 @@ Guofei Gu, Phillip A Porras, Vinod Yegneswaran, Martin
  W Fong, and Wenke Lee. 2007. Bothunter  Detecting
  malware infection through ids-driven dialog
 correlation. In USENIX Security Symposium , volume
- 7, pages 1 16.
 Hachem Guerid, Karel Mittig, and Ahmed Serhrouchni.
 2013. Privacy-preserving domain-flux botnet detection
  in a large scale network. In 2013 Fifth International
@@ -1348,7 +982,6 @@ Chuan Guo, Geoff Pleiss, Yu Sun, and Kilian Q Weinberger.
 Qinglang Guo, Haiyong Xie, Yangyang Li, Wen Ma,
 and Chao Zhang. 2021. Social bots detection via
 fusing bert and graph convolutional networks. Symmetry
- , 14(1) 30.
 Charles R Harris, K Jarrod Millman, Stéfan J Van
 Der Walt, Ralf Gommers, Pauli Virtanen, David Cournapeau,
  Eric Wieser, Julian Taylor, Sebastian Berg,
@@ -1364,31 +997,31 @@ Distilling the knowledge in a neural network. arXiv
 preprint arXiv 1503.02531 , 2(7).
 Tin Kam Ho. 1995. Random decision forests. In Proceedings
  of 3rd international conference on document
- analysis and recognition , volume 1, pages 278 282. IEEE.
+ analysis and recognition , volume 1, pages 278 
 Philip N Howard, Bence Kollanyi, and Samuel Woolley.
  2016. Bots and automation over twitter during
 the us election. Computational propaganda project 
 Working paper series , 21(8).
 Ziniu Hu, Yuxiao Dong, Kuansan Wang, and Yizhou
 Sun. 2020. Heterogeneous graph transformer. In Proceedings
- of The Web Conference 2020 , pages 2704 2710.Zhen Huang, Zhilong Lv, Xiaoyun Han, Binyang Li,
+ of The Web Conference 2020 , pages 2704 
+2710.Zhen Huang, Zhilong Lv, Xiaoyun Han, Binyang Li,
 Menglong Lu, and Dongsheng Li. 2022. Social botaware
  graph neural network for early rumor detection.
  In Proceedings of the 29th International Conference
- on Computational Linguistics , pages 6680 6690, Gyeongju, Republic of Korea. International
+ on Computational Linguistics , pages 6680 
+6690, Gyeongju, Republic of Korea. International
 Committee on Computational Linguistics.
 Clayton Hutto and Eric Gilbert. 2014. Vader  A parsimonious
  rule-based model for sentiment analysis of
 social media text. In Proceedings of the international
 AAAI conference on web and social media , volume 8,
-pages 216 225.
 Jürgen Knauth. 2019. Language-agnostic twitter-bot
 detection. In Proceedings of the International Conference
  on Recent Advances in Natural Language
 Processing (RANLP 2019) , pages 550 558.
 Sneha Kudugunta and Emilio Ferrara. 2018. Deep neural
  networks for bot detection. Information Sciences ,
-467 312 322.
 Kyumin Lee, Brian Eoff, and James Caverlee. 2011.
 Seven months with the devils  A long-term study of
 content polluters on twitter. In Proceedings of the
@@ -1398,11 +1031,9 @@ Zhenyu Lei, Herun Wan, Wenqian Zhang, Shangbin
 Feng, Zilong Chen, Qinghua Zheng, and Minnan
 Luo. 2022. Bic  Twitter bot detection with text-graph
 interaction and semantic consistency. arXiv preprint
-arXiv 2208.08320 .
 Vladimir I Levenshtein et al. 1966. Binary codes capable
  of correcting deletions, insertions, and reversals.
 InSoviet physics doklady , volume 10, pages 707 710.
-Soviet Union.
 Paul Pu Liang, Chiyu Wu, Louis-Philippe Morency, and
 Ruslan Salakhutdinov. 2021. Towards understanding
 and mitigating social biases in language models. In
@@ -1432,13 +1063,11 @@ really making much progress  revisiting, benchmarking
  and refining heterogeneous graph neural
 networks. In Proceedings of the 27th ACM SIGKDD
 Conference on Knowledge Discovery & Data Mining ,
-pages 1150 1160.
 William Marcellino, Madeline Magnuson, Anne Stickells,
  Benjamin Boudreaux, Todd C Helmus, Edward
  Geist, and Zev Winkelman. 2020. Counterradicalization
  bot research using social bots to fight
 violent extremism. Technical report, RAND CORP
-SANTA MONICA CA.
 Michele Mazza, Stefano Cresci, Marco Avvenuti, Walter
  Quattrociocchi, and Maurizio Tesconi. 2019. Rtbust 
  Exploiting temporal patterns for botnet detection
@@ -1449,7 +1078,6 @@ Dean. 2013. Efficient estimation of word representations
  in vector space. In 1st International Conference
 on Learning Representations, ICLR 2013, Scottsdale,
 Arizona, USA, May 2-4, 2013, Workshop Track Proceedings
- .
 Zachary Miller, Brian Dickinson, William Deitrick, Wei
 Hu, and Alex Hai Wang. 2014. Twitter spammer
 detection using data stream clustering. Information
@@ -1462,7 +1090,9 @@ on Advances in Social Networks Analysis and Mining
 (ASONAM) , pages 533 540. IEEE.
 Moin Nadeem, Anna Bethke, and Siva Reddy. 2021.
 Stereoset  Measuring stereotypical bias in pretrained
-language models. In Proceedings of the 59 11th International Joint Conference
+language models. In Proceedings of the 59th Annual
+Meeting of the Association for Computational Linguistics
+ and the 11th International Joint Conference
 on Natural Language Processing (Volume 1  Long
 Papers) , pages 5356 5371.
 Lynnette Hui Xian Ng and Kathleen M Carley. 2022.
@@ -1483,9 +1113,8 @@ research , 12 2825 2830.Huailiang Peng, Yujun Zhang, Hao Sun, Xu Bai,
 Yangyang Li, and Shuhai Wang. 2022. Domainaware
  federated social bot detection with multirelational
  graph neural networks. In IJCNN , pages
-1 8. IEEE.
 Phu Pham, Loan TT Nguyen, Bay V o, and Unil
-Yun. 2022. Bot vec  a general approach of intracommunity
+Yun. 2022. Bot2vec  a general approach of intracommunity
  oriented representation learning for bot
 detection in different types of social networks. Information
  Systems , 103 101771.
@@ -1495,7 +1124,6 @@ Migration Policy Institute .
 John Platt et al. 1999. Probabilistic outputs for support
 vector machines and comparisons to regularized likelihood
  methods. Advances in large margin classifiers ,
-10(3) 61 74.
 Colin Raffel, Noam Shazeer, Adam Roberts, Katherine
 Lee, Sharan Narang, Michael Matena, Yanqi Zhou,
 Wei Li, Peter J Liu, et al. 2020. Exploring the limits
@@ -1507,7 +1135,6 @@ Sippo Rossi, Matti Rossi, Bikesh Upreti, and Yong Liu.
 2020. Detecting political bots on twitter during the
 2019 finnish parliamentary election. In Proceedings
 of the 53rd Hawaii international conference on system
- sciences .
 Mohsen Sayyadiharikandeh, Onur Varol, Kai-Cheng
 Yang, Alessandro Flammini, and Filippo Menczer.
 2020. Detection of novel social bots by ensembles
@@ -1535,7 +1162,7 @@ about twitter s bot problem  arXiv preprint
 arXiv 2209.10006 .Onur Varol, Emilio Ferrara, Clayton Davis, Filippo
 Menczer, and Alessandro Flammini. 2017. Online
 human-bot interactions  Detection, estimation, and
-characterization. In ICWSM , volume 11, pages 280 289.
+characterization. In ICWSM , volume 11, pages 280 
 Youze Wang, Shengsheng Qian, Jun Hu, Quan Fang,
 and Changsheng Xu. 2020. Fake news detection via
 knowledge-driven multimodal graph convolutional
@@ -1563,7 +1190,6 @@ bot interference in global politics. First Monday .
 Kai-Cheng Yang, Emilio Ferrara, and Filippo Menczer.
 2022a. Botometer 101  Social bot practicum for
 computational social scientists. arXiv preprint
-arXiv 2201.01608 .
 Kai-Cheng Yang, Onur Varol, Clayton A Davis, Emilio
 Ferrara, Alessandro Flammini, and Filippo Menczer.
 2019. Arming the public with artificial intelligence to
@@ -1591,7 +1217,6 @@ results demonstrate that the distribution of Twitter
 spatial-temporal patterns. The spatial andtemporal
 nature of the bot populations has great implications
 for social media moderation, day-to-day users, and
-future research.
 Since the Twitter bot population has spatial patterns,
  it could be beneficial to invest more resources
 into high-stakes communities with higher bot presence.
@@ -1602,7 +1227,6 @@ that the bot percentage in political and cryptocurrency
 to building general-purpose bot detection systems,
 the fine-grained study of these  highly polluted 
 communities (Uyheng and Carley, 2020) is also of
-integral importance.
 Since the Twitter bot population has temporalpatterns,
  it could be beneficial to take sociopolitical
  events into account when investing content
@@ -1616,7 +1240,6 @@ potential interference and curbing the malicious impact
 elections (Bessi and Ferrara, 2016), referendums
 (Stella et al., 2018), and other major socio-political
 events (Woolley, 2016).
-B Problem Definition
 Letu (uf, uc)be a social media account, where
 ufrepresents all its accessible features (metadata,
 textual, graph-based) and uc  {human ,bot}represents
@@ -1642,8 +1265,10 @@ We report F1-score for individual analysis and the bot
 percentage for community-level detection, where the
 ground truth is 50% and the closer the better.
 Hyperparameter Graph-Based Text-Based GNN Distillation
-LEARNING RATE 1 10 31 10 45 10 4 128 64 2048 50 50 50 1 10 51 10 51 10 5 128 128 1024 0.5 0.5 0.3 2 - 2
-λ 0.7 - Table
+LEARNING RATE 1 10 31 10 45 10 4
+BATCH SIZE 128 64 2048
+L2REGULARIZATION 1 10 51 10 51 10 5
+HIDDEN DIM 128 128 1024
  3  Hyperparameter settings of BotPercent .
 an important indicator (Yang et al., 2020), recently
 there were significant changes to Twitter s verification
@@ -1674,26 +1299,26 @@ the over-reliance on the verified feature.
 D Bot Percentage among Active Users
 We also provide an answer to an important and
 widely debated question  the overall percentage
-of bots among active Twitter users. We define ac-/uni00000015/uni00000013/uni00000014/uni00000017 /uni00000015/uni00000013/uni00000014/uni b /uni00000015/uni00000013/uni00000015/uni00000015
-/uni c/uni00000048/uni00000044/uni00000055/uni00000013/uni00000008/uni00000018/uni00000008/uni00000014/uni00000013/uni00000008/uni00000014/uni00000018/uni00000008/uni00000025/uni00000052/uni00000057/uni00000003/uni00000033/uni00000048/uni00000055/uni00000046/uni00000048/uni00000051/uni00000057/uni00000044/uni a/uni00000048/uni00000028/uni00000046/uni00000052/uni00000051/uni00000052/uni00000050/uni c
-/uni00000015/uni00000013/uni00000014/uni00000017 /uni00000015/uni00000013/uni00000014/uni b /uni00000015/uni00000013/uni00000015/uni00000015
-/uni c/uni00000048/uni00000044/uni00000055/uni00000013/uni00000008/uni00000018/uni00000008/uni00000014/uni00000013/uni00000008/uni00000014/uni00000018/uni00000008/uni00000015/uni00000013/uni00000008/uni00000025/uni00000052/uni00000057/uni00000003/uni00000033/uni00000048/uni00000055/uni00000046/uni00000048/uni00000051/uni00000057/uni00000044/uni a/uni00000048/uni b/uni00000048/uni00000044/uni f/uni00000057/uni b/uni00000046/uni00000044/uni00000055/uni00000048
-/uni00000015/uni00000013/uni00000014/uni00000017 /uni00000015/uni00000013/uni00000014/uni b /uni00000015/uni00000013/uni00000015/uni00000015
-/uni c/uni00000048/uni00000044/uni00000055/uni00000013/uni00000008/uni00000018/uni00000008/uni00000014/uni00000013/uni00000008/uni00000014/uni00000018/uni00000008/uni00000025/uni00000052/uni00000057/uni00000003/uni00000033/uni00000048/uni00000055/uni00000046/uni00000048/uni00000051/uni00000057/uni00000044/uni a/uni00000048/uni00000026/uni00000055/uni c/uni00000050/uni00000048
-/uni00000015/uni00000013/uni00000014/uni00000017 /uni00000015/uni00000013/uni00000014/uni b /uni00000015/uni00000013/uni00000015/uni00000015
-/uni c/uni00000048/uni00000044/uni00000055/uni00000013/uni00000008/uni00000018/uni00000008/uni00000014/uni00000013/uni00000008/uni00000025/uni00000052/uni00000057/uni00000003/uni00000033/uni00000048/uni00000055/uni00000046/uni00000048/uni00000051/uni00000057/uni00000044/uni a/uni00000048/uni00000036/uni00000058/uni00000053/uni00000055/uni00000048/uni00000050/uni00000048/uni00000003/uni00000026/uni00000052/uni00000058/uni00000055/uni00000057
-/uni00000015/uni00000013/uni00000014/uni00000017 /uni00000015/uni00000013/uni00000014/uni b /uni00000015/uni00000013/uni00000015/uni00000015
-/uni c/uni00000048/uni00000044/uni00000055/uni00000013/uni00000008/uni00000018/uni00000008/uni00000014/uni00000013/uni00000008/uni00000014/uni00000018/uni00000008/uni00000015/uni00000013/uni00000008/uni00000025/uni00000052/uni00000057/uni00000003/uni00000033/uni00000048/uni00000055/uni00000046/uni00000048/uni00000051/uni00000057/uni00000044/uni a/uni00000048/uni c/uni00000050/uni00000050/uni c/uni a/uni00000055/uni00000044/uni00000057/uni c/uni00000052/uni00000051
-/uni00000015/uni00000013/uni00000014/uni00000017 /uni00000015/uni00000013/uni00000014/uni b /uni00000015/uni00000013/uni00000015/uni00000015
-/uni c/uni00000048/uni00000044/uni00000055/uni00000013/uni00000008/uni00000018/uni00000008/uni00000014/uni00000013/uni00000008/uni00000014/uni00000018/uni00000008/uni00000025/uni00000052/uni00000057/uni00000003/uni00000033/uni00000048/uni00000055/uni00000046/uni00000048/uni00000051/uni00000057/uni00000044/uni a/uni00000048/uni a/uni00000058/uni00000051/uni00000003/uni00000033/uni00000052/uni f/uni c/uni00000046/uni c
-/uni00000015/uni00000013/uni00000014/uni00000017 /uni00000015/uni00000013/uni00000014/uni b /uni00000015/uni00000013/uni00000015/uni00000015
-/uni c/uni00000048/uni00000044/uni00000055/uni00000013/uni00000008/uni00000018/uni00000008/uni00000014/uni00000013/uni00000008/uni00000025/uni00000052/uni00000057/uni00000003/uni00000033/uni00000048/uni00000055/uni00000046/uni00000048/uni00000051/uni00000057/uni00000044/uni a/uni00000048/uni00000029/uni00000052/uni00000055/uni00000048/uni c/uni a/uni00000051/uni00000003/uni00000033/uni00000052/uni f/uni c/uni00000046/uni c
-/uni00000015/uni00000013/uni00000014/uni00000017 /uni00000015/uni00000013/uni00000014/uni b /uni00000015/uni00000013/uni00000015/uni00000015
-/uni c/uni00000048/uni00000044/uni00000055/uni00000013/uni00000008/uni00000018/uni00000008/uni00000014/uni00000013/uni00000008/uni00000025/uni00000052/uni00000057/uni00000003/uni00000033/uni00000048/uni00000055/uni00000046/uni00000048/uni00000051/uni00000057/uni00000044/uni a/uni00000048/uni00000024/uni00000045/uni00000052/uni00000055/uni00000057/uni c/uni00000052/uni00000051
-/uni00000015/uni00000013/uni00000014/uni00000017 /uni00000015/uni00000013/uni00000014/uni b /uni00000015/uni00000013/uni00000015/uni00000015
-/uni c/uni00000048/uni00000044/uni00000055/uni00000013/uni00000008/uni00000018/uni00000008/uni00000014/uni00000013/uni00000008/uni00000025/uni00000052/uni00000057/uni00000003/uni00000033/uni00000048/uni00000055/uni00000046/uni00000048/uni00000051/uni00000057/uni00000044/uni a/uni00000048/uni00000035/uni00000044/uni00000046/uni c/uni00000056/uni00000050
-/uni00000015/uni00000013/uni00000014/uni00000017 /uni00000015/uni00000013/uni00000014/uni b /uni00000015/uni00000013/uni00000015/uni00000015
-/uni c/uni00000048/uni00000044/uni00000055/uni00000013/uni00000008/uni00000018/uni00000008/uni00000014/uni00000013/uni00000008/uni00000025/uni00000052/uni00000057/uni00000003/uni00000033/uni00000048/uni00000055/uni00000046/uni00000048/uni00000051/uni00000057/uni00000044/uni a/uni00000048/uni00000026/uni f/uni c/uni00000050/uni00000044/uni00000057/uni00000048/uni00000003/uni00000026/uni b/uni00000044/uni00000051/uni a/uni Figure 10 11 political issues over the past decade.
+of bots among active Twitter users. We define ac-/uni00000015/uni00000013/uni00000014/uni00000017 /uni00000015/uni00000013/uni00000014/uni0000001b /uni00000015/uni00000013/uni00000015/uni00000015
+/uni0000003c/uni00000048/uni00000044/uni00000055/uni00000013/uni00000008/uni00000018/uni00000008/uni00000014/uni00000013/uni00000008/uni00000014/uni00000018/uni00000008/uni00000025/uni00000052/uni00000057/uni00000003/uni00000033/uni00000048/uni00000055/uni00000046/uni00000048/uni00000051/uni00000057/uni00000044/uni0000004a/uni00000048/uni00000028/uni00000046/uni00000052/uni00000051/uni00000052/uni00000050/uni0000005c
+/uni00000015/uni00000013/uni00000014/uni00000017 /uni00000015/uni00000013/uni00000014/uni0000001b /uni00000015/uni00000013/uni00000015/uni00000015
+/uni0000003c/uni00000048/uni00000044/uni00000055/uni00000013/uni00000008/uni00000018/uni00000008/uni00000014/uni00000013/uni00000008/uni00000014/uni00000018/uni00000008/uni00000015/uni00000013/uni00000008/uni00000025/uni00000052/uni00000057/uni00000003/uni00000033/uni00000048/uni00000055/uni00000046/uni00000048/uni00000051/uni00000057/uni00000044/uni0000004a/uni00000048/uni0000002b/uni00000048/uni00000044/uni0000004f/uni00000057/uni0000004b/uni00000046/uni00000044/uni00000055/uni00000048
+/uni00000015/uni00000013/uni00000014/uni00000017 /uni00000015/uni00000013/uni00000014/uni0000001b /uni00000015/uni00000013/uni00000015/uni00000015
+/uni0000003c/uni00000048/uni00000044/uni00000055/uni00000013/uni00000008/uni00000018/uni00000008/uni00000014/uni00000013/uni00000008/uni00000014/uni00000018/uni00000008/uni00000025/uni00000052/uni00000057/uni00000003/uni00000033/uni00000048/uni00000055/uni00000046/uni00000048/uni00000051/uni00000057/uni00000044/uni0000004a/uni00000048/uni00000026/uni00000055/uni0000004c/uni00000050/uni00000048
+/uni00000015/uni00000013/uni00000014/uni00000017 /uni00000015/uni00000013/uni00000014/uni0000001b /uni00000015/uni00000013/uni00000015/uni00000015
+/uni0000003c/uni00000048/uni00000044/uni00000055/uni00000013/uni00000008/uni00000018/uni00000008/uni00000014/uni00000013/uni00000008/uni00000025/uni00000052/uni00000057/uni00000003/uni00000033/uni00000048/uni00000055/uni00000046/uni00000048/uni00000051/uni00000057/uni00000044/uni0000004a/uni00000048/uni00000036/uni00000058/uni00000053/uni00000055/uni00000048/uni00000050/uni00000048/uni00000003/uni00000026/uni00000052/uni00000058/uni00000055/uni00000057
+/uni00000015/uni00000013/uni00000014/uni00000017 /uni00000015/uni00000013/uni00000014/uni0000001b /uni00000015/uni00000013/uni00000015/uni00000015
+/uni0000003c/uni00000048/uni00000044/uni00000055/uni00000013/uni00000008/uni00000018/uni00000008/uni00000014/uni00000013/uni00000008/uni00000014/uni00000018/uni00000008/uni00000015/uni00000013/uni00000008/uni00000025/uni00000052/uni00000057/uni00000003/uni00000033/uni00000048/uni00000055/uni00000046/uni00000048/uni00000051/uni00000057/uni00000044/uni0000004a/uni00000048/uni0000002c/uni00000050/uni00000050/uni0000004c/uni0000004a/uni00000055/uni00000044/uni00000057/uni0000004c/uni00000052/uni00000051
+/uni00000015/uni00000013/uni00000014/uni00000017 /uni00000015/uni00000013/uni00000014/uni0000001b /uni00000015/uni00000013/uni00000015/uni00000015
+/uni0000003c/uni00000048/uni00000044/uni00000055/uni00000013/uni00000008/uni00000018/uni00000008/uni00000014/uni00000013/uni00000008/uni00000014/uni00000018/uni00000008/uni00000025/uni00000052/uni00000057/uni00000003/uni00000033/uni00000048/uni00000055/uni00000046/uni00000048/uni00000051/uni00000057/uni00000044/uni0000004a/uni00000048/uni0000002a/uni00000058/uni00000051/uni00000003/uni00000033/uni00000052/uni0000004f/uni0000004c/uni00000046/uni0000005c
+/uni00000015/uni00000013/uni00000014/uni00000017 /uni00000015/uni00000013/uni00000014/uni0000001b /uni00000015/uni00000013/uni00000015/uni00000015
+/uni0000003c/uni00000048/uni00000044/uni00000055/uni00000013/uni00000008/uni00000018/uni00000008/uni00000014/uni00000013/uni00000008/uni00000025/uni00000052/uni00000057/uni00000003/uni00000033/uni00000048/uni00000055/uni00000046/uni00000048/uni00000051/uni00000057/uni00000044/uni0000004a/uni00000048/uni00000029/uni00000052/uni00000055/uni00000048/uni0000004c/uni0000004a/uni00000051/uni00000003/uni00000033/uni00000052/uni0000004f/uni0000004c/uni00000046/uni0000005c
+/uni00000015/uni00000013/uni00000014/uni00000017 /uni00000015/uni00000013/uni00000014/uni0000001b /uni00000015/uni00000013/uni00000015/uni00000015
+/uni0000003c/uni00000048/uni00000044/uni00000055/uni00000013/uni00000008/uni00000018/uni00000008/uni00000014/uni00000013/uni00000008/uni00000025/uni00000052/uni00000057/uni00000003/uni00000033/uni00000048/uni00000055/uni00000046/uni00000048/uni00000051/uni00000057/uni00000044/uni0000004a/uni00000048/uni00000024/uni00000045/uni00000052/uni00000055/uni00000057/uni0000004c/uni00000052/uni00000051
+/uni00000015/uni00000013/uni00000014/uni00000017 /uni00000015/uni00000013/uni00000014/uni0000001b /uni00000015/uni00000013/uni00000015/uni00000015
+/uni0000003c/uni00000048/uni00000044/uni00000055/uni00000013/uni00000008/uni00000018/uni00000008/uni00000014/uni00000013/uni00000008/uni00000025/uni00000052/uni00000057/uni00000003/uni00000033/uni00000048/uni00000055/uni00000046/uni00000048/uni00000051/uni00000057/uni00000044/uni0000004a/uni00000048/uni00000035/uni00000044/uni00000046/uni0000004c/uni00000056/uni00000050
+/uni00000015/uni00000013/uni00000014/uni00000017 /uni00000015/uni00000013/uni00000014/uni0000001b /uni00000015/uni00000013/uni00000015/uni00000015
+/uni0000003c/uni00000048/uni00000044/uni00000055/uni00000013/uni00000008/uni00000018/uni00000008/uni00000014/uni00000013/uni00000008/uni00000025/uni00000052/uni00000057/uni00000003/uni00000033/uni00000048/uni00000055/uni00000046/uni00000048/uni00000051/uni00000057/uni00000044/uni0000004a/uni00000048/uni00000026/uni0000004f/uni0000004c/uni00000050/uni00000044/uni00000057/uni00000048/uni00000003/uni00000026/uni0000004b/uni00000044/uni00000051/uni0000004a/uni00000048Figure 10  The temporal trends of the bot percentage on the 11 political issues over the past decade.
 Model Accuracy F1-score
 Yang et al. (Yang et al., 2020) 0.623 0.395
 BotHunter (Gu et al., 2007) 0.614 0.370
@@ -1703,7 +1328,8 @@ BotRGCN (Feng et al., 2021c) 0.488 0.485
 RGT (Feng et al., 2022a) 0.509 0.509
 Botometer (Yang et al., 2022a) 0.755 0.585
 BotBuster (Ng and Carley, 2022) 0.627 0.439
-BotPercent (Ours) 0.731 0.726 4  Individual bot detection performance.
+BotPercent (Ours) 0.731 0.726
+Table 4  Individual bot detection performance.
 BotPercent achieves a significantly higher F1-score
 thanks to its balanced and well-calibrated predictions.
 tive users as those who generated content on the
@@ -1718,7 +1344,7 @@ In addition to achieving state-of-the-art performance
 evaluate BotPercent at the individual level. We
 leverage the expert annotated dataset in the TwiBot22
  benchmark. BotPercent outperforms all baselines
- by at least 14.1 1-score (see Table 4). While
+ by at least 14.1 F1-score (see Table 4). While
 Botometer achieves slightly higher accuracy, further
  examination shows that it greatly underestimates
  the bot population (also shown in Figure 4)
@@ -1727,8 +1353,8 @@ users, which is also evident in its lower F1-score results.
  In summary, BotPercent achieves more balanced
  predictions and yields an overall improved
 performance.F Details of Bot Percentage Trend in
-Different Topics
-To facilitate readability, we divide Figure 7 10 10.
+To facilitate readability, we divide Figure 7 into 10
+topics and individually present trends in Figure 10.
 G Communities Details
 We adopt the 10 community datasets proposed in
 the TwiBot-22 dataset (Feng et al., 2022b) to evaluate
@@ -1736,14 +1362,13 @@ the TwiBot-22 dataset (Feng et al., 2022b) to evaluate
 five closely connected sub-communities around
 @BarackObama ,@elonmusk ,@CNN ,@NeurIPSConf
  , and @ladygaga . Then, Feng et al. (2022b)
-used K-means to cluster the Word Vec (Mikolov
+used K-means to cluster the Word2Vec (Mikolov
 et al., 2013) representations of hashtags and identified
  users tweeting about similar hashtags into five
 additional sub-communities.
 H Hyperparameter Details
 The hyperparameters of BotPercent are presented
 in Table 3 to facilitate reproducibility.
-I Dataset Details
 TheCRESCI -15(Cresci et al., 2015) dataset mainly
 consists of accounts collected from a volunteer
 base and active Italian Twitter users. Users in
@@ -1765,7 +1390,7 @@ FOLLOWER _COUNT TWEET _FREQUENCY status_count / user_age
 FRIEND _COUNT URL_ COUNT No. URL in user descriptions
 FAVORITE _COUNT BOT WORD IN DESCRIPTION /SCREEN NAME /USERNAME No. "bot" in description/screen name/username string
 LISTED _COUNT USERNAME ENTROPY  Pn
-i 1pilog pi, where piis the normalized string count
+i 1pilog2pi, where piis the normalized string count
 DEFAULT _PROFILE SCREEN NAME /USERNAME /DESCRIPTION _LENGTH length of name string
 PROFILE _USE_BACKGROUND _IMAGE FOLLOWERS _GROWTH _RATE followers_count / user_age
 VERIFIED FRIENDS _GROWTH _RATE friends_count / user_age
@@ -1778,13 +1403,14 @@ USERNAME &SCREEN NAME DISTANCE Levenshtein distance (Levenshtein et al., 1966) b
 Table 5  Features adopted in the feature-based module in BotPercent . User metadata features are directly extracted
 from Twitter API, and derived features are calculated based on user metadata.
 category sub-model weight α sum
-feature-basedRandom Forest 0.5441.127 0.583
-text-basedRoBERTa 0.4040.815 5 0.411
-graph-basedHGT 0.247 0.852 0.205 0.192 0.208 6  Learned weight αjkfor each sub-model (Section
+feature-basedRandom Forest 0.5441.127Adaboost 0.583
+text-basedRoBERTa 0.4040.815T5 0.411
+Table 6  Learned weight αjkfor each sub-model (Section
  2.3), where j  {f, t, g}denotes feature-, text-,
 and graph-based methods respectively.
 CRESCI -RTBUST -19(Mazza et al., 2019) dataset
-was crawled from Italian retweets between 1730 2018. The BOTOMETER -FEEDBACK -19
+was crawled from Italian retweets between 1730
+ June 2018. The BOTOMETER -FEEDBACK -19
 (Yang et al., 2019) dataset was constructed by manually
  labeling accounts annotated by feedback from
 Botometer users. TWIBOT-20(Feng et al., 2021b)
@@ -1800,8 +1426,6 @@ Moreover, we created a dictionary structure projecting
 prevent test data leakage caused by user overlap.
 This ensures no overlap between the training data
 in the merged version and the data used for evaluation.
-
-J Feature Details
 To facilitate further research, we present the list
 of features used in the feature-based module of
 BotPercent in Table 5.K Learned Weights for Each Model
@@ -1814,15 +1438,13 @@ received the highest weight, while text-based methods
 feature-based methods have the greatest impact on
 the prediction results, while graph-based methods
 have a slightly greater impact than text-based methods.
-
 L Computation Details
-We used a server with 8 2080 Ti
+We used a server with 8 NVIDIA 2080 Ti
 GPUs, 178GB memory, and 24 CPU cores for
 BotPercent training. The inference stage is conducted
- on a PC with 4 16GB memory.
+ on a PC with 4 CPU cores and 16GB memory.
  Training BotPercent with the best hyperparameters
  takes approximately 1 hour on the merged
-dataset.
 M Scientific Artifacts
 BotPercent is built with the help of many existing
  scientific artifacts, including PyTorch (Paszke
@@ -1834,19 +1456,18 @@ BotPercent implementation publicly available.
 N Active-User Collection Methodology
 We use the StreamClient function in the Twitter
 API to sample 1% of real-time tweets and corresponding
- users from December 12 18th, 2022.
+ users from December 12th to 18th, 2022.
 The StreamClient Twitter API function only provides
  posts or retweets but does not include users
 who only liked or browsed Twitter content.O Baseline Details
- Yang et al. (2020) leverages 8 12 derived features to identify
+ Yang et al. (2020) leverages 8 types of user
+metadata and 12 derived features to identify
 bot accounts with random forest.
  BotHunter (Gu et al., 2007) leverages random
  forest to classify users based on account
 metadata, network attributes, content, and timing
- information.
  LOBO (Echeverrıa et al., 2018) extracts 26
 user features and feeds them into random forest
- for classification.
  RoBERTa (Liu et al., 2019a  Feng et al.,
 2022b) leverages RoBERTa to encode user
 tweets and descriptions and feed them into an
@@ -1865,7 +1486,6 @@ model the intrinsic influence heterogeneity
 and relation heterogeneity in Twittersphere.
 RGT uses the same input as BotRGCN and
 feeds user features into RGT layers for bot
-identification.
  Botometer (Yang et al., 2022a) is a public
 website to check the activity of a Twitter account
  and returns a score, where higher scores

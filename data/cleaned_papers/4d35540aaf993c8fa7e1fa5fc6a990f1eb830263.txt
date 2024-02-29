@@ -1,9 +1,8 @@
-arXiv 2305.13331 1  [eess.AS]  19 2023A New Benchmark of Aphasia Speech Recognition and Detection Based on
+arXiv 2305.13331v1  [eess.AS]  19 May 2023A New Benchmark of Aphasia Speech Recognition and Detection Based on
 E-Branchformer and Multi-task Learning
-Jiyang Tang1, William Chen1, Xuankai Chang1, Shinji Watanabe1, Brian MacWhinney2 1Language Technologies Institute, Carnegie Mellon Univers ity, USA
+Jiyang Tang1, William Chen1, Xuankai Chang1, Shinji Watanabe1, Brian MacWhinney2
+1Language Technologies Institute, Carnegie Mellon Univers ity, USA
 2Department of Psychology, Carnegie Mellon University, USA
-jiyangta@cs.cmu.edu
-Abstract
 Aphasia is a language disorder that affects the speaking
 ability of millions of patients. This paper presents a new be nchmark
  for Aphasia speech recognition and detection tasks usi ng
@@ -22,7 +21,6 @@ recipes enable researchers to compare results directly, pr omoting
  progress in disordered speech processing.
 Index Terms   Disordered Speech Recognition, Assessment of
 Pathological Speech, Aphasia
-1. Introduction
 Aphasia is a language disorder that affects patients  abili ties to
 communicate effectively. This condition can manifest in va rious
  components of the language, including phonology, grammar,
@@ -35,7 +33,7 @@ Aphasia speech into text, while the detection task requires classifying
 For the recognition task, various automatic speech recognition
  (ASR) architectures have been benchmarked on Aphasia
  speech data. A recent trend is using a pre-trained
-Wav vec2.0 [3] to perform zero-shot or few-shot prediction s for
+Wav2vec2.0 [3] to perform zero-shot or few-shot prediction s for
 low-resource languages [4, 5]. Other benchmarked ASR model s
 include DNN-HMM [6, 7] and RNN [8 10]. While some studies
  formulate the detection task as a binary classiﬁcation p roblem
@@ -74,8 +72,6 @@ and WavLM [19]. Among existing studies, we found inconsistencies
  benchmark environment for both tasks1. We demonstrate
  the effectiveness and generalizability of our appro ach by
 applying it to another disordered speech database, the Deme ntiaBank
- Pitt corpus [20].
-2. Method
 In this section, we present a system that jointly models Apha sia
  detection and Aphasia speech recognition. The techniqu es
 used in this system have all been proven to be state-of-the-a rt in
@@ -97,13 +93,9 @@ Ktext tokens from a vocabulary V. Using the CTC algorithm
  [23], the encoder predicts the likelihood of generati ng the
 1https //github.com/espnet/espnettext sequence given the input PEnc(T X). The encoder hidden
 state output is denoted as H 
-H  Enc(X) (1)
-P(T X)   CTC( H) (2)
 The decoder models P(T X)given the encoder hidden states
 and prior token predictions [24] 
-P(tk X,T1 1)   Dec( H,T1 1) (3)
-PDec(T X) K 
-kP(tk X,T1 1) (4)
+P(tk X,T1 k 1)   Dec( H,T1 k 1) (3)
 During training, the model is optimized using the weighted s um
 of the CTC loss and the decoder loss [17] 
 L λLCTC (1 λ)LDec (5)
@@ -118,12 +110,11 @@ encoder networks and to support multi-task learning [22, 25 ,
 26]. To achieve this, the existing CTC module is applied to th e
 output of an intermediate encoder layer with index e. Then subsequent
  encoder layers incorporate the intermediate predi ctions
-into their input. Equation 1 1 e(X) (7)
+into their input. Equation 1 can be reorganized as 
 P(ZInter X)   CTC( He) (8)
 H  Enc e 1 E(NRM(He) LIN( ZInter)) (9)
 whereEis the total number of encoder layers, and ZInteris
 the latent sequence of the InterCTC target sequence TInter 
-(t 
 k k  1,...,K ).NRM( )andLIN( )refer to a normalization
  layer and a linear layer respectively. The negative log
 likelihood of generating TInteris used as the InterCTC loss 
@@ -131,12 +122,9 @@ LInter  logPInter(TInter X) (10)
 The choice of TInteris dependent on the task. During training,
 the intermediate layer is optimized to correctly predict TInterby
 including LInterin the loss function 
-L 
 CTC αLInter (1 α)LCTC (11)
 where the InterCTC weight αis a hyper-parameter. The updated
- overall loss function is obtained by inserting Equati on 11 5 
-L  λL 
-CTC (1 λ)LDec (12)
+ overall loss function is obtained by inserting Equati on 11
 Note that it is possible to apply CTC to multiple encoder laye rs
 while having different target sequences for each. In that ca se,
 the average of all InterCTC losses is used as LInter[22, 26].2.3. Speech Recognizer
@@ -171,7 +159,6 @@ speech recognition [31 33], we form an extended vocabulary
 V by adding two Aphasia tag tokens to V 
 V  V {[APH],[NONAPH] } (13)
 We then train the ASR model using Ttag
-ij  (tk V  k 
 1,...,K)as the ground truth, where Ttag
 ijis formed by inserting
  one or more Aphasia tags to Tij. Speciﬁcally, [APH] is inserted
@@ -193,7 +180,6 @@ model achieves state-of-the-art performance on FLEURS [22 ].
 Inspired by this, the second type of Aphasia detector uses In terCTC
  to classify input speech as either Aphasia or healthy
 speech. During training, the ground truth sequence Tinter
-ijfor InterCTC
  contains an Aphasia tag token. During inference, the
 prediction ˆyijis generated by checking the tag produced by InterCTC
  greedy search. This approach allows us to select whic h
@@ -206,7 +192,6 @@ encoder architectures and SSLR on Aphasia speech recogniti on.
 We then analyze the performance of the proposed method for
 recognition and detection tasks. All of our experiments wer e
 conducted using ESPnet2 [34].
-3.1. Datasets
 3.1.1. CHAT Transcripts
 CHAT [35] is a standardized transcription format for descri bing
  conversational interactions, used by both AphasiaBank and
@@ -237,13 +222,17 @@ experiments in this paper are performed using the English su bset.
 set by drawing 56%, 19%, and 25% percent of Aphasic speakers
 from each severity. There are four severity levels, each cor responding
  to a range of AQ scores  mild (AQ  75), moderate
-(50 75), severe (25 50), and very severe (0 25) [36]. The control group is split using the same
+(50 AQ 75), severe (25  AQ 50), and very severe (0
+ AQ 25) [36]. The control group is split using the same
 ratio and merged with patients  data. Doing so ensures our da ta
 splits are representative across all severity levels. We th en slice
 the recordings into sentences using the timestamps provide d in
 the CHAT transcripts while cleaning them as described in Sec tion
- 3.1.1. After that, sentences shorter than 0.3 30seconds are removed. Before data augmentation,
- the training set contains 42.7 22.7 20.1 10.1hours. Details can be found in our code release.
+ 3.1.1. After that, sentences shorter than 0.3seconds or
+longer than 30seconds are removed. Before data augmentation,
+ the training set contains 42.7hours of patient data and
+22.7hours of control group data while the test data contains
+20.1and10.1hours. Details can be found in our code release.
 Dementia speech recognition and detection have been a
 popular research topic as well [37 42]. We use the DementiaBank
  Pitt corpus [20] to test the generalizability of our des ign.
@@ -256,29 +245,27 @@ test set has been enhanced with noise removal and volume normalization,
 preserve a consistent data pipeline, we instead use the orig inal
 recordings and transcripts from the Pitt corpus as our test d ata.
 Details can be found in our code base.ModelPatient Control Overall
-WER WER WER
-Baselines
 Conformer 40.3 35 .3 38 .1
 E-Branchformer 36.2 31 .2 34 .0
-Proposed Methods
 E-Branchformer WavLM 26.4 17 .0 22 .2
  Tag-prepend 26.3 16 .9 22 .2
  Tag-append 26.216.922.1
  Tag-prepend/append 26.316.8 22 .1
  InterCTC-6 26.3 16 .922.1
  InterCTC-9 26.3 16 .9 22 .2
- InterCTC-6/Tag-prepend 26.3 16 .922.1 1  Word error rate (WER) of proposed methods evaluated
-on AphasiaBank.
+ InterCTC-6/Tag-prepend 26.3 16 .922.1
+Table 1  Word error rate (WER) of proposed methods evaluated
 3.2. Experimental Setups
 Baseline  We ﬁrst build two ASR systems using Conformer
  [27] and E-Branchformer [18], as described in Section
  2.3. The Conformer encoder has 12blocks, each having
-2048 4attention heads. The E-Branchformer
+2048 hidden units and 4attention heads. The E-Branchformer
 encoder has 12blocks, each with 1024 hidden units, and 4attention
- heads. The cgMLP module has 3072 31. Both systems use a Transformer decoderwith
- 6blocks, each having 2048 4attention
+ heads. The cgMLP module has 3072 units and the convolution
+ kernel size is 31. Both systems use a Transformer decoderwith
+ 6blocks, each having 2048 hidden units and 4attention
  heads. The Conformer and E-Branchformer models have
-44.2 45.7million trainable parameters respectively. For the
+44.2and45.7million trainable parameters respectively. For the
 detection task, we reproduce the Aphasia detection experim ent
 from a previous study. The detector is a support vector machi ne
 (SVM) that takes in linguistic features extracted from the o racle
@@ -289,14 +276,16 @@ the E-Branchformer encoder. Using it as a foundation, we bui ld
 tag-based and InterCTC-based detectors as described in Sec tion
  2.4. We also investigate the impact of tag insertion pos itions 
  prepending, appending, and both. Meanwhile, we appl y
-InterCTC to the 6 9th encoder layer respectively, a nd
+InterCTC to the 6th and the 9th encoder layer respectively, a nd
 analyze their performance difference. We set both the CTC an d
-InterCTC weight to 0.3 10.
+InterCTC weight to 0.3and the inference beam size to 10.
 In all experiments, we use speed perturbation with ratios of
-0.9 1.1, as well as SpecAugment [44], to augment the data.
-We choose the Adam optimizer with a learning rate of 10 3 10 6. We employ warmuplr learning rate
+0.9and1.1, as well as SpecAugment [44], to augment the data.
+We choose the Adam optimizer with a learning rate of 10 3and
+a weight decay of 10 6. We employ warmuplr learning rate
 scheduler with 2500 warm-up steps and a gradient clipping of
-1. Each ﬁnal model is selected by averaging the 10 40epochs. More
+1. Each ﬁnal model is selected by averaging the 10checkpoints
+with the highest validation accuracy out of 40epochs. More
 details can be found in our code base.
 3.3. Results and Discussion
 Overall, the proposed systems achieve both accurate Aphasi a
@@ -314,25 +303,20 @@ with previous work in detail in Table 2. Our systems obtained
 signiﬁcant lower WER for mild, moderate, and severe patient s,Model Metric Patient Control Overall
 Overall Mild Moderate Severe Very severe
 DNN-HMM [6] PER - 47.4 52 .8 61 .0 75 .8 - DNN-HMM
-   MOE [45] PER 36.8 33.1 41 .6 62.9 - Wav vec2
+   MOE [45] PER 36.8 33.1 41 .6 62.9 - Wav2vec2
  (zero-shot) [4] WER 56.0 - - - - 37.5 47 .1
-BLSTM-RNN i-Vector LM [8] WER - 33.7 41 .1 49 .2 63 .2 - Wav vec2
+BLSTM-RNN i-Vector LM [8] WER - 33.7 41 .1 49 .2 63 .2 - Wav2vec2
  [5] WER - 23.6 36 .8 36 .459.1 - E-Branchformer WavLM
-
  Tag-prepend WER 26.322.3 32 .834.572.5 16.922.2
- InterCTC-6 26.322.332.634.7 71 .7 16.9 22 .1
- InterCTC-6/Tag-prepend WER 26.3 22.132.9 34 .8 73 .3 16.9 22 .1 2  The recognition word error rate of proposed methods and exis ting work on the AphasiaBank English subset. The metrics are
+ InterCTC-6 WER 26.322.332.634.7 71 .7 16.9 22 .1
+ InterCTC-6/Tag-prepend WER 26.3 22.132.9 34 .8 73 .3 16.9 22 .1
+Table 2  The recognition word error rate of proposed methods and exis ting work on the AphasiaBank English subset. The metrics are
 phoneme error rate (PER) and word error rate (WER). Note that existing studies use different data splits than ours.
-ModelAccuracy
-Sent Spk
-SVM [4] - 96.2
-E-Branchformer WavLM
  Tag-prepend 89.3 95.1
  Tag-append 89.2 95.1
  Tag-prepend/append 90.895.7
- InterCTC-6 85.297.3
- InterCTC-9 84.597.3
- InterCTC-6/Tag-prepend 89.7 96.7 3  Sentence-level (Sent) and speaker-level (Spk) detection
+ InterCTC-6/Tag-prepend 89.7 96.7
+Table 3  Sentence-level (Sent) and speaker-level (Spk) detection
  accuracy of proposed methods on AphasiaBank. [4] is
 reproduced using the ofﬁcial code with oracle transcripts a s
 the input. For  Tag-prepend/append and  InterCTC-6/Tagprepend
@@ -369,12 +353,10 @@ incorporating an InterCTC auxiliary task [22]. In addition , the
 combined model has higher sentence-level accuracy and lowe r
 speaker-level accuracy compared to its InterCTC counterpa rt,
 which demands future investigation.Model Patient Control OverallAccuracy
-Sent Spk
 Conformer [38] - - 29.7 - Conformer
- [37] - - 25.5 -91.7
-E-Branchformer WavLM
  Tag-prepend 39.1 15 .024.865.6 83.3
- InterCTC-6 39.6 15 .0 25 .1 61.3 77.1 4  Test result of proposed methods on DementiaBank.
+ InterCTC-6 39.6 15 .0 25 .1 61.3 77.1
+Table 4  Test result of proposed methods on DementiaBank.
 The metric for speech recognition is the word error rate (WER ).
 The metrics for Dementia detection are sentence-level (Sen t)
 and speaker-level (Spk) accuracy. Other studies [39 42] ar e
@@ -390,9 +372,9 @@ as seen by the decreased InterCTC detection accuracy. The re sults
  also suggest that linguistic features are more import ant for
 Dementia detection than Aphasia. Furthermore, majority vo ting
  for speaker-level predictions is less effective in this case as
-the number of sentences per speaker is typically between 5 20. Despite this, we believe our method has the potential to b e
+the number of sentences per speaker is typically between 5 to
+20. Despite this, we believe our method has the potential to b e
 adapted to other disordered speech in future studies.
-4. Conclusion
 In this paper, we build an all-in-one Aphasia speech recogni tion
 and detection system and test its performance using Aphasia Bank
  and DementiaBank. We also standardize the data process ing
@@ -403,8 +385,8 @@ performance for severe Aphasia patients and the detection p erformance
 the impact of joint learning and combining detector methods ,
 and explore the potential beneﬁts of ﬁne-tuning a pre-train ed
 healthy ASR system using disordered speech.
-5. Acknowledgements
-This work used the Bridges2 210014 from the Advanced Cyberinfrastructure
+This work used the Bridges2 system at PSC and Delta system
+at NCSA through allocation CIS210014 from the Advanced Cyberinfrastructure
  Coordination Ecosystem  Services & Sup port
 (ACCESS) program, which is supported by National Science
 Foundation grants #2138259, #2138286, #2138307, #2137603 ,
@@ -413,9 +395,8 @@ and #2138296.6. References
 Brain and Language , vol. 16, no. 2, pp. 171 190, 1982.
 [2] S. Ash et al. ,  Speech errors in progressive non-ﬂuent aphasia, 
 en,Brain and Language , vol. 113, no. 1, pp. 13 20, 2010.
-[3] A. Baevski et al. ,  Wav vec 2.0  A framework for selfsupervised
+[3] A. Baevski et al. ,  Wav2vec 2.0  A framework for selfsupervised
  learning of speech representations,  in Proc.
-NeurIPS , 2020.
 [4] G. Chatzoudis et al. ,  Zero-shot cross-lingual aphasia detection
 using automatic speech recognition,  in Proc. Interspeech , 2022.
 [5] I. G. Torre, M. Romero, and A.  Alvarez,  Improving aphasic
@@ -424,7 +405,6 @@ methods on aphasiabank for english and spanish,  Applied Sciences
  , vol. 11, no. 19, 2021.
 [6] D. Le and E. Provost,  Improving automatic recognition o f
 aphasic speech with aphasiabank,  in Proc. Interspeech , 2016,
-pp. 2681 2685.
 [7] M. Perez, Z. Aldeneh, and E. Provost,  Aphasic speech rec ognition
  using a mixture of speech intelligibility experts,  inProc.
 Interspeech , 2020, pp. 4986 4990.
@@ -434,7 +414,6 @@ vol. 100, pp. 1 12, 2018.
 [9] Y . Qin, T. Lee, and A. Kong,  Automatic assessment of spee ch
 impairment in cantonese-speaking people with aphasia,  IEEE
 Journal of Selected Topics in Signal Processing , vol. 14, no. 2,
-pp. 331 345, 2020.
 [10] Y . Qin et al. ,  An end-to-end approach to automatic speech assessment
  for cantonese-speaking people with aphasia,  Journal
 of Signal Processing Systems , vol. 92, pp. 819 830, 2019.
@@ -442,7 +421,7 @@ of Signal Processing Systems , vol. 92, pp. 819 830, 2019.
 optimal transport domain adaptation,  in NeurIPS , 2019.
 [12] Y . Qin, T. Lee, and A. Kong,  Automatic speech assessmen t for
 aphasic patients based on syllable-level embedding and sup rasegmental
- duration features,  in Proc. ICASSP , 2018, pp. 5994 5998.
+ duration features,  in Proc. ICASSP , 2018, pp. 5994 
 [13] Y . Qin et al. ,  Automatic speech assessment for people with
 aphasia using TDNN-BLSTM with multi-task learning,  in
 Proc. Interspeech , 2018, pp. 3418 3422.
@@ -472,22 +451,19 @@ Archives of Neurology , vol. 51, no. 6, pp. 585 594, 1994.
  unsegmented sequence data with recurrent neural ne tworks, 
  in Proc. ICML , 2006, pp. 369 376.[24] D. Povey et al. ,  Purely sequence-trained neural networks for
 ASR based on lattice-free MMI,  in Proc. Interspeech , 2016,
-pp. 2751 2755.
 [25] J. Lee and S. Watanabe,  Intermediate loss regularizat ion for ctcbased
- speech recognition,  in Proc. ICASSP , 2021, pp. 6224 6228.
+ speech recognition,  in Proc. ICASSP , 2021, pp. 6224 
 [26] J. Nozaki and T. Komatsu,  Relaxing the conditional ind ependence
  assumption of ctc-based ASR by conditioning on interm ediate
  predictions,  in Proc. Interspeech , 2021, pp. 3735 3739.
 [27] A. Gulati et al. ,  Conformer  Convolution-augmented transformer
  for speech recognition,  in Proc. Interspeech , 2020,
-pp. 5036 5040.
 [28] Y . Peng et al. ,  Branchformer  Parallel mlp-attention architectures
  to capture local and global context for speech recogni tion
 and understanding,  in Proc. ICML , 2022, pp. 17 627 17 643.
 [29] W. Hsu et al. ,  Hubert  Self-supervised speech representation
 learning by masked prediction of hidden units,  IEEE/ACM
 Trans. Audio, Speech and Lang. Proc. , vol. 29, pp. 3451 3460,
-2021.
 [30] Y . Masuyama et al. ,  End-to-end integration of speech recognition,
  dereverberation, beamforming, and self-supervised learning
  representation,  in Proc. SLT , 2023, pp. 260 265.
@@ -498,17 +474,14 @@ Trans. Audio, Speech and Lang. Proc. , vol. 29, pp. 3451 3460,
 speech recognition,  in Proc. ASRU , 2017, pp. 265 271.
 [33] S. Zhou, S. Xu, and B. Xu, Multilingual end-to-end speech
 recognition with a single transformer on low-resource languages
- , 2018.
 [34] S. Watanabe et al. ,  Espnet  End-to-end speech processing
 toolkit,  in Proc. Interspeech , 2018, pp. 2207 2211.
 [35] B. MacWhinney,  The childes project  Tools for analyzi ng talk, 
-Child Language Teaching and Therapy , vol. 8, no. 2, pp. 217 218, 1992.
+Child Language Teaching and Therapy , vol. 8, no. 2, pp. 217 
 [36] B. MacWhinney et al. ,  Aphasiabank  Methods for studying discourse, 
  Aphasiology , vol. 25, no. 11, pp. 1286 1307, 2011,
-PMID  22923879.
 [37] T. Wang et al. ,  Conformer based elderly speech recognition
 system for alzheimer s disease detection,  in Proc. Interspeech ,
-2022.
 [38] S. Hu et al. ,  Exploiting cross-domain and cross-lingual ultrasound
  tongue imaging features for elderly and dysarthric sp eech
 recognition,  ArXiv , vol. abs/2206.07327, 2022.
@@ -520,13 +493,11 @@ based on spontaneous spoken english,  Computer Speech &
 Language , vol. 72, p. 101 298, 2022.
 [41] C. Bhat and S. Kopparapu,  Identiﬁcation of alzheimer  s disease
  using non-linguistic audio descriptors,  in Proc. EUSIPCO ,
-2019, pp. 1 5.
 [42] J. Chen, J. Zhu, and J. Ye,  An attention-based hybrid ne twork
 for automatic detection of alzheimer s disease from narrat ive
 speech,  in Proc. Interspeech , 2019, pp. 4085 4089.
 [43] S. Luz et al. ,  Alzheimer s dementia recognition through spontaneous
  speech  The adress challenge,  in Proc. Interspeech , 2020,
-pp. 2172 2176.
 [44] D. Park et al. ,  SpecAugment  A Simple Data Augmentation
 Method for Automatic Speech Recognition,  in Proc. Interspeech
  , 2019, pp. 2613 2617.

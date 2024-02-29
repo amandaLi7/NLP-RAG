@@ -6,7 +6,7 @@ David Rodriguez , Akshath Jain , Jose M. del Alamo , Norman Sadeh
  School of Computer Science, Carnegie Mellon University
 arjain@andrew.cmu.edu, sadeh@cs.cmu.edu
 Abstract  Apple and Android introduced privacy labels in
-2020 2022 respectively as a way of providing consumers
+2020 and 2022 respectively as a way of providing consumers
 with succinct summaries of mobile apps  more salient data
 practices. A number of apps are published in both stores,
 offering us the opportunity to compare their privacy label
@@ -24,7 +24,6 @@ collection disclosures of five different data types (location,
 contact info, sensitive info, identifiers, and health & fitness)
 we find discrepancies between iOS and Google Play privacy
 label disclosures in 66.5% of the mobile apps we analyze.
-1. Introduction
 The internet s and digital technologies  explosive
 growth in recent years has greatly influenced how people
 interact, consume media, and transact business. Yet, when
@@ -57,16 +56,12 @@ contributions of this work are as follows
  A Mapping between iOS and Android labels defining
  the practices and data types disclosed that
 could be directly compared between each platform.
-
  The design of a method for reliably finding
 iOS applications on Google Play Store (and vice
-versa).
  A comprehensive comparison between the mapped
 privacy labels for 822 identical Android and iOS
-applications.
  A static analysis of 560 Android applications 
 source code looking for precise and coarse location
- collection.
 To the best of our knowledge, this is the first research
 work comparing Android and iOS privacy labels usage
 by app developers. The proposed mapping along with a
@@ -81,7 +76,8 @@ the privacy labels comparison is presented. An analysis
 at scale is conducted in Section 4, highlighting the differences
  identified. Those differences are discussed in section
 5 with the relevant findings. Potential threats to validity
-are exposed in Section 6 7.
+are exposed in Section 6 and the paper s final conclusions
+are reported in Section 7.
 2. Background & Related Work
 Privacy labels have emerged as a result of the readability
  and comprehension problems of privacy policies
@@ -120,7 +116,6 @@ of data to which each practice alludes, as well as the
 category in which the data may fall and the purpose for
 accessing it. Data items, data categories, and purposes are
 declared in the privacy labels from among those provided
-by apple [4].
 2.2. Android Privacy Labels
 Android privacy labels went into effect in April 2022,
 following a similar overall format for data item and data
@@ -151,7 +146,6 @@ iOS Third-Party Advertising is also mapped to Android
 Advertising or marketing.
 Figure 1. Android (top) and iOS (bottom) privacy labels example
 Figure 2. Example of mapping between iOS (left) and Android (right)
-purpose labels
 The many-to-many relationship between the platforms 
  labels hinders making a straightforward comparison
  between all iOS and Android data labels. We have
@@ -163,7 +157,6 @@ shared in Android. The great difference between these two
 labels made us limit our comparison to data collection
 practices and the data items shown in table 1. Purposes
 were excluded from our analysis.
-2.4. Related Work
 The notion of privacy labels is an adaptation of nutrition
  labels introduced by Kelley et al. [7]. Their work
 aimed to create an information design (i.e., privacy labels)
@@ -174,26 +167,15 @@ sharing of personal data by organizations in an easy-tounderstand
  format. However, the use of privacy labels forTABLE 1. M APPING BETWEEN I OS AND ANDROID PRIVACY LABELS
 iOS Label Android Label
 Data practiceData Linked to YouData collected
-Data Not Linked to
-You
 Data itemsSensitive InfoRace and ethnicity
 Political or religious
-beliefs
-Sexual orientation
 Precise Location Precise location
 Coarse Location Approximate location
-Name Name
 Email Address Email address
 Phone Number Phone number
 Physical Address Address
-Other User Contact
-InfoOther info
-User ID User IDs
 Device ID Device or other IDs
-Health Health info
-Fitness Fitness info
 the mobile ecosystem was lately proposed by Kelley et al.
-[8].
 Since the adoption of privacy labels by Apple, their
 various uses and advantages are under discussion. Zhang
 et al. [25] checked the effectiveness of iOS privacy labels
@@ -220,7 +202,8 @@ privacy labels  correctness was not validated during the
 app approval process  .
 But even fewer studies [3], [19] have addressed Android
  privacy labels. Closer to our work, Mozilla has
-conducted a study [19] on the Android top 20 20 paid apps comparing the privacy policy with
+conducted a study [19] on the Android top 20 free apps
+and top 20 paid apps comparing the privacy policy with
 the privacy labels for each app. The study concludes by
 finding discrepancies between privacy policies and privacy
 labels for nearly 80% of the apps reviewed.
@@ -230,13 +213,11 @@ used static and dynamic analysis techniques to assess iOS
 and Android applications identifying personal data leaks.
 During this comprehensive work, they also analyzed the
 recipient s identity and location to uncover compliance
-issues.
 The related works described above have either focused
 on analyzing privacy labels in a single ecosystem or have
 compared apps  privacy behavior in both domains. To the
 best of our knowledge, no prior work has addressed a
 comparison between iOS and Android privacy labels.
-3. Method
 In this Section, we describe our analysis methodology.
 We begin by detailing the iOS and Android apps  selection
 process in Section 3.1. Afterward, in Section 3.2, we
@@ -249,7 +230,6 @@ Conducting a comparison between the privacy labels
 of App Store and Google Play Store applications requires
 a dataset containing matching applications from both markets.
  To create a dataset of this kind we pursued the
-following steps.
 iOS apps selection. We scraped the App Store website
 to collect the name and other details (e.g., privacy policy
 URL) of the whole list of available applications. From the
@@ -272,7 +252,9 @@ are indeed the same on both platforms.
 The logo comparison method downloads both logos
 and then performs a comparison based on the Structural
 Similarity Index Measure (SSIM) [23] between them. Our
-initial validation in a random sample of 30 1.0 0.9 in the range of [0-1]. However, we found
+initial validation in a random sample of 30 applications
+outputted a 1.0 precision score when using an SSIM
+threshold of 0.9 in the range of [0-1]. However, we found
 a few false positive cases when validating a larger dataset.
 Apps filtering. Since we needed to ensure that the
 dataset contained only matching applications for the labels
@@ -290,12 +272,11 @@ between privacy policies and other texts. This classifier
 is based on the Support Vector Machines (SVM) algorithm
  and was trained with 195 manually classified texts,
 achieving 98.76% precision, 97.56% recall, and 98.15%
-F1 100 unseen English texts.
+F1 score when evaluated against 100 unseen English texts.
 After discarding non-privacy policies texts, we compared
 them by computing the cosine similarity [21] to dismiss
 the applications that did not perfectly match (i.e., cosine
 similarity of 1.0) based on the similarity between privacy
-policies.
 3.2. Privacy labels collection and comparison
 iOS labels collection. We iterated the process of
 scraping the privacy labels for each iOS application. The
@@ -305,7 +286,6 @@ mandatory interaction requires the use of Selenium to
 trigger the button and load the HTML. Afterward, the
 BeautifulSoup python library [16] parses the HTML code
 and we iterate the collection of practices, types of personal
-data, and purposes.
 Android labels collection. Google Play Store does
 not reuse the same web resource for the privacy labels
 disclosure as iOS does. Instead, it serves a different resource
@@ -327,7 +307,6 @@ topics will be compared  1) the aggregated personal data
 types in each ecosystem and 2) the data collected by the
 same apps (i.e., Android app and iOS app).
 3.3. Comparing Android privacy labels to actual
-app code
 The popularity of third-party libraries has grown to
 the point that it has surpassed the amount of developers 
  source code [22]. In some cases, developers can be
@@ -391,7 +370,6 @@ expect to see exactly the same number of apps on both
 platforms due to its sensitivity. Interestingly too, almost
 twice as many iOS apps declare to collect user health
 data, considered by privacy regulations (i.e., GDPR) as
-sensitive data.
 Nevertheless, the most compelling comparison that
 can be done between Android and iOS in relation to
 privacy labels is to determine whether the same types of
@@ -412,7 +390,7 @@ developers report their applications to do. However, apps
 may intentionally or unintentionally be accessing nonreported
  personal data. To assess their statements, we
 managed to successfully download and perform static
-analysis on 560 822 Android apps.
+analysis on 560 out of the 822 Android apps.
 First, we checked whether applications have access to
 two types of personal data  coarse location and precise location.
  Figure 5 shows a comparison between the apps that
@@ -420,7 +398,6 @@ request access to these data and whether their collection is
 declared in the privacy labels. As can be seen, 36.6% and
 38.2% of the apps that do not declare collecting coarse
 and precise location respectively, request permissions to
-access these data.
 We further reconstructed the java source code out of
 the smali code for the 560 applications. As described in
 Section 3.3, we have looked for the API calls that retrieve
@@ -467,7 +444,7 @@ data collection disclosed in the privacy labels
 Differences between the number of applications
 disclosing collection of precise location and coarse
 (approximate) location in Android and iOS . In figures
-3 4 we could see that iOS apps mostly collect precise
+3 and 4 we could see that iOS apps mostly collect precise
 location while Android does the same with coarse location.
  Apple considers as precise location the latitude and
 longitude coordinates with three or more decimal places,
@@ -480,7 +457,6 @@ latitude and longitude coordinates with two decimal places
 or less, which is equivalent to 1.1 km of dispersion. Thus,
 the divergences between the definitions of these two dataitems highlight the disparity between iOS and Android
 privacy labels, but do not justify the noticeable differences
-seen in our results.
 Apparent inconsistencies found about users  health
 data being collected in the same applications . We
 manually inspected apps in two situations  1) an iOS app
@@ -527,7 +503,6 @@ on the app s details provided, and a lower number of
 unmaintained apps when compared to Google Play Store.
 This may also be a bias in favor of the iOS applications
 when comparing the privacy labels.
-7. Conclusions
 Increasing privacy awareness by users and regulatory
 pressure by supervisory authorities has led large technology
  companies (i.e., Google & Apple) to focus their
@@ -535,7 +510,6 @@ efforts on creating privacy labels for their apps marketplace.
  In this article, we have compared these labels to
 check if they are consistent, or if they involve considerable
  differences for the same applications in the different
-ecosystems.
 Following the proposed method, we collected and
 compared the privacy labels of 822 apps. Through the
 comparison, we observed that only 3.2% of the apps
@@ -549,8 +523,6 @@ inconsistencies. We hope that these findings serve as a
 call to action for regulators. In future work, we aim to
 conduct a dynamic analysis of the apps to further analyze
 the actual apps  behavior and compare it with the privacy
-labels.
-8. Acknowledgements
 This research has been partially supported
 by the project TED2021-130455A-I00 funded by
 MCIN/AEI/10.13039/501100011033 and the Europea
@@ -559,7 +531,6 @@ National Science Foundation Secure and Trustworthy
 Computing program (CNS-1801316, CNS-1914486) and
 an unrestricted Privacy Faculty Award from Google
 helped fund this study.
-References
 [1] Rehmat Alam. Command line google play apk downloader.
 github repository. https //github.com/rehmatworks/gplaydl, 2021.
 Accessed  2023-03-29.[2] Ying Chen, Heng Xu, Yilu Zhou, Sencun Zhu, and George Washington.
@@ -567,7 +538,7 @@ Accessed  2023-03-29.[2] Ying Chen, Heng Xu, Yilu Zhou, Sencun Zhu, and George W
 maturity ratings on android and ios applications. pages 201 212.
 Association for Computing Machinery (ACM), 5 2013.
 [3] Lorrie Faith Cranor. Mobile-app privacy nutrition labels missing
-key ingredients for success. Communications of the ACM , 65 26 28, 11 2022.
+key ingredients for success. Communications of the ACM , 65 26 
 [4] Apple Developer. App privacy details. https //developer.apple.com/
 app-store/app-privacy-details/. Accessed  2023-03-29.
 [5] Jack Gardner, Yuanyuan Feng, Kayla Reiman, Zhi Lin, Akshath
@@ -578,7 +549,6 @@ Symposium on Security and Privacy Workshops, Euro S and PW
 [6] Play Console Help. Provide information for google play s
 data safety section. https //support.google.com/googleplay/
 android-developer/answer/10787469 hl en, 2022. Accessed 
-2023-03-29.
 [7] Patrick Gage Kelley, Joanna Bresee, Lorrie Faith Cranor, and
 Robert W. Reeder. A  nutrition label  for privacy. In Proceedings
 of the 5th Symposium on Usable Privacy and Security , SOUPS  09,
@@ -586,11 +556,9 @@ New York, NY , USA, 2009. Association for Computing Machinery.
 [8] Patrick Gage Kelley, Lorrie Faith Cranor, and Norman Sadeh.
 Privacy as part of the app decision-making process. Conference
 on Human Factors in Computing Systems - Proceedings , pages
-3393 3402, 2013.
 [9] Simon Koch, Malte Wessels, Benjamin Altpeter, Madita Olvermann,
  Martin Johns, and   Datenanfragen. Keeping privacy labels
 honest. In Privacy Enhancing Technologies Symposium , pages
-486 506, 2022.
 [10] Konrad Kollnig, Anastasia Shuba, Reuben Binns, Max Van Kleek,
 and Nigel Shadbolt. Are iphones really better for privacy  comparative
  study of ios and android apps. Proceedings on Privacy
@@ -607,7 +575,6 @@ and Segmentation (PPS) , 2014.
  Faith Cranor, and Jason I. Hong. Understanding ios privacy
 nutrition labels  An exploratory large-scale analysis of app store
 data. Conference on Human Factors in Computing Systems Proceedings
- , 4 2022.
 [14] Orson Lucas, Martin Sokalski, and Rob Fisher. Corporate
 data responsibility  Bridging the consumer trust gap.
 https //advisory.kpmg.us/articles/2021/bridging-the-trust-chasm.
@@ -618,14 +585,12 @@ amp %3Bcid c-00107353. Accessed  2023-03-29.
 study of android behavioural code smells detection. Empirical
 Software Engineering , 27 1 34, 12 2022.
 [16] PyPI. beautifulsoup4. https //pypi.org/project/beautifulsoup4/. Accessed 
- 2023-03-29.
 [17] GitHub repository. Dex to java decompiler. https //github.com/
 skylot/jadx. Accessed  2023-03-29.
 [18] Gian Luca Scoccia, Marco Autili, Giovanni Stilo, and Paola Inverardi.
  An empirical study of privacy labels on the apple ios mobile
 app store. Proceedings - 9th IEEE/ACM International Conference
 on Mobile Software Engineering and Systems, MOBILESoft 2022 ,
-pages 114 124, 2022.
 [19] Anne Stopper and Jen Caltrider. See no evil  Loopholes in google s
 data safety labels keep companies in the clear and consumers
 in the dark. mozilla foundation. https //foundation.mozilla.org/en/
@@ -640,18 +605,14 @@ of Innovations in Engineering and Technology , 2, 2013.
 [22] Haoyu Wang, Yao Guo, Ziang Ma, and Xiangqun Chen. Wukong 
 A scalable and accurate two-phase approach to android app clone
 detection. pages 71 82. Association for Computing Machinery,
-Inc, 7 2015.
 [23] Zhou Wang, Alan Conrad Bovik, Hamid Rahim Sheikh, and Eero P.
 Simoncelli. Image quality assessment  From error visibility to
 structural similarity. IEEE Transactions on Image Processing ,
-13 600 612, 4 2004.
 [24] Yue Xiao, Zhengyi Li, Yue Qin, Xiaolong Bai, Jiale Guan, Xiaojing
 Liao, and Luyi Xing. Lalaine  Measuring and characterizing noncompliance
  of apple privacy labels at scale. arXiv , June 2022.
 [25] Shikun Zhang, Yuanyuan Feng, Yaxing Yao, Lorrie Faith Cranor,
 and Norman Sadeh. How usable are ios app privacy labels 
 InPrivacy Enhancing Technologies Symposium , pages 204 228,
-2022.
 [26] Shikun Zhang and Norman Sadeh. Do privacy labels answer users 
 privacy questions  In Network and Distributed System Security
-Symposium , 2023.

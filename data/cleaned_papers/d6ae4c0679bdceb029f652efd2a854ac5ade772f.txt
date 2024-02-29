@@ -3,7 +3,6 @@ Modern Generation Techniques Through the Lens of Minimum Bayes Risk
 Amanda Bertsch andAlex Xie andGraham Neubig andMatthew R. Gormley
 Carnegie Mellon University
 [abertsch, alexx]@cs.cmu.edu
-Abstract
 Minimum Bayes Risk (MBR) decoding is a
 method for choosing the outputs of a machine
 learning system based not on the output with
@@ -28,14 +27,11 @@ and empirical results about the effectiveness
 of various MBR variants and make concrete
 recommendations for the application of MBR
 in NLP models, including future directions in
-this area.
-1 Introduction
  Sometimes innovation is only old ideas
 reappearing in new guises . . . [b]ut the new
 costumes are better made, of better materials, as
 well as more becoming  so research is not so much
 going round in circles as ascending a spiral. 
-(Jones, 1994)
 Minimum Bayes Risk (MBR) decoding (Bickel
 and Doksum (1977)   2) is a decoding method following
  a simple intuition  when choosing a best
@@ -81,19 +77,14 @@ apply the insights from research on MBR, suggesting
 In  5, we show that some design choices, though
 seemingly intuitive to a practitioner accustomed to
 search-based decoding methods, should be avoided
-when applying MBR.
-2 Formalization
-We begin with the basics of decoding and MBR.arXiv 2310.01387 1  [cs.CL]  2 20232.1 Standard decoding
+We begin with the basics of decoding and MBR.arXiv 2310.01387v1  [cs.CL]  2 Oct 20232.1 Standard decoding
 Decoding from an autoregressive model (such as a
 transformer decoder) is performed tokenwise. The
 distribution at each decoding step is conditioned
 on the prior tokens and the input text 
-p(yi y i, x) (1)
 The model is locally normalized   the probabilities
 of next tokens sum to 1. The probability of a sequence
  under this global model distribution is
-p(y x)  TY
-i 1p(yi y i, x) (2)
 Given this distribution, there are several ways
 of extracting an output  by sampling at each decoding
  step from the distribution over next tokens
@@ -116,12 +107,7 @@ as the expected error (also called loss) under this
 distribution (Bickel and Doksum, 1977  Kumar and
 Byrne, 2004  Tromble et al., 2008). The MBR decoding
  is then the y within Ythat minimizes risk 
-ˆy  argmin
-y  YR(y ) (3)
-  argmin
 y  YEy x[L(y, y )] (4)
-  argmin
-y  YX
 y YL(y, y )p(y x) (5)
 We can trivially rewrite the risk as a maximization
  of gain (also called utility ) rather than a minimization
@@ -135,25 +121,16 @@ over independent samples from p(y x). Generally,
 this is performed by sampling repeatedly from a
 model (or several models) and estimating the probability
  of each individual output as proportional
-to the relative frequency that the output occurs.2 3(e.g. ancestral
+to the relative frequency that the output occurs.2
+For an unbiased sampling method3(e.g. ancestral
 sampling), as the number of outputs drawn goes to
 infinity, this recovers the model s true distribution
 of probability over sequences. Thus, we approximate
  risk using this sample 
-R(y ) 1
- Y X
-y YL(y, y ) (6)
-  1
- Y X
-y YG(y, y ) (7)
 Thus, given a sample (which may include duplicates)Yand
  a function (e.g. a metric) that compares
  two sequences G Y Y R, we approximate
  the true MBR decoding rule as 
-ˆy  argmax
-y  Y1
- Y X
-y YeG(y, y ) (8)
 Separation of evidence and hypothesis sets In
 many cases, the same subset of the output space is
 used for both the risk estimate and the candidate
@@ -162,7 +139,6 @@ smaller than the full output space, it is often beneficial
  to use separate sets (Eikema and Aziz, 2022 
 Yan et al., 2023). Following prior work ( 2.2), we
 refer to these as the evidence set (Ye) and hypothesis
- set (Yh).
 This separation is beneficial because there are
 distinct and potentially contradictory desiderata
 for the two sets. We wish for our evidence set to
@@ -178,10 +154,10 @@ for MBR over two subsets of the output space
 a transformer language model and other autoregressive models
 without conditional independence assumptions.
 2This is called a Monte Carlo approximation.
-3 3.2 3.1.ˆy  argmax
-y  YhX
-y YeG(y, y ) (9)
-3 9 1. Choice of hypothesis set Yh
+3We discuss the use of biased samplers in  3.2 and  3.1.ˆy  argmax
+Equation 9 demonstrates four major axes along
+which an MBR method may vary 
+1. Choice of hypothesis set Yh
 2. Choice of evidence set Ye
 3. Choice of gain (or error) function G(y, y )
 4. Choice of evidence distribution p(y x)
@@ -257,7 +233,6 @@ Note that in the most trivial case, where the metric
  is G(y, y )   1[y y ], MBR recovers modeseeking
  methods like beam search  i.e. MBR under
  this metric, in expectation, yields the maximum
-likelihood decoding.
 3.4 What probability distribution should we
 use to estimate risk 
 Most MBR decoding methods use the model s
@@ -272,7 +247,7 @@ true objective is to minimize error under the humanMethod Evidence Gen. Hypothes
 Lattice MBR (Tromble et al., 2008) N-best list N-best list BLEU translation lattice
 Coarse-to-fine MBR (Eikema and Aziz, 2022) ancestral sampling filter (sample) BEER single model
 Wiher et al. (2022) ancestral sampling evidence   more decodings BEER single model
-MBR-DC (Yan et al., 2023) temperature sampling temperature sampling BLEURT single model
+MBR-DC (Yan et al., 2023) temperature sampling1temperature sampling1BLEURT single model
 Ours (  3.3) ancestral sampling temperature sampling BERTScore single model
 Ours (  3.4) ancestral sampling temperature sampling BERTScore length-corrected scores
 (Freitag et al., 2023) epsilon sampling BLEURT single model
@@ -288,8 +263,6 @@ Table 1  Recent work under our taxonomy. The line separates methods that are exp
 identify as MBR-like (below).
 1Different temperatures used for evidence and hypothesis.
 2While Suzgun et al. (2023) coin the new term crowd sampling , they also explicitly refer to their method as MBR.
-distribution 
-argmin
 y  YhEy phuman[L(y, y )]
 Note that this is not the only reasonable choice of
 p(y x)  other possible distributions include a distribution
@@ -311,9 +284,6 @@ explanation and then an answer. Multiple outputs
 O {y1, . . . , y m}are sampled from the model,
 the answers A {a1, . . . , a m}are extracted ai 
 ans(yi), and the most frequent answer is returned 
-argmax
-amX
-i 11(ai a) (10)
 Self-consistency only computes exact match
 over the answer , not the reasoning chain. It is
 possible to recover MBR from this method by either
@@ -321,7 +291,6 @@ possible to recover MBR from this method by either
 set of resulting answers Yh Ye Adiscardingthe reasoning chain, or by defining a gain function
 G(y, y )  1(ans( y)   ans( y ))over full outputs
 O  though notationally different, they are mathematically
- equivalent.
 Thus, self-consistency is a type of MBR decoding
  in which we approximate the risk with a Monte
 Carlo estimate (cf. Eq. 6), the answers are sampled
@@ -345,7 +314,6 @@ probabilities of the sampled sequences. This also
 presents an opportunity for improvement  while
 Wang et al. (2023) do not evaluate on ancestral
 sampling, it is possible that this would outperform
-their best results.
 Self-consistency is a special case of MBR. Proposed
  extensions to self-consistency have recovered
  aspects of generalized MBR decoding, including
@@ -363,7 +331,6 @@ Common ensembling methods such as averaging
 model weights (Izmailov et al., 2018) or averaging
  token-level probabilities (Sennrich et al., 2016 
 Manakul et al., 2023) cannot be explicitly formulated
- as MBR.
 The connection to MBR is most straightforward
 in methods that perform MBR decoding over the
 outputs of multiple models (DeNero et al., 2010 
@@ -377,12 +344,8 @@ similarity between all pairs of outputs, and yielding
 the output with greatest average similarity. Observe
 that this may be framed as MBR minimizing the
 expected risk over the mixture distribution
-pensemble (y x)   
-  
   pθ1(y x)with probability π1
-   
 pθn(y x)with probability πn
-wherePn
 i 1πi  1. While πiis usually taken to
 be uniform over the ensemble, this need not always
 be the case (Duan et al., 2010).
@@ -394,11 +357,9 @@ pairwise perplexities of each output under each
 parser . While this is not precisely MBR, it may be
 viewed as a variation where the evidence set is a
 set of models , not a set of model outputs.
-ˆy  argmin
 y  YhEθ π( )[L(θ, y )]
 In this case, the error L(θ, y )is the perplexity of
 y under model θ, i.e. exp( logpθ(y ))  1
-pθ(y ),
 andπ( )is the distribution over models.
 4.3 MBR as Density Estimation
 Interestingly, Post-Ensemble (Kobayashi, 2018)
@@ -408,8 +369,9 @@ kernel density estimation. Kernel density estimation
 probability density function pof an unknown distribution,
  given samples (x1, x2,   , xn)from that
 distribution (Rosenblatt, 1956  Parzen, 1962).
-ˆp(x)  1 1K(x, xi) (11)
-Indeed, Equation 11 6. This connection allowed (Kobayashi, 2018)
+Indeed, Equation 11 very closely resembles the
+Monte Carlo estimator of expected loss in Equation
+ 6. This connection allowed (Kobayashi, 2018)
 to propose approximation error bounds on MBR,
 drawing from the density estimation literature.4
 Note that the kernel function K(x, xi)is more
@@ -421,11 +383,8 @@ For a sequence y, define Tn(y)to be a vector of
 size V n, where  V is the size of the vocabulary,
 containing the number of times every possible ngram
  appears in y. Then we can rewrite ROUGE- n
-as the following 
-KR(Tn(y) Tn(y ))
-  1  Tn(y) Tn(y ) 1
  Tn(y) 1  Tn(y ) 1(12)
-where      1is the L norm.
+where      1is the L1norm.
 The similarity between density estimation and
 MBR yields an alternative interpretation of MBR
 as a mode-seeking search. However, we are not
@@ -433,10 +392,7 @@ seeking the mode of the model s distribution over
 outputs, p(y x), but rather that of a distribution
 over some features ϕ(y)of our output, p (ϕ(y) x).
 For instance, in the case of ROUGE- nMBR,
-ˆy  argmax
-y  YhX
 y YeKR(Tn(y ) Tn(y)) (13)
- argmax
 y  Yhp (Tn(y ) x) (14)
 We posit that this alternative distribution
 p (Tn(y ) x)may be better correlated with
@@ -466,12 +422,10 @@ and the set of voters Vcorresponds to the evidence
 setYe. Then, if voter v s score for candidate c
 is taken to be a gain G(v, c)and each voter is assigned
  uniform weight, range voting is equivalent
-to the MBR decision rule in Equation 8 1
- V X
-v VG(v, c) (15)
+to the MBR decision rule in Equation 8 
 Other range-voting methods can similarly be cast
-as MBR variants.
-5 4 are MBRlike,
+5 Design Decisions Impact MBR
+Although all the methods in Section 4 are MBRlike,
  they make very different decisions about the
 four design choices in our MBR taxonomy. To
 demonstrate the importance of the method design,
@@ -480,25 +434,29 @@ design impacts the performance of the method.
 5.1 Experimental Details
 We run MBR experiments for abstractive summarization
  on CNN/DM (Nallapati et al., 2016)
-with a fine-tuned BART-Large released by the
+with a fine-tuned BART-Large5released by the
 BART authors (Lewis et al., 2020) as our base
 model. In  5.3, we additionally report results for
 translation on WMT 16 Romanian-English (RoEn)
  (Bojar et al., 2016) using mBART-50 (Liu et al.,
 2020).6We draw neancestral samples for our evidence
  set and nttemperature samples ( τ  0.5for
-CNN/DM, τ  0.3 16 Ro-En) for our
-hypothesis set. We set ne nt  30 5.2 5facebook/bart-large-cnn on HuggingFace
-(Wolf et al., 2020)
-6facebook/mbart-large-50-many-to-many-mmtMethod R1 2 43.98 20.88 30.88 88.04
+CNN/DM, τ  0.3for WMT 16 Ro-En) for our
+hypothesis set. We set ne nt  30 in  5.2 and
+5facebook/bart-large-cnn on HuggingFace
+6facebook/mbart-large-50-many-to-many-mmtMethod R1 R2 RL BS
+Greedy 43.98 20.88 30.88 88.04
 BS (k  5) 43.16 20.63 30.53 87.82
 BS (k  10) 42.62 20.23 30.02 87.71
 DBS ( k g  5) 43.77 20.85 30.77 87.97
-MBR ROUGE-1 46.89 22.29 32.01 88.41 46.31 22.36 32.02 88.38 46.04 22.09 32.09 88.68 2  MBR results on CNN/DM for various gain functions.
+MBR ROUGE-1 46.89 22.29 32.01 88.41
+MBR BEER 46.31 22.36 32.02 88.38
+MBR B ERTSCORE 46.04 22.09 32.09 88.68
+Table 2  MBR results on CNN/DM for various gain functions.
 We additionally test the same non-MBR, (approximate) modeseeking
  baselines as Wiher et al. (2022). All MBR methods
 outperform all non-MBR methods tested.
-ne nt  50 5.3. Unless otherwise specified,
+ne nt  50 in  5.3. Unless otherwise specified,
 we take ROUGE-1 (Lin, 2004) as our gain metric
 for summarization and BLEU-4 (Papineni et al.,
 2002)7as our gain metric for translation.
@@ -530,7 +488,8 @@ to performance degregation in this case  this further
 hypothesis set in MBR.
 7We use the implementation from
 sacrebleu (Post, 2018) with signature
-nrefs 1 13 2.3.15.3 Varying the risk distribution  lessons from
+nrefs 1 case mixed eff yes tok 13a 
+smooth exp version 2.3.15.3 Varying the risk distribution  lessons from
 beam search don t translate to MBR
 By nature, autoregressive text generation models
 suffer from length bias  sequence probability monotonically
@@ -567,7 +526,6 @@ heavily prioritizes longer sequences.
 sl(y x)  s(y x)/Tβ(16)
 (b)Length reward (He et al., 2016)  A fixed
 reward γis added to the score per token generated.
-
 sl(y x)  s(y x)  γT (17)
 The length-corrected distribution is then pl(y x) 
 expsl(y x). We apply normalized importance
@@ -578,27 +536,32 @@ drawn from the model distribution p(y x).
 We compare our MBR results against beam
 search both with and without length normalization.
  We use the models  default values for length
-penalty ( β  2for BART, β  1for mBART).Method R1 2 RL BS LR
-Beam search, no correction 43.88 20.96 30.77 87.79 108.00 43.95 21.00 30.84 87.81 114.39
+penalty ( β  2for BART, β  1for mBART).Method R1 R2 RL BS LR
+Beam search, no correction 43.88 20.96 30.77 87.79 108.00
+Beam search 43.95 21.00 30.84 87.81 114.39
 MBR, No correction 47.70 23.00 32.54 88.50 111.64
 MBR, Length norm, β  0.5 44.29 19.95 29.99 88.03 110.75
 MBR, Length norm, β  1.0 44.29 19.98 30.0 88.03 110.77
 MBR, Length reward, γ  0.547.60 22.93 32.48 88.48 112.52
-MBR, Length reward, γ  1.047.41 22.72 32.25 88.43 112.50 3  MBR results for various length correction schemes
+MBR, Length reward, γ  1.047.41 22.72 32.25 88.43 112.50
+Table 3  MBR results for various length correction schemes
 on CNN/DM. We report ROUGE-1, ROUGE-2, ROUGE-L,
 BERTSCORE , and length ratio, respectively.
 Method BLEU chrF BLEURT BS LR
-Beam search, no correction 33.21 59.81 65.50 94.95 99.37 33.06 60.05 65.60 94.96 101.58
+Beam search, no correction 33.21 59.81 65.50 94.95 99.37
+Beam search 33.06 60.05 65.60 94.96 101.58
 MBR, No correction 33.56 60.00 65.53 94.96 100.04
 MBR, Length norm, β  0.5 31.14 58.53 64.70 94.71 102.82
 MBR, Length norm, β  1.0 31.09 58.51 64.68 94.71 102.60
 MBR, Length reward, γ  0.5 32.09 59.63 65.19 94.82 105.00
-MBR, Length reward, γ  1.0 31.29 59.17 64.91 94.73 105.63 4 16 Romanian-English. We report BLEU, chrF,
+MBR, Length reward, γ  1.0 31.29 59.17 64.91 94.73 105.63
+Table 4  MBR results for various length correction schemes
+on WMT 16 Romanian-English. We report BLEU, chrF,
 BLEURT, BERTSCORE , and length ratio, respectively. We use
 the chrF (Popovi  c, 2015) implementation from sacrebleu .
 We use the smaller BLEURT-20-D6 checkpoint for efficiency
  (Sellam et al., 2020  Pu et al., 2021).
-Our results are Tables 3 4. In line with past
+Our results are Tables 3 and 4. In line with past
 work, we find that beam search generally benefits
  from incorporating a length penalty. However,
 we find that length-corrected MBR underperforms
@@ -617,7 +580,6 @@ to the references, more so than length-normalized
 beam search. This suggests that MBR may be to
 some extent immune from length biases, when they
 are not introduced by the MBR metric (Müller and
-Sennrich, 2021).
 6 MBR applications in NLP
 The use of minimum Bayes risk decoding in NLP
 predates these MBR-like methods  MBR has been
@@ -634,7 +596,8 @@ of utility they can expect to enjoy (DeGroot, 1970
 Bickel and Doksum, 1977). This is precisely the
 intuition encoded in MBR (i.e. Equation 3).
 Adoption in NLP MBR was adopted by the
-speech and NLP communities in the 1990 2000s, finding applications in syntactical parsing
+speech and NLP communities in the 1990s and
+early 2000s, finding applications in syntactical parsing
  (Goodman, 1996  Sima an, 2003), automatic
 speech recognition (Stolcke et al., 1997  Goel and
 Byrne, 2000), and statistical machine translation
@@ -673,15 +636,16 @@ its applications in other text generation tasks (Shi
 et al., 2022  Wiher et al., 2022  Suzgun et al., 2023).
 Outside of these areas, the method has largely
 been applied in shared task papers (e.g. Manakul
-2000 2005 2010 2015 2020 0.0000.0050.0100.0150.0200.025 1  The use of MBR (by name) peaked in the mid-2010s.
+2000 2005 2010 2015 2020
+Year0.0000.0050.0100.0150.0200.025Percentage of papers that mentionMentions of methods by year
+bayes risk decodingFigure 1  The use of MBR (by name) peaked in the mid-2010s.
 This graph shows the percentage of ACL Anthology papers
-that mention several MBR-related phrases by year, from 2000 2022.
+that mention several MBR-related phrases by year, from 2000
 et al. (2023)  Yan et al. (2022)  Barzdins and Gosko
 (2016)), as it provides a reliable boost in performance.
  The fraction of papers in the ACL Anthology
  that reference MBR (at least by this name) has
 declined from its peak around 2009 (Figure 1).
-7 Conclusion
 Minimum Bayes Risk decoding has declined in
 popularity, but the underlying concept of sampling
  a set from a distribution and choosing an
@@ -710,7 +674,6 @@ negative consequences of divergent terminology
 (Calvert, 1956  Samigullina et al., 2020), and decreased
  citation of older methods in NLP (Singhet al., 2023). For a more involved discussion of the
 literature on term coining and possible connections,
-see Appendix B.
 Language is not static, so some degree of terminology
  drift in scientific literature is unavoidable.
  However, recognizing the connections between
@@ -718,7 +681,6 @@ Language is not static, so some degree of terminology
 to understanding why such methods are effective.
 We must not forget the lessons of the past as we
 search for the methods of the future.
-Acknowledgments
 We would like to thank Jason Eisner and Patrick
 Fernandes for useful early discussions about this
 work, and Saujas Vaduguru, Daniel Fried, and
@@ -732,8 +694,6 @@ Program under Grant No. DGE2140739. Any
 opinions, findings, and conclusions or recommendations
  expressed in this material are those of the
 author(s) and do not necessarily reflect the views
-of the sponsors.
-References
 Chantal Amrhein and Rico Sennrich. 2022. Identifying
 weaknesses in machine translation metrics through
 minimum Bayes risk decoding  A case study for
@@ -744,7 +704,7 @@ Joint Conference on Natural Language Processing
 (Volume 1  Long Papers) , pages 1125 1141, Online
 only. Association for Computational Linguistics.
 Guntis Barzdins and Didzis Gosko. 2016. RIGA at
-SemEval-2016 8  Impact of Smatch extensions
+SemEval-2016 task 8  Impact of Smatch extensions
 and character-level neural translation on AMR parsing
  accuracy. In Proceedings of the 10th International
  Workshop on Semantic Evaluation (SemEval2016)
@@ -772,7 +732,6 @@ Marcel Bollmann and Desmond Elliott. 2020. On forgetting
 Anthology. In Proceedings of the 58th Annual Meeting
  of the Association for Computational Linguistics ,
 pages 7819 7827, Online. Association for Computational
- Linguistics.
 Sebastian Borgeaud and Guy Emerson. 2020. Leveraging
  sentence similarity in natural language generation 
  Improving beam search using range voting.
@@ -781,7 +740,6 @@ Generation and Translation , pages 97 109, Online.
 Association for Computational Linguistics.
 E. S. Calvert. 1956. Technical terms in science and
 technology. The American Journal of Psychology ,
-69(3) 476 479.
 Kyunghyun Cho, Bart van Merriënboer, Dzmitry Bahdanau,
  and Yoshua Bengio. 2014. On the properties
 of neural machine translation  Encoder decoder approaches.
@@ -803,20 +761,17 @@ re-ranking for question answering. In Proceedings
 of the 51st Annual Meeting of the Association for
 Computational Linguistics (Volume 2  Short Papers) ,
 pages 424 428, Sofia, Bulgaria. Association for Computational
- Linguistics.
 Nan Duan, Mu Li, Dongdong Zhang, and Ming Zhou.
 2010. Mixture model-based minimum Bayes risk
 decoding using multiple machine translation systems.
 InProceedings of the 23rd International Conference
 on Computational Linguistics (Coling 2010) , pages
 313 321, Beijing, China. Coling 2010 Organizing
-Committee.
 Kevin Duh, Katsuhito Sudoh, Xianchao Wu, Hajime
 Tsukada, and Masaaki Nagata. 2011. Generalizedminimum Bayes risk system combination. In Proceedings
  of 5th International Joint Conference on
 Natural Language Processing , pages 1356 1360,
 Chiang Mai, Thailand. Asian Federation of Natural
-Language Processing.
 Carolynn Van Dyke. 1992. Old words for new worlds 
 Modern scientific and technological word-formation.
 American Speech , 67(4) 383 405.
@@ -839,7 +794,6 @@ for neural machine translation. In Proceedings of
 the 2022 Conference on Empirical Methods in Natural
  Language Processing , pages 10978 10993, Abu
 Dhabi, United Arab Emirates. Association for Computational
- Linguistics.
 Patrick Fernandes, António Farinhas, Ricardo Rei,
 José G. C. de Souza, Perez Ogayo, Graham Neubig,
 and Andre Martins. 2022. Quality-aware decoding
@@ -848,7 +802,6 @@ the 2022 Conference of the North American Chapter
  of the Association for Computational Linguistics 
 Human Language Technologies , pages 1396 1412,
 Seattle, United States. Association for Computational
-Linguistics.
 Markus Freitag, Behrooz Ghorbani, and Patrick Fernandes.
  2023. Epsilon sampling rocks  Investigating
 sampling strategies for minimum bayes risk decoding
@@ -882,11 +835,11 @@ Wei He, Zhongjun He, Hua Wu, and Haifeng Wang.
 2016. Improved neural machine translation with smt
 features. In Proceedings of the Thirtieth AAAI Conference
  on Artificial Intelligence , AAAI 16, page
-151 157. AAAI Press.
 John Hewitt, Christopher Manning, and Percy Liang.
 2022. Truncation sampling as language model
 desmoothing. In Findings of the Association for Computational
- Linguistics  EMNLP 2022 , pages 3414 3427, Abu Dhabi, United Arab Emirates. Association
+ Linguistics  EMNLP 2022 , pages 3414 
+3427, Abu Dhabi, United Arab Emirates. Association
 for Computational Linguistics.
 Thanh Lam Hoang, Gabriele Picco, Yufang Hou, YoungSuk
  Lee, Lam Nguyen, Dzung Phan, Vanessa Lopez,
@@ -897,7 +850,6 @@ pages 8495 8505. Curran Associates, Inc.
 Ari Holtzman, Jan Buys, Li Du, Maxwell Forbes, and
 Yejin Choi. 2019. The curious case of neural text
 degeneration. International Conference on Learning
-Representations .
 Anna Kristina Hultgren. 2013. Lexical borrowing from
 english into danish in the sciences  An empirical
 investigation of  domain loss . International Journal
@@ -909,13 +861,12 @@ Averaging weights leads to wider optima and better
 Artificial Intelligence .
 Siddhartha Jain, Xiaofei Ma, Anoop Deoras, and Bing
 Xiang. 2023. Self-consistency for open-ended generations.
-
 Karen Sparck Jones. 1994. Natural Language Processing 
  A Historical Review , pages 3 16. Springer
 Netherlands, Dordrecht.
 T. Kloek and H. K. van Dijk. 1978. Bayesian estimates
 of equation system parameters  An application of
-integration by monte carlo. Econometrica , 46(1) 1 19.
+integration by monte carlo. Econometrica , 46(1) 1 
 Hayato Kobayashi. 2018. Frustratingly easy model ensemble
  for abstractive summarization. In Proceedings
  of the 2018 Conference on Empirical Methods
@@ -925,7 +876,6 @@ Linguistics.Philipp Koehn and Rebecca Knowles. 2017. Six challenges
  for neural machine translation. In Proceedings
 of the First Workshop on Neural Machine Translation ,
 pages 28 39, Vancouver. Association for Computational
- Linguistics.
 Shankar Kumar and William Byrne. 2004. Minimum
 Bayes-risk decoding for statistical machine translation.
  In Proceedings of the Human Language Technology
@@ -933,15 +883,14 @@ Bayes-risk decoding for statistical machine translation.
 of the Association for Computational Linguistics 
 HLT-NAACL 2004 , pages 169 176, Boston, Massachusetts,
  USA. Association for Computational Linguistics.
-
 Shankar Kumar, Wolfgang Macherey, Chris Dyer, and
 Franz Och. 2009. Efficient minimum error rate training
  and minimum Bayes-risk decoding for translation
  hypergraphs and lattices. In Proceedings of the
-Joint Conference of the 47 4th International Joint Conference on
+Joint Conference of the 47th Annual Meeting of the
+ACL and the 4th International Joint Conference on
 Natural Language Processing of the AFNLP , pages
 163 171, Suntec, Singapore. Association for Computational
- Linguistics.
 Young-Suk Lee, Ramón Astudillo, Hoang Thanh Lam,
 Tahira Naseem, Radu Florian, and Salim Roukos.
 2022. Maximum Bayes Smatch ensemble distillation
@@ -950,7 +899,6 @@ Conference of the North American Chapter of the
 Association for Computational Linguistics  Human
 Language Technologies , pages 5379 5392, Seattle,
 United States. Association for Computational Linguistics.
-
 Mike Lewis, Yinhan Liu, Naman Goyal, Marjan
 Ghazvininejad, Abdelrahman Mohamed, Omer Levy,
 Veselin Stoyanov, and Luke Zettlemoyer. 2020.
@@ -959,7 +907,6 @@ for natural language generation, translation, and comprehension.
  In Proceedings of the 58th Annual Meeting
  of the Association for Computational Linguistics ,
 pages 7871 7880, Online. Association for Computational
- Linguistics.
 Yujia Li, David Choi, Junyoung Chung, Nate Kushman,
  Julian Schrittwieser, Rémi Leblond, Tom Eccles,
  James Keeling, Felix Gimeno, Agustin Dal
@@ -979,7 +926,6 @@ Yinhan Liu, Jiatao Gu, Naman Goyal, Xian Li, Sergey
 Edunov, Marjan Ghazvininejad, Mike Lewis, andLuke Zettlemoyer. 2020. Multilingual denoising pretraining
  for neural machine translation. Transactions
  of the Association for Computational Linguistics,
- 8 726 742.
 Potsawee Manakul, Yassir Fathullah, Adian Liusie,
 Vyas Raina, Vatsal Raina, and Mark Gales. 2023.
 CUED at ProbSum 2023  Hierarchical ensemble
@@ -994,7 +940,6 @@ models for AMR parsing. In Proceedings of the
 61st Annual Meeting of the Association for Computational
  Linguistics (Volume 2  Short Papers) , pages
 1595 1605, Toronto, Canada. Association for Computational
- Linguistics.
 Robert K. Merton. 1957. Priorities in scientific discovery 
  A chapter in the sociology of science. American
 Sociological Review , 22(6) 635 659.
@@ -1007,7 +952,8 @@ Computational Linguistics.
 Mathias Müller and Rico Sennrich. 2021. Understanding
  the properties of minimum Bayes risk decoding
 in neural machine translation. In Proceedings of the
-59 11th International Joint
+59th Annual Meeting of the Association for Computational
+ Linguistics and the 11th International Joint
 Conference on Natural Language Processing (Volume
  1  Long Papers) , pages 259 272, Online. Association
  for Computational Linguistics.
@@ -1030,8 +976,8 @@ SIGNLL Conference on Computational Natural Language
 Association for Computational Linguistics.
 Graham Neubig. 2016. Lexicons and minimum risk
 training for neural machine translation  NAISTCMU
- at WAT2016. In Proceedings of the 3rd Work-shop on Asian Translation (WAT2016) , pages 119 125, Osaka, Japan. The COLING 2016 Organizing
-Committee.
+ at WAT2016. In Proceedings of the 3rd Work-shop on Asian Translation (WAT2016) , pages 119 
+125, Osaka, Japan. The COLING 2016 Organizing
 Franz Josef Och. 2003. Minimum error rate training
 in statistical machine translation. In Proceedings
 of the 41st Annual Meeting of the Association for
@@ -1043,14 +989,13 @@ Kishore Papineni, Salim Roukos, Todd Ward, and WeiJing
 40th Annual Meeting of the Association for Computational
  Linguistics , pages 311 318, Philadelphia,
 Pennsylvania, USA. Association for Computational
-Linguistics.
 G. Parmigiani. 2001. Decision theory  Bayesian. In
 Neil J. Smelser and Paul B. Baltes, editors, International
  Encyclopedia of the Social & Behavioral
 Sciences , pages 3327 3334. Pergamon, Oxford.
 Emanuel Parzen. 1962. On Estimation of a Probability
 Density Function and Mode. The Annals of Mathematical
- Statistics , 33(3) 1065 1076.
+ Statistics , 33(3) 1065   1076.
 Maja Popovi  c. 2015. chrF  character n-gram F-score
 for automatic MT evaluation. In Proceedings of the
 Tenth Workshop on Statistical Machine Translation ,
@@ -1058,24 +1003,21 @@ pages 392 395, Lisbon, Portugal. Association for
 Computational Linguistics.
 Matt Post. 2018. A call for clarity in reporting BLEU
 scores. In Proceedings of the Third Conference on
-Machine Translation  Research Papers , pages 186 191, Brussels, Belgium. Association for Computational
- Linguistics.
+Machine Translation  Research Papers , pages 186 
+191, Brussels, Belgium. Association for Computational
 Amy Pu, Hyung Won Chung, Ankur Parikh, Sebastian
 Gehrmann, and Thibault Sellam. 2021. Learning
 compact metrics for MT. In Proceedings of the 2021
 Conference on Empirical Methods in Natural Language
  Processing , pages 751 762, Online and Punta
 Cana, Dominican Republic. Association for Computational
- Linguistics.
 B. L. Raad. 1989. Modern trends in scientific terminology 
  Morphology and metaphor. American Speech ,
-64(2) 128 136.
 Murray Rosenblatt. 1956. Remarks on Some Nonparametric
  Estimates of a Density Function. The Annals
-of Mathematical Statistics , 27(3) 832 837.
+of Mathematical Statistics , 27(3) 832   837.
 Reuven Y . Rubinstein and Dirk P. Kroese. 2016. Simulation
  and the Monte Carlo Method , 3rd edition. Wiley
-Publishing.
 Mukund Rungta, Janvijay Singh, Saif M. Mohammad,
 and Diyi Yang. 2022. Geographic citation gaps in
 NLP research. In Proceedings of the 2022 Conference
@@ -1086,20 +1028,17 @@ I.A. Latypova. 2020. Linguistic borrowing as a way
 to enrich oil and gas terminology. In Proceedings
 of the International Session on Factors of Regional
 Extensive Development (FRED 2019) , pages 58 61.
-Atlantis Press.
 Thibault Sellam, Dipanjan Das, and Ankur Parikh. 2020.
 BLEURT  Learning robust metrics for text generation.
  In Proceedings of the 58th Annual Meeting of
 the Association for Computational Linguistics , pages
 7881 7892, Online. Association for Computational
-Linguistics.
 Rico Sennrich, Barry Haddow, and Alexandra Birch.
 2016. Improving neural machine translation models
 with monolingual data. In Proceedings of the 54th
 Annual Meeting of the Association for Computational
 Linguistics (Volume 1  Long Papers) , pages 86 96,
 Berlin, Germany. Association for Computational Linguistics.
-
 Shiqi Shen, Yong Cheng, Zhongjun He, Wei He, Hua
 Wu, Maosong Sun, and Yang Liu. 2016. Minimum
 risk training for neural machine translation. In Proceedings
@@ -1132,12 +1071,17 @@ Poster Sessions , pages 787 794, Sydney, Australia.
 Association for Computational Linguistics.
 Felix Stahlberg and Bill Byrne. 2019. On NMT search
 errors and model errors  Cat got your tongue  In
-Proceedings of the 2019 9th International Joint Conference on Natural Language
- Processing (EMNLP-IJCNLP) , pages 3356 3362, Hong Kong, China. Association for Computational
+Proceedings of the 2019 Conference on Empirical
+Methods in Natural Language Processing and the
+9th International Joint Conference on Natural Language
+ Processing (EMNLP-IJCNLP) , pages 3356 
+3362, Hong Kong, China. Association for Computational
  Linguistics.Felix Stahlberg, Adrià de Gispert, Eva Hasler, and Bill
 Byrne. 2017. Neural machine translation by minimising
  the Bayes-risk with respect to syntactic translation
- lattices. In Proceedings of the 15 2, Short Papers,
+ lattices. In Proceedings of the 15th Conference
+ of the European Chapter of the Association
+for Computational Linguistics  Volume 2, Short Papers,
  pages 362 368, Valencia, Spain. Association
 for Computational Linguistics.
 Miloš Stanojevi  c and Khalil Sima an. 2014. Fitting
@@ -1148,7 +1092,6 @@ Empirical Methods in Natural Language Processing
 for Computational Linguistics.
 Andreas Stolcke, Yochai Konig, and Mitchel Weintraub.
 1997. Explicit word error minimization in n-best list
-rescoring.
 Mirac Suzgun, Luke Melas-Kyriazi, and Dan Jurafsky.
 2023. Follow the wisdom of the crowd  Effective
 text generation via minimum Bayes risk decoding.
@@ -1166,13 +1109,11 @@ decoding for statistical machine translation. In Proceedings
  of the 2008 Conference on Empirical Methods
  in Natural Language Processing , pages 620 629,
 Honolulu, Hawaii. Association for Computational
-Linguistics.
 Xuezhi Wang, Jason Wei, Dale Schuurmans, Quoc V Le,
 Ed H. Chi, Sharan Narang, Aakanksha Chowdhery,
 and Denny Zhou. 2023. Self-consistency improves
 chain of thought reasoning in language models. In
 The Eleventh International Conference on Learning
-Representations .
 Gian Wiher, Clara Meister, and Ryan Cotterell. 2022.
 On decoding strategies for neural text generators.
 Transactions of the Association for Computational
@@ -1202,22 +1143,12 @@ minimum bayesian risk decoding.
 Tianyi Zhang, Varsha Kishore, Felix Wu, Kilian Q.
 Weinberger, and Yoav Artzi. 2020. Bertscore  Evaluating
  text generation with bert.A More details on importance sampling
-for MBR
 We present in this section the normalized importance
  sampling estimator of risk used in our experiments
- in  5.3.
 The core insight of importance sampling is that
 we can rewrite the expected value of a random
 variable f(x)under target distribution pas another
 expectation under some proposal distribution q 
-Ep[f(x)]  X
-xf(x)p(x)
- X
-xf(x)p(x)
-q(x)q(x)
- Eq 
-f(x)p(x)
-q(x) 
 Importance sampling can be particularly useful
 when sampling from the proposal distribution is
 easy, but sampling from the target distribution is
@@ -1230,14 +1161,6 @@ Yeaccording to model distribution p(y x)but wish
 to compute the risk under some length-corrected
 distribution pl(y x), we may compute
 R(y )  Ey pl[L(y, y )]
- Ey p 
-L(y, y )pl(y x)
-p(y x) 
- X
-y YeL(y, y )pl(y x)
-p(y x)
- X
-y YeL(y, y )w(y)
 where we let w(y)  pl(y x)/p(y x), commonly
 referred to as the importance weight.
 Note, however, that importance sampling requires
@@ -1248,23 +1171,16 @@ intractable, again because it requires the partition
 function. What we can efficiently compute is the
 unnormalized probability  pl(y x)   exp sl(y x),
 where slis the length-corrected score given by either
- Equation 16 17.
 Fortunately, we can use normalized importance
 sampling to obtain a consistent estimator of therisk by adjusting importance weights (Rubinstein
-and Kroese, 2016) 
 R(y )  Ey pl[L(y, y )] (18)
  Ey p[L(y, y )  w(y)]
-Ey p[  w(y)](19)
- X
-y YeL(y, y )  w(y)P
-y Ye w(y)(20)
 where  w(y)    pl(y x)/p(y x). As it is the ratio of
 two estimates, the normalized importance sampling
 estimator is biased for finite sample sizes.B Contextualizing this work within
 philosophy of science
 In this section, we contextualize our work in the
 broader framings of meta-analysis of scientific research.
-
 Patterns of citation in NLP Several factors have
 been shown to correlate with citation rate in NLP,
 including author geographic location (Rungta et al.,
@@ -1273,17 +1189,18 @@ including author geographic location (Rungta et al.,
 et al., 2023). Bollmann and Elliott (2020) conduct
  a bibliometric anaylsis of the ACL Anthology,
 finding that the mean age of papers cited decreased
-significantly from 2010 2019. Singh et al. (2023)
+significantly from 2010 to 2019. Singh et al. (2023)
 expand this analysis to the full anthology, finding
 that, while citations of older papers rose briefly
-in the mid-2010s, it has since declined, with 2021 8. They term this
+in the mid-2010s, it has since declined, with 2021
+marking a historic low for the percentage of citations
+ that went to older papers8. They term this
 citational amnesia and discuss several possible reasons
  for the result, including the shift to neural
 methods and the rise of new areas of NLP.
 Our work raises another potential explanation 
 some citational amnesia is due to terminology drift
 over time, as old methods begin to be referred to
-by newer names.
 Term coining in science Work in science and
 technology studies has examined the broader phenomenon
  of term coining in science. Dyke (1992)
@@ -1305,7 +1222,7 @@ political-science-inspired  range voting  in decoding.
 where many new terms are being coined  both of
 these descriptors apply to modern NLP. While several
  works in linguistics and STS have considered
-8 10
+8They define an  older paper  as one that is more than 10
 years older than the paper that is citing it.the coining of new terms for new phenomena, relatively
  little work has focused on the divergence of
 terminology for previously observed phenomena.
@@ -1324,4 +1241,3 @@ against developing language-specific scientific terminology
 2013). However, most work on lexical divides in
 science has focused on divides across language or
 field rather than divides across time in the same
-field.

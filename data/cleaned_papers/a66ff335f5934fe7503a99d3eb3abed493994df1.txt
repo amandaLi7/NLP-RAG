@@ -1,4 +1,3 @@
-NLPositionality  
 Characterizing Design Biases of Datasets and Models
 Sebastin Santy  Jenny T. Liang  
 Ronan Le Bras Katharina Reinecke Maarten Sap  
@@ -6,7 +5,6 @@ Ronan Le Bras Katharina Reinecke Maarten Sap
  Allen Institute for AI
 {ssanty,reinecke}@cs.washington.edu,
 {jtliang,maartensap}@cs.cmu.edu, ronanlb@allenai.org
-Abstract
 Design biases in NLP systems, such as performance
  differences for different populations, often
  stem from their creator s positionality , i.e.,
@@ -25,7 +23,9 @@ alignment with dataset labels and model predictions.
  We apply NLPositionality to existing
 datasets and models for two tasks social acceptability
  and hate speech detection. To date,
-we have collected 16,299 600 1,096 87countries. We find that datasets
+we have collected 16,299annotations in over
+a year for 600instances from 1,096annotators
+ across 87countries. We find that datasets
 and models align predominantly with Western,
 White, college-educated, and younger populations.
  Additionally, certain groups, such as nonbinary
@@ -36,32 +36,24 @@ tasks. Finally, we draw from prior literature
 to discuss how researchers can examine their
 own positionality and that of their datasets and
 models, opening the door for more inclusive
-NLP systems.
-1 Introduction
  Treating different things the same can
 generate as much inequality as treating
 the same things differently. 
- Kimberlé Crenshaw
 When creating NLP datasets and models, researchers 
  design choices are partly influenced
 * Equal contribution  work done while at the Allen Institute
- for AI
-1 2 3 4 5 6 7 1 2 3 4 5 6 70.95 0.25 0.30 0.82 0.32 0.67 0.27 101 Dataset
+1 2 3 4 5 6 7  x     x x  Hate Speech Database1 2 3 4 5 6 70.95 0.25 0.30 0.82 0.32 0.67 0.27Toxic101 Dataset
  Quality annotations only from master turkers, better if educated.  Maybe only English phrases  Are micro-aggressions toxic  And misogynistic comments   Should I include gender stereotypes Researcher from USA
- Woman Activist
-&
 Carl Jones, Tech Lead, New York TimesAditya Sharma, Tech Lead, Times of IndiaDevelopers use PerspectiveAPI to remove toxic comments from their news platforms
   These people are full of shit  (0.67)   Can you stop being a jerk   (0.82)   Presstitutes everywhere on the news   (0.33)    These jihadis need to be ousted  (0.41)
 Design ChoicesResearcher Positionality . . .Dataset Positionality
-Performance mismatch for di/uniFB erent populationsModel Positionality
-(Latent)
+Performance mismatch for di/uniFB00erent populationsModel Positionality
 (Latent)Figure 1  Example Scenario. Carl from the U.S. and
 Aditya from India both want to use Perspective API, but
 it works better for Carl than it does for Aditya. This is
 because toxicity researchers  positionalities lead them
 to make design choices that make toxicity datasets, and
 thus Perspective API, to have positionalities that are
-Western-centric.
 by their positionality , i.e., their views shaped by
 their lived experience, identity, culture, and background
  (Savin-Baden and Howell-Major, 2013).
@@ -72,7 +64,7 @@ example, a U.S.-born English-speaking researcher
 building a toxicity detection system will likely start
 with U.S.-centric English statements to annotate for
 toxicity. This can cause the tool to work poorly for
-other populations (e.g., not detect offensive termsarXiv 2306.01943 1  [cs.CL]  2 2023 1).
+other populations (e.g., not detect offensive termsarXiv 2306.01943v1  [cs.CL]  2 Jun 2023like   presstitute   in Indian contexts  see Figure 1).
 Such design biases in the creation of datasets
 and models, i.e., disparities in how well datasets
 and models work for different populations, stem
@@ -90,7 +82,6 @@ model cards and data sheets  Bender and Friedman,
 Further, many popular deployed models are hidden
 behind APIs, and thus design biases can only be
 characterized indirectly (e.g., by observing model
-behavior).
 We introduce NLPositionality , a framework
 for characterizing design biases and positionality of
 NLP datasets and models. For a given dataset and
@@ -132,7 +123,8 @@ detection which are known to exhibit design biases
 et al., 2021). We examine datasets and supervised
 models related to these tasks as well as generalpurpose
  large language models (i.e., GPT-4). As of
-May 25 2023, a total of 16,299 1,096 87countries,
+May 25 2023, a total of 16,299annotations were
+collected from 1,096annotators from 87countries,
 with an average of 38annotations per day. We discover
  that the datasets and models we investigate
 are most aligned with White and educated young
@@ -172,12 +164,11 @@ positionality, defining it as   the social and cultural
 position of a model with regard to the stakeholders
 with which it interfaces .  We extend this definition
 to add that datasets also encode positionality, in aIt s very goodIt s bad Telling your sibling what to do 
-GenderIt s very bad
-AgeEthnicity
 EducationCountryBlackWhiteAsianManWomanNon-binary
 PhDPre-HighUKIndiaAustraliaUSAPolandGermanyJapanCanada20-3030-4040-5050-60
 HighIt s okayIt s goodJUDGMENTS ACROSS DEMOGRAPHICS*ACTION
-*Only includes demographics with  3 101 2  Example Annotation. An example instance
+*Only includes demographics with  3 annotationsLanguagePortugeseGujaratiEnglishArabicBrazil
+Social Chemistry 101Figure 2  Example Annotation. An example instance
 from the Social Chemistry dataset that was sent to
 LabintheWild along with the mean of the received annotation
  scores across various demographics.
@@ -228,7 +219,6 @@ et al., 2021  Xu et al., 2021). In this work, we
 extend the discussion of design biases from prior
 work into NLP, discuss it in relation to researcher
 positionality, and show its effects on datasets and
-models.
 3NLPositionality   Quantifying
 Dataset and Model Positionality
 OurNLPositionality framework follows a twostep
@@ -260,28 +250,14 @@ LabintheWild (Reinecke and Gajos, 2015), which
 hosts web-based online experiments. Compared to
 traditional laboratory settings, it has more diverse
 participants and collects equally high-quality data
-for free (August and Reinecke, 2019  Oliveira et al.,Social Chemistry 101 101 1818-2525-3535-45AgeWomanManNon-BGenderWhiteBlackHispanicEthnicityAsianGradPhDCollegeEducationSchool
- 
-"
-#Country
-$GoldLab in the Wild
+for free (August and Reinecke, 2019  Oliveira et al.,Social Chemistry 101
+Social Chemistry 101 Eating with Hands BadGood
+ 1818-2525-3535-45AgeWomanManNon-BGenderWhiteBlackHispanicEthnicityAsianGradPhDCollegeEducationSchool
  Can you live with AI and it's morals  
 Social Chemistry 101 Eating with Hands BadGoodGoldDiverse Annotations Eating with Hands BadGood
-'
-(
-#
-)
-"
- 
-*
- 
-,
-.
-
-/
 1 2 3 4 5 6 7  x     x x  SocialChem with Annotations    x   x x    -     x   x  x     - -  CollectionProcessingAnalysis
-Model PredictionsAnnotations from people around the world 4 2300 5
-Pearson s r correlation is measured between gold labels, model predictions and annotations for each of the demographics separately Figure 3  Overview of the NLPositionality Framework. Collection (steps 1-4)   A subset of datasets  instances
+Model PredictionsAnnotations from people around the world 4Instances are sent as part of a study on LITW3Each instance has an associated gold label2300 instances are sampled from a dataset1The received annotations are compared against the gold labels from the dataset and predictions obtained from the models5
+Pearson s r correlation is measured between gold labels, model predictions and annotations for each of the demographics separately6Figure 3  Overview of the NLPositionality Framework. Collection (steps 1-4)   A subset of datasets  instances
 are re-annotated via diverse volunteers recruited on LabintheWild. Processing (step 5)   We compare the labels
 collected from LabintheWild with the dataset s original labels and models  predictions. Analysis (step 6)   We
 compute the Pearson s rcorrelation between the LabintheWild annotations by demographic for the dataset s original
@@ -329,42 +305,24 @@ the positionality of datasets and models. Finally,
 we report the total number of annotators and interannotator
  agreements for each demographic using
 Krippendorff s α(Krippendorff, 2006).
-4 Case Studies
 We present case studies of applying NLPositionality
  to two different socially-aligned tasks  social
 acceptability and hate speech detection.
 2We use models  output probability scores for supervised
 models and categorical labels for GPT-4.Instance Demographic Label µScore σ2Social AcceptabilityTelling a woman what to do.Man
-Non-binary
-WomanIt s okay
-It s okay
-It s bad-0.38
--0.33
--1.330.55 4.33 0.27
 Questioning your sexual
-orientation.10-20 20-30 30-40, 40-50 0.88 0.14 0.000.70 1.48 0.00
+orientation.10-20 years old
+30-40, 40-50 years oldIt s good
 Going to church to practice your
-religion.Christian
-Buddhist
-NoneIt s good
-It s okay
-It s okay1.33 0.00 0.051.33 0.00 0.50Hate SpeechJustice for yellow man lolAsian, Black, Latino/Latina
-WhiteHate speech
-Not sure1.00 0.330.00 1.33
+0.50Hate SpeechJustice for yellow man lolAsian, Black, Latino/Latina
 Iran s Supreme Court claims gender
 equality is  Zionist plot  aiming
 to corrupt role of women in
 society. I fucking second that Christian
-Jewish
-MuslimNot sure
-Hate speech
-Not hate speech0.50 1.00
--1.000.92 0.00 0.00
 Literally anyone can be a shitty
 person, LGBT people especially College, Graduate school
 Pre-high schoolHate speech
-Not hate speech1.00
--1.000.00 0.00 1  Disagreement Examples. Examples where there was disagreement within and between demographics on
+Table 1  Disagreement Examples. Examples where there was disagreement within and between demographics on
 what the label should be from LabintheWild participants. Disagreement is shown for each label through the variance
 (σ2) and the mean ( µ) of obtained annotations for a particular demographic.
 4.1 Social Acceptability
@@ -381,8 +339,8 @@ acceptability models  behavior have been shown to
 systematically display certain values (Arora et al.,
 2023) and biases (Hämmerl et al., 2022), some of
 which are Western-centric (Jiang et al., 2021  Talat
-et al., 2022).
-Setup 612 300examples from the Social Chemistry
+Setup 612participants annotated the social acceptability
+ of 300examples from the Social Chemistry
  dataset (Forbes et al., 2020). We collected
 11,294annotations for this task and compared participants 
  responses to the original Social Chemistry
@@ -403,13 +361,12 @@ We also report the Pearson s rresults in Table 2,
 with corresponding p-values after applying the Bonferroni
  correction in the Appendix C.1. We use 
 to represent statistically significant Pearson s rcoefficients
- ( p   2.04 05). Social Chemistry is
+ ( p   2.04e 05). Social Chemistry is
 most aligned with people who grow up ( r  0.76 )
 and live in ( r  0.76 ) English-speaking countries,
  who have a college education ( r  0.74 ),
 are White ( r  0.73 ), and are 20-30 years old
 (r  0.74 ), indicating a preference to younger
-WEIRD populations.
 Delphi also exhibits a similar pattern, but to a
 lesser degree. While it strongly aligns with people
 who grow up ( r  0.61 ) and live in ( r  0.65 )
@@ -425,33 +382,32 @@ who grow up ( r  0.74 ) and live in ( r  0.73 )
 English-speaking countries, are college-educated
 (r  0.69 ), are White ( r  0.70 ) and are between
  20-30 years old ( r  0.70 ). However, itDATASETS 
- SocialChemistry
- DynaHate MODELS 
- GPT-4
- Delphi
- PerspectiveAPI
- RewireAPI
- HateRoberta
 Demographic Pearson s r
 SocialAcceptability Toxicity&Hate Speech
-# α
- # α
 Country (Lived Longest) . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-African Islamic 316 0.20 0.54* 0.49 0.47 234 0.22 0.39 0.29 0.39 0.27 0.25 140 0.41 0.73* 0.72* 0.71* 54 0.50 0.38 -0.08 0.20 0.05 0.46 452 0.28 0.64* 0.59* 0.68* 183 0.41 0.32 0.12 0.32 0.21 0.21 528 0.42 0.75* 0.58* 0.74* 154 0.24 0.47 0.28 0.51* 0.12 0.52*
+African Islamic 316 0.20 0.54* 0.49 0.47 234 0.22 0.39 0.29 0.39 0.27 0.25
+Baltic 140 0.41 0.73* 0.72* 0.71* 54 0.50 0.38 -0.08 0.20 0.05 0.46
+Catholic Europe 452 0.28 0.64* 0.59* 0.68* 183 0.41 0.32 0.12 0.32 0.21 0.21
+Confucian 528 0.42 0.75* 0.58* 0.74* 154 0.24 0.47 0.28 0.51* 0.12 0.52*
 English-Speaking 8289 0.51 0.76* 0.61* 0.74* 4025 0.40 0.70* 0.33* 0.58* 0.37* 0.41*
-Latin American 281 0.33 0.45 0.41 0.47 65 0.20 0.39 0.10 0.28 0.09 0.17 426 0.39 0.56* 0.58* 0.67* 139 0.32 0.36 0.18 0.47 0.15 0.13 706 0.48 0.65* 0.57* 0.67* 387 0.37 0.40* 0.32 0.23 0.29 0.34 413 0.40 0.63* 0.60* 0.59* 116 0.21 0.34 0.20 0.33 0.30 0.21
+Latin American 281 0.33 0.45 0.41 0.47 65 0.20 0.39 0.10 0.28 0.09 0.17
+Orthodox Europe 426 0.39 0.56* 0.58* 0.67* 139 0.32 0.36 0.18 0.47 0.15 0.13
+Protestant Europe 706 0.48 0.65* 0.57* 0.67* 387 0.37 0.40* 0.32 0.23 0.29 0.34
+West South Asia 413 0.40 0.63* 0.60* 0.59* 116 0.21 0.34 0.20 0.33 0.30 0.21
 Education Level . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 College 4489 0.48 0.74* 0.66* 0.69* 2383 0.39 0.66* 0.34* 0.56* 0.38* 0.39*
 Graduate School 1116 0.53 0.72* 0.54* 0.69* 604 0.36 0.59* 0.28* 0.51* 0.25 0.38*
 High School 2183 0.49 0.67* 0.54* 0.64* 908 0.41 0.60* 0.25 0.49* 0.30* 0.37*
 PhD 709 0.46 0.65* 0.55* 0.61* 359 0.45 0.48* 0.19 0.43* 0.26 0.31
-Pre-High School 406 0.40 0.56* 0.46* 0.59* 116 0.26 0.37 0.24 0.45* 0.25 0.38 460 0.40 0.53* 0.46* 0.49* 195 0.09 0.61* 0.10 0.35 0.09 0.19
+Pre-High School 406 0.40 0.56* 0.46* 0.59* 116 0.26 0.37 0.24 0.45* 0.25 0.38
+Professional School 460 0.40 0.53* 0.46* 0.49* 195 0.09 0.61* 0.10 0.35 0.09 0.19
 Ethnicity . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 Asian, Asian American 1160 0.55 0.66* 0.55* 0.63* 644 0.45 0.57* 0.35* 0.47* 0.33* 0.39*
 Black, African American 465 0.52 0.61* 0.50* 0.57* 287 0.34 0.56* 0.32 0.36* 0.31 0.37*
 Latino / Latina, Hispanic 314 0.57 0.62* 0.52* 0.54* 239 0.36 0.43* 0.39* 0.46* 0.31 0.31
-Native American, Alaskan Native 103 0.64 0.59* 0.52* 0.64* 65 0.23 0.31 0.31 0.32 0.33
-Pacific Islander, Native Australian 38 0 0.65* 0.63 0.62 27 0.36 0.65 0.54 0.64 0.57 3102 0.55 0.73* 0.61* 0.70* 1831 0.44 0.69* 0.29* 0.56* 0.32* 0.38*
+Native American, Alaskan Native 103 0.64 0.59* 0.52* 0.64* 65   0.23 0.31 0.31 0.32 0.33
+Pacific Islander, Native Australian 38 0 0.65* 0.63 0.62 27   0.36 0.65 0.54 0.64 0.57
+White 3102 0.55 0.73* 0.61* 0.70* 1831 0.44 0.69* 0.29* 0.56* 0.32* 0.38*
 Gender . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 Man 4082 0.45 0.73* 0.63* 0.69* 1798 0.37 0.65* 0.34* 0.56* 0.34* 0.36*
 Non-Binary 858 0.41 0.60* 0.51* 0.55* 329 0.48 0.57* 0.21 0.37* 0.27 0.31*
@@ -460,25 +416,38 @@ Native Language . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 
 English 7338 0.51 0.76* 0.64* 0.71* 3622 0.40 0.70* 0.33* 0.60* 0.39* 0.42*
 Not English 2157 0.40 0.62* 0.54* 0.64* 1020 0.27 0.46* 0.32* 0.39* 0.32* 0.36*
 Age . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-10-20 3360 0.50 0.70* 0.61* 0.69* 1615 0.39 0.61* 0.32* 0.55* 0.36* 0.36*
-20-30 4066 0.47 0.74* 0.66* 0.70* 2114 0.39 0.65* 0.34* 0.56* 0.38* 0.42*
-30-40 870 0.51 0.66* 0.52* 0.61* 419 0.28 0.48* 0.14 0.41* 0.24 0.29 40-50 655 0.44 0.62* 0.55* 0.63* 256 0.28 0.63* 0.29 0.57* 0.31 0.37*
-50-60 308 0.49 0.69* 0.53* 0.60* 199 0.39 0.57* 0.26 0.41* 0.20 0.25 60-70 204 0.48 0.64* 0.49* 0.60* 19 0.57 0.42 0.46 0.05 -0.18 70-80 68 0.56* 0.52* 0.56* 24 0.50 0.35 0.36 0.24 0.85*
-80 24 0.52 0.48 0.48 12 0.63 0.01 0.45 -0.09 0.43
+10-20 yrs old 3360 0.50 0.70* 0.61* 0.69* 1615 0.39 0.61* 0.32* 0.55* 0.36* 0.36*
+20-30 yrs old 4066 0.47 0.74* 0.66* 0.70* 2114 0.39 0.65* 0.34* 0.56* 0.38* 0.42*
+30-40 yrs old 870 0.51 0.66* 0.52* 0.61* 419 0.28 0.48* 0.14 0.41* 0.24 0.29
+40-50 yrs old 655 0.44 0.62* 0.55* 0.63* 256 0.28 0.63* 0.29 0.57* 0.31 0.37*
+50-60 yrs old 308 0.49 0.69* 0.53* 0.60* 199 0.39 0.57* 0.26 0.41* 0.20 0.25
+60-70 yrs old 204 0.48 0.64* 0.49* 0.60* 19   0.57 0.42 0.46 0.05 -0.18
+70-80 yrs old 68   0.56* 0.52* 0.56* 24   0.50 0.35 0.36 0.24 0.85*
+80  yrs old 24   0.52 0.48 0.48 12   0.63 0.01 0.45 -0.09 0.43
 Country (Residence) . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-African Islamic 164 0.27 0.49 0.48 0.46 116 0.21 0.35 0.23 0.29 0.15 0.16 53 0.02 0.65 0.65 0.33 14 0.00 0.42 0.14 0.52 0.35 0.75 406 0.33 0.53* 0.41* 0.64* 172 0.37 0.32 0.11 0.38 0.15 0.22 268 0.42 0.68* 0.55* 0.77* 83 0.17 0.41 0.36 0.45 0.33 0.48
+African Islamic 164 0.27 0.49 0.48 0.46 116 0.21 0.35 0.23 0.29 0.15 0.16
+Baltic 53 0.02 0.65 0.65 0.33 14 0.00 0.42 0.14 0.52 0.35 0.75
+Catholic Europe 406 0.33 0.53* 0.41* 0.64* 172 0.37 0.32 0.11 0.38 0.15 0.22
+Confucian 268 0.42 0.68* 0.55* 0.77* 83 0.17 0.41 0.36 0.45 0.33 0.48
 English-Speaking 7315 0.50 0.76* 0.65* 0.73* 3819 0.40 0.72* 0.34* 0.60* 0.38* 0.42*
-Latin American 166 0.43 0.54* 0.56* 0.59* 53 0.15 0.30 0.12 0.26 -0.04 0.17 264 0.38 0.47 0.57* 0.60* 90 0.31 0.25 0.28 0.37 0.29 0.17 736 0.46 0.63* 0.57* 0.61* 387 0.36 0.45* 0.31 0.23 0.31 0.31 166 0.44 0.61* 0.57* 0.53* 21 0.77 0.22 0.57 0.07 0.16
+Latin American 166 0.43 0.54* 0.56* 0.59* 53 0.15 0.30 0.12 0.26 -0.04 0.17
+Orthodox Europe 264 0.38 0.47 0.57* 0.60* 90 0.31 0.25 0.28 0.37 0.29 0.17
+Protestant Europe 736 0.46 0.63* 0.57* 0.61* 387 0.36 0.45* 0.31 0.23 0.31 0.31
+West South Asia 166 0.44 0.61* 0.57* 0.53* 21   0.77 0.22 0.57 0.07 0.16
 Religion . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-Buddhist 189 0.33 0.64* 0.58* 0.55* 69 0.40 0.48 0.10 0.25 0.19 0.50 1969 0.50 0.73* 0.55* 0.73* 1080 0.29 0.56* 0.34* 0.49* 0.36* 0.34*
-Hindu 201 0.75 0.65* 0.60* 0.58* 109 0.46 0.63* 0.34 0.41 0.30 0.38 204 0.50 0.66* 0.60* 0.60* 144 0.45 0.64* 0.29 0.43* 0.29 0.33 319 0.36 0.63* 0.59* 0.72* 89 0.33 0.42 0.16 0.29 0.14 0.31 88 0.48 0.61* 0.60* 0.72* 13 0.35 -0.16 0.15 0.20 2  Positionality of NLP datasets and models quantified using Pearson s rcorrelation coefficients. # denotes
+Buddhist 189 0.33 0.64* 0.58* 0.55* 69 0.40 0.48 0.10 0.25 0.19 0.50
+Christian 1969 0.50 0.73* 0.55* 0.73* 1080 0.29 0.56* 0.34* 0.49* 0.36* 0.34*
+Hindu 201 0.75 0.65* 0.60* 0.58* 109 0.46 0.63* 0.34 0.41 0.30 0.38
+Jewish 204 0.50 0.66* 0.60* 0.60* 144 0.45 0.64* 0.29 0.43* 0.29 0.33
+Muslim 319 0.36 0.63* 0.59* 0.72* 89 0.33 0.42 0.16 0.29 0.14 0.31
+Spritual 88 0.48 0.61* 0.60* 0.72* 13   0.35 -0.16 0.15 0.20  
+Table 2  Positionality of NLP datasets and models quantified using Pearson s rcorrelation coefficients. # denotes
 the number of annotations associated with a demographic group. αdenotes Krippendorff s alpha of a demographic
-group for a task. * denotes statistical significance ( p   2.04 05after Bonferroni correction). For each dataset or
+group for a task. * denotes statistical significance ( p   2.04e 05after Bonferroni correction). For each dataset or
 model, we denote the minimum and maximum Pearson s rvalue for in demographic category in red ( X) and blue
 (X) respectively.does have strong correlations with other populations,
  such as people who grow up in Confucian
 countries ( r  0.74 ) and have a graduate degree
-(r  0.69 ).
 Native English speakers strongly correlate with
 both datasets and models. Non-binary people align
 less to both Social Chemistry, Delphi, and GPT-4
@@ -498,10 +467,13 @@ speech is likely to vary by background. Also, annotators
 such as political affiliation (Sap et al., 2022). Hate
 speech classifiers also produce errors for instances
 outside Western contexts (Ghosh et al., 2021).
-Setup For the hate speech detection task, 484 300examples
+Setup For the hate speech detection task, 484
+LabintheWild participants annotated 300examples
 from the Dynahate dataset (Vidgen et al., 2021)
 and rated whether an instance was hate speech or
-not. We collected 5,005 3, Rewire API4,
+not. We collected 5,005annotations and compared
+participants  responses to the original Dynahate
+dataset as well as Perspective API3, Rewire API4,
 HateRoBERTa (Hartvigsen et al., 2022), and GPT4
  zero-shot. To evaluate GPT-4, we use the prompt
 used by Rae et al. (2021) 
@@ -509,7 +481,6 @@ Text   Dynahate instance
 Question  Does the above text contain rude,
 hateful, aggressive, disrespectful,
 or unreasonable language 
-Answer 
 Results We find that the instances we selected for
 this task can vary by the annotator s demographics
  (see Table 1). For instance, annotators who
@@ -520,7 +491,6 @@ We also report the results in Table 2. We report
 thep-values after applying the Bonferroni correction
  in the Appendix C.1. Dynahate is highly correlated
  with people who grow up in English-speaking
-3perspectiveapi.com
 4rewire.onlinecountries ( r  0.70 ), who have a college education
  ( r  0.66 ), are White ( r  0.69 ), and are
 20-30 years old ( r  0.65 ). However, it also
@@ -584,7 +554,6 @@ and hate speech detection, with two datasets and
 five models in total. In this section, we discuss key
 takeaways from our experiments and offer recommendations
  to account for design biases in datasets
-and models.
 There Is Positionality in NLP Models and
 datasets have positionality, as they align better
 with some populations than others. This corroborates
@@ -740,7 +709,6 @@ not fit all (Groenwold et al., 2020  Rettberg, 2022).
 Therefore, we urge the NLP community to value
 the adaptation of language technologies from one
 language or culture to another (Joshi et al., 2020).
-6 Conclusion
 We introduce NLPositionality , a framework to
 quantify design biases and positionality of datasets
 and models. In this work, we present how researcher
@@ -759,7 +727,6 @@ better with Western, White, college-educated, and
 younger populations. Our results indicate the need
 for more inclusive models and datasets, paving the
 way for NLP research that benefits all people.
-7 Limitations
 Our study has several limitations. First, demographics
  may not be the best construct for positionality,
 as there may be variability of beliefs within demographic
@@ -810,8 +777,6 @@ measure to represent these complex social phenomena.
  To reduce this threat, we provide detailed
 instructions that describe how to provide annotations
  and followed the original annotation setup as
-closely as possible.
-8 Ethics Statement
 Towards Inclusive NLP Systems Building inclusive
  NLP systems is important so that everyone
 can benefit from their usage. Currently, these sys-tems exhibit many design biases that negatively
@@ -824,7 +789,6 @@ identifying design biases. The authors take inspiration
  from fields outside of NLP by studying positionality
  (Rowe, 2014) and acknowledge crossdisciplinary
  research as crucial to building inclusive
- AI systems.
 Ethical Considerations We recognize that the
 demographics we collected only represent a small
 portion of a person s positionality. There are many
@@ -855,7 +819,6 @@ people from a wide range of ages (including minors)
 asked for informed consent to the study procedures
 as well as the associated risks, such as being exposed
  to toxic or mature content, prior to beginning
-the study.
 Research Team Positionality We discuss aspects
  of our positionality below that we believe
 are most relevant to this research. The research
@@ -874,8 +837,6 @@ These nationalities and ethnicities are overrepresented
 Thus, we acknowledge that our knowledge of how
 design biases in NLP datasets and models impact
 people is largely through research, rather than personal
- experience.
-Acknowledgements
 We thank Yejin Choi and Liwei Jiang for their invaluable
  inputs in the early stages of the project,
 especially their ideas in shaping the direction of
@@ -888,10 +849,9 @@ HCI, and ML/AI groups for their feedback throughout
 , an outstanding canine researcher, for providing
 support and motivation throughout the study.
 Jenny T. Liang was supported by the National
-Science Foundation under grants DGE1745016 2140739. Katharina Reinecke was partially
+Science Foundation under grants DGE1745016 and
+DGE2140739. Katharina Reinecke was partially
 supported by the National Science Foundation under
- grant 2230466.
-References
 AAAI. 2023. Reproducibility checklist.
 ACL. 2017. ACL Diversity Statistics.
 David Ifeoluwa Adelani, Jade Abbott, Graham Neubig,
@@ -905,26 +865,24 @@ Arnav Arora, Lucie-Aimée Kaffee, and Isabelle Augenstein.
  2023. Probing pre-trained language models
 for cross-cultural differences in values. In Workshop
  on Cross-Cultural Considerations in NLP , page
-114 130.
 Lora Aroyo and Chris Welty. 2015. Truth is a lie  Crowd
 truth and the seven myths of human annotation. AI
 Magazine , 36(1) 15 24.
 Mohammad Atari, Jonathan Haidt, Jesse Graham, Sena
 Koleva, Sean T Stevens, and Morteza Dehghani.2022. Morality beyond the WEIRD  How the nomological
  network of morality varies across cultures.
-PsyArXiv .
 Tal August and Katharina Reinecke. 2019. Pay attention,
  please  Formal language improves attention
 in volunteer and paid online experiments. In ACM
 SIGCHI Conference on Human Factors in Computing
-Systems , page 1 11.
 Edmond Awad, Sohan Dsouza, Richard Kim, Jonathan
 Schulz, Joseph Henrich, Azim Shariff, Jean-François
 Bonnefon, and Iyad Rahwan. 2018. The moral machine
  experiment. Nature , 563(7729) 59 64.
 Edmond Awad, Sohan Dsouza, Azim Shariff, Iyad Rahwan,
  and Jean-François Bonnefon. 2020. Universals
-and variations in moral decisions made in 42 70,000 participants. National Academy of
+and variations in moral decisions made in 42 countries
+ by 70,000 participants. National Academy of
 Sciences , 117(5) 2332 2337.
 Valerio Basile, Federico Cabitza, Andrea Campagner,
 and Michael Fell. 2021. Toward a perspectivist turn
@@ -932,7 +890,6 @@ in ground truthing for predictive computing. arXiv
 preprint arXiv 2109.04270 .
 Emily Bender. 2019. The# benderrule  On naming the
 languages we study and why it matters. The Gradient ,
-14.
 Emily M. Bender and Batya Friedman. 2018. Data
 statements for natural language processing  Toward
 mitigating system bias and enabling better science.
@@ -953,7 +910,6 @@ Damian Blasi, Antonios Anastasopoulos, and Graham
  technology performance across the world s
 languages. In Annual Meeting of the Association for
 Computational Linguistics (Volume 1  Long Papers) ,
-pages 5486 5505.
 Su Lin Blodgett, Solon Barocas, Hal Daumé III, and
 Hanna Wallach. 2020. Language (technology) is
 power  A critical survey of "bias" in NLP. In Annual
@@ -964,12 +920,10 @@ Venkatesh Saligrama, and Adam T Kalai. 2016. Man
 is to computer programmer as woman is to homemaker 
  Debiasing word embeddings. volume 29.Vivien Burr. 2015. Social Constructionism . Routledge.
 Andrew Caines. 2021. The geographic diversity of NLP
-conferences.
 Scott Allen Cambo and Darren Gergle. 2022. Model positionality
  and computational reflexivity  Promoting
 reflexivity in data science. In ACM SIGCHI Conference
  on Human Factors in Computing Systems , pages
-1 19.
 Sasha Costanza-Chock. 2018. Design justice, AI, and
 escape from the matrix of domination. Journal of
 Design and Science , 3(5).
@@ -1006,7 +960,6 @@ Mitchell, and Matt Gardner. 2021. Documenting
 large webtext corpora  A case study on the colossal
  clean crawled corpus. In Conference on Empirical
  Methods in Natural Language Processing , pages
-1286 1305.
 Bonaventure F.P. Dossou, Atnafu Lambebo Tonja,
 Oreen Yousuf, Salomey Osei, Abigail Oppong,
 Iyanuoluwa Shode, Oluwabusayo Olufunke Awoyomi,
@@ -1017,7 +970,6 @@ on Simple and Efficient Natural Language Processing,
  pages 52 64.Maeve Duggan, L Rainie, A Smith, C Funk, A Lenhart,
 and M Madden. 2014. Online harassment. Pew
 Research Center, Washington, DC, USA, Technical
-Rep.
 Mary Q Foote and Tonya Gau Bartell. 2011. Pathways
 to equity in mathematics education  How life experiences
  impact researcher positionality. Educational
@@ -1028,7 +980,6 @@ Maarten Sap, and Yejin Choi. 2020. Social chemistry
 norms. In Conference on Empirical Methods in Natural
  Language Processing , pages 653 670.
 Batya Friedman. 1996. Value-sensitive design. Interactions
- , 3(6) 16 23.
 Batya Friedman and Helen Nissenbaum. 1996. Bias in
 computer systems. ACM Transactions on Information
  Systems , 14(3) 330 347.
@@ -1037,17 +988,14 @@ Rada Mihalcea. 2019. Women s syntactic resilience
 and men s grammatical luck  Gender-bias in part-ofspeech
  tagging and dependency parsing. In Annual
 Meeting of the Association for Computational Linguistics
- , pages 3493 3498.
 Timnit Gebru, Jamie Morgenstern, Briana Vecchione,
  Jennifer Wortman Vaughan, Hanna Wallach,
  Hal Daumé III, and Kate Crawford. 2021.
 Datasheets for datasets. Communications of the
-ACM , 64(12) 86 92.
 Sayan Ghosh, Dylan Baker, David Jurgens, and Vinodkumar
  Prabhakaran. 2021. Detecting crossgeographic
  biases in toxicity modeling on social media.
  In Workshop on Noisy User-generated Text , page
-313 328.
 Maharshi Gor, Kellie Webster, and Jordan Boyd-Graber.
 2021. Toward deconfounding the effect of entity
 demographics for question answering accuracy. In
@@ -1065,7 +1013,6 @@ Zettlemoyer, and Noah A Smith. 2022. Whose language
  counts as high quality  measuring language
 ideologies in text data selection. "Conference on Empirical
  Methods in Natural Language Processing" ,
-pages 2562 2580.
 Christian W Haerpfer and Kseniya Kizilova. 2012. The
 world values survey. The Wiley-Blackwell Encyclopedia
  of Globalization , pages 1 5.Melissa Hall, Laurens van der Maaten, Laura Gustafson,
@@ -1076,12 +1023,10 @@ Schramowski, Jind ˇrich Libovick  y, Constantin A
 Rothkopf, Alexander Fraser, and Kristian Kersting.
 2022. Speaking multiple languages affects the
 moral bias of language models. arXiv preprint
-arXiv 2211.07733 .
 Alex Hanna, Emily Denton, Andrew Smart, and Jamila
 Smith-Loud. 2020. Towards a critical race methodology
  in algorithmic fairness. In ACM Conference on
 Fairness, Accountability, and Transparency , pages
-501 512.
 Thomas Hartvigsen, Saadia Gabriel, Hamid Palangi,
 Maarten Sap, Dipankar Ray, and Ece Kamar. 2022.
 Toxigen  Controlling language models to generate
@@ -1103,15 +1048,13 @@ Papers) , pages 6997 7013.
 Andrew Gary Darwin Holmes. 2020. Researcher
 positionality A consideration of its influence and
 place in qualitative research A new researcher guide.
-Shanlax International Journal of Education , 8(4) 1 10.
+Shanlax International Journal of Education , 8(4) 1 
 Dirk Hovy and Anders Søgaard. 2015. Tagging performance
  correlates with author age. In Annual Meeting
 of the Association for Computational Linguistics and
 the International Joint Conference on Natural Language
  Processing (Volume 2  Short Papers) , pages
-483 488.
 Panagiotis G Ipeirotis. 2010. Demographics of Mechanical
- Turk.
 Lilly Irani, Janet Vertesi, Paul Dourish, Kavita Philip,
 and Rebecca E. Grinter. 2010. Postcolonial computing 
  A lens on design and development. In ACM
@@ -1129,7 +1072,6 @@ Language Learning , pages 103 112.
 Anna Jørgensen, Dirk Hovy, and Anders Søgaard. 2015.
 Challenges of studying and processing dialects in
 social media. In ACL Workshop on Noisy Usergenerated
- Text , pages 9 18.
 Pratik Joshi, Sebastin Santy, Amar Budhiraja, Kalika
 Bali, and Monojit Choudhury. 2020. The state and
 fate of linguistic diversity and inclusion in the NLP
@@ -1140,12 +1082,10 @@ A mulching proposal  Analysing and improving an
 algorithmic system for turning the elderly into highnutrient
  slurry. In Extended abstracts of the SIGCHI
 Conference on Human Factors in Computing Systems ,
-pages 1 11.
 András Kornai. 2013. Digital language death. PLOS
-ONE , 8(10) 1 11.
 Klaus Krippendorff. 2006. Reliability in content analysis 
  Some common misconceptions and recommendations.
- Human Communication Research , 30(3) 411 433.
+ Human Communication Research , 30(3) 411 
 Michael Li. 2020. To build less-biased AI, hire a more
 diverse team. Harvard Business Review .
 Kim Halskov Madsen and Peter H. Aiken. 1993. Experiences
@@ -1179,7 +1119,6 @@ Kiemute Oyibo. 2016. Designing culture-based persuasive
  technology to promote physical activity among
 university students. In Proceedings of the 2016 conference
  on user modeling adaptation and personalization
- , pages 321 324.
 Barbara Plank. 2022. The  problem  of human label
 variation  On ground truth in data, modeling and
 evaluation. In Conference on Empirical Methods in
@@ -1194,7 +1133,6 @@ Katharina Reinecke and Abraham Bernstein. 2011.
 Improving performance, perceived usability, and
 aesthetics with culturally adaptive user interfaces.
 ACM Transactions on Computer-Human Interaction ,
-18(2) 1 29.
 Katharina Reinecke and Abraham Bernstein. 2013.
 Knowing what a user likes  A design science approach
  to interfaces that automatically adapt to culture.
@@ -1203,7 +1141,7 @@ Katharina Reinecke and Krzysztof Z. Gajos. 2015.
 LabInTheWild  Conducting large-scale online experiments
  with uncompensated samples. In ACM Conference
  on Computer Supported Cooperative Work &
-Social Computing , pages 1364 1378.
+Social Computing , pages 1364  1378.
 Jill Walker Rettberg. 2022. ChatGPT is multilingual
  but monocultural, and it s learning your values.
 https //jilltxt.net/right-now-chatgpt-ismultilingual-but-monocultural-but-its-
@@ -1219,7 +1157,7 @@ Wendy E Rowe. 2014. Positionality. The SAGE encyclopedia
 Maarten Sap, Dallas Card, Saadia Gabriel, Yejin Choi,
 and Noah A. Smith. 2019. The risk of racial bias in
 hate speech detection. In Annual Meeting of the Association
- for Computational Linguistics , pages 1668 1678.
+ for Computational Linguistics , pages 1668 
 Maarten Sap, Swabha Swayamdipta, Laura Vianna,
 Xuhui Zhou, Yejin Choi, and Noah A. Smith. 2022.
 Annotators with attitudes  How annotator beliefs and
@@ -1233,7 +1171,6 @@ Guide to Theory and Practice. Routledge .
 Vered Shwartz. 2022. Good night at 4 pm   time expressions
  in different cultures. In Findings of the Association
  for Computational Linguistics  ACL , pages
-2842 2853.
 Clay Spinuzzi. 2005. The methodology of participatory
 design. Technical Communication , 52(2) 163 174.
 Aarohi Srivastava, Abhinav Rastogi, Abhishek Rao,
@@ -1242,18 +1179,15 @@ Adam R Brown, Adam Santoro, Aditya Gupta,
 Adrià Garriga-Alonso, et al. 2022. Beyond the
 imitation game  Quantifying and extrapolating the
 capabilities of language models. arXiv preprint
-arXiv 2206.04615 .
 Zeerak Talat, Hagen Blix, Josef Valvoda, Maya Indira
 Ganesh, Ryan Cotterell, and Adina Williams. 2022.
 On the machine learning of ethical judgments from
 natural language. In Conference of the North American
  Chapter of the Association for Computational
 Linguistics  Human Language Technologies , pages
-769 779.
 Rachael Tatman. 2017. Gender and dialect bias in
 YouTube s automatic captions. In ACL Workshop
 on Ethics in Natural Language Processing , pages
-53 59.
 Bertie Vidgen, Tristan Thrush, Zeerak Waseem, and
 Douwe Kiela. 2021. Learning from the worst  Dynamically
  generated datasets to improve online hate
@@ -1274,7 +1208,6 @@ learning  On the illusion of objectivity in NLP. arXiv
 preprint arXiv 2101.11974 .
 Thomas D Wickens and Geoffrey Keppel. 2004. Design
 and Analysis  A Researcher s Handbook . PrenticeHall.
-
 Langdon Winner. 2017. Do artifacts have politics  In
 Computer Ethics , pages 177 192. Routledge.
 Albert Xu, Eshaan Pathak, Eric Wallace, Suchin Gururangan,
@@ -1285,7 +1218,6 @@ Human Language Technologies , pages 2390 2397.A Data
 In this section, we describe all the decisions that
 went into sampling data points from the different
 datasets and its post-processing.
-A.1 Sampling
 For Social Chemistry, we sample instances whose
 label for anticipated agreement by the general public
  was  Controversial (  50%) . We ensure the
@@ -1293,9 +1225,8 @@ samples are equally represented by the moral foundation
  label, which we compute based on majority
 vote across annotators. In the study, annotators
 respond whether they found a presented action socially
- acceptable.
 For Dynahate, we randomly sample instances
-from rounds 3 4. In these rounds, annotators
+from rounds 3 and 4. In these rounds, annotators
  generated examples of implicit hate, which is
 subtler and harder to detect and could yield differences
  in annotations. We ensure that there are equal
@@ -1303,18 +1234,14 @@ amounts of hateful and not hateful instances and
 that the types of targets of the hateful instances are
 equally represented. During the studsy, annotators
 respond whether they found a presented instance
-toxic.
 For both social acceptability and hate speech detection,
  annotators responded whether they found
 the situation moral and whether they found the instance
  to be hate speech respectively.
-A.2 Post-Processing
 Because Social Chemistry has multiple annotations
 for each instance, we compute an aggregate score
 by taking the average score across annotators. This
 score is then used to correlate to the annotators 
-aggregated scores.
-B Study Design
 In this section, we discuss the design of the
 LabintheWild experiments. The social acceptability
  task was released to the public in April 2022.
@@ -1330,7 +1257,6 @@ The social acceptability task is marketed as
  for this study provide annotations for 25situations. The hate speech detection task is marketed
  as  Do you and AI agree on what is hate
 speech  Let s find out   Participants provid annotations
- for 15 instances.
 B.1 LabintheWild Study Flow
 We describe the format of the LabintheWild experiment.
  The phases of the experiment are  obtaining
@@ -1366,7 +1292,6 @@ Dynahate and we provide three examples of hate
 speech (see Figure 6). We also present examples of
 negative sentiment, profanity, or discussing groups
 that could be confused as hate speech, but are not
-hate speech.
 Collecting Annotations After being presented
 with instructions, participants begin data collection
 from the 300 instances selected from Section A.1.
@@ -1409,14 +1334,9 @@ participants as the same demographic as them (see
 Figure 8). Each of these agreement scores are further
  broken down by the type of the instance (i.e.,
 moral foundation for Social Chemistry and hate
-type for Dynahate).
-C Additional Results
 In this section, we report additional results from
 our analyses of the LabintheWild data.
-C.1 p-values
 We report the p-values from our analyses from Table
- 3.
-D Cultural Spheres
 Division of countries can be done through continents.
  However, continents are often not representative
  of the countries within it and clustering
@@ -1437,39 +1357,66 @@ the Dynahate dataset) and asked to rate whether the instance was toxic or not. P
 people from their country responded after each attempt.Figure 8  Results interface for the social acceptability task. Participants can view how well they aligned with the
 AI, as well as how other demographics they reported aligned with the AI. The AI alignment is further broken down
 by the type of moral foundation.DATASETS 
- SocialChemistry
- DynaHate MODELS 
- GPT-4
- Delphi
- PerspectiveAPI
- RewireAPI
- HateRoberta
 Demographic p-value (α  2.04e-05)
 SocialAcceptability Toxicity&Hate Speech
 Country (Lived Longest) . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-African Islamic 1.74e-04 2.01e-03 4.40e-03 4.02e-03 2.37e-01 3.50e-03 3.28e-01 6.82e-01 2.98e-06 7.11e-06 1.27e-05 1.00 00 1.00 00 1.00 00 1.00 00 4.34e-01 1.40e-09 1.98e-07 3.77e-11 2.21e-01 1.00 00 2.01e-01 1.00 00 1.00 00 5.23e-15 3.89e-07 1.58e-14 3.15e-03 1.00 00 4.27e-04 1.00 00 3.07e-04
-English-Speaking 6.67e-55 4.12e-29 2.21e-49 3.31e-44 3.59e-07 8.74e-27 3.17e-09 5.38e-12 2.50e-02 9.08e-02 1.52e-02 7.87e-01 1.00 00 1.00 00 1.00 00 1.00 00 1.02e-06 2.42e-07 1.38e-10 1.37e-01 1.00 00 3.34e-03 1.00 00 1.00 00 1.17e-14 2.18e-10 6.14e-16 1.15e-04 1.46e-02 5.09e-01 5.43e-02 5.07e-03 1.63e-09 2.10e-08 4.53e-08 3.30e-01 1.00 00 4.34e-01 9.13e-01 1.00 00
+African Islamic 1.74e-04 2.01e-03 4.40e-03 4.02e-03 2.37e-01 3.50e-03 3.28e-01 6.82e-01
+Baltic 2.98e-06 7.11e-06 1.27e-05 1.00e 00 1.00e 00 1.00e 00 1.00e 00 4.34e-01
+Catholic Europe 1.40e-09 1.98e-07 3.77e-11 2.21e-01 1.00e 00 2.01e-01 1.00e 00 1.00e 00
+Confucian 5.23e-15 3.89e-07 1.58e-14 3.15e-03 1.00e 00 4.27e-04 1.00e 00 3.07e-04
+English-Speaking 6.67e-55 4.12e-29 2.21e-49 3.31e-44 3.59e-07 8.74e-27 3.17e-09 5.38e-12
+Latin American 2.50e-02 9.08e-02 1.52e-02 7.87e-01 1.00e 00 1.00e 00 1.00e 00 1.00e 00
+Orthodox Europe 1.02e-06 2.42e-07 1.38e-10 1.37e-01 1.00e 00 3.34e-03 1.00e 00 1.00e 00
+Protestant Europe 1.17e-14 2.18e-10 6.14e-16 1.15e-04 1.46e-02 5.09e-01 5.43e-02 5.07e-03
+West South Asia 1.63e-09 2.10e-08 4.53e-08 3.30e-01 1.00e 00 4.34e-01 9.13e-01 1.00e 00
 Education Level . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-College 1.02e-50 1.19e-35 8.21e-41 8.96e-37 8.42e-08 7.75e-25 9.17e-10 8.75e-11 5.80e-44 1.97e-21 1.74e-39 9.60e-23 3.79e-04 4.51e-16 3.15e-03 4.12e-08 9.32e-38 1.31e-21 4.85e-33 6.01e-24 2.74e-03 1.19e-14 4.48e-05 5.12e-08 4.16e-28 2.29e-18 4.32e-24 1.63e-09 5.54e-01 9.82e-08 2.54e-02 1.93e-03
-Pre-High School 4.48e-17 8.53e-11 7.00e-20 2.25e-02 1.00 00 8.06e-04 1.00 00 1.43e-02 2.19e-13 1.50e-09 3.50e-11 1.65e-12 1.00 00 3.08e-03 1.00 00 1.00 00
+College 1.02e-50 1.19e-35 8.21e-41 8.96e-37 8.42e-08 7.75e-25 9.17e-10 8.75e-11
+Graduate School 5.80e-44 1.97e-21 1.74e-39 9.60e-23 3.79e-04 4.51e-16 3.15e-03 4.12e-08
+High School 9.32e-38 1.31e-21 4.85e-33 6.01e-24 2.74e-03 1.19e-14 4.48e-05 5.12e-08
+PhD 4.16e-28 2.29e-18 4.32e-24 1.63e-09 5.54e-01 9.82e-08 2.54e-02 1.93e-03
+Pre-High School 4.48e-17 8.53e-11 7.00e-20 2.25e-02 1.00e 00 8.06e-04 1.00e 00 1.43e-02
+Professional School 2.19e-13 1.50e-09 3.50e-11 1.65e-12 1.00e 00 3.08e-03 1.00e 00 1.00e 00
 Ethnicity . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 Asian, Asian American 6.37e-35 2.04e-22 4.77e-31 1.85e-21 4.80e-07 1.46e-13 4.19e-06 9.54e-09
 Black, African American 3.50e-24 8.08e-15 2.03e-20 8.82e-14 1.01e-03 6.16e-05 1.79e-03 2.34e-05
 Latino / Latina, Hispanic 1.47e-19 8.00e-13 6.30e-14 6.39e-07 2.39e-05 5.23e-08 3.19e-03 3.26e-03
-Native American, Alaskan Native 2.33e-07 3.11e-05 3.44e-09 1.00 00 6.37e-01 6.72e-01 6.07e-01 4.81e-01
-Pacific Islander, Native Australian 6.63e-04 1.38e-03 2.22e-03 1.00 00 1.32e-02 1.77e-01 1.59e-02 1.01e-01 1.27e-48 4.94e-29 1.44e-42 4.51e-42 1.47e-05 2.00e-24 1.18e-06 8.31e-10
+Native American, Alaskan Native 2.33e-07 3.11e-05 3.44e-09 1.00e 00 6.37e-01 6.72e-01 6.07e-01 4.81e-01
+Pacific Islander, Native Australian 6.63e-04 1.38e-03 2.22e-03 1.00e 00 1.32e-02 1.77e-01 1.59e-02 1.01e-01
+White 1.27e-48 4.94e-29 1.44e-42 4.51e-42 1.47e-05 2.00e-24 1.18e-06 8.31e-10
 Gender . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
 Man 2.55e-47 2.19e-31 8.72e-41 1.99e-34 1.09e-07 3.55e-24 7.84e-08 1.46e-08
-Non-Binary 3.61e-26 4.94e-18 1.14e-21 3.00e-16 1.64e-01 6.67e-06 8.00e-03 8.49e-04 7.04e-51 1.25e-27 1.76e-48 4.02e-33 6.36e-08 8.19e-22 4.27e-10 2.17e-09
+Non-Binary 3.61e-26 4.94e-18 1.14e-21 3.00e-16 1.64e-01 6.67e-06 8.00e-03 8.49e-04
+Woman 7.04e-51 1.25e-27 1.76e-48 4.02e-33 6.36e-08 8.19e-22 4.27e-10 2.17e-09
 Native Language . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-English 8.54e-55 2.04e-33 1.91e-44 1.22e-44 3.38e-07 1.28e-29 2.10e-10 2.39e-12 1.04e-25 5.10e-18 1.05e-27 9.78e-11 1.58e-04 2.40e-07 1.93e-04 6.29e-06
+English 8.54e-55 2.04e-33 1.91e-44 1.22e-44 3.38e-07 1.28e-29 2.10e-10 2.39e-12
+Not English 1.04e-25 5.10e-18 1.05e-27 9.78e-11 1.58e-04 2.40e-07 1.93e-04 6.29e-06
 Age . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-10-20 5.54e-43 9.00e-29 1.46e-40 2.89e-29 1.85e-06 2.23e-22 7.63e-09 8.33e-09 20-30 5.35e-50 1.49e-36 1.23e-42 1.79e-34 1.22e-07 6.51e-24 5.61e-10 2.90e-12 30-40 2.71e-33 2.24e-18 7.56e-27 2.25e-10 1.00 00 2.37e-07 4.49e-02 3.21e-03 40-50 2.48e-24 4.36e-18 2.98e-26 3.43e-16 1.49e-02 2.12e-12 5.43e-03 1.68e-04 50-60 9.40e-23 9.98e-12 4.58e-16 1.96e-10 1.49e-01 9.98e-05 1.00 00 2.47e-01 60-70 4.85e-17 9.35e-09 1.92e-14 4.99e-01 1.00 00 1.00 00 1.00 00 1.00 00 70-80 5.14e-05 4.20e-04 3.91e-05 8.78e-01 1.00 00 1.00 00 1.00 00 2.96e-05 80 4.75e-01 9.08e-01 8.63e-02 1.00 00 1.00 00 1.00 00 1.00 00 1.00 00
+10-20 yrs old 5.54e-43 9.00e-29 1.46e-40 2.89e-29 1.85e-06 2.23e-22 7.63e-09 8.33e-09
+20-30 yrs old 5.35e-50 1.49e-36 1.23e-42 1.79e-34 1.22e-07 6.51e-24 5.61e-10 2.90e-12
+30-40 yrs old 2.71e-33 2.24e-18 7.56e-27 2.25e-10 1.00e 00 2.37e-07 4.49e-02 3.21e-03
+40-50 yrs old 2.48e-24 4.36e-18 2.98e-26 3.43e-16 1.49e-02 2.12e-12 5.43e-03 1.68e-04
+50-60 yrs old 9.40e-23 9.98e-12 4.58e-16 1.96e-10 1.49e-01 9.98e-05 1.00e 00 2.47e-01
+60-70 yrs old 4.85e-17 9.35e-09 1.92e-14 4.99e-01 1.00e 00 1.00e 00 1.00e 00 1.00e 00
+70-80 yrs old 5.14e-05 4.20e-04 3.91e-05 8.78e-01 1.00e 00 1.00e 00 1.00e 00 2.96e-05
+80  yrs old 4.75e-01 9.08e-01 8.63e-02 1.00e 00 1.00e 00 1.00e 00 1.00e 00 1.00e 00
 Country (Residence) . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-African Islamic 2.01e-02 2.64e-02 4.28e-02 2.75e-01 1.00 00 1.00 00 1.00 00 1.00 00 8.25e-03 8.25e-03 1.00 00 1.00 00 1.00 00 1.00 00 1.00 00 1.66e-01 6.35e-08 3.01e-04 7.84e-13 1.68e-01 1.00 00 1.82e-02 1.00 00 1.00 00 3.36e-08 1.83e-04 1.35e-11 1.62e-01 4.59e-01 5.03e-02 8.55e-01 2.13e-02
-English-Speaking 1.96e-53 8.43e-35 6.34e-48 7.43e-47 1.17e-07 2.65e-29 3.29e-10 6.96e-13 1.14e-04 5.20e-05 7.76e-06 1.00 00 1.00 00 1.00 00 1.00 00 1.00 00 2.23e-03 1.60e-05 3.18e-06 1.00 00 1.00 00 4.34e-01 1.00 00 1.00 00 6.59e-18 5.21e-14 3.82e-16 3.23e-06 1.43e-02 3.54e-01 1.66e-02 1.21e-02 3.46e-08 8.91e-07 1.29e-05 1.89e-03 1.00 00 3.46e-01 1.00 00 1.00 00
+African Islamic 2.01e-02 2.64e-02 4.28e-02 2.75e-01 1.00e 00 1.00e 00 1.00e 00 1.00e 00
+Baltic 8.25e-03 8.25e-03 1.00e 00 1.00e 00 1.00e 00 1.00e 00 1.00e 00 1.66e-01
+Catholic Europe 6.35e-08 3.01e-04 7.84e-13 1.68e-01 1.00e 00 1.82e-02 1.00e 00 1.00e 00
+Confucian 3.36e-08 1.83e-04 1.35e-11 1.62e-01 4.59e-01 5.03e-02 8.55e-01 2.13e-02
+English-Speaking 1.96e-53 8.43e-35 6.34e-48 7.43e-47 1.17e-07 2.65e-29 3.29e-10 6.96e-13
+Latin American 1.14e-04 5.20e-05 7.76e-06 1.00e 00 1.00e 00 1.00e 00 1.00e 00 1.00e 00
+Orthodox Europe 2.23e-03 1.60e-05 3.18e-06 1.00e 00 1.00e 00 4.34e-01 1.00e 00 1.00e 00
+Protestant Europe 6.59e-18 5.21e-14 3.82e-16 3.23e-06 1.43e-02 3.54e-01 1.66e-02 1.21e-02
+West South Asia 3.46e-08 8.91e-07 1.29e-05 1.89e-03 1.00e 00 3.46e-01 1.00e 00 1.00e 00
 Religion . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
-Buddhist 7.42e-13 3.16e-10 7.78e-09 2.44e-02 1.00 00 1.00 00 1.00 00 1.27e-02 3.47e-48 2.43e-22 9.04e-47 1.21e-22 1.66e-07 3.99e-17 3.03e-08 3.61e-07 4.62e-14 3.57e-11 2.97e-10 1.12e-08 7.96e-02 6.02e-03 3.03e-01 1.89e-02 8.32e-17 1.85e-13 4.97e-13 8.13e-11 1.95e-01 4.75e-04 1.89e-01 4.87e-02 2.72e-14 1.81e-12 1.37e-20 7.50e-02 1.00 00 1.00 00 1.00 00 1.00 00 9.75e-08 3.49e-07 3.56e-12 1.00 00 1.00 00 1.00 00 1.00 00 3  Associated p-values of each associated Pearson s rcorrelation value after applying Bonferroni
+Buddhist 7.42e-13 3.16e-10 7.78e-09 2.44e-02 1.00e 00 1.00e 00 1.00e 00 1.27e-02
+Christian 3.47e-48 2.43e-22 9.04e-47 1.21e-22 1.66e-07 3.99e-17 3.03e-08 3.61e-07
+Hindu 4.62e-14 3.57e-11 2.97e-10 1.12e-08 7.96e-02 6.02e-03 3.03e-01 1.89e-02
+Jewish 8.32e-17 1.85e-13 4.97e-13 8.13e-11 1.95e-01 4.75e-04 1.89e-01 4.87e-02
+Muslim 2.72e-14 1.81e-12 1.37e-20 7.50e-02 1.00e 00 1.00e 00 1.00e 00 1.00e 00
+Spritual 9.75e-08 3.49e-07 3.56e-12 1.00e 00 1.00e 00 1.00e 00 1.00e 00  
+Table 3  Associated p-values of each associated Pearson s rcorrelation value after applying Bonferroni
 corrections. α  0.001 and α  2.04e-05 before and after applying Bonferroni corrections respectively.Cultural Sphere Countries
 African-Islamic Afghanistan, Albania, Algeria, Azerbaijan, Ethiopia, Indonesia, Iraq, Jordan, Morocco, Pakistan,
 Palestine, Qatar, Nigeria, Saudi Arabia, South Africa, Syrian Arab Republic, Tunisia, Turkey,
@@ -1478,20 +1425,14 @@ Burkina Faso, Bangladesh, Egypt, Ghana, Iran, Kazakhstan, Kyrgyzstan, Lebanon, L
 Rwanda, Tajikistan, Tanzania, Uganda, Yemen, Zambia, Zimbabwe
 Baltic Estonia, Latvia, Lithuania, Åland Islands
 Catholic-Europe Andorra, Austria, Belgium, Czech Republic, France, Hungary, Italy, Luxembourg, Poland,
-Portugal, Spain
-Slovakia, Slovenia
 Confucian China, Hong Kong, Japan, South Korea, Taiwan
-Macao
 English-Speaking American Samoa, Australia, Canada, Guernsey, Ireland, New Zealand, United Kingdom, United
-States
 Latin-America Argentina, Brazil, Colombia, Dominican Republic, Mexico, Philippines, Trinidad and Tobago,
-Venezuela
 Bolivia, Chile, Ecuador, Guatemala, Haiti, Nicaragua, Peru, Puerto Rico, Uruguay
 Orthodox-Europe Belarus, Bosnia, Bulgaria, Cyprus, Georgia, Greece, Moldova, Romania, Russia, Serbia, Ukraine
 Armenia, Montenegro, North Macedonia
 Protestant-Europe Denmark, Finland, Germany, Iceland, Netherlands, Norway, Sweden, Switzerland
 West-South-Asia India, Israel, Malaysia, Myanmar, Singapore, Vietnam
-Thailand
 Table 4  Cultural spheres and their corresponding countries from (Haerpfer and Kizilova, 2012). Black color
 indicates that the countries are part of our collected data. Gray color indicates countries not part of our analysis we
 have included them to give an idea of which other countries belong to the spheres.

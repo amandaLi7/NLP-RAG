@@ -1,8 +1,9 @@
 Multilingual Content Moderation  A Case Study on Reddit
-Meng Ye1, Karan Sikka1, Katherine Atwell2, Sabit Hassan2 1,Malihe Alikhani2 1Center for Vision Technologies, SRI International
+Meng Ye1, Karan Sikka1, Katherine Atwell2, Sabit Hassan2
+Ajay Divakaran1,Malihe Alikhani2
+1Center for Vision Technologies, SRI International
 2Department of Computer Science, University of Pittsburgh
 {first.last}@sri.com ,{kaa139, sah259, malihe}@pitt.edu
-Abstract
 Content moderation is the process of ﬂagging
 content based on pre-deﬁned platform rules.
 There has been a growing need for AI moderators
@@ -18,7 +19,7 @@ subsumes detection of offensive speech, and
 which entails an adaptive solution. We propose
  to study the challenges of content moderation
  by introducing a multilingual dataset
-of1.8 56
+of1.8 Million Reddit comments spanning 56
 subreddits in English, German, Spanish and
 French1. We perform extensive experimental
 analysis to highlight the underlying challenges
@@ -28,8 +29,6 @@ noise (human biases), transfer of moderation
 models, and predicting the violated rule. Our
 dataset and analysis can help better prepare for
 the challenges and opportunities of auto moderation.
-
-1 Introduction
 Being able to moderate user-generated content is
 critical for online social media platforms. Several
  platforms employ human moderators to monitor
@@ -41,14 +40,11 @@ moderators  task is to remove improper content
 and/or suspend users posting such content. However,
  reviewing and moderating each user comment
  is practically infeasible due to limited resources,
- especially during time-critical and large https //github.com/mye1225/multilingual_
-
-content_mod.git
+ especially during time-critical and large1https //github.com/mye1225/multilingual_
  bien ah pap  te felicito ..specs   
  jajajaj te re doli eh  xd     vaccine isn t a perfectly safe
 treatment   the risk is so small
 that it is recommended for
-nearly everyone 
  I am a physician. I'm just not
 verified on here. I'm a paediatric
 registrar in the UK. You're a
@@ -60,7 +56,6 @@ marktlage  wie du dein portfolio...
  honein was wird dann aus meinen
 24 dodgecoin     your muscles were likely not
 recovered and your nervous
-system ... 
  nausea and dizziness are
 actually quite common side
 effects of the vaccine ... 
@@ -68,26 +63,18 @@ effects of the vaccine ...
 very similar to mine   
  any one want to lose weight
 contact me via email  
-{{EMAIL}}. com 
-r/askdocs
-English
-SpanishGerman
-r/finanzen
- No advertising
  Provoke discussionr/bodyweightfitness
-r/argaming
  Medical advices are allowed in r/ askdocs , but not in r/ bodyweightfitness .
  An offensive comment that was not removed.
- A removed comment that doesn t seem to be violating rules.1 2 31 12 3
-kept removed
+ A removed comment that doesn t seem to be violating rules.1
  possible reason No medical advice
  Be wholesome Keine Werbung
  Kein Hass, Unhöflichkeit oder Angriffe
  Kryptodiskussionen sind begrenzt
  Personal questions only
- No emergencies
  Claiming credentials not allowed Seguir las reglas de reddit y
-reddiquette  No pirateriaFigure 1 1) depends on rules of each community, 2) requires
+reddiquette  No pirateriaFigure 1  Content moderation on Reddit is challenging
+as it 1) depends on rules of each community, 2) requires
 contextualized understanding of the comments, and 3)
 is affected by moderator biases.
 scale events. More importantly, such moderation
@@ -95,7 +82,6 @@ scale events. More importantly, such moderation
  health due to burnout from volunteer work
 and exposure to harmful content (Gillespie, 2020 
 Roberts, 2014  Dosono and Semaan, 2019  Wohn,
-2019).
 In recent years, researchers have put effort
 into collecting hate speech or offensive language
 datasets from social platforms such as Twitter
@@ -109,7 +95,7 @@ comments (Pamungkas et al., 2020  Chung et al.,
 2019  Ranasinghe and Zampieri, 2021). We refer
  to this problem as Offensive Language Identiﬁcation
  (OLI). Instead of simply removing such
-content or suspending users, some works proposearXiv 2302.09618 1  [cs.CL]  19 2023countering hate speech with discourse-aware style
+content or suspending users, some works proposearXiv 2302.09618v1  [cs.CL]  19 Feb 2023countering hate speech with discourse-aware style
 transfer (Atwell et al., 2022), expert-based counternarratives
  (Chung et al., 2019), by learning to intervene
  with conversational context (Qian et al.,
@@ -148,7 +134,8 @@ researchers who agree to the terms and conditions
 of our data-sharing policy approved by the ethical
 committee of our institution. Our contributions are 
  We propose a multilingual dataset for content
-moderation. The dataset consists of 1.8 56subreddits with moderation
+moderation. The dataset consists of 1.8 millioncomments
+ from 56subreddits with moderation
  labels, that specify whether a comment
 was kept or removed by the moderator. We
 also provide the meta-data for each subreddit
@@ -158,12 +145,10 @@ datasets are not suitable for the content moderation
  task because only a small portion of
 2https //www.redditinc.com/policies/
 content-policyDataset Platform Type Size Language
-OLID T O&H 14 1.5K en
 OffensEval T,R,F O&H 9M en, da, tr, ar, el
 HatEval T O&H 19.6K en, es
-CDUC Y CYB 4.6K en
 CONAN T O&H 15K en, fr, it
-Norms R MOD 4 1.8M en, de, es, fr
+Ours R MOD 1.8M en, de, es, fr
 Table 1  Comparison with published datasets.
 OLID (Zampieri et al., 2019). SWAD (Pamungkas
 et al., 2020). OffensEval-2020 (Zampieri et al., 2020).
@@ -172,22 +157,18 @@ HatEval (Basile et al., 2019). CONAN (Chung et al.,
  et al., 2018). Platforms  (T)witter,
 (F)acebook, (R)eddit, (Y)outube. Types  (O)ffensive
 and (H)ate speech, (SW)earing, (CYB)er Bullying,
-(MOD)eration.
 the removed comments are offensive. As
 such, the models trained on OLI datasets fail
 to identify removed comments that are nonoffensive.
-
  We study the performance of models
 trained on moderation data under different
 cross-lingual settings including multilinguallanguage
  model, translate-train, and translatetest.
-
  We provide insights on what makes content
 moderation a challenging task and discuss potential
  research problems that can be explored
 with our proposed dataset.
-2 2.1 Offensive Language and Hate Speech
-Datasets
+2.1 Offensive Language and Hate Speech
 Many existing works that have collected user comments
  from online social platforms. Zampieri et al.
 (2019) proposed Offensive Language Identiﬁcation
@@ -260,8 +241,8 @@ other low-resource languages. While Hassan et al.
 (2022) study human moderation bias across different
  languages and cultures, our work focuses on
 the problem of automated moderation.
-3 3.1 56subreddits based on the
-following criteria 
+3.1 Subreddit selection
+We collected data from 56subreddits3based on the
 Wide range of topics   Generally the popularity
 (and thus data points) of a subreddit depends on its
 topic. Being able to cover many topics will enable
@@ -297,12 +278,10 @@ from multiple subreddits. For each data record we
 store important ﬁelds such as the ID, author, posting
  time, and comment body. We follow a two step
 approach where we ﬁrst scrape data for a week, and
-3 56 8.
+3A full list of all 56 subreddits can be found in Table 8.
 4https //github.com/praw-dev/prawsplit language #sub #comments removal
-Training data
 en-train English 48 1 ,347 ,611 1 .87%
 en-val English 48 74 ,885 1 .83%
-Test data
 de German 3 177 ,046 0 .86%
 es Spanish 2 95 ,586 0 .66%
 en English 48 74 ,893 1 .85%
@@ -316,7 +295,7 @@ been deleted by the author. We use this two-step approach
 it does not retain its original content. Figure 5 in
 the appendix shows the overall procedure of our
 data collection pipeline.
-3.3 1.8
+We use the data collection pipeline to collect  1.8
 Million comments in a time span of three weeks.
 For benchmarking, we split all of the English
 data randomly into 90%/5%/5%as train, validation,
@@ -346,20 +325,11 @@ in OffensEval-2020 (Zampieri et al., 2020), and
  examples in those datasets makes them less
 suitable for real world applications because these
 offensive posts make up only a small share of moderated
- content.
 We also observe that different subreddits have
 4000 5000 6000 7000 8000r/publicfreakout
-r/worldnews
-r/antiwork
-r/tooafraidtoask
-r/news0.55%
-1.99%
-1.91%
-0.64%
 3.47%Number of comments
-kept
-removedFigure 2 5 subreddits (% removed comments in also
-shown).
+removedFigure 2  Number of kept and removed comments in
+the top 5 subreddits (% removed comments in also
 different rates of removal, from the lowest of 0.0%
 to the highest of 21.74%. These differences are
 likely explained by the discrepancies in topic and
@@ -367,7 +337,7 @@ subreddit rules, as well as the level to which the
 moderators enforce these rules. However, the overall
  rate of removal is quite low ( 1.84%) compared
 to existing datasets mentioned above. We show the
-statistics of the top 5 2
+statistics of the top 5 active subreddits in Figure 2
 (refer to Figure 6 in the appendix for more details).
 Each subreddit is associated with a set of rules
 that are enforced by the moderators, which are
@@ -381,7 +351,8 @@ number of rules in our dataset).
 3.4 Manual Analysis of Offensiveness
 To better understand the level of offensiveness in
 the content moderation task, we manually annotated
- 1,238comments (around 200 100unremoved examples for each of the four languages)
+ 1,238comments (around 200removed and
+100unremoved examples for each of the four languages)
  using the ﬁne-grained taxonomy of offensiveness
  presented in Mubarak et al. (2022), with
 the addition of the categories of sexuality and age.
@@ -399,16 +370,10 @@ due to its criticism of a product supported by the
 r/halo subreddit. Since these rules, views and
 goals can vary signiﬁcantly across subreddits, it ex-050100150200
 Not-OffensiveHS-GenderHS-SexualityHS-Age
-HS-Social
 HS-IdeologyHS-ReligionHS-DisabilityHS-RaceVulgar
 Violenceremoved comments
-0255075100
 Not-OffensiveHS-GenderHS-SexualityHS-Age
-HS-Social
 HS-IdeologyHS-ReligionHS-DisabilityHS-RaceVulgar
-ViolenceEnglish
-German
-Spanish
 Frenchnon-removed commentsFigure 3  Distribution of different types of offensive
 speech for Reddit comments.
 plains why content moderation is hard for machine
@@ -422,7 +387,6 @@ as the four different languages. To conclude, moderating
  to identifying offensive language and hate
 speech and a new dataset is needed to train models
 and study automated content moderation.
-4 Experiments
 We study the task of content moderation on Reddit
  by formulating it as a binary classiﬁcation task 
 given a user comment xpredict whether it should
@@ -450,24 +414,23 @@ for moderation. We investigate the above question
 using three models  RoBERTa (base) (Liu et al.,
 2019) ﬁnetuned on the HatEval (Basile et al., 2019)
 and OLID dataset (Zampieri et al., 2020), and an
-0 500 1000 0.00.10.20.30.40.50.60.70.80.9 17.6%
-non-offensive
+comments0.00.10.20.30.40.50.60.70.80.9offensiveness
 82.4%Figure 4  Distribution of offensiveness scores for removed
  comments (left plot shows sorted scores). Most
 of the removed comments are not very offensive. Only
 18% of them get offensive scores higher than 0.5.
 Model Tr data T-ori R-off R-mod
-RoBERTa HatEval 48.72 44 .12 50 .59 81.25 79 .20 47 .76
-XLM-RoBERTa OLID 75.81 75 .82 48 .45 3  Offensive language/hate speech classiﬁers
+RoBERTa HatEval 48.72 44 .12 50 .59
+RoBERTa OLID 81.25 79 .20 47 .76
+XLM-RoBERTa OLID 75.81 75 .82 48 .45
+Table 3  Offensive language/hate speech classiﬁers
 with their original training (Tr) Twitter dataset and
 macro-F1 scores on the test split of the same dataset (Tori),
  a subset of our Reddit data with offensive labels
 (R-off), and our Reddit data with moderation labels (Rmod).
-
 XLM-RoBERTa model ﬁne-tuned on OLID. We
 compute the moderation score for each comment
 by averaging the output probabilities from these
-models.
 Figure 4 shows the distribution of offensiveness
 scores of the removed comments. The left and the
 right plot show the sorted scores and the percentage
@@ -491,15 +454,16 @@ datasets that they were ﬁne-tuned on (T-ori), a subset
  of our collected Reddit data with manual offensiveness
  annotations (R-off), and our proposed
 moderation dataset (R-mod). From the results in Table
- 3 1) these models achieve
-good performance on both Twitter and Reddit data
-5The model ﬁne-tuned on the HatEval dataset has a low F Setting Language EncoderAUC F1-macro
+ 3 we can observe that  1) these models achieve
+good performance5on both Twitter and Reddit data
+5The model ﬁne-tuned on the HatEval dataset has a low F1Setting Language EncoderAUC F1-macro
 en de fr es en de fr es
 MLLM multilingual XLM-RoBERTa 66.83 69 .42 64 .25 63 .90 49 .60 49 .78 49 .94 49 .83
 Translate-trainGerman bert-base-german-uncased 60.33 63 .34 - - 49.53 49 .78 - French
  ﬂaubert-base-uncased 53.47 - 49.96 - 49.53 - 49.94 Spanish
  bert-base-spanish-uncased 64.16 - - 63.29 49 .58 - - 49.99
-Translate-test English roberta-base 67.38 71 .23 71 .61 64 .33 49 .66 50 .01 50 .36 50 .22 4  Experimental results on moderation classiﬁer under three settings  1) MLLM  multilingual language
+Translate-test English roberta-base 67.38 71 .23 71 .61 64 .33 49 .66 50 .01 50 .36 50 .22
+Table 4  Experimental results on moderation classiﬁer under three settings  1) MLLM  multilingual language
 model embeddings, 2) translate-train, and 3) translate-test.
 Setting Language EncoderAUC F1-macro
 en de fr es en de fr es
@@ -507,7 +471,8 @@ MLLM multilingual XLM-RoBERTa 66.14 70 .10 68 .32 59 .81 59 .97 64 .46 61 .15 56
 Translate-trainGerman bert-base-german-uncased 61.10 65 .90 - - 57.24 61 .15 - French
  ﬂaubert-base-uncased 53.64 - 53.71 - 51.99 - 55.10 Spanish
  bert-base-spanish-uncased 63.08 - - 60.52 59 .33 - - 56.87
-Translate-test English roberta-base 66.94 70 .66 71 .57 61 .96 61 .96 64 .16 64 .87 58 .11 5  Experimental results with balanced data splits from our moderation dataset.
+Translate-test English roberta-base 66.94 70 .66 71 .57 61 .96 61 .96 64 .16 64 .87 58 .11
+Table 5  Experimental results with balanced data splits from our moderation dataset.
 when the task is to identify offensive language, and
 2) their performance drops signiﬁcantly when evaluated
  on the moderation task.
@@ -517,9 +482,7 @@ is a signiﬁcant mismatch between the goals of content
  moderation and offensive language identiﬁcation.
  We thus believe that it is necessary to have a
 moderation-speciﬁc dataset to train classiﬁers for
-content moderation.
 4.2 Evaluation with Models Trained on
-Proposed Dataset
 We use our collected data with moderation labels
 to train the classiﬁer f. We use pre-trained transformer
  based language models as text encoders and
@@ -543,10 +506,11 @@ English data, and each non-English language needs to be translated
 the English data into each target non-English language, and
 then do both training and test in that target language. For
 translation we used models from Tiedemann and Thottingal
-(2020)We summarize our experimental results in Table
+(2020)We summarize our experimental results7in Table
  11 and observe that the RoBERTa ( 67.38) and
 XLM-RoBERTa ( 66.83) models outperform offensive
- language detectors (second model in Table 3 61.11on AUC) on the English data. This
+ language detectors (second model in Table 3
+achieved 61.11on AUC) on the English data. This
 is expected because the moderation training data
 contains removed comments that are non-offensive,
 and thus the trained classiﬁers are able to capture
@@ -562,19 +526,19 @@ the best in most cases. Considering the challenges
 of maintaining an extra translation model for every
 language in real-world applications, MLLM might
 be a better solution towards building multilingual
-auto moderators.
-We would like to note that the (macro) F1 50since the classiﬁer/predictions
+We would like to note that the (macro) F1 scores
+of these models are close to 50since the classiﬁer/predictions
  are overwhelmed by data imbalance
  (less than 2%of comments are labeled to
 be removed). We thus additionally report AUC
 scores since, being a ranking based metric, it is not
 affected by data imbalance. For comparison, we
-also propose additional data splits with balanced
+also propose additional data splits8with balanced
 classes and repeat the same experiments. As shown
 in Table 12, the performance trends for the balanced
  set are similar to the original splits, and the
-7 3 runs with different random seeds.
-8 10.Group Examples GT /fo/fm freq.
+7Averaged over 3 runs with different random seeds.
+8Statistics of the balanced splits can be found in Table 10.Group Examples GT /fo/fm freq.
 1)"every f****** one of those dogs ought to be put down." ,"my god this sub is a perpetual
 b***h fest. clearly time to unsub"Y/Y/Y 7.35%
 2)"prove it by sending me $5 000.00. that would be nothing for you... so go ahead and do it
@@ -587,7 +551,8 @@ units than switch last month in the uk."Y/N/N 23.85%
 Table 6  Different groups of comments from the English test data.  GT , fo, and fmare ground truth label,
 offensiveness score and moderation score, respectively.  Y  stands for offensive/removed and  N  stands for
 non-offensive/non-removed. "freq." denote the proportion of each group in the whole subset (2000 samples).
-F1 50, ranging from 55.10 64.46 51.99, which is
+F1 scores are clearly above 50, ranging from 55.10
+to64.46with one exception of 51.99, which is
 likely caused by low translation quality in French.
 4.3 Analysis on Error Types
 We performed additional analysis to understand
@@ -623,44 +588,38 @@ types of errors and we believe that there is scope for
 improvement by using models that  1) can incorporate
  knowledge from both OLI and moderation
 9Average offensiveness score from classiﬁers in Section
- 4.1 1
+ 4.1Subreddit Group Model AUC F1
 r/narutoM-BERT 51.59 47.43
-XLM-Ro 64.48 37.84
 r/naruto  r/animeM-BERT 55.78 54.13
-XLM-Ro 31.08 46.39
 r/judaismM-BERT 62.08 60.65
-XLM-Ro 50.23 33.77
 r/judaism  r/islamM-BERT 68.27 63.89
-XLM-Ro 62.79 33.91
-r/judaism  r/islam  
 r/christianityM-BERT 67.89 62.33
-XLM-Ro 49.27 34.50
 r/feminismM-BERT 71.82 64.05
-XLM-Ro 51.27 38.22
 r/feminism  r/lgbtM-BERT 73.25 67.26
-XLM-Ro 49.67 34.10
-r/feminism  r/lgbt  
 r/racismM-BERT 72.95 66.16
-XLM-Ro 60.78 33.80 7  Performance of classiﬁers within groups of
+Table 7  Performance of classiﬁers within groups of
 subreddits. M-BERT refers to bert-base-multilingualcased
  and XLM-Ro refers to XLM-RoBERTa-base.
 tasks and 2) are robust to label noise.
-4.4 145removed comments
+4.4 Manual Analysis of Rule Violations
+We also manually labeled 145removed comments
 from the r/stock subreddit with the help of 3annotators.
- The annotators were instructed to select
+ The annotators were instructed10to select
 one of the ﬁve rules a removed comment violated.
 We decided to drop class 4due to a small number
 of samples. We also dropped class 5as this class
 corresponded to the  not sure  class. We selected
 examples where annotators had the most agreement
- and this resulted in 111 3 36,54, and 21comments for the noncivil,
+ and this resulted in 111comments across 3
+classes with 36,54, and 21comments for the noncivil,
  missing context, and spam/self-promotion
 categories (respectively). We performed ﬁve-fold
 cross-validation strategy for our experiments by
 training a logistic regression classiﬁer on textual
 features extracted using sentence-transformers (allmpnet-base-v2)
  (Reimers and Gurevych, 2019)
-10 14 91.8 1.8, and the F1 80.56(Non-civil),
+10The guide provided to the annotators is shown in Table 14We obtained an AUC of 91.8 1.8, and the F1
+scores for individual classes are 80.56(Non-civil),
 77.47(Missing context), and 61.53(Spam/selfpromotion).
  The class-wise numbers match our
 intuition that examples from the  non-civil  class
@@ -681,14 +640,14 @@ that grouping subreddits together may result in
 improved performance. For example, grouping
 r/lgbt andr/feminism together achieves 73.25
 AUC, an improvement of 1.43over r/feminism
-alone, and an improvement of 6 7 12. However, we also observe that grouping
+alone, and an improvement of 6 7compared to
+Table 12. However, we also observe that grouping
  more than two subreddits can lead to a drop
 in performance. For instance, adding r/racism
 to the group of r/lgbt andr/feminism decreases
 the AUC slightly to 72.95. This suggest that splitting
  the moderation task across multiple classiﬁers
 could lead to better performance with proper partitioning.
-
 4.6 Insights on Moderation Dataset and Task
 Based on the qualitative and quantitative evaluations,
  we summarize our insights 
@@ -709,7 +668,6 @@ some benign comments were removed by the moderators.
  There could be multiple reasons for this
 such as human errors, individual biases. We believethis label noise is a characteristic of the task and
 researchers will be required to design algorithms
-with this in mind.
 Moderation requires more than offensiveness
 detection. Our experiments reveal that preexisting
  datasets with hate speech or offensive language
@@ -737,7 +695,6 @@ speciﬁc rules. We thus argue that an adaptive and
 dynamic system that could condition its decisions
 on given guidelines is needed for successful auto
 moderation on platforms such as Reddit.
-5 Conclusions
 In this study we discussed the challenges in content
  moderation, which include but are not limited
 to  differences in community rules, subtlety of offensiveness
@@ -775,7 +732,6 @@ among different communities. We provide metadata
 a description of the subreddit and subreddit rules
 so that future research can incorporate this information
  to build better approaches.
-Ethics Statement
 We have discussed in detail the data selection process
  while working with different subreddits. We
 had approval from our Institutional Review Board
@@ -796,13 +752,11 @@ in this study. Our dataset will be available to researchers
  who agree to the terms and conditions
 of our data-sharing policy approved by the ethical
 committee of our institution.
-Acknowledgment
 This project was supported by DARPA grant
 prime OTA No. HR00112290024 (subcontract No.
-AWD00005100 00002145). We also acknowledge
+AWD00005100 and SRA00002145). We also acknowledge
  the Center for Research Computing at
 the University of Pittsburgh for providing computational
- resources.
 11https //scrubadub.readthedocs.io/References
 Mikel Artetxe, Gorka Labaka, and Eneko Agirre. 2020.
 Translation artifacts in cross-lingual transfer learning.
@@ -817,7 +771,7 @@ conversations. ArXiv , abs/2209.08207.
 Valerio Basile, Cristina Bosco, Elisabetta Fersini,
 Nozza Debora, Viviana Patti, Francisco
 Manuel Rangel Pardo, Paolo Rosso, Manuela
-Sanguinetti, et al. 2019. Semeval-2019 5 
+Sanguinetti, et al. 2019. Semeval-2019 task 5 
 Multilingual detection of hate speech against immigrants
  and women in twitter. In 13th International
 Workshop on Semantic Evaluation , pages 54 63.
@@ -827,7 +781,6 @@ Kumar, Akanksha Bansal, Akash Bhagat, Yogesh
  Dawer, Bornini Lahiri, and Atul Kr Ojha.
 2020. Developing a multilingual annotated corpus
  of misogyny and aggression. arXiv preprint
-arXiv 2003.07428 .
 Eshwar Chandrasekharan, Mattia Samory, Shagun
 Jhaver, Hunter Charvat, Amy Bruckman, Cliff
 Lampe, Jacob Eisenstein, and Eric Gilbert. 2018.
@@ -850,12 +803,10 @@ Maral Dadvar, Dolf Trieschnigg, Roeland Ordelman,
 and Franciska de Jong. 2013. Improving cyberbullying
  detection with user context. In European Conference
  on Information Retrieval , pages 693 696.
-Springer.
 Karthik Dinakar, Roi Reichart, and Henry Lieberman.
 2011. Modeling the detection of textual cyberbullying.
  In Proceedings of the International AAAI Conference
  on Web and Social Media , volume 5, pages
-11 17.
 Bryan Dosono and Bryan Semaan. 2019. Moderation
  practices as emotional labor in sustaining onlinecommunities  The case of aapi identity work on reddit.
  In Proceedings of the 2019 CHI conference on
@@ -873,7 +824,7 @@ Web and Social Media , volume 14, pages 209 216.
 R Stuart Geiger and David Ribes. 2010. The work of
 sustaining order in wikipedia  The banning of a vandal.
  In Proceedings of the 2010 ACM conference on
-Computer supported cooperative work , pages 117 126.
+Computer supported cooperative work , pages 117 
 Tarleton Gillespie. 2020. Content moderation, ai,
 and the question of scale. Big Data & Society ,
 7(2) 2053951720943234.
@@ -889,11 +840,9 @@ Sabit Hassan, Katherine J Atwell, and Malihe Alikhani.
 the diversity of online discussions  A computational
 cross-linguistic study. In Proceedings of the Annual
  Meeting of the Cognitive Science Society , volume
- 44.
 Shagun Jhaver, Pranil V ora, and Amy Bruckman. 2017.
 Designing for civil conversations  Lessons learned
 from changemyview. Technical report, Georgia Institute
- of Technology.
 George Kennedy, Andrew McCollough, Edward Dixon,
 Alexei Bastidas, John Ryan, Chris Loo, and Saurav
 Sahay. 2017. Technology solutions to combat online
@@ -912,13 +861,11 @@ speech and offensive content identiﬁcation in indoeuropean
  languages. CoRR , abs/2108.05927.Hamdy Mubarak, Sabit Hassan, and Shammur A.
 Chowdhury. 2022. Emojis as anchors to detect
 arabic offensive language and hate speech. ArXiv ,
-abs/2201.06723.
 Endang Wahyu Pamungkas, Valerio Basile, and Viviana
  Patti. 2020. Do you really want to hurt me 
 predicting abusive swearing in social media. In
 The 12th Language Resources and Evaluation Conference
  , pages 6237 6246. European Language Resources
- Association.
 Jing Qian, Anna Bethke, Yinyin Liu, Elizabeth Belding,
  and William Yang Wang. 2019. A benchmark
  dataset for learning to intervene in online hate
@@ -927,7 +874,6 @@ Tharindu Ranasinghe and Marcos Zampieri. 2021.
 Multilingual offensive language identiﬁcation for
 low-resource languages. Transactions on Asian
 and Low-Resource Language Information Processing,
- 21(1) 1 13.
 Nils Reimers and Iryna Gurevych. 2019. Sentencebert 
  Sentence embeddings using siamese bertnetworks.
  In Proceedings of the 2019 Conference on
@@ -960,7 +906,6 @@ twitch micro communities  How they get involved,
 the roles they play, and the emotional labor they experience.
  In Proceedings of the 2019 CHI conference
  on human factors in computing systems , pages
-1 13.
 Marcos Zampieri, Shervin Malmasi, Preslav Nakov,
 Sara Rosenthal, Noura Farra, and Ritesh Kumar.
 2019. Predicting the type and target of offensiveposts in social media. In Proceedings of the 2019
@@ -972,10 +917,12 @@ Association for Computational Linguistics.
 Marcos Zampieri, Preslav Nakov, Sara Rosenthal, Pepa
 Atanasova, Georgi Karadzhov, Hamdy Mubarak,
 Leon Derczynski, Zeses Pitenis, and Ça  grı Çöltekin.
-2020. SemEval-2020 12  Multilingual Offensive
+2020. SemEval-2020 Task 12  Multilingual Offensive
  Language Identiﬁcation in Social Media (OffensEval
  2020). In Proceedings of SemEval .A Appendix
-A.1 1) Manual analysis of offensiveness
+For better understanding of the moderation data we
+have performed two studies that involved human
+annotators  1) Manual analysis of offensiveness
 in Section 3.4, and 2) manual analysis of rule violations
  in Section 4.4. In these two studies have
 used volunteered annotators including employees
@@ -986,9 +933,13 @@ did not use external annotation platforms and services
 data points) designed for better understanding of
 the moderation data and the annotations will not be
 released with our large main dataset.
-A.2 1-2 week(s) and changes in
+A.2 Temporal Changes in Community Rules
+We scraped the community rules for each subreddit
+at temporal intervals of 1-2 week(s) and changes in
 rules have been captured in our data. We checked
-our entire collection of scraped rules across 7.5 0.93% among all rules from all subreddits
+our entire collection of scraped rules across 7.5
+months and found that rule edits happened at a rate
+less than 0.93% among all rules from all subreddits
 per week. Many of those edits are simple changes
 (e.g., adding/removing periods, capitalizing words)
 that does not alter their semantic meaning and thus
@@ -998,7 +949,8 @@ added new rules which would affect moderation decisions
  of certain types of content. For example, on
 r/antiwork , the rule of "No politicians, no CEOs"
 was changed to "No politicians, no employers, no
-landlords, no cops." in between June 27 04. For those cases, developing content moderation
+landlords, no cops." in between June 27 and July
+04. For those cases, developing content moderation
  models with changing rules would be a good
 extension of this work.
 A.3 Completeness of the checking later
@@ -1026,165 +978,20 @@ r/lifehacks, r/mildyinfuriating, r/minecraft, r/naruto, r/news, r/nﬂ,
 r/onetruegod, r/personalﬁnance, r/publicfreakout, r/racism, r/science,
 r/sciﬁ, r/showerorange, r/showerthoughts, r/space, r/stocks, r/streetwear,
 r/talesfromcavesupport, r/theoryofreddit, r/tooafraidtoask, r/worldnews,
-r/xboxseriesx
 Spanish r/argentina, r/argaming
 German r/de, r/ﬁnanzen, r/ich_iel
 French r/rance, r/quebec, r/moi_dlvv
 Table 8  The list of all subreddits in our dataset.
-Figure 5 1) the crawler will assign target subreddits to a number of accounts and streaming
+Figure 5  Data collection pipeline  1) the crawler will assign target subreddits to a number of accounts and streaming
  comments and submissions concurrently and 2) after a certain period of time (around a week), the checker will
 go through each record and update if the comment still exists or has been removed/deleted.0 2000 4000 6000 8000 10000r/publicfreakout
-r/worldnews
-r/antiwork
-r/tooafraidtoask
-r/news
-r/funny
-r/halo
-r/christianity
-r/showerthoughts
-r/stocks
-r/personalfinance
-r/nfl
-r/anime
-r/bitcoin
-r/minecraft
-r/science
-r/collapse
-r/games
-r/islam
-r/futurology
-r/lgbt
-r/boardgames
-r/lego
-r/xboxseriesx
-r/coronavirus
-r/gadgets
-r/naruto
-r/space
-r/lifehacks
-r/judaism
-r/scifi
-r/bodyweightfitness
-r/immigration
-r/havewemet
-r/streetwear
-r/mildyinfuriating
-r/feminism
-r/covid19
-r/fifthworldproblems
-r/antivaxxers
 r/breadstapledtotrees
-r/grandpajoehate
-r/onetruegod
 r/talesfromcavesupport
-r/birdswitharms
-r/theoryofreddit
-r/showerorange
 r/racism0.55% (39/7114)
-1.99% (131/6589)
-1.91% (117/6123)
-0.64% (37/5778)
-3.47% (200/5756)
-0.53% (25/4748)
-0.78% (31/3989)
-2.45% (93/3802)
-0.98% (34/3455)
-0.22% (6/2708)
-1.74% (47/2699)
-0.45% (11/2439)
-0.41% (7/1724)
-0.87% (15/1717)
-1.94% (32/1650)
-15.18% (240/1581)
-1.82% (28/1540)
-3.03% (41/1355)
-2.66% (31/1166)
-6.31% (63/998)
-1.00% (10/996)
-0.34% (3/882)
-0.46% (4/875)
-0.47% (3/640)
-11.19% (66/590)
-0.19% (1/533)
-0.22% (1/455)
-6.25% (27/432)
-0.79% (3/382)
-0.73% (2/275)
-0.00% (0/246)
-0.00% (0/155)
-2.14% (3/140)
-0.00% (0/140)
-0.00% (0/135)
-0.00% (0/71)
-14.49% (10/69)
-21.74% (5/23)
-0.00% (0/22)
-0.00% (0/18)
-0.00% (0/11)
-0.00% (0/11)
-0.00% (0/11)
-0.00% (0/8)
-0.00% (0/7)
-0.00% (0/5)
-0.00% (0/3)
 0.00% (0/1)Number of comments in all subreddits
-kept
 removedFigure 6  Number of kept and removed comments in the English validation (en-val) data.0 5 10 15r/lego
-r/collapse
-r/minecraft
-r/argentina
-r/de
-r/anime
-r/futurology
-r/space
-r/covid19
-r/naruto
-r/islam
-r/lgbt
-r/news
-r/nfl
-r/publicfreakout
-r/worldnews
-r/coronavirus
-r/christianity
-r/lifehacks
-r/science
-r/bitcoin
-r/personalfinance
-r/antiwork
-r/gadgets
-r/funny
-r/halo
-r/argaming
-r/ich_iel
-r/showerthoughts
-r/judaism
-r/havewemet
-r/immigration
-r/stocks
-r/finanzen
-r/theoryofreddit
-r/games
-r/xboxseriesx
-r/boardgames
-r/streetwear
-r/racism
-r/moi_dlvv
-r/feminism
-r/bodyweightfitness
-r/rance
-r/tooafraidtoask
-r/antivaxxers
-r/quebec
-r/grandpajoehate
-r/showerorange
-r/fifthworldproblems
-r/catsstandingup
-r/birdswitharms
 r/breadstapledtotrees
-r/scifi
 r/talesfromcavesupport
-r/onetruegod
 r/mildyinfuriatingNumber of rules in each subredditFigure 7  Number of rules in all subreddits.Comment Subreddit fo
 atry contacting drewcybersupport on instagram about this he will
 deﬁnitely help you outr/minecraft 0.01
@@ -1201,13 +1008,12 @@ h no not me it would be another little tiny b***h like you r/publicfreakout 0.91
 i... your piece of s**t car so slow you ll be left behind ... d**b silly
 beta.r/tooafraidtoask 0.86
 jwe ve come so god d**n far in this country ... f**k this s**t   f**k
-this country r/antiwork 0.82 9 3 classiﬁers trained on offensive
+this country r/antiwork 0.82
+Table 9  Sampled removed comments and their average offensiveness score from 3 classiﬁers trained on offensive
 language identiﬁcation and hate speech detection datasets.
 split language #sub #comments removal
-Training data
 en-train English 48 1 ,016,386 47 .96%
 en-val English 48 56 ,460 47 .96%
-Test data
 de German 3 57 ,952 50 .00%
 es Spanish 2 18 ,298 50 .00%
 en English 48 56 ,466 48 .09%
@@ -1217,20 +1023,23 @@ splits.Setting Lang.AUC F1-macro
 en de fr es en de fr es
 MLLM multi 66.83 0.1069.42 0.1464.25 0.1463.90 0.03 49.60 0.1049.78 0.0049.94 0.0049.83 0.00
 Trans-trde 60.33 0.4463.34 0.68 - - 49.53 0.0049.78 0.00 - fr
- 53.47 0.38 - 49.96 0.61 - 49.53 0.00 - 49.94 0.00 64.16 0.53 - - 63.29 0.43 49.58 0.03 - - 49.99 0.13
-Trans-te en 67.38 0.1871.23 0.0271.61 0.3464.33 0.09 49.66 0.0550.01 0.1750.36 0.3050.22 0.30 11  Experimental results with standard deviation on original splits.
+ 53.47 0.38 - 49.96 0.61 - 49.53 0.00 - 49.94 0.00 es
+ 64.16 0.53 - - 63.29 0.43 49.58 0.03 - - 49.99 0.13
+Trans-te en 67.38 0.1871.23 0.0271.61 0.3464.33 0.09 49.66 0.0550.01 0.1750.36 0.3050.22 0.30
+Table 11  Experimental results with standard deviation on original splits.
 Setting Lang.AUC F1-macro
 en de fr es en de fr es
 MLLM multi 66.14 0.0270.10 0.0768.32 0.0159.81 0.06 59.97 0.5164.46 0.1161.15 0.9356.78 0.06
 Trans-trde 61.10 0.6765.90 1.22 - - 57.24 1.1561.15 1.17 - fr
- 53.64 0.37 - 53.71 1.40 - 51.99 0.98 - 55.10 0.56 63.08 0.14 - - 60.52 0.51 59.33 0.26 - - 56.87 0.47
-Trans-te en 66.94 0.0570.66 0.11 71.57 0.161.96 0.03 61.96 0.164.16 0.4064.87 1.3058.11 0.27 12  Experimental results with standard deviation on balanced splits.
+ 53.64 0.37 - 53.71 1.40 - 51.99 0.98 - 55.10 0.56 es
+ 63.08 0.14 - - 60.52 0.51 59.33 0.26 - - 56.87 0.47
+Trans-te en 66.94 0.0570.66 0.11 71.57 0.161.96 0.03 61.96 0.164.16 0.4064.87 1.3058.11 0.27
+Table 12  Experimental results with standard deviation on balanced splits.
 Category number of examples
-Non-civil 36 54
-Spam/self-promotion 21 13  Manually annotated rule violations.
+Spam/self-promotion 21
+Table 13  Manually annotated rule violations.
 Warning  Due to the nature of this study, this data may contain disturbing content, such as
 offensive language and hate speech.
-Label Rule Examples
 1 not being civil (hate, offensive, insulting,
 harassment, ...).(1) you re complete moron. (2) you fuckin
 loser. (3) have fun staying poor buddy.

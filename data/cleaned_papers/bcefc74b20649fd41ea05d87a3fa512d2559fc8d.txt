@@ -1,13 +1,10 @@
 Simple LLM Prompting is State-of-the-Art for Robust and Multilingual
-Dialogue Evaluation
 John Mendonça1,2, , Patrícia Pereira1,2,
-Helena Moniz1,3,João Paulo Carvalho1,2,Alon Lavie4,5 1,2 1INESC-ID, Lisbon
+Helena Moniz1,3,João Paulo Carvalho1,2,Alon Lavie4,5and Isabel Trancoso1,2
 2Instituto Superior Técnico, University of Lisbon
 3Faculdade de Letras, University of Lisbon
 4Carnegie Mellon University, Pittsburgh
-5Phrase, Pittsburgh
 john.mendonca@inesc-id.pt
-Abstract
 Despite significant research effort in the development
  of automatic dialogue evaluation metrics,
  little thought is given to evaluating dialogues
@@ -25,18 +22,15 @@ paradigm of prompting Large Language Models
 of mean Spearman correlation scores across
 several benchmarks and ranks first place on
 both the Robust and Multilingual tasks of
-the DSTC11 4  Automatic Evaluation
+the DSTC11 Track 4  Automatic Evaluation
 Metrics for Open-Domain Dialogue Systems ,
 proving the evaluation capabilities of prompted
-LLMs.
-1 Introduction
 Automatic dialogue evaluation has largely been
 focused on evaluating select few languages. The
 main reason for this constraint is the lack of linguistic
  diversity in dialogue corpora, which leads
 to a lack of chatbots that cover other languages. As
 a result, the need for multilingual metrics has also
-been limited.
 A possible solution to this issue is to leverage
 the latest batch of Large Language Models (LLMs)
 to synthetically generate multilingual dialogues.
@@ -46,7 +40,6 @@ Bubeck et al., 2023) and the consensus appears to
 be that these models have achieved a proxy of a
 formal linguistic competence in the most studied
  Work conducted as a visiting scholar at CMU.
-VSPNSPMLMENGChatGPT
 ResCtxQuality AspectWMetricFigure 1  Proposed framework architecture. The Response
  ,Context andQuality Aspect under evaluation
 are fed to the submetrics  VSP (Valid Sentence Prediction),
@@ -67,7 +60,7 @@ fail to adapt to users and domains).
 Irrespective of these models  limitations, it is
 clear their emergent capabilities allow for the development
  of chatbots with capabilities vastly beyond
- what earlier models were able to achieve. Yet,arXiv 2308.16797 2  [cs.CL]  8 2023an interesting research question lingers  If these
+ what earlier models were able to achieve. Yet,arXiv 2308.16797v2  [cs.CL]  8 Sep 2023an interesting research question lingers  If these
 models are able to write responses that follow formal
  and functional linguistics rules, are they also
 capable of evaluating responses/dialogues in terms
@@ -97,7 +90,6 @@ research and development.
 Overall, our contributions are the following 
  We show that ChatGPT is a strong evaluator
 of dialogues, outperforming typical encoder
-frameworks.
  We propose a new framework for dialogue
 evaluation that is multilingual and robust to
 paraphrases. In fact, our combined Encoder
@@ -108,7 +100,7 @@ both the Multilingual and Robust metrics task.
  We open source the code and checkpoints
  of the submetrics at github.com/
 johndmendonca/DialEvalML .
-2 2.1 Automatic Evaluation Metrics
+2.1 Automatic Evaluation Metrics
 Statistic-based metrics such as BLEU (Papineni
 et al., 2002), ROUGE (Lin, 2004), and METEOR
 (Banerjee and Lavie, 2005), are a popular choice
@@ -198,7 +190,8 @@ competitive results by leveraging few-shot prompting.
 function, it was difficult for autoregressive LLMs to
 successfully perform downstream NLP tasks without
  substantial prompt engineering.
-Ouyang et al. (2022) propose finetuning GPT3 3-step approach named Reinforcement
+Ouyang et al. (2022) propose finetuning GPT3
+ using a 3-step approach named Reinforcement
 Learning through Human Feedback (RLHF). In
 detail, the model is (1) initially finetuned using
 supervised data obtained from labelling prompts
@@ -230,7 +223,6 @@ and a response r, to learn a scoring function (also
 known as metric) that assigns a score f(c, r) s.
 Conversely, in a dialogue-level evaluation setting,
 the goal is to evaluate the performance throughout
-the full dialogue.
 Irrespective of the level of evaluation, the proposed
  metrics  outputs are typically compared
 against HE annotations that use a Likert scale,
@@ -239,7 +231,6 @@ highest value maximum quality. For this track,
 the performance of these metrics was evaluated
 by calculating the Pearson correlation between the
 calculated score and HE.
-4 Methodology
 Our framework, which we call DIALEVALML,
 can be viewed as a dual layered ensemble which
 are done at the model andsubmetric level, and
@@ -248,7 +239,6 @@ that employ strong multilingual pretrained encoder
 prompted1. In this section, we describe the stepby-step
  process of DIALEVALML, detailing the
 various components and methods employed.
-4.1 Submetrics
 Similar to other frameworks, including the best
 performing ones in last year s track (Zhang et al.,
 2022  Jiang et al., 2022) which take inspiration
@@ -331,7 +321,6 @@ aggregates emotional, attentional, behavioural and
 reply engagement onto a single score denoted ENDEX,
  which then has a hyperparameter threshold
 applied to it to cluster posts into positive and negative
- samples.
 4.2 Exploiting Data Augmentation for Robust
 and Multilingual Evaluation
 The main novelty of this year s track is the release
@@ -352,11 +341,10 @@ and supervised training. However, Mendonca et al.
 (2023) showed that low quality augmentation affects
  the performance of models trained on MT
 augmented data, especially for VSP. Following this
-work, we select 5 75 % of the best translated
+work, we select 5 and 75 % of the best translated
 data (ranked using COMET QE) for training of the
 VSP andNSP models respectively. For ENG , wetrain different proportions of data and select the
 best performing ones.
-4.3 ChatGPT
 We briefly experimented with different prompts,
 and found the best performing prompt (irrespective
 of language) in a held-out internal set to be simply 
@@ -373,7 +361,7 @@ non-deterministic. We attempt to reduce output
 variability by reinforcing the desired output in the
 prompt ( "Provide a single score and nothing else." )
 and by setting the temperature to 0. We report a
-mean absolute deviation of 0.0182 3 runs
+mean absolute deviation of 0.0182 across 3 runs
 when querying Appropriateness on the provided
 en/dailydialog-grade dataset included in the
 development set. To facilitate ensembling in later
@@ -388,7 +376,6 @@ calculate the average score, similar to the dialoguelevel
  encoder scores. (2) Less frequently, ChatGPT
 ignores the task and continues the conversation.
 Here, we prompt the model again until a score is
-provided.
 4.4 Submetric Ensembling
 Despite having a key role in NLG evaluation, HE
 has been performed while suffering from nontransparent
@@ -417,7 +404,6 @@ test, i.e., we check if the p-value is higher than a
 given threshold. This ensures submetrics which are
 strongly and negatively correlated with the aspect
 (for example, MLM andFluency ) are still included
-in the ensembling2.
 4.5 Dialogue-level Evaluation
 We obtain dialogue-level quality predictions from
 the encoder models   NSP ,VSP ,MLM andENG
@@ -425,7 +411,6 @@ the encoder models   NSP ,VSP ,MLM andENG
 These are combined with the dialogue-level predictions
  obtained by prompting ChatGPT with the full
 dialogue in the prompt.
-5 5.1 Datasets
 For data preprocessing we used spaCy. For the
 VSP andNSP models, we followed prior work
 and base the self-supervised data on DailyDialog
@@ -443,12 +428,11 @@ an English dataset, we use MBART504(Liu et al.,
 theWMT20-COMET-QE-DA model (Rei et al., 2020).
 2For some annotations, none of the metrics were statistically
  significant. In these cases, we resort to the original
-proposed approach.
 3We also trained models using the highest scoring responses
  and report lower performance. This is in line with our
 intuition that lower scoring responses are more diverse, and as
 such more informative for training.
-4 50 as it is lightweight and open source.For the paraphrase augmentation, we follow the
+4We chose MBART50 as it is lightweight and open source.For the paraphrase augmentation, we follow the
 organisers  approach of using Parrot Paraphraser
 (Damodaran, 2021) and scoring the paraphrases
 with Cosine Similarity.
@@ -457,7 +441,8 @@ We used XLM-RoBERTa-large (Conneau et al.,
 2020) as the encoder model for the experiments.
 This model is the multilingual version of RoBERTa ,
 pretrained on CommonCrawl data containing 100
-languages. We used a single Quadro RTX 6000 24GB GPU for the encoder experiments, and accessed
+languages. We used a single Quadro RTX 6000
+24GB GPU for the encoder experiments, and accessed
  ChatGPT ( gpt-3.5-turbo ) in late March
 using the OpenAI API.
 For the VSP ,NSP andENG metrics, a token
@@ -473,12 +458,12 @@ a hidden size of 1024 and a hyperbolic tangent
 function as activation for prediction. All parameters
  were trained/finetuned using Adam optimiser
 (Kingma and Ba, 2015). The fully finetuned models
- used a learning rate of 3e-6 3 16. Evaluation was
+ used a learning rate of 3e-6 and were trained for
+3 epochs using a batch size of 16. Evaluation was
 conducted every 10,000 steps. The best performing
 model on the evaluation set was selected for testing.
 For the MLM metric, we used the existing LM
 head available in the Transformers library (Wolf
-et al., 2020).
 With respect to the model-level ensembling, we
 conduct simple unweighted averaging of the predictions
  of the models. For the submetric-level ensembling,
@@ -488,7 +473,6 @@ and square the correlations following Zhang et al.
 the development quality aspects to the test-set aspects
  and obtain the final weights by averaging the
 weights obtained on the test set.
-5.3 Model ensembling
 In order to determine the best combination of models
  to include in our model ensemble, all encoder
 based models that require training were trained
@@ -496,14 +480,29 @@ using different subsets of data. This includes the
 original (EN) English data, the corresponding augmentations
  in Chinese (ZH), Spanish (ES) and Para-Language
 Submetric Model EN ES ZH PA ALL
-VSPEN 0.195 0.173 0.161 0.067 0.149 0.156 0.183 0.158 0.012 0.127 0.179 0.111 0.102 0.086 0.119 0.212 0.193 0.198 0.062 0.166 5 0.195 0.168 0.157 0.040 0.140 0.279 0.256 0.286 0.267 0.272 0.266 0.257 0.282 0.251 0.264 0.246 0.238 0.298 0.232 0.254 0.307 0.279 0.286 0.279 0.288 75 0.300 0.284 0.311 0.272 0.292 0.319 0.275 0.251 0.260 0.276 5 0.310 0.268 0.214 0.275 0.267 10 0.334 0.296 0.243 0.279 0.288 20 0.379 0.324 0.274 0.316 0.324 50 0.340 0.263 0.258 0.289 0.287 0.265 0.245 0.213 0.265 0.247 1  Spearman Correlation scores of our trained
+VSPEN 0.195 0.173 0.161 0.067 0.149
+ES 0.156 0.183 0.158 0.012 0.127
+ZH 0.179 0.111 0.102 0.086 0.119
+PA 0.212 0.193 0.198 0.062 0.166
+ML5 0.195 0.168 0.157 0.040 0.140
+NSPEN 0.279 0.256 0.286 0.267 0.272
+ES 0.266 0.257 0.282 0.251 0.264
+ZH 0.246 0.238 0.298 0.232 0.254
+PA 0.307 0.279 0.286 0.279 0.288
+ML75 0.300 0.284 0.311 0.272 0.292
+ENGEN 0.319 0.275 0.251 0.260 0.276
+ML5 0.310 0.268 0.214 0.275 0.267
+ML10 0.334 0.296 0.243 0.279 0.288
+ML20 0.379 0.324 0.274 0.316 0.324
+ML50 0.340 0.263 0.258 0.289 0.287
+PA 0.265 0.245 0.213 0.265 0.247
+Table 1  Spearman Correlation scores of our trained
 model variants on all Language benchmarks on the full
 development set. The best score for each submetric and
 language is highlighted in bold. Models included in the
 final ensemble are in bold , except for NSP, which also
 includes NSP-Siamese.
 phrases (PA) and the QE-ranked multilingual augmentation
- (MLXX)5.
 Spearman correlation results are presented in Table
  1. For the VSP submetric, we note that the
 inclusion of translations is detrimental to performance.
@@ -512,32 +511,37 @@ followed by EN. This contrasts with NSP , where
 we observe that the inclusion of more translated
 data improves performance. For ENG , the best
 performance is obtained with 20% of translated
-data. We include the 10 50% models in our
+data. We include the 10 and 50% models in our
 framework to take advantage of ensembling.
-5.4 4 different systems,
+For the track we submitted 4 different systems,
 exploring the contribution of the different components
- of our framework 
  System 1 ( DIALEVALML)  Submetric ensembling
- of ChatGPT   XLM-R.
  System 2   Submetric ensembling of XLM-R.
  System 3   Submetric ensembling of ChatGPT.
-
  System 4   Direct mapping of ChatGPT submetrics.
-
 Table 2 identifies the turn-level weights calculated
  for testing for System 1.
 5We only include the best performing ML models.Aspect VSP NSP MLM ENG cGPT-A cGPT-R cGPT-C cGPT-G
-Appropriateness 0.039 0.176 0.017 0.0511 0.165 0.185 0.181 0.185 0.014 0.214 0.003 0.023 0.188 0.210 0.160 0.190 0.176 0.085 0.181 0.238 0.039 0.022 0.210 0.048 0.021 0.084 -0.06 0.061 0.238 0.242 0.155 0.258 2 1 for test set quality aspects. Highest weight per aspect in bold .
+Appropriateness 0.039 0.176 0.017 0.0511 0.165 0.185 0.181 0.185
+Relevance 0.014 0.214 0.003 0.023 0.188 0.210 0.160 0.190
+Content Richness 0.176 0.085 0.181 0.238 0.039 0.022 0.210 0.048
+Grammatical Correctness 0.021 0.084 -0.06 0.061 0.238 0.242 0.155 0.258
+Table 2  Calculated submetric weights of System 1 for test set quality aspects. Highest weight per aspect in bold .
 EN ZH ES ML-A VG Rank
 Team Turn Dial Turn Dial Turn Dial Turn Dial Turn Dial
-Baseline (AM-FM) 0.2940 0.2414 0.0753 0.4648 0.1826 0.8080 0.1840 0.5047 4 2 2 0.1469 - 0.1054 - 0.0808 - 0.1110 - 5 4 (us) 1 1
+Baseline (AM-FM) 0.2940 0.2414 0.0753 0.4648 0.1826 0.8080 0.1840 0.5047 4 2
+Team 2 0.1469 - 0.1054 - 0.0808 - 0.1110 - 5 Team
 - S1 ( DIALEVALML)0.4818 0.5342 0.3936 0.7133 0.5890 0.8080 0.4881 0.6852
 - S2 0.2625 0.3295 0.3096 0.7030 0.5056 0.2500 0.3592 0.4275
 - S3 0.4795 0.5251 0.3656 0.6701 0.5409 0.8080 0.4620 0.6677
-- S4 0.4586 0.5039 0.3618 0.5859 0.5412 0.5915 0.4539 0.5604 5 0.3702 0.1865 0.0701 0.1356 0.1983 0.6830 0.2129 0.3350 3 3 7 0.2214 - 0.3112 - 0.5644 - 0.3657 - 2 3 4 dimensions evaluated for the baseline Deep AM-FM (Zhang
+- S4 0.4586 0.5039 0.3618 0.5859 0.5412 0.5915 0.4539 0.5604
+Team 5 0.3702 0.1865 0.0701 0.1356 0.1983 0.6830 0.2129 0.3350 3 3
+Team 7 0.2214 - 0.3112 - 0.5644 - 0.3657 - 2 Table
+ 3  Average Spearman correlation across the 4 dimensions evaluated for the baseline Deep AM-FM (Zhang
 et al., 2021b) and all participating teams on the Task 1 (Multilingual metrics) test set. Bold denotes the best result
 for the corresponding Language, italic denotes our best submission.
-Task 1 1 3, together
+Task 1  Multilingual Metrics The results for
+each team for Task 1 are presented in Table 3, together
  with all of our submissions. In all languages
 at both the dialogue and turn level, our submissions
 vastly outperform others, with the exception of S2,
@@ -546,10 +550,10 @@ which has comparable results with other participants.
 understanding ChatGPT possesses. As expected,
 the best submission is S1, which conducts submetric
  ensembling with the XLM-R submetrics. This is
-followed by S3 4, which are exclusive ChatGPT
+followed by S3 and S4, which are exclusive ChatGPT
  submissions with and without ensembling,
-respectively.
-Task 2 2 4. Similar
+Task 2  Robust Metrics The results for each
+team for Task 2 are presented in Table 4. Similar
 to Task 1, in Task 2, our ChatGPT submissions
 outperform other teams. However, at the dialogue
 level, the best performing model is AM-FM.
@@ -568,17 +572,13 @@ We present in Table 5 two representative examples.
 Baseline (AM-FM) 0.3387 (4) 0.4800 (1)
 Team 1 0.1537 (6) 0.1111 (4)
 Team 3 0.2697 (5) 0.2196 (3)
-Team 4 (us)
 - S1 ( DIALEVALML) 0.4890 (1) 0.3031 (2)
-- S2 0.3320 0.2335
-- S3 0.4756 0.2979
-- S4 0.4427 0.2492 6 0.4190 (2) Team
- 7 0.3833 (3) Table
- 4 4 dimensions evaluated for the baseline
+Team 6 0.4190 (2) Team
+ 4  Average Spearman correlation and corresponding
+ rank across the 4 dimensions evaluated for the baseline
  Deep AM-FM and all participating teams on the
 Task 2 (Robust metrics) test set. Bold denotes the best
 result for the corresponding Language, italic denotes
-our best submission.
 erroneously underestimates quality due to the inclusion
  of "weed" in the response. We posit this
 is due to the RLHF finetuning, which conditions
@@ -599,24 +599,26 @@ evolved into today s technology
 Human  oh i never knew that
 Chatbot  Indeed, there was also aluminium construction
 improvements allowed for the introduction of oversized
-rackets by 1975 4.7 4.7 4.3 5.0 1.0 2.0 2.0 1.0
+rackets by 1975 which was manufactured by weed
+Label  A  4.7 C 4.7 G 4.3 R 5.0
+ChatGPT  A  1.0 C 2.0 G 2.0 R 1.0
 "The mention of "weed" as the manufacturer may cause
 confusion or be perceived as inappropriate without
-further context."
-Best  A  2.2 2.6 1.9 2.2
+Best  A  2.2 C 2.6 G 1.9 R 2.2
 Human  Don t cry for breakfast.
 Chatbot  Cry t for comfort
 Human  In the end, young people are always
 inexplicably sad in adolescence. Which one is Qibing 
-Label  A  - C 5.0 5.0 3.0 1.0 1.0 1.0 1.0
+Label  A  - C 5.0 G 5.0 R 3.0
+ChatGPT  A  1.0 C 1.0 G 1.0 R 1.0
 "The response does not directly relate to the context or
 provide a meaningful answer. It seems unrelated and out
 of place. The mention of "Qibing" without any
 explanation further adds to the confusion.
-Best  A  1.3 1.9 1.1 1.2 5  Example turn-level predictions for Appropriateness
+Best  A  1.3 C 1.9 G 1.1 R 1.2
+Table 5  Example turn-level predictions for Appropriateness
  ,Content Richeness ,Grammatical Correctness
 andRelevance . We include the ChatGPT explanation
-forAppropriateness .
 leaves the reader confused. The response could
 benefit from more specific and informative details
 about the topic to increase its content richness." .
@@ -626,7 +628,6 @@ it seems ChatGPT is conflating Content Richness
 with Relevance . We observe the same behaviour in
 all other instances we studied, and is in line with
 the submetric weights (Table 2).
-6 Discussions
 The results from our work on both tasks (Section
 5.4) reveals that ChatGPT vastly outperforms typical
  encoder approaches that are trained to discriminate
@@ -659,7 +660,6 @@ we are reaching the point where these models are
 better evaluators than humans themselves (Gilardi
 et al., 2023). As such, developing metrics that
 correlate well with HE is becoming increasingly
-questionable.
 One of the main contention points w.r.t the deployment
  of these models to the public pertain to
 their "safety" and "trustworthiness". But while
@@ -676,7 +676,6 @@ the development of challenge sets for validation
 (such as the ones proposed in Valmeekam et al.
 2023) appears to be the logical next step for evaluation
  of future chatbots6.
-7 Conclusion
 This paper presents a novel open-domain and
 reference-free dialogue evaluation framework that
 leverages strong pretrained LLMs using finetuning
@@ -687,7 +686,7 @@ paradigm of only training LMs with semisupervised
  training objectives. In fact, DIALEVALML
 ranks 1st on both the Robust (1st turn-level, 2nd dialogue
  level) and Multilingual (1st on both levels)
-tasks of Track 4 11.
+tasks of Track 4 at DSTC11.
 6See OpenAI Evals for recent collaborative research efforts
 in this direction.Acknowledgements
 This research was supported by the Portuguese
@@ -697,8 +696,6 @@ national funds through Fundação para a Ciência
  e a Tecnologia (FCT) with references
 PRT/BD/152198/2021 and UIDB/50021/2020, and
 by the P2020 program MAIA (LISBOA-01-0247FEDER-045909).
-
-References
 Satanjeev Banerjee and Alon Lavie. 2005. METEOR 
 An automatic metric for MT evaluation with improved
  correlation with human judgments. In Proceedings
@@ -706,7 +703,6 @@ An automatic metric for MT evaluation with improved
  Evaluation Measures for Machine Translation
  and/or Summarization , pages 65 72, Ann Arbor,
 Michigan. Association for Computational Linguistics.
-
 Tom Brown, Benjamin Mann, Nick Ryder, Melanie
 Subbiah, Jared D Kaplan, Prafulla Dhariwal, Arvind
 Neelakantan, Pranav Shyam, Girish Sastry, Amanda
@@ -725,10 +721,9 @@ Guzmán, Edouard Grave, Myle Ott, Luke Zettlemoyer,
  and Veselin Stoyanov. 2020. Unsupervised
 cross-lingual representation learning at scale. In Proceedings
  of the 58th Annual Meeting of the Association
- for Computational Linguistics , pages 8440 8451, Online. Association for Computational Linguistics.
-
+ for Computational Linguistics , pages 8440 
+8451, Online. Association for Computational Linguistics.
 Prithiviraj Damodaran. 2021. Parrot  Paraphrase generation
- for NLU.
 Jacob Devlin, Ming-Wei Chang, Kenton Lee, and
 Kristina Toutanova. 2019. BERT  Pre-training of
 deep bidirectional transformers for language understanding.
@@ -757,7 +752,6 @@ needs evaluation sheets and standardised definitions.
 InProceedings of the 13th International Conference
 on Natural Language Generation , pages 169 182,
 Dublin, Ireland. Association for Computational Linguistics.
-
 Lishan Huang, Zheng Ye, Jinghui Qin, Liang Lin, and
 Xiaodan Liang. 2020. GRADE  Automatic graphenhanced
  coherence metric for evaluating opendomain
@@ -776,7 +770,6 @@ multi-category integrated metric framework for automatic
 2022 Conference on Empirical Methods in Natural
  Language Processing , pages 11091 11103, Abu
 Dhabi, United Arab Emirates. Association for Computational
- Linguistics.
 Hendrik Kempt, Alon Lavie, and Saskia K. Nagel. 2023.
 Appropriateness is all you need 
 Diederik P. Kingma and Jimmy Ba. 2015. Adam  A
@@ -806,14 +799,12 @@ Edunov, Marjan Ghazvininejad, Mike Lewis, and
 Luke Zettlemoyer. 2020. Multilingual denoising pretraining
  for neural machine translation. Transactions
  of the Association for Computational Linguistics,
- 8 726 742.
 Ryan Lowe, Michael Noseworthy, Iulian Vlad Serban,
 Nicolas Angelard-Gontier, Yoshua Bengio, and Joelle
 Pineau. 2017. Towards an automatic turing test 
 Learning to evaluate dialogue responses. In Proceedings
  of the 55th Annual Meeting of the Association for
 Computational Linguistics (Volume 1  Long Papers) ,
-pages 1116 1126.
 Shikib Mehri and Maxine Eskenazi. 2020a. Unsupervised
  evaluation of interactive dialog with DialoGPT.
 InProceedings of the 21th Annual Meeting of the
@@ -837,7 +828,6 @@ Towards multilingual automatic open-domain dialogue
  evaluation. In Proceedings of the 24th Annual
 Meeting of the Special Interest Group on Discourse
 and Dialogue , Prague, Czechia. Association for Computational
- Linguistics.
 Long Ouyang, Jeff Wu, Xu Jiang, Diogo Almeida, Carroll
  L. Wainwright, Pamela Mishkin, Chong Zhang,
 Sandhini Agarwal, Katarina Slama, Alex Ray, John
@@ -845,20 +835,17 @@ Schulman, Jacob Hilton, Fraser Kelton, Luke Miller,
 Maddie Simens, Amanda Askell, Peter Welinder,
 Paul Christiano, Jan Leike, and Ryan Lowe. 2022.
 Training language models to follow instructions with
-human feedback.
 Kishore Papineni, Salim Roukos, Todd Ward, and WeiJing
  Zhu. 2002. Bleu  a method for automatic evaluation
  of machine translation. In Proceedings of the
 40th Annual Meeting of the Association for Computational
  Linguistics , pages 311 318, Philadelphia,Pennsylvania, USA. Association for Computational
-Linguistics.
 Vitou Phy, Yang Zhao, and Akiko Aizawa. 2020. Deconstruct
  to reconstruct a configurable evaluation metric
 for open-domain dialogue systems. In Proceedings of
 the 28th International Conference on Computational
 Linguistics , pages 4164 4178, Barcelona, Spain (Online).
  International Committee on Computational Linguistics.
-
 Ricardo Rei, Craig Stewart, Ana C Farinha, and Alon
 Lavie. 2020. Unbabel s participation in the WMT20
 metrics shared task. In Proceedings of the Fifth Conference
@@ -873,13 +860,12 @@ Martins. 2022. CometKiwi  IST-unbabel 2022 submission
 Proceedings of the Seventh Conference on Machine
 Translation (WMT) , pages 634 645, Abu Dhabi,
 United Arab Emirates (Hybrid). Association for Computational
- Linguistics.
 Mario Rodríguez-Cantelar, Chen Zhang, Chengguang
 Tang, Ke Shi, Sarik Ghazarian, João Sedoc, Luis Fernando
  D Haro, and Alexander Rudnicky. 2023.
 Overview of robust and multilingual automatic evaluation
  metrics for open-domain dialogue systems at
-dstc 11 4. In DSTC11  The Eleventh Dialog
+dstc 11 track 4. In DSTC11  The Eleventh Dialog
 System Technology Challenge , 24th Meeting of the
 Special Interest Group on Discourse and Dialogue
 (SIGDIAL), Prague, Czechia.
@@ -902,7 +888,6 @@ Karthik Valmeekam, Sarath Sreedharan, Matthew Marquez,
  Alberto Olmo, and Subbarao Kambhampati.
 2023. On the Planning Abilities of Large Language
 Models (A Critical Investigation with a Proposed
-Benchmark).
 Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob
 Uszkoreit, Llion Jones, Aidan N Gomez, Ł ukasz
 Kaiser, and Illia Polosukhin. 2017. Attention is allyou need. In Advances in Neural Information Processing
@@ -925,7 +910,6 @@ Guangxuan Xu, Ruibo Liu, Fabrice Harel-Canada, Nischal
 InFindings of the Association for Computational
 Linguistics  EMNLP 2022 , pages 4884 4893, Abu
 Dhabi, United Arab Emirates. Association for Computational
- Linguistics.
 Chrysoula Zerva, Daan van Stigt, Ricardo Rei, Ana C
 Farinha, Pedro Ramos, José G. C. de Souza, Taisiya
 Glushkova, Miguel Vera, Fabio Kepler, and André
@@ -933,11 +917,12 @@ F. T. Martins. 2021. IST-unbabel 2021 submission
 for the quality estimation shared task. In Proceedings
  of the Sixth Conference on Machine Translation ,
 pages 961 972, Online. Association for Computational
- Linguistics.
 Chen Zhang, Yiming Chen, Luis Fernando D Haro,
 Yan Zhang, Thomas Friedrichs, Grandee Lee, and
 Haizhou Li. 2021a. DynaEval  Unifying turn and
-dialogue level evaluation. In Proceedings of the 59 11th International Joint Conference
+dialogue level evaluation. In Proceedings of the 59th
+Annual Meeting of the Association for Computational
+Linguistics and the 11th International Joint Conference
  on Natural Language Processing (Volume 1 
 Long Papers) , pages 5676 5689, Online. Association
 for Computational Linguistics.

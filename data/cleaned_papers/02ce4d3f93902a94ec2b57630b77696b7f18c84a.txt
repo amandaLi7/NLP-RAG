@@ -3,8 +3,6 @@ for Zero-shot Text Classification
 Yau-Shian Wang Ta-Chung Chi Ruohong Zhang Yiming Yang
 Carnegie Mellon University
 king6101@gmail.com {tachungc,ruohongz}@andrew.cmu.edu
-yiming@cs.cmu.edu
-Abstract
 We present PESCO, a novel contrastive learning
  framework that substantially improves the
 performance of zero-shot text classification.
@@ -23,8 +21,6 @@ data, which is close to the fully-supervised result.
  Extensive experiments and analyses show
 all the components of PESCO are necessary for
 improving the performance of zero-shot text
-classification.
-1 Introduction
 Text classification is the task of assigning relevant
 category labels to each input document. It is an important
  problem in machine learning research with
@@ -52,7 +48,6 @@ pre-training on large-scale unlabeled data. Nevertheless,
  how to adapt PTLMs to downstream tasks
 with less supervision remains an open question for
 the research community, inviting new ideas to explore.
-
 Prompt-based learning (Brown et al., 2020  Shin
 et al., 2020  Liu et al., 2021  Li and Liang, 2021 
 Gao et al., 2021a) has been actively studied to better
@@ -72,7 +67,6 @@ could unleash the potential power of a PTLM by
 constructing the input format of a downstream task
 in a way that closely resembles the PTLM pretraining
  objective, which is masked language modeling
- (MLM) in this case.
 Motivated by the recent success of prompt-based
 learning, we propose PESCO, a novel self-training
 framework for zero-shot classification that uses
@@ -84,7 +78,7 @@ into some predefined prompts and call the enhanced
 descriptions label-prompts. As depicted in Figure 1,
 to predict the pseudo-label of a document, PESCO
 formulates text classification as a neural matching
-task. A pre-trained text encoder maps both docu-arXiv 2305.14963 1  [cs.CL]  24 2023ments and label-prompts into a shared embedding
+task. A pre-trained text encoder maps both docu-arXiv 2305.14963v1  [cs.CL]  24 May 2023ments and label-prompts into a shared embedding
 space. A label whose embedding is closest to the
 document is predicted as the pseudo-label.
 To effectively update the text encoder with
@@ -106,9 +100,7 @@ classification baselines. On some datasets, the zeroshot
  results are even on par with a fully supervised
 baseline. On the Dbpedia dataset, in particular,
 PESCO achieves 98.5% accuracy without any labeled
- data.
 In summary, the contributions of this paper are
-twofold 
 1.We explore text classification in a neural
 matching formulation enhanced by prompts.
 We demonstrate that even without any finetuning
@@ -120,7 +112,7 @@ formulation is an effective method for zeroshot
 this is a promising direction for self-training
 and can achieve state-of-the-art performance
 on zero-shot text classification.
-2 2.1 Contrastive Learning
+2.1 Contrastive Learning
 Contrastive learning (CL) (Chopra et al., 2005 
 Hadsell et al., 2006) is a metric learning method
 that aims to pull closer similar inputs in the embedding
@@ -131,7 +123,6 @@ put similar inputs (positive pairs) and dissimilar
 inputs (negative pairs) in the same batch, simultaneously
  minimizing the distance of representations
 from positive pairs, while maximizing the distance
-of negative pairs.
 Figure 1  In this example, there are three classes, whose
 label descriptions are  sports ,  business , and  world 
 respectively. We convert the descriptions into labelprompts
@@ -161,7 +152,6 @@ sentence reformulation (Wu et al., 2020), back
 translation (Fang et al., 2020), dual encoder (Carlsson
  et al., 2021), language model corruption (Meng
 et al., 2021), and translation pairs (Wang et al.,
-2022).
 In addition, CL is a commonly used training
 algorithm for neural text retrieval (Xiong et al.,
 2021). Inverse cloze test (ICT) (Lee et al., 2019) is
@@ -171,7 +161,6 @@ sentence from the rest of the texts. It is also possible
  to construct positive pairs by leveraging the
 document structures (Chang et al., 2020).
 2.2 Self-training and Zero-Shot Text
-Classifcation
 Self-training Self-training (Yarowsky, 1995 
 Nigam and Ghani, 2000  Lee, 2013  Xie et al.,2020) is a widely used approach for semisupervised
  learning and can have additive improvement
@@ -217,8 +206,6 @@ scoring function g(x, c)so that relevant document
 and label description pairs can have higher scores.
 A label whose label description has the highest
 score is selected as model prediction 
-ˆy  arg max
-jg(x, cj), (1)
 Inspired by the recent success of pre-trained sentence
  encoder (Gao et al., 2021b  Chuang et al.,
 2022) which has shown impressive performanceon matching relevant texts, we explore using pretrained
@@ -244,7 +231,7 @@ a prompt function p( )to convert a label descriptioncinto
  a prompt by placing label descriptions
 into pre-defined templates. We design Ttemplates
 for each dataset, and the scoring function is 
-g(x, c)  1 1sim(fθ(x), fθ(pi(c))),(2)
+i 1sim(fθ(x), fθ(pi(c))),(2)
 where fθ( )is a text encoder with parameters θ
 that maps an input text to a dense embedding, and
 sim( )is a similarity function. For the rest of our
@@ -252,7 +239,6 @@ paper, we use cosine similarity as sim( ). For simplicity,
  in the rest of the article, we use pjto refer
 pi(cj), which is the  label-prompt  of label jwith
 irandomly sampled from {1,   , T}.
-4 PESCO
 PESCO is a simple but effective self-training framework
  for zero-shot text classification. Algorithm 1
 gives an overview of PESCO. In our iterative selftraining
@@ -265,10 +251,13 @@ Test (PLCT), which leverages pseudo-labels to construct
  positive training pairs. We continue the selftraining
  process by iteratively generating pseudolabels
  and updating the model using the PLCT objective
- function.Figure 2  The framework of the PLCT. (A)Suppose the pseudo-label ˆy forx is1. We select s2 1 2 1is the most similar to the embedding of label-prompt p1.ˆx is
-the augmented version of x1, which removes s2 1 1.(B)We use kandˆxfrom part (A) to construct an example
-batch of PLCT with batch size B  3. Similar to self-supervised training, we use ˆx to retrieve k because they are
-from the same document. We use ˆx to retrieve k because x andx have the same pseudo-label. We also use x1
+ function.Figure 2  The framework of the PLCT. (A)Suppose the pseudo-label ˆy1forx1is1. We select s2
+k1for the document x1because the embedding of s2
+1is the most similar to the embedding of label-prompt p1.ˆx1is
+the augmented version of x1, which removes s2
+1fromx1.(B)We use kandˆxfrom part (A) to construct an example
+batch of PLCT with batch size B  3. Similar to self-supervised training, we use ˆx1to retrieve k1because they are
+from the same document. We use ˆx1to retrieve k2because x1andx2have the same pseudo-label. We also use x1
 to retrieve the its pseudo-label-prompt p1.(C)We separate PLCT into LCT and PCL losses.
 4.1 Prompt-enhanced Label-aware Cloze Test
 We propose Prompt-enhanced Label-aware Cloze
@@ -285,7 +274,6 @@ positive texts for a document are its pseudo-label
 prompt (i.e. the label-prompt of a pseudo-label).
 We combine these two losses by putting the positive
  texts of LCT and PCL into the same batch of a
-contrastive loss.
 4.1.1 Label-aware Cloze Test
 LCT is inspired by Inverse Cloze Test (Lee et al.,
 2019) which is a widely used self-supervised pretraining
@@ -300,14 +288,8 @@ Test  without  Inverse  because we use the remaining
  long texts to match its relevant short sentences,
 which can be viewed as label descriptions.
 As illustrated in Figure 2-(A), given an input
-document xi {s1
-i, s2
-i,   , sn
 i}consists of nsentences
  and its predicted pseudo label ˆyi, its keysentence kiissj, where 
-j  arg max
-ng(sn
-i, pˆyi). (3)
 Here, g( )is the scoring function in Eq.(1). As
 key sentence kiis more relevant to the pseudolabel
  than any other sentences in xi, optimizing
@@ -317,7 +299,8 @@ between a document and its pseudo-label in embedding
 version of the pseudo-label prompt. Predicting the
 augmented version can have additional training signal
  than simply predicting pseudo-label prompt.
-We provide a real example of ˆxandkin Table. 1 8.
+We provide a real example of ˆxandkin Table. 1
+and more examples can be found in the Appendix
 Since key sentences are highly correlated to corresponding
  pseudo-label prompts, given a document,
  it should not only match its key sentence but
@@ -330,13 +313,8 @@ keys for a query in a supervised setting. Specifically,
  let I {1,   , B}be the set of the indices
 of the texts in a batch, where Bdenotes the batch
 size. The LCT loss LLCT is written as 
-X
-i I 1
- K(i) X
 ˆk K(i)logesim(fθ(ˆxi),fθ(ˆk))/γ
-P
 j Iesim(fθ(ˆxi),fθ(kj))/γ.
-(4)
 Here, K(i)  {kj, j I  ˆyj  ˆyi}denotes the
 keys belonging to the same pseudo class ˆyi, and γdenotes a temperature commonly-used in CL. To
 prevent trivial training signal, the input document
@@ -347,14 +325,9 @@ As the update target of self-training is to maximize
  the similarity between xiand its pseudo-labelprompt
  pˆyiin embedding space, we use the prompt
 contrastive loss (PCL) LPCL to directly maximize
-the similarity 
-LPCL   X
 i Ilogesim(fθ(ˆxi),fθ(pˆyi))/γ
-P
 c Cesim(fθ(ˆxi),fθ(p(c)))/γ.
-(5)
 Depicted in Figure 2 (C)-2, this loss predicts ˆyi
-from ˆxi.
 4.2 Combining LCT and PCL
 Naturally, to combine LCT and PCL, the simplest
 way is to use LPCL LLCT as the final training
@@ -373,41 +346,27 @@ Specifically, we use ˆxias a query to retrieve (1)
 the key kifrom the same text xi, (2)K(i), the keys
 belonging to the same pseudo class ˆyi, and (3) the
 positive pseudo-label-prompt pˆyi. The PLCT loss
-LPLCT is written as 
-X
-i I 1
- A(i) X
 a A(i)logesim(fθ(ˆxi),fθ(a))/γ
-P
 m Mesim(fθ(ˆxi),fθ(m))/γ
-(6)
 Here, A(i) K(i)  {pˆyi}is the set of positive
 texts in the mini-batch for xi,M  {kj, j I} 
 {pc, c C}denotes the set of all the candidate
-keys.
 Interestingly, ˆxican be viewed as a challenging
  data augmentation of xifor predicting pseudolabel
  prompt because it removes the most salient
 sentence from xi. A model can make a prediction
 simply based on one salient sentence, neglectingthe information of remainder. This data augmentation
  method forces the model to capture additional
-information.
-Algorithm 1 PESCO
 Require  Unlabeled texts X, label descriptions C.
 Initialization  A pre-trained sentence encoder
-fθ( ).
 Repeat until convergence 
 1.Usefθ( )to generate hard pseudo-labels ˆy
 with Eq.(1) for all unlabeled texts without data
-augmentation.
 2.Sample Tttraining pairs (x,ˆy)from step 1
 based on the pseudo-label predicted probability.
  Use these pairs to update the θoffθ( )
 that minimizes the LPLCT in eq 6.
 3.With a more powerful fθ( ), go back to step
-1.
-Output  fθ( )
-4.3 Self-training
 Algorithm 1 describes PECOS self-training loop.
 Our self-training algorithm is a simplified version
 of noisy student training (Xie et al., 2020) that a
@@ -416,7 +375,6 @@ a teacher. The key idea of noisy student training
 is that the teacher uses clean data without data
 augmentation to generate pseudo-labels, while the
 student learns to predict the pseudo-label on augmented
- data.
 We first use pre-trained sentence encoder to initialize
  fθ( ). Then, in step 1, fθ( )serves as a
 teacher to generate pseudo-labels from clean data
@@ -425,9 +383,8 @@ as a student that learns to increase the probability
 of predicting pseudo-labels by minimizing LPLCT .
 Step 2 is a noisy student training because the model
 takes ˆxas input rather than clean x. The selftraining
- repeats step 1 2 until convergence.
+ repeats step 1 and step 2 until convergence.
 We use fθ( )from the last iteration as our final
-model.
 In the algorithm, we set Tt d Tt 1that gradually
  increases Tuntil a threshold T . The probability
  of sampling a pseudo training pair is proportional
@@ -435,27 +392,26 @@ In the algorithm, we set Tt d Tt 1that gradually
 score function, so a more confident pseudo training
 pair is more likely to be sampled. When sampling
 pseudo training pairs, we found that it is importantLabel Description x k
-Family and
 Relationshiphow do you know if you re in love  is it possible to know for sure  in my
 experience you just know. it s a long term feeling of always wanting to share
 each new experience with the other person in order to make them happy, to
 laugh or to know what they think about it. it s jonesing to call even though you
 just got off an hour long phone call with them. it s knowing that being with
 them makes you a better person. it s all of the above and much more.how do you know if
-you re in love 
 Table 1  An example of the document ˆxand the selected pseudo positive keys kin Yahoo Answers. In this example,
 kis very related to label description.
 Dataset Class Number Test Examples
-AG News 4 7,600 14 70,000 10 60,000 2 400,000 2  Dataset statistics.
+Yahoo Answers 10 60,000
+Table 2  Dataset statistics.
 to keep the ratio of all the labels balanced. If a
 class doesn t have enough instances to be sampled,
 then we upsample the class to keep it balanced.
-5 5.1 Experimental Setting
+5.1 Experimental Setting
 Implementation Details Inspired by Yin et al.
 (2019) who formulate zero-shot text classification
 as entailment prediction, we choose the version of
 SimCSE (Gao et al., 2021b) pre-trained on natural
-language inference (NLI) task as our text encoder
+language inference (NLI) task1as our text encoder
 for all datasets. Our experiments have shown that
 sentence encoder fine-tuned on NLI performs better
  on zero-shot classification tasks. We use the
@@ -467,7 +423,6 @@ equations is set to be 0.07. For the value of din
 the self-training section, we set it to be 2because
 we want the model to annotate unlabeled data
 slowly. The details of other hyperparameters in the
-Appendix B.
 Datasets We conduct experiments on various text
 classification datasets  (1) AG News   topic classification
  on news article. (2) DBpedia   Ontology
@@ -505,7 +460,6 @@ AG news, without self-training, the accuracy of using
 different prompts, which further reduces the gap.
 The performance gap among different prompts is
 less than 2% without self-training and less than 1%
-after self-training.
 In Table 4, we analyze the effect of using
 prompts on SimCSE without self-training. By comparing
  [1] with [2], we find that using prompts for
@@ -520,7 +474,6 @@ self-training. However, comparing with the performance
 that the gap between [6] and [7] becomes smaller,Datasets Label Descriptions Prompts
 AG news (1)World (2)Sports (3)Business (4)Technology
 and Science(1)Category  [desc] news.
-(2)[desc] news.
 DBpedia (1)company (2)school and university (3) artist
 (4)athlete (5)politics (6)means of transportation
 (7)building (8)river and mountain and lake (9)village
@@ -541,10 +494,11 @@ Id Self-train Methods AG News DBpedia Yahoo Answers Amazon
 [2] No SimCSE w/ prompt 76.3 76.0 56.5 88.3
 [3] No PET 79.4 75.2 56.4 87.1
 [4] Yes iPET 86.0 85.2 68.2 95.2
-[5] Yes LOTClass 86.4 91.1 91.6
+[5] Yes LOTClass 86.4 91.1   91.6
 [6] Yes PESCO w/o prompt 87.1 96.0 69.9 95.1
 [7] Yes PESCO 89.6 98.5 71.1 95.2
-[8]   Supervised 94.2 99.3 77.3 97.1 4  Test-set accuracy of zero-shot text classification methods. The Self-train column indicates whether a
+[8]   Supervised 94.2 99.3 77.3 97.1
+Table 4  Test-set accuracy of zero-shot text classification methods. The Self-train column indicates whether a
 method performs self-training on unlabeled data.
 which indicates that the effect of using prompts
 decreases after self-training.
@@ -560,12 +514,11 @@ data, so the Self-train column is  No . In [7], we
 report the best results over 5 runs on PESCO single
 model performance without an ensemble. We also
 report the average, maximum, and minimum accuracy
- over 5 6. In [8], to see
+ over 5 runs in Appendix Table 6. In [8], to see
 the gap between zero-shot and fully-supervised settings,
  we train a typical BERT (Devlin et al., 2019)
 classifier on a labeled training set. We jointly finetune
  BERT and a linear classifier on top of BERT
-[CLS] output layer.
 Effect of Self-training First, by comparing [7]
 against [2] in Table 4, we find that the proposedself-training framework significantly improves the
 performance by more than 10% on average. On DBpedia,
@@ -574,7 +527,6 @@ performance by more than 10% on average. On DBpedia,
 This demonstrates that self-training is an effective
 method to enhance performance after general pretraining,
  closing the gap between fully supervised
-training.
 Comparison against LOTClass Comparing [7]
 PESCO against [5] LOTClass, PESCO significantly
  improves the zero-shot text classification
@@ -586,7 +538,6 @@ are classified as the corresponding category. Our
 method uses a pre-trained sentence encoder to define
  the relevance between document and category,
 which is more effective and requires less human
-heuristics.
 Comparison against iPET Our main baseline
 is [4] iPET, which uses [3] PET as a base model
 to generate initial pseudo-labels followed by a se-Id Methods AG News DBpedia Yahoo Answers Amazon
@@ -596,7 +547,8 @@ to generate initial pseudo-labels followed by a se-Id Methods AG News DBpedia Ya
 [4] LCT - R 80.7 86.9 68.6 93.3
 [5] PCL 87.8 89.4 68.7 95.1
 [6] LCT PCL 88.2 97.0 69.8 95.2
-[7] PESCO w/o aug 87.8 96.7 68.6 93.5 5  Contrastive losses of different methods. The methods end with  -R  means their pseudo positive key
+[7] PESCO w/o aug 87.8 96.7 68.6 93.5
+Table 5  Contrastive losses of different methods. The methods end with  -R  means their pseudo positive key
 sentences are randomly selected instead of picking the most salient sentence.
 ries of self-training steps. We find that our base
 model [2] achieves similar performance with [3]
@@ -613,7 +565,7 @@ requires a massive model ensemble (e.g. 15 models)
 code with a PvP ensemble without using various
 random seeds for ensembling. Even with this simplified
  setting, iPET still needs far more disk space
-(1.4 26 GB) and more training time than us
+(1.4 GB vs 26 GB) and more training time than us
 in that we do not need to train various models for
 model ensembling in each self-training step.
 Note that It is not feasible to test our method
@@ -626,7 +578,10 @@ hand, simCSE is finetuned for sentence embeddings,
 ability. Because iPET and LOTClass require language
  models to generate tokens, using SimCSERoberta
  for iPET or LOTClass is also not feasible.
-5.4 5. In the table, LCT means we
+5.4 Ablation Study and Analysis
+Comparison of different contrastive losses The
+results of different contrastive learning losses are
+shown in Table 5. In the table, LCT means we
 only use LLCT in Eq.( 4) to train our model, PCL
 means we use LPCL, and LCT PCL means we
 sum the LLCT andLPCL as our loss function
@@ -663,8 +618,6 @@ the most salient sentence from a document is an effective
 improve performance. This is consistent with previous
  literature (Xie et al., 2020) that updating
 student models with noisy data is important in selftraining.
-
-6 Conclusion
 This paper presents a novel approach to zero-shot
 text classification, which significantly improves the
 SOTA results on four benchmark datasets by formulating
@@ -674,7 +627,6 @@ pre-trained language models and contrastive learning
  over pseudo-labeled data in a self-training loop.
 Our experiments in comparison with representativebaselines and ablation analysis show evidence for
 the effectiveness of the proposed approach.
-7 Limitations
 The main limitation of our method is that it heavily
 depends on the quality of the label description. If
 a label description does not precisely describe the
@@ -685,14 +637,12 @@ difficult to be understood by pre-trained language
 models. Similarly, our method cannot work on
 the domain that is not covered by the pre-training
 corpora of language models, such as the medical
-domain.
 Another limitation of our method is that PLCT
 loss cannot handle short texts. If a text consists of
 only one sentence, PLCT loss will no longer work
 because LCT requires a document to be more than
 one sentence. In this case, PCL loss can still be
 used for self-training.
-References
 Tom Brown, Benjamin Mann, Nick Ryder, Melanie
 Subbiah, Jared D Kaplan, Prafulla Dhariwal, Arvind
 Neelakantan, Pranav Shyam, Girish Sastry, Amanda
@@ -706,12 +656,10 @@ Radford, Ilya Sutskever, and Dario Amodei. 2020.
 Language models are few-shot learners. In Advances
  in Neural Information Processing Systems ,
 volume 33, pages 1877 1901. Curran Associates,
-Inc.
 Fredrik Carlsson, Amaru Cuba Gyllensten, Evangelia
  Gogoulou, Erik Ylipää Hellqvist, and Magnus
 Sahlgren. 2021. Semantic re-tuning with contrastive
 tension. In International Conference on Learning
-Representations .
 Wei-Cheng Chang, Felix X. Yu, Yin-Wen Chang, Yiming
  Yang, and Sanjiv Kumar. 2020. Pre-training tasks
 for embedding-based large-scale retrieval. In International
@@ -733,7 +681,6 @@ Conference of the North American Chapter of the
 Association for Computational Linguistics  Human
 Language Technologies , pages 4207 4218, Seattle,
 United States. Association for Computational Linguistics.
-
 Jacob Devlin, Ming-Wei Chang, Kenton Lee, and
 Kristina Toutanova. 2019. BERT  Pre-training of
 deep bidirectional transformers for language understanding.
@@ -751,16 +698,16 @@ Proceedings of the 2021 Conference of the North
 American Chapter of the Association for Computational
  Linguistics  Human Language Technologies ,
 pages 5408 5418, Online. Association for Computational
- Linguistics.
 Hongchao Fang, Sicheng Wang, Meng Zhou, Jiayuan
 Ding, and Pengtao Xie. 2020. Cert  Contrastive selfsupervised
  learning for language understanding.
 Tianyu Gao, Adam Fisch, and Danqi Chen. 2021a.
 Making pre-trained language models better few-shot
-learners. In Proceedings of the 59 11th International Joint Conference on Natural
+learners. In Proceedings of the 59th Annual Meeting
+ of the Association for Computational Linguistics
+and the 11th International Joint Conference on Natural
  Language Processing (Volume 1  Long Papers) ,
 pages 3816 3830, Online. Association for Computational
- Linguistics.
 Tianyu Gao, Xingcheng Yao, and Danqi Chen. 2021b.
 SimCSE  Simple contrastive learning of sentence
 embeddings. In Empirical Methods in Natural Language
@@ -778,12 +725,10 @@ preprint arXiv 1911.05722 .Prannay Khosla, Piotr Teterwak, Chen Wang, Aaron
 Sarna, Yonglong Tian, Phillip Isola, Aaron
 Maschinot, Ce Liu, and Dilip Krishnan. 2020.
 Supervised contrastive learning. arXiv preprint
-arXiv 2004.11362 .
 Yoon Kim. 2014. Convolutional neural networks for
 sentence classification. In Proceedings of the 2014
 Conference on Empirical Methods in Natural Language
  Processing (EMNLP) . Association for Computational
- Linguistics.
 Dong-Hyun Lee. 2013. Pseudo-label  The simple and
 efficient semi-supervised learning method for deep
 neural networks. In ICML Workshops .
@@ -799,13 +744,13 @@ embeddings from pre-trained language models. In
 Proceedings of the 2020 Conference on Empirical
 Methods in Natural Language Processing (EMNLP) ,
 pages 9119 9130, Online. Association for Computational
- Linguistics.
 Xiang Lisa Li and Percy Liang. 2021. Prefix-tuning 
 Optimizing continuous prompts for generation. In
-Proceedings of the 59 11th
+Proceedings of the 59th Annual Meeting of the Association
+ for Computational Linguistics and the 11th
 International Joint Conference on Natural Language
-Processing (Volume 1  Long Papers) , pages 4582 4597, Online. Association for Computational Linguistics.
-
+Processing (Volume 1  Long Papers) , pages 4582 
+4597, Online. Association for Computational Linguistics.
 Pengfei Liu, Weizhe Yuan, Jinlan Fu, Zhengbao Jiang,
 Hiroaki Hayashi, and Graham Neubig. 2021. Pretrain,
  prompt, and predict  A systematic survey of
@@ -814,7 +759,6 @@ Yinhan Liu, Myle Ott, Naman Goyal, Jingfei Du, Mandar
  Joshi, Danqi Chen, Omer Levy, Mike Lewis,
 Luke Zettlemoyer, and Veselin Stoyanov. 2019.
 Roberta  A robustly optimized bert pretraining approach.
-
 Andrew L. Maas, Raymond E. Daly, Peter T. Pham,
 Dan Huang, Andrew Y . Ng, and Christopher Potts.
 2011. Learning word vectors for sentiment analysis.
@@ -822,7 +766,6 @@ InProceedings of the 49th Annual Meeting of the
 Association for Computational Linguistics  Human
 Language Technologies , pages 142 150, Portland,
 Oregon, USA. Association for Computational Linguistics.
-
 Yu Meng, Chenyan Xiong, Payal Bajaj, Saurabh Tiwary,
 Paul Bennett, Jiawei Han, and Xia Song. 2021. Cocolm 
  Correcting and contrasting text sequences for
@@ -863,7 +806,6 @@ Sebastian Riedel. 2020. How context affects language
 Knowledge Base Construction .
 Pranav Rajpurkar, Robin Jia, and Percy Liang. 2018.
 Know what you don t know  Unanswerable questions
-for squad.
 Pranav Rajpurkar, Jian Zhang, Konstantin Lopyrev, and
 Percy Liang. 2016. SQuAD  100,000  questions for
 machine comprehension of text. In Proceedings of
@@ -903,7 +845,7 @@ Association for Computational Linguistics (Volume
  Association for Computational Linguistics.
 Gokhan Tur, Dilek Hakkani-Tür, and Larry Heck. 2010.
 What is left to be understood in atis  In 2010 IEEE
-Spoken Language Technology Workshop , pages 19 24.
+Spoken Language Technology Workshop , pages 19 
 Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob
 Uszkoreit, Llion Jones, Aidan N Gomez, Ł ukasz
 Kaiser, and Illia Polosukhin. 2017. Attention is all
@@ -916,7 +858,6 @@ Methods in Natural Language Processing (EMNLP) .
 Zhuofeng Wu, Sinong Wang, Jiatao Gu, Madian
 Khabsa, Fei Sun, and Hao Ma. 2020. Clear  Contrastive
  learning for sentence representation. ArXiv ,
-abs/2012.15466.
 Qizhe Xie, Minh-Thang Luong, Eduard Hovy, and
 Quoc V . Le. 2020. Self-training with noisy student
 improves imagenet classification. In 2020 IEEE/CVF
@@ -927,7 +868,6 @@ Jialin Liu, Paul N. Bennett, Junaid Ahmed, and
 Arnold Overwijk. 2021. Approximate nearest neighbor
  negative contrastive learning for dense text retrieval.
  In International Conference on Learning
-Representations .
 Zhilin Yang, Zihang Dai, Yiming Yang, Jaime Carbonell,
  Russ R Salakhutdinov, and Quoc V Le. 2019.
 Xlnet  Generalized autoregressive pretraining for language
@@ -946,11 +886,11 @@ David Yarowsky. 1995. Unsupervised word sense disambiguation
 Annual Meeting of the Association for Computational
  Linguistics , pages 189 196, Cambridge, Massachusetts,
  USA. Association for Computational Linguistics.
-
 Wenpeng Yin, Jamaal Hay, and Dan Roth. 2019. Benchmarking
  zero-shot text classification  Datasets, evaluation
  and entailment approach. In Proceedings of
-the 2019 9th International
+the 2019 Conference on Empirical Methods in Natural
+ Language Processing and the 9th International
 Joint Conference on Natural Language Processing
 (EMNLP-IJCNLP) , pages 3914 3923. Association
 for Computational Linguistics.
@@ -963,9 +903,10 @@ Hanxiao Liu, Ekin Dogus Cubuk, and Quoc Le. 2020.
 Rethinking pre-training and self-training. In Advances
  in Neural Information Processing Systems ,
 pages 3833 3845.AG News DBpedia Yahoo Amazon
-avg 88.7 96.9 70.5 94.3 89.6 98.5 71.1 95.2 87.7 96.1 70.0 93.9 6  Average/minimum/maximum accuracy over 5
-runs.
-A Discussion
+avg 88.7 96.9 70.5 94.3
+max 89.6 98.5 71.1 95.2
+min 87.7 96.1 70.0 93.9
+Table 6  Average/minimum/maximum accuracy over 5
 Text Classification as neural text retrieval Formulating
  text classification as neural retrieval is
 straightforward but not widely explored by previous
@@ -997,7 +938,6 @@ contrastive learning, we believe contrastive learning
  is a promising direction for self-training and
 propose PESCO to explore its potential on zeroshot
  text classification.
-B Hyperparameters
 As indicated by previous work (Chen et al., 2020),
 using a larger batch size generally yields better performance
  because it includes more negative samples.
@@ -1008,7 +948,6 @@ size. Using a smaller batch size only reduces the accuracy
  by less than 2%. Also, we observe that our
 Figure 3  The effect of different batch sizes.
 Figure 4  Training epoch versus validation set accuracy
-on AG News dataset.
 algorithm converges after 1000 steps (1 epoch) of
 training, and additional training steps only slightly
 increase the performance. In other datasets, our
@@ -1026,13 +965,17 @@ plot the training epoch versus validation set accuracy.
 to obtain the best result, the model actually converges
  in the early training stage. Similar training
 curves can be observed in all the datasets.AG News DBpedia Yahoo Answers Amazon
-Learning rate 1e-5 1e-5 5e-6 5e-6 156 128 192 128 32 32 32 32 1e-6 1e-8 1e-8 1e-8 0.2 0.5 0.1 0.1 5 5 2 1 7  Hyperparameters.
+Learning rate 1e-5 1e-5 5e-6 5e-6
+Document length 156 128 192 128
+Batch size 32 32 32 32
+Epsilon 1e-6 1e-8 1e-8 1e-8
+T 0.2N 0.5N 0.1N 0.1N
+Table 7  Hyperparameters.
 Label Description x k
 Family and Relationship where is the best place to look for love 
 it might be easy to use the internetthere
  are many good matching web sites
 that can helpwhere is the best place
-to look for love 
 Entertainment and Music what is the best place to get guitar
 lessons in the south bay area  looking
  for a great instructor and relatively
@@ -1046,7 +989,6 @@ as click for lessons that will show you
 several teacher bios and let you decide
 for yourself.what is the best place
 to get guitar lessons in
-the south bay area 
 Business and Finance does anyone know a good apartment
 rental agency around washington dc 
 i ve had personal experience with archstone
@@ -1059,10 +1001,14 @@ were in the northern virginia area - bedroom
 apartment hunting  the housing market
 around here is absolutely insane.does anyone know a good
 apartment rental agency around
-washington dc 
-Sports why are there 5 5 1920 games in antwerp
+Sports why are there 5 rings in the olympics
+symbol  what does it represent  i heard
+few theories about it but not sure what
+is the correct one the 5 rings were introduced
+ at the the 1920 games in antwerp
 games. the rings included at least one
 color from the flag of every participating
- country.why are there 5 8  More examples of the distorted document ˆxand the selected pseudo positive keys kin Yahoo Answers.
+ country.why are there 5 rings
+in the olympics symbol 
+Table 8  More examples of the distorted document ˆxand the selected pseudo positive keys kin Yahoo Answers.
 It happens that kseems to be the most important sentence of the texts, so their semantics are closest to label
-descriptions.

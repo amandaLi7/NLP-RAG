@@ -4,7 +4,6 @@ Santosh T.Y.S.S, Marcel Perez San Blas, Phillip Kemper, Matthias Grabmair
 School of Computation, Information, and Technology 
 Technical University of Munich, Germany
 {santosh.tokala, marcel.perez, phillip.kemper, matthias.grabmair}@tum.de
-Abstract
 We report on an experiment in case outcome
 classiﬁcation on European Court of Human
 Rights cases where our model ﬁrst learns to
@@ -26,7 +25,6 @@ static pre-trained encoder, our models produce
 a small but consistent improvement in classiﬁcation
  performance over single-task and joint
 models without contrastive loss.
-1 Introduction
 The NLP task of classifying case outcome information
  from a textual statement of case facts is
 generally referred to as Legal Judgement Prediction
@@ -48,7 +46,6 @@ Constitutional court (Sert et al., 2021  Mumcuo  gluet al., 2021), UK courts (St
  2020), German courts (Waltl et al., 2017), the
 Philippine Supreme court (Virtucio et al., 2018),
 and the Thailand Supreme Court (Kowsrihawat
-et al., 2018).
 In this work, we experiment with classifying
 case outcomes in the ECtHR A and B benchmark
 tasks introduced by LexGLUE (Chalkidis et al.,
@@ -73,7 +70,6 @@ dataset remains a useful resource for the development
  for text patterns that correspond to speciﬁc
 convention articles as drafted by the court. Consequently,
  we speak of case outcome classiﬁcation
-(COC) .
 Positive instances for Task A are cases in which
 an article was deemed violated by the court. Negative
  instances, however, usually encompass not
@@ -84,7 +80,7 @@ cases in which the particular article was not alleged
 probability of a positive task A label (violation)
 given its task B label (allegation) can be very high
 in the LexGLUE dataset, we posit that models can
-fall into this pitfall of identifying dominant articlesarXiv 2302.00768 3  [cs.CL]  13 2023with high conditional violation probability, missing
+fall into this pitfall of identifying dominant articlesarXiv 2302.00768v3  [cs.CL]  13 Feb 2023with high conditional violation probability, missing
  information speciﬁc to violation classiﬁcation.
 Thus, we experiment with multi-task architectures
 to decouple these reasoning steps involved in Task
@@ -93,7 +89,6 @@ cases judgement prediction carried out in Zhong
 et al. 2018  Yang et al. 2019  Xu et al. 2020  Yue
 et al. 2021 that coordinated multiple outcome variables
  (law articles, criminal charges, and penalty
-terms).
 In the ECtHR context, most of the previous
 works (Chalkidis et al., 2019, 2021, 2022b  Clavié
 and Alphonsus, 2021  Santosh et al., 2022, 2023)
@@ -133,7 +128,6 @@ article latent space to form distinct sub-clusters of
 similar outcome cases. Unlike our two-level hierarchical
  contrastive learning, a single-level one has
 been explored for LJP in the concurrent work by
-Zhang et al. 2023.
 Our experiments demonstrate that, given a static
 Figure 1  Our architecture capturing task dependency
 from allegation to violation classiﬁcation branch.
@@ -141,8 +135,6 @@ pre-trained encoder, our models outperform singletask
  and joint models without contrastive loss by a
 small but consistent margin, with larger improvements
  for sparse classes in classiﬁcation performance.
-
-2 Method
 Our model takes as input the case fact description
 as token encodings x {x1,x2,...,x m}where
 xi {xi1,xi2,...,x in}and outputs the set of articles
@@ -159,21 +151,16 @@ fact description inputs. Our model contains three
 main components  (1) encoding layer, (2) ArticleSpeciﬁc
  Case representation and (3) Task Dependency
  learning. See Fig. 1 for an overview of our
-model.
 Encoding layer  We encode each sentence in the
 case facts description with LegalBERT (Chalkidis
 et al., 2020) to obtain the token level representations{zi1,zi2,...,z
  in}. Sentence level representations
  are then computed using a token-level atten-tion mechanism as follows 
 uit tanh(Wwzit bw) &αit exp(uituw) 
-texp(uituw)&fi n 
-t 1αitzit
-(1)
 whereWw,bwanduware trainable parameters.
 The sentence level representations {f1,...,f m}
 are passed through a GRU encoder to obtain
 context-aware representations of the case facts
-h {h1,h2,...,h m}.
 Article-Speciﬁc Case Representation  We disentangle
  the input case facts into multiple articleview-representations
  c {c1,c2,...,c k}where
@@ -190,7 +177,6 @@ and mitigates the tendency of models to focus on
 skewed dominant articles. This is distinct from previous
  works (Chalkidis et al., 2019, 2021, 2022b 
 Santosh et al., 2022) which use a single vector representation
- for case facts.
 Task Dependency Learning  To capture both the
 inter-article correlations for allegation, violation
 classiﬁcation, and the inter-task dependency, we
@@ -201,12 +187,6 @@ a multi-head self-attention layer (Vaswani et al.,
 (e.g., some articles are typically alleged together
 while others usually occur in isolation) and obtain
 article-interaction-aware allegation feature representationsc 
-
-b {c 
-b1,c 
-b2,...,c 
-bk}. Thesec 
-bare
 passed through karticle-speciﬁc Task B classiﬁcation
  layers to obtain the binary outcome obcorresponding
  to each article for allegation classiﬁcation,
@@ -215,14 +195,10 @@ Then we utilize the task B allegation information
  to enhance task A violation classiﬁcation to
 capture the task dependency. We concatenate the
 obtained article-interaction-aware allegation representationsc 
-
 band allegation label probability logits
-o 
-b with article-speciﬁc case representations cto
+b1with article-speciﬁc case representations cto
 obtain the enhanced article-speciﬁc representation
 for Task A as cai  [ci,c 
-bi,o 
-bi]. We again em We
  use non-binarized response (i.e. probability logits) as
 it avoids the information loss that can occur in the probability
 space due to binarization.ploy multi-head self-attention mechanism on these
@@ -269,27 +245,10 @@ It is calculated as the mean loss computed based
 on every article based representation as an anchor
 point. The loss for the interaction-aware representation
  of thejthcase speciﬁc to the itharticle for Task
-Bc 
 bijas an anchor point is calculated as follows 
-l(c 
-bij)  log( 
-f Q(i,j)exp(c 
-bij f/τa)
- 
-g P(i,j)exp(c 
-bij g/τa))
- α 
-f R(i,j)exp(c 
-bij f/τc)
- 
-g Q(i,j)exp(c 
-bij g/τc))(2)
-whereP(i,j)  {c 
 blm l  i&m  j}(all rep-resentations except the anchor point), Q(i,j)  
-{c 
 blm l i&m  j)}(all representations
 which share the same article as the anchor point),
-R(i,j)  {c 
 blm l i&yij ylm&m  j},
 yijthe denotes binary outcome label of case jwith
 respect to article i(all representations which share
@@ -327,7 +286,6 @@ Task A/B only  We train single-task models only
 on task A and B labels, respectively. Their architecture
  is based on our model with contrastive loss,
 task dependency and article-speciﬁc representation
-components removed.
 Multi-task  Using the same architecture, we also
 develop a model for both task A and B that is
 trained in classic multi-task fashion with separate
@@ -337,10 +295,11 @@ classiﬁcation heads without article-speciﬁc representations
 Following Chalkidis et al. 2022b, we report microF1
  (µ-F1) and macro-F1 (m-F1) scores across theTable 1  Results on Task A and B.  feat. ,  lab, .  Cont. 
 indicate feature, label and contrastive, respectively
-Task B Task A
-Model µ-F1 m-F1µ-F1 m-F1 hm-F1 76.20 67.15 - - Task
+Model µ-F1 m-F1µ-F1 m-F1 hm-F1
+Task B only 76.20 67.15 - - Task
  A only - - 68.42 56.26 54.14
-Multi-task 78.17 69.16 69.29 58.05 55.57 79.29 70.97 71.26 65.24 60.90
+Multi-task 78.17 69.16 69.29 58.05 55.57
+Our Method 79.29 70.97 71.26 65.24 60.90
 w/o feat. & lab. 78.93 71.45 70.07 59.14 57.09
 w/o feat. 78.59 71.56 70.68 63.93 59.28
 w/o label 79.09 71.38 70.32 64.12 61.70
@@ -359,7 +318,6 @@ article having been violated are considered as positive
 alleged but not found to have been violated as negative
  instances. This forms the most critical measure
 for violation classiﬁcation as it conditions on allegation.
-
 We compare the performance of our method with
 the baselines in the ﬁrst four rows of Table 1. The
 multi-task method performs better than the individual
@@ -372,8 +330,7 @@ higher by a small margin in Task B and Task A
 micro-F1 but achieves a larger beneﬁt ( 5%) in
 task A macro-F1 and hard macro-F1 metrics. This
 suggests that our model is of particular utility for
-sparser classes.
-3.3 3.3.1 Ablation on Task Dependency Learning
+3.3.1 Ablation on Task Dependency Learning
 We create three ablation conditions by removing
 one interaction mechanism in each of them  (i) w/o
 feature & label (article-speciﬁc representation but
@@ -404,7 +361,7 @@ of the predicted ones. We create two variants  only
 gold labels andgold labels   features (gold labels
 along with task B features). From the third section
 of Table 1, we observe that performance on Task
-A increases substantially in micro-F1 1,
+A increases substantially in micro-F1 and macroF1,
  which is intuitive as the model gets access to
 perfect allegation information. Interestingly, when
 adding task allegation feature information, we notice
@@ -416,7 +373,6 @@ the beneﬁt of using task dependency information
 from allegation branch to violation branch in our
 architecture, and the size of the performance gap
 motivates future work on accurate allegation classiﬁcation.
-
 3.3.2 Ablation Hierarchical Contrastive Loss
 We carry out an ablation experiment for each
 component of our hierarchical contrastive loss 
@@ -434,14 +390,12 @@ article-level contrastive learning supports our hypothesis
  that maximizing the distinctiveness among
 article representations encourages the model to
 learn how to extract article-speciﬁc salient information
- from case facts.
 Finally, to study the impact of our contrastiveloss component alone, we evaluate single-task models
  applying our hierarchical contrastive loss referred
  to as  Task A/B Contrastive . From the last
 section of Table 1, we observe that they outperform
 their baseline counterparts in both tasks, but still
 stay behind our model.
-4 Conclusion
 We improve ECtHR article violation classiﬁcation
 from fact statements by leveraging feature and label
  information from an allegation classiﬁcation
@@ -458,8 +412,6 @@ statements interrelate in a way that may not be optimally
  captured using straightforward multi-task
 architectures, and motivate further research on dependency
  modeling between related legal classiﬁcation
- tasks.
-Limitations
 In this work, we have demonstrated improvements
 in violation classiﬁcation for ECtHR cases by leveraging
  the dependency from allegation classiﬁcation
@@ -480,7 +432,6 @@ a necessary sub-part of deriving the ﬁnal outcome
 related to the main task (violation prediction) at
 hand. We leave an exploration of the relatedness
 of auxiliary tasks and their impact on LJP/COC for
-future work.
 One major challenge is dealing with long input
 case facts description, which is currently handled
 with hierarchical model in this work. These hierar-chical models do not allow tokens in one sentence
@@ -492,8 +443,6 @@ et al. 2022  Chalkidis et al. 2022a. Additionally,
 we freeze the weights in the LegalBERT encoder,
 both to save computational resources and to evaluate
  the effectiveness of our dependency mechanism
-in a clean way.
-Ethics Statement
 We employ pre-trained language models and do not
 train them from scratch, thus inheriting the biases
 they may have acquired from their training corpus.
@@ -516,7 +465,6 @@ the respondent state. If COC models are deployed
 as part of a decision support systems, then they
 of course must be screened for performance/error
 differences in between groups that are to be treated
-equally.
 The task of LJP/COC in itself raises serious ethical
  and legal concerns, both in general and speciﬁc
 to the European Court of Human Rights. However,
@@ -535,8 +483,7 @@ aligning their inferences with legal expert reasoning.
 2https //hudoc.echr.coe.intcommunity increasingly addressing ethical aspects
 of developed systems in the context of technical
 research (e.g., Wang et al. 2021  Medvedeva et al.
-2021, 2022 2021  Leins
-et al. 2020).
+2021, 2022  Tsarapatsanis and Aletras 2021  Leins
 In this work, we use COC as a technical benchmarking
  task that allows the development and study
 of neural NLP models on legal text. We focus on
@@ -552,12 +499,11 @@ ethically, and mindfully by experts in solving problems
  arising in legal research and practice.
 All experiments were carried out using Google
 Colab. We did not track computation hours.
-References
 Nikolaos Aletras, Dimitrios Tsarapatsanis, Daniel
 Preo  tiuc-Pietro, and Vasileios Lampos. 2016. Predicting
  judicial decisions of the european court of
 human rights  A natural language processing perspective.
- PeerJ Computer Science , 2 93.
+ PeerJ Computer Science , 2 e93.
 Vithor Gomes Ferreira Bertalan and Evandro Eduardo
  Seron Ruiz. 2020. Predicting judicial outcomes
  in the brazilian legal system using textual features.
@@ -566,7 +512,6 @@ Ilias Chalkidis, Ion Androutsopoulos, and Nikolaos
 Aletras. 2019. Neural legal judgment prediction in
 english. In Proceedings of the 57th Annual Meeting
  of the Association for Computational Linguistics ,
-pages 4317 4323.
 Ilias Chalkidis, Xiang Dai, Manos Fergadiotis, Prodromos
  Malakasiotis, and Desmond Elliott. 2022a.
 An exploration of hierarchical attention transformers
@@ -584,7 +529,6 @@ Prodromos Malakasiotis. 2021. Paragraph-level rationale
 study on european court of human rights cases. In
 Proceedings of the 2021 Conference of the NorthAmerican Chapter of the Association for Computational
  Linguistics  Human Language Technologies ,
-pages 226 241.
 Ilias Chalkidis, Abhik Jana, Dirk Hartung, Michael
 Bommarito, Ion Androutsopoulos, Daniel Katz, and
 Nikolaos Aletras. 2022b. Lexglue  A benchmark
@@ -598,12 +542,10 @@ Tomada, Sebastian Schwemer, and Anders Søgaard.
  fairness in legal text processing. In Proceedings
  of the 60th Annual Meeting of the Association
 for Computational Linguistics (Volume 1  Long Papers)
- , pages 4389 4406.
 Ting Chen, Simon Kornblith, Mohammad Norouzi,
 and Geoffrey Hinton. 2020. A simple framework for
 contrastive learning of visual representations. In International
  conference on machine learning , pages
-1597 1607. PMLR.
 Benjamin Clavié and Marc Alphonsus. 2021. The unreasonable
  effectiveness of the baseline  Discussing
 svms in legal text classiﬁcation. In Legal Knowledge
@@ -614,11 +556,9 @@ Desmond Elliott. 2022. Revisiting transformerbased
 Findings of the Association for Computational Linguistics 
  EMNLP 2022 , pages 7212 7230, Abu
 Dhabi, United Arab Emirates. Association for Computational
- Linguistics.
 Olivier Henaff. 2020. Data-efﬁcient image recognition
 with contrastive predictive coding. In International
 conference on machine learning , pages 4182 4192.
-PMLR.
 Daniel Martin Katz, Michael J Bommarito, and Josh
 Blackman. 2017. A general approach for predicting
 the behavior of the supreme court of the united states.
@@ -626,7 +566,6 @@ PloS one , 12(4) e0174698.
 Aaron Russell Kaufman, Peter Kraft, and Maya Sen.
 2019. Improving supreme court forecasting using
  boosted decision trees. Political Analysis ,
-27(3) 381 387.
 Prannay Khosla, Piotr Teterwak, Chen Wang, Aaron
 Sarna, Yonglong Tian, Phillip Isola, Aaron
 Maschinot, Ce Liu, and Dilip Krishnan. 2020. Supervised
@@ -645,7 +584,6 @@ Give me convenience and give her death  Who
 should decide what uses of nlp are appropriate, and
 on what basis  In Proceedings of the 58th Annual
 Meeting of the Association for Computational Linguistics
- , pages 2908 2913.
 Bin Liang, Zixiao Chen, Lin Gui, Yulan He, Min Yang,
 and Ruifeng Xu. 2022. Zero-shot stance detection
 via contrastive learning. In Proceedings of the ACM
@@ -654,20 +592,20 @@ Bingfeng Luo, Yansong Feng, Jianbo Xu, Xiang Zhang,
 and Dongyan Zhao. 2017. Learning to predict
 charges for criminal cases with legal basis. In Proceedings
  of the 2017 Conference on Empirical Methods
- in Natural Language Processing , pages 2727 2736.
+ in Natural Language Processing , pages 2727 
 Vijit Malik, Rishabh Sanjay, Shubham Kumar Nigam,
 Kripabandhu Ghosh, Shouvik Kumar Guha, Arnab
 Bhattacharya, and Ashutosh Modi. 2021. Ildc for
 cjpe  Indian legal documents corpus for court judgment
  prediction and explanation. In Proceedings of
-the 59 11th International
+the 59th Annual Meeting of the Association for Computational
+ Linguistics and the 11th International
 Joint Conference on Natural Language Processing
 (Volume 1  Long Papers) , pages 4046 4062.
 Masha Medvedeva, Ahmet Üstün, Xiao Xu, Michel
 V ols, and Martijn Wieling. 2021. Automatic judgement
  forecasting for pending applications of the european
  court of human rights. In ASAIL/LegalAIIA@
-ICAIL .
 Masha Medvedeva, Michel V ols, and Martijn Wieling.
 2020. Using machine learning to predict decisions
 of the european court of human rights. Artiﬁcial Intelligence
@@ -675,12 +613,10 @@ of the european court of human rights. Artiﬁcial Intelligence
 Masha Medvedeva, Martijn Wieling, and Michel V ols.
 2022. Rethinking the ﬁeld of automatic prediction
 of court decisions. Artiﬁcial Intelligence and Law ,
-pages 1 18.
 Emre Mumcuo  glu, Ceyhun E Öztürk, Haldun M Ozaktas,
  and Aykut Koç. 2021. Natural language processing
  in law  Prediction of outcomes in the higher
 courts of turkey. Information Processing & Management
- , 58(5) 102684.
 Joel Niklaus, Ilias Chalkidis, and Matthias Stürmer.
 2021. Swiss-judgment-prediction  A multilingual
 legal judgment prediction benchmark. In Proceedings
@@ -691,7 +627,6 @@ Sastry, Amanda Askell, Pamela Mishkin, Jack Clark,
 et al. 2021. Learning transferable visual models
 from natural language supervision. In International
 Conference on Machine Learning , pages 8748 8763.
-PMLR.
 T. Y . S. S Santosh, Oana Ichim, and Matthias Grabmair.
  2023. Zero shot transfer of article-aware legal
 outcome classiﬁcation for european court of human
@@ -719,8 +654,8 @@ from overﬁtting. The journal of machine learning
 research , 15(1) 1929 1958.
 Benjamin Strickson and Beatriz De La Iglesia. 2020.
 Legal judgement prediction for uk courts. In Proceedings
- of the 2020 3rd international conference
- on information science and system , pages 204 209.
+ of the 2020 the 3rd international conference
+ on information science and system , pages 204 
 Octavia-Maria   Sulea, Marcos Zampieri, Mihaela Vela,
 and Josef van Genabith. 2017. Predicting the law
 area and decisions of french supreme court cases. In
@@ -731,7 +666,6 @@ Dimitrios Tsarapatsanis and Nikolaos Aletras. 2021.
 On the ethical limits of natural language processing
  on legal text. In Findings of the Association
 for Computational Linguistics  ACL-IJCNLP 2021 ,
-pages 3590 3599.
 Josef Valvoda, Ryan Cotterell, and Simone Teufel.
 2023. On the role of negative precedent in legal outcome
  prediction. Transactions of the Association for
@@ -746,7 +680,7 @@ Copino, Michelle P Neverida, Vanesa O Osiana,
 Elmer C Peramo, Joanna G Syjuco, and Glenn
 Brian A Tan. 2018. Predicting decisions of the
 philippine supreme court using natural language processing
- and machine learning. In 2018 42nd
+ and machine learning. In 2018 IEEE 42nd
 annual computer software and applications conference
  (COMPSAC) , volume 2, pages 130 135. IEEE.
 Bernhard Waltl, Georg Bonczek, Elena Scepankova,
@@ -768,7 +702,7 @@ Nuo Xu, Pinghui Wang, Long Chen, Li Pan, Xiaoyan
 Wang, and Junzhou Zhao. 2020. Distinguish confusing
  law articles for legal judgment prediction. In
 Proceedings of the 58th Annual Meeting of the Association
- for Computational Linguistics , pages 3086 3095.
+ for Computational Linguistics , pages 3086 
 Wenmian Yang, Weijia Jia, Xiaojie Zhou, and Yutao
 Luo. 2019. Legal judgment prediction via multiperspective
  bi-feedback network. In Proceedings of
@@ -780,7 +714,6 @@ Alex Smola, and Eduard Hovy. 2016. Hierarchical
 InProceedings of the 2016 conference of the North
 American chapter of the association for computational
  linguistics  human language technologies ,
-pages 1480 1489.
 Linan Yue, Qi Liu, Binbin Jin, Han Wu, Kai Zhang,
 Yanqing An, Mingyue Cheng, Biao Yin, and Dayong
  Wu. 2021. Neurjudge  a circumstance-aware
@@ -791,18 +724,15 @@ Conference on Research and Development in Information
 Han Zhang, Zhicheng Dou, Yutao Zhu, and Ji-Rong
 Wen. 2023. Contrastive learning for legal judgment
 prediction. ACM Transactions on Information Systems.
-
 Haoxi Zhong, Zhipeng Guo, Cunchao Tu, Chaojun
 Xiao, Zhiyuan Liu, and Maosong Sun. 2018. Legal
  judgment prediction via topological learning. InProceedings of the 2018 Conference on Empirical
 Methods in Natural Language Processing , pages
-3540 3549.
 Haoxi Zhong, Yuzhong Wang, Cunchao Tu, Tianyang
 Zhang, Zhiyuan Liu, and Maosong Sun. 2020. Iteratively
  questioning and answering for interpretable legal
  judgment prediction. In Proceedings of the AAAI
 Conference on Artiﬁcial Intelligence , volume 34,
-pages 1250 1257.
 A Implementation Details
 Our models compute word embeddings of size 768.
 Our word level attention context vector size is 300.
@@ -829,4 +759,3 @@ to the other outcome cases in that same article. We
 setαto be 0.5. We use a memory bank of size 32
 per article and outcome, and store only the most
 recent examples per article and its corresponding
-outcome.

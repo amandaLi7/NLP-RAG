@@ -1,8 +1,7 @@
 Read and Reap the Rewards 
 Learning to Play Atari with the Help of Instruction
-Manuals
-Yue Wu1 , Yewen Fan1, Paul Pu Liang1, Amos Azaria2, Yuanzhi Li1,3, Tom Mitchell1 1Carnegie Mellon University,2Ariel University,3 5@andrew.cmu.edu
-Abstract
+Yue Wu1 , Yewen Fan1, Paul Pu Liang1, Amos Azaria2, Yuanzhi Li1,3, Tom Mitchell1
+1Carnegie Mellon University,2Ariel University,3Microsoft Research
 High sample complexity has long been a challenge for RL. On the other hand,
 humans learn to perform tasks not only from interaction or demonstrations, but
 also by reading unstructured text documents, e.g., instruction manuals. Instruction
@@ -16,10 +15,9 @@ reading manuals released by the Atari game developers. Our framework consists
 of a QA Extraction module that extracts and summarizes relevant information
 from the manual and a Reasoning module that evaluates object-agent interactions
 based on information from the manual. An auxiliary reward is then provided to
-a standard A C RL agent, when interaction is detected. Experimentally, various
+a standard A2C RL agent, when interaction is detected. Experimentally, various
 RL algorithms obtain significant improvement in performance and training speed
 when assisted by our design. Code at github.com/Holmeswww/RnR.
-1 Introduction
 Reinforcement Learning (RL) has achieved impressive performance in a variety of tasks, such as Atari
 (Mnih et al., 2015  Badia et al., 2020), Go (Silver et al., 2017), or autonomous driving (Fuchs et al.,
 2021  Kiran et al., 2022), and is hypothesized to be an important step toward artificial intelligence
@@ -36,13 +34,13 @@ manuals, and wiki pages. In addition, unstructured language has been experimenta
 a powerful and flexible source of knowledge for complex tasks (Tessler et al., 2021). Therefore,
 we hypothesize that RL agents could benefit from reading and understanding publicly available
 instruction manuals and wiki pages.
-37th Conference on Neural Information Processing Systems (NeurIPS 2023).arXiv 2302.04449 3  [cs.LG]  26 2023 1  An overview of our Read and Reward framework. Our system receives the current frame in
+37th Conference on Neural Information Processing Systems (NeurIPS 2023).arXiv 2302.04449v3  [cs.LG]  26 Oct 2023Figure 1  An overview of our Read and Reward framework. Our system receives the current frame in
 the environment, and the instruction manual as input. After object detection and grounding, the QA
 Extraction Module extracts and summarizes relevant information from the manual, and the Reasoning
 Module assigns auxiliary rewards to detected in-game events by reasoning with outputs from the QA
 Extraction Module. The  Yes/No  answers are then mapped to  5/ 5auxiliary rewards.
 In this work, we demonstrate the possibility for RL agents to benefit from human-written instruction
-manuals. We download per-game instruction manuals released by the original game developers or
+manuals. We download per-game instruction manuals released by the original game developers1or
 Wikipedia and experiment with 4 Atari games where the object location ground-truths are available.
 Two challenges arise with the use of human-written instruction manuals  1) Length   Manuals contain
 a lot of redundant information and are too long for current language models. However, only a
@@ -70,8 +68,7 @@ not require explicit training on synthetic text (Hermann et al., 2017  Chaplot e
 consistent performance on manuals from two different sources  Wikipedia and Official manuals.
 To our knowledge, our work is the first to demonstrate the capability to improve RL performance in
 an end-to-end setting using real-world manuals designed for human readers.
-1atariage.com
-22 2.1 Reducing sample complexity in RL
+2.1 Reducing sample complexity in RL
 Prior works have attempted to improve sample efficiency with new exploration techniques (Schulman
 et al., 2017  Haarnoja et al., 2018  Badia et al., 2020), self-supervised objectives (Pathak et al., 2017 
 Schrittwieser et al., 2020), and static demonstration data (Kumar et al., 2019, 2020). Fan & Xiao
@@ -107,26 +104,26 @@ entities might be annotated with the descriptions  randomly moving enemy  and  a
 chases you , respectively). The agent learns to generalize to new environment settings by learning
 the correlation between the annotations and the environmental goals and mechanics. The proposed
 agent achieves better performance than the baselines, which do not use natural language. However
-the design of the 2 6-line descriptions created from templates. Such design oversimplifies
+the design of the 2D environment uses 6-line descriptions created from templates. Such design oversimplifies
  the observations into a 2D integer matrix, and removes the need for visual understanding
 and generalization to new objects and new formats of instruction manual, e.g., human written manuals.
 2.4 RL Models that Read Natural Language Instructions
 Zhong et al. (2019, 2021) make use of special architectures with Bidirectional Feature-wise Linear
-Modulation Layers that support multi-hop reasoning on 6 6 grid worlds with template-generated
+Modulation Layers that support multi-hop reasoning on 6  6 grid worlds with template-generated
 instruction manuals. However, the model requires 200 million training samples from templates
-identical to the test environments. Such a training requirement results in performance loss even on 10 10 grid worlds with identical mechanics, thus limiting the generalization of the model.
+identical to the test environments. Such a training requirement results in performance loss even on 10
+ 10 grid worlds with identical mechanics, thus limiting the generalization of the model.
 Wang & Narasimhan (2021) mixes embedding of entities with multi-modal attention to get entity
 representations, which are then fed to a CNN actor. The attention model and CNN actor are trained
 jointly using RL. However, the whole framework is designed primarily for a grid world with a
 template generated instruction manual consisting of one line per entity. In our experiments, we find
-3 2  Illustration of the QA Extraction Module on the game PacMan. We obtain generic
+3Figure 2  Illustration of the QA Extraction Module on the game PacMan. We obtain generic
 information about the game by running extractive QA on 4 generic questions (3 shown since one
 question did not have an answer). We then obtain object-specific information using a question
 template. We concatenate generic and object-specific information to obtain the  context  string.
 that extracting entity embeddings from human-written Atari instruction manuals following Wang &
 Narasimhan (2021) does not improve the performance of our vision-based agent due to the complexity
 and diversity of the language.
-3 Read and Reward
 We identify two key challenges to understanding and using the instruction manual with an RL agent.
 The first challenge is Length . Due to the sheer length of the raw text ( 2 3pages), current pre-trained
 language models cannot handle the raw manual due to input length constraints. Additionally, most
@@ -138,7 +135,6 @@ begins with   MS. PAC-MAN and characters are trademark of Bally Midway Mfg. Co. 
 to Atari, Inc. by Namco-America, Inc. 
 It is therefore intuitive in our first step to have a QA Extraction Module that produces a summary
 directed toward game features and objectives, to remove distractions and simplify the problem of
-reasoning.
 The second challenge is Reasoning . Information in the manual may be implicit. For example, the
 Skiing manual states that the goal is to arrive at the end in the fastest time, and that the player will lose
 time when they hit a tree, but it never states directly that hitting a tree reduces the final reward. Most
@@ -150,7 +146,6 @@ On the other hand, large language models have achieved success without training 
 including reading comprehension, reasoning, and planning (Brown et al., 2020  Kojima et al., 2022 
 Ahn et al., 2022). Therefore, in the Reasoning Module, we compose natural language queries about
 specific object interactions in the games, to borrow the in-context reasoning power of large language
-models.
 The rest of the section describes how the two modules within our Read and Reward framework (a QA
 extraction module and a reasoning module) are implemented.
 QA Extraction Module (Read) In order to produce a summary of the manual directed towards
@@ -209,15 +204,14 @@ generative LLMs, we can use the probability of  Yes  vs.  No  as scores, followi
 Finally, during game-play, a rule-based algorithm detects  hit  events by checking the distance
 between bounding boxes. For detected interactions, an auxiliary reward is provided to the RL
 algorithm according to {Yes, No }rating from the reasoning module (see Section 4.4 for details).
-4 4.1 Atari Environment and Baselines
+4.1 Atari Environment and Baselines
 The Openai gym Atari environment contains diverse Atari games designed to pose a challenge for
-human players. The observation consists of a single game screen (frame)  a 2 7-bit pixels,
-160 210 pixels high. The action space consists of the 18 discrete actions defined by the
+human players. The observation consists of a single game screen (frame)  a 2D array of 7-bit pixels,
+160 pixels wide by 210 pixels high. The action space consists of the 18 discrete actions defined by the
 joystick controller. Instruction manuals released by the original game developers have been scanned
 and parsed into publicly available HTML format3. For completeness, we also attach an explanation
 of the objectives for each game in Appendix A.3.
 2AllenNLP Transformer-QA
-3atariage.com
 54.2 Delayed Reward Schedule
 Most current Atari environments include a dense reward structure, i.e., the reward is obtained quite
 often from the environment. Indeed, most RL algorithms for the Atari environments perform well
@@ -231,7 +225,8 @@ for current RL algorithms, and are among some of the hardest games to solve in A
 the tennis, breakout, and Pac-Man games by providing the reward (the  final game score ) only at
 the end of the game. This delayed reward structure does not change the optimization problem, but is
 more realistic and imposes additional challenges to RL algorithms.
-4.3 4  Examples of SPACE (Lin et al., 2020)
+4.3 Grounding Objects in Atari
+Figure 4  Examples of SPACE (Lin et al., 2020)
 and CLIP (Radford et al., 2021) in the full endto-end
  pipeline (Section 4.3). The top row shows
 bounding boxes for objects and the bottom row
@@ -256,8 +251,7 @@ problem becomes very challenging for the domain
  of Atari. Since it is not the main focus of
 our proposed work, we attempt to provide an
 unsupervised end-to-end solution only for the
-game of Skiing.
-Full end-to-end pipeline on Skiing with A C
+Full end-to-end pipeline on Skiing with A2C
 To demonstrate the full potential of our work,
 we offer a proof-of-concept agent directly operating
  on raw visual game observations and
@@ -282,12 +276,19 @@ objects from the simulator RAM state. Specifically, we first manually label arou
 object name and X,Y coordinates and then train a linear regression model mapping from simulator
 RAM state to labeled object coordinates. Note that this labeling strategy fails for games in which
 multiple objects of the same kind appears, i.e., multiple trees appear in one frame of Skiing.
-6A C R&R A C PPO R&R PPO R D1 R&R R D1 57 R&R Agent57
-Tennis -5 (-5) -23 -6 (-6) -23 -1 (-1) -23 0 (0) -23 580 (580) 452 253 (253) 204 3115 (3115) 2116 1000 (1000) 708 14 (14) 2 9 (9) 2 10 (10) 2 38 (38) 2 1  Table of the game score of different RL algorithms trained under delayed reward schedule,
+6A2C R&R A2C PPO R&R PPO R2D1 R&R R2D1 Agent57 R&R Agent57
+Tennis -5 (-5) -23 -6 (-6) -23 -1 (-1) -23 0 (0) -23
+Pacman 580 (580) 452 253 (253) 204 3115 (3115) 2116 1000 (1000) 708
+Breakout 14 (14) 2 9 (9) 2 10 (10) 2 38 (38) 2
+Table 1  Table of the game score of different RL algorithms trained under delayed reward schedule,
 RL with Read and Reward consistently outperforms their counterparts that are not using the manual.
 In addition, Read and Reward performance remains consistent across official Atari manual and
 Wikipedia in brackets  (.) .
-A C R&R A C PPO R&R PPO R D1 R&R R D1 5.2 2.2 23 1.3 8.1 2.3 23 1.0 2.2 3.1 23.0 1.3 455 .2 63.2 387 .1 66.2 284 .2 67.3 200 .1 65.4 3001 .3 203 .2 1999 .2 109 .2 4.5 3.0 2 .1 0.3 10.2 0.1 1 .9 0.5 10 3.0 2 .1 0.2 2  Table of the game score of different RL algorithms trained under delayed reward schedule
+A2C R&R A2C PPO R&R PPO R2D1 R&R R2D1
+Tennis  5.2 2.2  23 1.3  8.1 2.3  23 1.0  2.2 3.1  23.0 1.3
+Pacman 455 .2 63.2 387 .1 66.2 284 .2 67.3 200 .1 65.4 3001 .3 203 .2 1999 .2 109 .2
+Breakout  4.5 3.0 2 .1 0.3  10.2 0.1 1 .9 0.5 10  3.0 2 .1 0.2
+Table 2  Table of the game score of different RL algorithms trained under delayed reward schedule
 on the official Atari manual, with statistics computed over 3 random seeds. RL with Read and Reward
 consistently outperforms their counterparts that are not using the manual.
 4.4 Simplifying Interaction Detection to Distance Tracking
@@ -298,39 +299,40 @@ agent so that we can query the manual for  hit  interaction.
 We, therefore, monitor the environment frames and register interaction whenever an object s bounding
 boxes intersect with the agent. For each detected interaction, we assign rewards from { rn, rp}
 accordingly as detailed in Section 3. Experimentally, we find that it suffices to set rn rp  5.
-4.5 30000 25000 20000 15000 10000 5000
-Game Score (Performance)107 108 109 1010 1011Frames Seen (Efficiency)Average Human
-Random Agent
+Game Score (Performance)107
+1011Frames Seen (Efficiency)Average Human
 Read and Reward (Ours)
-A C (Baseline)R D2 57
-GDI-H3 5  Performance (in Game Score) vs Efficiency
+Figure 5  Performance (in Game Score) vs Efficiency
  (in Frames Seen) of fully end-to-end Read
-and Reward (green) compared to an A C baseline,
+and Reward (green) compared to an A2C baseline,
  and MuZero (Schrittwieser et al., 2020) on
 Skiing. Benefiting from the auxiliary rewards
 from the instruction manual, Read and Reward
-out-performs the A C Baseline and achieves 60%
+out-performs the A2C Baseline and achieves 60%
 improvement on random performance while using
 much fewer training frames compared to the SOTA
 mixed-policy Agent 57 (Badia et al., 2020) and
 GDI-H3 (Fan & Xiao, 2022).Since Read and Reward only provides an auxiliary
  reward, it is compatible with most RL
-frameworks such as A C, PPO, SAC, TD3,
+frameworks such as A2C, PPO, SAC, TD3,
 and Agent 57 (Mnih et al., 2016  Schulman
  et al., 2017  Haarnoja et al., 2018 
 Fujimoto et al., 2018  Badia et al., 2020).
 We use popular open-source implementations
-A C,PPO,R D1 (Stooke & Abbeel, 2019), and
-Agent57 (Hu, 2022).
-4.6 5, our agent is best on the efficiency
+A2C,PPO,R2D1 (Stooke & Abbeel, 2019), and
+Pipeline Results on Skiing with A2C
+We compare the performance of our Read and
+Reward agent using the full pipeline to baselines
+in Figure 5, our agent is best on the efficiency
 axis and close to best on the performance axis.
-A C equipped with Read and Reward outperforms
- A C baseline and more complex methods
+A2C equipped with Read and Reward outperforms
+ A2C baseline and more complex methods
 like MuZero (Schrittwieser et al., 2020). We
 note a 50% performance gap between our agent
 and the SOTA Agent 57, but our solution does
 not require policy mixing and requires more than
-10 60% better than random.
+10 times fewer frames to converge to performance
+ 60% better than random.
 When experimenting with a full end-to-end pipeline as described in Section 4.3, we notice instability
 with the detection and grounding models. As shown in Figure 4, missing bounding boxes cause lots
 of mislabeling when objects are close to each other. Such errors may lead to the auxiliary reward
@@ -352,25 +354,33 @@ N/AGhosts. stay close to an energy pill before
  eating it, and tease the ghosts.
 Table 3  Table showing the outputs of the QA Extraction module on Wikipedia instructions vs the
 official Atari manual. The Wikipedia manual is significantly shorter, and contains less information,
-causing the extractive QA model to use the same answer for all questions. Full table for all 4 5 in the Appendix.
+causing the extractive QA model to use the same answer for all questions. Full table for all 4 games
+is shown in Table 5 in the Appendix.
 Although Skiing is arguably one of the easiest games in Atari for object detection and grounding,
 with easily distinguishable objects and white backgrounds, we still observe that current unsupervised
 object detection and grounding techniques lack reliability.
-4.7 0.0 0.2 0.4 0.6 0.8 1.0 1e BreakoutGame Score
+4.7 Results on Games with Delayed Reward Structure
+0.0 0.2 0.4 0.6 0.8 1.0
+Frames Seen 1e824681012BreakoutGame Score
 Read and Reward (Ours)
-A C (Baseline)
-0.0 0.2 0.4 0.6 0.8 1.0 1 0.0 0.2 0.4 0.6 0.8 1.0 1 8 20 15 10 5TennisGame Score
+0.0 0.2 0.4 0.6 0.8 1.0
+Frames Seen 1e820406080Auxiliary Reward
+0.0 0.2 0.4 0.6 0.8 1.0
+Frames Seen 1e8 20 15 10 5TennisGame Score
 Read and Reward (Ours)
-A C (Baseline)
-0.0 0.2 0.4 0.6 0.8 1.0 1 0.0 0.2 0.4 0.6 0.8 1.0 1e MsPacmanGame Score
+0.0 0.2 0.4 0.6 0.8 1.0
+Frames Seen 1e8100200300400500Auxiliary Reward
+0.0 0.2 0.4 0.6 0.8 1.0
+Frames Seen 1e8100200300400MsPacmanGame Score
 Read and Reward (Ours)
-A C (Baseline)
-0.0 0.2 0.4 0.6 0.8 1.0 1 8 17.0 16.5 16.0 15.5 15.0 6  Comparison of the training curves of
-Read and Reward   A C v.s. A C Baseline in
+0.0 0.2 0.4 0.6 0.8 1.0
+Frames Seen 1e8 17.0 16.5 16.0 15.5 15.0Auxiliary Reward
+Figure 6  Comparison of the training curves of
+Read and Reward   A2C v.s. A2C Baseline in
 terms of game score alongside Auxiliary Reward
 v.s. Frames Seen under our delayed reward setting
 for 3 different Atari games. Read and Reward (red)
-consistently outperforms the A C baseline (brown)
+consistently outperforms the A2C baseline (brown)
 in all games. In addition, the auxiliary reward from
 Read and Reward demonstrates a strong positive
 correlation with the game score, suggesting that
@@ -385,10 +395,9 @@ environments (Kolve et al., 2017  Fan et al.,
  (Section 4.2) for Tennis, MsPacman, and
 Breakout. Various RL frameworks benefit significantly
  from Read and Reward, as shown in
-Table 1, 2.
 We plot the Game Score and the auxiliary rewards
- of A C with Read and Reward v.s. the
-A C baseline in Figure 6. The A C baseline
+ of A2C with Read and Reward v.s. the
+A2C baseline in Figure 6. The A2C baseline
 fails to learn under the sparse rewards, while
 the performance of the Read and Reward agent
 continues to increase with more frames seen. In
@@ -396,27 +405,31 @@ addition, we observe that the auxiliary reward
 from the Read and Reward framework has a
 strong positive correlation with the game score
 (game reward) of the agent, suggesting that the
-A C agent benefits from optimizing the auxiliary
+A2C agent benefits from optimizing the auxiliary
  rewards at training time.
 4.8 Results without Delayed Reward
 Without delayed reward, Read and Reward does
 not offer performance improvement in terms of
 game score, but still improves training speed.
-As shown in Table 4, Agent57 112 57
+As shown in Table 4, Agent57 with Read and
+Reward requires up to 112X less training steps
+to reach the same performance as the Agent57
 baseline without the instruction manuals.
 84.9 R&R Behavior on Manuals from Different Source
 To illustrate the generalization of our proposed framework to a different source of information, we
-download the  Gameplay  section from Wikipedia for each game and feed the section as manual to
+download the  Gameplay  section from Wikipedia4for each game and feed the section as manual to
 our model. In Table 3, we show a comparison of the answers on the set of 4 generic questions on the
 Pacman by our QA Extraction Module. Note that the QA Extraction module successfully extracts all
 important information about avoiding ghosts and eating pellets to get points. In addition, since the
 official manual contains more information than the Gameplay section of Wikipedia (2 pages v.s. less
 than 4 lines), we were able to extract much more information from the official manual.
 Tennis Pacman Breakout
-steps to reach baseline@1 5 5.1 5 8911
-speed-up ratio 1.67 2 112 4 57 with Read and Reward
+steps to reach baseline@1e66e5
+speed-up ratio 1.67 2 112
+Table 4  Table showing the number of training
+steps required by Agent57 with Read and Reward
 (Official) to reach the same performance as the
-Agent57 1 6 training steps and the
+Agent57 baseline at 1e6 training steps and the
 speedup ratio, under delayed-reward.Due to the high similarity in the output from the
 QA Extraction Module, the Reasoning module
 demonstrates good agreement for both the Wiki
@@ -424,7 +437,9 @@ manual and the official manual. Therefore, we
 observe consistent agent performance between
 the official manual and the Wikipedia manual in
 terms of game score (Table 1).
-5 4.3. However, since Read and Reward does not need to detect all objects to
+5 Limitations and Future Works
+One potential challenge and limitations is the requirement of object localization and detection as
+mentioned in Section 4.3. However, since Read and Reward does not need to detect all objects to
 assign reward, i.e., energy pills are not grounded in the game Pacman but Read and Reward is still
 achieves improvement. In addition, reliable backbone object detection models (He et al., 2017) have
 already shown success in tasks such as indoor navigation (Shridhar et al., 2020b) and autonomous
@@ -440,7 +455,6 @@ and interactions following recent works on video scene understanding Wang et al.
 progress tracking Wu et al. (2023).
 Finally, the performance of Read and Reward may be limited by information within the natural
 language data it reads.
-6 Conclusions
 In this work, we propose Read and Reward, a method that assists and speeds up RL algorithms on
 the Atari challenges by reading downloaded game manuals released by the Atari game developers.
 Our method consists of a QA extraction module that extracts and summarizes relevant information
@@ -453,13 +467,9 @@ Our results suggest that even small open-source QA language models could extract
 gameplay information from human-written documentations for RL agents. With recent break-trough
 in zero-shot language understanding and reasoning with LLMs (Bubeck et al., 2023), we hope that
 our work could incentivize future works on integrating human prior knowledge into RL training.
-4wikipedia.org
-9Broader Impacts
 Our research on using instruction manuals for RL could lead to both positive and negative impacts.
 The benefits include more efficient RL agents that could solve more real-world problems. The risks
 may involve more game cheating and exploitation, over reliance on the instruction manuals, and
-potential job loss.
-References
 Michael Ahn, Anthony Brohan, Noah Brown, Yevgen Chebotar, Omar Cortes, Byron David, Chelsea
 Finn, Keerthana Gopalakrishnan, Karol Hausman, Alex Herzog, et al. Do as i can, not as i say 
 Grounding language in robotic affordances. arXiv preprint arXiv 2204.01691 , 2022.
@@ -478,7 +488,6 @@ Iz Beltagy, Matthew E Peters, and Arman Cohan. Longformer  The long-document tra
 arXiv preprint arXiv 2004.05150 , 2020.
 Alex Bewley, Zongyuan Ge, Lionel Ott, Fabio Ramos, and Ben Upcroft. Simple online and realtime
 tracking. In 2016 IEEE international conference on image processing (ICIP) , pp. 3464 3468.
-IEEE, 2016.
 SRK Branavan, David Silver, and Regina Barzilay. Learning to win by reading manuals in a
 monte-carlo framework. Journal of Artificial Intelligence Research , 43 661 704, 2012.
 Tom B Brown, Benjamin Mann, Nick Ryder, Melanie Subbiah, Jared Kaplan, Prafulla Dhariwal,
@@ -534,7 +543,6 @@ representations , 2018.
 B Ravi Kiran, Ibrahim Sobh, Victor Talpaert, Patrick Mannion, Ahmad A. Al Sallab, Senthil
 Yogamani, and Patrick P  erez. Deep reinforcement learning for autonomous driving  A survey.
 IEEE Transactions on Intelligent Transportation Systems , 23(6) 4909 4926, 2022. doi  10.1109/
-TITS.2021.3054625.
 Takeshi Kojima, Shixiang Shane Gu, Machel Reid, Yutaka Matsuo, and Yusuke Iwasawa. Large
 language models are zero-shot reasoners. arXiv preprint arXiv 2205.11916 , 2022.
 Eric Kolve, Roozbeh Mottaghi, Winson Han, Eli VanderBilt, Luca Weihs, Alvaro Herrasti, Daniel
@@ -542,7 +550,6 @@ Gordon, Yuke Zhu, Abhinav Gupta, and Ali Farhadi. AI2-THOR  An Interactive 3D En
 for Visual AI. arXiv , 2017.
 Aviral Kumar, Justin Fu, Matthew Soh, George Tucker, and Sergey Levine. Stabilizing off-policy
 q-learning via bootstrapping error reduction. Advances in Neural Information Processing Systems ,
-32, 2019.
 Aviral Kumar, Aurick Zhou, George Tucker, and Sergey Levine. Conservative q-learning for offline
 reinforcement learning. Advances in Neural Information Processing Systems , 33 1179 1191, 2020.
 Junnan Li, Dongxu Li, Caiming Xiong, and Steven Hoi. Blip  Bootstrapping language-image pretraining
@@ -562,10 +569,8 @@ Jelena Luketina, Nantas Nardelli, Gregory Farquhar, Jakob Foerster, Jacob Andrea
 natural language. arXiv preprint arXiv 1906.03926 , 2019.
 Hongyuan Mei, Mohit Bansal, and Matthew R Walter. Listen, attend, and walk  Neural mapping
 of navigational instructions to action sequences. In Thirtieth AAAI Conference on Artificial
-Intelligence , 2016.
 So Yeon Min, Devendra Singh Chaplot, Pradeep Ravikumar, Yonatan Bisk, and Ruslan Salakhutdinov.
 Film  Following instructions in language with modular methods. arXiv preprint arXiv 2110.07342 ,
-2021.
 Dipendra Misra, John Langford, and Yoav Artzi. Mapping instructions and visual observations to
 actions with reinforcement learning. arXiv preprint arXiv 1704.08795 , 2017.
 V olodymyr Mnih, Koray Kavukcuoglu, David Silver, Andrei A Rusu, Joel Veness, Marc G Bellemare,
@@ -580,7 +585,6 @@ Alexander Pashevich, Cordelia Schmid, and Chen Sun. Episodic transformer for vis
 navigation. arXiv preprint arXiv 2105.06453 , 2021.
 Deepak Pathak, Pulkit Agrawal, Alexei A Efros, and Trevor Darrell. Curiosity-driven exploration
 by self-supervised prediction. In International conference on machine learning , pp. 2778 2787.
-PMLR, 2017.
 Alec Radford, Jong Wook Kim, Chris Hallacy, Aditya Ramesh, Gabriel Goh, Sandhini Agarwal,
 Girish Sastry, Amanda Askell, Pamela Mishkin, Jack Clark, et al. Learning transferable visual
 models from natural language supervision. arXiv preprint arXiv 2103.00020 , 2021.
@@ -608,7 +612,6 @@ Adam Stooke and Pieter Abbeel. rlpyt  A research code base for deep reinforcemen
 pytorch. arXiv preprint arXiv 1909.01500 , 2019.
 Richard S Sutton, David McAllester, Satinder Singh, and Yishay Mansour. Policy gradient methods
 for reinforcement learning with function approximation. Advances in neural information processing
-systems , 12, 1999.
 Andrew Szot, Alexander Clegg, Eric Undersander, Erik Wijmans, Yili Zhao, John Turner, Noah
 Maestre, Mustafa Mukadam, Devendra Singh Chaplot, Oleksandr Maksymets, et al. Habitat 2.0 
 Training home assistants to rearrange their habitat. Advances in Neural Information Processing
@@ -637,7 +640,6 @@ and Shrimai Prabhumoye. Plan, eliminate, and track language models are good teac
 embodied agents. arXiv preprint arXiv 2305.02412 , 2023.
 Yury Zemlyanskiy, Joshua Ainslie, Michiel de Jong, Philip Pham, Ilya Eckstein, and Fei Sha.
 Readtwice  Reading very large documents with memories. arXiv preprint arXiv 2105.04241 ,
-2021.
 Victor Zhong, Tim Rockt  aschel, and Edward Grefenstette. Rtfm  Generalising to novel environment
 dynamics via reading. arXiv preprint arXiv 1910.08210 , 2019.
 Victor Zhong, Austin W Hanjie, Sida I Wang, Karthik Narasimhan, and Luke Zettlemoyer. Silg 
@@ -650,9 +652,8 @@ A.1 Scale of Auxiliary Rewards
 In practice, the R&R framework is quite robust to the scale of auxiliary reward since reward clipping
 has been implemented by most RL algorithms (Hu, 2022). Any reward in the range of (2,50) should
 result in the same behavior.
-A.2 Atari Baselines
-A C/PPO. A C (Mnih et al., 2016) and PPO (Schulman et al., 2017) are among some of the earliest
-Actor-Critic algorithms that brought success for deep RL on Atari games. A C learns a policy πand
+A2C/PPO. A2C (Mnih et al., 2016) and PPO (Schulman et al., 2017) are among some of the earliest
+Actor-Critic algorithms that brought success for deep RL on Atari games. A2C learns a policy πand
 a value function Vto reduce the variance of the REINFORCE (Sutton et al., 1999) algorithm. The
 algorithm optimizes the advantage function A(s, a)  Q(s, a) V(s)instead of the action value
 function Q(s, a)to further stabilize training.
@@ -660,9 +661,9 @@ MuZero. MuZero algorithm (Schrittwieser et al., 2020) combines a tree-based sear
 model of the environment. The model of MuZero iteratively predicts the reward, the action-selection
 policy, and the value function. When applied to the Atari benchmarks, MuZero achieves super-human
 performance in a lot of games.
-R D2/R D1. R D2 (Kapturowski et al., 2018) proposes an improved training strategy for RNNbased
+R2D2/R2D1. R2D2 (Kapturowski et al., 2018) proposes an improved training strategy for RNNbased
  RL agents with distributed prioritized experience replay. The algorithm is the first to exceed
-human-level performance in 52 57 Atari games. R D1 is a single-machine variant implemented
+human-level performance in 52 of the 57 Atari games. R2D1 is a single-machine variant implemented
 by (Stooke & Abbeel, 2019).
 Agent57. Badia et al. (2020) train a neural network that parameterizes a family of policies with
 different exploration, and proposes a meta-controller to choose which policy to prioritize during
@@ -678,10 +679,10 @@ the net and land in bounds.
 Pacman (Ms. Pac-Man). The player earns points by eating pellets and avoiding ghosts, which
 contacting them results in losing a life. Eating a  power pellet  causes the ghosts to turn blue,
 allowing them to be eaten for extra points. Bonus fruits can be eaten for increasing point values,
-twice per round.
 Breakout Using a single ball, the player must use the paddle to knock down as many bricks as
 possible. If the player s paddle misses the ball s rebound, the player will lose a life.
-A.4 14Game Wikipedia Official Manual
+A.4 Outputs of QA Extraction Module
+14Game Wikipedia Official Manual
 What is the objective of the game 
 SkiingTo reach the bottom of the ski course as
 rapidly as possible.To reach the bottom of the hill in the
@@ -692,7 +693,6 @@ and anticipating and avoiding trouble.
 How to score at the game 
 N/A Elapsed time at the end of the run.
 Who are your enemies 
-N/A N/A
 What is the objective of the game 
 PacmanThe player earns points by eating pellets
 and avoiding ghosts.To score as many points as you can practice
@@ -718,7 +718,6 @@ How to score at the game
 N/AThe first player to win at least 6 games
 and be ahead by two games wins the set.
 Who are your enemies 
-N/A N/A
 What is the objective of the game 
 BreakoutThe player must knock down as many
 bricks as possible.Destroy the two walls using five balls
@@ -740,11 +739,8 @@ N/AScores are determined by the bricks hit
 during a game A player scores points by
 hitting one of the wall s bricks Smash
 their way through the wall and score
-points.
 Who are your enemies 
-N/A N/A
 Table 5  Table showing the outputs of the QA Extraction module on Wikipedia instructions vs the
 official Atari manual. The Wikipedia manual is significantly shorter, and contains less information,
 causing the extractive QA model to repeat answers. However, the overall information, across the 4
 questions, captured by the Extraction module is in good agreement across Wiki and Official manuals.
-15

@@ -1,12 +1,10 @@
 Screen Correspondence  Mapping Interchangeable Elements
-between UIs
 Jason Wu, Amanda Swearngin, Xiaoyi Zhang, Jeffrey Nichols, Jeffrey Bigham
 {jsonwu,aswearngin,xiaoyiz,jwnichols,jbigham}@apple.com
 Login PageSign in with your email address to access your account.EmailTest App
 Don t have an account or forgot it 
 Your account is used to access data across all your devices.
 Your email address is used to enable services when you sign in, including backup which automatically backs up the data on your devices. Your device s identiﬁer may be used to check eligibility for special oﬀers. For more information, see our terms of service.
-Login Page
 Don t have an account or forgot your password 
 Your email address is used to enable services when you sign in, including backup which automatically backs up the data on your devices. Your device s identiﬁer may be used to check eligibility for special oﬀers. For more information, see our terms of service.RequiredRequiredEmailPasswordSign in with your email address to access your account.
 Input ScreenExemplarInferred SemanticsText_InstructionText_TitleButton_BackButton_Disabled
@@ -15,11 +13,9 @@ Login PageSign in with your email address to access your account.EmailTest App
 Don t have an account or forgot it 
 Your account is used to access data across all your devices.
 Your email address is used to enable services when you sign in, including backup which automatically backs up the data on your devices. Your device s identiﬁer may be used to check eligibility for special oﬀers. For more information, see our terms of service.ImageIconIconImage
-Unmatched
 Figure 1  Screen correspondence produces a mapping of similar UI elements across two UIs that have related elements. Screenshots
  are encoded using a multi-modal model that segments and featurizes UI elements. Mappings are generated that link
 element pairs that have the same or similar functionality across UI screens.
-ABSTRACT
 Understanding user interface (UI) functionality is a useful yet challenging
  task for both machines and people. In this paper, we investigate
  a machine learning approach for screen correspondence ,
@@ -38,19 +34,16 @@ on the first page. Copyrights for components of this work owned by others than A
 must be honored. Abstracting with credit is permitted. To copy otherwise, or republish,
 to post on servers or to redistribute to lists, requires prior specific permission and/or a
 fee. Request permissions from permissions@acm.org.
-, ,
  2022 Association for Computing Machinery.
 ACM ISBN 978-1-4503-XXXX-X/18/06. . . $15.00
 https //doi.org/10.1145/1122445.1122456correspondence facilitates better UI understanding for humans and
 machines  (i)instructional overlay generation, (ii)semantic UI element
  search, and (iii)automated interface testing.
-KEYWORDS
 user interface modeling, ui semantics, element correspondence
 ACM Reference Format 
 Jason Wu, Amanda Swearngin, Xiaoyi Zhang, Jeffrey Nichols, Jeffrey Bigham.
 2022. Screen Correspondence  Mapping Interchangeable Elements between
 UIs. In .ACM, New York, NY, USA, 13 pages. https //doi.org/10.1145/1122445.
-1122456 1 INTRODUCTION
 Understanding how user interfaces (UIs) can be operated to achieve
 some goal can be challenging for both machines and humans, especially
  those who are less tech-savvy. While automated systems
@@ -58,14 +51,13 @@ in the right circumstances can provide useful assistance [ 62,63] or
 automatically complete the task themselves [ 34,36], people can be
 hindered or completely blocked by apps that do not provide necessary
  metadata, such as the view hierarchy. A promising approach
-involves inferring UI functionality solely from the pixels renderedarXiv 2301.08372 1  [cs.HC]  20 2023, , Wu et al.
+involves inferring UI functionality solely from the pixels renderedarXiv 2301.08372v1  [cs.HC]  20 Jan 2023, , Wu et al.
 to the screen, but to date this method has primarily been useful
 for identifying the location and type of typical UI elements [ 65]
 and not higher-level semantics. For example, these algorithms can
 identify that a screen has a button that contains the text  Login,  but
 are unaware of the higher-level concept of logging in to a service,
 and they cannot infer what the role of this button would be in that
-process.
 There are many higher-level semantics in user interfaces (e.g., login,
  account registration, shopping carts), which would correspond
 to an enormous number of classes if we attempted to use a classifier
@@ -104,11 +96,9 @@ support UI design search and exemplar-based exploration, we used
 our model to index a large dataset of UI elements and screens .
 Finally, we built a system to aid an automated app crawler by
 identifying mappings between the elements of screens from different
- runs.
 To summarize, we make the following contributions 
  We introduce screen correspondence as a method of mapping
 interchangeable elements between UI screens from their
-screenshots.
  We describe a machine learning approach to generating correspondence
  between two UI screenshots, and we show it
 outperforms existing baselines.
@@ -136,13 +126,12 @@ set of classes ( e.g.UI element and icon type), which may exclude
 less common components [7].
 An alternative is to train models using self-supervision [ 9,18,35],
 which allows them to take advantage of larger unlabeled datasets.
-Screen Vec [ 35] and other pixel-based autoencoders [ 9,39] map UIs
+Screen2Vec [ 35] and other pixel-based autoencoders [ 9,39] map UIs
 to fixed-length embedding vectors which can be used to represent
 semantic properties. The Pixel-words model [ 18] employs a transformer
  model architecture and masked training objective based on
 prior work in NLP [ 11]. Our work builds upon these approaches to
 train a model for identifying UI element correspondences between
-screens.
 2.2 Multi-screen Understanding
 While many automated UI systems can benefit from understanding
 the semantics of a single screen, screens are rarely used in isolation.
@@ -163,7 +152,6 @@ of visual and DOM-based features. Prior work [ 14] used supervised
  learning to predict the relationship and transitions between
 screenshots by, among other things, classifying whether inputs
 were different instances of the same screen ( e.g.,a news app with
-dynamic content).
 Screen fingerprinting is useful for comparing screens to known
 examples  however, finer grain mappings ( e.g.,element-level fingerprinting)
  can result in higher fidelity comparisons and additional
@@ -246,7 +234,6 @@ overview of our approach.
 The first stage of our system identifies semantically relevant pieces
 of information from a UI screenshot, such as UI elements and text.
 The input is a bitmap and the output is a list of detected UI elements
-and pieces of text.
 We use a pre-trained object detection model from previous work
 [60] that was trained to recognize UI elements in iOS app screens.
 The pre-trained model uses the Faster-RCNN architecture [ 45] and
@@ -258,7 +245,6 @@ improve the quality of the output. Optical character recognition
 (OCR) is performed using Tesseract [ 53], an open-source, off-theshelf
  OCR software package. We run OCR on regions of the screen
 that correspond to text elements as detected by our element detector.
-
 3.2 UI Element Encoder
 Using the elements segmented from the screenshot, we generate
 representations that encode properties useful for comparison. In
@@ -273,12 +259,16 @@ Note that the pre-trained models were trained on different datasets
 generate modality-specific features for each element, then feed
 their output into a screen transformer model, which combines and
 learns further associations between them., , Wu et al.
-UI Element Detectione Screen Transformere e e enUI Element Detectione Screen Transformere e e enEdges denote embedding similarityEdges w/ high similarity form correspondences
+UI Element Detectione1Screen Transformere2e3e4enUI Element Detectione1Screen Transformere2e3e4enEdges denote embedding similarityEdges w/ high similarity form correspondences
 Correspondence Matching
 Figure 2  Overview of our screen correspondence approach. Elements and text from two screenshots are first extracted using
 UI element detection then featurized using a screen transformer model. Finally, a correspondence between UI elements are
 generated from element pairs with highly similar embeddings relative to other candidates.
-Screen TransformerElement Label EmbeddingAppearance EmbeddingText EmbeddingPos Embeddinge1 1 2 3 1 2 3 1 1 3 3  Architecture diagram of our screen transformer model. Each modality-specific input is treated as separate inputs
+Screen TransformerElement Label EmbeddingAppearance EmbeddingText EmbeddingPos Embeddinge1
+Element 1VisualElement 2VisualElement 3VisualElement 1LabelElement 2LabelElement 3Labelel1
+Element 1TextElement 3Textel2el3ea1ea2ea3et1et3e2e3Modality PoolingContextual EmbeddingOne embeddingper UI element
+One embeddingper modality
+Figure 3  Architecture diagram of our screen transformer model. Each modality-specific input is treated as separate inputs
 to our transformer model, which implicitly aligns them based on their positional information. Note that elements may be
 missing modalities (Element 2 in this example). After the per-modality inputs are processed by our transformer, we generate
 element embeddings ( i.e.,one per element) by pooling together outputs corresponding to the same original element.
@@ -290,7 +280,6 @@ cause changes in absolute position but have less effect on relative
 ordering. We adopted a relative positional encoding scheme used to
 improve the performance of language models [ 49] that incorporates
 pairwise distance when calculating the attention score between
-two elements.
 Element Category  We categorized elements based on their UI and
 icon type. Our pre-trained element detector classifies elements into
 12 categories, as defined by previous work [ 65]. Three of these canbe further delineated into sub-categories. We separate the Toggle
@@ -304,7 +293,7 @@ representations of a proposal-based object detector. Similar approaches
 which also need to take into account multiple visual information [  
 ] Since our UI element detector is based off of a similar proposalbased
  architecture, we retrieve the activations of the object proposals
- corresponding to detected elements using the fc layer [ 52].Screen Correspondence  Mapping Interchangeable Elements between UIs , ,
+ corresponding to detected elements using the fc6layer [ 52].Screen Correspondence  Mapping Interchangeable Elements between UIs , ,
 This approach to featurizing appearance is beneficial since it results
 in a fixed-size representation for image regions without the need
 to explicitly resize or crop them.
@@ -374,15 +363,15 @@ examples. This approach is similar to approaches in text decoding
 models that consider only the top 𝑘most likely tokens, which have
 been shown to generate higher quality output by reducing the effect
 from low-probability outputs.
-4 DATASET
 We developed and trained our transfer model on two datasets of
 app screens that were generated by manual crawling of popular
 mobile apps  Crawls andRico . The Crawls dataset, which was
-used by prior UI modeling work [ 7], consists of 750,000 6,000 apps and was collected by crowdworkers who
+used by prior UI modeling work [ 7], consists of 750,000 iOS app
+screens from 6,000 apps and was collected by crowdworkers who
 were instructed to manually explore mobile applications through a
 remote interface that periodically captured screenshots and additional
  metadata of the current app screen. The Rico dataset [ 9] is
-a publicly available dataset of 72,000 9,700
+a publicly available dataset of 72,000 Android screens from 9,700
 apps that was also collected by crowdworkers remotely operating
 devices. We divided each dataset into training (70%), validation
 (15%), and testing (15%) splits by their crawl ID, which corresponds
@@ -390,8 +379,7 @@ to which app was crawled.
 4.1 Evaluation Dataset
 While our training algorithm does not depend on labeled data
 (i.e.,unsupervised), we manually collected a small set of labeled
-examples (900 90 screens) from each dataset to evaluate
-our system.
+examples (900 pairs across 90 screens) from each dataset to evaluate
 4.1.1 Data Collection. Our evaluation dataset consists of data from
 9 types of screens that we hypothesized could have correspondences 
  Media Player, In-App Purchases, Login, Permission Request,
@@ -403,11 +391,10 @@ health, social media), we focused on screen categories , since both
 a health app and a banking app might both contain a login screen
 that could contain correspondences. For each of our two datasets,
 we sampled a small number of screens from each category for correspondence
- labeling (9 10 90 screens total).
+ labeling (9 categories x 10 screens   90 screens total).
 The 9 categories that we chose do not cover all possibilities, but we
 believe they constitute a reasonable subset. More detailed descriptions
  and criteria of each category is available in the appendix of
-this paper.
 4.1.2 Data Labeling. We created a labeling interface to annotate
 our small evaluation split. First, a randomly selected element was, , Wu et al.
 shown on a screen, and the interface displayed a prompt asking if
@@ -428,14 +415,12 @@ A drawback of this approach is that it is slow, since it requires
 providing a role description before elements are matched. However,
 we found the additional consideration of element role is useful for
 reasoning about correspondences.
-5 EVALUATION
 We evaluate our model against several baselines and ablated versions
  of our model. Our results show that compared to heuristic
 and traditional key-point methods used in CV, multi-modal transformer
  encodings lead to better correspondences. Furthermore, our
 ablation experiments show that the architectural improvements we
 made lead to modest performance gains.
-5.1 Baselines
 In this section, we describe the baselines used in our performance
 evaluation. We focus primarily on other unsupervised approaches,
 since our constraint was that we didn t have any labeled data available
@@ -447,7 +432,6 @@ keypoint-based methods used for image matching and heuristics
 such as schema-matching. Our main constraint was that we did
 not have large quantities of labeled data for supervised machine
 learning methods, so we selected unsupervised techniques for comparison.
-
 ORB  As a review, image correspondence relies on the computation
  of semantic features from regions of the image. Semantic
 features, usually invariant to surface-level changes such as translation
@@ -512,26 +496,27 @@ featurizes the layout of UI using a semantic map which is fed into
 an autoencoder. To summarize, the Pixel-words configuration (i)
 considers categorical and text information, (ii)uses absolute positional
  encodings, and (iii)includes an additional layout embedding
-component.
-5.2 5.2.1 Baseline Comparison. Our evaluation results (Table 1) shows
+5.2.1 Baseline Comparison. Our evaluation results (Table 1) shows
 the benefit of our multi-modal model over simpler baselines. We
 1https //github.com/kfiraberman/neural_best_buddiesScreen Correspondence  Mapping Interchangeable Elements between UIs , ,
 Table 1  Performance of our approach and other baselines
 for screen correspondence. Our approach leads to the best
-performance, reaching an F1 0.61. We also included ablated
+performance, reaching an F1 score 0.61. We also included ablated
  versions of our model without relative positional embeddings,
  appearance features, and text features.
-CRAWLS RICO
-Model Configuration P R F1 1
+Model Configuration P R F1 P R F1
 Screen Trans. 0.66 0.57 0.61 0.83 0.41 0.55
 Screen Tran. (w/o Relative) 0.58 0.53 0.56 0.74 0.37 0.49
 Screen Trans. (w/o Appearance) 0.74 0.44 0.55 0.77 0.38 0.51
 Screen Trans. (w/o Text) 0.66 0.63 0.59 0.77 0.37 0.50
-Screen Trans (Pixel-words) 0.70 0.49 0.58 0.83 0.22 0.35 0.48 0.59 0.53 0.80 0.32 0.45 0.25 0.17 0.20 0.63 0.21 0.31 0.22 0.15 0.18 0.58 0.17 0.26 4  Performance across different categories in the
+Screen Trans (Pixel-words) 0.70 0.49 0.58 0.83 0.22 0.35
+Heuristic 0.48 0.59 0.53 0.80 0.32 0.45
+ORB 0.25 0.17 0.20 0.63 0.21 0.31
+NBB 0.22 0.15 0.18 0.58 0.17 0.26
+Figure 4  Performance across different categories in the
 Crawls (Top) and Rico (bottom) datasets using the full
 Screen Transformer model configuration. The average classification
- performance was F1 0.61 1 0.55
-onRico .
+ performance was F1 0.61 on Crawls and F1 0.55
 employ standard classification metrics to measure the accuracy
 of element-to-element correspondences generated by our model.
 Since elements in our evaluation dataset are labeled using their
@@ -542,7 +527,7 @@ to our labeling procedure where one element is highlighted at a
 time, the examples in our evaluation set were only partially labeled,
 meaning that screens contained only a randomly sampled subset
 of all possible corresponding pairs. Our best model configuration
-reaches an F1 0.61. Screens in our dataset contained an
+reaches an F1 score of 0.61. Screens in our dataset contained an
 average of around 20 elements, so correct correspondence requiredfinding the best out of match out of all possible candidates. The
 ORB and NBB baselines are based on keypoint-based matching,
 which is commonly used in CV to compare images. Among them,
@@ -557,7 +542,6 @@ keypoint-based methods and reached high recall by directly using
 the outputs of pre-existing models ( i.e.,element detection, icon
 classification). Precision was lower, possibly due to the difficulty of
 accurately matching ambiguous elements without knowledge of
-additional context.
 Our ablation experiments revealed that our modifications to the
 base transformer architecture led to modest improvements in terms
 of F1 score but also had other consequences for precision and recall.
@@ -602,14 +586,16 @@ transformer model is the best-performing configuration for both, , Wu et al.
 Table 2  Performance of our approach and other baselines
 screen correspondence for same-screen pairs in the Crawls
 dataset. Many configurations, including our model, reach a
-maximum F1 0.76. We attribute labeling noise and
+maximum F1 score of 0.76. We attribute labeling noise and
 the IoU element matching process used to assign predicted
 element locations to ground-truth boxes.
-Model Configuration P R F1 0.85 0.68 0.76
+Model Configuration P R F1
+Screen Transformer 0.85 0.68 0.76
 Screen Transformer (w/o Relative) 0.86 0.68 0.76
 Screen Transformer (w/o Appearance) 0.87 0.66 0.75
 Screen Transformer (w/o Text) 0.85 0.68 0.76
-Screen Transformer (Pixel-words) 0.88 0.66 0.76 0.87 0.66 0.75 0.78 0.48 0.59 0.53 0.25 0.34
+Screen Transformer (Pixel-words) 0.88 0.66 0.76
+Heuristic 0.87 0.66 0.75
 datasets, the relative performance ablated models were affected differently.
  Notably, the Rico models without text and the Pixel-Words
 model performed much worse, suggesting that its evaluation set
@@ -638,13 +624,12 @@ meant that no significant dynamic change ( e.g.,scrolling, dynamic
 content) occurred. After this process, the final dataset contains 607
 examples. We did not repeat this for the Rico dataset because the
 authors applied a heuristic to filter out repeated views of the same
-screen [9].
 Our observations and performance results (Table 2) show that
 same-screen correspondence is generally higher. Since same-screen
 pairs are usually more visually similar, the model can rely more
 heavily on surface-level features and in many cases perform direct
 matching, such as looking for recurring text. Many configurations,
-including our model, reached a maximum F1 0.76. Errors
+including our model, reached a maximum F1 score of 0.76. Errors
  from labeling noise and IoU element matching ( e.g.,matching
 ground truth bounding boxes to predictions) may have establishedan effective ceiling, since our element detection model introduced
 errors (has a class-weighted mAP score of 0.8).
@@ -663,7 +648,6 @@ metadata. These example applications are not meant to be novel, but
 we believe they show that accurate screen correspondence allows
 many existing systems to work under a wider range of conditions,
 e.g., using pixel data alone or improved robustness to dynamic
-visual changes.
 6.1 Instructional Overlays
 We used our model to improve users  understanding of complex or
 newly installed apps by creating an infrastructure that could be used
@@ -699,7 +683,6 @@ nearest-neighbor search to retrieve the screens in our database that
 are most similar. If the distance is sufficiently close, we run our
 screen correspondence matching, which also returns a  matching
 cost.  If enough matches are discovered and the matching cost isScreen Correspondence  Mapping Interchangeable Elements between UIs , ,
-Exemplar Labeling
 Generated Help Overlay
 Figure 5  Coach marks are useful for uncovering functionality
  in apps. High-quality natural language descriptions of
@@ -714,7 +697,6 @@ to label many similar screens at once) or automatically retrieved
 to find an exemplar from a database of labeled screens.)
 below a heuristically set threshold, we directly render the annotations
  to the screenshot using image drawing APIs and display the
-annotated image.
 In a complete implementation, the matching and rendering algorithms
  would be built into a mobile operating system and run on
 the user s mobile device so that it would not require the user to exit
@@ -747,7 +729,6 @@ found in the property database. Matching elements are shown in
 the context of their app screen and highlighted with a bounding box.
 When a result is selected, users are brought to the element inspector
 page, where users can examine the properties of all elements on
-the screen.
 One limitation of tag-based search is that it is difficult to specify
 target properties that do not belong to the pre-defined set of tags.
 For example, a  plus  icon displayed on the top or bottom of a list
@@ -784,8 +765,6 @@ allows searching for similar elements (Center). Another search query is run usin
 results are similar to the query in that they are all located at the top right of the screen and they appear to be used for adding
 items to a gallery (Right). This example shows how designers can start a search using natural language or tag-based queries
 then refine the results based on exemplars.
-Recorded Action
-Replayed Action
 Figure 7  Automated UI testing techniques execute an interaction
  trace (either manually pre-defined or automatically
 generated) to detect functional regressions, visual regressions,
@@ -848,7 +827,6 @@ as input to our model, we believe that our approach is likely to
 generalize well to other types of graphical UIs that also represent
 their output as pixels. In the future, we aim to replicate our experiments
  on other types of graphical UIs with varying screen sizes
-and shapes.
 We see several opportunities to improve the performance of our
 system. Since our system relies on several individual components,
 it may be useful to quantify the performance of each separately.
@@ -868,7 +846,6 @@ could be applied to UIs by first predicting their UI hierarchy [ 60]
 and generating mappings for groups of elements. Our model could
 also use different unsupervised pre-training objectives to help it
 build better representations of UI elements for our matching task
-[28, 50].
 Our work focuses on mapping interchangeable elements with
 similar functionality between UI screens, however there are other
 relationships that can be modeled. Categorization of different relations
@@ -876,14 +853,11 @@ relationships that can be modeled. Categorization of different relations
 and functional connections can enrich the expressiveness of language
  and rhetoric. We plan to focus future modeling efforts on
 identifying and inferring a wider range of similar relationships that
-exist in UIs.
 Finally, our work explores inferring UI functionality from a single
  previously encountered example, yet we believe our approach
 may extend to multiple examples [ 17]. For example, non-parametric
 machine learning methods such as the k-nearest neighbors algorithm
  often benefit from considering more than one example at a
-time.
-8 CONCLUSION
 In this paper, we explore screen correspondence as a machine learning
  technique for inferring UI functionality by directly leveraging
 previously encountered examples. We describe our model architecture
@@ -899,9 +873,9 @@ mapping to prior examples.
 A MODEL HYPERPARAMETERS
 Model Hyperparameter Value
 Screen Transformer optimizer Adam
-learning rate 1e-4 1e-5 0.25 256 4 4 10 epochs. We implemented
+We trained our models with early stopping and stopped training
+when validation loss did not improve for 10 epochs. We implemented
  our model using the PyTorch [ 42] and PyTorch Lightning
-[13] frameworks.
 B UI CATEGORY CRITERIA
 We collected a small dataset of 9 screen categories for evaluation
 of our model s intra-class correspondence capabilities. We used the
@@ -933,8 +907,6 @@ permission or purchases, see other categories.
 May include a search bar and filtering controls.
  Website View - A screen where an app opens an external
 website. May contain a URL bar and forward/backward controls.,
- , Wu et al.
-REFERENCES
 [1]Kfir Aberman, Jing Liao, Mingyi Shi, Dani Lischinski, Baoquan Chen, and Daniel
 Cohen-Or. 2018. Neural best-buddies  Sparse cross-domain correspondence. ACM
 Transactions on Graphics (TOG) 37, 4 (2018), 1 14.
@@ -944,7 +916,6 @@ arXiv 1409.0473 (2014).
 [3]Sara Bunian, Kai Li, Chaima Jemmali, Casper Harteveld, Yun Fu, and Magy Seif
 Seif El-Nasr. 2021. VINS  Visual Search for Mobile User Interface Design. In
 Proceedings of the 2021 CHI Conference on Human Factors in Computing Systems .
-1 14.
 [4]Joel Chan, Joseph Chee Chang, Tom Hope, Dafna Shahaf, and Aniket Kittur. 2018.
 Solvent  A mixed initiative system for finding analogies between research papers.
 Proceedings of the ACM on Human-Computer Interaction 2, CSCW (2018), 1 21.
@@ -958,11 +929,9 @@ labels for mobile gui components by deep learning. In Proceedings of the ACM/IEE
 [7]Jieshan Chen, Amanda Swearngin, Jason Wu, Titus Barik, Jeffrey Nichols, and
 Xiaoyi Zhang. 2022. Towards Complete Icon Labeling in Mobile Applications. In
 Proceedings of the 2021 CHI Conference on Human Factors in Computing Systems .
-1 14.
 [8]Sen Chen, Lingling Fan, Chunyang Chen, Ting Su, Wenhe Li, Yang Liu, and Lihua
 Xu. 2019. Storydroid  Automated generation of storyboard for Android apps.
 In2019 IEEE/ACM 41st International Conference on Software Engineering (ICSE) .
-IEEE, 596 607.
 [9]Biplab Deka, Zifeng Huang, Chad Franzen, Joshua Hibschman, Daniel Afergan,
 Yang Li, Jeffrey Nichols, and Ranjitha Kumar. 2017. Rico  A mobile app dataset
 for building data-driven design applications. In Proceedings of the 30th Annual
@@ -986,7 +955,6 @@ User Interfaces . 1 12.
 [15] Sidong Feng, Suyu Ma, Jinzhong Yu, Chunyang Chen, TingTing Zhou, and Yankun
 Zhen. 2021. Auto-icon  An automated code generation tool for icon designs
 assisting in ui development. In 26th International Conference on Intelligent User
-Interfaces . 59 69.
 [16] Martin A Fischler and Robert C Bolles. 1981. Random sample consensus  a
 paradigm for model fitting with applications to image analysis and automated
 cartography. Commun. ACM 24, 6 (1981), 381 395.
@@ -998,7 +966,6 @@ arXiv preprint arXiv 2105.11941 (2021).
 [19] Anna Gladkova, Aleksandr Drozd, and Satoshi Matsuoka. 2016. Analogy-based
 detection of morphological and semantic relations with word embeddings  what
 works and what doesn t.. In Proceedings of the NAACL Student Research Workshop .
-8 15.
 [20] Kelvin Guu, Tatsunori B Hashimoto, Yonatan Oren, and Percy Liang. 2018. Generating
  sentences by editing prototypes. Transactions of the Association for
 Computational Linguistics 6 (2018), 437 450.
@@ -1020,10 +987,9 @@ interface retrieval. In Proceedings of the 2019 CHI Conference on Human Factors 
 Computing Systems . 1 10.
 [27] Wei Jiang, Eduard Trulls, Jan Hosang, Andrea Tagliasacchi, and Kwang Moo
 Yi. 2021. Cotr  Correspondence transformer for matching across images. In
-Proceedings of the IEEE/CVF International Conference on Computer Vision . 6207 6217.
+Proceedings of the IEEE/CVF International Conference on Computer Vision . 6207 
 [28] Vid Kocijan, Ana-Maria Cretu, Oana-Maria Camburu, Yordan Yordanov, and
 Thomas Lukasiewicz. 2019. A Surprisingly Robust Trick for the Winograd Schema
-Challenge. In ACL.
 [29] Harold W Kuhn. 1955. The Hungarian method for the assignment problem. Naval
 research logistics quarterly 2, 1-2 (1955), 83 97.
 [30] Ranjitha Kumar, Jerry O Talton, Salman Ahmad, and Scott R Klemmer. 2011.
@@ -1031,7 +997,6 @@ Bricolage  example-based retargeting for web design. In Proceedings of the SIGCH
 Conference on Human Factors in Computing Systems . 2197 2206.
 [31] Seokjun Lee, Rhan Ha, and Hojung Cha. 2018. Click sequence prediction in
 Android mobile applications. IEEE Transactions on Human-Machine Systems 49, 3
-(2018), 278 289.
 [32] Luis A Leiva, Asutosh Hota, and Antti Oulasvirta. 2020. Enrico  A dataset for
 topic modeling of mobile ui designs. In 22nd International Conference on HumanComputer
  Interaction with Mobile Devices and Services . 1 4.
@@ -1042,9 +1007,8 @@ schema challenge. In Thirteenth international conference on the principles of kn
 multimodal smartphone automation by demonstration. In Proceedings of the 2017
 CHI conference on human factors in computing systems . 6038 6049.
 [35] Toby Jia-Jun Li, Lindsay Popowski, Tom Mitchell, and Brad A Myers. 2021.
-Screen Vec  Semantic Embedding of GUI Screens and GUI Components. In Proceedings
+Screen2Vec  Semantic Embedding of GUI Screens and GUI Components. In Proceedings
  of the 2021 CHI Conference on Human Factors in Computing Systems .
-1 15.
 [36] Yang Li, Jiacong He, Xin Zhou, Yuan Zhang, and Jason Baldridge. 2020. Mapping
 natural language instructions to mobile UI action sequences. arXiv preprint
 arXiv 2005.03776 (2020).
@@ -1059,12 +1023,10 @@ Kumar. 2018. Learning design semantics for mobile apps. In Proceedings of the
 31st Annual ACM Symposium on User Interface Software and Technology . 569 579.
 [40] Hongjing Lu, Ying Nian Wu, and Keith J Holyoak. 2019. Emergence of analogy
 from relation learning. Proceedings of the National Academy of Sciences 116, 10
-(2019), 4176 4181.
 [41] Forough Mehralian, Navid Salehnamadi, and Sam Malek. 2021. Data-driven
 accessibility repair revisited  on the effectiveness of generating labels for icons in
 Android apps. In Proceedings of the 29th ACM Joint Meeting on European Software
 Engineering Conference and Symposium on the Foundations of Software Engineering .
-107 118.
 [42] Adam Paszke, Sam Gross, Francisco Massa, Adam Lerer, James Bradbury, Gregory
 Chanan, Trevor Killeen, Zeming Lin, Natalia Gimelshein, Luca Antiga, et al .2019.
 Pytorch  An imperative style, high-performance deep learning library. Advances
@@ -1091,7 +1053,6 @@ Summarization with pointer-generator networks. arXiv preprint arXiv 1704.04368
 relative position representations. arXiv preprint arXiv 1803.02155 (2018).
 [50] Ming Shen, Pratyay Banerjee, and Chitta Baral. 2021. Unsupervised Pronoun
 Resolution via Masked Noun-Phrase Prediction. arXiv preprint arXiv 2105.12392
-(2021).
 [51] Karen Simonyan and Andrew Zisserman. 2014. Very deep convolutional networks
 for large-scale image recognition. arXiv preprint arXiv 1409.1556 (2014).
 [52] Amanpreet Singh, Vivek Natarajan, Meet Shah, Yu Jiang, Xinlei Chen, Dhruv
@@ -1099,16 +1060,15 @@ Batra, Devi Parikh, and Marcus Rohrbach. 2019. Towards vqa models that can
 read. In Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern
 Recognition . 8317 8326.
 [53] Ray Smith. 2007. An overview of the Tesseract OCR engine. In Ninth international
-conference on document analysis and recognition (ICDAR 2007) , Vol. 2. IEEE, 629 633.
+conference on document analysis and recognition (ICDAR 2007) , Vol. 2. IEEE, 629 
 [54] Hao Tan and Mohit Bansal. 2019. Lxmert  Learning cross-modality encoder
 representations from transformers. arXiv preprint arXiv 1908.07490 (2019).
 [55] Michael Tomasello. 2005. Constructing a language  A usage-based theory of
 language acquisition . Harvard university press.
 [56] Oriol Vinyals, Charles Blundell, Timothy Lillicrap, Daan Wierstra, et al .2016.
 Matching networks for one shot learning. Advances in neural information processing
- systems 29 (2016).
 [57] Bryan Wang, Gang Li, Xin Zhou, Zhourong Chen, Tovi Grossman, and Yang
-Li. 2021. Screen words  Automatic mobile UI summarization with multimodal
+Li. 2021. Screen2words  Automatic mobile UI summarization with multimodal
 learning. In The 34th Annual ACM Symposium on User Interface Software and
 Technology . 498 510.
 [58] Shufan Wang, Laure Thompson, and Mohit Iyyer. 2021. Phrase-bert  Improved
@@ -1137,7 +1097,6 @@ Mobile Human-Computer Interaction . 1 11.
 Lisa Yu, Qi Shan, Jeffrey Nichols, Jason Wu, Chris Fleizach, et al .2021. Screen
 Recognition  Creating Accessibility Metadata for Mobile Applications from Pixels.
 InProceedings of the 2021 CHI Conference on Human Factors in Computing Systems .
-1 15.
 [66] Xiaoyi Zhang, Anne Spencer Ross, Anat Caspi, James Fogarty, and Jacob O
 Wobbrock. 2017. Interaction proxies for runtime repair and enhancement of
 mobile application accessibility. In Proceedings of the 2017 CHI conference on
@@ -1149,6 +1108,5 @@ Technology . 609 621.
 [68] Mingyuan Zhong, Gang Li, Peggy Chi, and Yang Li. 2021. HelpViz  Automatic
 Generation of Contextual Visual Mobile Tutorials from Text-Based Instructions.
 InThe 34th Annual ACM Symposium on User Interface Software and Technology .
-1144 1153.
 [69] Xin Zhou and Yang Li. 2021. Large-Scale Modeling of Mobile User Click Behaviors
-Using Deep Learning. In Fifteenth ACM Conference on Recommender Systems . 473 483.
+Using Deep Learning. In Fifteenth ACM Conference on Recommender Systems . 473 

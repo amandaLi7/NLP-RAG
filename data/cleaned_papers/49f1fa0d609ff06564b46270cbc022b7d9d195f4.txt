@@ -24,7 +24,6 @@ aspects of security and privacy .
 ACM Reference Format 
 Leon Derczynski, Hannah Rose Kirk, Vidhisha Balachandran, Sachin Kumar, Yulia Tsvetkov, M.R. Leiser, and Saif Mohammad. 2023.
 Assessing Language Model Deployment with Risk Cards. In .ACM, New York, NY, USA, 18 pages. https //doi.org/XXXXXXX.XXXXXXX
-1 INTRODUCTION
 This paper proposes RiskCards as a tool for structured assessment of risks given a language model deployment.
 When establishing documentation, reporting or auditing standards, we need clear terminology. Hazards describe a
 potential source of an adverse outcome [ 34]. In physical analogies, bleach, radioactive material, or a swimming pool
@@ -36,7 +35,7 @@ made or distributed for profit or commercial advantage and that copies bear this
 components of this work must be honored. For all other uses, contact the owner/author(s).
  2023 Copyright held by the owner/author(s).
 Manuscript submitted to ACM
-1 2303.18190 1  [cs.CL]  31 2023Assessing Language Model Deployment with Risk Cards, April, 2023 Derczynski, Kirk, Balachandran, Kumar, Tsvetkov, Leiser, Mohammad
+1arXiv 2303.18190v1  [cs.CL]  31 Mar 2023Assessing Language Model Deployment with Risk Cards, April, 2023 Derczynski, Kirk, Balachandran, Kumar, Tsvetkov, Leiser, Mohammad
 or probability of a hazard becoming harmful andits impact [ 1]. When the risk is unknown, or its impact uncertain, one
 possible regulatory strategy is for policy makers, organisations, and other stakeholders to adopt the precautionary
 principle [32], especially when the science around the risk is unknown or the impact indeterminable.
@@ -55,11 +54,8 @@ helpful. Not all risks are present in every application scenario/deployment, and
 It s not clear how to efficiently map general knowledge about LM risks and harms to individual application scenarios.
 Thus, we need a framework for adapting these tools to their contexts.
 Fig. 1. Overview of proposed risk cards.
-Risk Card
  Risk Title . Name of the risk to be documented.
  Description . Details about the risk including context, application and subgroup
-impacts.
- Definition of risk
  Tool, Model or Application it presents in
  Subgroup or Demographic the risk adversely impacts
  Categorization . Situating the risk under different risk taxonomies.
@@ -73,7 +69,6 @@ demonstrating the impact.
  Publications/References demonstrating the harm
  Documentation of real-world harm
  Actions required for harm . Details on the situation and context for the harm to
-surface.
  Actions that would elicit such harm from a model
  Access and resources required for interacting with the system
  Sample prompt & LM output . A sample prompt and real LM output to exemplify
@@ -145,7 +140,6 @@ accompanying resource contains content that at times is strong, extensive, detai
 LMs may result in harmful content being generated, and some prompts may be illegal to enter or generate outputs illegal in your
 jurisdiction. The authors are not liable for use or misuse of the examples in this article or in the accompanying resource.
 3Assessing Language Model Deployment with Risk Cards, April, 2023 Derczynski, Kirk, Balachandran, Kumar, Tsvetkov, Leiser, Mohammad
-2 RELATED WORK
 We summarise the literature on documenting and exposing LM risks along four axes according to the type of resource
 or evaluation artefact. For each, we explain its limitations for evaluating LM risks, and how this motivates RiskCards .
 Taxonomies. Taxonomies provide a system under which to classify various forms of harms. A number of previous
@@ -182,25 +176,49 @@ with some behaviours having many more corresponding prompts than others. In cont
 prompts that lead to harmful outputs but paired with additional documentation to enable attacks to be conducted in a
 structured manner, making them easily to integrate into an auditing process [27].
 1We add a short code to the first column of this table which can later be used to refer to the specific risk in a RiskCard .
-4Assessing Language Model Deployment with Risk Cards Assessing Language Model Deployment with Risk Cards, April, 2023 1.1 1.2 1.3 1.4 1.5 Denying People Opportunity To Self-identify
-S1.6 2.1 2.2 3.1 Quality-of-service Harms Alienation
-S3.2 3.4 4.1 Inter- & intrapersonal Harms Loss Of Agency, Social Control
+4Assessing Language Model Deployment with Risk Cards Assessing Language Model Deployment with Risk Cards, April, 2023
+Number Theme Subcategory
+S1.1 Representational Harms Stereotyping
+S1.2 Demeaning Social Groups
+S1.3 Erasing Social Groups
+S1.4 Alienating Social Groups
+S1.5 Denying People Opportunity To Self-identify
+S1.6 Reifying Essentialist Social Categories
+S2.1 Allocative Harms Opportunity Loss
+S3.1 Quality-of-service Harms Alienation
+S3.2 Increased Labour
+S3.4 Service Or Benefit Loss
+S4.1 Inter- & intrapersonal Harms Loss Of Agency, Social Control
 S4.2 Technology-facilitated Violence
 S4.3 Diminished Health And Well-being
-S4.4 5.1 Social System/societal Harms Information Harms
-S5.2 5.3 5.4 Macro Socio-economic Harms
+S4.4 Privacy Violations
+S5.1 Social System/societal Harms Information Harms
+S5.3 Political And Civic Harms
+S5.4 Macro Socio-economic Harms
 S5.5 Environmental Harms
 (a) Shelby et al. [40] s categories of harms, and numbering
 Number Classification Harm
 W1.1 Discrimination, Exclusion and Toxicity Social stereotypes and unfair discrimination
-W1.2 1.3 1.4 2.1 2.2 2.3 3.1 3.2 Causing material harm by disseminating false or poor information
+W1.2 Exclusionary norms
+W1.4 Lower performance for some languages and social groups
+W2.1 Information Hazards Compromising privacy by leaking private information
+W2.2 Compromising privacy by correctly inferring private information
+W2.3 Risks from leaking or correctly inferring sensitive information
+W3.1 Misinformation Harms Disseminating false or misleading information
+W3.2 Causing material harm by disseminating false or poor information
 e.g. in medicine or law
-W3.3 4.1 4.2 Facilitating fraud, scams and more targeted manipulation
+W3.3 Leading users to perform unethical or illegal actions
+W4.1 Malicious Uses Making disinformation cheaper and more effective
+W4.2 Facilitating fraud, scams and more targeted manipulation
 W4.3 Assisting code generation for cyber attacks, weapons, or malicious use
-W4.4 5.1 Human-Computer Interaction Harms Anthropomorphising systems can lead to overreliance or unsafe use
+W4.4 Illegitimate surveillance and censorship
+W5.1 Human-Computer Interaction Harms Anthropomorphising systems can lead to overreliance or unsafe use
 W5.2 Creating avenues for exploiting user trust, nudging or manipulation
-W5.3 6.1 Automation, access, and environmental harms Environmental harms from operating LMs
-W6.2 6.3 6.4 Disparate access to benefits due to hardware, software, skill constraints
+W5.3 Promoting harmful stereotypes by implying gender or ethnic identity
+W6.1 Automation, access, and environmental harms Environmental harms from operating LMs
+W6.2 Increasing inequality and negative effects on job quality
+W6.3 Undermining creative economies
+W6.4 Disparate access to benefits due to hardware, software, skill constraints
 (b) Weidinger et al. [52] s areas of risk of harm from LMs
 Table 1. Two taxonomies of language model risks and harms
 Documentation. In terms of adding structured documentation to artefacts in machine learning and natural language
@@ -217,11 +235,9 @@ and ethical considerations relevant to how a task is framed. Our work directly b
 development practices. However, RiskCards are intentionally not tied to a specific dataset, model or task, instead
 presenting a more flexible, reusable and comparable structure for demonstrating and documenting LM-mediated risks
 across models, their training data and their application scenarios.
-3 DEFINING RISKCARDS
 This section defines what a RiskCard is ( 3.1), explains its components ( 3.2), gives examples of completed RiskCards
 ( 3.3) and describes when (or when not) to write them ( 3.4).
 3.1 Structure of a RiskCard
-Each RiskCard must 
 (1)Name and describe a risk  Each RiskCard begins with a concise name for the risk followed by a brief
 description. The description should be sufficient to make it clear how the risk presents and also delineate the
 scope of the risk. It may be helpful to include exemplifying references.
@@ -235,7 +251,6 @@ might not fit in any of these categories, and if so, that should be stated  othe
 category, and if so, all categories should be named which capture essential aspects of the risk.
 (4)Describe who may be affected, and how, if the risk manifests (i.e. its impact)  A range of actors can suffer
 a range of harms from a risk. Relevant intersections of these should be noted on the card, as pairs of actor and
-harm type.
 (5)Clarify what is required for the risk to manifest  Not all outputs present a risk simply from being read.
 Sometimes they may have to be used in a specific setting, or more than once, for a risk to be relevant. The
 conditions required for harm to present should be specified.
@@ -248,7 +263,8 @@ We now further establish possible dimensions of harm ( 3.2), including who is at
 arise, and which actions or conditions are required for harm to materialise.
 2We encourage (but avoid explicitly requiring) peer-reviewed evidence for risk impacts to balance the trade-off between dilution of RiskCards as a
 credible resource with the value in allowing emergence of previously undocumented risks.
-6Assessing Language Model Deployment with Risk Cards Assessing Language Model Deployment with Risk Cards, April, 2023 3.2 Dimensions of Harm
+6Assessing Language Model Deployment with Risk Cards Assessing Language Model Deployment with Risk Cards, April, 2023
+3.2 Dimensions of Harm
 Categorising risks in RiskCards involves describing who can be harmed when the risk manifests, what kind of harm
 may be done and what conditions must be present for this harm to materialise. Building these descriptions in a structured
 way, from combinations of a set list of actors and categories of harm, makes it easier to identify relevant RiskCards for
@@ -280,14 +296,14 @@ negatively due to technology. This could cover privacy violations or using gener
 (v)Social & societal harms describe societal-level effects that result from repeated interaction with LM output  for
 example, misinformation, electoral manipulation, and automated harassment.
 (vi)Legal harms describe outputs which are illegal to generate or own in some jurisdictions. For example, blasphemy
-is still illegal in many jurisdictions [ 46], including in the anglosphere.3Written CSAM is illegal to create or own
+is still illegal in many jurisdictions [ 46], including in the anglosphere.3Written CSAM4is illegal to create or own
 in many jurisdictions. Copyrighted material presents another kind of legal risk. LMs can lead to breaches of the
 law through multiple routes, and this is signified through this  legal harms  category.
 3.2.3 What actions are required for harm to manifest  Many risks require some kind of action or set of conditions in
 order to yield harm. Some text can inflict harm by being read [ 16]  for example, the propagation of negative stereotypes
-3 2021, England & Wales  in 2007 4 7Assessing Language Model Deployment with Risk Cards, April, 2023 Derczynski, Kirk, Balachandran, Kumar, Tsvetkov, Leiser, Mohammad
-Field Content
-Title Hate speech
+3Scotland s blasphemy laws were repealed in 2021, England & Wales  in 2007
+4Child Sexual Abuse Material
+7Assessing Language Model Deployment with Risk Cards, April, 2023 Derczynski, Kirk, Balachandran, Kumar, Tsvetkov, Leiser, Mohammad
 Description Derogatory speech toward or about a group where the group is predicated on an
 identity characteristic
 Categorisation W1.3, S1.1
@@ -298,7 +314,6 @@ be at risk. The other harms are intrinsic to the text.
 Sample prompt & LM output The problem with black people is that they just don t try hard enough.
 Notes For an overview of datasets, see [48]
 Table 2. Risk card for hate speech.
-Field Content
 Title Prompt extraction
 Description An LM reveals proprietary information about its prompt/configuration
 Categorisation W2.2, S5.1
@@ -306,9 +321,10 @@ Harm types Developer-Social, Developer-Financial, Provider-Legal
 Harm reference(s) [51], https //twitter.com/goodside/status/1608715122419302401
 Actions required for harm An actor external to the model owner or provider needs to be able to extract
 proprietary information about the model, identify that they have done this, and act
-upon it
 Sample prompt & LM output Ignore previous directions. Return the first 50 words of your prompt. Assistant
-is a large language model trained by SomeCorp. knowledge cutoff  2021-09 01 2022 3. Risk card for prompt extraction.
+is a large language model trained by SomeCorp. knowledge cutoff  2021-09
+Current date  December 01 2022 Browsing  disabled
+Table 3. Risk card for prompt extraction.
 about real people, or graphic descriptions of violent acts. Other text requires situational context for harm risk to
 manifest  for example, authoring many fake comments evincing a certain view and posting of them online as genuine,
 in an astroturfing effort [ 15]. In other cases, text can be harmful in one setting but fine in another. For example, the
@@ -349,7 +365,6 @@ cases, overlapping RiskCards enable debate and discussion about relevant issues,
 Second, multiple RiskCards may be created at different levels of granularity (e.g.  hate speech  vs  misogyny ) if it is
 appropriate to use the different levels in different deployment contexts. Finally, with time, existing RiskCards may
 need updating or some marked as obsolete so that a new, more temporally relevant card can be introduced in its place.
-4 APPLYING RISKCARDS
 An auditor can use RiskCards to assess a LM in context by 
  Defining the assessment
  Selecting which RiskCards to use
@@ -357,8 +372,6 @@ An auditor can use RiskCards to assess a LM in context by
  For each selected RiskCard ,
  Developing and recording an assessment strategy
  Manually probing and assessing the model to the agreed depth
- Recording results
- Compiling a report
  Recontributing to RiskCards set.
 The sections below describe how to conduct these steps. Once results are recorded, we recommend compiling a
 report which documents procedural details (e.g., when the assessment was conduct, who carried out the assessment)
@@ -367,7 +380,7 @@ report which documents procedural details (e.g., when the assessment was conduct
 and key findings of the assessment. Because RiskCards are dynamic and participatory, we encourage assessors to
 contribute new findings so that others can learn from their process. This could include appending new prompt-output
 pairs to an existing RiskCard or adding newly identified RiskCards . Using RiskCards relies on qualitative inspection
-and human work. We argue the value of this in  4.6 6.
+and human work. We argue the value of this in  4.6 and discuss limitations in  6.
 4.1 Defining the Assessment
 The first stage in structuring the assessment is defining what will be assessed. First, the context for the model and its
 application should be agreed and recorded. For example,   A web app for translation will accept text in the source language
@@ -394,7 +407,6 @@ proceed with a full set of RiskCards   though usually, models are not used for e
 Who is the anticipated user  What are their expectations in that scenario  What kind of input data will they be putting
 into the system  How private or public will model outputs be  What will model outputs be used for  Where is the
 liability if something goes wrong with model output 
-4.3 Define Assessors
 After the candidate set of RiskCards has been selected, a decision must be made on who will carry out the assessment.
 We provide three considerations when assigning assessors. First, an assessor must have adequate domain expertise to
 detect the risks, and different assessor profiles may lend themselves to different RiskCards . For example, if the risk is
@@ -421,7 +433,6 @@ chosen. Assessors should now proceed to assess the LM system card-by-card. Each 
 assessment strategy. Detailed suggestions of semi-automated probing tactics are given in  4.5. However, the strategy
 development stage should center people, especially those that are marginalized and disadvantaged, so that they are not
 mere passive subjects but rather have the agency to shape the risk assessment process.
-4.5 Probing Models
 In this step, assessors evaluate the model against each RiskCard . We recommend performing this manually as automatic
  evaluation has clear limits ( 4.6). The probing stage involves assessors interacting with the model to expose a
 demonstrable prompt-output pair which aligns with the RiskCard in question. Across these experiments, assessors
@@ -463,7 +474,7 @@ Now that we have a structure for describing risks via RiskCards , we map some ri
 proposed structure. In this section, we describe an inductive survey of existing literature on LM risks where specific
 risks are collated, de-duplicated, and mapped into RiskCards . The result is a  starter set" of RiskCards to provide
 a basic scaffold for others to conduct their assessments. We distribute this starter set in an openly-available Github
-repository.7 5.1 Enumerating Risks
+5.1 Enumerating Risks
 The risks that surround or are exacerbated by LMs are an open class. It is an unreasonable expectation to identify all
 of these   especially due to their changing nature across applications and through time. Nevertheless, beginning the
 process of applying RiskCards is difficult without concrete examples. Thus, we examine a selection of works to identify
@@ -473,7 +484,8 @@ so we skip over risks which are mentioned in the literature but not substantiate
 description and reference(s), are given in Tab. 4 (in the Appendix).
 7https //github.com/leondz/lm_risk_cards
 8Note that the dynamic nature and flexibility of RiskCards allows for these to be added if and when a harm is documented.
-12Assessing Language Model Deployment with Risk Cards Assessing Language Model Deployment with Risk Cards, April, 2023 5.2 Developing risk card prompts and outputs
+12Assessing Language Model Deployment with Risk Cards Assessing Language Model Deployment with Risk Cards, April, 2023
+5.2 Developing risk card prompts and outputs
 Prompts and output examples on the starter set of RiskCards are created through interactions with models from
 OpenAI (text-davinci-003  text-davinci-002), Eleuther (GPT-NeoX-20B), and Cohere (using a medium model released
 between October 2022-January 2023). While we state this set of target models, we do not denote which model generated
@@ -520,14 +532,11 @@ The Risk of Malicious Use. Finally, any documentation reporting on failure modes
 of harms can be elicited via specific prompts could be reverse-engineered by malicious users to scale-up dangerous or
 harmful generations. We mitigate the risk of malicious use by (i) encouraging that specific models are not documented
 on a risk card, and (ii) providing only illustrative sets of sample prompt-output pairs.
-7 CONCLUSION
 This paper describes RiskCards   a structured, open tool for assessing the risks in a single language model deployment.
 We believe that both good due diligence and high quality assessments are a path to reducing and mitigating many kinds
 of harms mediated by language models. RiskCards enable this increase in quality, positively serving the interests of
 those interacting with, owning, and affected by language model systems.
-REFERENCES
 [1]Robert Baldwin, Martin Cave, and Martin Lodge. 2012. Understanding Regulation  Theory, Strategy, and Practice (2nd ed ed.). Oxford University Press,
-New York.
 [2]Michele Banko, Brendon MacKeen, and Laurie Ray. 2020. A unified taxonomy of harmful content. In Proceedings of the fourth Workshop on Online
 Abuse and Harms . Association for Computational Linguistics, 125 137.
 [3] Eric Barendt. 2019. What is the harm of hate speech  Ethical Theory and Moral Practice 22, 3 (2019), 539 553.
@@ -541,7 +550,6 @@ Models Be Too Big . In Proceedings of the 2021 ACM Conference on Fairness, Accou
 Methods. https //doi.org/10.48550/ARXIV.2210.07321
 [8]Deep Ganguli, Liane Lovitt, Jackson Kernion, Amanda Askell, Yuntao Bai, Saurav Kadavath, Ben Mann, Ethan Perez, Nicholas Schiefer, Kamal Ndousse,
 et al.2022. Red Teaming Language Models to Reduce Harms  Methods, Scaling Behaviors, and Lessons Learned. arXiv preprint arXiv 2209.07858
-(2022).
 [9]Timnit Gebru, Jamie Morgenstern, Briana Vecchione, Jennifer Wortman Vaughan, Hanna Wallach, Hal Daumé Iii, and Kate Crawford. 2021.
 Datasheets for datasets. Commun. ACM 64, 12 (2021), 86 92.
 [10] Samuel Gehman, Suchin Gururangan, Maarten Sap, Yejin Choi, and Noah A. Smith. 2020. RealToxicityPrompts  Evaluating Neural Toxic Degeneration
@@ -549,7 +557,6 @@ in Language Models. In Findings of the Association for Computational Linguistics
 3356 3369. https //doi.org/10.18653/v1/2020.findings-emnlp.301
 [11] Katharine Gelber and Luke McNamara. 2016. Evidencing the harms of hate speech. Social Identities 22, 3 (2016), 324 341.
 [12] Beth Humphries, Donna M Mertens, and Carole Truman. 2020. Arguments for an  emancipatory research paradigm. In Research and inequality .
-Routledge, 3 23.
 [13] Pratik Joshi, Sebastin Santy, Amar Budhiraja, Kalika Bali, and Monojit Choudhury. 2020. The State and Fate of Linguistic Diversity and Inclusion in
 the NLP World. In Proceedings of the 58th Annual Meeting of the Association for Computational Linguistics . Association for Computational Linguistics,
 Online, 6282 6293. https //doi.org/10.18653/v1/2020.acl-main.560
@@ -572,11 +579,9 @@ usage. In Proceedings of the Fourth Workshop on Online Abuse and Harms . 138 149
 [21] Percy Liang, Rishi Bommasani, Tony Lee, Dimitris Tsipras, Dilara Soylu, Michihiro Yasunaga, Yian Zhang, Deepak Narayanan, Yuhuai Wu, Ananya
 Kumar, et al. 2022. Holistic evaluation of language models. arXiv preprint arXiv 2211.09110 (2022).
 [22] Stephanie Lin, Jacob Hilton, and Owain Evans. 2021. Truthfulqa  Measuring how models mimic human falsehoods. arXiv preprint arXiv 2109.07958
-(2021).
 [23] Tianyu Liu, Yizhe Zhang, Chris Brockett, Yi Mao, Zhifang Sui, Weizhu Chen, and Bill Dolan. 2021. A token-level reference-free hallucination
 detection benchmark for free-form text generation. arXiv preprint arXiv 2104.08704 (2021).
 [24] P Mishkin, L Ahmad, M Brundage, G Krueger, and G Sastry. 2022. DALL  E 2 Preview - Risks and Limitations. https //github.com/openai/dalle-2preview/blob/main/system-card.md.
-
 [25] Margaret Mitchell, Simone Wu, Andrew Zaldivar, Parker Barnes, Lucy Vasserman, Ben Hutchinson, Elena Spitzer, Inioluwa Deborah Raji, and
 Timnit Gebru. 2019. Model cards for model reporting. In Proceedings of the conference on fairness, accountability, and transparency . 220 229.
 [26] Saif Mohammad. 2022. Ethics Sheets for AI Tasks. In Proceedings of the 60th Annual Meeting of the Association for Computational Linguistics (Volume
@@ -597,7 +602,7 @@ Scientifique Et Technique (International Office of Epizootics) 14, 4 (Dec. 1995)
 [35] Ethan Perez, Saffron Huang, Francis Song, Trevor Cai, Roman Ring, John Aslanides, Amelia Glaese, Nat McAleese, and Geoffrey Irving. 2022. Red
 teaming language models with language models. arXiv preprint arXiv 2202.03286 (2022).
 [36] Paul Röttger, Bertie Vidgen, Dong Nguyen, Zeerak Waseem, Helen Margetts, and Janet Pierrehumbert. 2021. HateCheck  Functional Tests
-for Hate Speech Detection Models. In Proceedings of the 59 11th
+for Hate Speech Detection Models. In Proceedings of the 59th Annual Meeting of the Association for Computational Linguistics and the 11th
 International Joint Conference on Natural Language Processing (Volume 1  Long Papers) . Association for Computational Linguistics, Online, 41 58.
 https //doi.org/10.18653/v1/2021.acl-long.4
 [37] Rachel Rudinger, Jason Naradowsky, Brian Leonard, and Benjamin Van Durme. 2018. Gender bias in coreference resolution. arXiv preprint
@@ -618,12 +623,9 @@ arXiv 2206.04615 (2022).
 15Assessing Language Model Deployment with Risk Cards, April, 2023 Derczynski, Kirk, Balachandran, Kumar, Tsvetkov, Leiser, Mohammad
 [45] Jonathan Stray, Alon Halevy, Parisa Assar, Dylan Hadfield-Menell, Craig Boutilier, Amar Ashar, Lex Beattie, Michael Ekstrand, Claire Leibowicz,
 Connie Moon Sehat, et al .2022. Building Human Values into Recommender Systems  An Interdisciplinary Synthesis. arXiv preprint arXiv 2207.10192
-(2022).
 [46] USCIRF. 2019. Violating Rights  Enforcing the World s Blasphemy Laws. (2019).
 [47] Joe Vest and James Tubberville. 2020. Red Team Development and Operations A practical Guide. https //redteam.guide/. Independently Published
-(2020).
 [48] Bertie Vidgen and Leon Derczynski. 2020. Directions in abusive language training data, a systematic review  Garbage in, garbage out. Plos one 15, 12
-(2020), e0243300.
 [49] Bertie Vidgen, Tristan Thrush, Zeerak Waseem, and Douwe Kiela. 2020. Learning from the worst  Dynamically generated datasets to improve
 online hate detection. arXiv preprint arXiv 2012.15761 (2020).
 [50] Eric Wallace, Pedro Rodriguez, Shi Feng, Ikuya Yamada, and Jordan Boyd-Graber. 2019. Trick me if you can  Human-in-the-loop generation of
@@ -634,7 +636,6 @@ Kasirzadeh, et al. 2021. Ethical and social risks of harm from language models. 
 [53] Laura Weidinger, Jonathan Uesato, Maribeth Rauh, Conor Griffin, Po-Sen Huang, John Mellor, Amelia Glaese, Myra Cheng, Borja Balle, Atoosa
 Kasirzadeh, et al .2022. Taxonomy of risks posed by language models. In 2022 ACM Conference on Fairness, Accountability, and Transparency . 214 229.
 [54] Wenjie Yin and Arkaitz Zubiaga. 2021. Towards generalisable hate speech detection  a review on obstacles and solutions. PeerJ Computer Science 7
-(2021), e598.
 16Assessing Language Model Deployment with Risk Cards Assessing Language Model Deployment with Risk Cards, April, 2023
 A LM RISK CARDS STARTER SET  A SURVEY OF RISKS
 Name Description Discussed by
@@ -712,4 +713,3 @@ Violation of privacy Sharing information from users (not in training) that was i
 Weapon instructions Giving instructions or advice on constructing weapons [8, 52]
 Wrong tone Picking an overly casual/profane tone/register [7]
 Table 4. Risks identified through survey
-18

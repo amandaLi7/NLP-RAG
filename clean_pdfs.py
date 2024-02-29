@@ -71,36 +71,41 @@ def replace_bounded_strings(text):
     return corrected_text
 
 
+def remove_short_lines(text: str) -> str:
+    lines = [line for line in text.split("\n") if len(line) > 20]
+    return "\n".join(lines)
+
+
 def process_text(text: str) -> str:
     text = remove_hyphens(text)
     text = remove_nonalphanumeric(text)
-    text = replace_bounded_numbers(text)
-    text = replace_bounded_strings(text)
+    text = remove_short_lines(text)
+    # text = replace_bounded_numbers(text)
+    # text = replace_bounded_strings(text)
     return text
+
+
+def clean_pdfs(input_folder, output_folder):
+    for file_path in os.listdir(input_folder):
+        output_path = f"{output_folder}/{file_path}"
+        if not os.path.exists(output_path):
+            text = open(f"{input_folder}/{file_path}", "r")
+            processed_text = process_text(text.read())
+            with open(output_path, "w") as output:
+                output.write(processed_text)
 
 
 if __name__ == "__main__":
 
-    # # Test
-    # parsed_papers_dir = os.listdir("./data/parsed_papers")[:5]
-    # count = 0
-    # for file_path in parsed_papers_dir:
-    #     text = open(f"./data/parsed_papers/{file_path}", "r")
-    #     processed_text = process_text(text.read())
-    #     print(processed_text[:1000])
+    parsed_papers_dir = "./data/parsed_papers"
+    cleaned_papers_dir = "./data/cleaned_papers"
+
+    parsed_other_dir = "./data/parsed_other"
+    cleaned_other_dir = "./data/cleaned_other"
 
     start = time.time()
 
-    for file_path in os.listdir("./data/parsed_papers"):
-        text = open(f"./data/parsed_papers/{file_path}", "r")
-        processed_text = process_text(text.read())
-        with open(f"./data/cleaned_papers/{file_path}", "w") as output:
-            output.write(processed_text)
-
-    for file_path in os.listdir("./data/parsed_other"):
-        text = open(f"./data/parsed_other/{file_path}", "r")
-        processed_text = process_text(text.read())
-        with open(f"./data/cleaned_other/{file_path}", "w") as output:
-            output.write(processed_text)
+    clean_pdfs(parsed_papers_dir, cleaned_papers_dir)
+    # clean_pdfs(parsed_other_dir, cleaned_other_dir)
 
     print(f"Time to clean: {time.time() - start}")

@@ -1,10 +1,11 @@
 STMT  A Spatial-Temporal Mesh Transformer for
 MoCap-Based Action Recognition
-Xiaoyu Zhu1, Po-Yao Huang2 , Junwei Liang3 , Celso M. de Melo4, Alexander Hauptmann1 1Carnegie Mellon University,2FAIR, Meta AI,3HKUST (Guangzhou),4 1. Current state-of-the-art MoCap-based action recognition methods first convert body markers into a human body mesh, which
+Xiaoyu Zhu1, Po-Yao Huang2 , Junwei Liang3 , Celso M. de Melo4, Alexander Hauptmann1
+1Carnegie Mellon University,2FAIR, Meta AI,3HKUST (Guangzhou),4DEVCOM Army Research Laboratory
+Figure 1. Current state-of-the-art MoCap-based action recognition methods first convert body markers into a human body mesh, which
 is used to predict a standardized 3D skeleton. The 3D skeleton is used as input for action recognition models (dashed line). We propose
 a method that directly models the dynamics of raw mesh sequences (solid line). Our method saves the manual effort to derive skeleton
 representation, and achieves superior recognition performance by leveraging surface motion and body shape knowledge from meshes.
-Abstract
 We study the problem of human action recognition using
 motion capture (MoCap) sequences. Unlike existing techniques
  that take multiple manual steps to derive standardized
@@ -22,8 +23,6 @@ bi-directional and auto-regressive attention in our hierarchical
  performance compared to skeleton-based and pointcloud-based
  models on common MoCap benchmarks. Code
 is available at https //github.com/zgzxy001/
-STMT .
-1. Introduction
 Motion Capture (MoCap) is the process of digitally
 recording the human movement, which enables the fine Equal
  Contribution.grained capture and analysis of human motions in 3D space
@@ -49,7 +48,7 @@ each dataset. Moreover, different MoCap datasets usually
  ACCAD [48], BioMotion [64], Eyes Japan [15], and
 KIT [42] have 82, 41, 37, and 50 body markers respectively.
  This prevents the model to be trained and tested on
-a unified framework. To use standard skeleton representa-arXiv 2303.18177 1  [cs.CV]  31 2023tions such as NTU RGB D [58], Punnakkal et al. [50] first
+a unified framework. To use standard skeleton representa-arXiv 2303.18177v1  [cs.CV]  31 Mar 2023tions such as NTU RGB D [58], Punnakkal et al. [50] first
 used Mosh   to fit body markers into SMPL-H meshes, and
 then predicted a 25-joint skeleton [33] from the mesh vertices
  [54]. Finally, a skeleton-based model [60] was used
@@ -62,7 +61,6 @@ MoCap data ( i.e., surface motion and body shape knowledge).
  To overcome those disadvantages, we propose a
 mesh-based action recognition method to directly model
 dynamic changes in raw mesh sequences, as illustrated in
-Figure 1.
 Though mesh representations provide fine-grained body
 information, it is challenging to classify high-dimensional
 mesh sequences into different actions. First, unlike structured
@@ -104,11 +102,9 @@ The contributions of this paper are three-fold
  for spatial-temporal mesh modeling.  We design effective and efficient pretext tasks, namely
 masked vertex modeling and future frame prediction,
 to enable the model to learn from the spatial-temporal
-global context.
   Our model achieves superior performance compared
 to state-of-the-art point-cloud and skeleton models on
 common MoCap benchmarks.
-2. Related Work
 Action Recognition from Depth and Point Cloud.
 3D action recognition models have achieved promising
  performance with depth [34, 55, 56, 68, 71] and point
@@ -118,9 +114,10 @@ human actions. In MVDI [71], dynamic images [4] were
 extracted through multi-view projections from depth
 videos for 3D action recognition. 3D-FCNN [55] directly
 exploited a 3D-CNN to model depth videos. Another
-popular category of 3 3D point clouds. PointNet [51] and PointNet   [52]
+popular category of 3D human action recognition is based
+on 3D point clouds. PointNet [51] and PointNet   [52]
 are the pioneering works contributing towards permutation
-invariance of 3 3D geometric
+invariance of 3D point sets for representing 3D geometric
 structures. Along this avenue, MeteorNet [36] stacked
 multi-frame point clouds and aggregates local features
 for action recognition. 3DV [70] transferred point cloud
@@ -172,8 +169,6 @@ probable reason is that self-supervised learning on highdimensional
  In this work, we propose an effective and efficient
  self-supervised learning method based on masked vertex
  modeling and future frame prediction.
-3. Method
-3.1. Overview
 In this section, we describe our model for meshbased
  action recognition, which we call STMT . The inputs
  of our model are temporal mesh sequences  M 
@@ -181,7 +176,6 @@ In this section, we describe our model for meshbased
 number. Pi RN 3represents the vertex positions in
 Cartesian coordinates, where Nis the number of vertices.
 Ai RN Nrepresents the adjacency matrix of the mesh.
-Element Amn
 i Aiis one when there is an edge from
 vertex Vmto vertex Vn, and zero when there is no edge.
 The mesh representation with vertices and their adjacent
@@ -202,7 +196,6 @@ more challenging problem, as there is no vertex-level correspondence
  information to build patches at the frame level,then use a hierarchical transformer which can freely attend
  to any intra- and inter-frame patches to learn spatialtemporal
  associations. In summary, it has the following key
-components 
  Surface Field Convolution to form local vertex
 patches by considering both intrinsic and extrinsic
 mesh representations.
@@ -227,20 +220,13 @@ two vertices is approximated using Euclidean distance. Intrinsic
 which is defined as the shortest path between two vertices
 on mesh surfaces. We propose a light-weighted surface field
 convolution to build local patches, which can be denoted as 
-F (x,y,z )
-V G  X
 (δx,δy,δz) G(x,y,z )W(δx,δy,δz) F(x δx,y δy,z δz)
-(1)
-F (x,y,z )
-V E  X
 (ζx,ζy,ζz) E(x,y,z )W(ζx,ζy,ζz) F(x ζx,y ζy,z ζz)
-(2)
 GandEis the local region around vertex (x, y, z ).
 In this paper, we use k-nearest-neighbor to sample local
 vertices. (δx, δy, δz)and(ζx, ζy, ζz)represent the spatial
  displacement in geodesic and euclidean space, respectively.F(x,y,z
  )denotes the feature of the vertex at position
-(x, y, z ).
 3.3. Hierarchical Spatial-Temporal Transformer
 We propose a hierarchical transformer that consists of
 intra-frame and inter-frame attention. The basic idea behind
@@ -278,44 +264,29 @@ and euclidean space are expected to be different, we propose
  to use separate transformers to model intrinsic patches
 and extrinsic patches. Specifically, the aggregated feature
 for vertex Vis denoted as 
-F (x,y,z )
-V  OAG(F (x,y,z )
-V G ) OAE(F (x,y,z )
 V E ) (4)Here F (x,y,z )
 V G  RN dgandF (x,y,z )
-V E  RN deare
 local patches learned using Equ. 1 and Equ. 2. F (x,y,z )
-V  
 RN ddenotes the local patch for position (x, y, z ), where
 d dg de. The weights of OAGandOAEare not shared.
 3.3.2 Inter-Frame Self-Attention
-Given F 
 Vwhich encodes local connectivity information,
 we use self-attention (SA) [65] to learn semantic affinities
  between different vertex patches across frames. Specifically,
  let Q,K,Vbe the query, key andvalue , which are
 generated by applying linear transformations to the input
-features F 
-V RN das follows 
-(Q,K,V )  F 
-V (Wq,Wk,Wv)
-Q,K  RN da,V RN d
 Wq,Wk Rd da,Wv Rd d(5)
 whereWq,WkandWvare the shared learnable linear
 transformation, and dais the dimension of the query and
 key vectors. Then we can use the query and key matrices to
 calculate the attention weights via the matrix dot-product 
 A  ( α)i,j  softmax(Q KT
- da). (6)
-Fsa A V (7)
 The self-attention output features Fsaare the weighted
 sums of the value vector using the corresponding attention
 weights. Specifically, for a vertex patch in position (x, y, z ),its aggregated feature after inter-frame self-attention can be
 computed as  F(x,y,z )
 sa  PA(x,y,z ),(x ,y ,z ) V(x ,y ,z ),
 where (x , y , z )belongs to the Cartesian coordinates of
-F 
-V.
 3.4. Self-Supervised Pre-Training
 Self-supervised learning has achieved remarkable results
  on large-scale image datasets [23]. However, selfsupervised
@@ -342,17 +313,12 @@ step to convert camera frames back to world frames. Different
  frames on the fly, which saves the pre-processing step.
 Moreover, our pre-training method is designed for temporal
 mesh sequences and considers both bi-directional and autoregressive
- attention.
 3.4.1 Data Augmentation through Joint Shuffle
 Considering the flexibility of SMPL-H representations,
 we propose a simple yet effective approach to augment
 SMPL-H sequences by shuffling body pose parameters.
 Specifically, we split SMPL-H pose parameters into five
 body parts  bone, left/right arm, and left/right leg. We
-useIbone, Ileft
-leg, Iright
-leg, Ileft
-arm, Iright
 arm to denote the SMPL-H
 pose indexes of the five body parts. Then we synthesize
 new sequences by randomly selecting body parts from five
@@ -365,31 +331,20 @@ number, tis the frame number, and nis the joint number.
 We randomly select the shape βand dynamic parameters ϕ
 from one of the five SMPL-H sequences to compose a new
 SMPL-H body model. Given bSMPL-H sequences, we can
-synthesizebC5 5 (b 5) number of new sequences.We prove that the model can benefit from large-scale pretraining
- in Section 4.6.
-Algorithm 1 1 function STMT JOINT SHUFFLE (θ 
+5 (b 5) number of new sequences.We prove that the model can benefit from large-scale pretraining
+Algorithm 1  Pseudocode of STMT Joint Shuffle
+1 function STMT JOINT SHUFFLE (θ 
 Rb t n 3, Ibone, Ileft
-leg, Iright
-leg, Ileft
-arm, Iright
-arm )
-2  θs random sample (θ,5)  θs R5 3,
+2  θs random sample (θ,5)  θs R5 t n 3,
 randomly sample five SMPL-H sequences
 3  tmax getmax length (θs)  compute the
 maximum sequence length in θs
 4  θnew Initialize (tmax, n,3)
-5  P  {Ibone, Ileft
-leg, Iright
-leg, Ileft
-arm, Iright
-arm}
-6 0,1,2,3,4 7  θs repeat (θs[i],(tmax, n,3))  pad each
+6  fori in0,1,2,3,4do
+7  θs repeat (θs[i],(tmax, n,3))  pad each
 sequence to the max length using repeating
 8  θnew[P[i]] θs[i][P[i]] assign the body-part
-sequence
-9  return θnew
 3.4.2 Masked Vertex Modeling with Bi-Directional Attention
-
 To fully activate the inter-frame bi-directional attention in
 the transformer, we design a self-supervised pretext task
 named Masked Vertex Modeling (MVM). The model can
@@ -403,7 +358,6 @@ to all patches in the entire sequence. It models the joint
 distribution of vertex patches over the whole temporal sequences
  xas the following product of conditional distributions,
  where xiis a single vertex patch 
-p(x)  NY
 i 1p(xi x1, .., x i, ..., x N). (8)
 Where Nis the number of patches in the entire sequence
 xafter masking. Every patch will attend to all patches in
@@ -411,7 +365,6 @@ the entire sequence. In this way, bi-directional attention is
 fully-activated to learn spatial-temporal features that can accurately
  reconstruct completed mesh sequences.
 3.4.3 Future Frame Prediction with Auto-Regressive
-Attention
 The masked vertex modeling task is to reconstruct masked
 vertices in different body parts. The model can reconstruct
  completed mesh sequences if it captures the human
@@ -430,7 +383,6 @@ pass. For auto-regressive attention, we model the joint distribution
  of vertex patches over a mesh sequence xas the
 following product of conditional distributions, where xiis
 a single patch at frame ti 
-p(x)  NY
 i 1p(xi x1, x2, ..., x M). (9)
 Where Nis the number of patches in the entire sequence
 xafter masking. M  (ti 1) n, where nis the number of
@@ -438,8 +390,6 @@ patches in a single frame. Each vertex patch depends on all
 patches that are temporally before it. The auto-regressive
 attention enables the model to predict movement patterns
 and trajectories, which is beneficial for the downstream action
- recognition task.
-3.5. Training
 In the pre-training stage, we use PCN [74] as the decoder
 to reconstruct masked vertices and predict future frames.
 The decoder is shared for the two pretext tasks. Since
@@ -448,25 +398,21 @@ mesh vertices are unordered, the reconstruction loss and future
  we use Chamfer Distance (CD) as the loss function to
 measure the difference between the model predictions and
 ground truth mesh sequences.
-CD(Mpred, Mgt)  1 2 1 2
-(10)
 CD (10) calculates the average closest euclidean distance
  between the predicted mesh sequences Mpred and the
 ground truth sequences Mgt. The overall loss is a weighted
 sum of masked vertex reconstruction loss and future frame
-prediction loss 
-L λ1CD(MMV M
 pred , Mgt)  λ2CD(MFFP
-pred, Mgt)(11)
 In the fine-tuning stage, we replace the PCN decoder
 with an MLP head. Cross-entropy loss is used for model
 training.4. Experiment
-4.1. Datasets
 Following previous MoCap-based action recognition
 methods [50,63], we evaluate our model on the most widely
 used benchmarks  KIT [42] and BABEL [50]. KIT is
-one of the largest MoCap datasets. It has 56 6,570 sequences in total. (2) BABEL is the largest 3 15 different datasets. BABEL has
-43 346 subjects.
+one of the largest MoCap datasets. It has 56 classes with
+6,570 sequences in total. (2) BABEL is the largest 3D MoCap
+ dataset that unifies 15 different datasets. BABEL has
+43 hours of MoCap data performed by over 346 subjects.
 We use the 60-class subset from BABEL, which contains
 21,653 sequences with single-class labels. We randomly
 split each dataset into training, test, and validation set, with
@@ -474,7 +420,6 @@ ratios of 70%, 15%, and 15%, respectively. Note that existing
  action recognition datasets with skeletons only are not
 suitable for our experiments, as they do not provide full 3D
 surfaces or SMPL parameters to obtain the mesh representation.
-
 Motion Representation. Both KIT and BABEL s MoCap
 sequences are obtained from AMASS dataset in SMPL-H
 format. A MoCap sequence is an array of pose parameters
@@ -496,36 +441,35 @@ Mat. for more details about datasets and pre-processing.
 We compare our model with state-of-the-art 3D skeletonbased
  and point cloud-based action recognition models, as
 there is no existing literature on mesh-based action recognition.
- 2s-AGCN [61], CTR-GCN [7], and MS-G D [37] are
+ 2s-AGCN [61], CTR-GCN [7], and MS-G3D [37] are
 used as skeleton-based baselines. Among those methods,
 2s-AGCN trained with focal loss and cross-entropy loss are
 used as benchmark methods in the BABEL dataset [50].
 For the comparison with point-cloud baselines, we choose
-PSTNet [18], SequentialPointNet [30], and P Transformer
+PSTNet [18], SequentialPointNet [30], and P4Transformer
 [16]. Those methods achieved top performance on common
 point-cloud-based action recognition benchmarks.
 4.3. Implementation Details
 For skeleton-based baselines, we use the official implementations
- of 2s-ACGN, CTR-GCN, and MS-G D fromMethod InputKIT BABEL-60
+ of 2s-ACGN, CTR-GCN, and MS-G3D fromMethod InputKIT BABEL-60
 Top-1 (%) Top-5 (%) Top-1 (%) Top-5 (%)
-2s-AGCN-FL [61] (CVPR 19) 3 42.44 75.60 49.62 79.12 2s-AGCN-CE [61] (CVPR 19) 3 57.46 81.54 63.57 86.77
-CTR-GCN [7] (ICCV 21) 3 64.65 87.90 67.30 88.50
-MS-G D [37] (CVPR 20) 3 65.38 87.90 67.43 87.99
+2s-AGCN-FL [61] (CVPR 19) 3D Skeleton 42.44 75.60 49.62 79.12
+2s-AGCN-CE [61] (CVPR 19) 3D Skeleton 57.46 81.54 63.57 86.77
+CTR-GCN [7] (ICCV 21) 3D Skeleton 64.65 87.90 67.30 88.50
+MS-G3D [37] (CVPR 20) 3D Skeleton 65.38 87.90 67.43 87.99
 PSTNet [18] (ICLR 21) Point Cloud 56.93 88.21 61.94 84.11
 SequentialPointNet [30] (arXiv 21) Point Cloud 59.75 88.01 62.92 84.58
-P Transformer [16] (CVPR 21) Point Cloud 62.15 88.01 63.54 86.55
-STMT(Ours) Mesh 65.59 90.09 67.65 88.68 1. Experimental Results on KIT and BABEL Dataset.
+P4Transformer [16] (CVPR 21) Point Cloud 62.15 88.01 63.54 86.55
+STMT(Ours) Mesh 65.59 90.09 67.65 88.68
+Table 1. Experimental Results on KIT and BABEL Dataset.
 Figure 3. Visualization of inter-frame attention. Red denotes the
-highest attention.
 [62], [8], and [38]. For point-cloud-based baselines, we use
 the official implementations of PSTNet, SequentialPointNet,
- P Transformer from [19], [31], and [17]. We pre-train
-STMT for 200 32. The model is
-fine-tuned for 50 64. Adam optimizer
+ P4Transformer from [19], [31], and [17]. We pre-train
+STMT for 200 epochs with a batch size of 32. The model is
+fine-tuned for 50 epochs with a batch size of 64. Adam optimizer
  [26] is used with a learning rate of 0.0001 for both
 pre-training and fine-tuning. See Sup. Mat. for more implementation
- details.
-4.4. Main Results
 Comparison with State-of-the-Art Methods. As indicated
  in Table 1, STMT outperforms all other state-ofthe-art
  models. Our model can outperform point-cloudbased
@@ -541,11 +485,10 @@ model can pay attention to key regions across frames. This
 supports the intuition that our hierarchical transformer can
 take the place of explicit vertex tracking by learning spatialtemporal
  correlations.Intrinsic Extrinsic MVM FFP Top-1 (%)
-  63.40 64.03 64.96 64.13 65.59 2. Performance of ablated versions. Intrinsic and Extrinsic
+Table 2. Performance of ablated versions. Intrinsic and Extrinsic
  stand for the intrinsic (geodesic) and extrinsic (euclidean) features
  in surface field convolution. MVM stands for Masked Vertex
 Modelling. FFP stands for Future Frame Prediction.
-4.5. Ablation Study
 Ablation Study of STMT .We test various ablations of
 our model on the KIT dataset to substantiate our design decisions.
  We report the results in Table 2. Note that Joint
@@ -564,7 +507,6 @@ model can only see the person movement in the past. The
 model can achieve the best performance with both MVM
 and FFP, which demonstrates that the two self-supervised
 tasks are supplementary to each other.
-4.6. Analysis
 Different Pre-Training Strategies. We pre-train our
 model with different datasets and summarize the results in
 Table 3. The first row shows the case without pre-training.
@@ -576,22 +518,25 @@ better performance with Joint Shuffle, as it can synthesize
 large-scale mesh sequences.Method Top-1 (%)
 w/o pre-training 64.03
 pre-training w/o JS 64.13
-pre-training w/ JS 65.59 3. Comparison of Different Pre-Training Strategies. JS
+pre-training w/ JS 65.59
+Table 3. Comparison of Different Pre-Training Strategies. JS
 stands for Joint Shuffle.
 r Pre-Train Loss (  104)Fine-Tune Accuracy (%)
-0.1 0.39 64.44 0.3 0.41 64.55 0.5 0.40 65.59 0.7 0.43 64.19 0.9 0.48 65.07 0.43 64.75 4. Effect of Different Masking Ratios.
+Table 4. Effect of Different Masking Ratios.
 Different Masking Ratios. We investigate the impact of
 different masking ratios. We report the converged pretraining
- loss and the fine-tuning top-1 4. We also experiment with
+ loss and the fine-tuning top-1 classification accuracy
+ on the test set in Table 4. We also experiment with
 the random masking ratio in the last row. For each forward
-pass, we randomly select one masking ratio from 0.1 0.9 0.1 to mimic flexible masked token length. The
+pass, we randomly select one masking ratio from 0.1 to 0.9
+with step 0.1 to mimic flexible masked token length. The
 model with a random masking ratio does not outperform
 the best model that is pre-trained using a single ratio ( i.e.
 0.5). We observe that as the masking ratio increases, the
 pre-training loss mostly increases as the task becomes more
 challenging. However, a challenging self-supervised learning
  task does not necessarily lead to better performance.
-The model with a masking ratio of 0.7 0.9 have a high
+The model with a masking ratio of 0.7 and 0.9 have a high
 pre-train loss, while the fine-tune accuracy is not higher
 than the model with a 0.5 masking ratio. The conclusion
 is similar to the comparison of MVM and FFP training objectives,
@@ -599,7 +544,8 @@ is similar to the comparison of MVM and FFP training objectives,
 task may not be optimal.
 Different Number of Mesh Sequences for Pre-Training.
 We test the effect of different numbers of mesh sequences
-used in pre-training. We report the fine-tuning top-1 4. We observe that a large
+used in pre-training. We report the fine-tuning top-1 classification
+ accuracy in Figure 4. We observe that a large
 number of pre-training data can bring substantial performance
  improvement. The proposed Joint Shuffle method
 can greatly enlarge the dataset size without any manual cost,
@@ -614,13 +560,15 @@ mesh sequences. Skeleton and point cloud representations
 are derived from the estimated meshes to train the baseline
 Figure 4. Effect of Different Number of Mesh Sequences.
 Method Input Top-1 (%)
-2s-AGCN-FL [61] 3 58.67 2s-AGCN-CE [61] 3 57.49
-CTR-GCN [7] 3 62.25
-MS-G D [37] 3 60.01
+2s-AGCN-FL [61] 3D Skeleton 58.67
+2s-AGCN-CE [61] 3D Skeleton 57.49
+CTR-GCN [7] 3D Skeleton 62.25
+MS-G3D [37] 3D Skeleton 60.01
 PSTNet [18] Point Cloud 51.48
 SequentialPointNet [30] Point Cloud 60.60
-P Transformer [16] Point Cloud 57.84
-STMT(Ours) Mesh 64.04 5. Experimental results on body poses estimated by VIBE
+P4Transformer [16] Point Cloud 57.84
+STMT(Ours) Mesh 64.04
+Table 5. Experimental results on body poses estimated by VIBE
 [27] on NTU RGB D dataset. The skeleton, point cloud, and mesh
 representations are derived from the same noisy body estimations.
 models (see Sup. Mat.). We report the results in Table 5.
@@ -629,8 +577,6 @@ We observe that STMT can outperform the best skeletonbased
 1.79% and 3.44% respectively. This shows that STMT with
 meshes as input, is more robust to input noise compared
 to other state-of-the-art methods with 3D skeletons or point
-clouds as input.
-5. Conclusion
 In this work, we propose a novel approach for MoCapbased
  action recognition. Unlike existing methods that rely
 on skeleton representation, our proposed model directly
@@ -643,10 +589,11 @@ self-supervised learning tasks, namely Masked Vertex Modeling
 the model to learn global context. Our experiments show
 that STMT can outperform state-of-the-art skeleton-based
 and point-cloud-based models.
-Acknowledgment
 This work was supported by the Army Research Laboratory
  and was accomplished under Cooperative Agreement
-Number W NF-17-5-0003. This work used Bridges2 220012 from the ACCESS program.References
+Number W911NF-17-5-0003. This work used Bridges2
+ GPU resources provided by PSC through allocation
+CIS220012 from the ACCESS program.References
 [1] Felix Achilles, Alexandru-Eugen Ichim, Huseyin Coskun,
 Federico Tombari, Soheyl Noachtar, and Nassir Navab. Patient
  mocap  Human pose estimation under blanket occlusion
@@ -659,12 +606,10 @@ arXiv 2106.08254 , 2021. 3
 [3] Mathieu Barnachon, Sa  ıda Bouakaz, Boubakeur Boufama,
 and Erwan Guillou. Ongoing human action recognition with
 motion capture. Pattern Recognition , 47(1) 238 247, 2014.
-1
 [4] Hakan Bilen, Basura Fernando, Efstratios Gavves, Andrea
 Vedaldi, and Stephen Gould. Dynamic image networks for
 action recognition. In 2016 IEEE Conference on Computer
 Vision and Pattern Recognition (CVPR) , pages 3034 3042,
-2016. 2
 [5] Tom Brown, Benjamin Mann, Nick Ryder, Melanie Subbiah,
  Jared D Kaplan, Prafulla Dhariwal, Arvind Neelakantan,
  Pranav Shyam, Girish Sastry, Amanda Askell, Sandhini
@@ -691,7 +636,6 @@ Computer Vision , pages 13359 13368, 2021. 6, 7, 8
 Deng, and Weiming Hu. Channel-wise topology refinement
  graph convolution for skeleton-based action recognition.
  https //github.com/Uason-Chen/CTRGCN,
- 2021. 7
 [9] Kyunghyun Cho, Bart Van Merri  enboer, Caglar Gulcehre,
 Dzmitry Bahdanau, Fethi Bougares, Holger Schwenk, and
 Yoshua Bengio. Learning phrase representations using rnn
@@ -716,14 +660,13 @@ Technologies, Volume 1 (Long and Short Papers) , pages
 [13] Alexey Dosovitskiy, Lucas Beyer, Alexander Kolesnikov,
 Dirk Weissenborn, Xiaohua Zhai, Thomas Unterthiner,
 Mostafa Dehghani, Matthias Minderer, Georg Heigold, Sylvain
- Gelly, et al. An image is worth 16 16 words  Transformers
+ Gelly, et al. An image is worth 16x16 words  Transformers
  for image recognition at scale. 2021. 3
 [14] Yong Du, Wei Wang, and Liang Wang. Hierarchical recurrent
  neural network for skeleton based action recognition.
 In2015 IEEE Conference on Computer Vision and Pattern
 Recognition (CVPR) , pages 1110 1118, 2015. 2
 [15] EyesJapan. Eyes Japan. https //mpcapdata.com ,
-2018. 1, 2
 [16] Hehe Fan, Yi Yang, and Mohan Kankanhalli. Point 4d transformer
  networks for spatio-temporal modeling in point cloud
 videos. In IEEE/CVF Conference on Computer Vision and
@@ -731,7 +674,7 @@ Pattern Recognition, CVPR , 2021. 6, 7, 8
 [17] Hehe Fan, Yi Yang, and Mohan Kankanhalli. Point 4d
 transformer networks for spatio-temporal modeling in point
 cloud videos. https //github.com/hehefan/
-P Transformer , 2021. 7
+P4Transformer , 2021. 7
 [18] Hehe Fan, Xin Yu, Yuhang Ding, Yi Yang, and Mohan S.
 Kankanhalli. Pstnet  Point spatio-temporal convolution on
 point cloud sequences. In 9th International Conference on
@@ -741,25 +684,22 @@ Learning Representations, ICLR 2021, Virtual Event, Austria,
 Mohan S. Kankanhalli. Pstnet  Point spatiotemporal
  convolution on point cloud sequences.
 https //github.com/hehefan/Point-SpatioTemporal-Convolution
- , 2021. 7
 [20] Meng-Hao Guo, Jun-Xiong Cai, Zheng-Ning Liu, Tai-Jiang
 Mu, Ralph R. Martin, and Shi-Min Hu. Pct  Point cloud
 transformer. Computational Visual Media , 7(2) 187 199,
-Apr 2021. 4
 [21] Rana Hanocka, Amir Hertz, Noa Fish, Raja Giryes, Shachar
 Fleishman, and Daniel Cohen-Or. Meshcnn  A network with
-an edge. ACM Transactions on Graphics (TOG) , 38(4) 90 1 90 12, 2019. 3
+an edge. ACM Transactions on Graphics (TOG) , 38(4) 90 1 
 [22] Bradley Hayes and Julie A Shah. Interpretable models for
 fast activity recognition and anomaly explanation during collaborative
  robotics tasks. In 2017 IEEE International Conference
- on Robotics and Automation (ICRA) , pages 6586 6593. IEEE, 2017. 1
+ on Robotics and Automation (ICRA) , pages 6586 
 [23] Kaiming He, Xinlei Chen, Saining Xie, Yanghao Li, Piotr
 Doll ar, and Ross Girshick. Masked autoencoders are scalable
 vision learners. arXiv preprint arXiv 2111.06377 , 2021. 3, 5[24] Yonghong Hou, Zhaoyang Li, Pichao Wang, and Wanqing
 Li. Skeleton optical spectra-based action recognition using
  convolutional neural networks. IEEE Transactions on
 Circuits and Systems for Video Technology , 28(3) 807 811,
-2018. 2
 [25] Wei Jiang, Kwang Moo Yi, Golnoosh Samei, Oncel Tuzel,
 and Anurag Ranjan. Neuman  Neural human radiance field
 from a single video. In Proceedings of the European conference
@@ -784,7 +724,6 @@ Recognition - Workshops , pages 9 14, 2010. 1
 [30] Xing Li, Qian Huang, Zhijian Wang, Zhenjie Hou, and Tianjin
  Yang. Sequentialpointnet  A strong frame-level parallel
  point cloud sequence network for 3d action recognition,
-2021. 6, 7, 8
 [31] Xing Li, Qian Huang, Zhijian Wang, Zhenjie Hou, and
 Tianjin Yang. Sequentialpointnet  A strong framelevel
  parallel point cloud sequence network for 3d action
@@ -793,9 +732,9 @@ SequentialPointNet , 2021. 7
 [32] Zhihao Li, Jianzhuang Liu, Zhensong Zhang, Songcen Xu,
 and Youliang Yan. Cliff  Carrying location information in
 full frames into human pose and shape estimation. In ECCV ,
-2022. 8
 [33] Jun Liu, Amir Shahroudy, Mauricio Perez, Gang Wang,
-Ling-Yu Duan, and Alex C Kot. Ntu rgb d 120 3d human activity understanding. IEEE
+Ling-Yu Duan, and Alex C Kot. Ntu rgb d 120  A largescale
+ benchmark for 3d human activity understanding. IEEE
 Transactions on Pattern Analysis and Machine Intelligence ,
 42(10) 2684 2701, 2020. 2
 [34] Jun Liu, Amir Shahroudy, Gang Wang, Ling-Yu Duan, and
@@ -806,7 +745,6 @@ Intell. , 42(6) 1453 1467, 2020. 2
 Kot. Global context-aware attention lstm networks for 3d
 action recognition. In Proceedings of the IEEE Conference
 on Computer Vision and Pattern Recognition (CVPR) , July
-2017. 2
 [36] Xingyu Liu, Mengyuan Yan, and Jeannette Bohg. Meteornet 
  Deep learning on dynamic 3d point cloud sequences. In
 ICCV , 2019. 2[37] Ziyu Liu, Hongwen Zhang, Zhenghao Chen, Zhiyong Wang,
@@ -817,7 +755,7 @@ Pattern Recognition , pages 143 152, 2020. 6, 7, 8
 [38] Ziyu Liu, Hongwen Zhang, Zhenghao Chen, Zhiyong Wang,
 and Wanli Ouyang. Disentangling and unifying graph convolutions
  for skeleton-based action recognition. https 
-//github.com/kenziyuliu/MS-G D , 2020. 7
+//github.com/kenziyuliu/MS-G3D , 2020. 7
 [39] Matthew Loper, Naureen Mahmood, Javier Romero, Gerard
 Pons-Moll, and Michael J. Black. SMPL  A skinned multiperson
  linear model. In SIGGRAPH Asia , 2015. 3
@@ -839,7 +777,7 @@ for 3d posture estimation of symmetrical lifting. Journal of
 biomechanics , 69 40 46, 2018. 1
 [44] Celso Melo, Brandon Rothrock, Prudhvi Gurram, Oytun
 Ulutan, and B. Manjunath. Vision-based gesture recognition
-in human-robot teams using synthetic data. pages 10278 10284, 10 2020. 2
+in human-robot teams using synthetic data. pages 10278 
 [45] Matteo Menolotto, Dimitrios-Sokratis Komaris, Salvatore
 Tedesco, Brendan O Flynn, and Michael Walsh. Motion capture
  technology in industrial applications  A systematic review.
@@ -856,7 +794,6 @@ Timo Bolkart, Ahmed A. A. Osman, Dimitrios Tzionas, and
 Michael J. Black. Expressive body capture  3D hands, face,
 and body from a single image. In Proceedings IEEE Conf.
 on Computer Vision and Pattern Recognition (CVPR) , pages
-10975 10985, 2019. 3
 [50] Abhinanda R. Punnakkal, Arjun Chandrasekaran, Nikos
 Athanasiou, Alejandra Quiros-Ramirez, and Michael J.
 Black. BABEL  Bodies, action and behavior with english
@@ -886,7 +823,6 @@ Cristina Losada-Guti  errez. Exploiting the convlstm  Human
  action recognition using raw depth video-based recurrent
  neural networks. CoRR , abs/2006.07744, 2020. 2
 [57] SFU. SFU Motion Capture Database. http //mocap.
-cs.sfu.ca/ . 1, 2
 [58] Amir Shahroudy, Jun Liu, Tian-Tsong Ng, and Gang Wang.
 NTU RGB D  A large scale dataset for 3D human activity
 analysis. In CVPR , 2016. 2
@@ -910,7 +846,6 @@ action_recognition , 2019. 7
 [63] Jiankai Sun, Bolei Zhou, Michael J Black, and Arjun Chandrasekaran.
  Locate  End-to-end localization of actions in 3d
 with transformers. arXiv preprint arXiv 2203.10719 , 2022.
-6
 [64] Nikolaus F. Troje. Decomposing biological motion  a framework
  for analysis and synthesis of human gait patterns. Journal
  of vision , 2 5 371 87, 2002. 1
@@ -920,7 +855,6 @@ with transformers. arXiv preprint arXiv 2203.10719 , 2022.
 U. V on Luxburg, S. Bengio, H. Wallach, R. Fergus, S. Vishwanathan,
  and R. Garnett, editors, Advances in Neural Information
  Processing Systems , volume 30. Curran Associates,
-Inc., 2017. 4
 [66] Pascal Vincent, Hugo Larochelle, Isabelle Lajoie, Yoshua
 Bengio, and Pierre-Antoine Manzagol. Stacked denoisingautoencoders  Learning useful representations in a deep network
  with a local denoising criterion. 2010. 3
@@ -935,16 +869,14 @@ Trans. Multim. , 20(5) 1051 1061, 2018. 2
 [69] Pichao Wang, Zhaoyang Li, Yonghong Hou, and Wanqing
 Li. Action recognition based on joint trajectory maps using
  convolutional neural networks. CoRR , abs/1611.02447,
-2016. 2
 [70] Y . Wang, Y . Xiao, F. Xiong, W. Jiang, Z. Cao, J. Zhou, and
-J. Yuan. 3 3d dynamic voxel for action recognition in
+J. Yuan. 3dv  3d dynamic voxel for action recognition in
 depth video. In 2020 IEEE/CVF Conference on Computer
 Vision and Pattern Recognition (CVPR) , pages 508 517, Los
 Alamitos, CA, USA, jun 2020. IEEE Computer Society. 2
 [71] Yang Xiao, Jun Chen, Yancheng Wang, Zhiguo Cao,
 Joey Tianyi Zhou, and Xiang Bai. Action recognition for
 depth video using multi-view dynamic images. Inf. Sci. ,
-480 287 304, 2019. 2
 [72] Sijie Yan, Yuanjun Xiong, and Dahua Lin. Spatial temporal
  graph convolutional networks for skeleton-based action
 recognition. In Sheila A. McIlraith and Kilian Q. Weinberger,
@@ -960,12 +892,12 @@ transformers with masked point modeling. In Proceedings
 of the IEEE Conference on Computer Vision and Pattern
 Recognition (CVPR) , 2022. 3
 [74] Wentao Yuan, Tejas Khot, David Held, Christoph Mertz, and
-Martial Hebert. Pcn  Point completion network. In 2018 3D Vision (3DV) , pages 728 737, 2018. 6
+Martial Hebert. Pcn  Point completion network. In 2018
+International Conference on 3D Vision (3DV) , pages 728 
 [75] Songyang Zhang, Xiaoming Liu, and Jun Xiao. On geometric
  features for skeleton-based action recognition using multilayer
  lstm networks. In 2017 IEEE Winter Conference on
 Applications of Computer Vision (WACV) , pages 148 157,
-2017. 2
 [76] Wenping Zhao, Jinxiang Chai, and Ying-Qing Xu. Combining
  marker-based mocap and rgb-d camera for acquiring
 high-fidelity hand motion data. In Proceedings of the ACM

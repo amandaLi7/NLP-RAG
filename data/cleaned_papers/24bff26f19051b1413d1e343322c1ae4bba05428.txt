@@ -1,8 +1,8 @@
 When to generate hedges in peer-tutoring interactions
-Alafate Abulimiti1,2, Chloé Clavel3, Justine Cassell1,4 1INRIA, Paris ENS/PSL  alafate.abulimiti@inria.fr 
+Alafate Abulimiti1,2, Chloé Clavel3, Justine Cassell1,4
+1INRIA, Paris2ENS/PSL  alafate.abulimiti@inria.fr 
 3LTCI, Institut Polytechnique de Paris, Telecom Paris  chloe.clavel@telecom-paris.fr 
 4Carnegie Mellon University  justine@cs.cmu.edu 
-Abstract
 This paper explores the application of machine
 learning techniques to predict where hedging
 occurs in peer-tutoring interactions. The study
@@ -25,7 +25,6 @@ in predicting hedges by using Shapley values
 the tutee has a significant impact on hedge prediction.
  We further validate this observation
 through a follow-up ablation study.
-1 Introduction
 Effective communication involves various conversational
  strategies that help speakers convey their
 intended meaning and manage social interactions at
@@ -39,7 +38,6 @@ soften the impact of their statements and convey
 humility or modesty, or avoid face threat. Although
 hedges can be effective in certain situations, understanding
  when and how to use hedges is essential
-and challenging.
 The use of hedges is especially significant in
 tutoring interactions where they may facilitate correcting
  a wrong answer without embarrassing the
@@ -82,19 +80,17 @@ Despite the widespread use of hedges in communication,
 timing and the effectiveness of their use, particularly
  in dialogue rather than running text, and
 specifically in the current article, in peer-tutoring
-environments.
-To address this gap in the literature, our researcharXiv 2307.15582 1  [cs.CL]  28 2023 1   First, can we predict when hedges should
+To address this gap in the literature, our researcharXiv 2307.15582v1  [cs.CL]  28 Jul 2023focuses on two key questions 
+RQ1   First, can we predict when hedges should
 be generated in peer-tutoring environments 
 To address this question we investigate whether
 it is possible to identify the points at which hedges
 should be introduced during a peer tutoring dialogue.
-
 RQ2   Second, what features contribute to accurate
  predictions  of where to place hedges 
 To address this question we focus on the explainability
  of classification models using Shapley
 values (Sundararajan and Najmi, 2020) .
-2 2.1 Hedges
 Hedges are a common rhetorical device used to diminish
  the impact of an utterance, often to avoid unnecessary
  embarrassment on the part of the listener
@@ -116,7 +112,6 @@ you shouldn t do that.  Although the different types
 of hedges function differently, they all share a common
  role of mitigation in conversation. Therefore,
 in this paper, we focus on simply predicting hedges
-vs non-hedges.
 As described above, in tutoring, including peer
 tutoring, hedges are frequently used and have a positive
  impact on performance (Madaio et al., 2017a).
@@ -197,7 +192,7 @@ task, mainly because determining what is  appropriate
  in a conversation is rather subjective and is
 certainly context-dependent. For example, EmpDG
 (Li et al., 2020) model achieved an accuracy of approximately
- 0.34 32 evenly distributed
+ 0.34 across the 32 evenly distributed
 labels in the Empathetic Dialogue dataset (Rashkin
 et al., 2019). indicating the complexity of the problem
  at hand. Similarly, MoEL (Lin et al., 2019)
@@ -208,8 +203,6 @@ emphasizing the difficulty of the task.
 The current paper aims to fill the lucunae in prior
 work by integrating social context and nonverbal
 behaviors as predictive features to construct predictive
- models for hedges.
-3 3.1 Task Description
 Suppose we have a set of dialogues
 D  {d1, d2, d3, ...d n}. Each dialogue
 d {u1, u2, u3...um}consists of mturns,
@@ -227,7 +220,6 @@ fixed window size ( ω) of the dialogue history,
 represented as  hi {umax (1,i ω), ui ω 1, ...u i}.
 The primary objective of this research is to develop
 a model, denoted M, capable of predicting the
-type of hedge l 
 i 1that a tutor will use next, basedon the dialogue history hi. The effectiveness of the
 model is measured using standard classification
 metrics, such as precision, recall, and F1 score.
@@ -237,7 +229,6 @@ The features used as inputs are extracted from the
 turns in the interaction (further details in Section
 3.3), while the output is a binary value showing
 whether or not hedges are present in each turn.
-3.2 Corpus
 The dataset used in the current work is the same
 as that employed in our previous work on hedges
 (Madaio et al., 2018). It is a subset of a larger investigation
@@ -246,7 +237,7 @@ conversational strategies in task-oriented dialogue.
 The corpus consists of face-to-face interaction from
 20 same-gender dyads of American teenagers, with
 an average age of 14.3 years (and a range of ages
-from 13 16 years), gender-balanced1, and
+from 13 to 16 years), gender-balanced1, and
 recorded twice over two weeks. However, due
 to technical issues, data from only 14 dyads  data
 were usable. The participants were asked to to take
@@ -260,7 +251,7 @@ period. For the 14 dyads we used for our model, 28hour-long
  face-to-face interactions were recorded
 over the period of two weeks. The recorded video
 and audio data were transcribed, resulting in approximately
- 9479 14 dyads. These
+ 9479 turns for the 14 dyads. These
 included 8399 non-hedges and 1080 hedges. 4214
 non-hedges and 507 hedges in the tutors  turns
 since, as described above, we looked only at tutor
@@ -294,14 +285,11 @@ highly experienced. The methods and results from
 our study can be used as a foundation for future
 research, which could include the investigation of
 expert tutors and the potential differences in their
-use of hedges.
-3.3 Features
 In this section, we outline the features used as input
 vectors (i.e., uivector) for our prediction model,
 which seeks to properly predict the hedging strategy
  for the tutor s upcoming turn. In total, we have
 a vector with a length of 438 to represent a turn.
-3.3.1 Turn embedding
 Turn embedding is a common technique in natural
  language processing that involves representing
 a turn as a vector. In this study, we apply a sentence
@@ -310,9 +298,7 @@ to generate turn embeddings from the tutor-tutee
 conversation. This feature enables us to capture the
 semantic meaning of the turn in the context of the
 conversation, which can be helpful for predicting
-hedges.
 3.3.2 Conversational Strategies ( CS) of the
-previous turns
 Conversational strategies refer to the different ways
 of speaking used by both speakers to manage social
 interaction. Strategies considered in this study are
@@ -336,7 +322,6 @@ speakers  previous hedge strategies to predict the
 tutor s next hedge strategy. This avoids any issues
 with predicting label leakage.
 3.3.3 Tutoring Strategies ( TS) in the previous
-turns
 Tutoring strategies (Madaio et al., 2016) refer to
 the different techniques employed by the tutor or
 tutee to facilitate learning. Strategies considered in
@@ -359,7 +344,6 @@ annotation was also carried out by Madaio et al.
 (2018), with annotators achieving a minimum Krippendorff s
  alpha of .7 for all tutoring strategies.
 3.3.4 Dialogue Act ( DialAct ) of the previous
-turns
 Dialogue acts are types of speech acts (Searle,
 1965) used by tutors and tutees during their interactions.
  In our study, we use the widely-used
@@ -372,7 +356,6 @@ acts were found, they are Abandoned or Turn-Exit
 (%) ,Acknowledge (Backchannel) (b),Backchannel
  in question form (bh),Yes-No-Question (qy),
 Statement-non-opinion (sv) and Statement-opinion
-(sd).
 3.3.5 Rapport in the previous turns
 As our previous work demonstrates, the level of
 rapport between tutor and tutee plays a role in theuse of hedges. We therefore include it as a feature
@@ -411,11 +394,11 @@ reliability of 0.7or above on Krippendorff s alpha.
 We collected all nonverbal behaviors that occurred
 during one turn and encoded them using one-hot
 encoding. For head nods and smiles, we used a
-binary labeling approach, marking 1 0for non-occurrence. As gaze serves
+binary labeling approach, marking 1for their occurrence
+ and 0for non-occurrence. As gaze serves
 as a potent indicator of attention, we categorized
 it into 4 distinct types  no gaze appeared in the
 video, gaze at partner, gaze at worksheet, and gaze
-elsewhere.
 Mutual gaze between interlocutors, mutual
 smiles, and mutual head nods serve as great indicators
  of alignment and rapport in communication.
@@ -424,7 +407,6 @@ process for nonverbal behaviors captures the behaviors
  of both participants within a turn, not only the
 current turn holder. s Our current approach successfully
  captures these important mutual signals.3.3.7 Contextual Information ( ConInfo ) in the
-previous turns
 Our model also incorporates contextual information
  that characterizes the discourse environment
 between the two interlocutors. Specifically, we
@@ -462,27 +444,18 @@ a vector representation. Our vector representation
 consists of three basic parts  turns as a sequence
 of tokens, annotations based on the turn (e.g., conversational
  strategies), and the nonverbal behaviors.
-Figure 1 6 parts  turn embedding, conversational strategies
+Figure 1 shows that we divide a vector of turns into
+6 parts  turn embedding, conversational strategies
 (CS), tutoring strategies ( TS), nonverbal behaviors
 (NB), contextual information ( ConInfo ) and dialogue
  acts ( DialAct ). After encoding each turn in
 this fashion, we use the four previous turns as a
 history tensor of a turn. This history ten tensor
 will be the input to the prediction models, and the
-model s output will be this turn s hedge label.1x Turn emb
-SD PR SV HDCS
-KT KB MC DQ SQTS
-Gaz e Smile HeadNB
-SessionConInfo
-Prb_ID CorrecDiaAct
- 
-Turn vec
+model s output will be this turn s hedge label.1x384Turn emb
 Dialogue History v ec
-(4 previous turns)
-Models
-Hedge/NonHedgeP
- eriod ...
-...Figure 1 3.5 Prediction as Classification
+...Figure 1  Vector Representation
+3.5 Prediction as Classification
 We mentioned in the previous section that we transform
  the prediction problem into a classification
 problem. This means that the corresponding hedge
@@ -502,7 +475,6 @@ For example, Long Short-Term Memory networks
  (MLPs) due to their superior ability to manage
  and interpret context, an essential factor in our
 exploration of hedging phenomena.
-3.5.1 LightGBM
 In this work, we used LightGBM (Ke et al., 2017),
 a gradient boosting framework known for its efficiency.
  We use it to predict hedges in dialogues,
@@ -510,12 +482,10 @@ relying only on dialogue features such as conversational
  strategies, tutoring strategies, nonverbal
 behaviors, and contextual information, while turn
 embeddings are not included.
-3.5.2 XGBoost
 We also used the Extreme Gradient Boosting (XGBoost)
  algorithm (Chen and Guestrin, 2016), which
 is a decision tree-based ensemble machine learningalgorithm that uses a gradient boosting framework.
 Similar to LightGBM, the turn embedding is not
-used.
 3.5.3 Multi-layer perceptron (MLP)
 We constructed a multi-layer perceptron using two
 sets of features. These included a pre-trained
@@ -569,7 +539,8 @@ adjusted the loss function to account for class imbalance,
  less frequent classes more effectively. The
 code is available in https //github.com/
 neuromaancer/hedge_prediction
-4 4.1 1, we conducted
+4.1 Classification Results
+To answer the research question 1, we conducted
 classification experiments on different models. Table
  1 offers an in-depth comparison of multiple
 machine learning models for predicting hedges in
@@ -594,10 +565,9 @@ those using only embeddings, showed a remarkable
  The LSTM model using only turn embeddings
  demonstrated balanced performance across
 all metrics, achieving the highest precision of 19%
-and a competitive F1 0.28. However, the
+and a competitive F1 score of 0.28. However, the
 attention-based LSTM (AttnLSTM) model did not
 significantly outperform the standard LSTM model
-in any metric.
 The inclusion of turn embeddings significantly
 impacts model performance. Models with only embeddings
  perform better in terms of F1 score and
@@ -623,18 +593,16 @@ LightGBM 0.24 ( 0.07) 0.16 (  0.08)0.09 ( 0.08) 0.10 (  0.07) 0.10 (  0.10) 0.12
 LSTM 0.25 ( 0.05) 0.24 (  0.05) 0.26 (  0.06) 0.24 (  0.06) 0.22 (  0.06) 0.25 (  0.07)0.21 ( 0.06)
 AttnLSTM 0.23 ( 0.06)0.20 ( 0.06) 0.22 (  0.05) 0.25 (  0.05) 0.24 (  0.05) 0.23 (  0.07) 0.22 (  0.06)
 MLP 0.26 ( 0.06) 0.25 (  0.06) 0.25 (  0.06) 0.26 (  0.06) 0.25 (  0.06) 0.27 (  0.06)0.21 ( 0.07)
-Table 2 1 scores after the feature ablation, CS  Conversational Strategies  TS  Tutoring Strategies  NB  Nonverbal
+Table 2  F1 scores after the feature ablation, CS  Conversational Strategies  TS  Tutoring Strategies  NB  Nonverbal
 Behaviors  ConInfo   Contextual Information  DialAct   Dialogue Act.
 porate attention mechanisms, do not show significant
  improvements over the regular LSTM models.
 This could be due to the limited amount of data
 available, which cannot unleash the potential of the
-attention mechanism.
 Since good performance can also be achieved
 using the extracted features, in order to answer our
 research question 2, in the next subsections we will
 mainly investigate the importance of features in
-predicting hedges.
 4.2 Features Explanation with Shapley values
 Shapley values (Hart, 1989), originating from cooperative
  game theory, have emerged as a powerful
@@ -660,21 +628,15 @@ simplicity, we identify the features that frequently
 appear in these 4 figures as significant indicators.
 Therefore, we have selected some of the most representative
  features in predicting hedges in Table
-3.
 Based on Table 3, certain features have a significant
  impact on the likelihood of using hedges
 in tutoring conversations. Rapport has a negative
 valence, suggesting that higher rapport between the
 participants results in a lower likelihood of hedgesFeatures Valence
-correctness  
 no gaze from tutor problem
- id rapport
- tutee s
  deep question tutee s
  gaze at tutor tutee s
- pre-test tutor s
  gaze at elsewhere tutor s
- praise Table
  3  Features and their Valences
 being used. This confirms the finding cited above,
 that hedges are more frequent in low rapport interaction
@@ -691,7 +653,6 @@ a negative valence, implying that these actions tend
 to decrease the likelihood of hedges. This could be
 because deeper questions or praise might indicate
 a more open and confident dialogue, thus reducing
-the need for hedges.
 The table also reveals a negative correlation between
  various non-verbal cues such as  no gaze
 from tutor ,  tutee s gaze at tutor , and  tutor s
@@ -705,8 +666,6 @@ indicate that when tutors  attention is focused elsewhere,
 instruction or correction. To our knowledge, this is
 the first demonstration that specific nonverbal cues
 substantially influence the likelihood of a hedgebeing used in the succeeding turn of peer-tutoring
-interactions.
-4.3 Ablation Study
 We next examine the aforementioned models with
 different features ablated from input. This approach
  allows us to identify which features, when
@@ -718,7 +677,7 @@ the model s performance. Our study considered
 (CS), Tutoring Strategies ( TS), Nonverbal Behaviors
  ( NB), Contextual Information ( ConInfo ), Dialogue
  Act (DialAct), and Rapport.
-Table 2 1 scores as a consequence
+Table 2 shows the different F1 scores as a consequence
  of removing the different features. For
 XGBoost and LightGBM, the worst performance
 is observed when NBandCSwere removed, respectively,
@@ -732,7 +691,6 @@ these models on the DialAct feature for their prediction
  of AttnLSTM was achieved when the rapport
  feature was removed, suggesting that the attention
  mechanism could compensate for loss of
-rapport.
 5 Conclusion and Future Work
 This study presents an effective approach to predict
 where hedges occur in peer-tutoring interactions
@@ -757,8 +715,6 @@ learning outcomes. Second, incorporating reinforcement
  learning techniques to enhance specific
 aspects of the interaction, such as learning performance,
  could improve the practical applications of
-our findings.
-Acknowledgments
 We thank the anonymous reviewers for their helpful
  feedback. We express sincere gratitude to the
 members of the ArticuLabo at Inria Paris for their
@@ -769,9 +725,8 @@ for answering our questions about their prior work.
 This study received support from the French government,
  administered by the Agence Nationale
 de la Recherche, as part of the "Investissements
-d avenir" program, with reference to ANR-19P IA-0001
+d avenir" program, with reference to ANR-19P3IA-0001
  (PRAIRIE 3IA Institute).
-References
 Alafate Abulimiti, Chloé Clavel, and Justine Cassell.
 2023. How about kind of generating hedges using
 end-to-end neural models  In Proceedings of the
@@ -782,12 +737,10 @@ Nalini Ambady and Robert Rosenthal. 1993. Half a
 minute  Predicting teacher evaluations from thin
 slices of nonverbal behavior and physical attractiveness.
  Journal of personality and social psychology ,
-64(3) 431.
 Dzmitry Bahdanau, Kyung Hyun Cho, and Yoshua Bengio.
  2015. Neural machine translation by jointly
 learning to align and translate. In 3rd International
 Conference on Learning Representations, ICLR
-2015 .
 Jere Brophy. 1981. Teacher praise  A functional analysis.Review
  of educational research , 51(1) 5 32.
 Nitesh V Chawla, Kevin W Bowyer, Lawrence O Hall,
@@ -797,7 +750,7 @@ minority over-sampling technique. Journal of artificial
 Tianqi Chen and Carlos Guestrin. 2016. Xgboost  A
 scalable tree boosting system. In Proceedings of
 the 22nd acm sigkdd international conference on
-knowledge discovery and data mining , pages 785 794.
+knowledge discovery and data mining , pages 785 
 Valerian J Derlega, Sandra Metts, Sandra Petronio, and
 Stephen T Margulis. 1993. Self-disclosure. Sage
 Publications, Inc.Bruce Fraser. 2010. Pragmatic competence  The case
@@ -807,7 +760,6 @@ Lucie Galland, Catherine Pelachaud, and Florian Pecune.
 co-optimize agent s task performance and user s engagement.
  In Proceedings of the 22nd ACM International
  Conference on Intelligent Virtual Agents ,
-pages 1 3.
 Pranav Goel, Yoichi Matsuyama, Michael Madaio, and
 Justine Cassell. 2019. i think it might help if we multiply,
  and not add. In Detecting indirectness in conversation.
@@ -817,14 +769,12 @@ Hector Gómez-Gauchía, Belén Díaz-Agudo, and Pedro
  A González-Calero. 2006. Conversational strategies
  in cobber  an affective ccbr framework. Journal
 of Experimental & Theoretical Artificial Intelligence ,
-18(4) 449 469.
 Sergiu Hart. 1989. Shapley value . Springer.
 Sepp Hochreiter and Jürgen Schmidhuber. 1997. Long
-short-term memory. Neural computation , 9(8) 1735 1780.
+short-term memory. Neural computation , 9(8) 1735 
 Dan Jurafsky. 1997. Switchboard swbd-damsl shallowdiscourse-function
  annotation coders manual. www.
 dcs. shef. ac. uk/nlp/amities/files/bib/ics-tr-97-02.
-pdf.
 Guolin Ke, Qi Meng, Thomas Finley, Taifeng Wang,
 Wei Chen, Weidong Ma, Qiwei Ye, and Tie-Yan Liu.
 2017. Lightgbm  A highly efficient gradient boosting
@@ -840,16 +790,16 @@ Chua. 2020. Estimation-action-reflection  Towards
 deep interaction between conversational and recommender
  systems. In Proceedings of the 13th International
  Conference on Web Search and Data Mining ,
-pages 304 312.
 Qintong Li, Hongshen Chen, Zhaochun Ren, Pengjie
 Ren, Zhaopeng Tu, and Zhumin Chen. 2020. Empdg 
  Multi-resolution interactive empathetic dialogue
  generation. In Proceedings of the 28th International
  Conference on Computational Linguistics ,
-pages 4454 4466.
 Zhaojiang Lin, Andrea Madotto, Jamin Shin, Peng Xu,
 and Pascale Fung. 2019. Moel  Mixture of empathetic
- listeners. In Proceedings of the 2019 9th International Joint Conference
+ listeners. In Proceedings of the 2019 Conference
+ on Empirical Methods in Natural Language Processing
+ and the 9th International Joint Conference
 on Natural Language Processing (EMNLP-IJCNLP) ,
 pages 121 132.Scott M Lundberg and Su-In Lee. 2017. A unified approach
  to interpreting model predictions. In I. Guyon,
@@ -865,7 +815,6 @@ Michael Madaio, Justine Cassell, and Amy Ogan. 2017b.
  i think you just got mixed up   confident peer tutors
 hedge to support partners  face needs. International
 Journal of Computer-Supported Collaborative Learning,
- 12(4) 401 421.
 Michael Madaio, Rae Lasko, Amy Ogan, and Justine
 Cassell. 2017c. Using temporal association rule mining
  to predict dyadic rapport in peer tutoring. International
@@ -874,7 +823,6 @@ Michael Madaio, Kun Peng, Amy Ogan, and Justine
 Cassell. 2018. A climate of support  a processoriented
  analysis of the impact of rapport on peer
 tutoring. International Society of the Learning Sciences,
- Inc.[ISLS].
 Michael A Madaio, Amy Ogan, and Justine Cassell.
 2016. The effect of friendship and tutoring roles
 on reciprocal peer tutoring strategies. In Intelligent
@@ -892,10 +840,7 @@ Utku Norman, Tanvi Dinkar, Barbara Bruno, and Chloé
 Clavel. 2022. Studying alignment in a collaborative
 learning activity via automatic methods  The link
 between what we say and do. Dialogue & Discourse ,
-13(2) 1 48.
 OpenAI. 2022. Chatgpt  Optimizing language models
-for dialogue.
-OpenAI. 2023. Gpt-4.
 Long Ouyang, Jeffrey Wu, Xu Jiang, Diogo Almeida,
 Carroll Wainwright, Pamela Mishkin, Chong Zhang,
 Sandhini Agarwal, Katarina Slama, Alex Ray, et al.
@@ -924,30 +869,29 @@ Y-Lan Boureau. 2019. Towards empathetic opendomain
  conversation models  A new benchmark and
 dataset. In Proceedings of the 57th Annual Meeting
  of the Association for Computational Linguistics ,
-pages 5370 5381.
 Nils Reimers and Iryna Gurevych. 2019. Sentence-bert 
 Sentence embeddings using siamese bert-networks.
-InProceedings of the 2019 9th
+InProceedings of the 2019 Conference on Empirical
+Methods in Natural Language Processing and the 9th
 International Joint Conference on Natural Language
 Processing (EMNLP-IJCNLP) , pages 3982 3992.
 Oscar J Romero, Ran Zhao, and Justine Cassell. 2017.
 Cognitive-inspired conversational-strategy reasoner
-for socially-aware agents. In IJCAI , pages 3807 3813. Melbourne, VIC.
+for socially-aware agents. In IJCAI , pages 3807 
+3813. Melbourne, VIC.
 John R Searle. 1965. What is a speech act. Perspectives
 in the philosophy of language  a concise anthology ,
-2000 253 268.
 Jamin Shin, Peng Xu, Andrea Madotto, and Pascale
 Fung. 2020. Generating empathetic responses by
 looking ahead the user s sentiment. In ICASSP 20202020
  IEEE International Conference on Acoustics,
-Speech and Signal Processing (ICASSP) , pages 7989 7993. IEEE.
+Speech and Signal Processing (ICASSP) , pages 7989 
 Helen Spencer-Oatey. 2005. (im)politeness, face and
 perceptions of rapport  Unpackaging their bases and
 interrelationships. 1(1) 95 119.
 Mukund Sundararajan and Amir Najmi. 2020. The
 many shapley values for model explanation. In International
  conference on machine learning , pages
-9269 9278. PMLR.
 Linda Tickle-Degnen and Robert Rosenthal. 1990. The
 nature of rapport and its nonverbal correlates. Psychological
  inquiry , 1(4) 285 293.

@@ -1,11 +1,8 @@
 Multi-Objective Improvement of Android
-Applications
 James, Callan1*and Justyna Petke1*
 1*Computer Science Department, University College London, Gower
-Street, London, WC E 6BT, Greater London, United Kingdom.
+Street, London, WC1E 6BT, Greater London, United Kingdom.
 *Corresponding author(s). E-mail(s)  james.callan.19@ucl.ac.uk 
-j.petke@ucl.ac.uk 
-Abstract
 Non-functional properties, such as runtime or memory use, are important to
 mobile app users and developers, as they affect user experience. Previous work
 on automated improvement of non-functional properties in mobile apps failed to
@@ -19,8 +16,7 @@ framework to greatly improve the speed of search. GIDroid contains three stateof
 cache the results of method calls.
 Genetic improvement relies on testing to validate patches. Previous work showed
 that tests in open-source Android applications are scarce. We thus wrote tests
-for 21 7 Android apps, creating a new benchmark for performance
-improvements.
+for 21 versions of 7 Android apps, creating a new benchmark for performance
 We used GIDroid to improve versions of mobile apps where developers had
 previously found improvements to runtime, memory, and bandwidth use. Our
 technique automatically re-discovers 64% of existing improvements. We then
@@ -29,14 +25,15 @@ known improvements. We were able to improve execution time by up to 35%,
 and memory use by up to 33% in these apps.
 Keywords  Android apps, genetic improvement, multi-objective optimization,
 search-based software engineering
-1 2308.11387 1  [cs.SE]  22 20231 Introduction
+1arXiv 2308.11387v1  [cs.SE]  22 Aug 20231 Introduction
 Android applications (or apps for short) are one of the most widely used types of
 software (Kemp (2022)). They are designed for direct user interaction, with the
 main entry point for the software being its UI components. Due to the small size of
 Android devices (phones and tablets) compared to traditional desktop devices, their
 hardware capabilities are naturally limited. These two factors result in non-functional
 properties being especially important to both users and developers. In fact, nonfunctional
- properties are so important to Android users that 1/3 59% of bad reviews were due to poor performance (Lim
+ properties are so important to Android users that 1/3 of instances of users
+abandoning applications and 59% of bad reviews were due to poor performance (Lim
 et al (2014)  Inukollu et al (2014)).
 Hort et al (2022) s survey on Android performance optimizations lists several
  approaches for improving non-functional properties of Android apps. These
@@ -62,7 +59,6 @@ considered. Hort et al (2022) reveals only one work that applies multi-objective
  to non-functional properties of Android apps. Morales et al (2018) consider
 energy consumption and the number of anti-patterns. Although the authors release
 their framework, it is not open-source and requires external hardware for energy
-measurements.
 Rather than targeting specific features or resources, we aim to find source code
 transformations. There have been a few attempts to find Android app performance
 optimizations with source code transformations so far. Lin et al. proposed two
@@ -78,7 +74,6 @@ is only applicable to methods that access databases inside loops.
 Linters contain rules which aim to identify areas of code that may cause performance
 issues, leaving to app developers the decisions to implement suggested changes. However,
  their use comes with challenges (Habchi et al (2018)), including dealing with
-false positives.
 In order to find patches to source code, we propose to use Genetic Improvement.
 GI is a search-based technique that uses meta-heuristics to perform a guided search
 over software patches, to find those that improve a given software property. GI makes
@@ -117,7 +112,7 @@ In order to validate our proposed approach, we created a tool, GIDroid (2023), f
 running multi-objective (MO) GI on Android applications. We provide three fitness
 functions, to improve runtime, memory, and bandwidth use. GIDroid contains three
 MO algorithms (NSGA-II (Deb et al (2000)), NSGA-III (Deb and Jain (2014)), and
-3 2 (Kim et al (2004))). Based on work by Callan et al (2022), who mined nonfunctional
+3SPEA2 (Kim et al (2004))). Based on work by Callan et al (2022), who mined nonfunctional
  improvements made by Android developers, we implement in GIDroid two
 novel mutation operators, specifically designed to mimic human-made edits. These
 cache results of repeated calls, aiming to save memory use.
@@ -131,7 +126,7 @@ We selected Android apps that contain real-world non-functional-propertyimprovin
  commits, in order to see if GIDroid can re-discover changes made by
 Android developers. Moreover, we use the latest versions of these applications, to see
 if we can find as-yet-undiscovered improvements. Overall, we created a benchmark of
-21 7 Android apps, which we open source for future work.
+21 versions of 7 Android apps, which we open source for future work.
 GIDroid was able to find patches that improve execution time by up to 35%, and
 memory usage by up to 65%. Unfortunately, no improvements to bandwidth use were
 found. Such improvements are within GIDroid s search space, which leaves room for
@@ -139,8 +134,7 @@ future work for more effective search strategies.
 To sum up, we present the following novel contributions 
 1. An open-source, simulation-based tool, GIDroid (GIDroid (2023)), for automated
  multi-objective improvement of Android applications  runtime, memory,
-and bandwidth use.
-2. A benchmark of 21 7 Android applications, including tests, for future
+2. A benchmark of 21 versions of 7 Android applications, including tests, for future
 work on performance improvement in the Android domain.
 3. An evaluation of the effectiveness of 3 multi-objective genetic improvement
 algorithms at improving runtime, memory use, and bandwidth of Android
@@ -149,16 +143,18 @@ applications. No GI work has targeted 3 properties before.
 approaches for automated optimization of Android applications.
 5. An empirical comparison of our multi-objective GI-based approach for Android
 application performance improvement with state-of-the-art linters.
-The rest of this paper is structured as follows  Section 2 3 presents an introduction to genetic improvement and multi-objective optimization 
- Section 4 5 presents research
-questions we aim to answer to evaluate our approach, with Section 6 7 presents our results, with threats to validity presented in
-Section 8 9 concluding.
+The rest of this paper is structured as follows  Section 2 describes related work 
+Section 3 presents an introduction to genetic improvement and multi-objective optimization 
+ Section 4 presents challenges of applying GI to the Android domain and
+our proposed framework that overcomes these challenges  Section 5 presents research
+questions we aim to answer to evaluate our approach, with Section 6 outlining our
+methodology  Section 7 presents our results, with threats to validity presented in
+Section 8  Section 9 concluding.
 1At the time of our experiments, none of the automated test generation tools for Android were compatible
 with latest Android software, thus we had to manually create tests to evaluate our MO-GI approach.
 42 Android App Performance Optimization
 A number of approaches have been proposed for improving the performance of Android
 applications. Hort et al (2022) s survey on this topic presents the following code-level
-approaches 
 Prefetching  Network resources are fetched before they are needed by the application
  and stored locally (Mohan et al (2013)  Baumann and Santini (2017)). When
 the application needs said resources, it can get them without having to wait for a
@@ -175,7 +171,6 @@ Development Team (2015)). These tools have performance rules which aim to identi
 areas of code that may cause performance issues. However, often these warnings are
 false-positives (Habchi et al (2018)). The developer must then manually fix the issues.
 Existing Android linters do not provide any information on the impact of fixing the
-issues they detect.
 Refactoring  Refactoring approaches aim to modify the source code of the application
  to be more performant. In Lin et al (2014, 2015) s work applications were
 refactored to execute code asynchronously, making them execute more quickly. These
@@ -200,7 +195,7 @@ write native code. Such code is generally faster than the Java/Kotlin code and t
 can be used to find performance improvements. However, changing a programming
 language can be time-consuming, with no upfront knowledge of the magnitude of
 possible performance gains.
-5 1 Comparison of existing strategies for improvement of non-functional properties of
+5Table 1 Comparison of existing strategies for improvement of non-functional properties of
 Android apps with our tool   GIDroid.
 Work Properties Source Fully Trade-offs
 Code Automatic Considered
@@ -230,7 +225,6 @@ properties that can allow developers to choose the best patches for their partic
 needs, and be fully aware of the consequences that a particular patch will have on
 other properties. We note that prefetching, offloading, and others are complementary
 to GI, and could still offer benefits to applications that have been optimized using GI.
-3 Background
 Before we outline our proposed framework for automatic performance improvement of
 Android applications, we first provide a short introduction to Genetic Improvement
 (GI) and Multi-Objective (MO) optimization.
@@ -249,7 +243,6 @@ to the program being improved. The most common mutation operators used in previo
  work have been  delete ,copy , and replace . These operations can be applied
 at the level of lines of source code, bytecode, or other. The vast majority of GI work
 operates at statement-level, applying mutation operators to nodes of an abstract
-syntax tree (AST).
 Each GI patch is applied to the original software for evaluation, measured using a
 fitness function. In the case of program repair, this fitness can be the number of passing
 tests, and for execution time improvement it could be the time taken by the tests.
@@ -285,7 +278,6 @@ and crossover operators are used to generate child populations and then individu
 are selected for the next generation from both child and parent populations.
 7The algorithms vary in their selection phases. The algorithms use Pareto dominance
  to compare different individuals who may find trade-offs between different
-properties.
 Both NSGA-II and NSGA-III sort the population into Pareto fronts based on their
 fitnesses. The population of the next generation is then selected from the top fronts,
 one at a time, until a set number of individuals are chosen. If a front needs to be
@@ -326,30 +318,13 @@ the tests themselves (Callan and Petke (2021)).
 Android apps are generally built using Gradle with the Android Gradle plugin.
 This makes them incompatible with much of the tooling surrounding automatic
 compilation and testing of code (Android Development Team (2022b, 2023a)).
-8Android
-App
-Robolectric
-Tests
-
-Mutation
- 
-Crossover
-Gradle
-Compilation
-Fitness
-Search
-Fitness
-Results
-New
-Population
-Candidate
-Patches
 SelectionFig. 1 GI framework for Android app improvement, with search based on a genetic algorithm. In
 the case of local search, only mutation is applied.
  gin . e d i t . statement . DeleteStatement Example . java  608
  gin . e d i t . statement . CopyStatement Example . java  1307   
 Example . java . java  320 365  
-Fig. 2 608 1307 265 365 in the file Example.java
+Fig. 2 An example of a program variant that deletes the statement with ID 608 and then copies the
+statement with ID 1307 to position 265 into the block with ID 365 in the file Example.java
 Another challenge of applying GI to the mobile domain is the accurate measurement
  of the fitness function. Previous work has only applied GI to problems that take
 seconds/minutes to run. In the mobile domain, it was shown that apps that run in
@@ -361,14 +336,12 @@ In order to overcome the aforementioned challenges, we propose the GI framework
 shown in Figure 1. The framework is split into two main components  the Search,
 and the Fitness sections. These components can be swapped out depending on the
 properties being improved.
-4.1 Representation
 We use a program representation consisting of a list of edits, which are applied sequentially
  to the source code. This representation has been used in GI many times in the
 past and proven successful Petke et al (2018). We use a list of edits, rather than representing
  the whole program in the genome, as may be done in traditional genetic
 programming, to reduce the memory footprint of the search process. An example of
 this representation, as used in GIDroid, is shown in Figure 2.
-94.2 Fitness
 In the Fitness section in our framework (see Figure 1), we measure the properties
 that we are improving. As in previous GI work, we patch the application, compile it
 and run unit tests on it. If all unit tests pass, the patch is considered valid, if not,
@@ -409,7 +382,6 @@ mentioning that thus far the primary technique for improving bandwidth has been
 prefetching (Mohan et al (2013)). No attempts have been made to improve it using
 source-code transformations, despite such changes being made by developers (Callan
 et al (2022)). We are the first to try to do so.
-104.3 Search
 The Search section of our framework for Android app improvement (see Figure 1)
 determines how the search space of patches is navigated. Most GI work so far has used
 single-objective algorithms, such as genetic programming and local search. Only a few
@@ -424,7 +396,6 @@ To start our search we need to generate an initial set of patches. Our patch rep
  is not of fixed size and may contain any number of edits. We create an initial
 population containing individuals consisting of single random edits. Further creation
 is guided by a given search algorithm, where mutations and crossover are applied to
-create new patches.
 4.3.1 Mutation and Crossover
 Patches are created via mutation and crossover on the list of edits representation.
 In the single-objective search used in GI so far crossover typically appends the lists
@@ -451,14 +422,17 @@ consider possible tensions between objectives when we run our search.
 First, we propose a simple In-Method Caching Operator . This operator simply
  stores the result of calling a method in a local variable and replaces future calls
 to this method with the local variable (see Algorithm 1). An example of this operator
-11 1 1 function MethodCacheFinder (C)
-2 3 4 5 6 7 8 9 10 11 12 13 14 end function
+11Algorithm 1 Find method calls to cache in Method M
+1 function MethodCacheFinder (C)
+4  foreach expression einMdo
+5  ifeis a method call expression then
+7  cachable  cachable  e
 Original Code Mutated Code
 i n t x   foo (a , b , c )   int cachedVar1   foo(a,b,c) 
-i n t y   foo (a , b , c )   i n t x   cachedVar1 1  
+i n t y   foo (a , b , c )   i n t x   cachedVar1  
+i n t y   cachedVar1  
 Fig. 3 An example of the In-Method Cache Operator. The resultant code stores the results of a
 method call foo, with parameters a,band c. This stored result can then be used later in the same
-method.
 can be seen in Figure 3. The second caching operator creates new fields in the associated
  class for storing cached method calls. This Class Caching Operator allows
 cached variables to persist beyond the end of individual method calls and could prove
@@ -472,27 +446,26 @@ local variables do not persist after a method is executed, there must be at leas
 instances of the expression for it to be cached. These operators will not disrupt the
 source code syntax as they simply replace a method call expression with a variable
 name expression which is the same type as the method s return type.
-5 Research Questions
 To evaluate how effective the multi-objective GI approach for improvement of Android
 apps  runtime, memory, and bandwidth use is, we pose the following research questions 
-12 2 1 function ClassCacheFinder (M)
-2 3 4 5 6 7 8 9 10 11 1 { c l a s s C1 {
+12Algorithm 2 Find method calls to cache in Class C
+1 function ClassCacheFinder (M)
+3  foreach method minCdo
+4  foreach expression einmdo
+5  ifeis a method call expression then
+6  cachable  cachable  e
+Original Code Mutated Code
+c l a s s C1 { c l a s s C1 {
 public void foo () { int cachedVar1 
 i n t x   a ( )   public void foo () {
 } if (cachedVar1    null) {
-} cachedVar1   a() 
-}
 i n t x   cachedVar1 
-}
-}
 Fig. 4 An example of the Class Cache Operator. The result of a method call is stored in a field of
 the class for later use in any method.
 RQ1  Can MO-GI optimize Android apps in the same way as real
-developers 
 In order to validate our approach, we want to see if MO-GI can reproduce real-world
 improvements that Android developers have manually implemented in the past.
 RQ2  How effective is MO-GI at optimising Android apps without known
-improvements 
 Answering this question will allow us to see how well our approach generalises. In
 particular, if it s able to find improvements in current code.
 RQ3  Which MO algorithm is the most effective for MO-GI for Android 
@@ -512,14 +485,12 @@ RQ6  How does GI compare with available state-of-the-art techniques for
 Android performance improvement via code modification 
 We want to compare GIDroid with state-of-the-art tools that are readily available to
 developers to see if our tool could offer an attractive alternative.
-6 Methodology
 In order to answer our research questions, we propose a series of experiments, running
 both multi- and single-objective GI on a benchmark of real-world Android applications.
 To answer RQ1 ,RQ3 , and RQ5 , we run GI with three multi-objective algorithms
 on a set of applications, in some of which we know potential improvements are present,
 in order to validate our approach. To answer RQ2 , we use the same setup to improve
 the latest versions of applications, to see if our framework can find yet-undiscovered
-optimizations
 Next, to answer RQ4 , we run GI with a single-objective hill climbing algorithm,
 to compare with a multi-objective approach. With this set of experiments, we can
 evaluate whether or not our multi-objective algorithms can find improvements that
@@ -541,7 +512,8 @@ Whilst Gin is compatible with most Java programs, and thus could potentially eas
 to extend, it is not compatible with the Android compilation and testing environments.
 In GIDroid, we implement three MO algorithms  NSGA-II (Deb et al (2000)) as it
 is one of the most widely used multi-objective algorithms  NSGA-III (Deb and Jain
-(2014)), that was specifically developed for problems with 3 2 (Kim et al (2004)), which has recently proven successful for MO-GI
+(2014)), that was specifically developed for problems with 3 or more objectives in
+mind  and SPEA2 (Kim et al (2004)), which has recently proven successful for MO-GI
 in the desktop domain (Mesecan et al (2022)). We use MO algorithms, as we believe
 that we will be able to find better improvements to some properties if we are able to
 14sacrifice others. In particular, with our caching operators   these operators are likely
@@ -552,7 +524,6 @@ To measure execution time we use Linux s time tool (Kerrisk (2019)), we measure
  memory usage with the Java Runtime s memory allocation tracking (Oracle
 Development Team (2020)) and we use Linux s built-in process-level network traffic
 tracking (Kerrisk (2022)) to measure bandwidth.
-6.2 Benchmarks
 Genetic improvement requires a set of tests that cover the areas of code being
 improved, in order to validate that a non-functional property-improving patch does
 not negatively affect the app s functionality. Unfortunately, most open-source Android
@@ -565,7 +536,6 @@ and Bae (2016)  Mahmood et al (2014)  Mao et al (2016)  Su et al (2017)  Li et a
 (2017)  Yasin et al (2021)) focus on testing UI via input generation in order to induce
 crashes and only run on devices/emulators, so would not be compatible with our
 framework. Moreover, they do not generate assertions   crucial for capturing correct
-app behaviour.
 This meant that we had to manually construct unit tests for every single benchmark.
  We first had to attempt to understand each application and the component
 being improved and then attempt to create thorough, high-quality tests for them. In
@@ -580,7 +550,6 @@ would find this process simpler, as they already have an understanding of the ap
  They would get many other benefits from writing tests (Mockus et al (2009) 
 Bach et al (2017)) so the cost cannot be only placed upon the application of GI. Given
 the cost associated with manual testing, we set a threshold of 20 benchmarks for all
-our experiments.
 To validate our approach, we first run GIDroid on applications with known performance
  issues. Callan et al (2022) has recently conducted a study of the changes that
 Android developers make to improve app performance. They pose that some of those
@@ -588,12 +557,8 @@ changes are within the GI search-space. For instance, moving an operation outsid
 afor loop, if only need to be executed once. While others are not yet achievable,
 e.g., requiring new code to be added that could not be achieved via mutation of the
 existing code base. We thus use Callan et al (2022) s criteria to iteratively analyse the
-15 2 Parameter settings for the MO
+15Table 2 Parameter settings for the MO
 algorithms used in our study.
-Parameter Value
-Mutation Rate 0.5 0.2
-No. Generations 10
-No. Individuals 40
 Selection Binary Tournament
 Crossover Append Lists of Edits
 Mutation Add/Remove an Edit
@@ -615,7 +580,6 @@ in resource files, which prevented applications from building. These bugs were f
 In a few cases, the benchmarks also used outdated non-Gradle build systems, so we
 wrote the necessary build scripts, and modified the project s directory structure, to
 be compatible with Gradle and thus with GIDroid. No source code was modified in
-this process.
 We ran the PMD static analyser on the 7 applications and ran GIDroid on
 the classes which showed the most performance issues. This way we could see how
 our approach compares against human effort for finding performance-improving code
@@ -623,19 +587,20 @@ transformations of existing code bases, for the 14 previously patched app varian
 We could also see whether our approach is able to find yet unknown performance
 improvements in the current versions of the 7 apps.
 6.3 Experimental Setup
-For each version of code we improve, we run GIDroid 20 400 evaluations. To
+For each version of code we improve, we run GIDroid 20 times with 400 evaluations. To
 minimise measurement noise, we use the Mann-Whitney U test at the 5% confidence
 level to determine whether there is an improvement of a given property (i.e., runtime,
-memory or bandwidth use). For the evolutionary algorithms, we divide these 400 10 40 individuals each, as was shown to be effective
+memory or bandwidth use). For the evolutionary algorithms, we divide these 400
+evaluations into 10 generations with 40 individuals each, as was shown to be effective
 in previous work, including in the Android domain (Motwani et al (2022)  Callan and
 Petke (2022a)). We set number of evaluations to 400 as, even when using simulationbased
  testing, the evaluation of an individual is slow, taking up to 2 minutes. We use
-16 2 as they have been used successfully
+16the Genetic programming parameters in Table 2 as they have been used successfully
 in the past (Callan and Petke (2022b)).
 We had 2520 runs in total, taking a mean of 3 hours per run, resulting in roughly
 7500 hours of computing time to test our approach.
 All of our experiments were performed on a high-performance cloud computer,
-with 16 8-core Intel Xenon CPUs. We ran jobs across 10 nodes, each
+with 16GB RAM and 8-core Intel Xenon CPUs. We ran jobs across 10 nodes, each
 running separately to avoid interference between fitness measurements.
 7 Results and Discussion
 In this section, we present and analyse the results of our experiments, answering our
@@ -643,12 +608,12 @@ Research Questions (Section 5). Throughout this section we will refer to the CPU
 time (s) of the test process as execution time, the size of the occupied Java heap as
 memory consumption (MB), and the number of bytes sent and received by the test
 process as network usage (B). Each of these objectives is a fitness function which we
-aim to minimize.
-7.1 1 5 6 show the improvements found in the benchmarks in which we knew
+7.1 RQ1  Known Improvements
+Figure 5 and 6 show the improvements found in the benchmarks in which we knew
 improvements were possible. We find improvements to both execution time and memory,
  but not bandwidth. We believe this is due to the nature of the benchmarks.
 Although feasible, only one application had bandwidth improvements in its history
-that would be achievable by GI. This improvement required 2 2
+that would be achievable by GI. This improvement2required 2 insertions and 2
 deletions at once to be achieved and thus was more difficult to evolve over time.
 We find improvements to execution time of up to 26% and memory of up to 69%.
 We manually analysed the patches found in order to determine whether GI was capable
@@ -657,33 +622,45 @@ result of this analysis can be found in Table 3. In 64% of benchmarks GIDroid is
 able to find patches containing edits semantically-equivalent to developer patches,
 providing at least the same % performance improvement. In other words, aside from
 reproducing improvements, in some cases, we find additional edits, further improving
-app performance.
-7.2 2  Improvements of Current Apps
+7.2 RQ2  Improvements of Current Apps
 Next, we analyse the results of the experiments on the benchmarks of current versions
 of applications, to see how well our approach generalizes to code in which there are
 no known improvements.
-The performance of each algorithm on versions of software is shown in Figure 5 6. We find improvements to the execution time of up to 35% and to
+The performance of each algorithm on versions of software is shown in Figure 5
+and Figure 6. We find improvements to the execution time of up to 35% and to
 memory consumption of up to 32%. Again no improvements were found to bandwidth.
 We believe this is due to the nature of our benchmarks, where only FDroid 2 uses
 bandwidth extensively.
-2https //github.com/erikusaj/fdroidTvClient/commit/bf aa a e a bad a dab f bc
-17 3 No. of times GIDroid finds patches that contain edits
+2https //github.com/erikusaj/fdroidTvClient/commit/bf8aa30a576144524e83731a1bad20a1dab3f1bc
+17Table 3 No. of times GIDroid finds patches that contain edits
 semantically-equivalent to developer patches, providing at least the
 same % performance improvement (Rep.) and no. runs where an
 improvement was found (Imp.). Each MO run was repeated 20 times.
 Application Version NSGAII NSGAIII SPEA2
 Rep. Imp. Rep. Imp. Rep. Imp.
-Port Authority 1 4 16 8 18 3 15 2 0 17 0 15 0 14 3 0 13 0 14 0 18 4 4 15 8 17 10 13 5 5 19 3 19 0 12 6 4 13 7 18 2 11 1 10 14 6 13 8 20 2 0 15 0 18 0 19 1 0 15 0 12 0 13 1 3 13 4 12 7 14 1 0 19 0 17 0 13 2 8 14 4 12 6 16 1 2 12 3 18 4 17 1 13 15 12 16 12 18
+Port Authority 1 4 16 8 18 3 15
+Port Authority 2 0 17 0 15 0 14
+Port Authority 3 0 13 0 14 0 18
+Port Authority 4 4 15 8 17 10 13
+Port Authority 5 5 19 3 19 0 12
+Port Authority 6 4 13 7 18 2 11
+Tower Collector 1 10 14 6 13 8 20
+Tower Collector 2 0 15 0 18 0 19
+Gadgetbridge 1 0 15 0 12 0 13
+Fosdem Companion 1 3 13 4 12 7 14
+Fdroid 1 0 19 0 17 0 13
+Fdroid 2 8 14 4 12 6 16
+Lightning Browser 1 2 12 3 18 4 17
+Frozen Bubble 1 13 15 12 16 12 18
 We have compiled the best changes found by GIDroid in these experiments to
-demonstrate the capabilities of GIDroid. We detail each of these patches below 3 7.2.1 Port-Authority (PAN)
+demonstrate the capabilities of GIDroid. We detail each of these patches below 3
+7.2.1 Port-Authority (PAN)
 In the Port Authority application, our best change found consisted of removing an
 unnecessary try-catch statement, which resolved the IP address of a URL. It would
 not only attempt to resolve URLs, but also, redundantly, IP addresses. Furthermore,
 the resolved IP address is then passed to the constructor of the InetSocketAdress class,
 which already performs IP resolution, rendering the statement completely redundant.
 The error handling is also performed in the same way when the IP address is passed
-to the InetSocket.
-7.2.2 F-Droid (FDN)
 The improvement for F-droid refactored an if/else statement. Before, the statement
 checked if an object was null or not, instantiating it if it were null, and canceling its
 animation if not. However, after this statement, the object was instantly re-initialised.
@@ -692,16 +669,31 @@ and then instantiated immediately after. We refactor the statement to remove the
 clause and only cancel the animation if the object is not null.
 3These can be found in our repository (GIDroid (2023)) under  bestPatch  in each of the applications in
 the  Benchmark  folder.
-18 4 Normalised Hypervolumes of the Pareto fronts found by
+18Table 4 Normalised Hypervolumes of the Pareto fronts found by
 GIDroid across our experiments, by algorithm.
-Application Version NSGAII NSGAIII SPEA2 1 (PA1) 0.145 0.186 0.458 2 (PA2) 0.223 0.267 0.327 3 (PA3) 0.259 0.285 0.249 4 (PA4) 0.429 0.225 0.112 5 (PA5) 0.247 0.073 0.196 6 (PA6) 0.053 0.053 0.143
-PortAuthority Current (PAN) 0.051 0.133 0.59 1 (TC1) 0.03 0.019 0.127 2 (TC2) 0.027 0.052 0.088
-Tower Collector Current (TCN) 0.254 0.017 0.309 1 (GB1) 0.611 0.568 0.158
-Gadgetbridge Current (GBN) 0.008 0.384 0.007 1 (FS1) 0.318 0.383 0.359
-Fosdem Companion Curr. (FSN) 0.105 0.138 0.021 1 (FD1) 0.016 0.206 0.012 2 (FD2) 0.022 0.042 0.525
-Fdroid Current (FDN) 0.206 0.065 0.233 1 (LB1) 0.322 0.159 0.028
-Lightning Browser Curr. (LBN) 0.038 0.037 0.039 1 (FB1) 0.097 0.094 0.076
-Frozen Bubble Current (FBN) 0.024 0.024 0.026 7.2.3 Tower Collector (TCN)
+Application Version NSGAII NSGAIII SPEA2
+PortAuthority 1 (PA1) 0.145 0.186 0.458
+PortAuthority 2 (PA2) 0.223 0.267 0.327
+PortAuthority 3 (PA3) 0.259 0.285 0.249
+PortAuthority 4 (PA4) 0.429 0.225 0.112
+PortAuthority 5 (PA5) 0.247 0.073 0.196
+PortAuthority 6 (PA6) 0.053 0.053 0.143
+PortAuthority Current (PAN) 0.051 0.133 0.59
+Tower Collector 1 (TC1) 0.03 0.019 0.127
+Tower Collector 2 (TC2) 0.027 0.052 0.088
+Tower Collector Current (TCN) 0.254 0.017 0.309
+Gadgetbridge 1 (GB1) 0.611 0.568 0.158
+Gadgetbridge Current (GBN) 0.008 0.384 0.007
+Fosdem Companion 1 (FS1) 0.318 0.383 0.359
+Fosdem Companion Curr. (FSN) 0.105 0.138 0.021
+Fdroid 1 (FD1) 0.016 0.206 0.012
+Fdroid 2 (FD2) 0.022 0.042 0.525
+Fdroid Current (FDN) 0.206 0.065 0.233
+Lightning Browser 1 (LB1) 0.322 0.159 0.028
+Lightning Browser Curr. (LBN) 0.038 0.037 0.039
+Frozen Bubble 1 (FB1) 0.097 0.094 0.076
+Frozen Bubble Current (FBN) 0.024 0.024 0.026
+7.2.3 Tower Collector (TCN)
 In the TowerCollector, the best-evolved change consisted of changes to the way in
 which a database is handled. It ensured that the connection to the database is closed
 when no longer needed and that the database is only instantiated when it is actually
@@ -718,8 +710,8 @@ noticeable difference.
 In the Fosdem application the most improving change consists of moving the instantiation
  of two objects outside of a loop. This means the same object can be reused in
 the loop, with the need for a new object to be assigned, thus saving both memory and
-execution time.
-19Fig. 5 Execution time improvements (%) achieved by GIDroid using three MO algorithms on 21 7 Android apps.
+19Fig. 5 Execution time improvements (%) achieved by GIDroid using three MO algorithms on 21
+versions of 7 Android apps.
 7.2.6 Gadget-Bridge (GBN)
 In the best change for the GadgetBridge Application we cache the method call which
 resolves the name of a file that is repeatedly used and removes the redundant rendering
@@ -728,7 +720,7 @@ of a view that is already visible.
 In Lightning Browser, the best-evolved mutation consists of removing a check for
 whether or not a list of bookmarks is null. The list is an argument decorated with
 @NonNull so should never be null, and in the case that is is there will be no errors.
-7.3 3  Multi-Objective Search
+7.3 RQ3  Multi-Objective Search
 In order to compare the different algorithms used in search, we consider the procedure
  proposed by Li et al (2020), for comparing different multi-objective algorithms in
 a search-based software engineering context. We choose to measure the hypervolume
@@ -741,7 +733,7 @@ different fitness scales, we normalise the values, though also present raw ones 
 online repository, including all Pareto fronts (GIDroid (2023)). Normalised hypervolume
  values are presented in Table 4. The Pareto fronts from all of our multi-objective
 20Fig. 6 Memory consumption improvements (%) achieved by GIDroid using three MO algorithms
-on 21 7 Android apps.
+on 21 versions of 7 Android apps.
 experiments can be found in our repository (GIDroid (2023)). We find that across
 our experiment we find patches spread across the Pareto front (see Figure 7), showing
 that trade-offs between properties must be considered in the search process, due to
@@ -749,7 +741,7 @@ the natural tension between them.
 We find that NSGA-II performs similarly to NSGA-III, with the biggest hypervolume
  in 5 cases for both algorithms. We find that SPEA2 performs best, finding the
 best fronts in 11 cases. In general, the different algorithms seem to perform similarly
-in terms of the best improvements found, as shown in Figure 5 6. We find
+in terms of the best improvements found, as shown in Figure 5 and Figure 6. We find
 that the caching operators we introduced turned out to be highly effective, appearing
 in 26% of improving patches.
 We also evaluate the effect size of the improvements found by each of the MO
@@ -758,15 +750,16 @@ Delaney (2000)) to calculate the magnitude of the differences between the observ
 of the NFPs of original applications and the improved versions. This measure is nonparametric
  so does assume data is normally distributed. We find that in all but 8 cases
 we find large effect sizes, and only find negligible differences in 2 cases.
-7.4 4  Comparison to SO-GI
+7.4 RQ4  Comparison to SO-GI
 Next, we run single-objective genetic improvement on each of our benchmarks. We
 measure the effects of the changes found by SO-GI on our other properties. The results
 of this evaluation can be found in Table 6. We found improvements to execution time
 of up to 33% and memory consumption of up to 72%.
-21 5 A effect size for each algorithm on each benchmark. Effect sizes larger than 0.5 show
+21Table 5 A effect size for each algorithm on each benchmark. Effect sizes larger than 0.5 show
 positive improvement. differences  N negligible, S small, M medium, L large
 BenchmarkExec. Time Mem. Con.
-NSGA-II NSGA-III SPEA2 NSGA-II NSGA-III SPEA2 1 1.0 (L) 1.0 (L) 0.93 (L) 1.0 (L) 1.0 (L) 1.0 (L)
+NSGA-II NSGA-III SPEA2 NSGA-II NSGA-III SPEA2
+PortAuthority 1 1.0 (L) 1.0 (L) 0.93 (L) 1.0 (L) 1.0 (L) 1.0 (L)
 PortAuthority 2 0.98 (L) 1.0 (L) 1.0 (L) 1.0 (L) 1.0 (L) 1.0 (L)
 PortAuthority 3 0.97 (L) 0.97 (L) 0.97 (L) 1.0 (L) 1.0 (L) 0.93 (L)
 PortAuthority 4 0.99 (L) 0.99 (L) 1.0 (L) 1.0 (L) 1.0 (L) 1.0 (L)
@@ -788,39 +781,52 @@ LightningBro. Current 0.9 (L) 0.83 (L) 0.59 (S) 1.0 (L) 0.9 (L) 0.92 (L)
 FrozenBubble 1 0.98 (L) 1.0 (L) 0.97 (L) 0.98 (L) 1.0 (L) 0.97 (L)
 FrozenBubble Current 1.0 (L) 0.93 (L) 0.88 (L) 1.0 (L) 1.0 (L) 1.0 (L)
 Fig. 7 Pareto Front from NSGA-II experiments on the FB1 Benchmark.
-22 6 Maximum improvements to execution time and
+22Table 6 Maximum improvements to execution time and
 memory use found by GIDroid using SO-GI (no bandwidth
 improvements were found).
 Application Version Exec. Time (%) Mem. Con. (%)
-PortAuthority 1 23.39 71.69 2 21.2 53.05 3 23.13 33.76 4 26.32 60.59 5 28.03 59.13 6 24.44 24.43 29.9 9.32 1 16.01 30.82 2 26.92 34.61 20.9 32.43 1 29.52 31.29 26.73 5.89
+PortAuthority 1 23.39 71.69
+PortAuthority 2 21.2 53.05
+PortAuthority 3 23.13 33.76
+PortAuthority 4 26.32 60.59
+PortAuthority 5 28.03 59.13
+PortAuthority6 24.44 24.43
+PortAuthority Current 29.9 9.32
+Tower Collector 1 16.01 30.82
+Tower Collector 2 26.92 34.61
+Tower Collector Current 20.9 32.43
+Gadgetbridge 1 29.52 31.29
+Gadgetbridge Current 26.73 5.89
 FosdemComp. 1 32.8 36.81
-FosdemComp. Current 10.31 13.62 1 21.82 17.06 2 27.94 33.01 14.14 32.18
+FosdemComp. Current 10.31 13.62
+Fdroid Current 14.14 32.18
 LightningBrow. 1 28.45 8.96
-LightningBro. Current 23.71 32.43 1 16.67 36.11 19.88 4.09
+LightningBro. Current 23.71 32.43
+FrozenBubble 1 16.67 36.11
+FrozenBubble Current 19.88 4.09
 We find that SO search generally performs better when improving individual properties
  than multi-objective search. However, a multi-objective search was capable of
 finding improvements to both execution time and memory in a similar time as a singleobjective
  search could find improvements to individual properties. Single-objective
-search produces results that improve one property in 753 1260 cases (21 20 3 properties) but in 47% of these cases, patches are detrimental to
-another property.
-7.5 5  Cost of GI
+search produces results that improve one property in 753 of 1260 cases (21 benchmarks
+  20 runs  3 properties) but in 47% of these cases, patches are detrimental to
 In order to evaluate the applicability of our approach, we analyze its cost. Figure 8
 shows a boxplot of the time taken in hours for our experiments. We find that the
 time taken varies a lot between different benchmarks and in some cases even across
-different runs on the same benchmark. We find that MO-GI takes between 0.1 20.6 hours, with a median time across the benchmarks of 2.6 hours. The main
+different runs on the same benchmark. We find that MO-GI takes between 0.1 hours
+and 20.6 hours, with a median time across the benchmarks of 2.6 hours. The main
 source of variation across the benchmarks is the difference in time taken by the test
 suites. In the slowest benchmark, the test suite takes 8 seconds to execute, whereas
 the quickest one takes 2 seconds. In the slowest experiments, there were more patches
 that compiled, rather than instantly failing, further slowing down the experiments.
-23Fig. 8 10 generations, each with
-40 individuals.
+23Fig. 8 Time taken by GIDroid using different MO algorithms to evolve 10 generations, each with
 We find that SO-GI takes longer than MO-GI, with a minimum of 0.4 hours, a
 maximum of 19.0 hours, and a median of 3.5 hours. SO-GI can only find improvements
 to one property at a time, showing the much-improved efficiency of using MO-GI.
 Despite hour-long runtimes, we note that this is a one-off cost. Given that users consider
  apps running for 150ms laggy, which might lead to them abandoning an app, we
 deem the cost of running MO-GI worth it.
-7.6 6  Comparison to Linter
+7.6 RQ6  Comparison to Linter
 In order to compare our approach to the currently available tooling for improving
 performance for Android, we run a well-known Linter (PMD) on all of the benchmarks
  which we improved. We configured it to provide warnings when any of its
@@ -833,13 +839,18 @@ no warnings or warnings that could not be repaired without introducing buggy beh
  For example, a warning about instantiating an object in a loop could be  unfixable 
 as a reference to each instantiated object is held in an array. So, moving the instantiation
  outside of the loop would result in an array with the same reference repeated
-multiple times.
-24 7 Improvements (%) from repairing linter warnings, for
+24Table 7 Improvements (%) from repairing linter warnings, for
 benchmarks where viable improvements were found.
 Application Version Exec. Time Mem. Con. Time (min.)
-PortAuthority 1 -2.5 2.8 2 5 2.4 10.4 9 0.9 -2.8 1 2 0 1 0 5 0.0 1.9 7 1 4.5 0 13 2.3 -0.2 9
+PortAuthority 1 -2.5 2.8 2
+PortAuthority 5 2.4 10.4 9
+PortAuthority Current 0.9 -2.8 1
+TowerCollector 2 0 1 0 5
+TowerCollector Current 0.0 1.9 7
+Fdroid Current 2.3 -0.2 9
 LightningBrow. 1 -2.2 0.4 1
-LightningBrow. Current 0.9 -1.6 5 1 3.5 -0.1 20
+LightningBrow. Current 0.9 -1.6 5
+FrozenBubble 1 3.5 -0.1 20
 FrozenBubble Current -1.6 0.4 15
 In all cases where possible, the fixes were easily created and very similar to
 the examples given in the PMD documentation, and are available in our online
@@ -867,20 +878,20 @@ not guarantee correctness. However, the patches produced can undergo the standar
 code review procedure as any other code being integrated into a project would. We
 conducted a manual analysis of all the patches on the Pareto fronts (1753 total), to
 ensure the improvements reported here do not disturb app functionality. Through
-manual analysis, we found that 1352 1753 best patches found did not
+manual analysis, we found that 1352 out of the 1753 best patches found did not
 disrupt the functionality of the apps, demonstrating the strength of our test suites.
 25Disruptive patches included the removal of some error handling and the deletion of
 some components rendered on screen that could not be detected with unit tests. They
 would be easily discarded by code review.
 Using stochastic search may result in us finding improvements out of sheer luck.
 In order to avoid this issue, reliably compare different algorithms, and demonstrate
-generalisability of our approach, we run each of the algorithms tested 20 21 benchmarks.
+generalisability of our approach, we run each of the algorithms tested 20 times on each
+of our 21 benchmarks.
 The search algorithms we use rely on parameters such as mutation and crossover
 rate. The values of these parameters can have an effect on the effectiveness of the
 algorithms. To mitigate this threat, we use the same parameters across all experiments
 for fair comparison. We use settings used in previous work that found improvements
-in software.
-We tested our approach on 21 7 Android apps, which poses a threat
+We tested our approach on 21 versions of 7 Android apps, which poses a threat
 to generalisability to other software. However, these apps are diverse in size and type.
 Moreover, we found improvements in current app versions, which were previously
 undiscovered. Unfortunately, currently, the big obstacle to wider adoption is test availability.
@@ -896,7 +907,7 @@ We propose to use multi-objective genetic improvement (MO-GI) to automatically
 improve Android apps. We are the first to apply MO-GI with three objectives to
 improve software performance and evaluate feasibility of MO-GI for bandwidth and
 memory use in the Android domain. To evaluate the effectiveness of the proposed
-approach we developed GIDroid, which contains 3 2 novel cachebased
+approach we developed GIDroid, which contains 3 MO algorithms and 2 novel cachebased
  mutation operators. We have tested GIDroid on 21 benchmarks, targeting
 runtime, memory, and bandwidth use. We find improvements to the execution time
 of up to 35% and memory consumption of up to 65%. However, we find that for the
@@ -907,7 +918,7 @@ patches. Although the techniques currently only perform well on relatively small
  (Madaan et al (2023)), trained on source code from programming competitions
 or puzzles which is short and self-contained (Puri et al (2021)). These examples
 do not contain the complex shared state and interaction with external components
-that are commonplace in Android apps. We asked ChatGPT to find improvements
+that are commonplace in Android apps. We asked ChatGPT4to find improvements
 on our benchmark set with known improvements, but it failed to find any5, while
 GIDroid re-discovered 64% of those.
 4https //openai.com/blog/chatgpt/
@@ -918,15 +929,13 @@ Data availability All our code and results are available in our repository GIDro
 Funding This work was supported by EPSRC grant no. EP/P023991/1.
 Copyright For the purpose of open access, the authors have applied a Creative
 Commons Attribution (CC BY) license to any Accepted Manuscript version arising.
-References
 Amalfitano D, Amatucci N, Fasolino AR, et al (2015) Agrippin  a novel search based
 testing technique for Android applications. In  DeMobile@SIGSOFT FSE. ACM,
-pp 5 12
 An G, Blot A, Petke J, et al (2019) Pyggi 2.0  Language independent genetic
 improvement framework. In  Proceedings of the 2019 27th ACM Joint Meeting on
 European Software Engineering Conference and Symposium on the Foundations
-of Software Engineering. ACM, New York, NY, USA, ESEC/FSE 2019, pp 1100 1104, https //doi.org/10.1145/3338906.3341184, URL http //doi.acm.org/10.1145/
-3338906.3341184
+of Software Engineering. ACM, New York, NY, USA, ESEC/FSE 2019, pp 1100 
+1104, https //doi.org/10.1145/3338906.3341184, URL http //doi.acm.org/10.1145/
 Android Development Team (2022a) Android context.
 Https //developer.android.com/reference/android/content/Context
 Android Development Team (2022b) Android testing guide.
@@ -937,15 +946,14 @@ Android Development Team (2023b) Android lint tool.
 Https //developer.android.com/studio/write/lint
 Auer M, Adler F, Fraser G (2022) Improving search-based Android test generation
 using surrogate models. In  SSBSE, Lecture Notes in Computer Science, vol 13711.
-Springer, pp 51 66
 Azim T, Neamtiu I (2013) Targeted and depth-first exploration for systematic testing
 of android apps. In  OOPSLA. ACM, pp 641 660
 Bach T, Andrzejak A, Pannemans R, et al (2017) The impact of coverage on bug
 density in a large industrial software project. In  ESEM. IEEE, pp 307 313
 Baek YM, Bae D (2016) Automated model-based Android GUI testing using multilevel
- GUI comparison criteria. In  ASE. ACM, pp 238 249 27Basios M, Li L, Wu F, et al (2017) Optimising darwinian data structures on Google
+ GUI comparison criteria. In  ASE. ACM, pp 238 249
+27Basios M, Li L, Wu F, et al (2017) Optimising darwinian data structures on Google
 Guava. In  SSBSE, Lecture Notes in Computer Science, vol 10452. Springer, pp
-161 167
 Baumann P, Santini S (2017) Every byte counts  Selective prefetching for mobile
 applications. Proc ACM Interact Mob Wearable Ubiquitous Technol 1(2) 6 1 6 29
 Berg F, Durr F, Rothermel K (2014) Increasing the efficiency and responsiveness
@@ -968,20 +976,18 @@ for improved energy consumption in Google Guava. In  SSBSE, Lecture Notes in
 Computer Science, vol 9275. Springer, pp 255 261
 Callan J, Petke J (2021) Improving Android app responsiveness through automated
 frame rate reduction. In  SSBSE, Lecture Notes in Computer Science, vol 12914.
-Springer, pp 136 150
 Callan J, Petke J (2022a) Improving responsiveness of Android activity navigation via
 genetic improvement. In  ICSE-Companion. ACM/IEEE, pp 356 357
 Callan J, Petke J (2022b) Multi-objective genetic improvement  A case study with
 EvoSuite. In  SSBSE, Lecture Notes in Computer Science, vol 13711. Springer, pp
-111 117
 Callan J, Krauss O, Petke J, et al (2022) How do Android developers improve nonfunctional
- properties of software  Empir Softw Eng 27(5) 113 28Chun BG, Ihm S, Maniatis P, et al (2011) Clonecloud  Elastic execution between
+ properties of software  Empir Softw Eng 27(5) 113
+28Chun BG, Ihm S, Maniatis P, et al (2011) Clonecloud  Elastic execution between
 mobile device and cloud. In  Proceedings of the Sixth Conference on Computer Systems.
  Association for Computing Machinery, New York, NY, USA, EuroSys  11, p
 301 314, https //doi.org/10.1145/1966445.1966473, URL https //doi.org/10.1145/
-1966445.1966473
 Das PK, Shome S, Sarkar AK (2016) Apps  Accelerating performance and power saving
-in smartphones using code offload. In  2016 6th Internat. Conf. on Advanced
+in smartphones using code offload. In  2016 IEEE 6th Internat. Conf. on Advanced
 Comput. (IACC), pp 759 765, https //doi.org/10.1109/IACC.2016.145
 Deb K, Jain H (2014) An evolutionary many-objective optimization algorithm using
 reference-point-based nondominated sorting approach, part I  solving problems with
@@ -992,7 +998,6 @@ Computer Science, vol 1917. Springer, pp 849 858
 Ding AY, Bo Han, Yu Xiao, et al (2013) Enabling energy-aware collaborative mobile
 data offloading for smartphones. In  2013 IEEE Internat. Conf. on Sensing, Communications
  and Networking (SECON), pp 487 495, https //doi.org/10.1109/SAHCN.
-2013.6645020
 FindBugs Development Team (2015) Findbugs lint tool.
 Https //findbugs.sourceforge.net/
 GIDroid (2023) A Tool for Multi-Objective GI in Android.
@@ -1012,7 +1017,6 @@ mobile applications. IEEE Trans Software Eng 48(8) 2879 2904. https //doi.org/
 10.1109/TSE.2021.3071193, URL https //doi.org/10.1109/TSE.2021.3071193
 Inukollu V, Keshamoni D, Kang T, et al (2014) Factors influencing quality of mobile
 apps  Role of mobile app development life cycle. Internat Journal of Soft Eng &
-29 5
 Ji R, Li Z, Chen S, et al (2018) Uncovering unknown system behaviors in uncertain
 networks with model and search-based testing. In  ICST. IEEE, pp 204 214
 Kemp S (2022) Digital 2022  Mobile duopoly consolidates its grip - datareportal
@@ -1024,7 +1028,8 @@ Kerrisk M (2022) Linux process tracking. https //man7.org/linux/manpages/man5/pr
  last accessed  February 10, 2023
 Khalid H, Shihab E, Nagappan M, et al (2015) What do mobile app users complain
 about  IEEE Softw 32(3) 70 77
-Kim M, Hiroyasu T, Miki M, et al (2004) SPEA2 2. In  PPSN, Lecture Notes in Computer
+Kim M, Hiroyasu T, Miki M, et al (2004) SPEA2   improving the performance of the
+strength Pareto evolutionary algorithm 2. In  PPSN, Lecture Notes in Computer
 Science, vol 3242. Springer, pp 742 751
 Langdon WB, Lam BYH, Petke J, et al (2015) Improving CUDA DNA analysis software
  with genetic programming. In  Silva S, Esparcia-Alc  azar AI (eds) Proceedings
@@ -1036,7 +1041,6 @@ software engineering  A critical review and methodological guidance. IEEE Trans
 on Soft Eng PP 1 1. https //doi.org/10.1109/TSE.2020.3036108
 Li SS, Peeler H, Sloss AN, et al (2022) Genetic improvement in the shackleton framework
  for optimizing LLVM pass sequences. In  GECCO Companion. ACM, pp
-1938 1939
 Li Y, Yang Z, Guo Y, et al (2017) DroidBot  a lightweight UI-guided test input
 generator for Android. In  ICSE (Companion Volume). IEEE, pp 23 26
 Lim SL, Bentley P, Kanakam N, et al (2014) Investigating country differences in
@@ -1045,12 +1049,12 @@ https //doi.org/10.1109/TSE.2014.2360674
 Lin Y, Radoi C, Dig D (2014) Retrofitting concurrency for Android applications
 through refactoring. In  FSE. ACM, pp 341 352
 Lin Y, Okur S, Dig D (2015) Study and refactoring of Android asynchronous
-programming (T). In  ASE. IEEE, pp 224 235 30Liu Y, Zhu N, Li M (2021) Solving many-objective optimization problems by a Paretobased
+programming (T). In  ASE. IEEE, pp 224 235
+30Liu Y, Zhu N, Li M (2021) Solving many-objective optimization problems by a Paretobased
  evolutionary algorithm with preprocessing and a penalty mechanism. IEEE
 Trans Cybern 51(11) 5585 5594
 Lyu Y, Li D, Halfond WGJ (2018) Remove rats from your code  automated optimization
  of resource inefficient database writes for mobile applications. In  ISSTA. ACM,
-pp 310 321
 Madaan A, Shypula A, Alon U, et al (2023) Learning performance-improving code
 edits. CoRR abs/2302.07867
 Mahmood R, Mirzaei N, Malek S (2014) Evodroid  segmented evolutionary testing of
@@ -1059,24 +1063,20 @@ Mao K, Harman M, Jia Y (2016) Sapienz  multi-objective automated testing for
 Android applications. In  ISSTA. ACM, pp 94 105
 Mateus BG, Martinez M, Kolski C (2021) An experience-based recommendation system
  to support migrations of Android applications from Java to Kotlin. CoRR
-abs/2103.09728
 Mesecan I, Blackwell D, Clark D, et al (2022) Keeping secrets  Multi-objective genetic
 improvement for detecting and reducing information leakage. In  ASE. ACM, pp
-61 1 61 12
 Mockus A, Nagappan N, Dinh-Trong TT (2009) Test coverage and post-verification
 defects  A multiple case study. In  ESEM. IEEE, pp 291 301
 Mohan P, Nath S, Riva O (2013) Prefetching mobile ads  Can advertising systems
 afford it  In  Proceedings of the 8th ACM European Conference on Computer Systems.
  Association for Computing Machinery, New York, NY, USA, EuroSys  13, p
 267 280, https //doi.org/10.1145/2465351.2465378, URL https //doi.org/10.1145/
-2465351.2465378
 Morales R, Saborido R, Khomh F, et al (2018) EARMO  an energy-aware refactoring
 approach for mobile apps. IEEE Trans Software Eng 44(12) 1176 1206
 Motwani M, Soto M, Brun Y, et al (2022) Quality of automated program repair on
 real-world defects. IEEE TSE 48(2) 637 661
 Nistor A, Song L, Marinov D, et al (2013) Toddler  Detecting performance problems
 via similar memory-access patterns. In  ICSE, pp 562 571, https //doi.org/10.1109/
-ICSE.2013.6606602
 Oracle Development Team (2020) Javaruntime. URL https //docs.oracle.com/javase/
 7/docs/api/java/lang/Runtime.html
 31Pecorelli F, Catolino G, Ferrucci F, et al (2020) Testing of mobile applications in the
@@ -1105,9 +1105,7 @@ Behavioral Statistics 25(2) 101 132
 White DR, Arcuri A, Clark JA (2011) Evolutionary improvement of programs. IEEE
 Trans Evol Comput 15(4) 515 538
 Wu F, Weimer W, Harman M, et al (2015) Deep parameter optimisation. In  GECCO.
-ACM, pp 1375 1382
 Yasin HN, Hamid SHA, Yusof RJR (2021) Droidbotx  Test case generation tool for
 Android applications using q-learning. Symmetry 13(2) 310
 Zuo S, Blot A, Petke J (2022) Evaluation of genetic improvement tools for improvement
  of non-functional properties of software. In  GECCO Companion. ACM, pp
-1956 1965 32

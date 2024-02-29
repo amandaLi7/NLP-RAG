@@ -1,13 +1,13 @@
 Overview of Robust and Multilingual Automatic Evaluation Metrics
-for Open-Domain Dialogue Systems at DSTC 11 4
+for Open-Domain Dialogue Systems at DSTC 11 Track 4
 Mario Rodríguez-Cantelar1, Chen Zhang2, Chengguang Tang3, Ke Shi3,
-Sarik Ghazarian4, João Sedoc5, Luis Fernando D Haro and Alexander Rudnicky6 1Speech Technology and Machine Learning Group - Universidad Politécnica de Madrid, Spain
+Sarik Ghazarian4, João Sedoc5, Luis Fernando D Haro1and Alexander Rudnicky6
+1Speech Technology and Machine Learning Group - Universidad Politécnica de Madrid, Spain
 2National University of Singapore, Singapore
 3Tencent AI Lab, China
 4University of Southern California, USA
 5Department of Technology, Operations, and Statistics, New York University, USA
 6Carnegie Mellon University, USA
-Abstract
 The advent and fast development of neural
 networks have revolutionized the research on
 dialogue systems and subsequently have triggered
@@ -31,7 +31,6 @@ effort to promote robust and multilingual automatic
 the datasets and baselines provided to participants
  and discusses the submission and result
 details of the two proposed subtasks.
-1 Introduction
 Recent advances in large-scale neural language
 models (Devlin et al., 2019  Radford et al., 2019 
 Zhang et al., 2020) have led to significant attention
@@ -78,7 +77,7 @@ proposed methods against baselines.
 Furthermore, to the best of our knowledge, none
 of the existing metrics have been thoroughly tested
 in a multilingual setting. Metric generalization
-across different languages is highly desirable, as itarXiv 2306.12794 3  [cs.CL]  14 2023helps the transformation of state-of-the-art Englishonly
+across different languages is highly desirable, as itarXiv 2306.12794v3  [cs.CL]  14 Sep 2023helps the transformation of state-of-the-art Englishonly
  dialogue systems into highly capable multilingual
  systems. Although multilingual pre-trained
 language models may exist and can be potentially
@@ -96,7 +95,6 @@ create additional data in the original language to
 improve and evaluate the robustness of existing
 metrics. To this end, we propose two subtasks in
 our track, and their details are listed as follows 
-1.1 Track Details
 This track consists of two tasks which are explained
 in more detail below.
 Participants will develop effective open-ended
@@ -123,18 +121,17 @@ metrics should signal such behavior.
 Participants can propose their own metrics or
 optionally improve the deep AM-FM (Zhang et al.,
 2021) baseline evaluation model provided by us.
-A leaderboard on the ChatEval platform was provided
+A leaderboard on the ChatEval platform1was provided
  to check the performance of their different
-1https //chateval.org/dstc proposed models compared to those submitted by
-other researchers.
+1https //chateval.org/dstc11proposed models compared to those submitted by
 For each evaluation task, Spearman s correlation
  was used to compare the proposed evaluation
 metrics against human judgments. A final average
 score was calculated to rank the submitted metric
  models. Additional instructions to participants
-were provided through the Github repository and
+were provided through the Github repository2and
 by email on the main DSTC distribution list.
-2 1  Multilingual Automatic Metrics
+2Task 1  Multilingual Automatic Metrics
 In this task, the goal for participants is to propose
  effective automatic dialogue evaluation metrics
  that exhibit the properties mentioned above
@@ -159,7 +156,7 @@ test sets have human-annotations, and only the test
 sets were manually translated or paraphrased/backtranslated
  to guarantee the correlations with the
 original human-annotations on the English data.
-2.1 1 shows the three clusters
+Datasets summary Table 1 shows the three clusters
  of datasets we used or created during the competition.
  The table shows information about the
 number of data used to train, develop, and test
@@ -169,8 +166,7 @@ and were back-translated into English. CHANEL
 and CDIAL include open-domain human-human
 conversations, while DSTC10 includes humanannotations
  on human-chatbot interactions. The
-type of annotations or metadata and how each clus https //github.com/Mario-RC/dstc11_t
-
+type of annotations or metadata and how each clus2https //github.com/Mario-RC/dstc11_t
 rack4_robust_multilingual_metricster was used (training/development/test) are indicated
  in the last three rows.
 Table 7 (Appendix A) provides a brief summary
@@ -195,27 +191,24 @@ the data in this cluster is that they have been automatically
 high-quality MS Azure translation service.5
 Development As development set, the organizers
  provided data from two clusters of datasets 
-DSTC10 and CDIAL.
-The first one was collected during DSTC10 5 (Zhang et al., 2022c), consisting of more
+The first one was collected during DSTC10
+Track 5 (Zhang et al., 2022c), consisting of more
 than 35k turn-level human-annotations, which were
 automatically translated into Spanish and Chinese,
 and then back-translated into English using MS
-Azure services.
-Second, we used datasets provided by THUCOAI group
+Second, we used datasets provided by THUCOAI6group
  (Conversational AI groups from Tsinghua
  University), naming this cluster of datasets
 CDIAL. It contains open-domain human-human
 dialogues. They are originally in Chinese and include
  3,470 dialogues (approximately 130k turns).
 Furthermore, we provided Chinese to English translations
- through the SotA Tencent MT system.
+ through the SotA Tencent MT7system.
 Furthermore, Tencent AI manually annotated  
 3k random H-H turns (  1k dialogues) of CDIAL
 in Chinese (at turn-and dialogue-level).
 It is important to note that the development data
-is intended to help participants verify the multilin https //github.com/CHANEL-JSALT-2020/
-
-datasets
+is intended to help participants verify the multilin3https //github.com/CHANEL-JSALT-2020/
 4https //www.clsp.jhu.edu/chaval-cha
 t-dialogue-modeling-and-evaluation/
 5https //azure.microsoft.com/en-us/pr
@@ -228,7 +221,6 @@ Test Furthermore, in order to check the generalization
  capabilities of the proposed metrics from
 the participant, the test data included new English,
 Chinese, and Spanish data of human-chatbot interactions
- (Appendix B).
 A new Human-Chatbot English dataset
 (HCEnglish) with  2k turns (  60 dialogues) with
 three different SotA chatbots (ChatGPT (Radford
@@ -247,7 +239,8 @@ Xiaoice (Zhou et al., 2020b) and Baidu s PlatoXL
 annotated (turn and dialogue level) by Tencent AI,
 and then translated from Chinese to English using
 the Tencent MT system.
-Third, hidden data from the DSTC10 1500 turns (  700
+Third, hidden data from the DSTC10 data was
+used for Spanish with a total of  1500 turns (  700
 dialogues). Existing turn-level annotations were
 used, as well as Spanish translations and English
 back-translations created using MS Azure, which
@@ -255,7 +248,6 @@ were subsequently manually reviewed.
 Table 2 shows the number of turns and dialogues
  for each test dataset for each language.
 The DSTC10 datasets did not have annotations at
-dialogue-level.
 Metadata Since the quality of translated sentences
  can play an important role in the estimation
  of metric scores, quality annotations between
@@ -272,13 +264,12 @@ high translation quality estimation, therefore reducing
  potential noise but also allowing the creation
 of more robust metric systems.
 8https //github.com/Unbabel/COMETDataset Name CHANEL DSTC10 CDIAL
-#datasets 18 7 3
 LanguageEnglish, Spanish/Chinese,
 and English back-translationEnglish, Spanish/Chinese,
 and English back-translationEnglish, Spanish/Chinese,
 and English back-translation
 Dialogues Type Human-Human Open-Domain Human-Chatbot Open-Domain Human-Human Open-Domain
-#dialogues/utterances   390,000 /   3,000,000 18,000 /   55,000 3,470 /  130,000
+#dialogues/utterances   390,000 /   3,000,000   18,000 /   55,000   3,470 /  130,000
 Annotations Sentiment analysis and ToxicitySentiment analysis and Toxicity
 Turn /dialogue level human scoresTurn /dialogue level human scores
 Task 1 Set Public  TrainPublic  Dev, Test
@@ -286,7 +277,10 @@ Hidden  Automatic TranslationsPublic  Train, Dev
 Task 2 Set Public  TrainPublic  Dev, Test
 Hidden  Manually back-translated/paraphrased 
 Table 1  Summary of train/development/test datasets.
-Language EN ZH ESGlobalDataset HCEnglish HCChinese DSTC10 10 10 1,700 478 114 2,292 364 1,672 123 2,159 55 333 388 4,839 59 40 - 99 15 160 - 175 3 - 3 277 2 1 at turn and dialogue level, and separated by language.
+Language EN ZH ESGlobalDataset HCEnglish HCChinese DSTC10 Total HCEnglish HCChinese DSTC10 Total HCEnglish DSTC10 Total
+Turns 1,700 478 114 2,292 364 1,672 123 2,159 55 333 388 4,839
+Dialogues 59 40 - 99 15 160 - 175 3 - 3 277
+Table 2  Summary statistics of the test dataset used for task 1 at turn and dialogue level, and separated by language.
 In addition, toxicity and sentiment analysis metadata
  were provided for the original turns in both the
 CHANEL and DSTC10 datasets for filtering and
@@ -313,8 +307,7 @@ Our annotations restricted the users to location US,
 AMT filtering pipeline (Zhang et al., 2022d) and
 cloudresearch. The average compensation was  
 15$/hr. We included text-based attention checks
-at the dialogue-level as well as an annotator agree https //github.com/Mario-RC/dstc11_t
-
+at the dialogue-level as well as an annotator agree9https //github.com/Mario-RC/dstc11_t
 rack4_robust_multilingual_metrics/blob/m
 ain/dstc11/track4-datasets-format.md
 10Without the convenience pool our annotator agreement
@@ -322,7 +315,7 @@ was near random.ment (both with an expert as well as between crowd
 workers [some from the DSTC10 dataset]) timebased
  filters on the turn-level.
 For the HCChinese data, we leveraged the power
-of Tencent MT to perform the English-to-Chinese
+of Tencent MT11to perform the English-to-Chinese
 translation of the corpus, followed by training a
 team of six professional Chinese annotators to annotate
  the dialogues. The entire annotation process
@@ -356,12 +349,9 @@ Coherence - Throughout the dialogue, is the
 system maintaining a good conversation flow.
 Engageness/Likeability - Throughout the dialogue,
  the system displays a likeable personality.
-
 Informativeness - Throughout the dialogue,
 the system provides unique and non-generic
-information.
 Overall - The overall quality of and satisfaction
- with the dialogue.
 Furthermore, when choosing the test dimensions,
 the annotations available in the train and development
  data were taken into account to keep them
@@ -379,10 +369,9 @@ overall quality of the system.
 Table 3 summarizes the dimensions for each test
 data set. As can be seen, the DSTC10 set only has
 human turn-level annotations.
-2.3 Baseline
 We provide a multilingual variant of deep AMFM
  (Zhang et al., 2021) (used previously during
-Track5 10) as the baseline model. The formulation
+Track5 at DSTC10) as the baseline model. The formulation
  of both AM and FM remains unchanged
 except that we switch their original English-based
 pre-trained language models to multilingual models.
@@ -392,22 +381,14 @@ embeddings of both the response and the last sentence
  in the corresponding dialogue context. Then,
 the cosine similarity of the two embeddings is the
 AM score assigned to the corresponding response.
-For the fluency metric (FM), we adopt the multi https //huggingface.co/sentence-trans
-
+For the fluency metric (FM), we adopt the multi12https //huggingface.co/sentence-trans
 formers/xlm-r-100langs-bert-base-nli-sts
 b-mean-tokensSets Dimensions
-DSTC10 10-turn A CR GC R
-ChatEval-turn A
-JSALT-turn A
-HCChinese
+DSTC10-turn A CR GC R
 HCChinese-dial C EL I O
 HCChinese-turn CR GC R
-HCEnglish
 HCEnglish-dial C EL I O
 HCEnglish-turn A CR GC R
-Test data
-Test-dial C EL I O
-Test-turn A CR GC R
 C  Coherence EL  Engageness/Likeability
 I  Informativeness O  Overall
 A  Appropriateness CR  Content Richness
@@ -422,7 +403,7 @@ serves as the FM score of the response. The final
 AM-FM score is the arithmetic mean of both metric
  scores. All information related to the baseline
 model, such as code and data, can be found in this
-GitHub repository.14 2.4 1, 4 teams participated, which provided a
+In Task 1, 4 teams participated, which provided a
 total of 16 submissions. Participants were asked to
 provide a brief description of the system for their
 proposals. The two system descriptions provided
@@ -437,7 +418,6 @@ NSP (Next Sentence Prediction), VSP (Valid Sentence
 submetric ensembles three models trained on English
  and multilingual data, while the VSP model
 13https //huggingface.co/ai-forever/mGP
-T
 14https //github.com/karthik19967829/D
 STC11-Benchmarkcombines different models. The ENG submetric
 uses an ensemble of encoder models trained on
@@ -481,7 +461,7 @@ semantic space. Through contrastive learning
 and multi-dataset distillation, they strengthen the
 model s scoring robustness and evaluation capability
  across various data domains.
-2.5 4 1 at
+Table 4 shows the results on test data for task 1 at
 turn and dialogue level. To calculate the scores in
 the table, the following procedure was followed 
 1. Data are separated in each language (English,
@@ -491,19 +471,24 @@ calculated for each dimension independently  3.Next, we calculate the mean of th
 the dimensions in each language (columns EN, ZH,
 and ES)  4. Finally, we calculate the final mean
 (Global column) of the language columns.
-Turn-level
 Team EN ZH ES Global Rank
-Baseline 0.2940 0.0753 0.1826 0.1840 4 2 0.1469 0.1054 0.0808 0.1110 5 4 0.4818 0.3936 0.5890 0.4881 1 5 0.3702 0.0701 0.1983 0.2129 3 7 0.2214 0.3112 0.5644 0.3657 2
-Dialogue-level
+Baseline 0.2940 0.0753 0.1826 0.1840 4
+Team 2 0.1469 0.1054 0.0808 0.1110 5
+Team 4 0.4818 0.3936 0.5890 0.4881 1
+Team 5 0.3702 0.0701 0.1983 0.2129 3
+Team 7 0.2214 0.3112 0.5644 0.3657 2
 Team EN ZH ES Global Rank
-Baseline 0.2414 0.4648 0.8080 0.5047 2 4 0.5342 0.7133 0.8080 0.6852 1 5 0.1865 0.1356 0.6830 0.3350 3 4  Spearman s correlations of the baseline and
+Baseline 0.2414 0.4648 0.8080 0.5047 2
+Team 4 0.5342 0.7133 0.8080 0.6852 1
+Team 5 0.1865 0.1356 0.6830 0.3350 3
+Table 4  Spearman s correlations of the baseline and
 average correlations of each team s metrics on turnlevel
  anddialogue-level test sets for task 1 . The first
 position is shown in bold, the second in underline and
 the third in italics.
 To rank each team, the best submission was used
 according to the calculated global score. Teams
-4, 7 5 were the best performers at turn-level.
+4, 7 and 5 were the best performers at turn-level.
 Regarding dialogue-level, team 4 was the best performer,
  followed by the baseline model and then
 by team 3. In particular, the performance of team 4
@@ -522,7 +507,7 @@ be noted that for Spanish at the dialogue-level, the
 amount of data was scarse, then producing nonstatistical
  significant results and making difficult to
 analyze the reason for so high correlation results.
-3 2  Robust Evaluation Metrics
+3 Task 2  Robust Evaluation Metrics
 In this task, the goal of the participants was to propose
  robust metrics for automatic evaluation of English
  dialogues that exhibit previously mentioned
@@ -539,7 +524,6 @@ Participants had the opportunity to evaluate
 their models with developmental data composed
 of paraphrased/back-translated sentences and their
 respective human annotations.
-3.1 Datasets
 Train, development, and test For task 2, the same
 task 1 datasets were used. However, to evaluate
  robustness, paraphrases and back-translated
@@ -550,8 +534,9 @@ sentences, but not the translations to other languages.
  Table 5 shows the number of turns and
 dialogues for each test data set sent to the participants.
  The DSTC10 datasets did not have annotations
- at dialogue-level.
-Dataset HCEnglish DSTC10 1,701 404 2,105 59 - 59 5 2 test datasets at the
+Dataset HCEnglish DSTC10 Total
+Turns 1,701 404 2,105
+Table 5  Summary statistics of task 2 test datasets at the
 turn and dialogue level.
 For creating semantically similar sentences, we
 relied on two options  back-translations and a
@@ -560,7 +545,6 @@ MS Azure MT services or Tencent MT system.
 Then for the paraphraser model, we used PARROT15(Damodaran,
  2021). Multiple paraphrases
 were generated for all the original English sentences
- in each dataset.
 For this task, paraphrases were preferable to
 back-translations. The reason is that current translation
  systems have a very high quality, so backtranslations
@@ -568,9 +552,8 @@ back-translations. The reason is that current translation
 sentence, or even identical, not meeting in this case
 the robustness criterion proposed in task 2.
 Metadata For this specific task, participants
-received as metadata the Levenshtein distance
+received as metadata the Levenshtein16distance
 15https //github.com/jsedoc/Parrot_Par
-aphraser
 16The Levenshtein distance is a numerical measure indicating
  the similarity between two strings. A higher Levenshteincalculated for all paraphrases generated from the
 original sentences, in all datasets. For task 1, QE
@@ -589,19 +572,21 @@ analysis annotations, for them to filter potentially
 biased or noised sentences.
 Dimensions Human-annotations for development
  and test data were the same as for task 1.
-3.2 2 1, the nature of the data is common in both
+3.2 Dimensions Evaluated
+As the data for task 2 are the same as those in
+task 1, the nature of the data is common in both
 tasks. Therefore, the dimensions used to evaluate
 the models, both at the turn and dialogue level, are
 shared between the two tasks.
-3.3 2, as for task
+The same baseline was used for task 2, as for task
 12.3. In this case, paraphrases were used instead of
 multilingual sentences to evaluate robustness.
-3.4 Participants
-For this task, a total of 5 21 submissions. Participants were
+For this task, a total of 5 teams participated and
+sent a total of 21 submissions. Participants were
 asked to provide a brief description of their systems.
-Team 4 7 1,
+Team 4 and 7 used the same models as for task 1,
 therefore they are descripted in Section 2.4. Below,
-we provide detailed description for teams 3 6.
+we provide detailed description for teams 3 and 6.
 Team 3 To address the variability of metrics in
 evaluating different dimensions and mitigate overfitting
  on scarce human-annotated data, they propose
@@ -629,7 +614,8 @@ and dynamically obtained dialogue examples. Hyperparameters
 grammaticality metric scores, randomly generated
 scores were submitted due to uninformative constant
  scores predicted by the LLM.
-3.5 2 6. To
+Team results for turn and dialogue levels on the
+test data for task 2 are provided in Table 6. To
 calculate the scores and provide the ranking, the
 following procedure was followed  1. Calculate
 the Spearman s correlation coefficients for each
@@ -638,22 +624,29 @@ the correlations of the dimensions  3. Calculate the
 mean (Global column) of the language columns.
 Turn-level Dialogue-level
 Team Global Rank Team Global Rank
-Baseline 0.3387 4 0.4800 1 1 0.1537 6 1 0.1111 4 3 0.2697 5 3 0.2196 3 4 0.4890 1 4 0.3031 2 6 0.4190 2 7 0.3833 3 6  Spearman s correlations of the baseline and
+Baseline 0.3387 4 Baseline 0.4800 1
+Team 1 0.1537 6 Team 1 0.1111 4
+Team 3 0.2697 5 Team 3 0.2196 3
+Team 4 0.4890 1 Team 4 0.3031 2
+Table 6  Spearman s correlations of the baseline and
 average correlations of each team s metrics on turnlevel
  anddialogue-level test sets for task 2 . The first
 position is shown in bold, the second in underline and
 the third in italics.
 The best presentation according to the overall
 score calculated was used to rank each team. Teams
-4, 6 7 were the best performers at the turn-level.
+4, 6 and 7 were the best performers at the turn-level.
 At dialogue-level, the baseline model provided the
-best performance, followed by team 4 3.
-Considering team 4 results, both in task 1 2, it can be considered their model as the overall
+best performance, followed by team 4 and team 3.
+Considering team 4 results, both in task 1 and
+task 2, it can be considered their model as the overall
  best in the competition, being good at multilingual
  level as well as in robustness. However,
 the performance of the baseline model at dialoguelevel
  is far superior to that of team 4, showing there
-is still room for improvement.4 4 on "Robust and Multilingual Automatic
+is still room for improvement.4 Conclusions and Future Work
+This paper presents a comprehensive overview of
+Track 4 on "Robust and Multilingual Automatic
 Evaluation Metrics for Open-Domain Dialogue
 Systems" organized as part of the 11thDialogue
 System Technology Challenge (DSTC11). The
@@ -707,7 +700,6 @@ as appropriate, by  ERDF A way of making
 Europe , by the  European Union , and by
 the European Commission through Project
 ASTOUND (101071191   HORIZON-EIC-2021PATHFINDERCHALLENGES-01).
- We gratefully
 acknowledge valuable efforts from Tencent AI Lab
 who supports Chinese translation and annotation
 of datasets by funding and infrastructure. Thanks
@@ -732,12 +724,10 @@ Rudnicky, Carnegie Mellon University. Thanks to
 Karthik Ganesan, Sarik Ghazarian, James Hagerty,
 Zhang Chen and Alex Rudnicky for developing the
 baseline model as part of the challenge tasks.
-References
 Daniel Adiwardana, Minh-Thang Luong, David R. So,
 Jamie Hall, Noah Fiedel, Romal Thoppilan, Zi Yang,
 Apoorv Kulshreshtha, Gaurav Nemade, Yifeng Lu,
 and Quoc V . Le. 2020. Towards a human-like opendomain
- chatbot.
 Rafael E. Banchs. 2012. Movie-DiC  a movie dialogue
 corpus for research and development. In Proceedings
 of the 50th Annual Meeting of the Association for
@@ -751,7 +741,6 @@ and Zheng-Yu Niu. 2022. PLATO-XL  Exploring
 the large-scale pre-training of dialogue generation.
 InFindings of the Association for ComputationalLinguistics  AACL-IJCNLP 2022 , pages 107 118,
 Online only. Association for Computational Linguistics.
-
 Tom Brown, Benjamin Mann, Nick Ryder, Melanie
 Subbiah, Jared D Kaplan, Prafulla Dhariwal, Arvind
 Neelakantan, Pranav Shyam, Girish Sastry, Amanda
@@ -770,21 +759,18 @@ Guzmán, Edouard Grave, Myle Ott, Luke Zettlemoyer,
  and Veselin Stoyanov. 2020. Unsupervised
 cross-lingual representation learning at scale. In Proceedings
  of the 58th Annual Meeting of the Association
- for Computational Linguistics , pages 8440 8451, Online. Association for Computational Linguistics.
-
+ for Computational Linguistics , pages 8440 
+8451, Online. Association for Computational Linguistics.
 Prithiviraj Damodaran. 2021. Parrot  Paraphrase generation
- for nlu.
 Cristian Danescu-Niculescu-Mizil and Lillian Lee. 2011.
 Chameleons in imagined conversations  A new approach
  to understanding coordination of linguistic
 style in dialogs. In Proceedings of the Workshop on
 Cognitive Modeling and Computational Linguistics,
-ACL 2011 .
 Jan Deriu, Alvaro Rodrigo, Arantxa Otegi, Guillermo
 Echegoyen, Sophie Rosset, Eneko Agirre, and Mark
 Cieliebak. 2021. Survey on evaluation methods for
 dialogue systems. Artificial Intelligence Review ,
-54 755 810.
 Jacob Devlin, Ming-Wei Chang, Kenton Lee, and
 Kristina Toutanova. 2019. BERT  Pre-training of
 deep bidirectional transformers for language understanding.
@@ -797,7 +783,6 @@ Computational Linguistics.
 Emily Dinan, Stephen Roller, Kurt Shuster, Angela
 Fan, Michael Auli, and Jason Weston. 2019. Wizard
 of wikipedia  Knowledge-powered conversational
-agents.
 Michel Galley, Chris Brockett, Xiang Gao, Jianfeng
 Gao, and Bill Dolan. 2019. Grounded response generation
  task at dstc7. In AAAI Dialog System Technology
@@ -805,7 +790,6 @@ Gao, and Bill Dolan. 2019. Grounded response generation
 Zuhaib Akhtar, Shalaka Vaidya, Gary Pan, Lyle H.
 Ungar, H. Andrew Schwartz, and Joao Sedoc. 2023.
 Human-centered metrics for dialog system evaluation.
-
 Karthik Gopalakrishnan, Behnam Hedayatnia, Qinlang
  Chen, Anna Gottardi, Sanjeev Kwatra, Anu
 Venkatesh, Raefer Gabriel, and Dilek Hakkani-Tür.
@@ -828,8 +812,8 @@ Kobayashi, and Michimasa Inaba. 2016. The dialogue
  breakdown detection challenge  Task description,
  datasets, and evaluation metrics. In Proceedings
 of the Tenth International Conference on Language
-Resources and Evaluation (LREC 16) , pages 3146 3150, Portorož, Slovenia. European Language Resources
- Association (ELRA).
+Resources and Evaluation (LREC 16) , pages 3146 
+3150, Portorož, Slovenia. European Language Resources
 Chao-Chun Hsu, Sheng-Yeh Chen, Chuan-Chun Kuo,
 Ting-Hao Huang, and Lun-Wei Ku. 2018. EmotionLines 
  An emotion corpus of multi-party conversations.
@@ -848,7 +832,6 @@ S Lee, H Schulz, A Atkinson, J Gao, K Suleman,
 L El Asri, M Adada, M Huang, S Sharma, W Tay,
 et al. 2019. Multi-domain task-completion dialog
 challenge. Dialog system technology challenges ,
-8(9).
 Yanran Li, Hui Su, Xiaoyu Shen, Wenjie Li, Ziqiang
 Cao, and Shuzi Niu. 2017. DailyDialog  A manually
 labelled multi-turn dialogue dataset. In Proceedings
@@ -874,7 +857,6 @@ Rieser, Samira Shaikh, David Traum, Yi-Ting Yeh,
 Zhou Yu, Yizhe Zhang, and Chen Zhang. 2022. Report
  from the nsf future directions workshop on automatic
  evaluation of dialog  Research directions and
-challenges.
 Shikib Mehri and Maxine Eskenazi. 2020a. Unsupervised
  evaluation of interactive dialog with DialoGPT.
 InProceedings of the 21th Annual Meeting of the
@@ -897,13 +879,11 @@ Mitesh M. Khapra. 2018. Towards exploiting background
 InProceedings of the 2018 Conference on Empirical
  Methods in Natural Language Processing , pages
 2322 2332, Brussels, Belgium. Association for Computational
- Linguistics.
 Yixin Nie, Mary Williamson, Mohit Bansal, Douwe
 Kiela, and Jason Weston. 2020. I like fish, especially
 dolphins  Addressing contradictions in dialogue modeling.
  In Proceedings of the 58th Annual Meeting of
 the Association for ComputationaL Linguistics, ACL
-2020 .
 OpenAI. 2023. Gpt-4 technical report.
 Kishore Papineni, Salim Roukos, Todd Ward, and WeiJing
  Zhu. 2002. Bleu  a method for automatic evaluation
@@ -916,15 +896,14 @@ Linguistics.Soujanya Poria, Devamanyu Hazarika, Navonil Majumder,
  2019. MELD  A multimodal multi-party
 dataset for emotion recognition in conversations. In
 Proceedings of the 57th Annual Meeting of the Association
- for Computational Linguistics , pages 527 536, Florence, Italy. Association for Computational
-Linguistics.
+ for Computational Linguistics , pages 527 
+536, Florence, Italy. Association for Computational
 Alec Radford, Karthik Narasimhan, Tim Salimans, Ilya
 Sutskever, et al. 2018. Improving language understanding
  by generative pre-training.
 Alec Radford, Jeffrey Wu, Rewon Child, David Luan,
 Dario Amodei, Ilya Sutskever, et al. 2019. Language
 models are unsupervised multitask learners. OpenAI
-blog, 1(8) 9.
 Hannah Rashkin, Eric Michael Smith, Margaret Li, and
 Y-Lan Boureau. 2019. Towards empathetic opendomain
  conversation models  A new benchmark and
@@ -949,7 +928,6 @@ ChatEval  A tool for chatbot evaluation. In Proceedings
 Chapter of the Association for Computational Linguistics
  (Demonstrations) , pages 60 65, Minneapolis,
  Minnesota. Association for Computational Linguistics.
-
 Abigail See, Stephen Roller, Douwe Kiela, and Jason
 Weston. 2019. What makes a good conversation 
 how controllable attributes affect human judgments.
@@ -958,7 +936,6 @@ American Chapter of the Association for Computational
  Linguistics  Human Language Technologies,
 Volume 1 (Long and Short Papers) , pages 1702 1723,
 Minneapolis, Minnesota. Association for Computational
- Linguistics.
 Thibault Sellam, Dipanjan Das, and Ankur Parikh. 2020.
 BLEURT  Learning robust metrics for text generation.
  In Proceedings of the 58th Annual Meeting of
@@ -966,10 +943,11 @@ the Association for Computational Linguistics , pages
 7881 7892, Online. Association for Computational
 Linguistics.Lifeng Shang, Zhengdong Lu, and Hang Li. 2015. Neural
  responding machine for short-text conversation.
-InProceedings of the 53 7th
+InProceedings of the 53rd Annual Meeting of the Association
+ for Computational Linguistics and the 7th
 International Joint Conference on Natural Language
-Processing (Volume 1  Long Papers) , pages 1577 1586, Beijing, China. Association for Computational
-Linguistics.
+Processing (Volume 1  Long Papers) , pages 1577 
+1586, Beijing, China. Association for Computational
 Kurt Shuster, Jing Xu, Mojtaba Komeili, Da Ju,
 Eric Michael Smith, Stephen Roller, Megan Ung,
 Moya Chen, Kushal Arora, Joshua Lane, Morteza
@@ -977,7 +955,6 @@ Behrooz, William Ngan, Spencer Poff, Naman Goyal,
 Arthur Szlam, Y-Lan Boureau, Melanie Kambadur,
 and Jason Weston. 2022. Blenderbot 3  a deployed
 conversational agent that continually learns to responsibly
- engage.
 Tianxiang Sun, Junliang He, Xipeng Qiu, and Xuanjing
  Huang. 2022. BERTScore is unfair  On social
 bias in language model-based metrics for text generation.
@@ -1002,7 +979,6 @@ Jiang, Xiaoyan Zhu, and Minlie Huang. 2020b. A
 large-scale chinese short-text conversation dataset.
 InNatural Language Processing and Chinese Computing
  , pages 91 103, Cham. Springer International
-Publishing.
 Yu Wu, Wei Wu, Chen Xing, Ming Zhou, and Zhoujun
 Li. 2017. Sequential matching network  A new architecture
  for multi-turn response selection in retrievalbased
@@ -1010,19 +986,16 @@ Li. 2017. Sequential matching network  A new architecture
 Meeting of the Association for Computational Linguistics
  (Volume 1  Long Papers) , pages 496 505,
 Vancouver, Canada. Association for Computational
-Linguistics.
 Guangxuan Xu, Ruibo Liu, Fabrice Harel-Canada, Nischal
  Reddy Chandra, and Nanyun Peng. 2022. EnDex 
  Evaluation of dialogue engagingness at scale.
 InFindings of the Association for Computational
 Linguistics  EMNLP 2022 , pages 4884 4893, Abu
 Dhabi, United Arab Emirates. Association for Computational
- Linguistics.
 Yi-Ting Yeh, Maxine Eskenazi, and Shikib Mehri. 2021.
 A comprehensive assessment of dialog evaluationmetrics. In The First Workshop on Evaluations and
 Assessments of Neural Conversation Systems , pages
 15 33, Online. Association for Computational Linguistics.
-
 Chen Zhang, Luis Fernando D Haro, Thomas
 Friedrichs, and Haizhou Li. 2022a. MDD-Eval  Selftraining
  on augmented data for multi-domain dialogue
@@ -1038,7 +1011,6 @@ Chen Zhang, Luis Fernando D Haro, Rafael E Banchs,
 Thomas Friedrichs, and Haizhou Li. 2021. Deep amfm 
  Toolkit for automatic dialogue evaluation. Conversational
  Dialogue Systems for the Next Decade ,
-pages 53 69.
 Chen Zhang, João Sedoc, Luis Fernando D Haro, Rafael
 Banchs, and Alexander Rudnicky. 2022c. Automatic
 evaluation and moderation of open-domain dialogue
@@ -1048,7 +1020,6 @@ Sebastian Gehrmann, Daniel Deutsch, Elizabeth
 Clark, Yixin Liu, Miruna Clinciu, Saad Mahamood,
 and Khyathi Chandu. 2022d. Needle in a haystack 
 An analysis of finding qualified workers on mturk for
-summarization.
 Saizheng Zhang, Emily Dinan, Jack Urbanek, Arthur
 Szlam, Douwe Kiela, and Jason Weston. 2018a. Personalizing
  dialogue agents  I have a dog, do you
@@ -1056,7 +1027,6 @@ have pets too  In Proceedings of the 56th Annual
 Meeting of the Association for Computational Linguistics
  (Volume 1  Long Papers) , pages 2204 2213,
 Melbourne, Australia. Association for Computational
-Linguistics.
 Yizhe Zhang, Siqi Sun, Michel Galley, Yen-Chun Chen,
 Chris Brockett, Xiang Gao, Jianfeng Gao, Jingjing
 Liu, and Bill Dolan. 2020. DIALOGPT   Large-scale
@@ -1071,7 +1041,6 @@ and Gongshen Liu. 2018b. Modeling multi-turn conversation
  of the 27th International Conference on
 Computational Linguistics , pages 3740 3752, Santa
 Fe, New Mexico, USA. Association for Computational
- Linguistics.
 Tianyu Zhao, Divesh Lala, and Tatsuya Kawahara. 2020.
 Designing precise and robust dialogue response evaluators.
  In Proceedings of the 58th Annual Meeting ofthe Association for Computational Linguistics , pages
@@ -1101,7 +1070,6 @@ for Computational Linguistics.
 Li Zhou, Jianfeng Gao, Di Li, and Heung-Yeung Shum.
 2020b. The design and implementation of XiaoIce,
 an empathetic social chatbot. Computational Linguistics
- , 46(1) 53 93.
 A Appendix  Datasets statistics
 Table 7 shows all the data sets that make up the
 training, development, and test sets. In detail, it
@@ -1112,7 +1080,6 @@ the annotations (at turn and/or dialogue level), the
 original language of the dataset and into which
 languages it is translated.
 B Appendix  Existing Benchmark
-Datasets
 Descriptions of the datasets that constitute the
 DSTC10 benchmark can be found at Zhang et al.
 (2022c). Details of the remaining evaluation
@@ -1124,11 +1091,6 @@ Conversation (ESTC) dialogue corpus (Zhou et al.,
 Conversation (STC) dataset (Shang et al., 2015).
 ESTC is designed to build Chinese empathetic dialogue
  systems. The dialogues are crawled fromName #Turns #DialoguesAverage
-Turn/DialAverage
-Words/TurnAnnotation
-GranularityOriginal
-LanguageTranslation
-Train
 DBDC (Higashinaka et al., 2016) 8,509 415 20.5 7.31 Turn En Zh/Es
 CMU_DoG (Zhou et al., 2018c) 95,305 4,221 22.58 17.93 Turn En Zh/Es
 Cornell Movie-Dialogs (Danescu-Niculescu-Mizil and Lee, 2011) 304,713 83,097 3.67 13.72 Turn En Zh/Es
@@ -1147,7 +1109,8 @@ Switchboard Coherence (Cervone and Riccardi, 2020) 12,059 1,000 12.06 20.55 Turn
 Topical-Chat (Gopalakrishnan et al., 2019) 235,281 10,784 21.82 23.23 Turn En Zh/Es
 Wizard of Wikipedia (Dinan et al., 2019) 201,999 22,311 9.05 18.83 Turn En Zh/Es
 Wochat (Haro et al., 2016) 19,881 607 32.75 6.75 Turn En Zh/Es
-Total 2,636,322 334,470 236.26 255.77 2-GRADE (Huang et al., 2020) 1,800 600 3.0 12.07 Turn En Zh/Es
+Total 2,636,322 334,470 236.26 255.77
+ConvAI2-GRADE (Huang et al., 2020) 1,800 600 3.0 12.07 Turn En Zh/Es
 DailyDialog-GRADE (Huang et al., 2020) 900 300 3.0 12.60 Turn En Zh/Es
 DailyDialog-GUPTA (Gupta et al., 2019) 2,460 500 4.92 12.37 Turn En Zh/Es
 DailyDialog-ZHAO (Zhao et al., 2020) 4,248 900 4.72 12.41 Turn En Zh/Es
@@ -1162,14 +1125,17 @@ PersonaChat-ZHAO (Zhao et al., 2020) 4,614 900 5.13 12.06 Turn En Zh/Es
 TOPICAL-USR (Mehri and Eskenazi, 2020b) 4,032 360 11.2 23.16 Turn En Zh/Es
 ECM-Eval (Zhou et al., 2018a) 3,004 1,502 2.0 13.13 Turn Zh En
 KdConv-Eval (Zhou et al., 2020a) 3,499 354 9.88 21.11 Turn Zh En
-LCCC-Eval (Wang et al., 2020a) 3,009 589 5.11 11.72 148,769 29,910 104.76 212.64 3 (Giorgi et al., 2023  Shuster et al., 2022) 679 21 32.33 16.96 Turn/Dial En Zh/Es
+LCCC-Eval (Wang et al., 2020a) 3,009 589 5.11 11.72 Turn Zh En
+Total 148,769 29,910 104.76 212.64
+BlenderBot3 (Giorgi et al., 2023  Shuster et al., 2022) 679 21 32.33 16.96 Turn/Dial En Zh/Es
 ChatGPT (Giorgi et al., 2023  Radford et al., 2018) 462 21 22 91.07 Turn/Dial En Zh/Es
 GPT-3.5 (Giorgi et al., 2023  Brown et al., 2020) 560 17 32.94 23.73 Turn/Dial En Zh/Es
 HCChinese 2,017 187 10.79 8.08 Turn/Dial Zh En
 ChatEval (Sedoc et al., 2019) 400 200 2 8.13 Turn En Zh/Es
 DSTC10 (Zhang et al., 2022c) 112 28 4 14 Turn En Zh/Es
 JSALT (Rudnicky et al., 2020) 46 13 3.54 17.26 Turn En Zh/Es
-Total 4,276 487 107.60 179.23 7  Summary of the train, development, and test datasets. Some information comes from Yeh et al. (2021).
+Total 4,276 487 107.60 179.23
+Table 7  Summary of the train, development, and test datasets. Some information comes from Yeh et al. (2021).
 Weibo and post-processing, such as the removal
 of trivial responses and filtering out potential advertisements,
  has been conducted by Shang et al.
@@ -1183,7 +1149,7 @@ from the Large-scale Cleaned Chinese Conversation
  dialogue corpus (LCCC) (Wang et al., 2020b).
 The LCCC corpus is designed for pretraining the
 Chinese dialogue model. The dialogues are mainly
-collected from Weibo, a Chinese microbloggingwebsite and other open-source Chinese dialogue
+collected from Weibo, a Chinese microbloggingwebsite17and other open-source Chinese dialogue
 corpora, such as the Douban Conversation (Wu
 et al., 2017) and the E-Commerce Conversation
 Corpus (Zhang et al., 2018b). All the dialogues
@@ -1223,9 +1189,8 @@ inappropriate responses were filtered out. In the
 end, we collected 531 human-chatbot multi-turn
 conversations with 207 from Plato-XL, 224 from
 XiaoIce, and 100 dialogues from the Chinese DialoGPT.
-
 TBD-Q1-2023 Three Bot Dialog Evaluation Corpus
- (TBD-Q1-2023 1 2023)
+ (TBD-Q1-2023 OR TBD  Quarter 1 of 2023)
 from Giorgi et al. (2023) consists of dialogues
 with three chatbots  ChatGPT (Radford et al.,
 2018), GPT-3 (Brown et al., 2020), and BlenderBot3
@@ -1233,13 +1198,15 @@ with three chatbots  ChatGPT (Radford et al.,
 were told to have a long conversation with the chatbots
  on a range of topics of their choosing. All
 conversations were collected between November
-2022 2023. They collected 21 14.6 turns per dialogue. Conversations
+2022 and March 2023. They collected 21 dialogues
+with an average of 14.6 turns per dialogue. Conversations
  for BlenderBot3 were directly from the
 website https //blenderbot.ai/ . The
 ChatGPT conversations were taken directly from
 the website https //chat.openai.com/ .
 Finally, GPT3 used the text-davinci-003 model
 with the prompt Hal is a chatbot that attempts to
-answer questions with useful responses  . The GPT3 0.5, max
+answer questions with useful responses  . The GPT3
+ model parameters were temperature of 0.5, max
 tokens of 289, top-p of 0.3, frequency penalty of
 0.5, and presence penalty of 0.

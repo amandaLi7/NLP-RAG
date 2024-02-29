@@ -1,13 +1,10 @@
 Latent Positional Information is in the Self-Attention Variance of
 Transformer Language Models Without Positional Embeddings
-Ta-Chung Chi 
 Carnegie Mellon UniversityTing-Han Fan
 Princeton UniversityLi-Wei Chen
 Carnegie Mellon University
 Alexander I. Rudnicky
 Carnegie Mellon UniversityPeter J. Ramadge
-Princeton University
-Abstract
 The use of positional embeddings in transformer
  language models is widely accepted.
 However, recent research has called into question
@@ -26,7 +23,6 @@ persists after extensive gradient updates. Our
 findings serve to justify the decision to discard
 positional embeddings and thus facilitate more
 efficient pretraining of transformer language
-models.
 1 Introduction & Related Work
 Transformer models have become the backbone of
 natural language processing applications (Vaswani
@@ -48,17 +44,7 @@ et al., 2021  Sinha et al., 2021  Haviv et al., 2022),
 the situation is different for transformer language
 models (Irie et al., 2019  Yang et al., 2019  Tsai
  Correspondence to  tachungc@andrew.cmu.edu
-Layer norm
-Multi
-Head
-
-Attention
-FFN
-Addition
-Input
-Layer norm
-Addition
-Layer 2 3 4 1 1  The architecture of a Pre-LN transformer language
+Layer 1Figure 1  The architecture of a Pre-LN transformer language
  model. All the parameters are randomly initialized
  and randomly sampled input is used in this work.
 et al., 2019  Scao et al., 2022  Haviv et al., 2022).
@@ -78,10 +64,11 @@ This motivates further investigation into individual
 operations within a transformer layer.
 The example architecture of a pre-LN (Xiong
 et al., 2020) multi-layer transformer language
-model with no positional embeddings used in thisarXiv 2305.13571 1  [cs.CL]  23 2023405060708090100 0510152025 2  We plot the positions w.r.t their mean absolute
+model with no positional embeddings used in thisarXiv 2305.13571v1  [cs.CL]  23 May 2023405060708090100
+0510152025MAENumber of LayersFigure 2  We plot the positions w.r.t their mean absolute
 error (MAE) for input sequence length L  512 . A
-naive baseline of predicting the middle point of L  256 128. The numbers are the average of
-5 seeds.
+naive baseline of predicting the middle point of L  256
+gives an MAE of 128. The numbers are the average of
 work is shown in Figure 1.1We hereinafter refer
 to this configuration as TLM. Our primary focus
 is on the multi-head attention (MHA) module of a
@@ -114,7 +101,7 @@ shown by the position probing experiment in Haviv
 et al. (2022). Since both BERT and TLM have
 access to the same semantic input and the only
 difference is the use of causal attention masks in
-TLM, we hypothesize that the positional informa Post-LN
+TLM, we hypothesize that the positional informa1Post-LN
  places layer norm at different positions. It is the
 configuration used in BERT (Devlin et al., 2019).tion may be attributed to the interaction between
 causal attention masks and the TLM architecture.
@@ -156,138 +143,82 @@ sequence length L  512 , standard deviation for
 initialization σ  0.02. All proofs of lemmas are
 deferred to Appendix A.
 Given a sequence of randomly sampled input
-embeddings {xm}L
 m 1, where each element of
 xm Rdis sampled i.i.d from N(0, σ2), a TLM
 consists of the following operations 
 3.1 Layer Normalization
 For each input embedding xm, it computes the
 sample mean and (biased) sample variance 
-xm,  Pd
-i 1xmi
-d, S(xm, )  Pd
-i 1(xmi xm, )2 0 100 200 300 400 500 0.00.20.40.60.81.0 3  We plot the positions w.r.t their cumulative
-attention score for L  512 500 samples.
+d0 100 200 300 400 500
+Positions0.00.20.40.60.81.0Cumulative Attention ProbabilityFigure 3  We plot the positions w.r.t their cumulative
+attention score for L  512 averaged over 500 samples.
 Then each entry iofxm, denoted as xmi, is normalized
  by mean and variance to emi 
-emi xmi xm, p
-S(xm, ) γ β
-( ) xmi E[xmi]p
-V[xmi] N(0,1),
 where V[x]denotes the variance of x. Since the
 initialization scheme sets γ  1 andβ  0,( )
 holds with sufficiently large dby the Law of large
 numbers and the continuous mapping theorem.
-3.2 Self Attention
 Each attention head computes query, key, and value
-vectors in Rd
-H 
 qm Wqem,km Wkem,vm Wvem,
-where Wq,Wk,Wv Rd
-H dare matrices with
 each element sampled i.i.d from N(0, σ2).
 To be precise, most matrices ( W(h)
-q,W(h)
-k,
-W(h)
-v), vectors ( q(h)
-m,k(h)
-m,v(h)
 m), and scalars ( l(h)
-mn,
-a(h)
 mn) are associated with a head number h. For
 notation simplicity, we only show the dependency
-onhwhen we need it.
 Lemma 1. qm,km, andvmhave zero mean and
 (dσ2) Icovariance matrix.
 The resulting vectors are processed by the selfattention
  module for pre-Softmax logits 
-lmn (
- qm,kn ,ifm n
- inf, otherwise
-0 1 2 3 4 5 6 8 7 6 5 4 3
 Log VarianceTheoretical@Layer 0
-Simulation@Layer 0
-Simulation@Layer 5
-Simulation@Layer 11 4  We plot the log positions (up to L  512 ) w.r.t
+Simulation@Layer 11Figure 4  We plot the log positions (up to L  512 ) w.r.t
 their log variance under the assumption of Property 1.
 The simulation aligns with the theoretical curve posited
-by Lemma 3 0 500 samples.
+by Lemma 3 at the 0thlayer averaged over 500 samples.
 followed by the scaled softmax normalization 
-amn exp 
-lmn/p
-d/H 
-PL
-i 1exp 
-lmi/p
-d/H 
 Lemma 2. lmnhas zero mean andd3σ4
-H variance.
-lmn/p
-d/H hasd2σ4
-Hvariance.
 The numerical variance of lmn/p
-d/H in our case
-is7682 0.024 12 0.0079 . Lemma 2 1. When σ4 2,lm, has small variance,
+12 0.0079 . Lemma 2 suggests the
+following approximation 
+Property 1. When σ4 H
+d2,lm, has small variance,
  making the attention weights am, almost
-evenly distributed among all positions.2 3, we verify Property 1 by showing that
+evenly distributed among all positions.2
+In Figure 3, we verify Property 1 by showing that
 amnis almost evenly distributed in simulation.
 Observe that the output vector omat position m
-is 
-om Wo
- H
-h 1 1a(h)
-mnv(h)
-n 
-,
 where denotes the concatenation of vectors from
 allHattention heads. Assume that Property 1
 is valid and that Wo Rd dhas elements i.i.d
 sampled from N(0, σ2), we derive the distribution
-ofombelow.
 Lemma 3. omhas zero mean andd2σ4
-mIcovariance
- matrix.
 2This approximation was also used in Xiong et al. (2020)
 except that they made a stronger assumption that WqandWk
-have to be initialized as zero matrices.0 1 2 3 4 5 6 15 10 5 05Log VarianceSimulation@ 0.2
-Theoretical@ 0.2
-Simulation@ 0.02
-Theoretical@ 0.02
-Simulation@ 0.002
-Theoretical@ 0.002 5  We vary the value of σand show its effect at the 0thlayer. As we can see, a smaller value of σbrings
+have to be initialized as zero matrices.0 1 2 3 4 5 6
+05Log VarianceSimulation@ 0.2
+Figure 5  We vary the value of σand show its effect at the 0thlayer. As we can see, a smaller value of σbrings
 Lemma 3 into alignment with the corresponding simulation more closely. Note that the two lines overlap completely
 when σ  0.002. Average of 500 samples.
-Figure 4 3 1. We can see
+Figure 4 is a simulation that verifies Lemma 3 under
+ the assumption of Property 1. We can see
 thatthe variance of omalready encodes the positional
- information m.
-3.3 1, the
+3.3 Residual Connection
+As denoted by the Addition block of Figure 1, the
 residual connection sets the output as ym xm 
 om. It allows the model to pass the first MHA
 output to later MHA modules as well as the final
 classifier. As the positional information has been
 passed by the residual connection, we omit the FFN
 part in our analysis.
-3.4 3, which happens before the MHA modules
+3.4 The Final Layer Normalization
+Layer normalization is an operation that might
+eliminate the positional information derived in
+Lemma 3, which happens before the MHA modules
  and position classifier. As mentioned in  3.1,
-LN(ym)gives 
-y 
-mi ymi E[ymi]p
-V[ymi] xmi WoWvPm
-neni
-mq
-σ2 2σ4
-m,
 E[ymi]   0,V[ymi]  V[xmi]  V[omi]
- σ2 2σ4 4. The variance of the j-th dimension of
-ymis 
-mσ2 P
-i(Wo,j Wv, i)2
-mσ2 2σ4,where Wo,j  R1 dis the j-th row of Wo.
+Lemma 4. The variance of the j-th dimension of
+mσ2 d2σ4,where Wo,j  R1 dis the j-th row of Wo.
 Wv, i Rd 1is the i-th column of Wv. As long
-asP
-i(Wo,j Wv, i)2 2σ4, the classifier should
+i(Wo,j Wv, i)2  d2σ4, the classifier should
 be able to exploit the discrepancy to derive m.
 Readers might wonder why Wo,j andWv, iin
 the numerator cannot be treated as random variables.
@@ -295,17 +226,16 @@ the numerator cannot be treated as random variables.
 dimension ( j-th) at a time. This means we cannot
 use the law of large numbers to approximate the
 sample variance of ymjas we did for the denominator.
-
-3.5 3.2.
+3.5 Relaxing the Assumptions
+We discuss possible relaxation of the assumptions
 What if Property 1 does not hold  Or equivalently,
- σ4 2. This prompts us to vary the
+d2. This prompts us to vary the
 value of σ. In Figure 5, we see that smaller σbetter
  aligns Lemma 3 with the simulations, which is
 unsurprising as Lemma 3 assumes small σ. Even
 when σis not too small (i.e., σ  0.2,0.02), the
 variance still encodes the positional information as
 the variance of omis negatively correlated with its
-position m.
 Other Initialization Schemes So far we assume
 the weight matrices ( Wq,Wk,Wv,Wo) are initialized
  i.i.d from N(0, σ2). However, we can relax
@@ -313,11 +243,9 @@ the assumption to i.i.d. samples from a distribution
 with zero mean and finite variance. This is because
 the proof in Appendix A calculates the covariance.
 The variance calculation relies on E[rir 
-i]  σ2I
-where r 
 iis the i-th row vector of a weight matrix.This property holds for any distribution with zero
-mean and σ2variance.
-4 3 of Haviv
+Why are the positions of later tokens in a sequence
+ harder to be predicted in Figure 3 of Haviv
  et al. (2022)  Lemma 3 states the variance
 is inversely proportional to the position m, so the
 variance of later tokens (large m) plateaus, resulting
@@ -330,13 +258,12 @@ Why do lower layers (closer to input) give worse
 probing performances in both Figure 2 and Haviv
  et al. (2022)  This can be explained by Figure
  4. Most of the positions at the 0thlayer have
-tiny variance ( exp( 10)   4 .5 5), which again
+tiny variance ( exp( 10)   4 .5e 5), which again
 poses a difficult numerical optimization problem.
 Why does BERT fail to converge without positional
  embeddings  In a BERT model (Devlin
 et al., 2019), each token has access to all the other
 tokens, making the variance at all positionsd2σ4
-L.
 Therefore, a BERT model cannot utilize variance
 differences as its positional indicator.
 5 Post-Training Results
@@ -355,23 +282,24 @@ gradients and thereby fewer parameter updates,
 and 2) Lower layers typically encode more lowlevel
  information dependent on positional information
  (Vuli  c et al., 2020  de Vries et al., 2020).
-Figures 6 7 0th(lowest)
+Figures 6 and 7 demonstrate that the 0th(lowest)
 layer exhibits highly similar cumulative attention
 probability and decay-with-position variance as the
 theoretical results. In contrast, higher layers deviate
 from the analyses in   3. We posit that the model
 learns to rely more heavily on semantic rather than
 positional information. This also explains why
-0 100 200 300 400 500 0.20.40.60.81.0 0 6 11 6  We plot the positions w.r.t their cumulative
+0 100 200 300 400 500
+Positions0.20.40.60.81.0Cumulative Attention ProbabilityLayer 0
+Layer 11Figure 6  We plot the positions w.r.t their cumulative
 attention probability for L  512 of a pre-trained TLM.
 We average over all heads in a layer and 500 samples.
-0 1 2 3 4 5 6 2 1 0123 0 6 11 7  We plot the log positions w.r.t their log variance
+0123Log VarianceLayer 0
+Figure 7  We plot the log positions w.r.t their log variance
  for L  512 of a pre-trained TLM. We average
-over 500 samples.
 predicting positions using outputs of higher transformer
  layers is more challenging as demonstrated
 in Figure 2 of Haviv et al. (2022).
-6 Conclusion
 We mathematically analyzed a randomly initialized
 transformer language model without positional embeddings.
  We showed that the variance of the selfattention
@@ -391,7 +319,6 @@ obviously do not hold true for human languages
 and pre-trained TLMs. Therefore, we attempted
 to empirically verify the existence of lemmas and
 properties on a pre-trained TLM without positional
-embeddings in  5.
 That being said, several methods could be attempted
  to remove these assumptions. Firstly, we
 can analyze the training dynamics of a TLM to shed
@@ -401,8 +328,6 @@ language model could be used to quantify the degree
  of input token duplication in human languages.
 This might give us a more accurate estimate of the
 variance at different positions. We leave these ideas
-as future work.
-Ethics Statement
 Our work provides a deeper understanding of why
 a transformer language model can still perform
 well without positional embeddings, potentially
@@ -414,19 +339,15 @@ the ethical challenges of improper text generation
 and privacy issues inherent in the data collection
 process. These implications apply to any natural
 language processing research and are not unique to
-this specific work.
-Acknowledgment
 The authors acknowledge the support from Boeing
-(2019-STU-PA-259), Amazon (CC ADV 00474341 2021 TR), NSF MRI Award 1919452, and Princeton
- Research Computing.
-References
+(2019-STU-PA-259), Amazon (CC ADV 00474341
+2021 TR), NSF MRI Award 1919452, and Princeton
 Alex Andonian, Quentin Anthony, Stella Biderman, Sid
 Black, Preetham Gali, Leo Gao, Eric Hallahan, Josh
 Levy-Kramer, Connor Leahy, Lucas Nestler, Kip
 Parker, Michael Pieler, Shivanshu Purohit, Tri Songz,
 Wang Phil, and Samuel Weinbach. 2021. GPT-NeoX 
 Large Scale Autoregressive Language Modeling in
-PyTorch.
 Satwik Bhattamishra, Arkil Patel, and Navin Goyal.
 2020. On the computational power of transformersand its implications in sequence modeling. In Proceedings
  of the 24th Conference on Computational
@@ -460,13 +381,12 @@ positional encodings still learn positional information.
 arXiv preprint arXiv 2203.16634 .
 Kazuki Irie, Albert Zeyer, Ralf Schlüter, and Hermann
 Ney. 2019. Language modeling with deep transformers.
- In INTERSPEECH .
 M I Jordan. 1986. Serial order  a parallel distributed processing
  approach. technical report, june 1985-march
-1986.
 Diederik P. Kingma and Jimmy Ba. 2014. Adam 
 A method for stochastic optimization. Cite
-arxiv 1412.6980 3rd International Conference for
+arxiv 1412.6980Comment  Published as a conference
+ paper at the 3rd International Conference for
 Learning Representations, San Diego, 2015.
 Juho Lee, Yoonho Lee, Jungtaek Kim, Adam Kosiorek,
  Seungjin Choi, and Yee Whye Teh. 2019.
@@ -477,7 +397,9 @@ permutation-invariant neural networks. In Proceedings
  Learning Research , pages 3744 3753. PMLR.
 Ziyang Luo, Artur Kulmizev, and Xiaoxi Mao. 2021.
 Positional artefacts propagate through masked language
- model embeddings. In Proceedings of the 59 11th International Joint Conference
+ model embeddings. In Proceedings of the 59th
+Annual Meeting of the Association for Computational
+Linguistics and the 11th International Joint Conference
  on Natural Language Processing (Volume 1 
 Long Papers) , pages 5312 5327, Online. Association
 for Computational Linguistics.Adam Paszke, Sam Gross, Francisco Massa, Adam
@@ -490,14 +412,11 @@ Junjie Bai, and Soumith Chintala. 2019. Pytorch
 An imperative style, high-performance deep learning
 library. In Advances in Neural Information Processing
  Systems 32 , pages 8024 8035. Curran Associates,
-Inc.
 Alec Radford, Jeffrey Wu, Rewon Child, David Luan,
 Dario Amodei, Ilya Sutskever, et al. 2019. Language
 models are unsupervised multitask learners. OpenAI
-blog, 1(8) 9.
 David E. Rumelhart and James L. McClelland. 1987.
 Learning Internal Representations by Error Propagation
- , pages 318 362.
 Teven Le Scao, Thomas Wang, Daniel Hesslow, Lucile
 Saulnier, Stas Bekman, M Saiful Bari, Stella Biderman,
  Hady Elsahar, Jason Phang, Ofir Press, Colin
@@ -518,10 +437,11 @@ Yao-Hung Hubert Tsai, Shaojie Bai, Makoto Yamada,
 Louis-Philippe Morency, and Ruslan Salakhutdinov.
 2019. Transformer dissection  An unified understanding
  for transformer s attention via the lens of
-kernel. In Proceedings of the 2019 9th International Joint Conference on Natural
+kernel. In Proceedings of the 2019 Conference on
+Empirical Methods in Natural Language Processing
+and the 9th International Joint Conference on Natural
  Language Processing (EMNLP-IJCNLP) , pages
 4344 4353, Hong Kong, China. Association for Computational
- Linguistics.
 Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob
 Uszkoreit, Llion Jones, Aidan N Gomez, Łukasz
 Kaiser, and Illia Polosukhin. 2017. Attention is all
@@ -533,7 +453,6 @@ pretrained language models for lexical semantics. In
 Proceedings of the 2020 Conference on Empirical
 Methods in Natural Language Processing (EMNLP) ,
 pages 7222 7240, Online. Association for Computational
- Linguistics.
 Ruibin Xiong, Yunchang Yang, Di He, Kai Zheng,
 Shuxin Zheng, Chen Xing, Huishuai Zhang, YanyanLan, Liwei Wang, and Tie-Yan Liu. 2020. On layer
 normalization in the transformer architecture. In International
@@ -542,211 +461,47 @@ Baosong Yang, Longyue Wang, Derek F. Wong, Lidia S.
 Chao, and Zhaopeng Tu. 2019. Assessing the ability
 of self-attention networks to learn word order. In
 Proceedings of the 57th Annual Meeting of the Association
- for Computational Linguistics , pages 3635 3644, Florence, Italy. Association for Computational
-Linguistics.A Proofs
-The proof of Lemma 1 2 are head-dependent
+ for Computational Linguistics , pages 3635 
+3644, Florence, Italy. Association for Computational
+The proof of Lemma 1 and 2 are head-dependent
 while that of Lemma 3 is head-independent. For
-notation simplicity, at Lemma 1 2, we drop
+notation simplicity, at Lemma 1 and 2, we drop
 the head dependency on matrices ( W(h)
-q,W(h)
-k,
-W(h)
-v), vectors ( q(h)
-m,k(h)
-m,v(h)
 m), and scalars ( l(h)
-mn,
-a(h)
-mn).
 Proof of Lemma 1 Here, we use r 
-ito denote
 thei-th row vector of Wv.
-cov(vm,vn)  E[vmv 
-n]
- E[Wveme 
-nW 
-v]
- E 
-   
-  r 
-1em
-...
-r 
-d
-Hem 
-  h
-e 
-nr1. . .e 
-nrd
-Hi 
-  
- h
-E[r 
-ieme 
-nrj]id
-H
-i,j 1
- h
-E[Tr(rjr 
-ieme 
-n)]id
-H
-i,j 1
- h
-Tr(E[rjr 
-i]E[eme 
-n])id
-H
-i,j 1
-( )  
 Tr(( 1i jσ2) Id  1m n Id) d
-H
-i,j 1 1 1m ndσ2 d
-H
-i,j 1
-  ( 1m ndσ2) Id/H
 ( )holds because riandrjare independent when
 i  j(similarly for emanden) and the covariance
 of a Gaussian random vector is an identity matrix.
 IdandId/H denote d dandd
-H d
-Hidentity
-matrices.
 Proof of Lemma 2 Here, we use r 
-ito denote
 thei-th row vector of WqandWk.
-cov(lmn, lmp)
- E[(e 
-mW 
-qWken)(e 
-mW 
-qWkep) ]
- E[Tr(e 
-mW 
-qWkene 
-pW 
-kWqem)]
- E[Tr(eme 
-mW 
-qWkene 
-pW 
-kWq)]
- Tr(E[eme 
-m]E[W 
-qWkene 
-pW 
-kWq])
- E[Tr(ene 
-pW 
-kWqW 
-qWk)]
- Tr(E[ene 
-p]E[W 
-kWqW 
-qWk)])
-  ( 1n p)Tr(E[WqW 
-q]E[WkW 
-k])
-( )  ( 1n p)Tr((d
-Hσ2 I)(d
-Hσ2 I))
-  ( 1n p)d3σ4 2( )holds since 
-E[WqW 
-q]  E 
-   
-  r 
-1...
-r 
-d
-H 
-  h
-r1. . .rd
-Hi 
-  
- h
-E[r 
-irj]id
-H
-i,j 1 d
-Hσ2 3 Because Wo Rd dis applied
+Proof of Lemma 3 Because Wo Rd dis applied
  on a concatenation of vectors at all heads, we
-takevi  H
-h 1v(h)
 i.vihere is head-independent
 while viat Lemma 1 is head-dependent. Here, we
-user 
 ito denote the i-th row vector of Wo.
-cov(om,om)
-Property 1 E"
-WoPm
-i 1 1v 
-j
-mW 
-o#
- 1
-m mX
-i,j 1E[Woviv 
-jW 
-o]
- 1
-m mX
-i,j 1 1vi
-...
-r 
-dvi 
-   v 
-jr1. . .v 
-jrd  
-  
- 1
-m mX
-i,j 1h
-E[r 
-kviv 
-jrl]id
-k,l 1 1
-m mX
-i,j 1h
-E[Tr(rlr 
-kviv 
-j)]id
-k,l 1 1
-m mX
-i,j 1h
-Tr(E[rlr 
-k]E[viv 
-j])id
-k,l 1
-( ) 1
-m mX
-i,j 1 
 Tr(( 1k lσ2) I ( 1i jdσ2) I) d
-k,l 1 2σ4
-mI
 ( )follows from Lemma 1  because
-cov(v(h)
-i,v(h)
 j)   ( 1i jdσ2) Id/H, a concatenation
  for all h HgivesE[viv 
-j]   ( 1i jdσ2) Id.
 B Probing Experiment Details
 We train a randomly initialized and frozen TLM
 with 12layers, d  768 ,H  12 ,L  512 , and
 σ  0.02. We use the Adam optimizer (Kingma
-and Ba, 2014) with learning rate 1 3 5000
+and Ba, 2014) with learning rate 1e 3and5000
 gradient updates. The batch size is set to 32. We
 implement our model using PyTorch (Paszke et al.,
 2019).# Layers Hidden Size # Attention Heads Train Seq. Len. # Trainable Params.
-12 64 12 512 162M
 Optimizer Batch Size Train Steps Precision Dataset
-Adam (lr 6e-4) 32 50,000 16 2 1  Pre-trained Model Configurations.
+Adam (lr 6e-4) 32 50,000 bfloat16 OpenWebText2
+Table 1  Pre-trained Model Configurations.
 C Pre-trained Transformer Language
-Model Details
 We use the gpt-neox library (Andonian et al., 2021)
 to train a TLM with no positional embeddings. Detailed
  hyperparameters are listed in Table 1. The
-pretraining takes 5 hours on one NVIDIA A GB.
-
+pretraining takes 5 hours on one NVIDIA A10040GB.
 D Scientific Artifacts
 We use the gpt-neox library (Andonian et al., 2021)
 under Apache-2.0 license. OpenWebText2 (Gao
@@ -754,6 +509,6 @@ et al., 2020) is released by the authors of gpt-neox.
 The codebase and dataset are publicly released for
 research purposes. The steps taken to protect privacy
  and anonymization are discussed in Section
-6 7 of Gao et al. (2020). The distribution
+6 and 7 of Gao et al. (2020). The distribution
 and statistics of OpenWebext2 are also discussed
 in Gao et al. (2020).

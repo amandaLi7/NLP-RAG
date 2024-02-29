@@ -1,6 +1,5 @@
 Grounding Language Models to Images for Multimodal Inputs and Outputs
-Jing Yu Koh Ruslan Salakhutdinov Daniel Fried1
-Abstract
+Jing Yu Koh1Ruslan Salakhutdinov1Daniel Fried1
 We propose an efficient method to ground pretrained
  text-only language models to the visual
 domain, enabling them to process arbitrarily interleaved
@@ -22,7 +21,6 @@ approach works with any off-the-shelf language
 model and paves the way towards an effective,
 general solution for leveraging pretrained language
  models in visually grounded settings.
-1. Introduction
 Trained at massive scale on large text corpora, large language
  models (LLMs) are able to demonstrate compelling
 abilities such as generating human-like dialogue and answering
@@ -39,7 +37,6 @@ In this paper, we show that we are able to efficiently leverage
 Proceedings of the 40thInternational Conference on Machine
 Learning , Honolulu, Hawaii, USA. PMLR 202, 2023. Copyright
 2023 by the author(s).
-What is this bird 
 What other birds can this feeder attract 
 Show me pictures of some of these birds. This feeder can attract many types of birds. The
 birds that can eat the seeds include the song
@@ -65,7 +62,7 @@ for processing and outputting arbitrarily interleaved multimodal
 a frozen pretrained visual encoder, and train with a multitask
  objective for (1) image captioning (learning to process
 interleaved multimodal inputs) and (2) image-text retrieval
-1 2301.13823 4  [cs.CL]  13 2023Grounding Language Models to Images for Multimodal Inputs and Outputs
+1arXiv 2301.13823v4  [cs.CL]  13 Jun 2023Grounding Language Models to Images for Multimodal Inputs and Outputs
 (learning to produce interleaved multimodal outputs). For
 captioning, we extract visual embeddings from the visual
 encoder, and learn a linear mapping through the maximumlikelihood
@@ -109,9 +106,9 @@ Our findings pave the way towards models capable of conditioning
  on and generating long, coherent, multimodal
 sequences, and provide further insights into the abilities of
 pretrained text-only LLMs on visually grounded tasks. Our
-code and pretrained models are made publicly available to
+code and pretrained models are made publicly available2to
 encourage future work and exploration.
-1 24 hours on a single GPU.
+1Our model is trained in less than 24 hours on a single GPU.
 2https //github.com/kohjingyu/fromage2. Related Work
 Large language models. Large language models have
 recently received significant attention in the machine learning
@@ -148,8 +145,8 @@ outputs  Flamingo is incapable of producing visual outputs,
 while CM3 generally produces poor visual outputs (further
 comparison in the appendix). In addition, FROMAGe is
 efficient and requires significantly less compute  it is trained
-in 1 GPU day (Flamingo uses 1535 15 days, and
-CM3 384 24 days), and does not require
+in 1 GPU day (Flamingo uses 1535 TPUs for 15 days, and
+CM3 uses 384 GPUs for 24 days), and does not require
 web-scale interleaved image-text data.
 Efficient adaptation of pretrained models. Lastly, our
 work builds upon approaches for parameter and resource
@@ -162,7 +159,7 @@ small set of parameters to act as an input prefix, while keeping
 to new language tasks. Frozen (Tsimpoukelli et al., 2021)
 proposed training a visual encoder to enable few-shot learning
  for multimodal tasks. MAGMA (Eichenberg et al., 2022)
-improved upon Frozen by training adapter modules for im Grounding
+improved upon Frozen by training adapter modules for im2Grounding
  Language Models to Images for Multimodal Inputs and Outputs
 proved performance on downstream tasks. ESPER (Yu et al.,
 2022b) uses reinforcement learning to improve zero-shot
@@ -176,7 +173,6 @@ methods from these prior works. While previous models
 mostly focus on generating text-only outputs, our model
 is capable of processing arbitrarily interleaved image-text
 inputs to generate coherent interleaved image-text outputs.
-3. Method
 Our approach integrates a language model and visual model
 while keeping their parameters frozen. We learn translation
 parameters (parameterized as linear layers) to cast images
@@ -195,7 +191,6 @@ using a byte-level BPE tokenizer (Sennrich et al., 2015
 Radford et al., 2019  Brown et al., 2020). The models were
 trained to maximize the log likelihood of the token sequence,
 factorized as a sum of conditional log probabilities 
-logpθ(x)  tX
 t 1logpθ(st s1, . . . , s t 1)
 Visual model. To extract visual information from an input
 image ycorresponding to a caption x, we use a pretrained
@@ -234,7 +229,6 @@ layer of the LLM, hθ(xi) Rp, into a vector space for
 retrieval, where qis a dimension smaller than p. Similarly,
 we train another linear mapping Wi Rm qto map the
 visual embeddings vϕ(yi)into the same retrieval space.
-3.3. Training Setup
 We train FROMAGe with a multi-task objective of image
 captioning and image-text retrieval (summarized in Fig. 2) 
 Image captioning. Similar to previous work (Tsimpoukelli
@@ -244,55 +238,28 @@ image captioning as the task of generating text tokens conditioned
 of the image-to-text mapping layer, vϕ(y)TWc, which is
 prepended to the caption. The log likelihood of caption x
 (tokenized as (s1, . . . , s T)) conditioned on its image yis 
-lc(x, y)  TX
 t 1logpθ(st vϕ(y)TWc, s1, . . . , s t 1)
 The captioning loss Lcis then the negative log likelihood of
 all samples in a batch of Nimage-text pairs 
-Lc  1 1lc(xi, yi) (1)
 Image-text retrieval. In addition to image captioning, we
 train our model to retrieve images conditioned on text (and
 vice versa). Image-text retrieval has been used to learn
 3Grounding Language Models to Images for Multimodal Inputs and Outputs
-Generated Text
 (next token prediction)
-LLM
 InfoNCE Loss Frozen Model Loss
 Cross Entropy Loss Linear Layer
-silhouette of
-a plane
-against the
-sunset [RET]
 Image-Text Retrieval silhouette of a
-plane against
 the sunset [RET] Output Embeddings
 (seq_len, 4096) silhouette of...[RET]
-Visual
 Encoder Input Caption
-Input Image
-Image Captioning
 Image and Caption Inputs Visual
-Encoder Visual
-Encoder
-silhouette
-of a plane
-against
-the sunset cute cat
-sitting on
 a scooter Tokenizer Tokenizer  img1  silhouette of ... img2  a cute scooter Input Embeddings
 (seq_len, 4096) Generated Text
 (next token prediction)
-LLM
 Cross Entropy Loss silhouette of a
-plane flying into
-the sun  pad  cat
-on a motorcycle
-Combined Groundtruth
 Caption silhouette of a
-plane against the
-sunset  pad  cute
-cat sitting on a
-scooter ...
-Image #1 Caption #1 Image #2 Caption #2 2. Overview of the FROMAGe architecture. FROMAGe is a model trained on image-text pairs for image captioning and image-text
+Image #1 Caption #1 Image #2 Caption #2
+Figure 2. Overview of the FROMAGe architecture. FROMAGe is a model trained on image-text pairs for image captioning and image-text
 retrieval. It is capable of processing arbitrarily interleaved image and text inputs, and producing interleaved images and text as outputs.
 joint visual and language representations (Jia et al., 2021 
 Radford et al., 2021), enabling cross-modality search from
@@ -306,29 +273,24 @@ the image and text embeddings can be computed with the
 learnt linear mappings Wt, andWi(described in Sec. 3.2) 
 sim(x, y)  (hθ(x)TWt)(vϕ(y)TWi)T
  hθ(x)TWt  vϕ(y)TWi)T 
-We minimize the InfoNCE loss for text-to-image (t i) and
-image-to-text (i t) retrieval over a batch of Ntext-image
+We minimize the InfoNCE loss for text-to-image (t2i) and
+image-to-text (i2t) retrieval over a batch of Ntext-image
 pairs (xi, yi), where each example is treated as a positive
 pair, and other in-batch examples as negatives 
-Lt i  1 1
 logexp( sim(xi, yi)/τ)PN
 j 1exp( sim(xi, yj)/τ) 
-(2)
-Li t  1 1
 logexp( sim(yi, xi)/τ)PN
 j 1exp( sim(yi, xj)/τ) 
-(3)
 Similar to previous work (Jia et al., 2021  Radford et al.,
 2021), τis a learnable temperature parameter. The final
 training loss is a weighted sum of the captioning loss (Eq. 1)
-and the retrieval losses (Eq. 2 3) 
-L λcLc λr(Lt i Li t)
+and the retrieval losses (Eq. 2 and 3) 
 λcandλrare hyperparameters representing captioning and
 retrieval loss weights respectively. Since θandϕare frozen,
 only the linear mappings Wc,Wt, andWi, and the [RET]
 embedding vector receive gradient updates.
 3.4. Data and Implementation Details
-We train on the Conceptual Captions (CC M)
+We train on the Conceptual Captions (CC3M)
 dataset (Sharma et al., 2018) consisting of 3.3 mil-lion image-text pairs.3To encourage the model to attend
 more explicitly to images, we randomly concatenate distinct
 examples together (with probability of 0.5 to concatenate)
@@ -351,112 +313,32 @@ frozen, our method is memory and compute efficient  we
 backpropagate through the frozen LLM and visual model,
 but only compute gradient updates for the 3 trainable linear
 mappings and [RET] embedding (see Sec. 3.3). Our models
- are trained with a batch size of 180 1 epoch (18000 iterations)
- on 1 6000 GPU (clock time of 24 hours). We use
+ are trained with a batch size of 180 for 1 epoch (18000 iterations)
+ on 1 A6000 GPU (clock time of 24 hours). We use
 the Adam (Kingma & Ba, 2015) optimizer with a learning
-rate of 0.0003 100 steps. The loss weights
-λcandλrare set to 1 1 256 , and embedding
+rate of 0.0003 and warmup of 100 steps. The loss weights
+λcandλrare set to 1 and we use a visual prefix length of
+k  1and retrieval embedding dimension q  256 , and embedding
  dimension d  4096 (inherited from OPT-6.7B).
-4. Experiments
 The most interesting capabilities of FROMAGe emerge in
 situations with both image-and-text inputs and image-andtext
  outputs, such as multimodal dialogue (Fig. 1). As there
 does not exist comprehensive benchmarks for these specific
 tasks, we focus evaluation on image retrieval and image33.1M
  examples remain after filtering out missing images.
-4 2 in
+4Grounding Language Models to Images for Multimodal Inputs and Outputs
+ detailed ink wash  X    gouache painting 
+  vector icon   oil on canvas 
+ pen drawing  X   high resolution
+photography   vector icon   pencil outline   digital drawing 
+ at the beach  X    in a forest   by the mountains   in a showroom   at the lake 
 the afternoon. It was good to
-get friends
-and family
-together for
-fun and food
 and drinks. Dad enjoyed
-a glass of
-wine while
-he manned
-the grill. The
-burgers
-and
-sausages
-were
-delicious.
- The burger and
-sausages were cooked
-to perfection. The
 burgers were cooked on
-the grill and the
 sausages were smoked. 
-This is
-my dog
-[RET]  This is
-it taking
-a bath
-[RET]  This is
-us by
-the lake
-[RET] [RET]
- 
-[RET]
- [RET]
- This is
-my pet
-gecko on
-the lawn
-[RET]  This is my
-cat looking
-very
-dignified
-[RET] [RET]
- [RET]
- 
-Picture of
-ursus
-arctos
-horribilis
-[RET] A dish
-usually
-cooked at
-Thanksgiving
-[RET] [RET]
- 
-The
-vegetable
-commonly
-used for
-Halloween
-[RET] [RET]
- 
-[RET]
- 
 Figure 3. Selected examples from FROMAGe for various image-text tasks. FROMAGe is sensitive to context  it can generate multimodal
 dialogue, and rapidly learn in-context to perform various few shot image-text tasks. More examples are provided in the appendix.
 5Grounding Language Models to Images for Multimodal Inputs and Outputs
-Retrieved
-Image
-Input Context
-I went on
-a desert
-tour over
-the
-summer. This is
-our
-caravan
-as we
-left.
-There was
-nothing
-but sand
-for quite
-some time.
-Eventually
-we ran
-across a
-stone ridge.
-Believe it or
-not, there
-were green
-plants growing
-there.  
 Figure 4. Contextual image retrieval conditioned on a Visual
 Story (Huang et al., 2016) of interleaved image-and-text inputs.
 and-text generation tasks, as few prior models are capable of
@@ -490,16 +372,23 @@ This is similar to standard image-text retrieval.
  Image-text pairs in VIST follow a temporal
 order. This tests the ability of retrieval models to condition
  on free-form temporally dependent language.
-3.Retrieve the last image given the 5 4 images. This tests the ability of retrieval
+3.Retrieve the last image given the 5 preceding descriptions
+ and 4 images. This tests the ability of retrieval
 models to process interleaved image-and-text context.
 Our results are presented in Table 1. We primarily compare
  against CLIP (Radford et al., 2021), as it is one of
 4Previous versions of the paper had slightly worse scores due
 to a normalization bug.Model Inputs R@1 R@5 R@10
-CLIP ViT-L/141 11.9 25.5 32.2 11.3 24.6 32.1
-CLIP ViT-L/145 5.9 19.5 28.0 11.9 23.8 31.7 5 6.2 16.8 23.4
-CLIP ViT-L/14 5 8.8 22.3 29.8 5 13.2 28.5 36.7
-CLIP ViT-L/14 5 captions, 4 2.4 21.3 34.0 5 captions, 4 18.2 42.7 51.8 1. Recall@ kon zero-shot contextual image retrieval of the
+CLIP ViT-L/141 caption11.9 25.5 32.2
+FROMAGe 11.3 24.6 32.1
+CLIP ViT-L/145 captions5.9 19.5 28.0
+FROMAGe 11.9 23.8 31.7
+BLIP 5 captions 6.2 16.8 23.4
+CLIP ViT-L/14 5 captions 8.8 22.3 29.8
+FROMAGe 5 captions 13.2 28.5 36.7
+CLIP ViT-L/14 5 captions, 4 images 2.4 21.3 34.0
+FROMAGe 5 captions, 4 images 18.2 42.7 51.8
+Table 1. Recall@ kon zero-shot contextual image retrieval of the
 last image in Visual Storytelling (Huang et al., 2016). Numbers in
 bold indicate best scores for a particular set of inputs. indicates
 retrieval over images not previously seen in the story sequence.4
@@ -513,28 +402,28 @@ free-form text. However, as greater context is provided to
 both models, FROMAGe substantially outperforms CLIP.
 Given the full set of 5 captions, CLIP performance substantially
  deteriorates (as it appears to be unable to properly
-handle longer, temporally dependent sentences), with R@1 50.4% relative to the single caption setting. In
+handle longer, temporally dependent sentences), with R@1
+decreasing by 50.4% relative to the single caption setting. In
 contrast, FROMAGe is able use the additional descriptions
-to improve in retrieval accuracy (11.3 11.9 on R@1).
+to improve in retrieval accuracy (11.3 to 11.9 on R@1).
 FROMAGe also effectively conditions on multimodal context
  (which previous image-text retrieval models are not
 explicitly trained for). When both images and text inputs
 are provided to the model, retrieval improves significantly,
 increasing by 37.9% on R@1 relative to the caption-only
-setting (13.2 18.2). Similar improvements are seen on
+setting (13.2 to 18.2). Similar improvements are seen on
 R@5 and R@10. This is a substantial gain over the baseline
-CLIP model with 5 107% on R@1 (8.8 18.2) when image-and-text
-context is provided.
+CLIP model with 5 captions  we achieve a relative improvement
+ of 107% on R@1 (8.8 to 18.2) when image-and-text
 We also run an experiment to test the ability of CLIP to
 retrieve images conditioned on multimodal context. We
 embed each of the images and descriptions in the input,
 and average their embeddings. We find that it does substantially
  worse than when only caption inputs are provided  it
-achieves a R@1 2.4, a significant decrease from the CLIP
-R@1 8.8 5 captions. likely because
+achieves a R@1 of 2.4, a significant decrease from the CLIP
+R@1 of 8.8 when it is provided with 5 captions. likely because
  it is trained to condition on image-text inputs. These
 results are significantly worse than that of FROMAGe under
-the same settings.
 5For these same reasons, CLIP is unsuitable for dialogue, and
 does not have few-shot and in-context learning abilities.
 6Grounding Language Models to Images for Multimodal Inputs and Outputs
@@ -546,15 +435,14 @@ strongly outperforms CLIP for longer input descriptions. As
 for free-form text generation, we also run human evaluations
 to evaluate the ability of FROMAGe to generate stories by
 learning in-context from VIST examples (Sec. 5.2).
-4.2. Visual Dialogue
 We evaluate FROMAGe on zero-shot Visual Dialog (VisDial)
  (Das et al., 2017). We test its ability to (1) select the
 correct text answer (from 100 candidates) for a question
 given an image and a conversation about it (image-andtext-to-text,
- IT T, which is the standard VisDial task), and
+ IT2T, which is the standard VisDial task), and
 (2) retrieve the correct image given a conversation about it
-(text-to-image, T I). Our results are summarized in Tab. 2.
-For IT T, since FROMAGe is an autoregressive generative
+(text-to-image, T2I). Our results are summarized in Tab. 2.
+For IT2T, since FROMAGe is an autoregressive generative
 model, we compute the perplexity of each question and
 answer sequence, and select the option with the lowest perplexity.
  FROMAGe outperforms ESPER (Yu et al., 2022b),
@@ -572,11 +460,11 @@ we attribute to its larger model size (80B parameters, of
 which 10.2B are trainable), and larger training data of multimodal
  webpages (43M webpages) and image-and-text data
 (1.8B pairs). In contrast, FROMAGe has 5M trainable parameters
- and is trained on CC M (3.1M image-text pairs).
+ and is trained on CC3M (3.1M image-text pairs).
 Our approach may also be applied to the Flamingo model
 (which uses a 70B language model backbone) to enable
 image retrieval, which is likely to improve overall capabilities
- and extend it to a greater variety of tasks. On the T I
+ and extend it to a greater variety of tasks. On the T2I
 retrieval task, FROMAGe significantly outperforms prior
 work, achieving a 17.5% relative improvement over CLIP
 on R@1. ESPER and Flamingo are trained to generate
@@ -600,10 +488,9 @@ and image outputs. It is able to refine input images by compositing
  images and text concepts. FROMAGe also inherits
 the world knowledge of the frozen LLM, and can answer
 questions that require specific real world facts.
-5. Analysis
 We analyze various aspects of FROMAGe to determine their
 effects on its overall capabilities. In all experiments, models
-were trained on CC M for 24 6000 GPU.
+were trained on CC3M for 24 hours on a single A6000 GPU.
 5.1. Ablation Experiments
 We perform several ablation experiments to validate the
 design choices made in FROMAGe. We provided further
@@ -612,14 +499,16 @@ Freezing the LLM. We find that freezing the language
 model is essential to retaining in-context learning and fewshot
  generalization abilities. When finetuned, FROMAGe
 performs significantly worse on VIST and VisDial. Finetuning
- decreases retrieval performance on VIST (R@1 12.8 6.2) as well
-as VisDial text retrieval (R@1 14.6 1.0).
+ decreases retrieval performance on VIST (R@1 with
+full multimodal context decreases from 12.8 to 6.2) as well
+as VisDial text retrieval (R@1 from 14.6 to 1.0).
 Learning a dedicated retrieval token. As described in
 Sec. 3.2, we add a special [RET] token to represent embeddings
  for retrieving images from text. When the model
 is trained without the [RET] token, R@1 performance on
 VIST (with full multimodal context) is significant worse.
-We observe that adding the [RET] token improves R@1 38.1% relative gain over the model without the
+We observe that adding the [RET] token improves R@1 by
+a substantial 38.1% relative gain over the model without the
 [RET] token. We observe similar improvements across the
 board for other tasks.
 5.2. The Effect of Context
@@ -630,29 +519,32 @@ quantify these effects, we run ablations (Fig. 5, top) varying
 the number of captions and images provided to the model.
 We measure the recall of retrieving the correct image conditioned
  on the provided context for VIST dataset (Huang
-et al., 2016). Increasing context from 1 5 captions substantially
- improves the model  R@1 5.3% relative
+et al., 2016). Increasing context from 1 to 5 captions substantially
+ improves the model  R@1 increases by 5.3% relative
 7Grounding Language Models to Images for Multimodal Inputs and Outputs
-IT T T I
 Model Trainable Params Finetuning Data NDCG MRR R@1 R@5 R@10 R@1 R@5 R@10
-ViLBERT (Lu et al., 2019) 114 3.1 11.6 6.9 2.6 7.2 11.3 - - CLIP
- ViT-L/14 (Radford et al., 2021) 300 400 10.9 8.5 3.1 8.7 15.9 17.7 38.9 50.2
-Flamingo (Alayrac et al., 2022) 10.2 1.8 52.0 - - - - Incapable
-ESPER (Yu et al., 2022b) 4 0.5 22.3 25.7 14.6 - - Incapable
-FROMAGe (ours) 5.5 3.1 16.5 22.0 17.6 20.1 25.1 20.8 44.9 56.0 2. Zero-shot results on Visual Dialog (Das et al., 2017), for image-and-text-to-text (IT T) and text-to-image (T I) retrieval. Unlike
+ViLBERT (Lu et al., 2019) 114M 3.1M 11.6 6.9 2.6 7.2 11.3 - - CLIP
+ ViT-L/14 (Radford et al., 2021) 300M 400M 10.9 8.5 3.1 8.7 15.9 17.7 38.9 50.2
+Flamingo (Alayrac et al., 2022) 10.2B 1.8B 52.0 - - - - Incapable
+ESPER (Yu et al., 2022b) 4M 0.5M 22.3 25.7 14.6 - - Incapable
+FROMAGe (ours) 5.5M 3.1M 16.5 22.0 17.6 20.1 25.1 20.8 44.9 56.0
+Table 2. Zero-shot results on Visual Dialog (Das et al., 2017), for image-and-text-to-text (IT2T) and text-to-image (T2I) retrieval. Unlike
 previous methods, FROMAGe is capable of generating free-form text interleaved with image outputs through text-to-image retrieval.
-1 0 5 0 2 1 3 2 4 3 5 4 imgs R@1 2 4 6 8 10
-# Rounds of Dialogue R@1 5. Increasing input context generally improves performance.
+4 imgs051015R@1VIST Image Retrieval with Increasing Context
+# Rounds of Dialogue5101520R@1VisDial Image Retrieval with Increasing Context
+Figure 5. Increasing input context generally improves performance.
 Shown are results for image retrieval for VIST (Huang et al., 2016)
 (top) and image retrieval on VisDial (Das et al., 2017) (bottom).
-to the single caption case (11.3 11.9). However, when we
-provide an additional image and text example (2 1 image), we observe an even greater improvement of 30.1%
-relative to the single caption case (11.3 14.7). This highlights
+to the single caption case (11.3 to 11.9). However, when we
+provide an additional image and text example (2 captions  
+1 image), we observe an even greater improvement of 30.1%
+relative to the single caption case (11.3 to 14.7). This highlights
  the value of multimodal context  a single image can
 provide more information than multiple text descriptions.
 More context helps. Performance also steadily improves
 on image retrieval for VIST as more image and caption
-context is provided (Fig. 5, top). The highest R@1 18.2 5 4 images (i.e., the
+context is provided (Fig. 5, top). The highest R@1 of
+18.2 is achieved with 5 captions and 4 images (i.e., the
 full story context excluding the image to be retrieved), representing
  a 61.1% relative improvement over the single
 caption case. Similar trends are observed for image retrieval
@@ -664,44 +556,20 @@ FROMAGe outperforms CLIP in all settings, and significantly
 provided, achieving an improvement of 17.5% relative over
 CLIP. These findings suggest that FROMAGe is more sensitive
  to context, enabling it to perform better in situations
- the view from
-the lighthouse
-was amazing.  A road
-trip to
-the coast.
-What would
 we see  Model 1We saw
-emus
-near the
-road.
-2When we saw
-the
-lighthouse
-we knew we
-were there.
-3
 The cliffs had eroded
 over time into wonderful
 arches. You could walk
-right under them.
-4 5
- the water was
-so clear you
-could see the
-bottom. 
 Model Captions Only  the view from
-the top of the
-world 
-Model 5 6. More coherent and relevant text is generated when incontext
+All Images   Captions Figure 6. More coherent and relevant text is generated when incontext
  examples are provided to FROMAGe. When multimodal
 context is provided, the outputs for VIST are more story-like, while
 the outputs for a single image input are more caption-like.
-0.00.10.20.30.40.5 1 4 5 4 captionsHuman Preference (Visual Storytelling)
+More coherent story More relevant to image1 image 4 captions 5 images   4 captionsHuman Preference (Visual Storytelling)
 Figure 7. Human evaluations on VIST story generation. Including
 both images and captions improves story coherence over using just
 images, and improves image relevance compared to just captions.
 where correctly parsing long language descriptions is crucial
-to performance.
 5.3. In-context Learning and Text Generation
 As FROMAGe uses a frozen LLM as its backbone, it is also
 capable of in-context learning (Brown et al., 2020  Chan
@@ -710,7 +578,7 @@ examples. We observe this qualitatively from generating
 new stories for VIST, as shown in Fig. 6. When a single input
  image is provided, the model generally produces simple
 caption-like descriptions. However, when prompted with
-the full multimodal context (i.e., 5 4 stories),
+the full multimodal context (i.e., 5 images and 4 stories),
 the model is able to learn in-context to synthesize plausible
 story-like text for the 5th image (Fig. 6).
 As evaluating generated text is difficult, especially for subjective
@@ -720,12 +588,13 @@ study the effect of multimodal context on model generated
 stories. We request human annotators to select the output
 (from 3 anonymized models) which (1) forms the most coherent
  story when viewed in relation with the context, and
-(2) is most relevant to the image. We sample 100 5 independent ratings each. The results
+(2) is most relevant to the image. We sample 100 random
+examples and collect 5 independent ratings each. The results
  are aggregated from pairwise comparisons (details in
 appendix) and summarized in Fig. 7. When only the last image
  or the text description is provided as input, the generated
 stories are rated as less coherent than FROMAGe with the
-full multimodal context (5 4 descriptions). The
+full multimodal context (5 images and 4 descriptions). The
 model generated story is also rated as significantly more relevant
  to the image inputs compared to the text-only setting,
 which highlights the ability of the model to condition on
@@ -736,7 +605,6 @@ we attribute to the fact that the model produces more factual
 (albeit less story-like) descriptions (Fig. 6). These results
 showcase the ability of FROMAGe to learn in-context to
 synthesize coherent and consistent multimodal outputs.
-6. Future Work
 FROMAGe is one of the first models capable of parsing
 image-text inputs, and producing text interleaved with retrieved
  images. There are several promising directions that
@@ -781,7 +649,6 @@ and text. Scaling FROMAGe with larger and more capable
 language models, training on larger image-text datasets, and
 extending our approach for generation of novel images from
 scratch are promising directions for future work.
-Acknowledgements
 This work was partially supported by a gift from Google
 on Action, Task, and User Journey Modeling, and supported
  in part by ONR N000142312368 and DARPA/AFRL
@@ -791,7 +658,6 @@ Yeon Min, Brandon Trabucco, Saujas Vaduguru, and others
 for feedback on previous versions of this paper. We thank
 Felix Hill for insightful discussions about Frozen.
 9Grounding Language Models to Images for Multimodal Inputs and Outputs
-References
 Abadi, M., Agarwal, A., Barham, P., Brevdo, E., Chen, Z.,
 Citro, C., Corrado, G. S., Davis, A., Dean, J., Devin,
 M., et al. Tensorflow  Large-scale machine learning
@@ -822,11 +688,9 @@ Bommasani, R., Hudson, D. A., Adeli, E., Altman, R.,
 Arora, S., von Arx, S., Bernstein, M. S., Bohg, J., Bosselut,
  A., Brunskill, E., et al. On the opportunities and risks
 of foundation models. arXiv preprint arXiv 2108.07258 ,
-2021.
 Brown, T., Mann, B., Ryder, N., Subbiah, M., Kaplan, J. D.,
 Dhariwal, P., Neelakantan, A., Shyam, P., Sastry, G.,
 Askell, A., et al. Language models are few-shot learners.
-NeurIPS , 2020.
 Chan, S. C., Santoro, A., Lampinen, A. K., Wang, J. X.,
 Singh, A., Richemond, P. H., McClelland, J., and Hill,
 F. Data distributional properties drive emergent few-shot
@@ -846,7 +710,6 @@ Salakhutdinov, R. Transformer-xl  Attentive language
 models beyond a fixed-length context. ACL, 2019.
 Das, A., Kottur, S., Gupta, K., Singh, A., Yadav, D., Moura,
 J. M., Parikh, D., and Batra, D. Visual dialog. In CVPR ,
-2017.
 Dettmers, T., Lewis, M., Belkada, Y ., and Zettlemoyer, L.
 Llm. int8 ()  8-bit matrix multiplication for transformers
 at scale. NeurIPS , 2022.
@@ -856,7 +719,6 @@ transformers. arXiv preprint arXiv 2204.14217 , 2022.
 Eichenberg, C., Black, S., Weinbach, S., Parcalabescu, L.,
 and Frank, A. Magma multimodal augmentation of generative
  models through adapter-based finetuning. EMNLP ,
-2022.
 Esser, P., Rombach, R., and Ommer, B. Taming transformers
 for high-resolution image synthesis. In CVPR , 2021.
 Gehman, S., Gururangan, S., Sap, M., Choi, Y ., and Smith,
@@ -865,7 +727,6 @@ N. A. Realtoxicityprompts  Evaluating neural toxic degeneration
 Goyal, Y ., Khot, T., Summers-Stay, D., Batra, D., and
 Parikh, D. Making the v in vqa matter  Elevating the
 role of image understanding in visual question answering.
-InCVPR , 2017.
 Hoffmann, J., Borgeaud, S., Mensch, A., Buchatskaya, E.,
 Cai, T., Rutherford, E., Casas, D. d. L., Hendricks, L. A.,
 Welbl, J., Clark, A., et al. Training compute-optimal large
@@ -875,11 +736,9 @@ The curious case of neural text degeneration. ICLR , 2020.
 Houlsby, N., Giurgiu, A., Jastrzebski, S., Morrone, B.,
 De Laroussilhe, Q., Gesmundo, A., Attariyan, M., and
 Gelly, S. Parameter-efficient transfer learning for nlp. In
-ICML , 2019.
 Huang, T.-H., Ferraro, F., Mostafazadeh, N., Misra, I.,
 Agrawal, A., Devlin, J., Girshick, R., He, X., Kohli, P.,
 Batra, D., et al. Visual storytelling. In NAACL-HLT ,
-2016.
 Jia, C., Yang, Y ., Xia, Y ., Chen, Y .-T., Parekh, Z., Pham, H.,
 Le, Q., Sung, Y .-H., Li, Z., and Duerig, T. Scaling up
 visual and vision-language representation learning with
@@ -892,7 +751,6 @@ for parameter-efficient prompt tuning. EMNLP , 2021.
 Levesque, H., Davis, E., and Morgenstern, L. The winograd
 schema challenge. In Thirteenth international conference
  on the principles of knowledge representation and
-reasoning , 2012.
 Li, J., Li, D., Xiong, C., and Hoi, S. Blip  Bootstrapping
 language-image pre-training for unified vision-language
 understanding and generation. In ICML , 2022a.
@@ -910,7 +768,6 @@ task-agnostic visiolinguistic representations for visionand-language
  tasks. NeurIPS , 2019.
 Lu, K., Grover, A., Abbeel, P., and Mordatch, I. Pretrained
 transformers as universal computation engines. AAAI ,
-2022.
 Merullo, J., Castricato, L., Eickhoff, C., and Pavlick, E. Linearly
  mapping from image to text space. arXiv preprint
 arXiv 2209.15162 , 2022.
@@ -924,7 +781,6 @@ K., Ray, A., et al. Training language models to follow
 arXiv 2203.02155 , 2022.
 Papineni, K., Roukos, S., Ward, T., and Zhu, W.-J. Bleu  a
 method for automatic evaluation of machine translation.
-InACL, 2002.
 Paszke, A., Gross, S., Massa, F., Lerer, A., Bradbury, J.,
 Chanan, G., Killeen, T., Lin, Z., Gimelshein, N., Antiga,
 L., et al. Pytorch  An imperative style, high-performance
@@ -945,10 +801,10 @@ Ramesh, A., Pavlov, M., Goh, G., Gray, S., V oss, C., Radford,
  generation. In ICML , 2021.
 Reed, S., Akata, Z., Yan, X., Logeswaran, L., Schiele, B.,
 and Lee, H. Generative adversarial text to image synthesis.
-InICML , 2016.
 Schuhmann, C., Vencu, R., Beaumont, R., Kaczmarczyk,
 R., Mullis, C., Katta, A., Coombes, T., Jitsev, J., and
-Komatsuzaki, A. Laion-400 400 million image-text pairs. arXiv preprint
+Komatsuzaki, A. Laion-400m  Open dataset of clipfiltered
+ 400 million image-text pairs. arXiv preprint
 arXiv 2111.02114 , 2021.
 Sennrich, R., Haddow, B., and Birch, A. Neural machine
 translation of rare words with subword units. ACL, 2015.
@@ -984,10 +840,8 @@ models are zero-shot learners. ICLR , 2021.
 Wei, J., Tay, Y ., Bommasani, R., Raffel, C., Zoph, B.,
 Borgeaud, S., Yogatama, D., Bosma, M., Zhou, D., Metzler,
  D., et al. Emergent abilities of large language models.
-TMLR , 2022.
 Yang, K., Peng, N., Tian, Y ., and Klein, D. Re3  Generating
 longer stories with recursive reprompting and revision.
-EMNLP , 2022.
 Yu, J., Li, X., Koh, J. Y ., Zhang, H., Pang, R., Qin, J., Ku,
 A., Xu, Y ., Baldridge, J., and Wu, Y . Vector-quantized
 image modeling with improved vqgan. ICLR , 2021.
@@ -1039,7 +893,9 @@ A.1. Comparison Against CM3
 To the best of our knowledge, CM3 (Aghajanyan et al.,
 2022) is the only prior work which proposes a model capable
  of consuming arbitrarily interleaved image-and-text
-inputs and generating image-and-text outputs. CM3 384 24 days, while we
+inputs and generating image-and-text outputs. CM3 trains
+with far larger computational resources compared to our
+model   they train with 384 GPUs for 24 days, while we
 use a single GPU for 1 day, making our method far more
 computationally efficient.
 To benchmark the performance of the two models, we run
@@ -1047,193 +903,36 @@ a qualitative comparison to compare the produced images
 given an image-and-text story input from Visual Storytelling
 (VIST) (Huang et al., 2016). As FROMAGe produces images
  through retrieval and CM3 is a generative model, we
-are primarily interested in their abilities to produce semanti Grounding
+are primarily interested in their abilities to produce semanti12Grounding
  Language Models to Images for Multimodal Inputs and Outputs
-An item worn
-around the
-neck and
-waist in the
 kitchen [RET] Pickles
-are made
-from this
-raw
-vegetable
-[RET] An
-unhealthy
 meal [RET] The sculpture rolled off
-the shelf because it
 wasn't level . This is
 not level   [RET] [RET]
- 
-The sculpture rolled
 off the shelf because
-it wasn't anchored .
 This is not anchored  
-[RET] [RET]
- 
-I used an old rag to
-clean the knife, and
-then I put it in the
 trash . I put this in the
-trash   [RET] [RET]
  I used an old rag to
-clean the knife, and
-then I put it in the
 drawer . I put this in
 the drawer   [RET] [RET]
- 
 The foxes are getting in
 at night and attacking
 the chickens. They have
 gotten very nervous .
 These are nervous   [RET] [RET]
  The foxes are getting
-in at night and
-attacking the
-chickens. They have
-gotten very bold .
 These are bold   [RET] [RET]
- 
-[RET]
- The
-weather at
-0 degrees
-celsius
-[RET]
-[RET]
- A healthy
-meal [RET] [RET]
- 
-[RET]
- This
-liquid is
-used to
-fry foods
-[RET]
-[RET]
- 
-[RET]
- 
 Figure 8. Selected examples from FROMAGe for various image-text tasks. It is capable of retrieving correct images from some examples
 from the Winograd schema, as well as possess world knowledge.
-13 3
-They have
-found a
-fish in the
-shallows. Other
-friends
-join them
-as they
-walk down
-the
-riverbed. Two
-gentlemen
-gather for
-a day in
-the
+13Grounding Language Models to Images for Multimodal Inputs and Outputs
+Input Context Ours CM3
 wilderness. He smiles
-and poses
-with his
-new found
-food. Model Outputs
-Other
-anglers
-come with
-their
-poles.
-1 2 3 4 5
-Here is
-my
-favorite
-dish the
-won ton
-soup. I love
-looking at
-all the
-good
-tasting
-food on the
-menu. Here we are
-at the
-location
-restaurant
-with the
-famous purple
 passion tree. Meal is
-not
-complete
-without
-ice cream. Want to
-make sure
-we don t
-run out of
-gas on the
-way home.  
-5 1 2 3 4
-It was
-beautiful. I went
-on a
-tour of
-the old
-ruins. I had a
-great time
 yesterday. There were
-so many
-interesting
 areas. After we spent
-all afternoon
-there we went
-home to get
-something to
-eat.  
-5 1 2 3 4
-The man
-came
-here to
-hike. The
-scenery
-was
-breathtaking.
- Many
-tourists
-visited
-this
-national
-park. He met
-two other
-hikers
-and they
-started
 to talk. An elderly couple
-asked the hiker to
-take their picture.
-He was happy to do
-so. He could relate
 with people who liked
-the same things he
-did.  
-5 1 2 3 4
-Co-workers
-spent time
-with each
-other. The company
-even set up
-a location
-prop. Everyone
-gathered for
-the company s
-holiday
-party. [male]
-drank
-quite a
-bit and
-acted
-silly. Overall,
-everyone
-really
-enjoyed
-themselves   
-5 1 2 3 4 9. Comparison of our model against CM3 (Aghajanyan et al., 2022) on randomly selected examples from Visual Storytelling
+Figure 9. Comparison of our model against CM3 (Aghajanyan et al., 2022) on randomly selected examples from Visual Storytelling
 (VIST) (Huang et al., 2016).
 cally relevant images, rather than good quality images. Several
  randomly selected qualitative examples are presented in
@@ -1248,7 +947,6 @@ capable of retrieving images that are visually and semantically
 general, FROMAGe is more sensitive to input prompts and
 images, while CM3 does not appear to be able to handle
 long input sequences as well as FROMAGe.
-B. Further Analysis
 B.1. Details on Freezing Ablation
 We explore the effect of freezing the weights of our language
  model. Due to GPU memory constraints, we run this
@@ -1257,10 +955,10 @@ LLM backbone. We compare a version where the weights
 are kept frozen (FROMAGe with a 1.3b LLM), and a version
  where the language model is allowed to be finetuned.
 Despite the finetuned model achieving lower loss (on both
-the training and validation sets of CC M), we observe that
+the training and validation sets of CC3M), we observe that
 downstream performance on VIST and VisDial significantly
-deteriorates. On VIST, finetuning the language model de-creases retrieval performance on R@1 12.8 6.2, and
-on VisDial (IT T), decreases R@1 14.6 1.0. These
+deteriorates. On VIST, finetuning the language model de-creases retrieval performance on R@1from 12.8 to 6.2, and
+on VisDial (IT2T), decreases R@1from 14.6 to 1.0. These
 results demonstrate the importance of freezing the LLM
 backbone in order to retain the abilities of the LLM (incontext
  learning, zero-shot generalization) learnt from large
@@ -1282,17 +980,21 @@ model), which shows that we do not suffer from optimizing
 our model over multiple objectives.
 B.3. Image-Text Concatenation for Captioning
 During training, we concatenate distinct examples sequentially
- for image captioning. We found that this was signifi Grounding
+ for image captioning. We found that this was signifi14Grounding
  Language Models to Images for Multimodal Inputs and Outputs
-Captioning T I Retrieval I T Retrieval
-Training Loss BLEU-1 BLEU-2 BLEU-3 BLEU-4 METEOR R@1 R@5 R@10 R@1 R@5 R@10 0.4768 0.2899 0.1664 0.0965 0.2820 - - - - - Retrieval
- - - - - - 23.4 47.3 59.0 26.8 52.4 63.6 0.4766 0.2932 0.1720 0.1023 0.2873 23.4 47.2 58.0 26.4 52.3 63.4 3. Ablation results over different training objectives. All models are trained on CC M (Sharma et al., 2018) and reported on the 5K
+Captioning T2I Retrieval I2T Retrieval
+Training Loss BLEU-1 BLEU-2 BLEU-3 BLEU-4 METEOR R@1 R@5 R@10 R@1 R@5 R@10
+Captioning 0.4768 0.2899 0.1664 0.0965 0.2820 - - - - - Retrieval
+ - - - - - 23.4 47.3 59.0 26.8 52.4 63.6
+Captioning   Retrieval 0.4766 0.2932 0.1720 0.1023 0.2873 23.4 47.2 58.0 26.4 52.3 63.4
+Table 3. Ablation results over different training objectives. All models are trained on CC3M (Sharma et al., 2018) and reported on the 5K
 validation set of MS-COCO (2017) (Lin et al., 2014). For captioning, we report BLEU (Papineni et al., 2002) and METEOR (Banerjee &
 Lavie, 2005) scores, and for retrieval, we report Recall @k(single captions).
 cantly helpful for several downstream tasks, as it encourages
 our model to attend to multiple images within a sequence
 during training. In particular, on the VIST dataset, enabling
-image-text concatenation improves R@1 11.6 15.6 5 4 images are provided as input (see
+image-text concatenation improves R@1from 11.6 to 15.6
+when 5 captions and 4 images are provided as input (see
 Sec. 4.1). On VisDial, we find that the ablated model performs
  similarly. This agrees with intuition, as VIST requires
 processing of multiple images interleaved with text (while
@@ -1305,7 +1007,6 @@ Flamingo (Alayrac et al., 2022) or CM3 (Aghajanyan et al.,
 2022)) are generally not available to the public, our proposed
 approach may be a way to leverage large open image-text
 datasets (Schuhmann et al., 2021) for training such multimodal
- models.
 B.4. Image-Text Concatenation for Retrieval
 As described in Sec. B.3, we concatenate distinct examples
 sequentially for image captioning during training. This was
@@ -1317,17 +1018,16 @@ For retrieval on concatenated examples, the model is tasked
 to retrieve two separate images, one for the [RET] token at
 the end of the first caption, and one for the one at the end
 of the second. An example input text for a concatenated
-example is 
 silhouette of a plane against the
 sunset [RET] cute cat sitting on a
-scooter [RET]
 in which case the model is expected to retrieve the appropriate
  images of a plane and a cat respectively. However,
 we find that this concatenation does not appear to have a
 positive effect on the downstream tasks of VIST and VisDial.
- On VIST, R@1 15.6 0 1 2 3 4 5 6 7
-# params 1e R@1 10. Performance on VIST contextual image retrieval and
-VisDial IT T over different model scales. Performance generally
+ On VIST, R@1also slightly decreases from 15.6 to
+# params 1e9051015R@1Performance with Model Size
+VisDialFigure 10. Performance on VIST contextual image retrieval and
+VisDial IT2T over different model scales. Performance generally
 improves as models get bigger.
 14.4. We hypothesize that this is likely because these tasks
 (and many of our qualitative examples) do not require the
@@ -1339,7 +1039,6 @@ these abilities. However, in certain multimodal applications
 (such as retrieval for more factual multimodal tasks, rather
 than dialogue), it may be possible that this retrieval concatenation
  strategy is still useful, and we leave exploration to
-future work.
 B.5. Scaling Properties
 FROMAGe is trained in a model-agnostic approach
 (Sec. 3.3), which can be applied to any pre-trained textonly
@@ -1354,7 +1053,7 @@ the zero-shot contextual image retrieval task for Visual Storytelling
  (Huang et al., 2016) and Visual Dialog (Das et al.,
 2017). This promising trend suggests that our framework is
 likely to benefit from even larger text-only models such as
-GPT-3 (175B) (Brown et al., 2020), Chinchilla (70B) (Hoff Grounding
+GPT-3 (175B) (Brown et al., 2020), Chinchilla (70B) (Hoff15Grounding
  Language Models to Images for Multimodal Inputs and Outputs
 mann et al., 2022), or PaLM (540B) (Chowdhery et al.,
 2022). In future work, it will be interesting to test this, and
@@ -1378,7 +1077,7 @@ can perform image retrieval interleaved with text. This allows
 Frozen and MAGMA cannot produce images interleaved
 with generated text. Our model is also significantly more
 efficient (1 GPU day of training) compared to prior work
-(MAGMA uses 32 1.25 days).
+(MAGMA uses 32 GPUs for 1.25 days).
 C. Human Evaluation Procedure
 As detailed in Sec. 5.2 of the main paper, we perform human
 evaluations of 500 randomly selected examples to determine
@@ -1386,7 +1085,6 @@ generated story quality given different input contexts. Users
 are tasked to evaluate three settings 
 1. Generated outputs conditioned on the last image only.
 2.Generated outputs conditioned on the preceding text
-descriptions only.
 3.Generated outputs conditioned on the preceding images
  and text descriptions.
 The results (described in Sec. 5.2 of the main paper), show
@@ -1452,144 +1150,37 @@ retrieval datasets. Although image retrieval is unable to produce
  truly novel images from outside of the retrieval data,
 it also has benefits for controlling output results. Unlike
 image generation models which synthesize novel images
-16 11. User interface shown to for human raters for performing evaluations. Raters are tasked to compare model outputs with different
+16Grounding Language Models to Images for Multimodal Inputs and Outputs
+Figure 11. User interface shown to for human raters for performing evaluations. Raters are tasked to compare model outputs with different
 contexts as inputs, and rate (1) whether they form more coherent stories and (2) are more relevant to the last image. Model outputs are
 anonymized and shuffled.
-050100150200250300350 1 4 captions About the sameGeneration result preference (A vs. B)
-0100200300 1 4 5 images About the sameGeneration result preference (A vs. B)
-050100150200250 4 4 5 images About the sameHuman Preference (Visual Storytelling)
+050100150200250300350
+More coherent story More relevant to image1 image 4 captions About the sameGeneration result preference (A vs. B)
+More coherent story More relevant to image1 image 4 captions   5 images About the sameGeneration result preference (A vs. B)
+More coherent story More relevant to image4 captions 4 captions   5 images About the sameHuman Preference (Visual Storytelling)
 Figure 12. Head-to-head evaluations of FROMAGe with different input contexts. For each figure, human evaluators are tasked to select
 whether one model is more coherent than the other, and if one is more relevant to the image.
-Input Context 5 4 1 4 captions
-This one
-reminds me
-of a
-Christmas
+Input Context 5 images   4
+captions 1 images 4 captions
 ornament   The colors are
-so bright and
-vivid.  Although
-beautiful,
-it s a bit
-scary when
-they fire off
-too close to
 the ground. Who doesn t
-love
-fireworks 
-This one
-looks like a
-fiery palm
-tree  When they
-break
-apart, they
-look like
-little
-crawly
 bugs. 1 2 3 4 5 5 Fireworks
-light up the
-sky at the
-annual
-festival. 
-5
- I was thinking
-the same
-thing. 
-5 5 5
-He climbed
-high and took
-pictures at
-major
-milestones on
-the way up. He went
-with a
-group and
-camped with
-others on
-the
 mountain. [male] went
-prepared to
-go on a trip
-that involved
-hiking,
-camping and
 climbing.  He was happy
 to be there.  He made it
-to the top
-and saw the
-clouds.
 1 2 3 4 5 5 5 Person taking
-a photo of the
-sunset from the
-summit of
 mountain.   He was a man
-of many
-talents. 
-5 5 5We put the
-meat on
 the grill. We then got
-the grill
 ready.  We had a nice
 family dinner.  We set up
-the table
-for easter
-dinner. After church
-our relatives
-started
-showing up.
 1 2 3 4 5 5 5 5 I was the only
-one who didn't
-have a relative
-there. 
-5 5 A group of
-people at a
-dinner table. 
-They found a
-few different
-locations. They were
-taking
-pictures
-for their
-announcements.
- The couple
-was preparing
-for their
-wedding. The woman
-had to show
-off her
 ring.  The couple got
-engaged on a
-trip to New
-York City. 
 1 2 3 4 5 5 5 Red berries on
-a tree in the
 winter.   I think she
-was just trying
-to get the guy
-to stop
-filming. 
-5 5 5
-The smoke was
-billowing for
-hours. He watched
-the blaze
-from his
-room on the
-second
-floor. There was a
-terrible fire
 last night. It was on
-the news
-before
-dark.
-1 The fire was
-so big it could
-be seen from
-space. 
 2 3 4 5 5 5 A fire in the
 distance   I was watching
-the news and
-didn't see it. 
-5 5 5 13. Examples of generated stories conditioned on different input contexts.
+Figure 13. Examples of generated stories conditioned on different input contexts.
 17Grounding Language Models to Images for Multimodal Inputs and Outputs
 from scratch, a benefit of retrieving from a fixed corpus is
 that it allows us to explicitly control what our model can
@@ -1603,4 +1194,3 @@ data used to mitigate the risk of training large multimodal
 models (Birhane et al., 2021). This will involve filtering of
 images, rigorous testing of model biases (for both image
 and text content), and more.
-18

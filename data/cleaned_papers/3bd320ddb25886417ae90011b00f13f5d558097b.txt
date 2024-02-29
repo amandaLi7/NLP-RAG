@@ -1,8 +1,8 @@
 BASS  Block-wise Adaptation for Speech Summarization
-Roshan Sharma1, Kenneth Zheng1,Siddhant Arora1,Shinji Watanabe1, Rita Singh1, Bhiksha Raj1 1, Language Technologies Institute2
+Roshan Sharma1, Kenneth Zheng1,Siddhant Arora1,Shinji Watanabe1, Rita Singh1, Bhiksha Raj1
+Electrical and Computer Engineering1, Language Technologies Institute2
 Carnegie Mellon University, USA
 {roshansh,kzheng2,siddhana,swatanab,bhiksha,rsingh }@cs.cmu.edu
-Abstract
 End-to-end speech summarization has been shown to improve
 performance over cascade baselines. However, such models
 are difficult to train on very large inputs (dozens of minutes
@@ -19,7 +19,6 @@ based on new acoustic information. We devise and test strategies
 on the How2 dataset demonstrate that the proposed block-wise
 training method improves by 3 points absolute on ROUGE-L
 over a truncated input baseline.
-1. Introduction
 With the rising amount of data that people consume in daily life
   videos, music, podcasts, meetings, lectures, and more   building
  artificial intelligence that can concisely extract important information
@@ -30,7 +29,6 @@ from long audio inputs. Speech summarization, whether extractive
  [3] or abstractive [4, 5, 6], requires global acoustic context
 since knowledge of the entire speech signal is helpful for either
 extracting relevant key-frames or generating comprehensive abstractive
- summaries.
 Recently, end-to-end speech summarization models [7, 8]
 have been shown to outperform competitive cascade models
 that comprise speech recognition and text summarization modules.
@@ -43,7 +41,8 @@ like the XNOR-former [1]. However, even with such optimizations,
  there remains an upper limit on the number of input
  frames that a given end-to-end model can consume with
 available computing infrastructure. For example, with a 6-layer
-conformer [10] encoder, a 32G V-100 25,000  and with an XNOR-encoder, the same GPU
+conformer [10] encoder, a 32G V-100 GPU can take sequences
+of length 25,000  and with an XNOR-encoder, the same GPU
 can take 45,000 frames. Any input speech sequence of length
 greater than this upper limit is truncated to be able to train and
 infer, and truncating inputs makes summarization less accurate
@@ -60,7 +59,6 @@ that can process a small set of input frames, i.e., a block of
 input at a time rather than using the entire input sequence. Such
  block-wise  models can be trained in two ways - to predict an
 output either after seeing multiple blocks of input or after every
-new block of input.
 Most prior work has been focused on the former to enable
 streaming inference for tasks like speech recognition [12, 13,
 14, 15, 16], speech translation [17], spoken intent detection
@@ -83,7 +81,7 @@ an utterance transcription for every new block of input. Such
 block-level targets are relatively easy to derive for tasks like
 speech recognition, where there exists a monotonic alignment
 between the input frames and output tokens. However, for abstractive
- speech summarization, the relationship between inputarXiv 2307.08217 1  [cs.CL]  17 2023frames and output tokens is non-monotonic and indirect, and it
+ speech summarization, the relationship between inputarXiv 2307.08217v1  [cs.CL]  17 Jul 2023frames and output tokens is non-monotonic and indirect, and it
 is consequently challenging to obtain block-level targets.
 In this paper, we first mathematically formulate the process
  of block-wise training and introduce in Figure 1 BlockWise
@@ -105,7 +103,6 @@ forward input acoustics or output summaries, these may not be
 as useful because input acoustics may not be as informative,
 and output summaries could be erroneous or change entirely
 with new blocks. In summary, this paper makes the following
-contributions 
 1. We introduce Block-wise Adaptation for Speech Summarization
  (BASS), a novel algorithm for training speech summarization
  models. BASS predicts a speech summary after consuming
@@ -115,12 +112,10 @@ contributions
 which aggregates semantics from the input acoustics and is
 not affected by how it is expressed. We then describe mechanisms
  to carry this semantic context across blocks for adaptation
- and training.
 3. We evaluate the relative strengths of block-wise adaptation
  from a pretrained model and block-wise training from
 scratch, and show that BASS improves performance under
 adaptation settings by 3 points on ROUGE-L.
-2. Proposed Approach
 2.1. Formulating Block-wise Training
 Given a long audio instance with N frames of D-dimensional
 speech features X  (xi RD i  1,2,   , N), the goal of
@@ -131,35 +126,32 @@ The input sequence Xcan also be represented as a sequence
  of Tabutting blocks with block size Bsuch that X 
 {X1, X2, ...XT}. The i-th input block Xiproduces a blocklevel
  output ˆYi, which is the model hypothesis for the full reference
- Y. We use the notation X1 1,   , XT
-andY1 1,   , YT.
+ Y. We use the notation X1 Tto represent X1,   , XT
+andY1 Tto represent Y1,   , YT.
 The goal of a block-wise model is to generate the best possible
- summary ˆYTafter seeing the Tblocks of input. Equation 1 1 Tbased on the joint conditional
-density P(YT, Y1 1 1 T).
-P(YT X1 T)  X
-Y1 1P(YT, Y1 1 1 T)(1)
+ summary ˆYTafter seeing the Tblocks of input. Equation 1
+expresses the probability of observing the final output sequence
+YTgiven the input blocks X1 Tbased on the joint conditional
+density P(YT, Y1 T 1 X1 T).
+YT 1P(YT, Y1 T 1 X1 T)(1)
 Using the chain rule of probability, we can represent the inner
-termP(YT, Y1 1 1 T)as shown in Equation 2.P(Y1 1 T)  P(YT X1 T, Y1 1)P(Y1 1 1 T)
-(2)
+termP(YT, Y1 T 1 X1 T)as shown in Equation 2.P(Y1 T X1 T)  P(YT X1 T, Y1 T 1)P(Y1 T 1 X1 T)
 Based on the fact that the model is causal (streaming), the
 present output cannot depend on future outputs or inputs. This
-implies P(Y1 1 1 T)  P(Y1 1 1 1). Combining
-this with Equation 2 3.
-P(Y1 1 T)  P(YT X1 T, Y1 1)P(Y1 1 1 1)
-(3)
+implies P(Y1 T 1 X1 T)  P(Y1 T 1 X1 T 1). Combining
+this with Equation 2 results in Equation 3.
+P(Y1 T X1 T)  P(YT X1 T, Y1 T 1)P(Y1 T 1 X1 T 1)
 This leads to the following general decomposition based on the
 chain rule and the streaming assumption, shown in Equation 4.
-P(Y1 1 T)  P(YT X1 T, Y1 1)   P(Y1 1)(4)
-Consider Equation 1 1 1, and is challenging to compute. Rather
-than evaluating all possible values for past context Y1 1,
+P(Y1 T X1 T)  P(YT X1 T, Y1 T 1)   P(Y1 X1)(4)
+Consider Equation 1 which involves marginalizing over the output
+ variables Y1 T 1, and is challenging to compute. Rather
+than evaluating all possible values for past context Y1 T 1,
 we can perform this optimization in a greedy manner, i.e., by
 choosing the block-level output sequence with the highest probability
  as context for future predictions. Combining this Viterbi
-assumption with Equations 1 4 5.
-P(YT X1 T) max
-YTP(YT X1 T, Y1 1)   max
-Y P(Y1 1)
-(5)
+assumption with Equations 1 and 4 leads us to the final formulation
+YTP(YT X1 T, Y1 T 1)   max
 In summary, Equation 5 demonstrates a setup wherein after receiving
  a new block of input, we maximize the probability of the
 block level output being as close as possible to the ground-truth
@@ -172,8 +164,7 @@ network parameters after every block.
 Apart from the aforementioned assumptions, we can also
 make the Markov assumption while modeling contextual dependence.
  To minimize the impact of context from further away
-blocks on the current block, we can rewrite P(Y1 1 i)  
-P(Yi M i Xi M i).
+blocks on the current block, we can rewrite P(Y1 i X1 i)  
 2.2. Modeling Strategy and Architecture
 The proposed BASS model is shown in Figure 1. Different from
 past work in summarization, we explicitly introduce a semantic
@@ -184,7 +175,6 @@ the acoustics from the summary. Modifying the input language
 or ambient environment changes the acoustics, but not the semantics.
  Summaries are generated by sampling from this rich
 semantic representation, and modifying Sleads to a different
-summary Y.
 The process of speech summarization occurs at the intersection
  of three distinctive spaces- the acoustic space, the semantic
 space, and the summary space. The acoustic space comprises
@@ -198,36 +188,25 @@ Consider the task of estimating the most likely summary Y
 given the input speech Xunder this setting.Figure 2  Updater mechanisms (a) concatenation, (b) gated attention,
  and (c) hierarchical attention use previous embedding
 Si 1and encoding Enc( Xi) to produce current embedding
-ˆY  arg max
-YP(Y X)
-  arg max
-YX
-SP(Y, S X)
- arg max
-Ymax
-SP(Y, S X)(6)
 Equation 6 describes the process of identifying the most
 likely hypothesis summary ˆYgiven the input Xand semantic
  representation S. From Figure 1, based on the conditional
  independence between the summary Yand acoustics X
 given semantic representation S, we can write P(Y, S X)  
 P(Y X)P(S X). Thus, we can obtain the solution for Equation
- 6 7.
-ˆS  arg max
-SP(S X)
-ˆY arg max
-YP(Y ˆS) max
-SP(S X)(7)
-From Equations 7 5, BASS estimates
-P(Yi X1 i, Y1 1)using Equation 8.
-P(Yi X1 i)  P(Yi Si)P(Si S1 1, Xi) (8)
+ 6 using the coordinate descent update shown in Equation
+From Equations 7 and 5, BASS estimates
+P(Yi X1 i, Y1 i 1)using Equation 8.
+P(Yi X1 i)  P(Yi Si)P(Si S1 i 1, Xi) (8)
 The encoder and decoder model the probabilities P(S X)
 andP(Y S)respectively. The updater uses the past semantic
 embeddings and the current encoder output to produce the current
- semantic embedding. Figure 2 1.Concatenation  Si Concat (Si 1,Encoder (Xi))
+ semantic embedding. Figure 2 shows three alternate structures
+ for our updater to aggregate semantic context from the
+prior and the current block 
+1.Concatenation  Si Concat (Si 1,Encoder (Xi))
 The current semantic embedding is obtained by concatenating
  the embeddings from the previous and current blocks.
-2.Gated Attention  
 Si Encoder (Xi)  w Attn(Si 1,Encoder (Xi))
 The current and previous semantic embeddings are combined
 using an attention mechanism and incorporated into the final
@@ -240,31 +219,35 @@ This method performs the context passing within each decoder
  and current semantic embeddings independently. Then,
 we stack the two attention outputs and perform a second level
 of attention between this result and the decoder state.3. Experimental Setup
-3.1. Dataset
 Table 1  Statistics of the How-2 2,000h Dataset used for model
 training and evaluation. The maximum input length N(in
 frames), and maximum output length L(in tokens) are shown.
 Set Max N Max L #Videos
-Train 145,082 173 68,336 39,537 152 2,127
+Train 145,082 173 68,336
+Test 39,537 152 2,127
 The How-2 Dataset [23] contains 2,000h of instructional
 videos with corresponding text transcripts, video, speech, translations,
  and summaries. Abstractive summaries are generated
-based on user-provided descriptions of the videos. Table 1 2 data. The model features and reference summaries have
-been made public by the authors of [7].
+based on user-provided descriptions of the videos. Table 1 highlights
+ the number of videos in the train and test partitions of the
+How2 data. The model features and reference summaries have
+been made public1by the authors of [7].
 3.2. Model Hyperparameters and Evaluation
 Models   Our models use ESPNet22[24] and are first pretrained
  on the ASR task and then fine-tuned for summarization.
  The encoder consists of convolutional subsampling by
-factor 4, followed by 12 conformer [10] blocks with 8 2048. The decoder has 6 transformer
-blocks, with 4 2048. The
+factor 4, followed by 12 conformer [10] blocks with 8 attention
+heads and a hidden size of 2048. The decoder has 6 transformer
+blocks, with 4 attention heads and a hidden size of 2048. The
 total number of model parameters is 103M. Both the encoder
 and decoder use a dropout rate of 0.2. We use 43-dimensional
 filter bank and pitch features as input to the encoder.
 ASR   ASR models are trained with Connectionist Temporal
 Classification (CTC) and Cross-Entropy loss with CTC weight
 of 0.3. We use the Adam optimizer with peak lr 0.001, and a
-warmup scheduler for ASR pre-training. This takes 2 8
-V-100 32 0.15. During inference, we
+warmup scheduler for ASR pre-training. This takes 2 days on 8
+SUMM   Our summarization models are trained with crossentropy
+ loss and label smoothing of 0.15. During inference, we
 use a beam size of 8. Model averaging was not performed as it
 was found to hurt summarization performance. Fine-tuning is
 run for a day on one A40 GPU.
@@ -278,8 +261,9 @@ automatic metrics for evaluating summarization models.
 4. Experimental Results
 4.1. Truncated Input Baselines
 First, we train end-to-end summarization baseline models on
-truncated inputs ( Trunc ) that are 10 30 seconds
- long. Table 2 10 30
+truncated inputs ( Trunc ) that are 10 seconds long and 30 seconds
+ long. Table 2 reports the results of training on truncated
+inputs and evaluating recordings that are 10 seconds and 30
 seconds long, compared to different state-of-the-art approaches
 referenced in prior work. We note that using the standard full
 multi-head attention provides significant gains over restricted
@@ -289,25 +273,28 @@ self-attention, and therefore use the standard multi-head selfattention
 2Code will be released in https //github.com/espnet/espnetTable 2  Performance of Block-wise Adaptation and Training Approaches compared to Truncated Baselines with different inference
 strategies using ROUGE, METEOR, and BERTScore metrics- higher scores indicate better performance
 Training Method Inference Pre-training Train Maxlen Inf. Maxlen ROUGE-1  ROUGE-2  ROUGE-L  METEOR  BERTScore  
-Trunc, Restricted Self-Attention [7] Standard X 100 100 60.73 44.9 56.10 29.30 91.53
-Trunc, Full Self-Attention [8] Standard X 100 100 65.30 51.40 62.10 32.50 93.00
-  TTS Augmentation [8] Standard X 100 100 68.40 54.10 65.00 34.90 93.80
-Trunc-Baseline Standard X 10 10 60.87 45.12 56.79 30.00 91.6
-Trunc-Baseline Standard X 30 30 63.30 47.58 59.16 31.76 92.08
-Trunc-Baseline Standard X 60 60 64.57 49.11 60.49 32.47 92.38
-BASS-Adapt Block 10 30 30 63.99 49.00 60.17 32.17 92.51
-BASS-Train Block X 30 30 60.87 43.12 54.79 29.12 89.40 3  Part-of-speech coverage between the Predicted Summary
- and the Reference for Truncated 10 30s model
+Trunc, Restricted Self-Attention [7] Standard X 100s 100s 60.73 44.9 56.10 29.30 91.53
+Trunc, Full Self-Attention [8] Standard X 100s 100s 65.30 51.40 62.10 32.50 93.00
+  TTS Augmentation [8] Standard X 100s 100s 68.40 54.10 65.00 34.90 93.80
+Trunc-Baseline Standard X 10s 10s 60.87 45.12 56.79 30.00 91.6
+Trunc-Baseline Standard X 30s 30s 63.30 47.58 59.16 31.76 92.08
+Trunc-Baseline Standard X 60s 60s 64.57 49.11 60.49 32.47 92.38
+BASS-Adapt Block 10s 30s 30s 63.99 49.00 60.17 32.17 92.51
+BASS-Train Block X 30s 30s 60.87 43.12 54.79 29.12 89.40
+Table 3  Part-of-speech coverage between the Predicted Summary
+ and the Reference for Truncated 10s baseline and BASSADAPT
 Model Noun Verb Adj Adv Prop.Noun
 Baseline 10-sec 0.85 0.76 0.84 0.65 0.78
-BASS-ADAPT 0.87 0.79 0.84 0.67 0.81 4  Performance of BASS models with block level inference
+BASS-ADAPT 0.87 0.79 0.84 0.67 0.81
+Table 4  Performance of BASS models with block level inference
 across different implementations of the semantic updater model.
 Models are pre-trained on 10s and fine-tuned on 30s. R-1, R-2,
 R-3 represent the ROUGE-1, ROUGE-2, and ROUGE-L metrics
-respectively
 Updater R-1   R-2  R-L METEOR  BERTScore  
-Concat 63.99 49.00 60.17 32.17 92.51 63.94 48.91 60.16 32.12 92.12
-Hier. Attn 59.71 43.99 55.74 29.32 91.27 4.2. Block-wise Training versus Truncated Training
+Concat 63.99 49.00 60.17 32.17 92.51
+Gated Attn 63.94 48.91 60.16 32.12 92.12
+Hier. Attn 59.71 43.99 55.74 29.32 91.27
+4.2. Block-wise Training versus Truncated Training
 The proposed BASS method can be used to help models trained
 on shorter recordings adapt to longer inputs ( BASS-Adapt ),
 or to train models from scratch in a block-wise manner
@@ -324,7 +311,6 @@ compared against BASS-Train by training a model on 30second
 latter performs worse - for training from scratch, the challenge
 is relatively poor initial context. Initially, the learned context is
 not very helpful which leads to slower convergence and poorer
-performance.
 We compare both model adaptation and training strategies
 in Table 2. We see that the proposed BASS-Adapt approach
 outperforms BASS-Train on all metrics. We also observe
@@ -338,7 +324,7 @@ improvement in ROUGE-L over the 10-second truncated baseline,
 audio, showing that our BASS model trained with 30-secondrecordings comprising 10-second chunks can do as well as a
 model trained on 60-second recordings. The proposed approach
 is more computationally efficient than the baseline by a factor
-of 3 3 3 times
+of 3 since the proposed approach uses 3x smaller inputs 3 times
 for quadratic self-attentions.
 Finally, Table 3 sheds light on the improvement in the prediction
  of different parts of speech in the reference summary
@@ -357,7 +343,6 @@ similar gains in performance, with hierarchical attention
 performing significantly worse. Gated attention is able to
 achieve similar performance while reducing having a very
 small memory footprint compared to concatenation.
-5. Conclusion
 In this paper, we address the challenge of training end-to-end
 speech summarization models over very long inputs. Though
 certain optimizations can be used to improve the upper limit
@@ -371,11 +356,10 @@ adapt pre-trained truncated input models to longer sequences,
 or train models over long sequences from scratch. We show
 that the proposed model outperforms truncated baselines and
 enables the training of speech summarization models with very
-long inputs.
-6. Acknowledgements
 We would like to thank Raphael Olivier, Hira Dhamyal and
 Mark Lindsey for their helpful feedback. This work used
-PSC Bridges2 210014 120015 from the Advanced Cyberinfrastructure Coordination
+PSC Bridges2 and NCSA Delta through allocations CIS210014
+and IRI120015 from the Advanced Cyberinfrastructure Coordination
  Ecosystem  Services & Support (ACCESS) program,
 which is supported by National Science Foundation grants
 #2138259, #2138286, #2138307, #2137603, and #2138296.7. References
@@ -397,7 +381,6 @@ IEEE Automatic Speech Recognition and Understanding Workshop
 [5]   ,  Integrating multiple asr systems into nlp backend with attention
  fusion,  in ICASSP 2022 - 2022 IEEE International Conference
  on Acoustics, Speech and Signal Processing (ICASSP) ,
-2022, pp. 6237 6241.
 [6] S. Shon, S. Arora, C.-J. Lin, A. Pasad, F. Wu, R. Sharma, W.-L.
 Wu, H.-Y . Lee, K. Livescu, and S. Watanabe,  Slue phase-2  A
 benchmark suite of diverse spoken language understanding tasks, 
@@ -419,7 +402,6 @@ Proc. Interspeech 2020 , 2020, pp. 5036 5040.
 [11] K. Deng, S. Watanabe, J. Shi, and S. Arora,  Blockwise Streaming
  Transformer for Spoken Language Understanding and Simultaneous
  Speech Translation,  in Proc. Interspeech 2022 , 2022, pp.
-1746 1750.
 [12] K. Rao, H. Sak, and R. Prabhavalkar,  Exploring architectures,
 data and units for streaming end-to-end speech recognition with
 rnn-transducer,  in 2017 IEEE Automatic Speech Recognition and
@@ -432,20 +414,18 @@ International Conference on Acoustics, Speech and Signal Processing
 Sainath, and T. Strohman,  Recognizing long-form speech using
 streaming end-to-end models,  in 2019 IEEE Automatic Speech
 Recognition and Understanding Workshop (ASRU) , 2019, pp.
-920 927.
 [15] E. Tsunoo, Y . Kashiwagi, and S. Watanabe,  Streaming transformer
  asr with blockwise synchronous beam search,  in 2021
 IEEE Spoken Language Technology Workshop (SLT) , 2021, pp.
-22 29.
 [16] Y . Shi, Y . Wang, C. Wu, C.-F. Yeh, J. Chan, F. Zhang, D. Le,
 and M. Seltzer,  Emformer  Efficient memory transformer based
 acoustic model for low latency streaming speech recognition,  in
 ICASSP 2021 - 2021 IEEE International Conference on Acoustics,
- Speech and Signal Processing (ICASSP) , 2021, pp. 6783 6787.[17] X. Ma, Y . Wang, M. J. Dousti, P. Koehn, and J. Pino,  Streaming
+ Speech and Signal Processing (ICASSP) , 2021, pp. 6783 
+6787.[17] X. Ma, Y . Wang, M. J. Dousti, P. Koehn, and J. Pino,  Streaming
 simultaneous speech translation with augmented memory transformer, 
  in ICASSP 2021 - 2021 IEEE International Conference
 on Acoustics, Speech and Signal Processing (ICASSP) , 2021, pp.
-7523 7527.
 [18] Y . Wang, H. Lv, D. Povey, L. Xie, and S. Khudanpur,  Wake
 word detection with streaming transformers,  in ICASSP 20212021
  IEEE International Conference on Acoustics, Speech and
@@ -458,7 +438,6 @@ Workshop, SLT 2018, Athens, Greece, December 18-21,
 [20] T. Hori, N. Moritz, C. Hori, and J. L. Roux,  Advanced
 Long-Context End-to-End Speech Recognition Using ContextExpanded
  Transformers,  in Proc. Interspeech 2021 , 2021, pp.
-2097 2101.
 [21] T. Hori, N. Moritz, C. Hori, and J. Le Roux,  Transformer-based
 long-context end-to-end speech recognition,  Proc. Interspeech
 2020 , pp. 5011 5015, 2020.

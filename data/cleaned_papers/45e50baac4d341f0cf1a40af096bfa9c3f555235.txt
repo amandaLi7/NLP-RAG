@@ -1,11 +1,12 @@
-Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing , pages 2663 2675 6-10, 2023 2023 Association for Computational Linguistics
+Proceedings of the 2023 Conference on Empirical Methods in Natural Language Processing , pages 2663 2675
+December 6-10, 2023  2023 Association for Computational Linguistics
 Understanding the Effect of Model Compression on
 Social Bias in Large Language Models
-Gustavo Gonçalves1,2 1,3 1Language Technologies Institute, Carnegie Mellon University, Pittsburgh, PA, USA
+Gustavo Gonçalves1,2and Emma Strubell1,3
+1Language Technologies Institute, Carnegie Mellon University, Pittsburgh, PA, USA
 2NOV A LINCS, Universidade NOV A de Lisboa, Lisbon, Portugal
 3Allen Institute for Artificial Intelligence, Seattle, WA, USA
 {ggoncalv, estrubel}@cs.cmu.edu
-Abstract
 Large Language Models (LLMs) trained with
 self-supervision on vast corpora of web text
 fit to the social biases of that text. Without
@@ -27,7 +28,6 @@ bias in LLMs. Longer pretraining and larger
 models led to higher social bias, and quantization
  showed a regularizer effect with its best
 trade-off around 20% of the original pretraining
-time.1 1 Introduction
 Large Language Models (LLMs) are trained on
 large corpora using self-supervision, which allows
 models to consider vast amounts of unlabelled
@@ -38,7 +38,6 @@ up social biases contained in the training data.
 Which is amplified by larger models, more data,
 and longer training (Kaneko et al., 2022  Kaneko
 and Bollegala, 2022  Kurita et al., 2019  Delobelle
-and Berendt, 2022).
 Social biases in LLMs are an ongoing problem
  that is propagated from pretraining to finetuning
  (Ladhak et al., 2023  Gira et al., 2022). Biased
@@ -90,7 +89,6 @@ and increased social bias, and show that quantization
  and distillation can reduce bias, demonstrating
 the potential for compression as a pragmatic approach
  for reducing social bias in LLMs.
-2 Methodology
 We were interested in understanding how dynamic
 Post-Training Quantization (PTQ) and distillation
 influence social bias contained in LLMs of different
@@ -111,8 +109,6 @@ RoBERTa models, and the Pythia family of autoregressive
 different language modeling tasks and span across
 a wide range of parameter sizes, thus providing
 a comprehensive view of the variations of social
-bias.
-2.1 Measuring Bias
 We use the Bias Bench benchmark for evaluating
 markers of social bias in LLMs. Bias Bench compiles
  three datasets, CrowS-Pairs (Nangia et al.,
@@ -156,7 +152,6 @@ sentence embeddings between the attribute and target
  sets to assess a preference between attributes
 and targets (bias). We provide more detail of this
 formulation in Appendix A.1.
-2.2 Models
 In this work, we focus on two popular methods
 for model compression  knowledge distillation and
 quantization. We choose these two methods given
@@ -179,18 +174,29 @@ observed during training impacts all of the above.
 We experiment with three different base LLMs 
 BERT (Devlin et al., 2019), RoBERTa (Liu et al.,
 2019), and Pythia (Biderman et al., 2023), with
-uncompressed model sizes ranging from 70 6.9B parameters. BERT and RoBERTa Model Params Size (MB) GENDER RACE RELIGION
-BERT Base 110 438 57.25 62.33 62.86 8 110 181 57.25 0.1962.14 9.5346.67
-  CDA (Webster et al., 2020) 110 1.1456.11 5.6356.70 2.8660.00
-  D ROPOUT (Webster et al., 2020) 110 1.9155.34 3.3059.03 7.6255.24
-  INLP (Ravfogel et al., 2020) 110 6.1051.15 5.6367.96 1.9160.95
-  SELF-DEBIAS (Schick et al., 2021) 110 4.9652.29 5.6356.70 6.6756.19
-  SENTDEBIAS (Liang et al., 2020) 110 4.9652.29 0.3962.72 0.9563.81 345 1341 1.5255.73 1.9460.39 4.7667.62 8 345 432 6.8750.38 0.7863.11 7.6255.24 66 268 6.1051.15 9.3246.99 4.7658.10 123 498 60.15 63.57 60.95 8 123 242 6.5153.64 5.0458.53 10.4749.52
-  CDA (Webster et al., 2020) 110 3.8356.32 0.1963.76 0.9559.05
-  D ROPOUT (Webster et al., 2020) 110 0.7659.39 1.1762.40 2.8657.14
-  INLP (Ravfogel et al., 2020) 110 4.9855.17 1.7561.82 1.9162.86
-  SELF-DEBIAS (Schick et al., 2021) 110 3.0657.09 1.1762.40 9.5251.43
-  SENTDEBIAS (Liang et al., 2020) 110 8.0452.11 1.5565.12 1.940.95 354 1422 60.15 0.5864.15 0.9561.90 8 354 513 2.6857.47 0.2063.37 0.9560.00 82 329 7.2852.87 3.4960.08 2.8663.81 1  CrowS-Pairs stereotype scores for GENDER ,RACE , and RELIGION for BERT and RoBERTa models.
+uncompressed model sizes ranging from 70M parameters
+ to 6.9B parameters. BERT and RoBERTa2664Model Params Size (MB) GENDER RACE RELIGION
+BERT Base 110M 438 57.25 62.33 62.86
+  D YNAMIC PTQ int8 110M 181 57.25  0.1962.14  9.5346.67
+  CDA (Webster et al., 2020) 110M  1.1456.11  5.6356.70  2.8660.00
+  D ROPOUT (Webster et al., 2020) 110M  1.9155.34  3.3059.03  7.6255.24
+  INLP (Ravfogel et al., 2020) 110M  6.1051.15  5.6367.96  1.9160.95
+  SELF-DEBIAS (Schick et al., 2021) 110M  4.9652.29  5.6356.70  6.6756.19
+  SENTDEBIAS (Liang et al., 2020) 110M  4.9652.29  0.3962.72  0.9563.81
+BERT Large 345M 1341  1.5255.73  1.9460.39  4.7667.62
+  D YNAMIC PTQ int8 345M 432  6.8750.38  0.7863.11  7.6255.24
+DistilBERT 66M 268  6.1051.15  9.3246.99  4.7658.10
+RoBERTa Base 123M 498 60.15 63.57 60.95
+  D YNAMIC PTQ int8 123M 242  6.5153.64  5.0458.53  10.4749.52
+  CDA (Webster et al., 2020) 110M  3.8356.32  0.1963.76  0.9559.05
+  D ROPOUT (Webster et al., 2020) 110M  0.7659.39  1.1762.40  2.8657.14
+  INLP (Ravfogel et al., 2020) 110M  4.9855.17  1.7561.82  1.9162.86
+  SELF-DEBIAS (Schick et al., 2021) 110M  3.0657.09  1.1762.40  9.5251.43
+  SENTDEBIAS (Liang et al., 2020) 110M  8.0452.11  1.5565.12  1.940.95
+RoBERTa Large 354M 1422 60.15  0.5864.15  0.9561.90
+  D YNAMIC PTQ int8 354M 513  2.6857.47  0.2063.37  0.9560.00
+DistilRoBERTa 82M 329  7.2852.87  3.4960.08  2.8663.81
+Table 1  CrowS-Pairs stereotype scores for GENDER ,RACE , and RELIGION for BERT and RoBERTa models.
 Stereotype scores closer to 50% indicate less biased model behavior. Bold values indicate the best method per bias
 category. Results on the other datasets displayed similar trends and were included in Appendix B for space.
 represent two similar sets of widely used and studied
@@ -220,13 +226,12 @@ minimizes the loss according to the predictions of
 (hard-targets) to better generalize to unseen data.
 Quantization compresses models by reducing
 the precision of their weights and activations during
-inference. We use the standard PyTorch implementation to
+inference. We use the standard PyTorch implementation3to
  apply dynamic PTQ over the linear layers
 of the transformer stack, from fp32 full-precision
 to quantized int8 precision. This work analyzes
 quantized BERT, RoBERTa, and Pythia models of
 a comprehensive range of sizes.
-3 Results
 Dynamic PTQ and distillation lower social bias.
 In Table 1 we analyze the effects of dynamic PTQ
 and distillation in the CrowS dataset, where BERT
@@ -238,21 +243,24 @@ The INLP (Ravfogel et al., 2020) baseline consists
 of a linear classifier that learns to predict the target
 bias group given a set of context words, such as
 3https //pytorch.org/tutorials/recipes/recipes/
-dynamic_quantization.html Figure 1  LM score vs. GENDER ,RACE , and RELIGION bias on the SS dataset across all Pythia models. Darker
+dynamic_quantization.html2665Figure 1  LM score vs. GENDER ,RACE , and RELIGION bias on the SS dataset across all Pythia models. Darker
 data points show later pretraining steps, and more transparent points to earlier steps. The included table shows the
 Kendall Tau C, for the correlation across "All" model sizes, full-precision "Original", and "int8" model sizes.
-Model
-SizeBest
-LM ScoreStep
-Nr.Bias
-G. /RA. /RE.
-70 89.2 21 59.8 / 58.4 / 58.6 160 90.2 36 61.4 / 57.6 / 59.4 410 91.6 114 65.2 / 60.7 / 64.5 1.4 92.6 129 66.6 / 63.2 / 66.2 2.8 92.9 114 67.1 / 63.7 / 66.8 6.9 92.7 129 69.0 / 64.0 / 68.4 2  Bias measured using SS for the full-precision
+70M 89.2 21K 59.8 / 58.4 / 58.6
+160M 90.2 36K 61.4 / 57.6 / 59.4
+410M 91.6 114K 65.2 / 60.7 / 64.5
+1.4B 92.6 129K 66.6 / 63.2 / 66.2
+2.8B 92.9 114K 67.1 / 63.7 / 66.8
+6.9B 92.7 129K 69.0 / 64.0 / 68.4
+Table 2  Bias measured using SS for the full-precision
 Pythia models having the best LM score per model size.Model
-SizeBest
-LM ScoreStep
-Nr.Bias
-G. /RA. /RE.
-70 87.7 29 57.5 / 54.8 / 58.0 160 89.0 21 61.1 / 56.3 / 57.7 410 90.5 50 64.2 / 58.4 / 63.6 1.4 91.4 29 66.1 / 59.7 / 63.3 2.8 91.6 50 64.1 / 60.2 / 61.9 6.9 91.4 21 67.3 / 60.1 / 67.3 3 8 quantized
+70M 87.7 29K 57.5 / 54.8 / 58.0
+160M 89.0 21K 61.1 / 56.3 / 57.7
+410M 90.5 50K 64.2 / 58.4 / 63.6
+1.4B 91.4 29K 66.1 / 59.7 / 63.3
+2.8B 91.6 50K 64.1 / 60.2 / 61.9
+6.9B 91.4 21K 67.3 / 60.1 / 67.3
+Table 3  Bias measured using SS for int8 quantized
 Pythia models having the best LM score per model size.
  he/she  . The Self-Debias baseline was proposed by
 Schick et al. (2021), and uses prompts to encourage
@@ -280,10 +288,11 @@ GENDER , the best model for RACE and RELIGION
 varies across datasets. This can be explained by the
 different dataset tasks and the pretraining.
 In Appendix B we show the social bias scores asa function of the pretraining of the Pythia models in
-Figures 2 7, 9, 10 11. The BERT/RoBERTa
+Figures 2 to 7, 9, 10 and 11. The BERT/RoBERTa
 Base and Large versions are roughly comparable
-with the 160 410M Pythia models. For the
-SS dataset, the 160 410M model. However, this is
+with the 160M and 410M Pythia models. For the
+SS dataset, the 160M model is consistently less
+biased than the 410M model. However, this is
 not the case for the other two datasets where the
 160M struggles in the RACE category while assessing
  the distance of sentence embeddings (SEAT) 
@@ -303,10 +312,10 @@ score and social bias across the SS dataset. Moreover,
 model score, where the social bias score tends to
 be high. The application of dynamic PTQ shows
 a regularizer effect on all models.The Kendall Tau
-C across the models and categories shows a strong correlation between LM score and social bias. Statistical
+C across the models and categories shows a strong2666correlation between LM score and social bias. Statistical
  significant tests were performed using a
 one-sided t-test to evaluate the positive correlation.
-Tables 2 3 show at what step, out of the
+Tables 2 and 3 show at what step, out of the
 21 we tested, the best LM scores occur on the SS
 dataset. In Table 2 the best LM score increases
 monotonically with model size and so do the social
@@ -319,7 +328,6 @@ higher LM score and social bias, albeit at lower
 scores than the original models. This shows an
 interesting possibility of early stopping depending
 on the deployment task of the LLM.
-4 Limitations
 While this work provides three different datasets,
 which have different views on social bias and allow
 for an indicative view of LLMs, they share some
@@ -355,8 +363,7 @@ AMD EPYC 7 662 64-Core Processors, where
 the quantized experiments ran for approximately 4days. A CPU implementation was used given the
 quantization backends available in PyTorch. Experiments
  that did not require quantization ran using
-an NVIDIA A100 40 5 hours to run.
-Ethics Statement
+an NVIDIA A100 40GB GPU and took approximately
 We reiterate that this work provides a limited Western
  view of Social bias focusing only on three main
 categories  GENDER ,RACE , and RELIGION . Our
@@ -367,7 +374,6 @@ must also reiterate that these models need to be further
  studied and are not ready for production. The
 effects of quantization along pretraining should be
 considered as preliminary results.
-5 Acknowledgments
 This work has been partially funded by the FCT
 project NOV A LINCS Ref. UIDP/04516/2020,
 by the Amazon Science - TaskBot Prize Challenge
@@ -380,12 +386,11 @@ SFRH/BD/140924/2018. We would like to acknowledge
 compute resources for this work. Any opinions,
 findings, and conclusions in this paper are the authors 
  and do not necessarily reflect those of the
-sponsors.
-References
 Orevaoghene Ahia, Julia Kreutzer, and Sara Hooker.
 2021. The Low-Resource Double Bind  An Empirical
  Study of Pruning for Low-Resource Machine
-Translation. In EMNLP (Findings) , pages 3316 3333. Association for Computational Linguistics.
+Translation. In EMNLP (Findings) , pages 3316 
+3333. Association for Computational Linguistics.
 Arash Ahmadian, Saurabh Dash, Hongyu Chen, Bharat
 Venkitesh, Stephen Gou, Phil Blunsom, Ahmet
 Üstün, and Sara Hooker. 2023. Intriguing Properties
@@ -401,7 +406,6 @@ Robert Sim, and Hanna M. Wallach. 2021. Stereotyping
  Norwegian Salmon  An Inventory of Pitfalls
 in Fairness Benchmark Datasets. In ACL/IJCNLP
 (1), pages 1004 1015. Association for Computational
-Linguistics.
 Tianlong Chen, Jonathan Frankle, Shiyu Chang, Sijia
 Liu, Yang Zhang, Zhangyang Wang, and Michael
 Carbin. 2020. The Lottery Ticket Hypothesis for
@@ -419,16 +423,13 @@ Computational Linguistics  Human Language Technologies,
  NAACL-HLT 2019, Minneapolis, MN, USA,
 June 2-7, 2019, Volume 1 (Long and Short Papers) ,
 pages 4171 4186. Association for Computational
-Linguistics.
 Maha Elbayad, Jiatao Gu, Edouard Grave, and Michael
 Auli. 2020. Depth-Adaptive Transformer. In ICLR .
-OpenReview.net.
 Leo Gao, Stella Biderman, Sid Black, Laurence Golding,
  Travis Hoppe, Charles Foster, Jason Phang,
 Horace He, Anish Thite, Noa Nabeshima, Shawn
 Presser, and Connor Leahy. 2021. The Pile  An
 800GB Dataset of Diverse Text for Language Modeling.CoRR
- , abs/2101.00027.
 Michael Gira, Ruisu Zhang, and Kangwook Lee. 2022.
 Debiasing Pre-Trained Language Models via Efficient
  Fine-Tuning. In LT-EDI , pages 59 69. Association
@@ -452,13 +453,12 @@ Masahiro Kaneko and Danushka Bollegala. 2021. Debiasing
 EACL , pages 1256 1266. Association for Computational
  Linguistics.Masahiro Kaneko and Danushka Bollegala. 2022. Unmasking
  the Mask - Evaluating Social Biases in
-Masked Language Models. In AAAI , pages 11954 11962. AAAI Press.
+Masked Language Models. In AAAI , pages 11954 
 Masahiro Kaneko, Danushka Bollegala, and Naoaki
 Okazaki. 2022. Debiasing Isn t Enough  - on the
 Effectiveness of Debiasing MLMs and Their Social
 Biases in Downstream Tasks. In COLING , pages
 1299 1310. International Committee on Computational
- Linguistics.
 Sneha Kudugunta, Yanping Huang, Ankur Bapna,
 Maxim Krikun, Dmitry Lepikhin, Minh-Thang Luong,
  and Orhan Firat. 2021. Beyond Distillation 
@@ -468,12 +468,12 @@ InEMNLP (Findings) , pages 3577 3599. Association
 Keita Kurita, Nidhi Vyas, Ayush Pareek, Alan W.
 Black, and Yulia Tsvetkov. 2019. Measuring Bias
 in Contextualized Word Representations. CoRR ,
-abs/1906.07337.
 Faisal Ladhak, Esin Durmus, Mirac Suzgun, Tianyi
 Zhang, Dan Jurafsky, Kathleen R. McKeown, and
 Tatsunori Hashimoto. 2023. When Do Pre-Training
 Biases Propagate to Downstream Tasks  A Case
-Study in Text Summarization. In EACL , pages 3198 3211. Association for Computational Linguistics.
+Study in Text Summarization. In EACL , pages 3198 
+3211. Association for Computational Linguistics.
 Paul Pu Liang, Irene Mengze Li, Emily Zheng,
 Yao Chong Lim, Ruslan Salakhutdinov, and LouisPhilippe
  Morency. 2020. Towards Debiasing Sentence
@@ -495,7 +495,8 @@ Debiasing Techniques for Pre-trained Language Models.
 Computational Linguistics.
 Moin Nadeem, Anna Bethke, and Siva Reddy. 2021.
 StereoSet  Measuring stereotypical bias in pretrained
-language models. In ACL/IJCNLP (1) , pages 5356 5371. Association for Computational Linguistics.
+language models. In ACL/IJCNLP (1) , pages 5356 
+5371. Association for Computational Linguistics.
 Nikita Nangia, Clara Vania, Rasika Bhalerao, and
 Samuel R. Bowman. 2020. CrowS-Pairs  A Challenge
  Dataset for Measuring Social Biases in Masked
@@ -505,7 +506,6 @@ Sebastian Gehrmann, Sara Hooker, and Julia
 Kreutzer. 2022. Intriguing Properties of Compression
  on Multilingual Models. In EMNLP , pages
 9092 9110. Association for Computational Linguistics.
-
 Alec Radford, Jeff Wu, Rewon Child, David Luan,
 Dario Amodei, and Ilya Sutskever. 2019. Language
 models are unsupervised multitask learners.
@@ -517,7 +517,6 @@ for Computational Linguistics.
 Victor Sanh, Lysandre Debut, Julien Chaumond, and
 Thomas Wolf. 2019. DistilBERT, a distilled version
 of BERT  Smaller, faster, cheaper and lighter. CoRR ,
-abs/1910.01108.
 Timo Schick, Sahana Udupa, and Hinrich Schütze. 2021.
 Self-Diagnosis and Self-Debiasing  A Proposal for
 Reducing Corpus-Based Bias in NLP. Trans. Assoc.
@@ -526,16 +525,14 @@ Kellie Webster, Xuezhi Wang, Ian Tenney, Alex Beutel,
  Emily Pitler, Ellie Pavlick, Jilin Chen, and
 Slav Petrov. 2020. Measuring and Reducing Gendered
  Correlations in Pre-trained Models. CoRR ,
-abs/2010.06032.
 Canwen Xu, Wangchunshu Zhou, Tao Ge, Ke Xu, Julian
  J. McAuley, and Furu Wei. 2021. Beyond Preserved
  Accuracy  Evaluating Loyalty and Robustness
-of BERT Compression. In EMNLP (1) , pages 10653 10659. Association for Computational Linguistics.
+of BERT Compression. In EMNLP (1) , pages 10653 
+10659. Association for Computational Linguistics.
 Guangxuan Xu and Qingyuan Hu. 2022. Can
 Model Compression Improve NLP Fairness. CoRR ,
-abs/2201.08542.
 A Details of Metric Calculation
-A.1 SEAT
 The SEAT task shares the same task as WEAT task,
 which is defined by four word sets, two attribute
 sets, and two target sets. For example, to decide
@@ -548,82 +545,130 @@ The target sets will characterize concepts such as
 WEAT evaluates how close are the attribute sets
 from the target sets to determine the existence of
 bias. Mathematically this is given by 
-s(A, B, X, Y )   
-x Xs(x, A, B )  
-y Ys(y, A, B )
 (1)Where AandBrepresent the attribute sets, and
 XandYare the target sets of words. The sfunction
  in Equation (1) denotes mean cosine similarity
 between the target word embeddings and the attribute
- word embeddings 
-s(w, A, B ) 1
- A  
-a Acos(w, a) 1
- B  
-b Bcos(w, b).
-(2)
 The reported score of the benchmark (effect size)
-is given by 
 d µ({s(x, A, B )}x X) µ({s(y, A, B )}y Y)
 σ({s(t, X, Y )}t A B)
-(3)
 Where µandσare the mean and standard deviation
  respectively. Equation (3) is designed so
 that scores closer to zero indicate the smallest possible
  degree of bias. SEAT extends the previous
 formulation by considering the distance sentence
 embeddings instead of word embeddings.
-B Additional Plots and Tables Figure 2 3 4 5 6 7 8 4  SS stereotype scores and language modeling scores (LM Score) for BERT, and RoBERTa models.
+B Additional Plots and Tables2669Figure 2  Crows GENDER bias with Quantized Results
+Figure 3  Crows RACE bias with Quantized Results
+Figure 4  Crows RELIGION bias with Quantized Results2670Figure 5  Stereoset GENDER bias with Quantized Results
+Figure 6  Stereoset RACE bias with Quantized Results
+Figure 7  Stereoset RELIGION bias with Quantized Results2671Figure 8  Stereoset LM Score with Quantized Results
+Table 4  SS stereotype scores and language modeling scores (LM Score) for BERT, and RoBERTa models.
 Stereotype scores closer to 50% indicate less biased model behavior. Bold values indicate the best method per
 bias and LM Score. Results are on the SS test set. A random model (which chooses the stereotypical candidate
 and the anti-stereotypical candidate for each example with equal probability) obtains a stereotype score of 50% in
-expectation.
 Model GENDER bias RACE bias RELIGION bias LM Score
-BERT Base 60.28 57.03 59.70 84.17 8 3.2956.99 2.3654.67 2.8756.83 2.9481.23
-  CDA (Webster et al., 2020)  0.6759.61 0.3056.73 1.3358.37 1.0983.08
-  D ROPOUT (Webster et al., 2020)  0.3860.66 0.0457.07 0.5759.13 1.1483.04
-  INLP (Ravfogel et al., 2020)  3.0357.25 0.2657.29 2.4457.26 3.5480.63
-  SELF-DEBIAS (Schick et al., 2021)  0.9459.34 2.7354.30 2.4457.26 0.0884.09
- SENTENCE DEBIAS (Liang et al., 2020)  0.9159.37 0.7557.78 0.9758.73 0.0384.20 2.9663.24 0.0457.07 0.2459.94 0.2484.41 8 0.8259.46 1.8655.17 3.7455.96 3.1281.05 8.7351.55 6.4050.63 9.5749.87 30.3053.87 66.32 61.67 64.28 88.95 8 3.9262.40 3.1558.52 0.0364.25 5.7583.20
-  CDA (Webster et al., 2020)  1.8964.43 0.7360.95 0.2364.51 0.1083.83
-  D ROPOUT (Webster et al., 2020)  0.0666.26 1.2760.41 2.2062.08 0.1188.81
-  INLP (Ravfogel et al., 2020)  9.0660.82 3.4158.26 3.9460.34 0.7088.23
-  SELF-DEBIAS (Schick et al., 2021)  1.2865.04 2.8958.78 1.4462.84 0.6788.26
- SENTENCE DEBIAS (Liang et al., 2020)  3.5562.77 1.0562.72 0.3763.91 0.0188.94 0.5166.83 1.3760.30 0.2164.49 0.1489.09 8 2.7263.60 2.1059.57 0.4063.88 0.6888.27 2.0464.28 0.3661.31 1.1665.44 0.2489.192672 5  LM Scores vs. Biases on the SS dataset of the
+BERT Base 60.28 57.03 59.70 84.17
+  D YNAMIC PTQ int8  3.2956.99  2.3654.67  2.8756.83  2.9481.23
+  CDA (Webster et al., 2020)  0.6759.61  0.3056.73  1.3358.37  1.0983.08
+  D ROPOUT (Webster et al., 2020)  0.3860.66  0.0457.07  0.5759.13  1.1483.04
+  INLP (Ravfogel et al., 2020)  3.0357.25  0.2657.29  2.4457.26  3.5480.63
+  SELF-DEBIAS (Schick et al., 2021)  0.9459.34  2.7354.30  2.4457.26  0.0884.09
+ SENTENCE DEBIAS (Liang et al., 2020)  0.9159.37  0.7557.78  0.9758.73  0.0384.20
+BERT Large  2.9663.24  0.0457.07  0.2459.94  0.2484.41
+  D YNAMIC PTQ int8  0.8259.46  1.8655.17  3.7455.96  3.1281.05
+Distil BERT Base  8.7351.55  6.4050.63  9.5749.87  30.3053.87
+RoBERTa Base 66.32 61.67 64.28 88.95
+  D YNAMIC PTQ int8  3.9262.40  3.1558.52  0.0364.25  5.7583.20
+  CDA (Webster et al., 2020)  1.8964.43  0.7360.95  0.2364.51  0.1083.83
+  D ROPOUT (Webster et al., 2020)  0.0666.26  1.2760.41  2.2062.08  0.1188.81
+  INLP (Ravfogel et al., 2020)  9.0660.82  3.4158.26  3.9460.34  0.7088.23
+  SELF-DEBIAS (Schick et al., 2021)  1.2865.04  2.8958.78  1.4462.84  0.6788.26
+ SENTENCE DEBIAS (Liang et al., 2020)  3.5562.77  1.0562.72  0.3763.91  0.0188.94
+RoBERTa Large  0.5166.83  1.3760.30  0.2164.49  0.1489.09
+  D YNAMIC PTQ int8  2.7263.60  2.1059.57  0.4063.88  0.6888.27
+Distil RoBERTa Base  2.0464.28  0.3661.31  1.1665.44  0.2489.192672Table 5  LM Scores vs. Biases on the SS dataset of the
 int8 models, at the same steps with the best LM Score
 for the original (full-precision) models (Table 2)
-.Model
-Size LM ScoreStep
-Nr.Bias
-G. /RA. /RE.
-70 87.7 21 55.4 / 56.8 / 58.8 160 88.3 36 59.4 / 54.7 / 57.3 410 88.7 114 63.3 / 57.8 / 60.9 1.4 90.1 129 65.5 / 60.0 / 62.5 2.8 90.5 114 64.3 / 58.3 / 62.0 6.9 90.5 129 66.6 / 62.2 / 64.7 6  LM Scores vs. Biases on the SS dataset of the
+70M 87.7 21K 55.4 / 56.8 / 58.8
+160M 88.3 36K 59.4 / 54.7 / 57.3
+410M 88.7 114K 63.3 / 57.8 / 60.9
+1.4B 90.1 129K 65.5 / 60.0 / 62.5
+2.8B 90.5 114K 64.3 / 58.3 / 62.0
+6.9B 90.5 129K 66.6 / 62.2 / 64.7Table 6  LM Scores vs. Biases on the SS dataset of the
 original (full-precision) models, at the same steps with
 the best LM Score for the int8 models (Table 3)
-.Model
-Size LM ScoreStep
-Nr.Bias
-G. /RA. /RE.
-70 88.4 29 58.9 / 55.4 / 58.0 160 89.8 21 62.7 / 57.7 / 57.0 410 91.5 50 67.2 / 60.5 / 63.3 1.4 91.8 29 65.9 / 61.2 / 64.9 2.8 92.4 50 65.3 / 63.5 / 63.8 6.9 92.2 21 67.0 / 61.0 / 64.9 9 10 11 7  GENDER bias on SEAT dataset. Effect sizes closer to 0 are indicative of less biased model representations.
+70M 88.4 29K 58.9 / 55.4 / 58.0
+160M 89.8 21K 62.7 / 57.7 / 57.0
+410M 91.5 50K 67.2 / 60.5 / 63.3
+1.4B 91.8 29K 65.9 / 61.2 / 64.9
+2.8B 92.4 50K 65.3 / 63.5 / 63.8
+6.9B 92.2 21K 67.0 / 61.0 / 64.9
+Figure 9  Seat GENDER bias with Quantized Results
+Figure 10  Seat RACE bias with Quantized Results2673Figure 11  Seat RELIGION bias with Quantized Results
+Table 7  GENDER bias on SEAT dataset. Effect sizes closer to 0 are indicative of less biased model representations.
 Bold values indicate the best method per test. Statistically significant effect sizes at p   0.01 are denoted by *. The
 final column reports the average absolute effect size across all six gender SEAT tests for each model.
-Model weat6 7 8 weat b Avg. Effect
-BERT Base 0.931 0.090 -0.124 0.937 0.783 0.858 0.620 8 0.614 0.000 -0.496 0.711 0.401 0.549 0.1580.462 0.846 0.186 -0.278 1.342 0.831 0.849 0.1020.722 1.136 0.317 0.138 1.179 0.879 0.939 0.1440.765 0.317 -0.354 -0.258 0.105 0.187 -0.004 0.4160.204 0.350 -0.298 -0.626 0.458 0.413 0.462 0.1860.434 0.370 -0.015 0.418 0.221 -0.259 0.710 0.2880.332 8 0.905 0.273 1.097 0.894 0.728 1.180 0.2260.846 0.061 -0.222 0.093 -0.120 0.222 0.112 0.4820.138 0.922 0.208 0.979 1.460 0.810 1.261 0.940 8 0.350 0.177 0.389 1.038 0.349 0.897 0.4060.533 0.976 0.013 0.848 1.288 0.994 1.160 0.0600.880 1.134 0.209 1.161 1.482 1.136 1.321 0.1341.074 0.812 0.059 0.604 1.407 0.812 1.246 0.1170.823 0.755 0.068 0.869 1.372 0.774 1.239 0.0940.846 0.849 0.170 -0.237 0.900 0.510 1.102 0.3120.628 8 0.446 0.218 -0.368 0.423 -0.040 0.303 0.6400.300 1.229 0.192 0.859 1.504 0.748 1.462 0.0590.9992674 8  RACE bias on SEAT dataset. ABWS  angry-black-woman-stereotype. Effect sizes closer to 0 are indicative
+Model weat6 weat6b weat7 weat7b weat8 weat8b Avg. Effect
+BERT Base 0.931 0.090 -0.124 0.937 0.783 0.858 0.620
+  D YNAMIC PTQ int8 0.614 0.000 -0.496 0.711 0.401 0.549  0.1580.462
+  CDA 0.846 0.186 -0.278 1.342 0.831 0.849  0.1020.722
+  D ROPOUT 1.136 0.317 0.138 1.179 0.879 0.939  0.1440.765
+  INLP 0.317 -0.354 -0.258 0.105 0.187 -0.004  0.4160.204
+  SENTENCE DEBIAS 0.350 -0.298 -0.626 0.458 0.413 0.462  0.1860.434
+BERT Large 0.370 -0.015 0.418 0.221 -0.259 0.710  0.2880.332
+  D YNAMIC PTQ int8 0.905 0.273 1.097 0.894 0.728 1.180  0.2260.846
+Distil BERT 0.061 -0.222 0.093 -0.120 0.222 0.112  0.4820.138
+RoBERTa Base 0.922 0.208 0.979 1.460 0.810 1.261 0.940
+  D YNAMIC PTQ int8 0.350 0.177 0.389 1.038 0.349 0.897  0.4060.533
+  CDA 0.976 0.013 0.848 1.288 0.994 1.160  0.0600.880
+  D ROPOUT 1.134 0.209 1.161 1.482 1.136 1.321  0.1341.074
+  INLP 0.812 0.059 0.604 1.407 0.812 1.246  0.1170.823
+  SENTENCE DEBIAS 0.755 0.068 0.869 1.372 0.774 1.239  0.0940.846
+RoBERTa large 0.849 0.170 -0.237 0.900 0.510 1.102  0.3120.628
+  D YNAMIC PTQ int8 0.446 0.218 -0.368 0.423 -0.040 0.303  0.6400.300
+Distil RoBERTa 1.229 0.192 0.859 1.504 0.748 1.462  0.0590.9992674Table 8  RACE bias on SEAT dataset. ABWS  angry-black-woman-stereotype. Effect sizes closer to 0 are indicative
 of less biased model representations. Bold values indicate the best method per test. Statistically significant effect
 sizes at p   0.01 are denoted by *. The final column reports the average absolute effect size across all seven race
 SEAT tests for each model.
-Model ABWS ABWS-b weat3 4 5 weat bAvg.
-Effect
+Model ABWS ABWS-b weat3 weat3b weat4 weat5 weat5bAvg.
 BERT Base -0.079 0.690 0.778 0.469 0.901 0.887 0.539 0.620
- DYN. PTQ int8 0.772 0.425 0.835 0.548 0.970 1.076 0.517 0.1150.735 0.231 0.619 0.824 0.510 0.896 0.418 0.486 0.0510.569 0.415 0.690 0.698 0.476 0.683 0.417 0.495 0.0670.554 0.295 0.565 0.799 0.370 0.976 1.039 0.432 0.0190.639
-  SENTDEBIAS -0.067 0.684 0.776 0.451 0.902 0.891 0.513 0.0080.612
-BERT Large -0.219 0.953 0.420 -0.375 0.415 0.890 -0.345 0.1040.517
- DYN. PTQ int8 0.660 -0.118 -0.173 0.093 -0.318 0.337 0.364 0.3050.295 1.081 -0.927 0.441 0.202 0.358 0.726 -0.076 0.0760.544 0.395 0.159 -0.114 -0.003 -0.315 0.780 0.386 0.307
- DYN. PTQ int8 0.660 -0.118 -0.173 0.093 -0.318 0.337 0.364 0.0120.295 0.455 0.300 -0.080 0.024 -0.308 0.716 0.371 0.0150.322 0.499 0.392 -0.162 0.044 -0.367 0.841 0.379 0.0760.383 0.222 0.445 0.354 0.130 0.125 0.636 0.301 0.0090.316 0.407 0.084 -0.103 0.015 -0.300 0.728 0.274 0.0340.273
-RoBERTa Large -0.090 0.274 0.869 -0.021 0.943 0.767 0.061 0.1250.432
- DYN. PTQ int8 -0.065 -0.014 0.587 -0.190 0.572 0.580 -0.173 0.0040.312 0.774 0.112 -0.062 -0.012 -0.410 0.843 0.456 0.0740.381 9  RELIGION bias on SEAT dataset. Effect sizes closer to 0 are indicative of less biased model representations.
+ DYN. PTQ int8 0.772 0.425 0.835 0.548 0.970 1.076 0.517  0.1150.735
+  CDA 0.231 0.619 0.824 0.510 0.896 0.418 0.486  0.0510.569
+  D ROPOUT 0.415 0.690 0.698 0.476 0.683 0.417 0.495  0.0670.554
+  INLP 0.295 0.565 0.799 0.370 0.976 1.039 0.432  0.0190.639
+  SENTDEBIAS -0.067 0.684 0.776 0.451 0.902 0.891 0.513  0.0080.612
+BERT Large -0.219 0.953 0.420 -0.375 0.415 0.890 -0.345  0.1040.517
+ DYN. PTQ int8 0.660 -0.118 -0.173 0.093 -0.318 0.337 0.364  0.3050.295
+Distil BERT 1.081 -0.927 0.441 0.202 0.358 0.726 -0.076  0.0760.544
+RoBERTa Base 0.395 0.159 -0.114 -0.003 -0.315 0.780 0.386 0.307
+ DYN. PTQ int8 0.660 -0.118 -0.173 0.093 -0.318 0.337 0.364  0.0120.295
+  CDA 0.455 0.300 -0.080 0.024 -0.308 0.716 0.371  0.0150.322
+  D ROPOUT 0.499 0.392 -0.162 0.044 -0.367 0.841 0.379  0.0760.383
+  INLP 0.222 0.445 0.354 0.130 0.125 0.636 0.301  0.0090.316
+  SENTDEBIAS 0.407 0.084 -0.103 0.015 -0.300 0.728 0.274  0.0340.273
+RoBERTa Large -0.090 0.274 0.869 -0.021 0.943 0.767 0.061  0.1250.432
+ DYN. PTQ int8 -0.065 -0.014 0.587 -0.190 0.572 0.580 -0.173  0.0040.312
+Distil RoBERTa 0.774 0.112 -0.062 -0.012 -0.410 0.843 0.456  0.0740.381
+Table 9  RELIGION bias on SEAT dataset. Effect sizes closer to 0 are indicative of less biased model representations.
 Bold values indicate the best method per test. Statistically significant effect sizes at p   0.01 are denoted by *. The
 final column reports the average absolute effect size across all four religion SEAT tests for each model.
-Model religion1 2 religion b Avg. Abs. Effect.
-BERT Base 0.744 -0.067 1.009 -0.147 0.492 8 0.524 -0.171 0.689 -0.205 0.0950.397 0.355 -0.104 0.424 -0.474 0.1520.339 0.535 0.109 0.436 -0.428 0.1150.377 0.473 -0.301 0.787 -0.280 0.0310.460 0.728 0.003 0.985 0.038 0.0530.439 0.011 0.144 -0.160 -0.426 0.3060.186 8 0.524 -0.171 0.689 -0.205 0.0950.397 0.172 0.529 0.318 0.076 0.2180.274 0.132 0.018 -0.191 -0.166 0.127 8 0.527 0.567 0.079 0.020 0.1720.298 0.341 0.148 -0.222 -0.269 0.1190.245 0.243 0.152 -0.115 -0.159 0.0410.167
-  INLP -0.309 -0.347 -0.191 -0.135 0.1190.246 0.002 -0.088 -0.516 -0.477 0.1440.271
-RoBERTa Large -0.163 -0.685 -0.158 -0.542 0.2600.387 8 0.117 -0.292 0.293 0.015 0.0520.179 0.490 0.019 0.291 -0.131 0.1060.2322675
+Model religion1 religion1b religion2 religion2b Avg. Abs. Effect.
+BERT Base 0.744 -0.067 1.009 -0.147 0.492
+  D YNAMIC PTQ int8 0.524 -0.171 0.689 -0.205  0.0950.397
+  CDA 0.355 -0.104 0.424 -0.474  0.1520.339
+  D ROPOUT 0.535 0.109 0.436 -0.428  0.1150.377
+  INLP 0.473 -0.301 0.787 -0.280  0.0310.460
+  SENTENCE DEBIAS 0.728 0.003 0.985 0.038  0.0530.439
+BERT Large 0.011 0.144 -0.160 -0.426  0.3060.186
+  D YNAMIC PTQ int8 0.524 -0.171 0.689 -0.205  0.0950.397
+Distil BERT 0.172 0.529 0.318 0.076  0.2180.274
+RoBERTa Base 0.132 0.018 -0.191 -0.166 0.127
+  D YNAMIC PTQ int8 0.527 0.567 0.079 0.020  0.1720.298
+  CDA 0.341 0.148 -0.222 -0.269  0.1190.245
+  D ROPOUT 0.243 0.152 -0.115 -0.159  0.0410.167
+  INLP -0.309 -0.347 -0.191 -0.135  0.1190.246
+  SENTENCE DEBIAS 0.002 -0.088 -0.516 -0.477  0.1440.271
+RoBERTa Large -0.163 -0.685 -0.158 -0.542  0.2600.387
+  D YNAMIC PTQ int8 0.117 -0.292 0.293 0.015  0.0520.179
+Distil RoBERTa 0.490 0.019 0.291 -0.131  0.1060.2322675

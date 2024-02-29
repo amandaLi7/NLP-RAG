@@ -1,12 +1,9 @@
-COBRA
- Frames 
 Contextual Reasoning about Effects and Harms of Offensive Statements
 Xuhui Zhou Hao Zhu Akhila Yerukola Thomas Davidson 
 Jena D. Hwang Swabha Swayamdipta Maarten Sap  
  Language Technologies Institute, Carnegie Mellon University Department of Sociology, Rutgers University
  Thomas Lord Department of Computer Science, University of Southern California Allen Institute for AI
 /envel pexuhuiz@andrew.cmu.edu /gl becobra.xuhuiz.com
-Abstract
 Warning  This paper contains content that may
 be offensive or upsetting.
 Understanding the harms and offensiveness of
@@ -20,8 +17,6 @@ to their student would be interpreted as a genuine
  compliment. Such contextual factors have
 been largely ignored by previous approaches to
 toxic language detection.
-We introduce COBRA
- frames, the first
 context-aware formalism for explaining the intents,
  reactions, and harms of offensive or biased
  statements grounded in their social and situational
@@ -40,7 +35,6 @@ context inverts the statement s offensiveness
 (29% accuracy drop). Our work highlights the
 importance and feasibility of contextualized
 NLP by modeling social factors.
-1 Introduction
 Humans judge the offensiveness and harms of a
 statement by reasoning about its pragmatic implications
  with respect to the social and interactional
@@ -48,56 +42,21 @@ context (Cowan and Hodge, 1996  Cowan and Mettrick,
  2002  Nieto and Boyer, 2006  Khurana et al.,
 2022). For example, when someone says   I m impressed
  that your English is so good   , while they
-Explanations
-Context
-Speaker
-Teacher Listener
-Student Situation
 English learning class
-Context Speaker
-White Listener
-Black Situation
-Workplace meeting
- Target
-group
-Black folks
-Emotional
-reaction
 Annoyance, anger Speaker intent
-To give a
-compliment
 Received meaning / implication
 Implies that non-white people are
 not native English speakers
-Oﬀensiveness
 Microaggression Power dynamics
-Racial power
-diﬀerential
-Cognitive
-reaction
-Avoid the speaker
 Explanations Target group
-N/A
-Emotional reaction
-Happy Speaker intent
-To give a compliment
 Received meaning / implication
 Implies that the listener has done well Oﬀensiveness
-Harmless Power
-dynamics  N/A
-Cognitive reaction
 More conﬁdent in speaking ability
 Statement   I'm impressed that your English is so good 
 Statement   I'm impressed that your English is so good       Co b ra  Frame
-How does
-oﬀensiveness
-change with
-a diﬀerent
-context 
 Figure 1  Pragmatic reasoning about the offensiveness
 and harms of statements requires taking interactional
 context into account. We introduce COBRA
- , a formalism
  to distill seven types of pragmatic implications
 of possibly offensive statements grounded in the situational
  and social context. As illustrated here, COBRA
@@ -115,41 +74,26 @@ non-white person is considered a microaggression
 et al., 2018  Jiang et al., 2021), ignoring context
 1While social biases and power dynamics are culturally
 dependent (Fiske, 2017), in this work, we operate from the
-U.S.-centric sociocultural perspective.arXiv 2306.01985 2  [cs.CL]  9 2023StatementContext Example Human Verif.
+U.S.-centric sociocultural perspective.arXiv 2306.01985v2  [cs.CL]  9 Jun 2023StatementContext Example Human Verif.
 Situation Speaker Listener (Dimension) Explanation Rating Suggest.
-All Asian moms are
-sluttyAsian culture
-classWhite
 studentProfessor (Int.) make a joke 1/3 i
 Black people make good
-laborersHistory
 classTeacher Student (Tgr.) black people 3/3
 What is this going to
-solve Debate about
 defunding policeWhite
-personBlack
 person(Pow.) racial power dynamic 3/3
 America is a melting pot
 hence why Chinese are
-hereHistory
 classTeacher Students (Imp.) implies that Chinese
 immigrants are only here because
 of a "melting pot" of cultures2/3 ii
-There are a lot of
 radfems in the USAOnline conversation
-in a forum
 about feminismRadical
-feministsOther
 people(Imp.) implies that those who
 do not support radical feminism
-are wrong0/3 iii
-You are a waste of
 oxygenArgument Man Woman (Emo.) hurt, invalidated, angry,
-or ashamed3/3
-All Asian people are
 great at mathsHigh school Teacher Asian
 students(Cog.) feeling like they have
-to work harder3/3
 Suggested corrections  iinsult (to) Asian women 
 iiimplies that Chinese immigrants move to the US only because of multi-culture 
 iiiUS has many radical feminism supporters
@@ -160,7 +104,6 @@ and the different pragmatic implications, which has
 resulted in non-explainable methods that can backfire
  by discriminating against minority populations
 (Sap et al., 2019b  Davidson et al., 2019).
-We introduce COBRA
  Frames ,2a formalism
  to capture and explain the nuanced contextdependent
  pragmatic implications of offensive language,
@@ -182,7 +125,7 @@ have several advantages over previous approaches
 to detecting offensiveness language. First, our
 free-text descriptions allow for rich representations
  of the relevant aspects of context (e.g., situational
- roles, social power dynamics, etc.), in con COntextual
+ roles, social power dynamics, etc.), in con2COntextual
  Bias fRAmestrast to modeling specific contextual features alone
 (e.g., user network features, race or dialect, conversational
  history  Ribeiro et al., 2017  Sap et al.,
@@ -211,26 +154,7 @@ large language model (GPT-3.5  Ouyang et al.,
  dataset creation (West et al., 2022  Kim et al.,
 2022a  Liu et al., 2022), we opt for machine generations
  for both the likely contexts for statements  Statements from
-Toxigen
-Three plausible
-contexts
-generated by
-GPT-3.5
-Full COBRA
-frames
-generated by
-GPT-3.5
-More toxic
-context
-Less toxic
 context Counterfactual
-contexts
-generated by
-GPT-3.5
- 
- 
-Target group
-Emotional
 reaction Speaker intent
 Received meaning / implication
 Oﬀensiveness Power dynamics
@@ -259,16 +183,11 @@ formalism and models show the promise and importance
  of modeling contextual factors of statements
 for pragmatic understanding, especially for socially
 relevant tasks such as explaining the offensiveness
-of statements.
-2 C OBRA
- Frames
 We draw inspiration from  interactional frames 
 as described by Fillmore (1976), as well as more
 recent work on  social bias frames  (Sap et al.,
 2020) to understand how context affects the interpretation
  of the offensiveness and harms of statements.
- We design COBRA
- frames (S,C,E),
 an approach that takes into account a Statement in
 Context ( 2.1) and models the harms, implications,
 etc ( 2.2) with free-text Explanations.2.1 Contextual Dimensions
@@ -302,7 +221,6 @@ capture the targeted group and biased implication
 to capture the nuances of offensiveness, increase
 the trust in models  predictions, and assist content
 moderators (Sap et al., 2020  Gabriel et al., 2022 
-Miller, 2019).
 Intent (Int.) captures the underlying communicative
  intent behind a statement (e.g.,  to give a compliment ).
  Prior work has shown that intent can
@@ -320,15 +238,10 @@ the offensiveness and harms of the statement.
 3While Social Bias Frames contain seven variables, only
 two of those are free-text explanations (the others being categorical 
  Sap et al., 2020). 10.40%  6.94%  5.73%  5.26%  5.20%  5.13%  5.01%  56.33%Asian folk
-LGBTQIA People with
-disabilities
-WomenJewish folk
 Black folkMuslim folk
 Others(a) Target groups
  27.63%  25.71%  22.95%  10.90%  12.80%Microaggression
-Offensive
 generalizationOffensive
-Not offensiveOthers
 (b) Offensiveness types
 Figure 3  Distributions of target groups and offensiveness
  types in C OBRA CORPUS .
@@ -369,10 +282,16 @@ could take, or on the long-term harms that repeated
 exposure to such statements could have. Examples
 include  not wanting to come into work anymore, 
  avoiding a particular teacher,  etc.Unique # Avg. # words
-Statements 11,648 14.34 23,577 6.90 10,683 3.11 13,554 4.05 29,895 14.97 11,126 3.48 12,766 10.46 30,802 19.66
+Statements 11,648 14.34ContextSituation 23,577 6.90
+Listeners 13,554 4.05ExplanationsIntents 29,895 14.97
+Target group 11,126 3.48
+Power dynamics 12,766 10.46
+Implication 30,802 19.66
 Emo. Reaction 28,429 16.82
-Cog. Reaction 29,826 22.06 2,527 2.09
-Total # in C OBRA CORPUS 32,582 2  General data statistics of C OBRA CORPUS
+Cog. Reaction 29,826 22.06
+Offensiveness 2,527 2.09
+Total # in C OBRA CORPUS 32,582
+Table 2  General data statistics of C OBRA CORPUS
 Offensiveness (Off.) captures, in 1-3 words, the
 type or degree of offensiveness of the statement
 (e.g.,  sexism ,  offensive generalization ). We
@@ -425,11 +344,10 @@ in-context examples. Conditioned on the in-context
 examples, we then sample three contexts from GPT3.5
  for each statement. The examples of prompts
 for plausible context generation are presented in
-Appendix C.
 Verifying Contexts We randomly sample 500
 statement-context pairs and ask three annotators to
 rate the plausibility of the contexts (see Appendix
-A.2 for the exact questions).5 500 pairs,
+A.2 for the exact questions).5Of the 500 pairs,
 only 1% were marked as completely implausible
 or gibberish. 92% of the scenarios were marked as
 plausible by at least two workers, and some were
@@ -460,12 +378,16 @@ moderately high, with 75.37% pairwise agreement and freemarginal
 more off. 5.28% 43.09% 27.54% 2.85% 21.24%
 less off. 60.06% 16.6% 5.79% 11.38% 6.17%
 Table 3  Percentage of contexts occurring under each
-category/scenario in COBRA CORPUS -CF. Row 1 2 2021  Clark et al., 2021  Liu et al., 2022), we also
+category/scenario in COBRA CORPUS -CF. Row 1 indicates
+ statements that are more offensive due to their
+contexts vs Row 2 indicates those which are lesser offensive
+2021  Clark et al., 2021  Liu et al., 2022), we also
 asked annotators to provide corrections or suggestions
  for those they consider unlikely. 97% of explanations
  were marked as likely by at least two
 annotators (majority vote) and 84% were marked
-as likely by all three annotators (unanimous).6 1, humans tend to have better
+as likely by all three annotators (unanimous).6As
+illustrated in Table 1, humans tend to have better
  explanations of the implications of statements,
 whereas machines sometimes re-use words from
 the statement. This might explain the gap between
@@ -499,13 +421,10 @@ Creating COBRA CORPUS -CFOne of the difficulties
  of collecting counterfactual data is finding
 6Our annotation agreement is moderately high, on average,
 with 89.10% pairwise agreement and κ 0.782.CobraCorpus-Cf Source
-CobraCorpus Source
 This is conversation between a
 man and a woman in an initial
 interaction in workspace 
 Excuse me miss, are any of your
-bosses here 
-CobraCorpus Target
  intent  The speaker is trying to find someone
 in a position of authority  /intent   targetGroup 
  Listener, women  /targetGroup   implication 
@@ -529,7 +448,6 @@ This is a conversation between a male
 co-worker and a female co-worker in a
 conversation about sexual harassment 
  it s not a big deal, just let
-it go
 CobraCorpus-Cf Target
  intent  The speaker is trying to
 console their friend  /intent  ...
@@ -537,8 +455,8 @@ console their friend  /intent  ...
  intent  The speaker is trying to
 downplay the sexual harassment
  /intent  ...  type  sexism  /type 
-CHaRM
-T5 5 4  Experiment overview. CHARMis an encoder-decoder Transformer model based on pretrained FLAN-T5
+T5 Encoder T5 Decoder
+Figure 4  Experiment overview. CHARMis an encoder-decoder Transformer model based on pretrained FLAN-T5
 checkpoints (Chung et al., 2022). During the training stage, the model is finetuned to generate the explanation
 dimensions in a linearized format given the statement and context in COBRA CORPUS . We evaluate the quality of the
 generated explanation on COBRA CORPUS and the accuracy of detecting offensiveness in COBRA CORPUS -CF. The
@@ -549,7 +467,6 @@ be interpreted in different ways. Statements such
 as microaggressions, compliments, criticism, and
 offers for advice are well-suited for this, as their
 interpretation can be highly contextual (Sue, 2010 
-Nadal et al., 2014).
 We scraped 1000 statements from a crowdsourced
  corpus of microaggressions,7including
 many contextually ambiguous statements. Following
@@ -560,8 +477,8 @@ counterfactual contexts. Then, for each microaggression
  in the corpus, we generated both a harmless
  and offensive context with GPT-3.5, prompted
 with five randomly sampled triples as in-context
-examples. This process yields 982 triples, as GPT3.5 18
-statements.
+examples. This process yields 982 triples, as GPT3.5
+ failed to generate a harmless context for 18
 Human Verification We then verify that the
 counterfactual contexts invert the offensiveness
 of the statements. Presented with both contexts,
@@ -585,7 +502,6 @@ classify the category of the situation in the counterfactual
  context pairs as conversations occurring
 between friends, among strangers in public, at a
 workplace, and between members of a family, using
- keyword matching.
 We observe that contexts involving conversations
  occurring among strangers in public and at
 the workplace are perceived as more offensive than
@@ -605,22 +521,25 @@ including in public and at the workplace.
 8We have high average annotation agreement in this task
 (κ  0.73).Intent Target group Power Dynamics Implication Emotional React. Cognitive React. Offensiveness Average
 BLEU ROUGE BLEU ROUGE BLEU ROUGE BLEU ROUGE BLEU ROUGE BLEU ROUGE BLEU ROUGE BLEU ROUGE
-Small 46.3 58.1 20.2 52.6 51.7 67.2 29.5 37.9 22.9 28.8 17.1 24.2 30.9 48.8 31.2 45.4 48.7 60.3 22.8 55.8 52.3 67.2 31.3 40.2 20.4 29.2 18.5 25.3 31.9 48.3 32.3 46.6 52.3 63.2 29.2 59.3 55.9 70.3 35.1 43.1 23.0 31.9 19.4 26.8 32.2 50.2 35.3 49.2 54.6 64.7 32.5 60.4 54.5 70.2 36.3 44.2 23.0 31.5 18.7 26.8 30.2 48.8 35.7 49.5 55.6 65.3 36.1 61.2 54.0 69.9 36.7 44.7 23.2 32.6 18.3 27.1 29.8 47.5 36.2 49.8 4  Performance of different model sizes measured with automatic evaluation metrics, broken down by
+Small 46.3 58.1 20.2 52.6 51.7 67.2 29.5 37.9 22.9 28.8 17.1 24.2 30.9 48.8 31.2 45.4
+Base 48.7 60.3 22.8 55.8 52.3 67.2 31.3 40.2 20.4 29.2 18.5 25.3 31.9 48.3 32.3 46.6
+Large 52.3 63.2 29.2 59.3 55.9 70.3 35.1 43.1 23.0 31.9 19.4 26.8 32.2 50.2 35.3 49.2
+XL 54.6 64.7 32.5 60.4 54.5 70.2 36.3 44.2 23.0 31.5 18.7 26.8 30.2 48.8 35.7 49.5
+XXL 55.6 65.3 36.1 61.2 54.0 69.9 36.7 44.7 23.2 32.6 18.3 27.1 29.8 47.5 36.2 49.8
+Table 4  Performance of different model sizes measured with automatic evaluation metrics, broken down by
 explanation dimension. The best result is bolded. We also calculate the BERTScore (Zhang et al., 2020) for each
 model size, which shows similar trends (see Appendix B.2). Takeaway   unsurprisingly, the best-performing model
 is often CH ARM (XXL), but XL follows closely behind.
-5 Experiments
 We investigate the role that context plays when
 training models to explain offensive language on
 both COBRA CORPUS andCOBRA CORPUS -CF. Although
  GPT-3.5 s COBRA explanations are highly
 rated by human annotators ( 3.3), generating them
-is a costly process both from a monetary and energy
+is a costly process both from a monetary9and energy
  consumption perspective (Strubell et al., 2019 
 Taddeo et al., 2021  Dodge et al., 2022). Therefore,
  we also investigate whether such high-quality
 generations can come from more efficient neural
-models.
 We train CH ARM ( 5.1), with which we first
 empirically evaluate the general performance of
 our models in generating COBRA explanations. We
@@ -670,7 +589,6 @@ of competitive performance and efficiency. During
  inference, we use beam search decoding with
 beam_size 4 . Additional experimental details are
 provided in Appendix B.1.
-5.2 Evaluation
 We evaluate our models in the following ways. For
 automatic evaluation of explanation generation, we
 use BLEU-2 and Rouge-L to capture the word
@@ -692,37 +610,25 @@ the phoneCallerRecipient
 of the call leaf  leaf  leaf
 A group of people having
 a meeting in personMale
-managerFemale
-subordinateὈ0 Ὀ0 Ὀ0
 Bounce, shine, and softness
 are the key to sexy hair.At a partyMale
-strangerFemale
-strangerὈ0 Ὀ0 Ὀ0
-Advice on how to
 style their hairFemale
-friendFemale
-friendὈ0  leaf  leaf
 Wow  You re so articulate  Professional settingWhite
-personBlack
-personὈ0 Ὀ0 Ὀ0
 Class Professor Student Ὀ0  leaf  leaf
 Thats a good girl.Praising their daughter Parent Daughter Ὀ0 Ὀ0  leaf
 A professional setting Male bossFemale
-employeeὈ0 Ὀ0 Ὀ0 5  Examples of GPT-3.5 and CH ARM s prediction on C OBRA CORPUS -CF. leaf  harmless,Ὀ0  toxic.
+Table 5  Examples of GPT-3.5 and CH ARM s prediction on C OBRA CORPUS -CF. leaf  harmless,Ὀ0  toxic.
 to see that CHARM (Large) achieves the best performance
  in the power dynamics and offensiveness
 dimension, which indicates that increasing modeling
  size does not guarantee improvement in every
 explanation dimension in C OBRA .
-Training
-w/ contextInference
 w/ contextBLEU ROUGE Human*
-    33.0 47.6 66.54 31.0 45.0 70.82 35.7 49.5 75.46 6  Automatic and human evaluations of contextaware
+Table 6  Automatic and human evaluations of contextaware
  and context-agnostic versions of CHARM (XL).
 Human evaluations are done on the same random subset
 (100) on all three variations. Takeaway  context significantly
  improves CHARMboth in training and inference
-on C OBRA CORPUS .
 How important context is for CH ARM We
 examine how context influences CH ARM s ability
  to generate explanations. In context-agnostic
@@ -736,18 +642,23 @@ the automatic and human evaluation. This is consistent
 for understanding the toxicity of statements.
 How well do models adapt to counterfactual contexts 
  We then investigate how well our model,
-as well as GPT-3.5 ,10 10text-davinci-003 13 2022 1 50.0 100.0 50.0 67.8
-GPT-3.5 55.2 99.4 52.7 68.9 50.0 72.3 50.0 59.1 66.5 98.84 60.0 74.7 71.4 96.5 64.2 77.1 7  Accuracy, derived from binarizing the  offensiveness 
+as well as GPT-3.5 ,10identifies the offensiveness
+10text-davinci-003 Jan 13th 2022Accuracy Recall Precision F1
+All Toxic 50.0 100.0 50.0 67.8
+GPT-3.5 55.2 99.4 52.7 68.9
+XL WoC 50.0 72.3 50.0 59.1
+XL 66.5 98.84 60.0 74.7
+XXL 71.4 96.5 64.2 77.1
+Table 7  Accuracy, derived from binarizing the  offensiveness 
  explanation, for different models on
 COBRA CORPUS -CF(WoC means Without Context).
 All Toxic means predicting every statement as toxic.
 Takeaway  CH ARM adapts to counterfactual contexts
- better than GPT-3.5 ( text-davinci-003 13 2022).
+ better than GPT-3.5 ( text-davinci-003 Jan 13th
 of statements when the context drastically alters
 the implications. We then compare different models 
  ability to classify whether the statement is offensive
  or not given the counterfactual context in
-COBRA CORPUS -CF.
 Surprisingly, although our model is only trained
 on the GPT-3.5-generated COBRA CORPUS , it outperforms
  GPT-3.5 (in a few-shot setting as described
@@ -762,7 +673,6 @@ typically articulate , while such statement-context
 pair contains no information about people of color.
 In general, counterfactual contexts are still challenging
  even for our best-performing models.6 Conclusion & Discussion
-We introduce COBRA
  frames, a formalism to
 distill the context-dependent implications, effects,
 and harms of toxic language. COBRA captures
@@ -778,7 +688,6 @@ dataset of toxic comments populated with contextual
 COBRA CORPUS -CF, a small-scale, curated dataset
 of toxic comments paired with counterfactual contexts
  that significantly alter the toxicity and implication
- of statements.
 We contribute CH ARM, a new model trained
 with COBRA CORPUS for producing explanations
 of toxic statements given the statement and its
@@ -787,7 +696,6 @@ contextual factors is insufficient for explaining
 toxicity. CH ARM also outperforms GPT-3.5 in
 COBRA CORPUS -CF, even though it is trained on
 data generated by GPT-3.5.
-We view COBRA
  as a vital step towards
 addressing the importance of context in content
 moderation and many other social NLP tasks. Potential
@@ -808,14 +716,13 @@ the growing calls for transparency and accountability
 Besides content moderation, COBRA also has the
 potential to test linguistic and psychological theories
  about offensive statements. While we made
-some preliminary attempts in this direction in  3 4, more work is needed to fully realize this
+some preliminary attempts in this direction in  3
+and  4, more work is needed to fully realize this
 potential. For example, future studies could investigate
  the differences in in-group and out-group
 interpretations of offensive statements, as well as
 the role of power dynamics, cultural background,and individual sensitivities in shaping perceptions
-of offensiveness.
 Limitations & Ethical and Societal
-Considerations
 We consider the following limitations and societal
 considerations of our work.
 Machine-generated Data Our analysis is based
@@ -838,12 +745,10 @@ to investigate the nature of biases latent in distilled
 contexts for harmful speech and further investigate
 their potential impact. For example, it would be
 valuable to collect human-annotated data on COBRA
-
  to compare with the machine-generated
 data. However, we must also recognize that humans
  are not immune to biases (Sap et al., 2019b,
 2022), and therefore, such investigations should be
-carefully designed.
 Limited Contextual Variables Although COBRACORPUS
  has rich contexts, capturing the full
 context of statements is challenging. Future work
@@ -907,7 +812,6 @@ endorse the use of our system to suppress speech
 without human oversight and encourage practitioners
  to take non-censorship-oriented approaches to
 content moderation (e.g., counterspeech (Tekiro  glu
-et al., 2022)).
 Harms of Exposing Workers to Toxic Content
 The verification process of COBRA CORPUS andCOBRA CORPUS -CFis performed by human annotators.
  Exposure to such offensive content can be
@@ -917,7 +821,6 @@ workload, paying workers above minimum wage
 ($7-12), and providing them with crisis management
  resources. Our annotation work is also supervised
  by an Institutional Review Board (IRB).
-Acknowledgements
 First of all, we thank our workers on MTurk for
 their hard work and thoughtful responses. We thank
 the anonymous reviewers for their helpful comments.
@@ -939,18 +842,15 @@ Ayme Arango Monnar, Jorge Perez, Barbara Poblete,
 Magdalena Saldaña, and Valentina Proust. 2022. Resources
  for multilingual hate speech detection. In
 Proceedings of the Sixth Workshop on Online Abuse
-and Harms (WOAH) .
 Emily M. Bender and Batya Friedman. 2018. Data
 statements for natural language processing  Toward
 mitigating system bias and enabling better science.
 Transactions of the Association for Computational
-Linguistics .
 Emily M. Bender, Timnit Gebru, Angelina McMillanMajor,
  and Shmargaret Shmitchell. 2021. On the
 dangers of stochastic parrots  Can language models
 be too big  In Proceedings of the 2021 ACM Conference
  on Fairness, Accountability, and Transparency ,
-FAccT  21.
 Rishi Bommasani, Drew A. Hudson, Ehsan Adeli, Russ
 Altman, Simran Arora, Sydney von Arx, Michael S.
 Bernstein, Jeannette Bohg, Antoine Bosselut, Emma
@@ -964,7 +864,7 @@ Enrico Bunde. 2023. AI-Assisted and Explainable
  Hate Speech Detection for
 Social Media Moderators. https //
 scholarspace.manoa.hawaii.edu/items/
-f c b34-5 62-40 0-919f-a e cfbbc32 .
+f21c8b34-5d62-40d0-919f-a4e07cfbbc32 .
 [Accessed 13-May-2023].
 Kai-Wei Chang, He He, Robin Jia, and Sameer Singh.
 2021. Robustness and adversarial examples in natural
@@ -978,7 +878,6 @@ Hyung Won Chung, Le Hou, Shayne Longpre, Barret
  Zoph, Yi Tay, William Fedus, Eric Li, Xuezhi
 Wang, Mostafa Dehghani, Siddhartha Brahma, et al.
 2022. Scaling instruction-finetuned language models.
-ArXiv preprint .
 Elizabeth Clark, Tal August, Sofia Serrano, Nikita
 Haduong, Suchin Gururangan, and Noah A. Smith.
 2021. All that s  human  is not gold  Evaluating
@@ -1004,7 +903,6 @@ Alexandra Sasha Luccioni, Noah A Smith, Nicole
 DeCario, and Will Buchanan. 2022. Measuring the
 carbon intensity of ai in cloud instances. In 2022
 ACM Conference on Fairness, Accountability, and
-Transparency .
 Marta Dynel. 2015. The landscape of impoliteness
 research. Journal of Politeness Research .
 Nina Eliasoph and Paul Lichterman. 2003. Culture in
@@ -1013,10 +911,8 @@ Mai ElSherief, Caleb Ziems, David Muchlinski, Vaishnavi
  Anupindi, Jordyn Seybolt, Munmun De Choudhury,
  and Diyi Yang. 2021. Latent hatred  A benchmark
  for understanding implicit hate speech. In Proc.
-of EMNLP .
 Charles J. Fillmore. 1976. Frame semantics and the nature
  of language*. Annals of the New York Academy
-of Sciences .
 Gary Alan Fine. 1979. Small Groups and Culture Creation 
  The Idioculture of Little League Baseball
 Teams. American Sociological Review .
@@ -1037,7 +933,6 @@ crowdsourcing and characterization of Twitter abusive
 Nguyen, Franziska Roesner, Eunsol Choi, and Yejin
 Choi. 2022. Misinfo reaction frames  Reasoning
 about readers  reactions to news headlines. In Proc.
-of ACL .
 Matt Gardner, Yoav Artzi, Victoria Basmov, Jonathan
 Berant, Ben Bogin, Sihao Chen, Pradeep Dasigi,
 Dheeru Dua, Yanai Elazar, Ananth Gottumukkala,
@@ -1061,7 +956,6 @@ Noah D Goodman and Michael C Frank. 2016. Pragmatic
 Michael Gregory. 1967. Aspects of varieties differentiation.
  Journal of Linguistics .
 Herbert P Grice. 1975. Logic and conversation. In
-Speech acts . Brill.
 Thomas Hartvigsen, Saadia Gabriel, Hamid Palangi,
 Maarten Sap, Dipankar Ray, and Ece Kamar. 2022.
 Toxigen  Controlling language models to generate
@@ -1069,17 +963,14 @@ implied and adversarial toxicity. In ACL.
 Tatsunori B. Hashimoto, Hugh Zhang, and Percy Liang.
 2019. Unifying human and statistical evaluation for
 natural language generation. In Proc. of NAACLHLT.
-
 Eric Holgate, Isabel Cachola, Daniel Preo  tiuc-Pietro,
 and Junyi Jessy Li. 2018. Why swear  analyzing
 and inferring the intentions of vulgar expressions. In
-Proc. of EMNLP .
 Dirk Hovy and Diyi Yang. 2021. The importance of
 modeling social factors of language  Theory and
 practice. In Proceedings of the 2021 Conference
 of the North American Chapter of the Association
 for Computational Linguistics  Human Language
-Technologies .
 Timothy Jay and Kristin Janschewitz. 2008. The pragmatics
  of swearing. Journal of Politeness Research .
 Liwei Jiang, Jena D. Hwang, Chandra Bhagavatula, Ronan
@@ -1090,10 +981,8 @@ Regina Rini, and Yejin Choi. 2021. Can machines
 learn morality  the delphi experiment.David Jurgens, Libby Hemphill, and Eshwar Chandrasekharan.
  2019. A just and comprehensive strategy
  for using NLP to address online abuse. In Proc.
-of ACL .
 Gabriele Kasper. 1990. Linguistic politeness   Current
 research issues. Journal of Pragmatics . Special Issue
-on Politeness.
 Daphne Keller and Paddy Leerssen. 2020. Facts and
 where to find them  Empirical research on internet
 platforms and content moderation. In Social Media
@@ -1108,7 +997,6 @@ Youngjae Yu, Pei Zhou, Ronan Le Bras, Malihe
 Alikhani, Gunhee Kim, Maarten Sap, and Yejin Choi.
 2022a. Soda  Million-scale dialogue distillation
 with social commonsense contextualization. ArXiv
-preprint .
 Hyunwoo Kim, Youngjae Yu, Liwei Jiang, Ximing
 Lu, Daniel Khashabi, Gunhee Kim, Yejin Choi, and
 Maarten Sap. 2022b. Prosocialdialog  A prosocial
@@ -1117,7 +1005,6 @@ Rita Kohli, Nallely Arteaga, and Elexia R McGovern.
 2018.  compliments  and  jokes   Unpacking racial
 microaggressions in the K-12 classroom. In Microaggression
  Theory Influence and Implications . John Wiley
- & Sons.
 Jonatan Kurzwelly, Hamid Fernana, and Muhammad
  Elvis Ngum. 2020. The allure of essentialism
 and extremist ideologies. Anthropology Southern
@@ -1132,7 +1019,6 @@ Linguistically-informed transformations (LIT)  A
 method for automatically generating contrast sets.
 InProceedings of the Third BlackboxNLP Workshop
 on Analyzing and Interpreting Neural Networks for
-NLP.
 Alisa Liu, Swabha Swayamdipta, Noah A. Smith, and
 Yejin Choi. 2022. WANLI  Worker and AI collaboration
  for natural language inference dataset creation.
@@ -1146,17 +1032,14 @@ dialogue response generation. In Proc. of EMNLP .Tara M Mandalaywala, David M Am
  Rhodes. 2018. Essentialism promotes racial
 prejudice by increasing endorsement of social hierarchies.
  Social Psychological and Personality Science ,
-9(4) 461 469.
 Tim Miller. 2019. Explanation in artificial intelligence 
 Insights from the social sciences. Artificial intelligence
- .
 Will Monroe and Christopher Potts. 2015. Learning in
 the rational speech acts model. ArXiv preprint .
 Kevin L Nadal, Kristin C Davidoff, Lindsey S Davis,
 and Yinglee Wong. 2014. Emotional, behavioral, and
 cognitive reactions to microaggressions  Transgender
 perspectives. Psychology of Sexual Orientation and
-Gender Diversity .
 Leticia Nieto and Margot Boyer. 2006. Understanding
  oppression  Strategies in addressing power and
 privilege. Colors NW .
@@ -1167,7 +1050,6 @@ Schulman, Jacob Hilton, Fraser Kelton, Luke Miller,
 Maddie Simens, Amanda Askell, Peter Welinder,
 Paul Christiano, Jan Leike, and Ryan Lowe. 2022.
 Training language models to follow instructions with
-human feedback.
 Joon Sung Park, Lindsay Popowski, Carrie J. Cai,
 Meredith Ringel Morris, Percy Liang, and Michael S.
 Bernstein. 2022. Social simulacra  Creating populated
@@ -1179,7 +1061,6 @@ as hyper-implicatures. J. Polit. Philos.
 Justus J Randolph. 2005. Free-Marginal multirater
 kappa (multirater k[free])  An alternative to fleiss 
 Fixed-Marginal multirater kappa. In Proceedings of
-JLIS.
 Manoel Horta Ribeiro, Pedro H. Calais, Yuri A. Santos,
 Virgílio A. F. Almeida, and Wagner Meira Jr. 2017.
 Characterizing and Detecting Hateful Users on Twitter.
@@ -1218,24 +1099,20 @@ Emma Strubell, Ananya Ganesh, and Andrew McCallum.
 deep learning in NLP. In Proc. of ACL .
 Derald Wing Sue. 2010. Microaggressions in everyday
 life  Race, gender, and sexual orientation . John
-Wiley & Sons.
 Mariarosaria Taddeo, Andreas Tsamados, Josh Cowls,
 and Luciano Floridi. 2021. Artificial intelligence and
 the climate emergency  Opportunities, challenges,
 and recommendations. One Earth .
 Rachael Tatman. 2020. What I won t build. Widening
-NLP Workshop.
 Serra Sinem Tekiro  glu, Helena Bonaldi, Margherita
 Fanton, and Marco Guerini. 2022. Using pre-trained
 language models for producing counter narratives
 against hate speech  a comparative study. In Findings
  of the Association for Computational Linguistics 
-ACL 2022 .
 Kristen Vaccaro, Christian Sandvig, and Karrie Karahalios.
  2020. "at the end of the day facebook does
 what itwants"  How users experience contesting algorithmic
  content moderation. Proc. ACM Hum.Comput.
- Interact.
 Bertie Vidgen, Dong Nguyen, Helen Margetts, Patricia
 Rossini, and Rebekah Tromble. 2021a. Introducing
 CAD  the contextual abuse dataset. In Proceedings
@@ -1282,7 +1159,12 @@ Choi, and Noah Smith. 2021. Challenges in automated
 Proceedings of the 16th Conference of the European
 Chapter of the Association for Computational Linguistics 
  Main Volume .Intent Target group Power Dynamics Implication Emotional React. Cognitive React. Offensiveness Average
-Small 0.936 0.929 0.932 0.900 0.886 0.877 0.889 0.907 0.939 0.933 0.932 0.907 0.892 0.880 0.890 0.910 0.944 0.939 0.938 0.916 0.898 0.887 0.897 0.917 0.947 0.940 0.938 0.917 0.897 0.886 0.899 0.918 0.948 0.939 0.937 0.918 0.898 0.887 0.895 0.917 8  BERTScore of different model sizes measured with automatic evaluation metrics, broken down by
+Small 0.936 0.929 0.932 0.900 0.886 0.877 0.889 0.907
+Base 0.939 0.933 0.932 0.907 0.892 0.880 0.890 0.910
+Large 0.944 0.939 0.938 0.916 0.898 0.887 0.897 0.917
+XL 0.947 0.940 0.938 0.917 0.897 0.886 0.899 0.918
+XXL 0.948 0.939 0.937 0.918 0.898 0.887 0.895 0.917
+Table 8  BERTScore of different model sizes measured with automatic evaluation metrics, broken down by
 explanation dimension.
 A Crowd-sourcing on MTurk
 In this paper, human annotation is widely used in  3.2,  3.3,  4,  4,  5.2, and  5.2. We restrict our
@@ -1293,7 +1175,7 @@ provided suggestions for explanations. Annotators are compensated $12.8 per hour
 collection procedure was approved by our institution s IRB.
 A.1 Annotator demographics
 Due to the subjective nature of toxic language (Sap et al., 2022), we aim to collect a diverse set of
-annotators. In our final pool of 109 annotators, the average age is 36 (ranging from 18 65). For political
+annotators. In our final pool of 109 annotators, the average age is 36 (ranging from 18 to 65). For political
 orientation, we have 64/21/24 annotators identified as liberal/conservative/neutral, respectively. For gender
 identity, we have 61/46/2 annotators identify as man/woman/non-binary, respectively. There are also 40
 annotators that self-identified as being part of a minority group.
@@ -1303,16 +1185,18 @@ examples with explanations. The annotation snippet of collecting plausible scena
 5. The annotation snippet of collecting explanations ( 3.3) is in Figure 6. The annotation snippet of
 collecting adversarial examples ( 4) is in Figure 7.
 B CH ARM experiment details
-B.1 11, different variants of FLAN-T5, small, base, large, XL
+With the HuggingFace s Transformers library11, different variants of FLAN-T5, small, base, large, XL
 and XXL, are finetuned on the COBRA training set for two epochs with AdamW optimizer with a learning
-rate of 1 4 16. We use beam search as the decoding algorithm and all reported results
+rate of 1e 4and batch size of 16. We use beam search as the decoding algorithm and all reported results
 are based on a single run. We also train a XL model using the same architecture and hyperparameters
-but without the context information. The sizes of CHARM range from 80 11B, the largest of which
-takes 10 32 5 6000 GPUs with NVLink, and can do inference in FP16 6000 GPU. We used HuggingFace evaluate package to evaluate the BLEU-2 and ROUGE-L scores.
-B.2 8 for the BERTScore metrics across different model sizes.
-C GPT-3 8. The example prompts for generating
+but without the context information. The sizes of CHARM range from 80M to 11B, the largest of which
+takes 10 hours to train in FP32 on 5 A6000 GPUs with NVLink, and can do inference in FP16 on a single
+A6000 GPU. We used HuggingFace evaluate package to evaluate the BLEU-2 and ROUGE-L scores.
+B.2 Evaluation details
+See Table 8 for the BERTScore metrics across different model sizes.
+C GPT-3 prompts used in this paper
+The example prompts for generating likely contexts are in Figure 8. The example prompts for generating
 adversarial contexts are in Figure 9. The example prompts for generating the likely explanations are in
-Figure 10.
 11https //github.com/huggingface/transformersFigure 5  The annotation snippet of collecting plausible scenarios ( 3.2)Figure 6  The annotation snippet of collecting explanations ( 3.2)Figure 7  The annotation snippet of collecting adversarial examples ( 4)statement speechContext speakerIdentity listenerIdentity
 We shouldn't lower our standards just
 to hire more womenhiring conversation between
@@ -1320,18 +1204,13 @@ coworkers man other coworkers
 Mexico isn't sending its best, it's
 sending rapists and murderers political speech or rantwhite American
 persongeneral audience
-of US voters
 I'm impressed that your English is so
 goodworkplace interaction between
 strangers or acquaintanceswhite American
-person or
 English speakernon-White
-American or
-English speaker
 Excuse me, are any of your bosses
 here initial interaction in a workplace
 setting between customer and
-worker man woman
 Excuse me, are any of your bosses
 here initial interaction in a workplace
 setting between customer and
@@ -1343,15 +1222,10 @@ while watching the NBA show white person white person
 I just wish you'd save your
 experimenting for collegeconversation between parent/elder
 family member to teenagerolder
-straight/nonqueer
- personyounger
-queer/LGBTQ 
-person
 I had a chude moment-I didn t know if
 it was a chick or a dude.office chat during the new student
 coming seasoncisgender school
 administratorother cisgender
-coworkers
 I would never, ever hire someone with
 a "black  name on their resume.  I
 wouldn t even interview them.conversation between the
@@ -1364,8 +1238,6 @@ work with them" and  Adultist isn t a
 thing.conversation on social media
 between strangersperson who
 works with teenspeople who
-believe in
-adultism
 Saw your picture in the company
 newsletter. WOW WOW WOW conversation in front of the office
 bulletin board male boss female employeeFigure 8  The example prompts for generating likely contexts
@@ -1373,16 +1245,12 @@ statementharmless_situationalCont
 extharmless_speakerId
 entityharmless_listenerI
 dentityoffensive_situationalCo
-ntextoffensive_spea
 kerIdentityoffensive_listen
-erIdentity
-Wow, your English is
 really good In an English language
 classroom after an oral
 exam English teacher StudentA workplace conversation
 where two co-workers are
 meeting White speakerNon-white
-colleague
 I can't tell any of you
 apart, you all look the
 same A conversation at a
@@ -1390,9 +1258,7 @@ performance of a dance
 troupe Audience member Dancer in uniformA random conversation
 between strangers on a
 plane White person Asian person
-How are you doin' my
 nigga Conversation between two
-people who have been
 friends for years Black man Black manConversation between
 two strangers who just
 met White man Black man
@@ -1401,114 +1267,44 @@ get the owner An initial interaction between
 a retail customer and a shop
 assistant Male customer Male shop assistantAn initial interaction
 between a retail customer
-and someone from the
 shop Man customerWoman shop
-owner
 I'm sure it's just a phase,
 hopefully it'll blow over A family conversation about
 a teenager's interest in a
 specific video games Parent TeenagerA family conversation
-about a teenager's
 sexuality Straight parent Queer child
 what is this going to
 solve two people arguing about a
 potential solution to a
 problemperson who does not
 think the solution will
-workperson who
-proposed the
 solutiona debate on whether or
 not to defund the police
 after a young black man
-being abused by the
-policeone who is
-against
-defunding the
-policeone who is for
-defunding the
-police
 Figure 9  The example prompts for generating adversarial contextsstatement speechContext speakerIdentity listenerIdentity intent targetGroup implication PowerDynamics EmotionalReaction CognitiveReaction offensiveness
 We shouldn't lower our
 standards just to hire more
 womenworkplace hiring
 conversation man other coworkersThe speaker is
-trying to avoid
-hiring
-underqualified
-candidates and
-worried that
-gender quotas will
 lead to thatwomen, women
 candidatesimplies that
-women
-candidates
-cannot be
-qualified as
-men, and that
-trying to hire
-women is
-antithetical to
-good
 candidatespower differential
-between speaker
-and targeted
-group (women)
-due to gender
-differential and
-hiring-vscandidate
-
 relationshipwomen could feel
-angry that their
-qualifications are
-seemingly dismissed,
-disappointed that
-their gender is
-brought up, or less
-worthy about their
 own qualificationswill feel less
-welcome and be
 less likely to want to
 work there, will want
-to avoid those kinds
 of jobs with men like
 the speaker microaggression
 Mexico isn't sending its
 best, it's sending rapists
 and murdererspolitical speech
 or rantwhite American
-persongeneral
-audience of US
-votersThe speaker is
-trying to express
-distrusts against
-immigrants from
-Mexico, calling
-them all rapists
-and murderersMexican
 immigrantsimplies that
-immigrants
-resort to
-criminal
-behavior, and
-cannot earn an
-honest living,
-and therefore
-immigration is
-badethnicity and
-citizenship power
-differential
-between speaker
-and targeted
 groupMexican immigrants
 could feel angry that
 the entire country of
-Mexico is being
-framed as criminal,
 afraid that people will
-believe that
 stereotypeMexican immigrants
-could likely be more
 feared, and will feel
-less welcome in the
 country they are inoffensive
 generalizationFigure 10  The example prompts for generating C OBRA explanations

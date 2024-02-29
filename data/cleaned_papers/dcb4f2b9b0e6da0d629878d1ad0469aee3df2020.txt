@@ -1,7 +1,7 @@
 Understanding Masked Autoencoders via Hierarchical Latent Variable Models
-Lingjing Kong*1Martin Q. Ma 1 1,2
-Eric P. Xing1,2Yuejie Chi Louis-Philippe Morency 1 1,2 1Carnegie Mellon University Mohamed bin Zayed University of Artificial Intelligence
-Abstract
+Lingjing Kong*1Martin Q. Ma 1Guangyi Chen1,2
+Eric P. Xing1,2Yuejie Chi1Louis-Philippe Morency 1Kun Zhang 1,2
+1Carnegie Mellon University2Mohamed bin Zayed University of Artificial Intelligence
 Masked autoencoder (MAE), a simple and effective selfsupervised
  learning framework based on the reconstruction
 of masked image regions, has recently achieved prominent
@@ -25,7 +25,6 @@ of existing empirical observations and provides insights for
 potential empirical improvements and fundamental limitations
  of the masking-reconstruction paradigm. We conduct
 extensive experiments to validate our theoretical insights.
-1. Introduction
 Self-supervised learning (SSL) has achieved tremendous
 success in learning transferable representations without labels,
  showing strong results in a variety of downstream
@@ -54,7 +53,6 @@ largely unclear whether such intuitions are sound in principle.
  Theoretically verifying and characterizing these empirical
  insights would not only grant a certificate to the current
 approaches but would also offer theoretical insights for algorithmic
- advancements.
 In this work, we establish a principled yet intuitive
 framework for understanding MAE and providing identifiability
  guarantees. Concretely, we first formulate the underlying
@@ -67,7 +65,7 @@ been studied in causal discovery [29, 62]. In [27, 50], it is
 hypothesized that complex data, such as images, follow a
 hierarchical latent structure.
 Stemming from this formulation, we show that under
-reasonable assumptions, MAE can recover a subset of thearXiv 2306.04898 1  [cs.LG]  8 2023true latent variables within the hierarchy, where the levels
+reasonable assumptions, MAE can recover a subset of thearXiv 2306.04898v1  [cs.LG]  8 Jun 2023true latent variables within the hierarchy, where the levels
 of the learned latent variables are explicitly determined by
 how masking is performed. Our theoretical framework not
 only unifies existing empirical observations coherently but
@@ -94,7 +92,6 @@ MAE by showing that it can recover true latent variables
  between masking hyperparameters (i.e., masking
  ratios and patch sizes) and the learned representation
  and discuss potential improvements and inherent
-limitations of MAE.
   We validate our theoretical insights with extensive experimental
  results. We illustrate how the semantic
 level of the learned representation varies with the aggressiveness
@@ -113,7 +110,9 @@ often highly dependent, whereas pixels far apart typically
 share less information. There has been a plethora of work
 adopting this intuition for vision tasks such as image generation
  [47, 55, 67]. Similar insights are also addressed in
-attempts to learn a part-whole image representation [27,50].z z2 5 8 10 11 2. A hierarchical data-generating process. zrepresents
+attempts to learn a part-whole image representation [27,50].z1z2
+x1x2x3x4x5x6x7x8x9x10x11
+Figure 2. A hierarchical data-generating process. zrepresents
 the latent variables and xstands for the observable variables (i.e.
 image pixels). The hierarchical model is generic and is capable of
 modeling arbitrary DAGs in the latent space.
@@ -130,16 +129,15 @@ structure G   (V,E)where Eis the set of all directed
 edges and V   (X,Z)comprises all observable variables
 X  {x1, . . . ,xm}(i.e., all pixels) and all latent variables
 Z  {z1, . . . ,zn}. Each variable xiorzjrepresents a
-multidimensional vector.1 1. (Data-generating process)  There is no direct
+multidimensional vector.1The hierarchical latent structure
+Gfulfills the following assumption 
+Assumption 1. (Data-generating process)  There is no direct
  edge between any two observables   xi,xj X,
 (xi,xj)/ Eand(xj,xi)/ E. Each variable is generated
 by its parents in a directed acyclic graph (DAG) according
-to 
-zi gzi(Pa(zi),εi),
 xj gxj(Pa(xj),εj),(1)
 where gziandgxjare invertible functions, εidenotes exogenous
  random variables, and Pa ( )denotes the parents
-of a certain node.
 The invertible data-generating-module assumption ( gi
 andgjbeing invertible) is adopted from prior work identifying
  latent variables in deep generative models [18, 58]. We
@@ -184,12 +182,9 @@ image xmfrom the estimated latent variable ˆc(i.e., the encoder
 positional embeddings and [MASK] token which are fed
 to the decoder in MAE. Although ˆsmis deterministic in
 MAE implementation, we view it as a random variable in
-our analysis.
 With the notation above, the MAE training objective can
 be expressed as follows 
-L(E, D )   Em,x,ˆsm 
  Dm(Emc(xmc),ˆsm) xm 2 
-.(2)
 2.3. Identifiability Theory
 Building upon the formalization above, we show in Theorem
  1 that each random mask mwould induce a specific
@@ -201,7 +196,8 @@ Theorem 1. (Locating the shared information c)  In a hierarchical
  latent variable structure G, for each specific mask
 m, there exists a corresponding minimal set of latent variables
  csuch that the generating process of xcan be expressed
- as in Figure 3 2To avoid notation cluttering, we adopt ˆ to distinguish the estimated
+ as in Figure 3 where the following conditions are
+2To avoid notation cluttering, we adopt ˆ to distinguish the estimated
 variables from the true ones in the generating process.xm xmcsm smc c
 Figure 3. Information sharing latent models . Here, xmand
 xmcdenote the masked part and the visible part of the image x,
@@ -211,18 +207,15 @@ toxmandxmcrespectively. The dashed line indicates the potential
  existence of statistical dependence.
 1.xm gxm(c,sm)andxmc gxmc(c,smc)where
 bothgxmandgxmcare invertible 
-2.sm   (c,smc) 
 3.cis minimal   c  Zsuch that dim (c ) dim(c),c 
 cannot satisfy the two conditions above.
 Suchcand the corresponding smare unique and can be
 located from the hierarchical structure by executing Algorithm
  1. Furthermore, smccan be found through Algorithm
- 2.
 The proof, Algorithm 1, and Algorithm 2 can be found
 in Appendix A. We note that although the minimal cand
 its corresponding smare unique for a given mask m, there
 is no unique smcin general. Algorithm 2 returns one such
-instance.
 Theorem 1 states that for each mask m, there exists
 a corresponding cthat represents all the information contained
  in the visible part xmcthat is conducive to reconstructing
@@ -232,12 +225,10 @@ masking on the property of c.
 Next, in Theorem 2, we show that MAE learning objective
  (Equation 2) estimates cspecified in Theorem 1, and
 MAE attains a form of identifiability of c. We first lay out
-the assumptions 
 Assumption 2. (MAE model)  For any mask m, the MAE
 decoder Dm(ˆc,ˆsm)has a non-singular Jacobian matrix
 almost anywhere, and there exists an invertible function
  gmc( )such that MAE encoder Emc( )   [  g 1
-mc( )]1 dc
 where [ ]1 dcdenotes the dimensions corresponding to c.
 Moreover, (Dm, gmc)forms an invertible mapping between
 (ˆc,ˆsm,ˆsmc)and(xm,xmc)
@@ -278,13 +269,13 @@ ratios and masking patch sizes inevitably leads to low-level
 latent variables. To see this, in Figure 4a, the mask is not
 large enough to cover all observable descendants of a desirable
  high-level variable z1, thus following Algorithm 1
-a low-level variable z will mix in ˆc, preventing the model
+a low-level variable z3will mix in ˆc, preventing the model
 from learning z1. This insight highlights the necessity of
 nontrivial masking ratios and patch sizes and resonates with
 the empirical observations in [22, 28, 63].
 Surprisingly, the above reasoning can be applied to the
 case with extremely aggressive masking  in Figure 4b lowlevel
- latent variables z will be learned by MAE when the
+ latent variables z6will be learned by MAE when the
 visible part is too small to cover all observable descendants
 of a desirable high-level variable z2. Thus, the learned representation
  does not become monotonically more high-level
@@ -293,10 +284,9 @@ masking also gives rise to low-level representations. This
 insight echoes the empirical finding in [61, 63] where the
 extremely large masking degrades the performance of highlevel
  downstream tasks like classification [63] but yields
-relatively low-level representations like the object loca-z z2 6 6
-(a)Conservative maskz z2 6 6
-(b)Aggressive maskz z2 6 6
-(c)Ideal mask
+relatively low-level representations like the object loca-z1z2
+(a)Conservative maskz1z2
+(b)Aggressive maskz1z2
 Figure 4. The impact of masking on the learned representation.
 We label the masked pixels with x. We locate the MAE learned
 latent variables with Algorithm 1 and label them with blue. We
@@ -309,7 +299,6 @@ empirical evidence to verify our theoretical insights.
 Takeaway  (1)MAE underdifferentmask ingintensitieslearns
  representations ofdifferentabstrac tion levels 
 (2)Learn inghigh-level representations isvery hard with
-extreme mask ing.
 Is current MAE optimal for representation learning 
 As reflected in the discussion above, although MAE offers
 the flexibility of tuning the masking scheme to learn representations
@@ -323,10 +312,8 @@ the augmentation-invariant latent variables [58] which correspond
 model. Our theory suggests an explanation for why representations
  learned by contrastive learning are superior to
 those of MAE on high-level tasks like linear-probing classification.
-
 Takeaway  Learn inghigh-level representations canbe
 challengingforrandom mask ing.
-3. Experiments
 We conduct five sets of experiments and then provide insights
  into possible empirical improvements over MAE. We
 investigate the following question  how does the masking
@@ -336,7 +323,7 @@ we pretrain MAE using different masking ratios and making
 1) measuring structure-level and pixel-level similarities between
  the reconstructed and the original images  2) visualizing
  self-attentions to understand what is learned  3) performing
- linear probing on ImageNet-1K (IN K) and different
+ linear probing on ImageNet-1K (IN1K) and different
  ImageNet variants  4) measuring the shape bias [19]
 which estimates how much a network leverages high-level
 shape information over low-level texture information  andFigure 5. Reconstruction evaluation using the validation set without masking, based on two structural-level similarity metrics (SSIM and
@@ -344,21 +331,20 @@ FSIM) and two pixel-level metrics (PSNR and MSE). We plot negative MSE for easie
 high-level information is better captured, while higher PSNR and negative MSE indicates better low-level reconstruction.
 5) transfer learning on object detection and segmentation.
 Details of experiments can be found in Appendix.
-Pretraining overview. We conduct pretraining on IN K
+Pretraining overview. We conduct pretraining on IN1K
 using the MAE pipeline [22], with ViT-Base as the backbone
  of our study. We conduct two sets of pretraining  1)
 fixing patch size at 16and varying the masking ratios from
 {0.1,0.25,0.5,0.75,0.9}. Larger masking ratios suggest
-larger portions of pixels being masked, i.e., 0.9 90% of pixels being randomly masked for the encoder. 2)
+larger portions of pixels being masked, i.e., 0.9suggests
+90% of pixels being randomly masked for the encoder. 2)
 Fix the masking ratio at 0.75and vary the patch size from
 {8,16,32}. To decouple the patch size for masking images
  and the patch size hyperparameter in the Vision Transformer,
  we adopt the implementation from [28]. The patch
 size studied in this paper refers to the minimal masking unit
 size, and the hyperparameter of the ViT patch size remains
-fixed at 8.
 3.1. Reconstructing High-level or Low-level Representations
-
 Setup. We begin our study by evaluating the high-level
 structural and low-level pixel-wise similarities between the
 reconstructed images from MAE and the original inputs.
@@ -390,13 +376,13 @@ well. All four metrics are full reference, meaning the assessment
  is based on comparing original and reconstructed
 images rather than the reconstructed output. We introduce
 the high-level and low-level metrics below and perform the
-reconstructions on the IN K evaluation set. The full details
+reconstructions on the IN1K evaluation set. The full details
 and comparisons of the four metrics can be found in [51].
 Evaluation of image reconstructions. We include the results
  in Figure 5. We plot the negative of the MSE to show
 a consistent trend with PSNR, so higher means better lowlevel
  reconstruction. From the first row, varying masking
-ratios from 0.1 0.75, higher masking ratios produce reconstructions
+ratios from 0.1to0.75, higher masking ratios produce reconstructions
  with higher structural information similarities
  with the original image (higher SSIM and FSIM), but
 the model trained with the extremely high ratio 0.9 captures
@@ -447,48 +433,56 @@ with larger patch sizes better capture high-level information,
  but extreme patch size hurts, which validates our theoretical
  insight that moderate masking ratios and patch sizes
 are critical for MAE to learn succinct and comprehensive
-object information.
 3.3. Representation Linear Separability
 T-SNE embedding visualizations. To gain a visual understanding
  of how masking ratios and patch sizes influence
  the representation structure, we visualize T-SNE [57]
 embeddings of different models. We randomly select ten
 classes from ImageNet. The results are shown in Figure 8.
-From 0.1 0.75, a larger masking ratio consistently produces
+From 0.1to0.75, a larger masking ratio consistently produces
  a more linearly separable representation, while the
 linear separabilities of representations with masking ratios
-0.75 0.9are visually similar. For different patch sizes,
+0.75and0.9are visually similar. For different patch sizes,
 the embeddings are more separated as the patch sizes grow.
 Non-extreme masking ratios and larger patch sizes generate
 more linearly separable embeddings.
-Linear probing on IN K. We use linear probing to test
+Linear probing on IN1K. We use linear probing to test
 how linearly separable the features are in the learned MAE
 representation. We show the linear probing results in Table
-1 1N K. For different masking ratios, similar to the
+1 in row 1N1K. For different masking ratios, similar to the
 observation in [22], the accuracy increases steadily until the
 masking ratio reaches the sweet point of 0.75. An extremely
 large masking ratio (0.9) hurts performance. For different
 patch sizes, which are not shown in [22], we observe that
-the accuracy increases first from 8 16, then decreases significantly
+the accuracy increases first from 8 to 16, then decreases significantly
  when the patch size is 32. From the results, higher
 masking ratios and larger patch sizes perform better at linear
  probing than lower masking ratios, but extreme masking
 hurts linear probing.
 Robustness evaluation on ImageNet variants. We evaluate
  the robustness of the MAE models on different variants
-of ImageNet validation datasets, or object detection datasetsFigure 8. T-SNE embeddings of different MAE models under varied masking ratios and patch sizes. We fix the patch size at 16 0.75to change the patch sizes. Each color represents one ImageNet class.
-mask ratio patch size IN K IN-v2 OJN IN-R IN-A IN-S
-0.1 16 47.45 34.72 9.42 14.63 2.00 7.25 0.25 16 53.58 40.34 11.54 18.68 2.49 10.27 0.5 16 60.07 46.71 13.94 22.44 2.89 12.58 0.75 16 67.41 54.23 18.24 25.20 3.76 15.51 0.9 16 62.97 49.52 15.87 19.11 2.76 10.46 0.75 8 62.57 49.17 13.44 19.42 3.73 10.73 0.75 16 68.96 55.94 13.73 24.23 6.29 18.81 0.75 32 73.31 61.35 19.03 27.84 12.69 28.30 1. Accuracy ( %) of linear probing and robustness evaluation
+of ImageNet validation datasets, or object detection datasetsFigure 8. T-SNE embeddings of different MAE models under varied masking ratios and patch sizes. We fix the patch size at 16to vary the
+masking ratios and fix the masking ratio at 0.75to change the patch sizes. Each color represents one ImageNet class.
+mask ratio patch size IN1K IN-v2 OJN IN-R IN-A IN-S
+0.1 16 47.45 34.72 9.42 14.63 2.00 7.25
+0.25 16 53.58 40.34 11.54 18.68 2.49 10.27
+0.5 16 60.07 46.71 13.94 22.44 2.89 12.58
+0.75 16 67.41 54.23 18.24 25.20 3.76 15.51
+0.9 16 62.97 49.52 15.87 19.11 2.76 10.46
+0.75 8 62.57 49.17 13.44 19.42 3.73 10.73
+0.75 16 68.96 55.94 13.73 24.23 6.29 18.81
+0.75 32 73.31 61.35 19.03 27.84 12.69 28.30
+Table 1. Accuracy ( %) of linear probing and robustness evaluation
  on ImageNet variants and ObjectNet. We linear-probe MAE
-via supervised training on IN K, and then perform inference on
-IN K as well as other evaluation sets.
+via supervised training on IN1K, and then perform inference on
+IN1K as well as other evaluation sets.
 that share similar class information with ImageNet-1K 
 ImageNet-v2 (INV2) [52], ObjectNet (OJN) [4], ImageNetAdversarial
  (IN-A) [25], ImageNet-Rendition [4], and
 ImageNet-Sketch (IN-S) [59]. These datasets share similar
 semantics and labels with ImageNet but are under different
 data distributions. The MAE models are first trained in a supervised
- fashion on IN K for linear probing, and inference
+ fashion on IN1K for linear probing, and inference
 is run on the evaluation sets without any training. Table 1
 shows for all evaluation datasets, a reasonably large masking
  ratio (i.e., 0.75) achieves better robustness than smaller
@@ -498,7 +492,6 @@ sizes, larger patch sizes yield better robustness evaluations
 on IN-v2, OJN, IN-R, and IN-S. Non-extreme masking ratios
  and large patch sizes have stronger robustness performances
  than extreme masking ratios or patch sizes.
-3.4. Shape Bias
 Texture vs. shape bias. Next, we analyze to what extent
  different MAE models rely on high-level vs. low-level
 information. We follow the analysis in [19], where the authors
@@ -507,17 +500,19 @@ information. We follow the analysis in [19], where the authors
 in Table 2, intermediate masking ratios (i.e., 0.25,0.5, and
 0.75) show a high level of shape bias, suggesting that the
 corresponding models exploit more high-level shape information.
- In contrast, extreme masking ratios (i.e., 0.1 0.9) leverage more low-level textures. This suggests that
+ In contrast, extreme masking ratios (i.e., 0.1and
+0.9) leverage more low-level textures. This suggests that
 extreme masking schemes make it more difficult to capture
 high-level shapes for MAE.
 3.5. Transfer Learning
 Next, we evaluate the quality of MAE models on different
- downstream tasks. Specifically, we look at object de-mask ratio 0.1 0.25 0.5 0.75 0.9 0.1352 0.2545 0.2458 0.2563 0.2014 2. Shape bias [19] measurement, a higher metric indicates
+ downstream tasks. Specifically, we look at object de-mask ratio 0.1 0.25 0.5 0.75 0.9
+shape bias 0.1352 0.2545 0.2458 0.2563 0.2014
+Table 2. Shape bias [19] measurement, a higher metric indicates
 that the model classifies images relying on the high-level shape
 feature rather than the low-level texture feature.
 mask ratio mask size APboxAPmask
-0.1 16 30.47 28.24 0.25 16 32.38 29.95 0.5 16 34.87 32.11 0.75 16 39.72 36.35 0.9 16 37.17 34.35 3. COCO object detection and segmentation using a ViT
-Mask R-CNN baseline.
+Table 3. COCO object detection and segmentation using a ViT
 tection and segmentation on the COCO dataset [43], which
 requires a strong semantic understanding of the scenes.
 We finetune Mask R-CNN [24] end-to-end using MAEpretrained
@@ -530,7 +525,7 @@ observe that the 0.75masking ratio yields the best detection
  and segmentation average precision, suggesting that the
 masking ratio 0.75generates representation with the best
 semantic understanding. The extremely high masking ratio
-of0.9 0.1hurt the performance.
+of0.9and a low masking ratio of 0.1hurt the performance.
 Results of different patch size experiments are included in
 Appendix. The results suggest that higher, but not extreme,
 masking ratios generate the best representation of object
@@ -544,19 +539,16 @@ unmasked regions, the model uses nearby visible pixels to
 interpolate, therefore capturing low-level pixel information.
 If high-level representation is desired for downstream tasks,
 the boundary pixels may be ignored when calculating the
-objective function.
 Next, in light of the limitation of random masking in Section
  2, one may leverage the latent structure of the underlying
  data-generating process for masking designs, which can
 serve as a more principled approach than recent work thatexploits auxiliary information for masking [34, 40, 41, 53].
 To this end, one may take advantage of the recent development
  of causal discovery [29, 62] to identify the latent
-structure.
 Lastly, if low-level information is preferable for downstream
  tasks, an extremely high masking ratio can retain
 such information and is more computationally efficient than
 its low masking ratio counterpart.
-4. Related work
 4.1. Masked Autoencoders
 Masked image modeling (MIM) [1 3, 11, 13, 22, 41, 63,
 69] has been gaining momentum recently due to their sotaof-the-art
@@ -621,7 +613,6 @@ in which similar latent causal models (Figure 3) are studied.
 smc(cf. independence assumed in [46]). Additionally, both
 works [46, 58] focus on contrastive learning with data augmentation,
  while our subject is MAE.
-5. Conclusion
 In this work, we formulate the data-generating process
 as a hierarchical latent variable model and provide guarantees
  that MAE can identify the true variables in such a hierarchical
@@ -640,34 +631,31 @@ for valuable feedback. The work of LK and YC is supported in part
 by NSF under the grants CCF-1901199 and DMS-2134080, and
 by ONR under the grant N00014-19-1-2404. The work of MM and
 LP is partially supported by BMW, National Science Foundation
-awards 1722822 1750439, and National Institutes of Health
-awards R MH125740, R MH096951, R MH130767 132225. This project is also partially supported by the National
- Institutes of Health (NIH) under Contract R HL159805,
+awards 1722822 and 1750439, and National Institutes of Health
+awards R01MH125740, R01MH096951, R21MH130767 and
+R01MH132225. This project is also partially supported by the National
+ Institutes of Health (NIH) under Contract R01HL159805,
 by the NSF-Convergence Accelerator Track-D award 2134901, by
 a grant from Apple Inc., a grant from KDDI Research Inc, and generous
  gifts from Salesforce Inc., Microsoft Research, and Amazon
-Research.References
 [1] Animashree Anandkumar, Daniel Hsu, Adel Javanmard, and
 Sham Kakade. Learning linear bayesian networks with latent
 variables. In International Conference on Machine Learning ,
 pages 249 257. PMLR, 2013. 1, 2, 8
 [2] Alexei Baevski, Wei-Ning Hsu, Qiantong Xu, Arun Babu, Jiatao
- Gu, and Michael Auli. Data vec  A general framework
+ Gu, and Michael Auli. Data2vec  A general framework
 for self-supervised learning in speech, vision and language.
 arXiv preprint arXiv 2202.03555 , 2022. 1, 8
 [3] Hangbo Bao, Li Dong, and Furu Wei. Beit  Bert pre-training
 of image transformers. arXiv preprint arXiv 2106.08254 ,
-2021. 1, 8
 [4] Andrei Barbu, David Mayo, Julian Alverio, William Luo,
 Christopher Wang, Dan Gutfreund, Josh Tenenbaum, and
 Boris Katz. Objectnet  A large-scale bias-controlled dataset
 for pushing the limits of object recognition models. Advances
  in neural information processing systems , 32, 2019.
-7, 15
 [5] Adrien Bardes, Jean Ponce, and Yann LeCun. Vicreg 
  Variance-invariance-covariance regularization for selfsupervised
  learning. arXiv preprint arXiv 2105.04906 , 2021.
-4
 [6] Anthony J Bell and Terrence J Sejnowski. An informationmaximization
  approach to blind separation and blind deconvolution.
  Neural computation , 7(6) 1129 1159, 1995. 8
@@ -691,7 +679,7 @@ Computer Vision , pages 9650 9660, 2021. 4, 15
  from pixels. In Hal Daum  e III and Aarti Singh,
 editors, Proceedings of the 37th International Conference
 on Machine Learning , volume 119 of Proceedings of Machine
- Learning Research , pages 1691 1703. PMLR, 13 18 2020. 1, 8
+ Learning Research , pages 1691 1703. PMLR, 13 18
 [12] Ting Chen, Simon Kornblith, Mohammad Norouzi, and Geoffrey
  Hinton. A simple framework for contrastive learning
 of visual representations. In International conference on machine
@@ -713,11 +701,10 @@ arXiv 1810.04805 , 2018. 1
 [17] Alexey Dosovitskiy, Lucas Beyer, Alexander Kolesnikov,
 Dirk Weissenborn, Xiaohua Zhai, Thomas Unterthiner,
 Mostafa Dehghani, Matthias Minderer, Georg Heigold, Sylvain
- Gelly, et al. An image is worth 16 16 words  Transformers
+ Gelly, et al. An image is worth 16x16 words  Transformers
  for image recognition at scale. arXiv preprint
 arXiv 2010.11929 , 2020. 14
 [18] Locatello et al. Weakly-supervised disentanglement without
-compromises. 2, 4
 [19] Robert Geirhos, Patricia Rubisch, Claudio Michaelis,
 Matthias Bethge, Felix A Wichmann, and Wieland Brendel.
 Imagenet-trained cnns are biased towards texture  increasing
@@ -742,12 +729,10 @@ Girshick. Momentum contrast for unsupervised visual representation
 [24] Kaiming He, Georgia Gkioxari, Piotr Doll  ar, and Ross Girshick.
  Mask r-cnn. In Proceedings of the IEEE international
 conference on computer vision , pages 2961 2969, 2017. 7,
-16
 [25] Dan Hendrycks, Kevin Zhao, Steven Basart, Jacob Steinhardt,
  and Dawn Song. Natural adversarial examples. In
 Proceedings of the IEEE/CVF Conference on Computer Vision
  and Pattern Recognition , pages 15262 15271, 2021. 7,
-15
 [26] Irina Higgins, Loic Matthey, Arka Pal, Christopher Burgess,
 Xavier Glorot, Matthew Botvinick, Shakir Mohamed, and
 Alexander Lerchner. beta-V AE  Learning basic visual concepts
@@ -772,11 +757,9 @@ Proceedings of the European conference on computer vision
  ica using auxiliary variables and generalized contrastive
  learning. In The 22nd International Conference on
 Artificial Intelligence and Statistics , pages 859 868. PMLR,
-2019. 8
 [33] Justin Johnson, Alexandre Alahi, and Li Fei-Fei. Perceptual
 losses for real-time style transfer and super-resolution. In
 European conference on computer vision , pages 694 711.
-Springer, 2016. 5
 [34] Ioannis Kakogeorgiou, Spyros Gidaris, Bill Psomas, Yannis
  Avrithis, Andrei Bursuc, Konstantinos Karantzalos, and
 Nikos Komodakis. What to hide from your students 
@@ -790,7 +773,6 @@ Vision and Pattern Recognition (CVPR) , June 2019. 8
 Aapo Hyvarinen. Variational autoencoders and nonlinear ica 
 A unifying framework. In International Conference on Artificial
  Intelligence and Statistics , pages 2207 2217. PMLR,
-2020. 8
 [37] Lingjing Kong, Shaoan Xie, Weiran Yao, Yujia Zheng,
 Guangyi Chen, Petar Stojanov, Victor Akinwande, and Kun
 Zhang. Partial disentanglement for domain adaptation. In
@@ -798,7 +780,7 @@ Kamalika Chaudhuri, Stefanie Jegelka, Le Song, Csaba
 Szepesvari, Gang Niu, and Sivan Sabato, editors, Proceedings
  of the 39th International Conference on Machine Learning,
  volume 162 of Proceedings of Machine Learning Research
- , pages 11455 11472. PMLR, 17 23 2022. 8
+ , pages 11455 11472. PMLR, 17 23 Jul 2022. 8
 [38] S  ebastien Lachapelle, Pau Rodr  ıguez L  opez, Yash Sharma,
 Katie Everett, R  emi Le Priol, Alexandre Lacoste, and Simon
  Lacoste-Julien. Disentanglement via mechanism sparsity
@@ -806,7 +788,6 @@ Katie Everett, R  emi Le Priol, Alexandre Lacoste, and Simon
 preprint arXiv 2107.10098 , 2021. 8
 [39] Jason D. Lee, Qi Lei, Nikunj Saunshi, and Jiacheng Zhuo.
 Predicting what you already know helps  Provable selfsupervised
- learning, 2021. 8
 [40] Gang Li, Heliang Zheng, Daqing Liu, Chaoyue Wang, Bing
 Su, and Changwen Zheng. Semmae  Semantic-guided
 masking for learning masked autoencoders. arXiv preprint
@@ -830,11 +811,9 @@ Raetsch, Sylvain Gelly, Bernhard Sch  olkopf, and Olivier
 Bachem. Challenging common assumptions in the unsupervised
  learning of disentangled representations. In international
  conference on machine learning , pages 4114 4124.
-PMLR, 2019. 8
 [45] Qi Lyu, Xiao Fu, Weiran Wang, and Songtao Lu. Latent
 correlation-based multiview learning and self-supervision 
 A unifying perspective. arXiv preprint arXiv 2106.07115 ,
-2021. 2, 8
 [46] Qi Lyu, Xiao Fu, Weiran Wang, and Songtao Lu. Understanding
  latent correlation-based multiview learning and
 self-supervision  An identifiability perspective. In International
@@ -846,7 +825,6 @@ generative modeling. Advances in neural information processing
 [48] Jiachun Pan, Pan Zhou, and Shuicheng Yan. Towards understanding
  why mask-reconstruction pretraining helps in
 downstream tasks. arXiv preprint arXiv 2206.03826 , 2022.
-8
 [49] Alec Radford, Jong Wook Kim, Chris Hallacy, Aditya
 Ramesh, Gabriel Goh, Sandhini Agarwal, Girish Sastry,
 Amanda Askell, Pamela Mishkin, Jack Clark, et al. Learning
@@ -866,10 +844,8 @@ Fang, Benjamin Recht, and Ludwig Schmidt. Evaluating machine
 Machine Learning , pages 8634 8644. PMLR, 2020. 7, 15
 [53] Yuge Shi, N. Siddharth, Philip H. S. Torr, and Adam R. Kosiorek.
  Adversarial masking for self-supervised learning,
-2022. 8
 [54] Peter Sorrenson, Carsten Rother, and Ullrich K  othe. Disentanglement
  by nonlinear ica with general incompressible-flow networks (gin). arXiv preprint arXiv 2001.04872 , 2020.
-8
 [55] Arash Vahdat and Jan Kautz. Nvae  A deep hierarchical variational
  autoencoder. Advances in Neural Information Processing
  Systems , 33 19667 19679, 2020. 2
@@ -878,13 +854,11 @@ Machine Learning , pages 8634 8644. PMLR, 2020. 7, 15
  , 15(1) 3221 3245, 2014. 15
 [57] Laurens Van der Maaten and Geoffrey Hinton. Visualizing
  data using t-sne. Journal of machine learning research ,
-9(11), 2008. 6
 [58] Julius V on K  ugelgen, Yash Sharma, Luigi Gresele, Wieland
 Brendel, Bernhard Sch  olkopf, Michel Besserve, and
 Francesco Locatello. Self-supervised learning with data augmentations
  provably isolates content from style. Advances
 in neural information processing systems , 34 16451 16467,
-2021. 2, 4, 8
 [59] Haohan Wang, Songwei Ge, Zachary Lipton, and Eric P
 Xing. Learning robust global representations by penalizing
 local predictive power. Advances in Neural Information Processing
@@ -896,12 +870,10 @@ structural similarity. IEEE transactions on image processing ,
 [61] Zhirong Wu, Zihang Lai, Xiao Sun, and Stephen Lin. Extreme
  masking for learning instance and distributed visual
 representations. arXiv preprint arXiv 2206.04667 , 2022. 1,
-4
 [62] Feng Xie, Biwei Huang, Zhengming Chen, Yangbo He, Zhi
 Geng, and Kun Zhang. Identification of linear non-gaussian
 latent hierarchical structure. In International Conference on
 Machine Learning , pages 24370 24387. PMLR, 2022. 1, 2,
-8
 [63] Zhenda Xie, Zheng Zhang, Yue Cao, Yutong Lin, Jianmin
 Bao, Zhuliang Yao, Qi Dai, and Han Hu. Simmim  A simple
 framework for masked image modeling. In Proceedings of
@@ -913,7 +885,7 @@ redundancy reduction. In International Conference on Machine
  Learning , pages 12310 12320. PMLR, 2021. 4
 [65] Lin Zhang, Lei Zhang, Xuanqin Mou, and David Zhang.
 Fsim  A feature similarity index for image quality assessment.
- IEEE transactions on Image Processing , 20(8) 2378 2386, 2011. 5
+ IEEE transactions on Image Processing , 20(8) 2378 
 [66] Qi Zhang, Yifei Wang, and Yisen Wang. How mask matters 
 Towards theoretical understandings of masked autoencoders.
 arXiv preprint arXiv 2210.08344 , 2022. 8
@@ -930,9 +902,10 @@ In this section, we provide the proof for Theorem 1.
 Theorem 1. (Locating the shared information c)  In a hierarchical
  latent variable structure G, for each specific mask m, there
 exists a corresponding minimal set of latent variables csuch that
-the generating process of xcan be expressed as in Figure 3 1.xm gxm(c,sm)andxmc gxmc(c,smc)where both
+the generating process of xcan be expressed as in Figure 3 where
+the following conditions are satisfied 
+1.xm gxm(c,sm)andxmc gxmc(c,smc)where both
 gxmandgxmcare invertible 
-2.sm   (c,smc) 
 3.cis minimal   c  Zsuch that dim (c ) dim(c),c 
 cannot satisfy the two conditions above.
 Suchcand the corresponding smare unique and can be located
@@ -942,38 +915,24 @@ Algorithm 1 Search for the minimal candsm.candsmdiscussed
  in text can be viewed as the concatenations of vectors in Cand
 Sm. LocateParents ( )pins down the locations Z s parents (including exogenous
  variables) in the graph. DirectedPaths (d,Xc
-m)returns the set of
 variables on the directed paths between dandXc
-m.
 1 inputs   The hierarchical graph structure G, and the
 partitioned observables Xm,Xmc.
-2 C,Sm   , .
-3 4 5  Z   { x}.
-6 7  Z,E   LocateParents (Z)
-8 9 10  ifp Ancestors (xmc)then
-11  C   C   { p}
-12  Z   Z   { p}
-13 14 15  ford   C   { d}do
+7  Z,E   LocateParents (Z)
+10  ifp Ancestors (xmc)then
+15  ford   C   { d}do
 16  ifd  DirectedPaths (d,Xmc)then
-17  C   C   { d}
 return C,SmAlgorithm 2 Search for smcgivenC.LocateParents (p)pins
 down the locations p s parents (including exogenous variables) in
-the graph.
 1 inputs   The hierarchical graph structure G, the partitioned
  observables Xm,Xmc, andCreturned by Algorithm
- 1.
-2 Smc   .
-3 4  P,P   {x}, .
-5 6 7  forp  LocateParents (p)do
-8 9  Smc  S mc  {p }
-10 11  Smc  S mc (LocateParents (p) 
-{p })
-12 13  P   P   {p }
-14  P   P 
-return Smc
-Proof. We will show that Algorithm 1 1, which implies its
+7  forp  LocateParents (p)do
+8  ifp is exogenous then
+10  else if p   C then
+11  Smc  S mc (LocateParents (p) 
+Proof. We will show that Algorithm 1 returns the minimal set of
+variables that satisfy all conditions in Theorem 1, which implies its
 existence. We will then argue that such Cis unique for a specific
-maskm.
 Condition 1  We first discuss the invertibility of gxm. Due to
 the invertibility assumption of the generating process, each backtrack
  step in Algorithm 1 is invertible (lossless). Thus, before the
@@ -985,14 +944,13 @@ stage, there exists c   Con the directed path from ctoXmc(per
 Algorithm 1). Therefore, cis a parent/ancestor of c and can thus
 be retrieved by backtracking from c thanks to the invertibility of
 the generating process. Therefore, the mapping between (C,Sm)
-andXmis invertible.
 We now address the invertibility of gxmc, i.e., the mapping between
  (C,Smc)andXmc. We observe that a similar argument
 applies  Algorithm 2 dictates that the latent variables from the
 backtracking from Xmcare either stored in either CorSmc. It
 follows that gxmcis invertible.
 Condition 2  We show that (c,sm,smc)returned by Algorithm
- 1 2 2 by contradiction. We
+ 1 and Algorithm 2 satisfies Condition 2 by contradiction. We
 suppose that sm    (c,smc). Then it implied that  d (c,smc),
  ε sm, such that d Descendants (ε). More precisely, it followed
  that there was a directed path that started from εand ended
@@ -1005,7 +963,6 @@ The fact that d cimplied that d Ancestors (xm)
 Ancestors (xmc)which further implied that δ Ancestors (xm) 
 Ancestors (xmc)asδwas an ancestor of d. Therefore, we have arrived
  at a contraction to the observation that δ Ancestors (xm) 
-Ancestors (xmc).
 We now discuss the scenario where d smc. By design, Algorithm
  2 ensures that smccontains two types of latent variables,
 exogenous variables and a spouse of latent variables in c. Assm
@@ -1016,9 +973,8 @@ of a latent variable in c. By Algorithm 1, there would be a directed
 on a path directed to xmc. As there existed a directed path from δ
 tod, there must exist a directed path from δtoxmc. Therefore,
 δ Ancestors (xm) Ancestors (xmc)which contradicts the fact
-established above.
 Therefore, these contradiction implies that sm   (c,smc).
-So far, we have shown that Algorithm 1 2 yield
+So far, we have shown that Algorithm 1 and Algorithm 2 yield
 (c,sm,smc)that fulfills the conditions of Figure 3. In the following,
  we show that (c,sm)is the minimal solution and is unique.
 Uniqueness and minimality of (c,sm) We now reason
@@ -1046,80 +1002,66 @@ choice and is unique.
 B. Identifiability proof
 In this section, we present the proof for Theorem 2. We first
 give a general identifiability theory (i.e., Theorem 3) for the generating
- process in Figure 3 2.
+ process in Figure 3 and then make the connection to the
 Theorem 3. The generating process in Figure 3 is defined as fol-lows 
 [v1,v2]  g(c,s1,s2), (3)
-v1 1(c,s1), (4)
-v2 2(c,s2), (5)
-where c  C   Rdc,s1 1, ands2 2 2. Both
-g andg are smooth and have non-singular Jacobian matrices
+where c  C   Rdc,s1  S   Rds1, ands2  S2 Rds2. Both
+g1andg2are smooth and have non-singular Jacobian matrices
 almost anywhere, and gis invertible.
-Ifˆg1 1andˆg2 2assume the generating
+Ifˆg1 Z   V 1andˆg2 Z   V 2assume the generating
 process of the true model (g1, g2)and match the joint distribution
 pv1,v2, then there is a one-to-one mapping between the estimate
 ˆcand the ground truth coverC   S   S , that is, cis blockidentifiable.
-
 Proof. For(v1,v2) pv1,v2, because of the matched joint distribution,
  we have the following relations between the true variables
 (c,s1,s2)and the estimated ones (ˆc,ˆs1,ˆs2) 
-v1 1(c,s1)   ˆg1(ˆc,ˆs1), (6)
-v2 2(c,s2)   ˆg2(ˆc,ˆs2), (7)
+v1 g1(c,s1)   ˆg1(ˆc,ˆs1), (6)
+v2 g2(c,s2)   ˆg2(ˆc,ˆs2), (7)
 (ˆc,ˆs1,ˆs2)   ˆg 1(v1,v2)   ˆg 1(g(c,s1,s2))    h(c,s1,s2),
-(8)
 where we define the smooth and invertible function h  
 ˆg 1 gthat transforms the true variables (c,s1,s2)to estimates
-(ˆc,ˆs1,ˆs2).
-Plugging Equation 8 6 1(c,s1)   ˆg1(hc,s1(c,s1,s2)).
+Plugging Equation 8 into Equation 6 yields the following 
+g1(c,s1)   ˆg1(hc,s1(c,s1,s2)).
 Fori  {1, . . . , d v1}and (j  {1, . . . , d s2}), taking partial
 derivative of the i-th dimension of both sides w.r.t. s2,j 
-0 1,i(c,s1)
  s2,j  ˆg1,i(hc,s1(c,s1,s2))
- s2,j.
 The equation equals zero because there is no s2,jin the left-hand
 side of the equation. Expanding the derivative on the right-hand
-side gives 
-X
 k {1,...,dc ds1} ˆg1,i
  h(c,s1),k  h(c,s1),k
  s2,j(c,s1,s2)   0 (9)
-For(ˆc,ˆs1)  C   S   E 1where E denotes some subset with
-zero measure, there are at least dc ds values of ifor which
-vectors [ ˆg1,i
+For(ˆc,ˆs1)  C   S   E 1where E1denotes some subset with
+zero measure, there are at least dc ds1values of ifor which
  h(c,s1),1(ˆc,ˆs1), . . . , ˆg1,i
  h(c,s1),dc ds1(ˆc,ˆs1)]are linearly
 independent, which is equivalent to the non-singular Jacobian matrix
  condition. Therefore, the (dc ds1) (dc ds1)linear system
 is invertible and the solution states that 
- h(c,s1),k
- s2,j(c,s1,s2)   0,
 for any k  {1, . . . , d c ds1},j  {1, . . . , d s2}, and (ˆc,ˆs1) 
 C  S  E 1. Therefore, we have shown that hc,s1, i.e.(ˆc,ˆs1), does
-not depend on s2.
 Applying the same reasoning to hc,s2, we can obtain that hc,s2,
-i.e.(ˆc,ˆs2)does not depend on s onC   S .Thus, for (ˆc,ˆs1,ˆs2)  C   S   S , we can observe that ˆcdoes
-not depend on s ands2, that is, ˆc hc(c).
+i.e.(ˆc,ˆs2)does not depend on s1onC   S .Thus, for (ˆc,ˆs1,ˆs2)  C   S   S , we can observe that ˆcdoes
+not depend on s1ands2, that is, ˆc hc(c).
 Notice that in all procedures above, the roles of the
 true quantities (c,s1,s2, g, g 1, g2)and the estimated quantities
 (ˆc,ˆs1,ˆs2,ˆg,ˆg1,ˆg2)are symmetric. Therefore, we can switch the
 two sets of quantities and derive the relation  for (c,s1,s2) 
-(C   S   S ),cdoes not depend on ˆs andˆs2, that is, c h 
-c(ˆc).
+(C   S   S ),cdoes not depend on ˆs1andˆs2, that is, c h 
 In sum, we have shown that on (C   S   S ), there is a one-toone
  mapping between candˆc.
-We now show that Theorem 2 3.
+We now show that Theorem 2 follows directly from Theorem 3.
 Theorem 2. (Identifiability of c)  For each mask m, given the
 dimensions (dc, dsm)the encoder function Emc( )recovers all
 information of clocated in Theorem 1, i.e., there exists a one-toone
  mapping h, s.t.,h(c)  ˆc.
-Proof. We invoke Theorem 3 3.
+Proof. We invoke Theorem 3 and establish the connection between
+ the MAE training and the estimation model in Theorem 3.
 In particular, we show that under Assumption 2, any solution produced
  by the MAE objective satisfies the conditions in Theorem 3
 and consequently is equipped with the identifiability guarantee.
 We establish the correspondence between the MAE configuration
- and the estimation models in Theorem 3 1 2 xmc 
- ˆg1 Dm( ,ˆsm) 
+ and the estimation models in Theorem 3 
  ˆg2  gmc, where Emc( )   [ g 1
-mc( )]1 dc.
 We can observe that the minimizer of MAE satisfies the conditions
  specified in Theorem 3. This is because for the optimal solutionEmcof
  the MAE objective, we can always construct a  gmc,
@@ -1127,12 +1069,10 @@ which, together with Dm, matches the joint distribution pxm,xmc
 and shares ˆc, as stipulated in Theorem 3. Thus, as shown in Theorem
  3, there exists a one-to-one mapping between the MAE estimate
  ˆc  Emc(xmc)and the true variable c, which concludes
-our proof.
 C. Experimental Setup
 In this section, we provide the details of the experimental
  setups for our empirical results. Checkpoints and some
 codes are in https //github.com/martinmamql/mae_
-understand .
 C.1. Masked Autoencoder
 Masked Autoencoder (MAE) is an auto-encoding approach
 based on Vision Transformers (ViT) [17]. It consists of five
@@ -1141,8 +1081,9 @@ steps  masking, encoding, unmasking, decoding, and reconstruction.
 Then MAE samples a subset of patches and discards the remaining
  patches. MAE uses a hyper-parameter, masking ratio, to determine
  the percentage of patches to discard. For instance, if the
-masking ratio is 75% ,3 4of the patches in an image will be discarded,
- and only1 4of the patches will be fed into the encoder.
+masking ratio is 75% ,3
+4of the patches in an image will be discarded,
+4of the patches will be fed into the encoder.
 The sampling of patches follows a uniform distribution. Next, a
 ViT encoder first embeds patches using a linear projection withpositional embeddings and then uses the processed embeddings to
 feed into transformer blocks. For decoding, MAE first re-arranges
@@ -1177,8 +1118,9 @@ sizes, we leverage the Tensor Processing Unit (TPU) from Google
 Cloud. We train separate MAE models for each (masking ratio,
 patch size )pair, and each pretrained MAE corresponds to a unique
 masking ratio and patch size. We train all MAEs for 800epochs.
-Training time varies, with the shortest (patch size   32 ) taking 18 3-128 Pod, and the longest (patch size   8) taking
- 40 3-128 pod. The architecture follows the
+Training time varies, with the shortest (patch size   32 ) taking 18
+hours on a TPU v3-128 Pod, and the longest (patch size   8) taking
+ 40 hours on a TPU v3-128 pod. The architecture follows the
 exact implementation from the original MAE paper [22], without
 any hyper-parameter tuning except masking ratio and patch size,
 which we study in this paper. Details of augmentation, initialization,
@@ -1192,9 +1134,8 @@ learning classifier on frozen features of MAE encoders. The decoders
 probing can be found in the Appendix section of [22]. We use the
 same hyper-parameters of linear probing as in [22].
 C.3. Reconstructing high-level or low-level representations
-
 To perform reconstruction, we use both the encoder and the
-decoder from the pretrained MAEs. All samples from ImageNet K
+decoder from the pretrained MAEs. All samples from ImageNet1K
  are passed through the encoder without any masking, and the
 decoder reconstructs images in the original input space. Since no
 masking is applied, no masking token is applied to the input of the
@@ -1235,18 +1176,18 @@ varied masking ratios or patch sizes, we sample ten random classes
 from ImageNet, and then use each MAE encoder to process images
  in the 10 classes to produce embeddings. We then project
 embeddings of all samples using PCA to a 50-dimension spacebefore t-SNE, as recommended by [56]. For t-SNE, we use a perplexity
- of 20.
 In Fig. 10, we show the t-SNE plot using the original patch size
 design in MAE. Similar to the main text, embeddings are more
-separated in patch sizes 16 32 8, but differently, there are
-no significant differences between 16 32. Larger patch sizes
+separated in patch sizes 16 and 32 than 8, but differently, there are
+no significant differences between 16 and 32. Larger patch sizes
 generate more linearly separable embeddings in this case, although
-the separability seems indistinguishable for sizes 16 32.
+the separability seems indistinguishable for sizes 16 and 32.
 For the robustness evaluation, we evaluate different variants
  of ImageNet validation datasets  ImageNet-v2 (INV2) [52],
 ImageNet-Adversarial (IN-A) [25], ImageNet-Rendition [4], and
 ImageNet-Sketch (IN-S) [59]. We also include another object
-classification dataset, ObjectNet (OJN) [4]. ImageNet-v2 10,000 new images each, sampled a
+classification dataset, ObjectNet (OJN) [4]. ImageNet-v2 contains
+ three new test sets with 10,000 new images each, sampled a
 decade after the collection of the original ImageNet dataset, and is
 independent of existing models to prevent overfitting. ImageNetAdversarial
  consists of natural images with adversarial filtration,
@@ -1272,25 +1213,27 @@ best robustness evaluation on IN-v2, OJN, IN-R, and IN-S. If we
 follow the original MAE and do not decouple masking patch size
 and ViT patch size, a medium patch size has stronger robustness
 performances than extreme patch sizes.
-C.6. Shape bias
 The cue-conflict dataset was introduced by [19] to evaluate
 how much deep learning models rely on shape information for
 prediction, which reflects the model s robustness to spurious correlation
- like textures. This dataset consists of 1280 160 48 images of textures.
-The shape accuracy is measured by the fraction of images pre-mask ratio patch size IN K IN-v2 OJN IN-R IN-A IN-S
-0.75 8 62.57 49.17 13.44 19.42 3.73 10.73 0.75 16 67.41 54.23 18.24 25.20 3.76 15.51 0.75 32 55.51 42.35 13.46 18.70 1.89 9.48 4. Accuracy ( %) of linear probing and robustness evaluation
+ like textures. This dataset consists of 1280 images synthesized
+ from 160 images of objects and 48 images of textures.
+The shape accuracy is measured by the fraction of images pre-mask ratio patch size IN1K IN-v2 OJN IN-R IN-A IN-S
+0.75 8 62.57 49.17 13.44 19.42 3.73 10.73
+0.75 16 67.41 54.23 18.24 25.20 3.76 15.51
+0.75 32 55.51 42.35 13.46 18.70 1.89 9.48
+Table 4. Accuracy ( %) of linear probing and robustness evaluation
  on ImageNet variants and ObjectNet. We linear probe MAE
-via supervised training on IN K, and then perform inference on
-IN K as well as other evaluation sets. We fix the masking ratio at
+via supervised training on IN1K, and then perform inference on
+IN1K as well as other evaluation sets. We fix the masking ratio at
 0.75to change patch sizes. The patch size refers to the patch size
 in the original MAE, where the masking patch size and the patch
 size of ViT are equal.
 mask ratio patch size APboxAPmask
-0.75 8 34.21 32.28 0.75 16 33.77 32.04 0.75 32 32.39 30.54 5. COCO object detection and segmentation using a ViT
+Table 5. COCO object detection and segmentation using a ViT
 Mask R-CNN baseline. We fix the masking ratio at 0.75to change
 patch sizes. The patch size refers to the patch size in the original
 MAE, where the masking patch size and the patch size of ViT are
-equal.
 dicted correctly by their shape. We directly run the pretrained
 MAE models with linear probes trained on ImageNet-1K on the
 cue-conflict dataset to examine the representation resulting from
@@ -1299,7 +1242,8 @@ C.7. Transfer learning
 We use the pretrained MAE ViT encoder as an FPN [42] backbone
  in Mask-RCNN [24], following [22]. To do so, [22] uses a
 stack of pretrained transformer blocks in MAE to produce feature
-maps at a single scale  for instance, patch size 16 16features. Then the features are equally divided, and upsampling
+maps at a single scale  for instance, patch size 16will produce
+stride 16features. Then the features are equally divided, and upsampling
  or downsampling is applied to create features at different
  scales. Lastly, the FPN is built on multi-scale features. Below
 we include the transfer learning results of different patch sizes on
@@ -1309,11 +1253,12 @@ FPN, we enforce the same combinations of multi-scale features
 i.e., stride 4,8,16, and 32.
 From Table 5, we show the transfer learning results of MAE
 under different patch sizes. Patch size 8performs the best, and
-patch size 16 32. The reason for the better performance
+patch size 16is better than 32. The reason for the better performance
  at patch size 8may be due to a smaller batch size used,
-compared to patch size 16 32(we can only fit batch size 1 8due to the increased number of tokens to process
+compared to patch size 16and32(we can only fit batch size 1
+for patch size 8due to the increased number of tokens to process
  because of a smaller patch size.) We use the same batch size
-for and16, and the comparison between the two supports our
+for32and16, and the comparison between the two supports our
 claim  an extreme masking scheme can hurt the model s capacity
  to capture high-level information or, in this case, the semantic
 understanding of the scene.

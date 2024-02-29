@@ -1,17 +1,13 @@
-Proceedings of the 18th Workshop on Innovative Use of NLP for Building Educational Applications (BEA 2023) , pages 232 241 13, 2023 2023 Association for Computational Linguistics
+Proceedings of the 18th Workshop on Innovative Use of NLP for Building Educational Applications (BEA 2023) , pages 232 241
+July 13, 2023 c 2023 Association for Computational Linguistics
 Towards Extracting and Understanding the Implicit Rubrics of
 Transformer Based Automated Essay Scoring Models
-James Fiacco
 Language Technologies Institute
 Carnegie Mellon University
 jfiacco@cs.cmu.eduDavid Adamson
-Turnitin
 dadamson@turnitin.com
-Carolyn P. Rosé
 Language Technologies Institute
 Carnegie Mellon University
-cprose@cs.cmu.edu
-Abstract
 By aligning the functional components derived
 from the activations of transformer models
 trained for AES with external knowledge such
@@ -27,7 +23,7 @@ IDEA ,SUPPORT , and LANGUAGE . The findings
  processes, biases, and limitations, contributing
  to the development of more transparent
  and reliable AES systems.
-1 50 years ago (Page, 1966),
+Since its inception over 50 years ago (Page, 1966),
 Automated Essay Scoring (AES) has been a valuable
  approach for evaluating large quantities of
 student essays. Recent developments in the field
@@ -79,10 +75,9 @@ We focus our interpretation in the domain of AES
 where each model in our investigation is trained
 to score essays based on distinct evaluation traits,
 namely ORGANIZATION ,MAIN IDEA ,SUPPORT ,
-and LANGUAGE .
 To probe these models, the features are drawn
 1Code and tool available at https //github.com/
-jfiacco/aes_neural_functional_groups from several sources that correspond to concepts of
+jfiacco/aes_neural_functional_groups232from several sources that correspond to concepts of
 both high and low validity for essay scoring  statistical
  features of an essay (e.g. number of sentences,
 number of paragraphs, etc.) (Woods et al., 2017),
@@ -103,8 +98,6 @@ method, and present potential explanations for correlated
  function/feature pairs through a series of
 experiments that validate our method s ability to
 reflect the internal rubric of each of the neural models.
-
-2 Related Work
 From the interpretability angle, the most closely
 related work to this is that of neural model
 probes (Shi et al., 2016  Adi et al., 2016  Conneau
@@ -134,7 +127,6 @@ more granular identification of important parts of
 a model, independent from known features for a
 Figure 1  Diagram visualizing the structure of the
 methodology. Nodes of each color represent correlated
- values.
 task. This can enable model analysts to quickly
 identify unexplained components and begin to propose
  alternative pallets of features. Furthermore,
@@ -163,7 +155,6 @@ learned from this research may extend beyond the
 AES domain, providing valuable insights for the
 broader field of natural language processing and
 machine learning interpretability.
-3 Methods
 In this section we present our interpretation approach
  (Figure 1), defining the key concepts of
 functional components ,functional group ,feature ,
@@ -171,7 +162,7 @@ andfeature group . Because the approach notably
 abstracts away from common terms in the neural
 network literature, throughout this section we draw
 an analogy to how one can define and describe the
-common features between mammals by comparing their common and unique characteristics.
+common features between mammals by comparing233their common and unique characteristics.
 3.1 Functional Components and Groups
 Functional components refer to the learned functions
  of a neural network, much like a particular
@@ -188,7 +179,6 @@ instance in the validation dataset into an activation
  matrix, Aof size M N, where Mis
 the number of data instances in the validation
 set and Nis the number of neurons being used
-for the analysis.
 2.Perform a dimensionality reduction,
 such as Principal Component Analysis
 (PCA) (Hotelling, 1933), on Ato get
@@ -267,11 +257,10 @@ The specific process used to define these groups
 is to perform a dimensionality reduction on each
 set of feature types that may have significant correlations
  and collecting them into a feature matrix.
-We do this process for each feature type rather than over all features at once because spurious correlations
+We do this process for each feature type rather than234over all features at once because spurious correlations
  between some unrelated features may convolute
  the feature groups, making them far more
 difficult to interpret.
-3.3 Alignment
 Using ICA as the dimensionality reduction, the
 independent functional groups of the neural model
 can reasonably align with the independent feature
@@ -287,14 +276,10 @@ Fcontains all independent functional components
 inA, if there exists a common latent variable in
 bothNand the set of independent feature groups,
 G, with components gi G, then there will be
-somefi  gj.
-4 Experiments
 In this section, we delve into the specific methodology
  used to analyze the activations of the four
 transformer models for AES, as well as the steps
 taken to prepare the data and features for this analysis.
-
-4.1 Datasets
 Although scoring rubrics are specific to the genre
 and grade level of a writing task, there are commonalities
  between each rubric that allow their
@@ -309,7 +294,6 @@ as "Analysis and Evidence." Rubrics and prompts
 were developed for validity, and essays were rigorously
  hand-scored by independent raters in the
 same manner as described in West-Smith et al.
-(2018).
 For each generic trait, the training set was sampled
  down from over 50,000 available essays, responding
  to 95 writing prompts. Essays from 77
@@ -330,8 +314,6 @@ under-sampled from the largest bins. In addition to
 these balanced essays, about 800  off topic  essays
 representing nonsense language or non-academic
 writing were included in the dataset, with a score
-of zero.
-4.2 Models
 Longformers are a transformer-based neural network
  architecture that have gained prominence in
 various NLP tasks (Beltagy et al., 2020). In the
@@ -341,7 +323,7 @@ fine-tuned on the trait s balanced dataset  For the
 remainder of this paper, the model fine-tuned on a
 given trait will be referred to as  the TRAIT model 
 (e.g. the ORGANIZATION model) for simplicity.
-Although ordinal scores from 0 4 were used
+Although ordinal scores from 0 to 4 were used
 for sampling and evaluation, the training data labels
  were continuous, averaged from rater scores.
 Essays were prefixed with text representing their
@@ -352,18 +334,25 @@ the prompt s title, instructions, or source material)
 was included. In addition to Longformer s sliding
 attention window of 512 tokens, the first and last
 32 tokens received global attention.
-Scores were rounded back to integers between 0 4, before evaluation. On the holdout prompts,
+Scores were rounded back to integers between 0
+and 4, before evaluation. On the holdout prompts,
 overall Quadratic Weighted Kappa (QWK) ranged
-from 0.784 0.839 for LANGUAGE
+from 0.784 for MAIN IDEA to 0.839 for LANGUAGE
  , while correlation with word count remained
- acceptably low  0.441 0.550 for SUPPORT .
+ acceptably low  0.441 for LANGUAGE up
+to 0.550 for SUPPORT .
 The activations of the Longformer model were
 saved for each instance in the analysis set at the
  classify  token to create a matrix of activations for
 the functional component extraction.235Model A Model B # Essays Extracted Features # Independent Feature Groups # Aligned IFG
-ORGANIZATION MAINIDEA 407 148 114 24 275 118 86 39 144 90 63 37 341 129 95 26 72 67 38 23 260 127 94 27 1  Comparing analysis dataset size and numbers of extracted features for each of the model comparisons,
+ORGANIZATION MAINIDEA 407 148 114 24
+ORGANIZATION LANGUAGE 275 118 86 39
+ORGANIZATION SUPPORT 144 90 63 37
+LANGUAGE MAINIDEA 341 129 95 26
+LANGUAGE SUPPORT 72 67 38 23
+SUPPORT MAINIDEA 260 127 94 27
+Table 1  Comparing analysis dataset size and numbers of extracted features for each of the model comparisons,
 identified by the Model Aand Model Bcolumns.
-4.3 Features
 The features employed in this analysis encompass
 statistical properties of the essays, tree features
 generated from Rhetorical Structure Theory (RST)
@@ -443,7 +432,13 @@ PCA was performed to determine how many components
  (or 99% of the variance for the features) to
 be used as the number of components of the ICA.236Functional Group Extraction Important Functional Group Alignment
 Model A Model B # Comp. A# Comp. B# FG # Aligned FG # A Only # B Only # Mixed
-ORGANIZATION MAINIDEA 119 55 125 22 12 0 10 96 66 110 29 11 0 18 66 36 68 22 9 1 12 78 55 93 23 8 3 12 34 28 38 13 2 2 9 45 49 64 25 2 2 21 2  Comparing number of functional groups extracted for each model comparison and presenting the number
+ORGANIZATION MAINIDEA 119 55 125 22 12 0 10
+ORGANIZATION LANGUAGE 96 66 110 29 11 0 18
+ORGANIZATION SUPPORT 66 36 68 22 9 1 12
+LANGUAGE MAINIDEA 78 55 93 23 8 3 12
+LANGUAGE SUPPORT 34 28 38 13 2 2 9
+SUPPORT MAINIDEA 45 49 64 25 2 2 21
+Table 2  Comparing number of functional groups extracted for each model comparison and presenting the number
  of functional groups that were both deemed important (Section 3.1) and sufficiently aligned with at least one
 feature group. Also specified is the number of functional groups that are unique to a particular model and the
 number that are shared between the models of given a comparison pair.
@@ -452,7 +447,6 @@ it needed to have an absolute value of Pearson s r
 value of greater than 0.2. This threshold was also
 used to determine if a functional group should be
 considered aligned with a feature group.
-5 Results
 In this section, we present aggregate statistics for
 each model comparison when it comes to computing
  features and independent feature groups (Table
@@ -463,7 +457,6 @@ we provide examples taken from the model comparison
 IDEA model. Due to length constraints, we present
 detailed examples of this comparison only. Similar
 figures and correlation statistics can can be found
-on Github2.
 5.1 Independent Feature Groups
 Since each trained model held out a different set
 of prompts from its training set, common prompts
@@ -491,10 +484,12 @@ have a positive correlation greater than 0.25(blue
 edges ) or a negative correlation less than  0.25(red
 edge s). The numbers correspond to the IDs of the
 functional group or feature group that the node represents
- ( seeTable 3).
 The types of feature groups that were aligned varied
  considerably between different comparisons.
-5.2 28 119. Table 1 2 show that
+5.2 Functional Component Groups
+The initial extraction of functional components for
+each model elicited numbers of functional components
+ between 28and119. Table 1 and 2 show that
 for a given model, fewer functional components
 will be extracted given a fewer instances in the
 analysis dataset. Despite this noise, a clear pattern
@@ -502,7 +497,6 @@ emerges where the ORGANIZATION model has the
 most functional components, followed by the LANGUAGE
  model. The MAIN IDEA model has fewer
 functional components, with the SUPPORT model
-having the fewest.
 When performing the dimensionality reduction
 to compute the functional groups, there is a consistent
  reduction to approximately 61-71% of the
@@ -510,7 +504,7 @@ combined total functional components.
 5.3 Important Functional Groups
 Despite the variance in the number of feature
 groups and functional groups extracted per comparison,
- there is a remarkably consistent number of Figure 3  Alignment diagram for functional groups
+ there is a remarkably consistent number of237Figure 3  Alignment diagram for functional groups
 (left) that are common to both the LANGUAGE and
 MAIN IDEA models with their alignment to feature
 groups ( right ). Only functional groups and feature
@@ -523,9 +517,9 @@ important functional groups that have at least one
 sufficient alignment to a feature group (Table 2).
 With the exception of the LANGUAGE V SUPPORT
 comparison, all other comparisons had between 21
-and aligned functional groups.
+and29aligned functional groups.
 As a visual aid for the important functional
-groups, see the left sides of Figures 2 3. Each
+groups, see the left sides of Figures 2 and 3. Each
 Figure is derived from the functional groups and
 feature groups of the LANGUAGE V MAINIDEA
 comparison. The numbers on each node are the
@@ -537,26 +531,26 @@ all of the comparisons would be too numerous to
 present in a conference paper format. However,
 we will present the major trends we found in our
 analysis. The first main trend is that all models
-had functional groups that we correlated with theFunctional Group 46 0.39(p   0.001)
-Independent Feature Group 1 0.43(p   0.001)
+had functional groups that we correlated with theFunctional Group 46
+Diff L ANGUAGE VSMAINIDEAr  0.39(p   0.001)
+Independent Feature Group 1 r  0.43(p   0.001)
 ModelErrors  MAINIDEA( ), ModelPairDifference( ),
 ModelErrors L ANGUAGE (-)
-Functional Group 56 0.13(p   0.05)
-Independent Feature Group 21 0.75(p   0.001)
+Predictions M AINIDEAr  0.13(p   0.05)
+Independent Feature Group 21 r  0.75(p   0.001)
 EssayStats  STDDEVS ENTENCE LENGTH ( ), EssayStats 
  NUMSENTENCES ( ), EssayStats  MEANWORDLENGTH
  ( ), EssayStats  NUMWORDS (-), EssayStats 
  NUMPARAGRAPHS (-), EssayStats  MEANSENTENCE
- LENGTH (-)
-Functional Group 92 0.13(p   0.05)
-Independent Feature Group 12 0.20(p   0.001)
+Predictions L ANGUAGE r  0.13(p   0.05)
+Independent Feature Group 12 r  0.20(p   0.001)
 WordCluster  PRIORITIES ( ), WordCluster POPULATION
  COMPARISION ( ), WordCluster EFFICIENCY
  ( ), WordCluster  TEENVALUES (-),
 WordCluster  STORYTELLING (-), WordCluster  SCHOOL
 (-), WordCluster  PARENTAL DECISIONS (-), WordCluster I
  NFORMAL (-), WordCluster H ISTORICAL CONFLICT (-)
-Independent Feature Group 69 0.22(p   0.001)
+Independent Feature Group 69 r  0.22(p   0.001)
 RST  NN C ONTRAST ( ),
 RST  SN E VALUATION (NS E LABORATION ,LEAF )( ),
 RST  SN B ACKGROUND (LEAF , NS E LABORATION )( ),
@@ -571,12 +565,10 @@ Table 3  Selected examples of correlated functional
 group/feature groups. Pearson s R values for relevant
 importance metric (model difference, model predictions)
  and feature group alignment are presented with
-p-values.
 statistical features of the essay. Furthermore, by
 computing the correlations between the individual
 features within that type, it was determined that
 number of paragraphs is likely the most salient
-contributor.
 The second set of trends is presented in Table 4,
 where the percent of the total aligned feature groups
 per model was computed. This revealed that the ORGANIZATION
@@ -589,12 +581,11 @@ list features, which is the combination of the algorithmically
 For the last percentage, we combine the prompt
 and demographic features and find that the SUP-238%Word %Demo. &
 Model %RST List Prompt
-ORGANIZATION 41 13 21 30 26 19 36 19 13 23 21 23 4  % of aligned feature groups for a given model
-by feature type.
+ORGANIZATION 41 13 21
+Table 4  % of aligned feature groups for a given model
 PORT model tended to align with fewer of these
 types of features. The reason for combining the
 demographic and prompt features is discussed in
-Section 6.
 5.5 Qualitative Analysis
 While the method that we presented can quickly
 advance one s understanding of a model from the
@@ -606,7 +597,7 @@ necessary to resolve what a feature group represents
 is doing. For instance, we found it concerning that
 so many of the models were connected with feature
  groups that contained demographic features
-(colored red in Figures 2 3). However, a qualitative
+(colored red in Figures 2 and 3). However, a qualitative
  look at the datasets for which prompts were
 included, we found that the distribution of prompts
 over the different schools, when controlling for essay
@@ -618,9 +609,8 @@ that many of these feature groups are more topicbased
  demographic-based. This interpretation was
 reinforced by many of the feature groups with
 demographic information also including prompts
-(e.g.  Independent Feature Group 29 3) and by examining essays that present those
-feature groups.
-6 Discussion
+(e.g.  Independent Feature Group 29  from Table
+ 3) and by examining essays that present those
 The results presented in the preceding section
 demonstrate the efficacy of the proposed method
 in extracting salient feature groups and functional
@@ -635,9 +625,7 @@ observed in the alignment of functional groups and
 their correlation with essay features, as well as
 the implications of these findings for enhancing
 the interpretability and transparency of neural AES
-systems.
 6.1 Functional Component and Feature
-Groups
 The proposed method successfully extracted meaningful
  functional groups from the analyzed neural
  models. Notably, the LANGUAGE V SUPPORT
@@ -651,7 +639,8 @@ expect the extraction of feature groups and function
  groups to approach their ideal independence
 characteristics. Despite this limitation, the method
 managed to condense the analysis space from thousands
- of activations to fewer than 125 90% of the model s variance.
+ of activations to fewer than 125 while still
+accounting for over 90% of the model s variance.
 Interestingly, the ORGANIZATION model exhibited
  the highest number of functional groups. This
 observation suggests that capturing the ORGANIZA TION
@@ -662,7 +651,6 @@ ORGANIZATION and other models  models which
 displayed very few, if any, functional groups exclusively
  present in the non-organization models.
 6.2 Alignment of Important Functional
-Groups
 In line with our expectations, the ORGANIZATION
 model demonstrated the greatest alignment with
 the RST tree features, while the LANGUAGE model
@@ -677,7 +665,7 @@ considerably noisy (RST parsing of student essay
 data has been shown to be markedly more challenging
  than standard datasets (Fiacco et al., 2022)), the
 signal remained significant. Furthermore, we anticipated
- that the LANGUAGE model would have a greater reliance on word choice, a concept mirrored
+ that the LANGUAGE model would have a239greater reliance on word choice, a concept mirrored
 by the word list-based feature groups.
 Contrary to our expectations, the MAIN IDEA
 model exhibited the highest number of promptbased
@@ -687,7 +675,6 @@ might have clearer expectations for thesis statements
  than others, a notion generally supported
 by a qualitative examination of the essays from
 prompts that score higher on MAIN IDEA .
-7 Conclusion
 The neural network interpretation technique presented
  in this paper demonstrates significant
 promise in learning the implicit rubrics of neural
@@ -701,7 +688,6 @@ This enhanced understanding enables researchers
 and educators to not only identify potential biases
 in scoring models, but also to refine their models
 to ensure a more reliable and fair assessment of
-student performance.
 The code for this method will be released and
 incorporated into an analysis tool for application
 to neural models not limited to the ones examined
@@ -711,17 +697,13 @@ models. These advancements can contribute to the
 overarching goal of promoting ethical and responsible
  AI in education by facilitating the examination
 and comprehension of complex neural models.
-Acknowledgements
 This work was supported in part by NSF grant DRL
-1949110.
-References
 Yossi Adi, Einat Kermany, Yonatan Belinkov, Ofer Lavi,
 and Yoav Goldberg. 2016. Fine-grained analysis of
 sentence embeddings using auxiliary prediction tasks.
 arXiv preprint arXiv 1608.04207 .
 Yonatan Belinkov. 2022. Probing classifiers  Promises,
 shortcomings, and advances. Computational Linguistics,
- 48(1) 207 219.
 Iz Beltagy, Matthew E Peters, and Arman Cohan. 2020.
 Longformer  The long-document transformer. arXiv
 preprint arXiv 2004.05150 .Peter F Brown, Vincent J Della Pietra, Peter V Desouza,
@@ -733,7 +715,6 @@ Low-complexity probing via finding subnetworks. In
 Proceedings of the 2021 Conference of the North
 American Chapter of the Association for Computational
  Linguistics  Human Language Technologies ,
-pages 960 966.
 Pierre Comon. 1994. Independent component analysis,
 a new concept  Signal processing , 36(3) 287 314.
 Alexis Conneau, Germán Kruszewski, Guillaume Lample,
@@ -753,7 +734,7 @@ Cahill, and Torsten Zesch. 2020. Don t take  nswvtnvakgxpm
  for an answer the surprising vulnerability
  of automatic content scoring systems to adversarial
  input. In Proceedings of the 28th international
-conference on computational linguistics , pages 882 892.
+conference on computational linguistics , pages 882 
 James Fiacco, Samridhi Choudhary, and Carolyn Rose.
 2019. Deep neural model inspection and comparison
 via functional neuron pathways. In Proceedings of
@@ -770,7 +751,7 @@ Harold Hotelling. 1933. Analysis of a complex of statistical
 of educational psychology , 24(6) 417.
 Shi Huawei and Vahid Aryadoust. 2023. A systematic
  review of automated writing evaluation systems.
-Education and Information Technologies , 28(1) 771 795.
+Education and Information Technologies , 28(1) 771 
 Shiyan Jiang, Kexin Yang, Chandrakumari Suvarna,
 Pooja Casula, Mingtong Zhang, and Carolyn Rose.
 2019. Applying rhetorical structure theory to student
@@ -781,11 +762,9 @@ Tdnn  a two-stage deep neural network for promptindependent
  automated essay scoring. In Proceedings
  of the 56th Annual Meeting of the Association for
 Computational Linguistics (Volume 1  Long Papers) ,
-pages 1088 1097.
 Urvashi Khandelwal, He He, Peng Qi, and Dan Jurafsky.
  2018. Sharp nearby, fuzzy far away  How
 neural language models use context. arXiv preprint
-arXiv 1805.04623 .
 Yaman Kumar, Mehar Bhatia, Anubha Kabra,
 Jessy Junyi Li, Di Jin, and Rajiv Ratn Shah. 2020.
 Calling out bluff  attacking the robustness of automatic
@@ -795,7 +774,7 @@ Yaman Kumar, Swapnil Parekh, Somesh Singh,
 Junyi Jessy Li, Rajiv Ratn Shah, and Changyou Chen.
 2023. Automatic essay scoring systems are both
 overstable and oversensitive  Explaining why and
-proposing defenses. Dialogue & Discourse , 14(1) 1 33.
+proposing defenses. Dialogue & Discourse , 14(1) 1 
 Adhiguna Kuncoro, Chris Dyer, John Hale, Dani Yogatama,
  Stephen Clark, and Phil Blunsom. 2018.
 Lstms can learn syntax-sensitive dependencies well,
@@ -824,19 +803,20 @@ by computer. The Phi Delta Kappan , 47(5) 238 243.
 Dadi Ramesh and Suresh Kumar Sanampudi. 2022.
 An automated essay scoring systems  a systematic
  literature review. Artificial Intelligence Review ,
-55(3) 2495 2527.
 Marco Tulio Ribeiro, Sameer Singh, and Carlos
 Guestrin. 2016. " why should i trust you " explaining
 the predictions of any classifier. In Proceedings of
 the 22nd ACM SIGKDD international conference on
-knowledge discovery and data mining , pages 1135 1144.Maria Ryskina and Kevin Knight. 2021. Learning mathematical
+knowledge discovery and data mining , pages 1135 
+1144.Maria Ryskina and Kevin Knight. 2021. Learning mathematical
  properties of integers. In Proceedings of the
 Fourth BlackboxNLP Workshop on Analyzing and Interpreting
  Neural Networks for NLP , pages 389 395.
 Angad Sethi and Kavinder Singh. 2022. Natural language
  processing based automated essay scoring with
-parameter-efficient transformer approach. In 2022 6th International Conference on Computing Methodologies
- and Communication (ICCMC) , pages 749 756. IEEE.
+parameter-efficient transformer approach. In 2022
+6th International Conference on Computing Methodologies
+ and Communication (ICCMC) , pages 749 
 Xing Shi, Kevin Knight, and Deniz Yuret. 2016. Why
 neural translations are the right length. In Proceedings
  of the 2016 Conference on Empirical Methods
@@ -852,7 +832,7 @@ Bronwyn Woods, David Adamson, Shayne Miel, and
 Elijah Mayfield. 2017. Formative essay feedback
 using predictive scoring models. In Proceedings of
 the 23rd ACM SIGKDD international conference on
-knowledge discovery and data mining , pages 2071 2080.
+knowledge discovery and data mining , pages 2071 
 Xunjie Zhu, Tingfeng Li, and Gerard Melo. 2018. Exploring
  semantic properties of sentence embeddings.
 InProceedings of the 56th Annual Meeting of the

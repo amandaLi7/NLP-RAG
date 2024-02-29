@@ -1,8 +1,7 @@
 Plan, Eliminate, and Track  
 Language Models are Good Teachers for Embodied Agents.
-Yue Wu So Yeon Min Yonatan Bisk Ruslan Salakhutdinov Amos Azaria Yuanzhi Li1 3
-Tom M. Mitchell Shrimai Prabhumoye4
-Abstract
+Yue Wu1So Yeon Min1Yonatan Bisk1Ruslan Salakhutdinov1Amos Azaria2Yuanzhi Li1 3
+Tom M. Mitchell1Shrimai Prabhumoye4
 Pre-trained large language models (LLMs)
 capture procedural knowledge about the
 world. Recent work has leveraged LLM s ability
@@ -30,15 +29,14 @@ has accomplished each sub-task. On the AlfWorld
 PET framework leads to a signiﬁcant 15%
 improvement over SOTA for generalization to
 human goal speciﬁcations.
-1. Introduction
 Humans can abstractly plan their everyday tasks without
  execution  for example, given the task  Make breakfast ,
  we can roughly plan to ﬁrst pick up a mug and
 make coﬀee, before grabbing eggs to scramble. Embodied
  agents, endowed with this capability will generalize
 more eﬀectively by leveraging common-sense reasoning.
-1Carnegie Mellon University Ariel University Microsoft
-Research Nvidia Research. Correspondence to  Yue Wu
+1Carnegie Mellon University2Ariel University3Microsoft
+Research4Nvidia Research. Correspondence to  Yue Wu
  ywu5@andrew.cmu.edu  .
 Figure 1. PET framework. Plan module uses LLM to generate
  a high-level plan. Eliminate Module uses a QA model
@@ -63,18 +61,16 @@ from the real world. Ahn et al. (2022) provides all available
  objects and possible interactions at the start and
 limits tasks to the set of provided objects/interactions.
 Huang et al. (2022b) limits the environment to objects
-on a single table.
 On the other hand, to successfully  cut some lettuce 
 in a real-world room, one has to  ﬁnd a knife , which
 can be non-trivial since there can be multiple drawers
 or cabinets (Chaplot et al., 2020  Min et al., 2021 
-Blukis et al., 2021). A more realistic scenario leads to aarXiv 2305.02412 2  [cs.CL]  7 2023Plan, Eliminate, and Track
+Blukis et al., 2021). A more realistic scenario leads to aarXiv 2305.02412v2  [cs.CL]  7 May 2023Plan, Eliminate, and Track
 diverse, complicated set of tasks or large and changing
 action space. Furthermore, the text description of the
 observation increases as a function of the number of
 receptacles and objects the agent sees. Combined with
 growing roll-outs, the state becomes too verbose to ﬁt
-into any LLM.
 In this work, we explore alternative mechanisms to
 leverage the prior knowledge encoded in LLMs without
 impacting the trainable nature of the actor. We propose
@@ -103,7 +99,6 @@ demonstrate that LLMs not only remove 40% of taskirrelevant
 QA, but also generate high-level sub-tasks with 99%
 accuracy. In addition, multiple LLMs may be used in
 coordination with each other to assist the agent from
-diﬀerent aspects.
 Our contributions are as follows 
 1.PET   A novel framework for leveraging pretrained
  LLMs with embodied agents  our work
@@ -114,7 +109,6 @@ tackle control tasks.
  action space for text environments.
 3.A 15% improvement over SOTA for generalization
 to human goals via sub-task planning and tracking.
-2. Related Work
 Language Conditioned Policies A considerable
 portion of prior work studies imitation learning (Tellex
 et al., 2011  Mei et al., 2016  Nair et al., 2022  Stepputtis
@@ -130,7 +124,6 @@ instructions (Nair et al., 2022), they lack domain knowledge
 enables planning, progress tracking, and observation
 ﬁltering through the use of LLMs, and is designed to
 be compatible with any language conditional policies
-above.
 LLMs for Control LLMs have recently achieved
 success in high-level planning. Huang et al. (2022a)
 shows that pre-trained LLMs can generate plausible
@@ -159,7 +152,6 @@ requirements greatly limit the generalization to other
 domains, and even to other forms of task speciﬁcation.
 We show that our PET framework achieves better generalization
  to human goal speciﬁcations which the agents
-were not trained on.
 Hierarchical Planning with Natural Language
 Due to the structured nature of natural language, Andreas
  et al. (2017) explored associating each task description
@@ -195,7 +187,6 @@ elimination in the setting of aﬀordances. Zahavy et al.
 (2018) trains a model to eliminate invalid actions on
 Zork from external environment signals. However, the
 functionality depends on the existence of external elimination
- signal.
 3. Plan, Eliminate, and Track
 In this section, we explain our 3-step framework  Plan,
 Eliminate, and Track (PET). In Plan module (MP),
@@ -217,29 +208,22 @@ conditioned on the current sub-task.
 Problem Setting We deﬁne the task description as
 T, the observation string at time step tasOt, and
 the list of permissible actions {at
-i at
-ican be executed}
 asAt. For each observation string Ot, we deﬁne the
 Figure 2. Plan Module (Sub-task Generation). 5 full examples
  are chosen from the training set based on RoBERTa
 embedding similarity with the task query description. Then
 the examples are concatenated with the task query to get
 the prompt. Finally, we prompt the LLM to generate the
-desired sub-tasks.
 receptacles and objects within the observation as rt
-iand
-ot
 irespectively. The classiﬁcation between receptacles
 and objects is deﬁned by the environment (Shridhar
 et al., 2020b). For a task T, we assume there exists a
 list of sub-tasksST {s1,...s k}that solvesT.
-3.1. Plan
 Tasks in the real world are often complex and need
 more than one step to be completed. Motivated by the
 ability of humans to plan high-level sub-tasks given
 a complex task, we design the Plan module (MP)
 to generate a list of high-level sub-tasks for a task
-descriptionT.
 Inspired by the contextual prompting techniques for
 planning with LLMs (Huang et al., 2022a), we use
 an LLM as our plan module MP. For a given task
@@ -251,15 +235,8 @@ the training set based on RoBERTa (Liu et al., 2019)
 embedding similarity with the query task T. We then
 concatenate the example tasks with example sub-tasks
 in a query-answer format to build the prompt PTfor
-MP(Fig. 2) 
-PT concat (QTE
-1,STE
-1,...,QTE
-5,STE
-5,QT)
 An illustration of our prompt format is shown in Figure
  2, whereT  heat some apple and put it in fridge ,
-andQTE
 1  What are the middle steps required to put
 two spraybottles on toilet , STE
 1  take a spraybottle,Plan, Eliminate, and Track
@@ -267,15 +244,12 @@ place the spraybottle in/on toilet, take a spraybottle,
 place the spraybottle in/on toilet . The expected list of
 sub-tasks to achieve this task Tiss1  take an apple ,
 s2  heat the apple , and s3  place the apple in/on
-fridge 
 Figure 3. Eliminate Module (Receptacle Masking). We
 use a pre-trained QA model to ﬁlter irrelevant receptacles/objects
  in the observation of each scene. As we can
 see, the original observation is too long and the receptacles
 shown in red are not relevant for task completion. These
 receptacles are ﬁltered by the QA model making the observation
- shorter.
-3.2. Eliminate
 Typical Alfworld scenes can start with around 15 receptacles,
  each containing up to 15 objects. In some
 close-to-worst cases, there can be around 30 open-able
@@ -294,7 +268,6 @@ we could signiﬁcantly shorten our observation. We
 therefore propose to leverage commonsense knowledge
 captured by large pre-trained QA models to design our
 Eliminate module MEto mask out irrelevant receptacles
- and objects.
 For taskT, we create prompts in the format Pr  Your
 task is to T. Where should you go to   for receptacles
 andPo  Your task is to  T. Which objects will be
@@ -305,14 +278,12 @@ for each receptacle rjin observation at every step. µ
 represents the belief score of whether the common-sense
 QA model believes the object/receptacle is relevant toT. We then remove oifrom observation if µoi  τo,
 and remove riifµri τr. Threshold τo,τrare hyperparameters.
-
 Figure 4. Track Module (Progress Tracking). At every step,
 we take the last 3 steps of roll-out as context and append a
 query (about whether the current sub-task is completed)
 to get the prompt. A pre-trained QA model generates a
 Yes/No answer to the prompt. For the answer  Yes , we
 update the tracker to the next sub-task.
-3.3. Track
 For the agent to utilize the high-level plan, it ﬁrst needs
 to know which sub-task to execute. A human actor
 typically starts from the ﬁrst item and check-oﬀ the
@@ -338,13 +309,10 @@ the task of sp  ). We feedPato a pre-trained zeroshot
 tokens  Yes  and  No  as follows  pMT( Yes  Pa) and
 pMT( No  Pa). IfpMT( Yes  Pa) pMT( No  Pa)
 then we increment the tracker pto track the next subtask.
-
 If the tracking ends prematurely, meaning that p  
 len(ST) but the environment has not returned  done ,
 we fall back to conditioning with T. We study the rate
 of pre-mature ends in Section 4.4 in terms of precision
-and recall.
-3.4. Agent
 Since the number of permissible actions can vary a
 lot by the environment, the agent needs to handle
 arbitrary dimensions of action space. While Shridhar
@@ -378,20 +346,9 @@ embedding ( Ht), the current observation embedding
 (Ot), and embedding of action ( ai).
 Finally, we compute the dot-product of the query andkeys as action scores for the policy π(Eq. 5).
 Ht  avgj [1,t 1]Embed(Oj) (1)
-HA [
-Embed(at
-1),...,Embed(at
-n)]
-(2)
-Q MQ(
 Embed(T),Ht,Embed(Ot),HA)
-(3)
-Ki MK(
 Embed(T),Ht,Embed(Ot),Embed(at
-i))
-(4)
 π  softmax ([ Q Ki i all permissible actions])
-(5)
 4. Experiments and Results
 We present our experiments as follows. First, we explain
  the environment setup and baselines for our experiments.
@@ -400,7 +357,6 @@ diﬀerent splits of the environment. Finally, we conduct
 ablation studies and analyze the PET framework part
 by part. We show that PET generalizes better to human
  goal speciﬁcation under eﬃcient behavior cloning
-training.
 4.1. Experimental Details
 AlfWorld Environment ALFWorld (Shridhar
 et al., 2020b) is a set of TextWorld environments
@@ -418,7 +374,8 @@ egg to put it in the microwave.  Each training instance
 in AlfWorld comes with an expert, from which we
 collected our training demonstration.
 Human Goal Speciﬁcation The crowd-sourced human
- goal speciﬁcations for evaluation contain 66 189 unseen nouns (Shridhar et al., 2020b).
+ goal speciﬁcations for evaluation contain 66 unseen
+verbs and 189 unseen nouns (Shridhar et al., 2020b).
 In comparison, the template goals use only 12 ways of
 goal speciﬁcation. In addition, the sentence structure
 for human goal speciﬁcation is more diverse compared
@@ -436,7 +393,8 @@ Model seen unseen seen unseen
 BUTLER   DAgger* (Shridhar et al., 2020b) 40 35 8 3
 BUTLER   BC (Shridhar et al., 2020b) 10 9 - GPT
  (Micheli & Fleuret, 2021) 91 95 42 57
-PET   Action Attention (Ours) 70 67.5 52.5 60 1. Comparison of diﬀerent models in terms of completion rate per evaluation split (seen and unseen), with and
+PET   Action Attention (Ours) 70 67.5 52.5 60
+Table 1. Comparison of diﬀerent models in terms of completion rate per evaluation split (seen and unseen), with and
 without human annotated goals. PET under-performs GPT on Template goal speciﬁcations but generalizes better to
 human goal speciﬁcations. *We include the performance of BUTLER with DAgger for completeness. All other rows are
 trained without interaction with the environment, MLE for GPT and behavior cloning for BUTLER BC and PET.
@@ -451,7 +409,7 @@ tracking), we use the same Macaw-11b model as the
 Eliminate module answer to Yes/No questions.
 Actor Model Design. OurAction Attention
 agent (MQandMK) is a 12-layer transformer with
-12 384. The last layer
+12 heads and hidden dimension 384. The last layer
 is then fed into two linear heads to generate Kand
 Q. For embedding of actions and observations, we use
 pre-trained RoBERTa-large (Liu et al., 2019) with embedding
@@ -489,13 +447,11 @@ GPT is ﬁned-tuned to generate each action step
 word-by-word to mimic the rule-based expert using
 the standard maximum likelihood loss.Plan, Eliminate, and Track
 4.2. Overall Results on Template and Human
-Goals
 We compare the performance of action attention assisted
  by PET with BUTLER (Shridhar et al., 2020b)
 and ﬁne-tuned GPT (Micheli & Fleuret, 2021) in Table
  1. For human goal speciﬁcations, PET outperforms
 SOTA (GPT) by 25% on seen and 5% on the unseen
-split.
 Although PET under-performs GPT on Template goal
 speciﬁcations, GPT requires ﬁne-tuning on fully textbased
  expert trajectory and thus loses adaptability to
@@ -508,8 +464,7 @@ not trained on the task, it generalizes to the variations
 for human goal speciﬁcations as shown in Section 4.5.
 Quantitatively, GPT suﬀers from a relative 50% performance
  drop transferring from template to human-goal
-speciﬁcations, whereas PET incurs only a 15 25%
-drop.
+speciﬁcations, whereas PET incurs only a 15  25%
 The setting closest to PET is BUTLER with behavior
 cloning (BUTLER   BC). Since BUTLER   BC performs
  poorly, we also include DAgger training results.
@@ -563,14 +518,17 @@ split. In addition, we note that object receptacle accuracy
  is generally lower than object accuracy because of
 the counter-intuitive spawning locations described in
 Section 4.5. In our experiments, a decision threshold
-of 0.4 0 .91 40% on average.
+of 0.4 has a recall of 0 .91 and reduces the number of
+objects in observation by 40% on average.
 Track module Since sub-task alignment information
 is not provided by the environment, we explore an
 alternative performance metric for the detection of the
 event of completion. Ideally, a sub-task tracker should
 record the last sub-task as  ﬁnished  if and only if the
 environment is  fully solved  by the expert. As an
-agreement measure, we report a precision of 0.99 0.78 for Macaw-11 0.96 0.96 for Macaw-large. The larger model
+agreement measure, we report a precision of 0.99 and
+a recall of 0.78 for Macaw-11B and a precision of 0.96
+and a recall of 0.96 for Macaw-large. The larger model
 (Macaw-11b) is more precise but misses more detection,
 therefore limiting the theoretical performance to 78%.
 The smaller model is much less accurate according to
@@ -597,10 +555,13 @@ with almost perfect embedding similarity for all tasks.
 Figure 6. Plot of AUC scores of zero-shot relevance identiﬁcation across all tasks in the Alfworld-Thor environment,
 with the Macaw-11b model. The ground truth is obtained as receptacles/objects accessed by the rule-based expert.
 Top  Receptacle relevance identiﬁcation. Bottom  Object relevance identiﬁcation. The QA model achieves an average
-AUC-ROC score of 65 76 on objects.
+AUC-ROC score of 65 for receptacles and 76 on objects.
 Model Ablations seen unseen
-Action Attention 25 9 25 11
-Action Attention   Plan & Track 35 15 52.5 27.5 3. Comparison of diﬀerent ablations of PET trained
+Action Attention 25 9
+Action Attention   Eliminate 25 11
+Action Attention   Plan & Track 35 15
+Action Attention   PET 52.5 27.5
+Table 3. Comparison of diﬀerent ablations of PET trained
 on a sampled set of 140 demonstrations from the training
 set, in terms of completion rate per evaluation split (seen
 and unseen). Applying Eliminate module alone has an
@@ -611,16 +572,15 @@ more signiﬁcant performance improvement.
 racies in the human goal speciﬁcations. Note that our
 Action Attention framework uses RoBERTa (Liu et al.,
 2019) embedding for sub-tasks, known to be robust to
-synonym variations.
 Eliminate Module We observe that the main
 source of elimination error occurs when the moduleincorrectly masks a receptacle that contains the object
 of interest so the agent fails to ﬁnd such receptacles.
-This is often because some objects in the AI Thor
+This is often because some objects in the AI2Thor
 simulator do not spawn according to common sense.
 As noted in the documentation of the environment2,
 objects like Apple or Egg has a chance of spawning in
 unexpected receptacles like GarbageCan, or TVStand.
-However, such generations in AI Thor are unlikely in
+However, such generations in AI2Thor are unlikely in
 real deployment  thus, the  mistakes  of our Eliminate
 module are reasonable.
 Track Module Experimentally, we ﬁnd that subtask
@@ -630,15 +590,12 @@ that require counting procedures. As shown in Table  ,
 in cabinet  into two repeating set of sub-tasks   take
 soapbar place soapbar in/on cabinet . Sub-task planning
  and tracking, therefore, simplify the hard problem
-of counting.
-2ai thor.allenai.org/ithor/documentation/objects/objecttypes/Plan,
+2ai2thor.allenai.org/ithor/documentation/objects/objecttypes/Plan,
  Eliminate, and Track
 Human Goal Speciﬁcation Examples
 Task Chill a cup and place it in the cabinet.
 GTcoolthe mug place the mug in/on coﬀeemachine
-
 Genchill the mug return the mug tocoﬀeemachine
-
 TaskTake the pencil from the desk, put it on the
 other side of the desk
 GT take a pencil  place the pencil in/on shelf
@@ -652,7 +609,6 @@ example, the generated plan largely diﬀers from the ground
 truth due to the mistake in human goal speciﬁcation  
  another side on the desk  instead of  shelf .
 5. Conclusion, Limitations, and Future
-Work
 In this work, we propose the Plan, Eliminate, and
 Track (PET) framework that uses pre-trained LLMs
 to assist an embodied agent in three steps. Our PET
@@ -683,8 +639,6 @@ undone, the system may break in this situation. Future
 work can focus on adding sub-task-level dynamic replanning
  to address this limitation or explore other
 ways in which LLMs can assist the learning of thepolicy (i.e., reading an instruction manual about the
-environment).
-References
 Ahn, M., Brohan, A., Brown, N., Chebotar, Y., Cortes,
 O., David, B., Finn, C., Fu, C., Gopalakrishnan, K.,
 Hausman, K., Herzog, A., Ho, D., Hsu, J., Ibarz,
@@ -705,13 +659,11 @@ arXiv preprint arXiv 2006.07185 , 2020.
 Andreas, J., Klein, D., and Levine, S. Modular multitask
  reinforcement learning with policy sketches. In
 International Conference on Machine Learning , pp.
-166 175. PMLR, 2017.
 Black, S., Gao, L., Wang, P., Leahy, C., and Biderman,
  S. GPT-Neo  Large Scale Autoregressive Language
  Modeling with Mesh-Tensorﬂow, March 2021.
 URL https //doi.org/10.5281/zenodo.5297715 .
 If you use this software, please cite it using these
-metadata.
 Blukis, V., Paxton, C., Fox, D., Garg, A., and Artzi, Y.
 A persistent spatial semantic representation for highlevel
  natural language instruction execution, 2021.
@@ -754,7 +706,6 @@ processing systems , 33 1877 1901, 2020.
 Chaplot, D. S., Gandhi, D., Gupta, A., and Salakhutdinov,
  R. Object goal navigation using goal-oriented
 semantic exploration, 2020. URL https //arxiv.
-org/abs/2007.00643 .
 Cideron, G., Seurin, M., Strub, F., and Pietquin, O.
 Higher  Improving instruction following with hindsight
  generation for experience replay. In 2020 IEEE
@@ -774,7 +725,7 @@ Fulda, N., Ricks, D., Murdoch, B., and Wingate,
 D. What can you do with a rock  aﬀordance
 extraction via word embeddings. arXiv preprint
 arXiv 1703.03429 , 2017.
-Goyal, P., Niekum, S., and Mooney, R. Pixl r  Guiding
+Goyal, P., Niekum, S., and Mooney, R. Pixl2r  Guiding
 reinforcement learning using natural language by
 mapping pixels to rewards. In Conference on Robot
 Learning , pp. 485 497. PMLR, 2021.
@@ -796,13 +747,13 @@ Jang, E., Irpan, A., Khansari, M., Kappler, D., Ebert,
 F., Lynch, C., Levine, S., and Finn, C. Bc-z  Zeroshot
  task generalization with robotic imitation learning.
  In Conference on Robot Learning , pp. 991 1002.
-PMLR, 2022.
 Jiang, Y., Gu, S. S., Murphy, K. P., and Finn, C. Language
  as an abstraction for hierarchical deep reinforcement
  learning. Advances in Neural Information
 Processing Systems , 32, 2019.
 Kollar, T., Tellex, S., Roy, D., and Roy, N. Toward
-understanding natural language directions. In 2010 5th ACM/IEEE International Conference on HumanRobot
+understanding natural language directions. In 2010
+5th ACM/IEEE International Conference on HumanRobot
  Interaction (HRI) , pp. 259 266. IEEE, 2010.
 Lin, B. Y., Huang, C., Liu, Q., Gu, W., Sommerer,
 S., and Ren, X. On grounded planning for embodied
@@ -827,12 +778,10 @@ in language with modular methods, 2021.Plan, Eliminate, and Track
 Misra, D., Langford, J., and Artzi, Y. Mapping instructions
  and visual observations to actions with reinforcement
  learning. arXiv preprint arXiv 1704.08795 ,
-2017.
 Nair, S., Mitchell, E., Chen, K., Savarese, S., Finn, C.,
 et al. Learning language-conditioned robot behavior
  from oﬄine data and crowd-sourced annotation.
 InConference on Robot Learning , pp. 1303 1315.
-PMLR, 2022.
 Oh, J., Singh, S., Lee, H., and Kohli, P. Zero-shot task
 generalization with multi-task deep reinforcement
 learning. In International Conference on Machine
@@ -859,7 +808,6 @@ arXiv preprint arXiv 2010.03768 , 2020b.
 Shridhar, M., Manuelli, L., and Fox, D. Cliport  What
 and where pathways for robotic manipulation. In
 Conference on Robot Learning , pp. 894 906. PMLR,
-2022.
 Smith, S., Patwary, M., Norick, B., LeGresley, P., Rajbhandari,
  S., Casper, J., Liu, Z., Prabhumoye, S.,
 Zerveas, G., Korthikanti, V., Zheng, E., Child, R.,
@@ -872,7 +820,6 @@ https //arxiv.org/abs/2201.11990 .
 Song, C. H., Wu, J., Washington, C., Sadler, B. M.,
 Chao, W.-L., and Su, Y. Llm-planner  Few-shot
 grounded planning for embodied agents with largelanguage models. arXiv preprint arXiv 2212.04088 ,
-2022.
 Stepputtis, S., Campbell, J., Phielipp, M., Lee, S.,
 Baral, C., and Ben Amor, H. Language-conditioned
 imitation learning for robot manipulation tasks. Advances
@@ -886,7 +833,6 @@ Tellex, S., Kollar, T., Dickerson, S., Walter, M., Banerjee,
  language commands for robotic navigation and
 mobile manipulation. In Proceedings of the AAAI
 Conference on Artiﬁcial Intelligence , volume 25, pp.
-1507 1514, 2011.
 Yao, S., Rao, R., Hausknecht, M., and Narasimhan,
 K. Keep calm and explore  Language models for
 action generation in text-based games, 2020. URL
@@ -895,4 +841,3 @@ Zahavy, T., Haroush, M., Merlis, N., Mankowitz, D. J.,
 and Mannor, S. Learn what not to learn  Action
 elimination with deep reinforcement learning. Advances
  in neural information processing systems , 31,
-2018.

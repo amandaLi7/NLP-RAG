@@ -1,7 +1,8 @@
 Language Resources and Evaluation
-https //doi.org/10.1007/s10579-023-09689-6 1 2 3 4 22 2023
-  The Author(s) 2023
-Abstract
+https //doi.org/10.1007/s10579-023-09689-6
+A corpus of Persian literary text
+Shahab Raji1 Malihe Alikhani2 Gerard de Melo3 Matthew Stone4
+Accepted  22 August 2023
 Persian poetry has profoundly affected all periods of Persian literature and the literature
 of other countries as well. It is a fundamental vehicle for expressing Persian cultureand political opinion. This paper presents a corpus of Persian literary text mainly
 focusing on poetry, covering the ninth to twenty-ﬁrst century annotated for century
@@ -12,22 +13,13 @@ which we rely both on supervised models and on Persian poetry-speciﬁc heuristi
 The corpus, the tools, and experiments described in this paper can be used not onlyfor digital humanities studies of Persian literature but also for processing Persian texts
 in general, as well as in other broader cross-linguistic applications.
 Keywords Corpus compilation  Classiﬁcation  Literary text  Rhetorical ﬁgures  
-Data cleaning
 Shahab Raji and Malihe Alikhani have contributed equally to this work.
-B Shahab Raji
-sraji@ea.com
-B Malihe Alikhani
 m.alikhani@northeastern.edu
-Gerard de Melo
-gdm@demelo.org
-Matthew Stone
 mdstone@cs.rutgers.edu
 1Electronic Arts, Redwood Shores, California, USA
 2Khoury School of Computer Science, Northeastern University, Boston, Massachusetts, USA
 3Hasso Plattner Institute, University of Potsdam, Potsdam, Germany
 4Department of Computer Science, Rutgers University, Piscataway, New Jersey, USA
-123S. Raji et al.
-1 1.1 Motivation
 Compiling corpora for low-resource languages is a valuable undertaking for preservation,
  education, knowledge acquisition, and monitoring demographic and politicalprocesses. The focus of this work is on presenting a large machine-readable corpus
 of Persian literary text suitable for studying a variety of NLP problems in Persian,
@@ -40,7 +32,6 @@ Persian poetry, in particular, has not only played a profound role in shaping Pe
  culture, politics, and literature, but has a pervasive inﬂuence on world literature
 (Mohaqeqi et al., 2014  T u s i , 2013 ). Even in the United States, Rumi ,Khayyam , and
 Hafez are among the best-selling poets.
-1.2 Previous work
 While there has been substantial computational research on poetry in English (Lau et
 al.,2018   Greene et al., 2010   Genzel et al., 2010   Hayward, 1996 ), Chinese (Zhang
 et al., 2017   Liu et al., 2019 ), and German (Baumann et al., 2018 ), among others,
@@ -50,7 +41,6 @@ Persian poetry but work with a collection of works by 30 poets but only in one s
 Ghazal . The corpus presented here covers those datasets as well as other styles. Other
 studies (Malmasi & Dras, 2015   Seraji et al., 2012   Khashabi et al., 2021 ) focus solely
 on contemporary Farsi language.
-1.3 Contributions
 We introduce a corpus of Persian literary text that encompasses poems from the ninth
 to twenty-ﬁrst centuries as well as the two main collections of myths and stories
 Gulistan andPanchatantra . Gulistan Saadi includes a mix of poetry and prose. These
@@ -60,7 +50,10 @@ In addition, in order to study the symbolism and rhetorical ﬁgures in Persian,
 annotate 4192 lines of poetry with six rhetorical ﬁgures. We explain these ﬁgures and
 their similarities to their English counterparts. We present detailed statistics about
 the corpus, and, in a series of computational experiments, we introduce a baseline
-123 1 112 614 57 ,980 260 ,180 1,422,501 9 ,144,037 228 ,501
+123A corpus of Persian literary text
+Table 1 Our corpus coverageItem Count
+Poems and prose 57 ,980
+V ocabulary size 260 ,180
 aAcollection (also known as, Diwan ) is a compilation of several poems
 by a poet that is collected in one volume
 bNumber of lines are only counted for poetry
@@ -73,7 +66,6 @@ temporal and structural analyses. Also, we made deliberate choices in selecting 
 based on factors such as popularity, as well as differences in content and intent among
 the selected poets. By taking this approach, we aim to present a balanced representationthat can be applicable to cross-linguistic studies while avoiding excessive information
 speciﬁc to Persian poetry.
-1.4 Outline
 The rest of the paper is organized as follows. In Sect. 2, we explain the data collection
 and normalization process used to compile a clean, well-organized corpus of Persian
 literary text from the ninth to twenty-ﬁrst century. In Sect. 3, we describe the human
@@ -81,17 +73,14 @@ annotation process used to endow our corpus with annotations for century, style,
 in Sect. 4, we present a series of computational analyses that offer new techniques
 to investigate literary developments over time and present an open-source library forstyle classiﬁcation. Additionally, we describe a series of classiﬁcation experiments to
 show the distinction between the authors and different periods.
-2 Corpus compilation
 We had to overcome several challenges to make this corpus possible. The ﬁrst of these
 is the limited availability of relevant source texts on the web. To complete some of
-123S. Raji et al.
 the collections and annotations, we had to obtain access to a diverse set of resources.
 Second, cleaning and normalizing online text in Farsi requires correcting for various
 keyboard layouts, including Arabic. We release Python code with this submission forcleaning and normalizing diverse forms of Persian text,
 1as most existing libraries are
 designed only for modern text. Third, annotating literary text is expensive and requires
 expert annotators. We have annotated part of the corpus with key rhetorical ﬁguressuch as metaphor with high reliability following carefully designed protocols.
-2.1 Crawling
 To compile a comprehensive corpus with poems and stories spanning from the ninth
 to twenty-ﬁrst centuries, we had to crawl multiple sources and request access to onlineteaching material to put together pieces and make collections complete. Our corpus
 was collected by crawling several Persian literary websites.
@@ -110,7 +99,6 @@ To ensure the quality of the data, we relied on both automated means and manual
 corrections. An important aspect of this is orthographic normalization. For this task,ﬁrst we tokenized each line using space and punctuation characters as separators. We
 developed a tool to normalize Persian text in accordance with the list of undesired
 forms proposed by the Academy of Persian Language and Literature.
-3According to
 these, the use of certain letters and letter combinations, imported from general Arabic
 and Western usage, is deemed incorrect. We have replaced such instances with the
 standard form of Persian letters.
@@ -118,10 +106,9 @@ Arabic characters that are represented with alternative Unicode codepoints have
 been replaced with their correct Persian form. Such cases typically are the result of
 1Code  https //github.com/pithysr/persian-poetry .
 2The material was collected from https //ganjoor.net ,http //shereno.com/ ,http //shamlou.org/ .
-3http //apll.ir/ .
 123A corpus of Persian literary text
 using an Arabic keyboard layout. For instance, Arabic Letter kaf (U 0643 ) is replaced
-with Arabic letter keheh (U 06 9 ) and Arabic letter high Hamza Waw (U 0676 )i s
+with Arabic letter keheh (U 06A9 ) and Arabic letter high Hamza Waw (U 0676 )i s
 replaced with Arabic letter Waw with Hamze above (U 0624 ).
 Left-to-right and Right-to-left control characters are removed, since the script is
 always right to left. We did not remove Zero width non-joiner (U 200C ), since it is
@@ -133,7 +120,6 @@ tools may not adequately handle older prose or poetry.
 Moreover, while the large size of the corpus makes manual proofreading prohibitively
  costly, we have corrected instances of misspellings as we came across them
 while working with the data. After cleaning, the vocabulary size is reduced by around3000.
-3 Corpus annotation
 The corpus includes the poet and century as metadata. We annotated each poem based
 on an inventory of styles and temporal periods. Additionally, we partially annotated
 the corpus with six rhetorical ﬁgures commonly used in Persian poetry.
@@ -141,9 +127,8 @@ the corpus with six rhetorical ﬁgures commonly used in Persian poetry.
 3.1.1 Background on Persian poetry styles
 Classical style Classical Persian poetry is classiﬁed into conventional styles in part
 based on different metrical and structural features. The prosody of classical Persianverse is based on the line, called a bayt , which consists of half lines that are metrically
-identical (Tousi, 1974   Tabatabai, 2001   Shamisa, 1999   Perry, 2011 ). Figures 2 3
+identical (Tousi, 1974   Tabatabai, 2001   Shamisa, 1999   Perry, 2011 ). Figures 2and 3
 from Sect. 3show examples of two lines of a poem. The half-lines are usually written
-side by side.
 Different styles of classic poetry are usually distinguishable by examining the
 rhymes of the words in the half-lines. Some of the styles have a similar pattern of
 rhymes, in which case the content and topic of the poem may be used to classify them.
@@ -155,9 +140,7 @@ while in Ghazal the rhymes occur at the end of each line. Hence, these two style
 can be distinguished just by the positions of their rhymes. In contrast, the position
 of the rhyming words in the two styles of ghazal andqaside are the same. However,
 aqaside could be used by religious poets as an educational poem, whereas ghazals
-123S. Raji et al.
 Fig. 1 Structure of rhyming words in different classical style. The letters indicate the position of the rhyming
-words
 (literally  love-songs) are much shorter poems, adopted by mystic poets and Suﬁs as
 a medium for the expression of love for the divine. From the fourteenth century CE,
 Persian poets became more interested in ghazals, and the qasida form declined.
@@ -186,12 +169,24 @@ rhetoric, when being analyzed in their stylistic function and expressive potenti
 useful tools for describing the poet s style and imagery. While these devices and tech-niques are studied in several domains (Tom & Eves, 2012  B u s h , 2012   Fengjie et al.,
 2016   García et al., 2018 ) in other languages, this is the ﬁrst large resource available
 to study them in Persian.
-123 2 Distribution of number
+123A corpus of Persian literary text
+Table 2 Distribution of number
 of poets, collections, and poems
 over timeCentury #Authors #Collections #Poems #Tokens
-9 10 8 1325 209 ,739 10 12 15 1092 292 ,016 11 5 98 3566 1 ,136,056 12 13 78 11 ,174 2 ,174,417 13 3 102 11 ,473 1 ,877,271 14 1 24 1812 231 ,679 15 2 15 3224 258 ,479 16 12 27 7410 498 ,199 17 3 12 3450 730 ,444 18 2 13 324 32 ,737 19 4 29 2236 483 ,770 20 2 46 6133 739 ,205 21 40 147 4400 708 ,526
+9th 10 8 1325 209 ,739
+10th 12 15 1092 292 ,016
+11th 5 98 3566 1 ,136,056
+12th 13 78 11 ,174 2 ,174,417
+13th 3 102 11 ,473 1 ,877,271
+14th 1 24 1812 231 ,679
+15th 2 15 3224 258 ,479
+16th 12 27 7410 498 ,199
+17th 3 12 3450 730 ,444
+18th 2 13 324 32 ,737
+19th 4 29 2236 483 ,770
+20th 2 46 6133 739 ,205
+21sta40 147 4400 708 ,526
 aNote that twenty-ﬁrst century is not released with the corpus due to
-copyright concerns
 We chose the collection of ghazals byHafez , which consists of 4192 lines of poems.
 We choose to work with this collection since the poems are among the most complex
 ghazals yet also the most popular in Iran, Afghanistan, and Tajikistan. This collection
@@ -206,20 +201,18 @@ to a deliberate use of lexical ambiguity, whereby the poet employs a word with t
 different meanings and arranges the context surrounding it in a way that one meaning
 is more immediate and the other remote, yet both can make sense.
 As an example, the word
- /chare8/char58/char51/char b/char12 (curtain) refers to two concepts  1. the penetralia,
+ /chare8/char58/char51/char4b/char12 (curtain) refers to two concepts  1. the penetralia,
 the most intimate part of the house, and 2. two semitones in traditional Persian music.This rhetorical ﬁgure is designed in a way that its direct meaning is the ﬁrst thing that
 comes to the mind but really the remote meaning is intended.
 Majaz (metonymy) Majaz refers to when only the related meaning of the word is
 intended. For example, when a part of a whole is used instead of the whole, such as
-when
  /char51/chare5/char85 (head) is used instead of person .
-123S. Raji et al.
 Esteara (metaphor) Esteara refers to a form of metaphor based on similarities of
-with the intended subject, where the subject is removed, for example,/char51/char e/char a/char11/char83(lion) in
-certain contexts means a brave warrior. Or/char11/char81/char d/char40/char10/char e
+with the intended subject, where the subject is removed, for example,/char51/char1e/char0a/char11/char83(lion) in
+certain contexts means a brave warrior. Or/char11/char81/char1d/char40/char10/char0e
 (ﬁre) can, metaphorically, describe the
 sorrow of losing the lover. In example (1), musk deer is a metaphor for the poet s lover.
-(1)/char09/chare0/char41/char83/char50/char09/char50/char41/char b/char e/char09/chare1/char10/char e/char09/char67/chare9 /char b/char e/char09/chare1/char e/char a/charba/char11/char82/chard3/charf8-/charf1/chareb/char e/char40/char09/chare0/char e/char40/char48/char e/char50/char41 /char b/char a
+(1)/char09/chare0/char41/char83/char50/char09/char50/char41/char4b/char2e/char09/chare1/char10/char1e/char09/char67/chare9 /char4b/char2e/char09/chare1/char1e/char0a/charba/char11/char82/chard3/charf8-/charf1/chareb/char0e/char40/char09/chare0/char0e/char40/char48/char2e/char50/char41 /char4b/char0a
 return- IMP Khotan to musk deer-CONJ that God O
 O God, guide the musk deer back to Khotan.
 Kenaya This refers to a particular kind of esteara , which we annotate separately
@@ -229,33 +222,28 @@ preferable for other reasons. In example (1) earlier, Khotan , the name of an an
 near Kashgar, China, is used as a kenaya for the hometown of the poet. In many cases,
 kenayas are phrases. Example (2) below means  having intentions to do something .
 Literal meanings of Examples (3) and (4) are to  draw on the water  and  to give to thewind . As a kenaya , they mean  to do something in vain  and  to waste , respectively.
-(2) /char09/chare1/char10/char e/char11/char83/char40/char58 /charf8/char09/char51/char e/char a/char67/char12/char51/chare5/char85
-have-GER thing head
-(3)/char09/chare0/char58/char09/char50/char48/char e/char e/char40/char51 /char b/char e/char11/char81/char10/charae/char09/char b
+(2) /char09/chare1/char10/char1e/char11/char83/char40/char58 /charf8/char09/char51/char1e/char0a/char67/char12/char51/chare5/char85
+(3)/char09/chare0/char58/char09/char50/char48/char2e/char0e/char40/char51 /char4b/char2e/char11/char81/char10/charae/char09/char4b
 hit-GER water on sketch
-(4)/char09/chare0/char58/char40/char58 /char58/char41/char b/char e/chare9/char b/char e
-give-GER wind to
+(4)/char09/chare0/char58/char40/char58 /char58/char41/char4b/char2e/chare9/char4b/char2e
 Tashbih (simile) In most of the cases, such similes in Persian poetry come with
 an explicit marker, such as  x like y  or  x as y . As in English, when the markeris removed, tashbih is very similar to esteara (metaphor). The top most frequent
-unigrams that are used with this rhetorical ﬁgure in Hafez poetry are /char09/charad/charcb/char09/char50(hair),/chard1/char b/char e/chard0/char41/char67/char e
+unigrams that are used with this rhetorical ﬁgure in Hafez poetry are /char09/charad/charcb/char09/char50(hair),/chard1/char6b/char2e/chard0/char41/char67/char2e
 (love), and /charc8/char58(heart).
 Jenas This device involves the use of words that are (or appear to be) derived from a
-common root, as in example (6), /char09/char50/char41/char09/char b(pronounced n az) and/char09/char50/char41/char a/char a/char09/char b(pronounced ny az). There
+common root, as in example (6), /char09/char50/char41/char09/char4b(pronounced n az) and/char09/char50/char41/char4a/char0a/char09/char4b(pronounced ny az). There
 are two kinds of jenas   (a) when the two words are homonyms, and (b) when they are
 very similar in writing or pronunciation.
 The examples below include pairs of words in a line that are similar in spelling
 or pronunciations. These words can appear in any order or anywhere within a line.
-Incidentally, in example (6), when the two words are used together/char10/char87/charca/charaa/char10/char b /charc1/char09/char b/char50(goblet of
+Incidentally, in example (6), when the two words are used together/char10/char87/charca/charaa/char10/char4b /charc1/char09/char4b/char50(goblet of
 the king ) is a metaphor for the universe.
-(5)/char09/char50/char41/char a/char a/char09/char b-/char09/char50/char41/char09/char b
-need - coquetry
-(6)/chard1/char b/char e-/chard0/char41/char67/char e
-king - goblet
+(5)/char09/char50/char41/char4a/char0a/char09/char4b-/char09/char50/char41/char09/char4b
+(6)/chard1/char6b/char2e-/chard0/char41/char67/char2e
 123A corpus of Persian literary text
 Fig. 2 Example of a line with jenas rhetorical ﬁgure (1) in the Hafez ghazal collection. The highlighted
 words are homonyms, the ﬁrst being a noun meaning  remedy  and the second a verb meaning  distress 
-(7)/char09/chare0/char41/chard2/char a/char a/char b/char12-/chare9/char09/char b/char41/chard2/char a/char a/char b/char12
-promise - chalice
+(7)/char09/chare0/char41/chard2/char4a/char0a/char4b/char12-/chare9/char09/char4b/char41/chard2/char4a/char0a/char4b/char12
 A complete list of identiﬁed jenas is released along with the corpus. Figure 2shows
 an example of jenas where two homonyms are used with different meanings.
 3.2.2 Annotation process
@@ -272,10 +260,10 @@ provides the literal meaning of each word or phrase when needed.
 Fortashbih , the annotators marked the word that is described by another word
 in the poem. For example, in Fig. 3,  belonging  is described as being similar to  a
 paint  that covers whatever is underneath it. This relationship is labelled as
-/char10/char87/charca/charaa/char10/char b /charc1/char09/char b/char50
+/char10/char87/charca/charaa/char10/char4b /charc1/char09/char4b/char50
 (belonging color) in the annotations. For jenas , the annotators provide the pair of
 words in the poem that create the rhetorical ﬁgure. The poem in Fig. 2is annotated as
-/char59/char09/char a/char09/char b/char41/chard3/char50/char58 /char59/char09/char a/char09/char b/char41/chard3/char50/char58 (remedy distress) for jenas . The words creating the rhetorical ﬁgure are
+/char59/char09/char4a/char09/char4b/char41/chard3/char50/char58 /char59/char09/char4a/char09/char4b/char41/chard3/char50/char58 (remedy distress) for jenas . The words creating the rhetorical ﬁgure are
 highlighted in both poems.
 Iham ,kenaya ,esteara , and majaz are more involved. For each word or phrase, the
 annotators provide the concept or concepts that is described by that word or phrase.
@@ -284,13 +272,13 @@ an adjudication process was used to select a consistent description after the in
 not indicate which meaning may be the intended one.
 4The research has been approved by our institutional review board for human subject studies. The annotators
 were paid a rate of $20/h.
-123S. Raji et al.
 Fig. 3 An example of a line (two half lines) with kenaya (1),esteara (2) and tashbih (3) rhetorical ﬁgures
 in Hafez ghazal collection
 Table 3 Distribution of different
 rhetorical ﬁgures in Hafez
 poetryRhetorical ﬁgure Frequency (%)
-Kenaya 19.9 13.3 12.1 7.8 5.7 4.0 3.2.3 4192 lines of
+3.2.3 Annotation results
+We chose the collection of ghazals byHafez and present annotations for 4192 lines of
 poetry. The inter-annotator agreement was measured at the line level across a test setof 500 lines and resulted in a Cohen s κscore of 0.78 (average across the rhetorical
 ﬁgures), which indicates strong agreement between annotators. Table 3shows what
 fraction of lines contain each of the rhetorical ﬁgures. We observe that kenaya is
@@ -302,7 +290,8 @@ detailed information about the distribution of texts over time, word counts, the
 our analysis on Persian poetry in this paper.
 4.1 Style classification
 In this section, we present several baselines for style prediction in Persian poetry.
-123 4.1.1 Rule-based approach
+123A corpus of Persian literary text
+4.1.1 Rule-based approach
 We have implemented an open source tool that recognizes classical styles of Persian
 poetry, except for ghazal andqaside , using a rule-based algorithm based on formal
 features. As shown in Fig. 1, only these two styles of classical Persian poetry remain
@@ -311,7 +300,7 @@ of rhyming words and attempts to predict the style of the poem using simple rule
 4.1.2 Supervised learning
 To distinguish between ghazal andqaside , we train a supervised model. We compiled
 a dataset of 1100 poems, 595 of which are ghazals , based on the most notable poets
-in each style,5 80 20% ratio. As models, we
+in each style,5We established a train test split at a 80 20% ratio. As models, we
 consider a convolutional neural network (CNN) (Kim, 2014 ) as well as a linear SVM
 model. The CNN model consists of a convolutional layer and a fully-connected layerto predict the label. A dropout rate of 0.5 is applied to the convolutional layer. The
 CNN model obtains an accuracy of 74%, while the SVM sentence classiﬁer obtains
@@ -322,35 +311,38 @@ Themodern style merits special consideration. The rhetorical ﬁgures, themes, m
 poetry. We also observed a considerable difference in the length of poems compared to
 classical styles. However, the difference between half-lines and lines is not as obviousas in classical Persian poems.
 We found that poems of the twenty-ﬁrst century can easily be distinguished from
-others by the two models. The same SVM model using Bag-of-words and CNN modelusing a word vec model as input both attain an accuracy of 89% at distinguishing
-modern poetry from classic poetry. The word vec embedding model was trained on
-our corpus.
+others by the two models. The same SVM model using Bag-of-words and CNN modelusing a word2vec model as input both attain an accuracy of 89% at distinguishing
+modern poetry from classic poetry. The word2vec embedding model was trained on
 4.2 Poet and century classification
 In what follows, we describe baseline experiments for predicting the century and the
 poet of poems from different historic periods.
-4.2.1 Models
 To further study the differences and commonalities between poems in different centuries
  and the style of authors, we ran a linear SVM model with Bag-of-Word features
-using a train test split of 85 15%. Another CNN model uses word vec (trained on
+using a train test split of 85 15%. Another CNN model uses word2vec (trained on
 5Parvin Etesami, Saadi, Farrokhi, Onsori and Naser Khosro for qaside and Saadi, Hafez, Rumi for ghazal .
 Saadi has collections with both styles.
-123S. Raji et al.
-Table 4 1-scores for
+Table 4 F1-scores for
 authorship classiﬁcation for
 well-known poetsPoet SVM CNNa
-Khayyam 0.53 0.45 0.85 0.72 0.89 0.87 0.85 0.65 0.99 0.97 0.91 0.78 0.87 0.77 5 1 0 0.185 0.165 0.151 0.131 0.112 0.104 0.087 0.086 0.085 0.080
+Rumi 0.85 0.65Ferdousi 0.99 0.97
+aThe unbalanced size of test sets as well as the unbalanced length of
+poems decrease the performance of CNN model
+Table 5 T o p1 0w o r d sw i t h
+highest drifts in meaning over
+timeWord Absolute drift
+Message 0.151King 0.131
+Bazaar 0.104Hunt 0.087God 0.086
 wine in particular has several metaphorical meanings. We can see that
 the dynamic embedding model can capture how context shifts over
 time has inﬂuenced the contextual interpretation of this word from analcoholic drink to a metaphor for martyrdom
 our corpus) as input, and consists of two parallel CNN layers with 50 ﬁlters each and
-kernel sizes of 4 10, a max-pooling layer, and two dense layers for predicting the
+kernel sizes of 4 and 10, a max-pooling layer, and two dense layers for predicting the
 labels. As in our previous model, a dropout rate of 0.5 is applied to the hidden layer.
-4.2.2 4show that using different inputs and the unbalanced size of the test
+The results in Table 4show that using different inputs and the unbalanced size of the test
 sets for each class signiﬁcantly affect the CNN model. A t-test indicates statistically
-signiﬁcant results with p 0.05 70.8.
+signiﬁcant results with p 0.05 and t  70.8.
 The confusion matrix for our temporal classiﬁcation in Fig. 4reveals the similarity
 of poems in the tenth to thirteenth centuries, as well as in the eighteenth to twentieth
-century.
 123A corpus of Persian literary text
 Fig. 4 The confusion matrix for century classiﬁcation. The results are largely better for the sixteenth,
 seventeenth, and twenty-ﬁrst century because cleaner data is available. Whereas, the results for some time
@@ -358,19 +350,17 @@ periods are not good due to the small size of the dataset or similarity between 
 4.3 Tracking changes in context
 In addition to the usage of the words as rhetorical ﬁgures, another meaningful study
 is to assess context shifts of words.
-4.3.1 Algorithm
 To observe how the contexts of words have changed over time, we applied dynamic
 Bernoulli embedding for language evolution (Rudolph & Blei, 2018 ) on our data. The
 method was originally devised to study language evolution and meaning shifts. We
 adapt the method to instead study changes in the contexts of words over time. Othermethods that study context changes (Mihalcea & Nastase, 2012   Hamilton et al., 2016 )
 propose algorithms for aligning embeddings that are trained separately on data in each
 time slice. However, such algorithms are highly sensitive to the size of the data that is
-123S. Raji et al.
 Fig. 5 Example of a line (two half lines) of a poem by Hafez with wine referring to the alcohol prohibition
 in the Islamic era. Wine here is used an a symbol of all of the prohibited activities
 used in each slice. Since the time slices in our corpus are very heterogeneous in size,
 such algorithms are not good candidates for our analysis.
-4.3.2 5,wine ,beware ,message ,king , and mirror exhibit the
+As we can observe in Table 5,wine ,beware ,message ,king , and mirror exhibit the
 highest drifts. The given numbers represent the absolute total drift of the word vector,
 assessed in terms of the Euclidean distance between the words  embeddings between
 the ﬁrst and the ﬁnal time slices (Rudolph & Blei, 2018 ).
@@ -381,12 +371,10 @@ and observations made in these works. For instance, neighboring words of wine ha
 changed from lover ,beloved ,dance , and happy in Suﬁ poetry to martyr ,blood ,country ,
 andwar. One sub-cluster of this includes words such as forbidden andaffectation that
 refer to alcohol prohibition in the Islamic era. Figure 5presents an example of this
-case.
 This has also been the subject of poetry critics (Pourjavadi, 2008 ). The context of
 king changed from the tenth and eleventh centuries (mostly inﬂuenced by Ferdowsi,
 Hafez, and Rumi), from land ,war,horse togift,heart ,love ,poverty . The complete
 list of words together with the result of the analysis and code is attached with this
-submission.6 5 Conclusion
 Preservation, revitalization, and documentation purposes call for the availability ofcomputational resources and methodologies for low-resource languages. We take a
 step forward with this by furthering research not just for modern Farsi, but also mid-dle and old Persian, by introducing a large standardized and machine-readable corpus
 of Persian literary text that is annotated for century and style. We have additionally
@@ -409,21 +397,19 @@ and indicate if changes were made. The images or other third party material in t
 in the article s Creative Commons licence, unless indicated otherwise in a credit line to the material. If
 material is not included in the article s Creative Commons licence and your intended use is not permitted
 by statutory regulation or exceeds the permitted use, you will need to obtain permission directly from thecopyright holder. To view a copy of this licence, visit http //creativecommons.org/licenses/by/4.0/ .
-References
 Arberry, A. J. (2008). Persian poems  An anthology of verse translations. Everyman s library, no. 996 .
-Yassavoli Publications. Retrieved from https //books.google.com/books id -yInMc wWg C .
+Yassavoli Publications. Retrieved from https //books.google.com/books id -yInMc3wWg4C .
 Asgari, E., & Chappelier, J.-C. (2013). Linguistic Resources and Topic Models for the Analysis of Persian
 Poems. In Proceedings of the workshop on computational linguistics for literature (pp. 23 31).
 Asgari, E., Ghassemi, M., & Finlayson, M. A. (2013, December). Conﬁrming the themes and interpretive
 unity of Ghazal poetry using topic models. In Neural Information Processing Systems (NIPS) Workshop
-for Topic Models .
 Atashi, M. (2004). Ahmad Shamlou  A critical analysis . Amitis.
 Baumann, T., Hussein, H., & Meyer-Sickendiek, B. (2018). Style detection for free verse poetry from text and
-speech. In Proceedings of the 27th international conference on computational linguistics (pp. 1929 1940). Association for Computational Linguistics. https //www.aclweb.org/anthology/C18-1164 .
+speech. In Proceedings of the 27th international conference on computational linguistics (pp. 1929 
+1940). Association for Computational Linguistics. https //www.aclweb.org/anthology/C18-1164 .
 Browne, E. G. (1999). Literary history of Persia. Routledge. Retrieved from https //www.routledge.com/
 A-Literary-History-of-Persia-4-V olume-Set/Browne/p/book/9780700704064 .
 Bush, L. R. (2012). More than words  Rhetorical devices in American political cartoons . University of
-South Florida.
 Fengjie, L., Jia, R., & Yingying, Z. (2016). Analysis of the rhetorical devices in Obama s public speeches.
 International Journal of Language and Linguistics, 4 (4), 141 146.
 García, J. R., Montanero, M., Lucero, M., Cañedo, I., & Sánchez, E. (2018). Comparing rhetorical devices
@@ -437,8 +423,6 @@ language processing (pp. 524 533).
 Hamilton, W. L., Leskovec, J., & Jurafsky, D. (2016). Diachronic word embeddings reveal statistical laws
 of semantic change . arXiv preprint arXiv 1605.09096 .
 Hayward, M. (1996). Analysis of a corpus of poetry by a connectionist model of poetic meter. Poetics,
-24(1), 1 11.
-123S. Raji et al.
 Hobbs, J. R. (1990). Literature and cognition (V ol. 21). Center for the Study of Language (CSLI).
 Kadkani, S. (1943). Poetry and imagination . Neel Publication.
 Khashabi, D., Cohan, A., Shakeri, S., Hosseini, P ., Pezeshkpour, P ., Alikhani, M., & Yaghoobzadeh, Y .
@@ -447,7 +431,6 @@ Khashabi, D., Cohan, A., Shakeri, S., Hosseini, P ., Pezeshkpour, P ., Alikhani,
 Kim, Y . (2014). Convolutional neural networks for sentence classiﬁcation. In Proceedings of the 2014
 conference on empirical methods in natural language processing (EMNLP) (pp. 1746 1751). Association
  for Computational Linguistics. https //doi.org/10.3115/v1/D14-1181 .https //www.aclweb.org/
-anthology/D14-1181 .
 Lau, J. H., Cohn, T., Baldwin, T., Brooke, J., & Hammond, A. (2018). Deep-speare  A joint neural model
 of poetic language, meter and rhyme. In Proceedings of the 56th annual meeting of the association
 for computational linguistics (V ol. 1  Long Papers, pp. 1948 1958). Association for Computational
@@ -469,7 +452,6 @@ English Literature, 3 (6), 145 151.
 Perry, J. R. (2011). Grammaire du persan contemporain. Iranian Studies, 44 (2), 273 275. https //doi.org/
 10.1080/00210862.2011.542038
 Pourjavadi, N. (2008). The wine of love  Researches on the meaning of wine in Persian mystical poetry .
-Karname.
 Raji, S., Alikhani, M., de Melo, G., & Stone, M. (2023). A corpus of Persian literary text. Zenodo .https //
 doi.org/10.5281/zenodo.7923612
 Rudolph, M., & Blei, D. (2018) Dynamic embeddings for language evolution. In Proceedings of the 2018
@@ -478,7 +460,7 @@ Conferences Steering Committee.
 Rypka, J. (2013). History of Iranian literature . Springer.
 Safa, Z. (1993). History of literature in Iran . Ferdows Publication.
 Seraji, M., Megyesi, B., & Nivre, J. (2012). A basic language resource kit for Persian. In Eight international
-conference on language resources and evaluation (LREC 2012), 23 25 2012, Istanbul, Turkey(pp. 2245 2252). European Language Resources Association.
+conference on language resources and evaluation (LREC 2012), 23 25 May 2012, Istanbul, Turkey(pp. 2245 2252). European Language Resources Association.
 Seyed-Gohrab, A. A. (2011). Metaphor and imagery in Persian poetry (V ol. 6). Brill.
 Shabestary, M. (2008). The secret rose garden . Forgotten Books.
 Shamisa, C. (1999). Style of poetry . Mitra Press.
@@ -486,7 +468,6 @@ Sharifnasab, M. (2004). On  Wine  in Mathnavi, Based on Ibn-e Farezs  Xamriyye .
 7(19), 190 204. https //doi.org/10.22054/ltr.2004.6269
 Tabatabai, A. (2001). Persian language etymology . Bokhara Magazine.
 Tom, G., & Eves, A. (2012). The use of rhetorical devices in advertising . Cross Currents  Cultures, Communities,
- Technologies.
 Tousi, M. A. (1974). The afﬁxes in Persian language . Gohar.
 Tusi, B. (2013). Expansion of Iranian literature and culture in the world . Tehran University Center of
 Islamic Studies-McGill University.
@@ -494,8 +475,6 @@ Zhang, J., Feng, Y ., Wang, D., Wang, Y ., Abel, A., Zhang, S., & Zhang, A. (201
  Chinese poetry generation using neural memory. In Proceedings of the 55th annual meeting
 of the association for computational linguistics (V ol. 1  Long Papers, pp. 1364 1373). Association
  for Computational Linguistics. https //doi.org/10.18653/v1/P17-1125 .https //www.aclweb.org/
-anthology/P17-1125 .
 123A corpus of Persian literary text
 Publisher s Note Springer Nature remains neutral with regard to jurisdictional claims in published maps
 and institutional afﬁliations.
-123

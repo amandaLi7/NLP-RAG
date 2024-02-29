@@ -1,9 +1,10 @@
 Contrastive Attention Networks for Attribution of Early Modern Print
 Nikolai Vogler1, Kartik Goyal2, Kishore PV Reddy1, Elizaveta Pertseva1, Samuel V . Lemley3,
-Christopher N. Warren3, Max G Sell3, Taylor Berg-Kirkpatrick1 1University of California, San Diego
-2 3Carnegie Mellon University
+Christopher N. Warren3, Max G Sell3, Taylor Berg-Kirkpatrick1
+1University of California, San Diego
+2Toyota Technological Institute at Chicago
+3Carnegie Mellon University
 nvogler@ucsd.edu, kartikgo@ttic.edu, cnwarren@cmu.edu, tberg@ucsd.edu
-Abstract
 In this paper, we develop machine learning techniques to
 identify unknown printers in early modern (c. 1500 1800)
 English printed books. Specifically, we focus on matching
@@ -25,7 +26,6 @@ validated by in-domain human experts. The results of our approach
  on two important philosophical works from the Early
 Modern period demonstrate potential to extend the extant historical
  research about the origins and content of these books.
-Introduction
 A complete understanding of the content of surviving historical
  works requires knowledge of the context of their printing.
 This has long been acknowledged in the humanities, giving
@@ -40,7 +40,8 @@ came from the same printing apparatus, as depicted in Figure
  2. Historians have, for example, leveraged the analysis
 of damaged type-imprints as a critical tool in identifying and
 studying clandestine printers who withheld their identities to
-avoid harsh penalties under censorship laws (Adams 2010 2018  Warren et al. 2020, 2021).
+avoid harsh penalties under censorship laws (Adams 2010 
+Como 2018  Warren et al. 2020, 2021).
 In this paper, we develop a computational model of the
 same analytic techniques used by bibliographers. Our method
 Copyright  2023, Association for the Advancement of Artificial
@@ -64,7 +65,7 @@ thousands of censored early modern works that are of interest
 to social, cultural, and intellectual historians.
 Matching damaged type-imprints across texts is challenging,
  since the variation in scale, position, font, and inking in
-scans of printed characters generally dominates the minutearXiv 2306.07998 1  [cs.CV]  12 2023deviations due to localized damage that are of actual interest,
+scans of printed characters generally dominates the minutearXiv 2306.07998v1  [cs.CV]  12 Jun 2023deviations due to localized damage that are of actual interest,
 as shown in Figs. 3 & 6. We present a Contrastive Attentionbased
  Metric Learning approach to identify similar damage
 across type-imprint pairs. Due to the dearth of training data
@@ -93,7 +94,6 @@ andLeviathan Ornaments (Warren et al. 2021). In a deployment
 evaluated by an expert bibliographer. Results suggest that
 our method can help scale printer attribution to the tens of
 thousands of anonymously printed early modern documents.
-Related Work
 Our work fits into a related line of work on computational
 analysis of historical documents under limited supervision 
 including, for example, unsupervised optical character recognition
@@ -137,7 +137,8 @@ attribution of print.
 Our work also draws from a body of work on metric learning
  over images using contrastive approaches and data augmentation
  (Hadsell, Chopra, and LeCun 2006  Musgrave,
-Belongie, and Lim 2020 2009 2019) which are commonplace for many computer
+Belongie, and Lim 2020  Weinberger and Saul 2009  Zhai
+and Wu 2019) which are commonplace for many computer
 vision tasks like self-supervised learning of image representations
  (Chen et al. 2020), image classification, and object
 localization (Ki et al. 2021). While these approaches have
@@ -149,11 +150,12 @@ pairs of images based on subtle shape variations while remaining
 Early Modern Print and Damaged Type Pieces
 We focus on a data domain that is highly relevant to the cultural
  analysis of censorship. From the advent of the printing
-press in the mid-1400 18th century, printers
+press in the mid-1400s through the 18th century, printers
 declined to attach their names to tens of thousands, or about
 25%, of all known books and pamphlets. Reasons included
 controversial content, censorship laws, and piracy (Como
-2007 1994 2017 1991 2003 1981 2016). As early as 1960,
+2007  Norbrook 1994  Raymond 2017  Woodfield 1991  Towers
+ 2003  McCabe 1981  McCoog 2016). As early as 1960,
 analytical bibliographers realized that distinctively damaged
 metal type pieces used to produce the inked type-imprint on
 a book s page could be recorded and compared across pub-Under-inkingOver-inkingSwellingFractureBendVisual Artifacts of Historical PrintDamageInkingDamage
@@ -169,16 +171,19 @@ lications to uncover the hidden identities of printers (Mills
 whether by being dropped on the ground, warped under pressure,
  or some other means, the type-imprints produced by
 the type piece become unique like a fingerprint as illustrated
-in Figure 2 3. Manual forensic analyses
+in Figure 2 and the top of Figure 3. Manual forensic analyses
  of these most distinctive aberration patterns bends and
 fractures, as well as other tell-tale cues identified by bibliographers,
  have produced evidence connecting anonymously
-printed works with known printers (Weiss 1992 2004 2013 2014 2016 1972 2010 2012). For example, Charlton Hinman s pioneering work in
-the 1960 55
+printed works with known printers (Weiss 1992  van den
+Berg and Howard 2004  Achinstein and Burton 2013  Garrett
+ 2014  Bricker 2016  Lavin 1972  Adams 2010  Como
+2012). For example, Charlton Hinman s pioneering work in
+the 1960s exhaustively compared all letterforms across 55
 copies of Shakespeare s First Folio using careful notetaking
- methods to uncover the collation process (Turner 1966 1963).
+ methods to uncover the collation process (Turner 1966 
 Recent printer attribution work uses digital reproductions
-in addition to physical copies (Adams 2010 2018).
+in addition to physical copies (Adams 2010  Como 2018).
 Warren et al. (2020, 2021) go one step further, employing
 Ocular (Berg-Kirkpatrick, Durrett, and Klein 2013b) historical
  OCR for automatic extraction of type-imprint images,
@@ -199,10 +204,8 @@ of type-imprint images. The metric learning framework facilitates
 in which we embed a type-imprint and use it to query and
 retrieve the top- kmost similarly damaged type-imprints from
 Global Inking ParamsSwellingRadiusStrengthThinning
- Undamaged Chars
 ThickeningThinningSwelling
-Undamaged Char 1 2Paired Fracture
-Paired Bend
+Undamaged Char 1Undamaged Char 2Paired Fracture
 Training SetThickeningLocal Damage Params (Char Class Specific)FractureAngleErosion/DilationThicknessBendSegment LengthShift AmountV WidthWidthFigure 4  Our random data augmentation procedure models
 realistic bends, fractures, and inking to generate paired training
  data for learning to match damaged type-imprints. We
@@ -214,7 +217,6 @@ independently to each image (bottom, green borders).
 the dataset. Supervised training consists of learning to embed
 matched pairs comparably and unmatched pairs disparately
 using a margin loss. However, this modeling approach faces
-two main hurdles 
 1.Spurious sources of deviations between type-imprints ,
 such as difference in scale, position, inking (Fig 3), font
 variation, character class due to imperfect historical typesetting
@@ -255,7 +257,6 @@ the glyph and X is another type-imprint image we would
 like to compare to. In this case, X also exhibits similar
 local damage as X, so the desired output of the model, the
 L2-distance between the final image embeddings eande ,
-should be small.
 Template feature-map residuals Most observable damage
 on a type-imprint image manifests as local deviations from
 an exemplary character shape. In order to aid the model in
@@ -285,26 +286,18 @@ an attention map ˆα Rh won the concatenated residual
 feature-maps [ F  F ], enables this comparison. Each valueˆαijofˆαrepresents a score for each spatial location, or  feature
  pixel , on the joint location dimension of the residual
 feature-map  ˆαij MLP([ F ij  F 
- ij]).
 After normalizing these attention scores, we obtain a
 weighed attention map α Rh wover such feature pixels.
  We compute the final d-dimensional output image embeddings
  eande by attending to  Fand F respectively 
-e  P
 ijαij F ij, and e   P
-ijαij F 
- ij. Finally, the
 model returns the Euclidean distance between the embeddings e e  2,
  representing the distance between the typeimprint
- image pair.
 Training CAML We train CAML with the popular triplet
 loss (Weinberger and Saul 2009), which operates on an anchor/query
  embedding ealong with the embedding e of a
 candidate image that matches the anchor and a non-matching
 candidate image s embedding e . This results in the following
- loss  max 
- e e  2 2 m,0 
-, which focuses
 on minimizing the Euclidean distance between the anchor
 and the positive matching images  embeddings, and maximizing
  the distance between the anchor and the non-matching
@@ -321,11 +314,13 @@ both known and unknown printer origins. Then we describe a
 random automatic process for synthesizing paired supervised
 match data from this collection for training CAML.
 Extracting Type-Imprint Images from Books
-We obtain page image scans from 38 1650 1690s by both known and unknown
+We obtain page image scans from 38 different English books
+printed from the 1650s 1690s by both known and unknown
 printers of historical interest. The materials were printed
 mainly in London after its civil war when the explosion of
 news, pamphlets, and cheap print are said to have led to
-England s  reading revolution  (Como 2018 2000 1994 2003 2000). In contrast
+England s  reading revolution  (Como 2018  Sharpe 2000 
+Achinstein 1994  Raymond 2003  Zaret 2000). In contrast
 to resources like Early English Books Online (EEBO), used
 in Mak (2014), our images are higher resolution to facilitate
 fine-grained comparison of anomalous type-imprints.
@@ -364,7 +359,6 @@ extract its skeleton (henceforth referred to as union skeleton ),
 which makes it easier to produce a bend/fracture on the same
 location of the pair.2We randomly apply one of two kinds
 of damage bends or fractures followed by inking noise, as
-described below.
 Bends In the case of a bend (Fig. 3, top left), we first sample
  the length of the segment to be bent and the amount
 to shift the segment (both as relative percentages of skeleton
@@ -377,7 +371,6 @@ length by drawing a Bezier curve between the midpoint and
 a shifted midpoint computed with the sampled shift amount .
 We increase the bent skeleton s thickness until it reaches the
 unbent character s thickness, as measured by a Euclidean
-distance transform.
 Fractures We sample a center point on the union skeleton
 and map it back to the original images in a similar fashion
  as in the bends. For each type-imprint in the pair, we
@@ -422,7 +415,6 @@ Fig. 4) through multiple iterations of tuning, sampling, and
 evaluation. In each round, we display comparisons between
 hundreds of samples of real and synthesized damages and
 have annotators evaluate the fidelity of the generated samples.
-Experimental Setup
 In this section, we first describe the real-world datasets containing
  a small amount of manually identified matches and
 damaged types in previous bibliographic studies that we use
@@ -433,7 +425,6 @@ settings, pertaining to the quality of the candidate sets we
 query against for our matching experiments. Then, we present
 strong baselines that are prevalent for computational image
 comparison for empirical comparison against our proposed
-approach.
 Ground Truth Evaluation Datasets
 We use two different hand-curated datasets from recent bibliographical
  studies that manually identified and matched damaged
@@ -447,7 +438,7 @@ printed Areopagitica (Warren et al. 2020). Specifically, we
 focus on four uppercase characters D,F,G, and Mwhose
 damaged type-imprints were compared across books from
 known printers of interest for this study. Overall, this dataset
-contains 128 159 pairwise queries.
+contains 128 total match groups with 159 pairwise queries.
 Leviathan Ornaments test set We construct our testset
 from the expert-curated set of matches manually identified ina recent bibliographical study, in which Warren et al. (2021)
 established that the book was printed in a single print shop by
@@ -456,7 +447,8 @@ of Malcolm (2008) to a different printer, John Darby in earlier
 work by amassing evidence from damaged type-imprints
 matched manually within Leviathan Ornaments and across
 other books by known printers from the suspected time period
-of its printing. Overall, this dataset contains 217 858 pairwise queries.
+of its printing. Overall, this dataset contains 217 total match
+groups with 858 pairwise queries.
 For the purpose of damaged type-imprint retrieval, we
 treat the known damaged type-imprints in Areopagitica and
 Leviathan Ornaments as queries against which we attempt
@@ -487,7 +479,6 @@ of negative candidates and are based on the actual data bibliographers
 latter setting, Lev-Mix, is possibly the most difficult because
 it includes the most variability in negative examples, making
 spurious matches using simple methods more likely.
-Baseline Models
 In order to show the effectiveness of our approach on matching
  subtle damages between type-imprints in the presence
 of multiple confounding sources of noise, we compare it to
@@ -525,14 +516,14 @@ feature extractor to classify positive and negative pairs (Zhai
 and Wu 2019) of images with a binary cross-entropy loss.
 Instead of encoding the 1-channel images separately, we stack
 the images on separate channels before inputting to the CNN.
-Quantitative Results
 In this section, we describe our quantitative results on the
 ground truth evaluation data presented in Experimental Setup.
 We report all-pairs Recall@k 5 micro-averaged over the
 character classes in each dataset configuration in our evaluations
  so every damaged type-imprint serves as the query
 image once. We train each model for 60 epochs and early
-stop using the best Areopagitica validation set recall.3 1, we compare results using the L2 baseline on
+stop using the best Areopagitica validation set recall.3
+In Table 1, we compare results using the L2 baseline on
 the aligned images, Stacked BCE classifier, Triplet Embedding
  model, which is equivalent to CAML without the spatial
 attention mechanism, and our proposed CAML method. First,
@@ -559,13 +550,20 @@ Ablation We perform two kinds of ablative studies on our
 model. The first study (Table 2) concerns with how we obtain
 the residuals of the image representations through subtracting
 3Code located at https //github.com/nvog/damaged-type.Method Syn Valid Areo Lev-Strong Lev-Mix
-L2 5.53 43.21 39.91 40.99 4.62 1.78 1.10 0.96 5.72 40.76 33.53 33.00 35.50 39.42 58.15 56.08 1  Recall @ 5 results micro-averaged over 4 character
+L2 Aligned 5.53 43.21 39.91 40.99
+Stacked BCE 4.62 1.78 1.10 0.96
+Emb 5.72 40.76 33.53 33.00
+CAML 35.50 39.42 58.15 56.08
+Table 1  Recall @ 5 results micro-averaged over 4 character
 classes for Areopagitica ground truth validation set, and 16
 character classes for both the synthetic validation set and
 Leviathan Ornaments ground truth test set. Both the Emb and
 CAML models use convolutional residual features.
 Residual Syn Valid Areo Lev-Strong Lev-Mix
-None 50.62 33.63 62.88 61.78 47.62 38.75 52.33 49.18 45.00 43.88 67.81 64.79 2  Micro-averaged recall @ 5 independent ablation
+None 50.62 33.63 62.88 61.78
+Input 47.62 38.75 52.33 49.18
+CNN 45.00 43.88 67.81 64.79
+Table 2  Micro-averaged recall @ 5 independent ablation
 study comparing different residual methods in the CAML
 model. Results on D,F,G,Mcharacter subset.
 the template character features. We compare 3 settings  (1)
@@ -588,15 +586,18 @@ training CAML without global inking synthesis such as Thinning
 which uses this augmentation, most of the decrease in performance
  is on synthetic validation (3 points R@5) and the
 Lev-Mix setting (0.68 R@5).
-Q C Q C Q C3 0.000.06 5 3 query/candidate pairs.
+Figure 5  CAML attention for 3 query/candidate pairs.
 Attention Visualization In Figure 5, we visualize the spatial
  attention weights on a few top-ranked Gtype-imprint images
  from the Lev-Mix test set. We compare two pairs (left,
 middle) using the same  Query 1 , while the third pair (right)
 uses a different  Query 2 . The highest attention weights are
 clearly located in locations with noticeable damage, along
-with other areas that help the model differentiate glyph shapes.PrinterTop-1 Top-5 Top-10 7 11 17 23 40 31
-Richardson & Holt 0 0 2 0 2 0 13 3 21 7 28 9 0 0 0 0 0 0 0 0 5 1 9 1 3  CAML deployment findings aggregated across
+with other areas that help the model differentiate glyph shapes.PrinterTop-1 Top-5 Top-10
+Richardson 7 11 17 23 40 31
+Richardson & Holt 0 0 2 0 2 0
+Everingham 0 0 5 1 9 1
+Table 3  CAML deployment findings aggregated across
 matches for known printers on Leviathan Ornaments . Expert
  is asked to annotate both low (lo) and high (hi) confidence
  matches returned by system. The most high confident
@@ -609,7 +610,8 @@ For analyzing how our model can aid bibliographical research,
  we design a deployment and expert evaluation case
 study to confirm the manual printer attribution of Leviathan
 Ornaments (Warren et al. 2021). Using an unannotated set
-of 138 4 1 unrelated
+of 138 books scanned by various libraries and printed by 4
+suspected printers of Leviathan Ornaments and 1 unrelated
 printer, we aim to simulate the entire process of human-inthe-loop
  printer attribution, from query selection to matching.
 Until now, such a process has required much manual effort.
@@ -625,7 +627,8 @@ to rank all Leviathan Ornaments type-imprints by damage
 intensity. An expert bibliographer then selects a few hundred
 of the top results to create a query set of 246 images. Next,
 using the L2 distance on CAML s image embeddings, we
-generate the top-10 518,891 total type-imprint images.
+generate the top-10 ranked candidates for each query image
+against a set of 518,891 total type-imprint images.
 Annotation Findings We setup an annotation interface
 and ask a bibliographical expert to annotate matching typeimprints
  among the retrieved candidates as either not a match,
@@ -644,7 +647,6 @@ the top-10. While John Redmayne printed another clandestine
 to use different sets of fonts entirely, only surfaced a single
 high match. Ultimately, evidence strongly suggests that John
 Richardson did, in fact, print Leviathan Ornaments .
-Conclusion
 We demonstrate that machine learning can be successfully
 applied to printer attribution by learning to match damaged
 type-imprint images in early modern books. By attributing
@@ -654,30 +656,24 @@ printed works from the period, which amounts to roughly
 25% of documents. Ultimately, this translates into more opportunities
  to discover significant historical networks of early
 print media involving printers, authors, and arguments.
-Acknowledgments
 This project is funded in part by the NSF under grant
 1936155, and by the NEH under grant HAA-284882-22. We
 would like to thank Ciaran Evans, DJ Schuldt, Kari Thomas,
 Laura DeLuca, and the rest of the Print & Probability team,
 along with Berg Lab, and the anonymous reviewers for their
 assistance and helpful feedback.
-References
 Achinstein, S. 1994. Milton and the revolutionary reader .
 Princeton N.J.  Princeton University Press. ISBN 978-0-69103490-4.
-
 Achinstein, S.  and Burton, B. 2013. Who Printed Milton s
 Tetrachordon (1645)  The Library , 14(1)  18 44.
 Adams, D. R. 2010. The Secret Printing and Publishing
 Career of Richard Overton the Leveller, 1644 46. Library ,
-11(1)  3 88.
 Assael, Y .  Sommerschield, T.  Shillingford, B.  Bordbar, M. 
 Pavlopoulos, J.  Chatzipanagiotou, M.  Androutsopoulos, I. 
 Prag, J.  and de Freitas, N. 2022. Restoring and attributing
 ancient texts using deep neural networks. Nature , 603(7900) 
-280 283.
 Bamman, D.  and Burns, P. J. 2020. Latin bert  A contextual
  language model for classical philology. arXiv preprint
-arXiv 2009.10053 .
 Berg-Kirkpatrick, T.  Durrett, G.  and Klein, D. 2013a. Unsupervised
  Transcription of Historical Documents. In Proceedings
  of the 51st Annual Meeting of the Association for Computational
@@ -703,16 +699,12 @@ Learning Research , 20(178).
 Chen, T.  Kornblith, S.  Norouzi, M.  and Hinton, G. 2020.
 A simple framework for contrastive learning of visual representations.
  In International conference on machine learning ,
-1597 1607. PMLR.
 Como, D. R. 2007. Secret Printing, the Crisis of 1640, and
 the Origins of Civil War Radicalism. Past & Present , 196(1) 
-37 82.
 Como, D. R. 2012. Print, Censorship, and Ideological Escalation
  in the English Civil War. Journal of British Studies ,
-51(4)  820 857.
 Como, D. R. 2018. Radical Parliamentarians and the English
 Civil War . Oxford  Oxford University Press. ISBN 978-0-19954191-1.
- OCLC  1089237699.
 Garrett, C. E. 2014. How T. S. Became Known as Thomas
 Sherman  An Attribution Narrative. The Papers of the Bibliographical
  Society of America , 108(2)  191 216.
@@ -722,7 +714,6 @@ Transcription. In Proceedings of the 2016 Conference of the
 North American Chapter of the Association for Computational
  Linguistics  Human Language Technologies , 467 472.
 San Diego, California  Association for Computational Linguistics.
-
 Garrette, D.  Alpert-Abrams, H.  Berg-Kirkpatrick, T.  and
 Klein, D. 2015. Unsupervised Code-Switching for Multilingual
  Historical Document Transcription. In Proceedings of
@@ -749,12 +740,11 @@ volume 37 of Proceedings of Machine Learning Research ,
 448 456. Lille, France  PMLR.Ki, M.  Uh, Y .  Choe, J.  and Byun, H. 2021. Contrastive Attention
  Maps for Self-supervised Co-localization. In Proceedings
  of the IEEE/CVF International Conference on Computer
-Vision , 2803 2812.
 Kingma, D. P.  and Ba, J. 2015. Adam  A method for stochastic
  optimization. In 3rd International Conference on Learning
 Representations, (ICLR) .
 Lavin, J. A. 1972. The Printer of  Hamlet  Q3. Studies in
-Bibliography , 25 173 176.
+Bibliography , 25  173 176.
 Liu, S.  and Smith, D. 2020. Detecting de minimis CodeSwitching
  in Historical German Books. In Proceedings of
 the 28th International Conference on Computational Linguistics,
@@ -762,20 +752,17 @@ the 28th International Conference on Computational Linguistics,
 Committee on Computational Linguistics.
 Mak, B. 2014. Archaeology of a digitization. Journal of the
 Association for Information Science and Technology , 65(8) 
-1515 1526.
 Malcolm, N. 2008. The Making of the Ornaments  Further
 Thoughts on the Printing of the Third Edition of Leviathan.
 Hobbes Studies , 21(1)  3 37.
 McCabe, R. A. 1981. Elizabethan Satire and the Bishops 
-Ban of 1599. The Yearbook of English Studies , 11 188 193.
+Ban of 1599. The Yearbook of English Studies , 11  188 193.
 McCoog, T. M. 2016.  Guiding souls to goodness and devotion 
    clandestine publications and the English Jesuit mission.
  In Bela, T.  Calma, C.  and Rzegocka, J., eds., Publishing
  subversive texts in Elizabethan England and the PolishLithuanian
  Commonwealth , 93 109. Leiden  Brill. OCLC 
-953683964.
 Mills, J. C. 1960. Detective in the Book World. Graphic Arts
-Review , 23.
 Musgrave, K.  Belongie, S.  and Lim, S.-N. 2020. A metric
 learning reality check. In European Conference on Computer
 Vision , 681 699. Springer.
@@ -802,14 +789,14 @@ in early modern England . New Haven (Conn.  Yale University
  Press. ISBN 978-0-300-08152-7. OCLC  1014626495.
 Towers, S. M. 2003. Control of Religious Printing in Early
 Stuart England . Boydell Press. ISBN 978-0-85115-939-3.Turner, R. K. 1966. Reappearing Types as Bibliographical
-Evidence. Studies in Bibliography , 19 198 209.
+Evidence. Studies in Bibliography , 19  198 209.
 van den Berg, S. J.  and Howard, W. S. 2004. G. M. Revealed 
 Printer of the First Attacks on The Doctrine and Discipline
 of Divorce. Milton Quarterly , 38(4)  242 252.
 van der Walt, S.  Sch  onberger, J. L.  Nunez-Iglesias, J. 
 Boulogne, F.  Warner, J. D.  Yager, N.  Gouillart, E.  Yu,
 T.  and the scikit-image contributors. 2014. scikit-image 
-image processing in Python. PeerJ , 2 453.
+image processing in Python. PeerJ , 2  e453.
 V ogler, N.  Allen, J.  Miller, M.  and Berg-Kirkpatrick, T.
 2022. Lacuna Reconstruction  Self-Supervised Pre-Training
 for Low-Resource Historical Document Transcription. In
@@ -823,31 +810,28 @@ Warren, C. N.  Wiscomb, A.  Williams, P.  Lemley, S. V .  and
 G Sell, M. 2021. Canst Thou Draw Out Leviathan with Computational
  Bibliography  New Angles on Printing Thomas
 Hobbes   Ornaments  Edition. Eighteenth-Century Studies ,
-54(4)  827 859.
 Weinberger, K. Q.  and Saul, L. K. 2009. Distance metric
  learning for large margin nearest neighbor classification.
 Journal of machine learning research , 10(2).
 Weiss, A. 1992. Shared Printing, Printer s Copy, and the
 Text(s) of Gascoigne s  A Hundreth Sundrie Flowres . Studies
- in Bibliography , 45 71 104.
+ in Bibliography , 45  71 104.
 Woodfield, D. B. 1991. Surreptitious printing in England,
 1550-1640 . New York  Bibliographical Society of America.
-OCLC  704200450.
 Zaret, D. 2000. Origins of Democratic Culture  Printing,
 Petitions, and the Public Sphere in Early-Modern England .
 Princeton, N.J.  Princeton University Press.
 Zhai, A.  and Wu, H.-Y . 2019. Classification is a strong
 baseline for deep metric learning. British Machine Vision
 Conference .Title Char Match Groups Pairwise Queries
-AreopagiticaD 38 57 33 47 40 44 17 11 128 159 30 134 14 46 22 99 14 59 4 19 15 53 17 59 8 19 5 18 17 66 13 47 7 20 13 75 13 47 14 58 11 39 217 858 4  Per-character ground truth dataset statistics of
+Table 4  Per-character ground truth dataset statistics of
 Leviathan Ornaments , which is the main test set used for
 quantitative evaluation. Aggregates are reported at bottom.
 Unaligned Raw  Images
-5139 4439 6958 5842 5841 5842 6  Effects of aligning character type piece typeimprints
+Figure 6  Effects of aligning character type piece typeimprints
  standardizes their height/width, offsets, shear, &
 rotation to a common size/orientation for more consistent
 glyph comparison across models (Goyal et al. 2020).
-Training Details
 All models are built using a number of CNN  blocks  containing
  3 convolutional layers, separated by batch normalization
 (Ioffe and Szegedy 2015) and ReLU non-linearities. Convolutional
@@ -855,11 +839,13 @@ All models are built using a number of CNN  blocks  containing
 kernel sizes of 3, strides of 1, and padding of 1, such that
 the only spatial dimension reduction is from the max pooling
  layers with kernel size and stride size of 2 with no
-padding. For Emb model, we use 4 2048-dimensional input.
+padding. For Emb model, we use 4 blocks followed by a
+flatten operation and linear layer with 2048-dimensional input.
  Emb models use 128-dimensional image embeddings.
 For CAML models, we use only 2 blocks in order to avoid
 reducing the spatial resolution of the feature maps before
-the attention operation. CAML s Attention module is a 4 256, 128, and 64 units separated
+the attention operation. CAML s Attention module is a 4layer
+ MLP with hidden sizes of 256, 128, and 64 units separated
  by Tanh activations. We use a batch size of 64, Adam(Kingma and Ba 2015) with a learning rate of 0.0001 and grid
 search over number of blocks {2,3,4,5}, number of convolutional
  layers per block {2,3,4,5,6}, CAML s attention
@@ -867,10 +853,9 @@ softmax temperatures {0.1,0.5,1.0}, and triplet loss margins{0.1,0.2,0.3,0.4,0.5
  We find a margin of 0.3 to yield
 consistently good performance across models. All hyperparameters
  are tuned on the Areopagitica validation set.
-Annotator Feedback
 In Figure 7, we show two rows from the expert annotation
 task, which underscore how difficult type-imprint damage
-identification can be. For example, all 5 5 Ccandidates
+identification can be. For example, all 5 of the first 5 Ccandidates
  include a break in the upper stroke indicating high
 plausibility of matching the query image. Yet the bounding
 boxes for the first two make it difficult to assess the Cs  terminals
@@ -878,7 +863,6 @@ boxes for the first two make it difficult to assess the Cs  terminals
 and the binarization in the next two makes high confidence
 difficult. The fifth one could very well be a match, yet the ink
 doesn t break as cleanly as it does in the query image so it
-was not selected.
 On the second row of Ds, the query contains a counter
 (white space) that extends into the juncture of the stem, bowl,
 and lower serif of the character. In this case, all of the results

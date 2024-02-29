@@ -1,10 +1,10 @@
 The Inside Story  Towards Better Understanding
 of Machine Translation Neural Evaluation Metrics
 Ricardo Rei 1,2,4, Nuno M. Guerreiro 3,4, Marcos Treviso3,4,
-Alon Lavie1, Luisa Coheur2,4, André F. T. Martins1,3,4 1Unbabel, Lisbon, Portugal,2INESC-ID, Lisbon, Portugal
+Alon Lavie1, Luisa Coheur2,4, André F. T. Martins1,3,4
+1Unbabel, Lisbon, Portugal,2INESC-ID, Lisbon, Portugal
 3Instituto de Telecomunicações, Lisbon, Portugal
 4Instituto Superior Técnico, University of Lisbon, Portugal
-Abstract
 Neural metrics for machine translation evaluation,
  such as C OMET , exhibit signiﬁcant
 improvements in their correlation with human
@@ -28,7 +28,6 @@ maps with Multidimensional Quality Metrics
 ease future research, we release our code
 athttps //github.com/Unbabel/COMET/
 tree/explainable-metrics .
-1 Introduction
 Reference-based neural metrics for machine translation
  evaluation are achieving evergrowing success,
  demonstrating superior results over traditional
@@ -53,7 +52,7 @@ explanations and human annotated error spans.
 2022)  contrary to traditional metrics, neural metrics
  are considered  black boxes  as they often use
 increasingly large models (e.g., the winning metric
-of the WMT 22 10B
+of the WMT 22 Metrics shared task was a 10B
 parameter model (Freitag et al., 2022)).
 While some recent work has focus on explaining
 the predictions made by reference-free quality estimation
@@ -76,7 +75,7 @@ that reference-based metrics leverage this tokenlevel
  information to produce sentence-level scores.
 To test this hypothesis, we assess whether our explanations
    measures of token-level importance obtained
- via attribution and input attribution methodsarXiv 2305.11806 1  [cs.CL]  19 2023such as attention weights and gradient scores (Treviso
+ via attribution and input attribution methodsarXiv 2305.11806v1  [cs.CL]  19 May 2023such as attention weights and gradient scores (Treviso
  et al., 2021  Rei et al., 2022b)   align with
 human-annotated spans (Fomicheva et al., 2021,
 2022  Zerva et al., 2022), as illustrated in Figure 1.
@@ -85,7 +84,6 @@ Our analysis focuses on two main vectors  (i) understanding
 on the quality of the explanations  and (ii) ﬁnding
 whether the explanations can help to identify potential
  weaknesses in the metrics. Our main contributions
- are 
  We provide a comparison between multiple explainability
  methods for different metrics on all
 types of evaluation  src-only, ref-only, and
@@ -101,7 +99,6 @@ We aim to explain sentence-level quality assessments
 token-level explanations that align to translation
 errors. In what follows, we describe the metrics
 and how we produce the explanations that we study.
-2.1 Metrics
 We focus our analysis on two state-of-the-art
 neural metrics  COMET (Rei et al., 2020) and
 UNITE(Wan et al., 2022).1While both metrics
@@ -120,7 +117,8 @@ Interestingly, UNITEis trained to obtain quality
 src] (SRC),[mt  ref] (REF), and [mt  src 
 ref] (SRC REF). In fact, when the input is SRC,
 UNITEworks like TransQuest (Ranasinghe et al.,
-1 2022 Metrics
+1Ensembles composed of these two metrics were respectively
+ ranked second and third in WMT 2022 Metrics
 shared task. The winner of WMT 2022 Metrics task   METRICXXL
    is not publicly available (Freitag et al., 2022).2020)  REF, like BLEURT (Sellam et al., 2020) 
 andSRC REF, like ROBLEURT (Wan et al., 2021).
@@ -143,7 +141,6 @@ the following techniques to extract explanations 2
  embed align  the maximum cosine similarity
  between each translation token embedding
 and the reference and/or source token embeddings
- (Tao et al., 2022) 
  gradℓ2  theℓ2-norm of gradients with respect
 to the word embeddings of the translation tokens
  (Arras et al., 2019) 
@@ -167,26 +164,29 @@ corresponding error spans. In our framework, these
 performance consistently over selecting just the best head (Treviso
  et al., 2021  Rei et al., 2022b). Moreover, we use the full
 attention matrix, instead of relying only on cross attention
-information.
 3https //github.com/google/
 wmt-mqm-human-evaluationMETRICEXPLAINABILITY en de zh en en ru Avg.
 METHOD AUC R@K AUC R@K AUC R@K AUC R@K
-src-only evaluation
-UNITE
 SRCembed align[mt, src]0.587 0.339 0.644 0.281 0.583 0.167 0.604 0.262
-gradℓ2 0.572 0.293 0.535 0.200 0.620 0.169 0.576 0.221 0.636 0.322 0.612 0.253 0.612 0.189 0.620 0.254 0.707 0.376 0.639 0.294 0.633 0.211 0.660 0.294
-ref-only evaluation
-UNITE
+gradℓ2 0.572 0.293 0.535 0.200 0.620 0.169 0.576 0.221
+attention 0.636 0.322 0.612 0.253 0.612 0.189 0.620 0.254
+attn grad 0.707 0.376 0.639 0.294 0.633 0.211 0.660 0.294
 REFembed align[mt, ref]0.658 0.396 0.667 0.328 0.635 0.218 0.653 0.314
-gradℓ2 0.596 0.319 0.571 0.260 0.661 0.202 0.609 0.261 0.637 0.344 0.670 0.335 0.652 0.224 0.653 0.301 0.725 0.425 0.667 0.380 0.660 0.248 0.684 0.351
+gradℓ2 0.596 0.319 0.571 0.260 0.661 0.202 0.609 0.261
+attention 0.637 0.344 0.670 0.335 0.652 0.224 0.653 0.301
+attn grad 0.725 0.425 0.667 0.380 0.660 0.248 0.684 0.351
 src,ref joint evaluation
-UNITE
 SRC REFembed align[mt, src  ref]0.650 0.383 0.670 0.330 0.618 0.213 0.646 0.309
-gradℓ2 0.595 0.325 0.579 0.257 0.643 0.191 0.606 0.257 0.657 0.421 0.670 0.383 0.649 0.223 0.659 0.342 0.736 0.421 0.674 0.383 0.671 0.248 0.693 0.351
+gradℓ2 0.595 0.325 0.579 0.257 0.643 0.191 0.606 0.257
+attention 0.657 0.421 0.670 0.383 0.649 0.223 0.659 0.342
+attn grad 0.736 0.421 0.674 0.383 0.671 0.248 0.693 0.351
 COMETembed align[mt, src]0.590 0.371 0.674 0.314 0.577 0.220 0.614 0.301
 embed align[mt, ref]0.694 0.425 0.696 0.355 0.647 0.275 0.679 0.352
 embed align[mt, src  ref]0.688 0.416 0.697 0.357 0.622 0.279 0.669 0.350
-gradℓ2 0.603 0.312 0.540 0.252 0.604 0.185 0.582 0.250 0.604 0.351 0.592 0.259 0.633 0.209 0.608 0.268 0.710 0.365 0.633 0.278 0.662 0.244 0.669 0.295 1  AUC and Recall@K of explanations obtained via different attribution methods for C OMET and U NITE
+gradℓ2 0.603 0.312 0.540 0.252 0.604 0.185 0.582 0.250
+attention 0.604 0.351 0.592 0.259 0.633 0.209 0.608 0.268
+attn grad 0.710 0.365 0.633 0.278 0.662 0.244 0.669 0.295
+Table 1  AUC and Recall@K of explanations obtained via different attribution methods for C OMET and U NITE
 models on the MQM data. Although U NITESRCis asrc-only evaluation metric, it was trained with reference
 information (Wan et al., 2022).
 error spans should align with the words that the
@@ -208,12 +208,12 @@ metrics have been used as the main metrics in previous
  works on explainable QE (Fomicheva et al.,
 2021, 2022  Zerva et al., 2022).
 4https //huggingface.co/Unbabel/
-wmt22-comet-da
 5Our implementation differs from the original work by
 Wan et al. (2022), See Appendix A for full details.
 6In this setup, Recall@K is the proportion of words with
 the highest attribution that correspond to translation errors
-against the total number of errors in the annotated error span.4 4.1 High-level analysis
+against the total number of errors in the annotated error span.4 Results
+4.1 High-level analysis
 Explanations are tightly related to the underlying
  metric architecture. The results in Table
  1 show that the predictive power of the attribution
@@ -235,12 +235,10 @@ explainability methods developed for QE systems
 can translate well to reference-based metrics. We
 provide examples of explanations in Appendix C.
 Reference information boosts explainability
-power. Table 1 also shows that, across all met In
+power. Table 1 also shows that, across all met7In
  Appendix B, we provide a comparison between the
 explanations obtained via embed align with COMET and with
 its pretrained encoder model, XLM-R.NEG HALL NE NUM00.20.40.6Recall@KCOMETUNITE
-REFUNITE
-SRC REF
 Figure 2  Performance of the best attribution methods
 for C OMET , U NITE REFand U NITESRC REFin
 terms of Recall@K on translations with critical errors 
@@ -259,7 +257,6 @@ interesting  in some cases, reference-based metrics
  may largely ignore source information, relying
 heavily on the reference instead.
 4.2 How do the explanations fare for critical
-translation errors 
 The MQM data analyzed until now consists primarily
  of high quality translations, with the majority of
 annotated errors being non-critical. However, it is
@@ -342,7 +339,6 @@ reference-based metrics errors. To support these
 studies, we call for future datasets illustrating critical
  errors (e.g., challenge sets (Karpinska et al.,
 2022)) to be accompanied by annotated error spans.
-Limitations
 We highlight three main limitations of our work.
 First, although we have explored gradient-based
 explanations that take the whole network into consideration
@@ -351,7 +347,6 @@ previous work (Bastings et al., 2021), we do not explicitly
  explore how COMET combines the sentence
 representations in the feed-forward that precedes
 the encoder model to produce the sentence-level
-score.
 Second, we have shown that combining attention
  with gradient information results in the best
 explanations for UNITE-based metrics. However,
@@ -360,14 +355,12 @@ extracting the explainability scores simultaneously
 may be more computationally expensive than other
 techniques  gradient-based metrics beneﬁt from
 GPU infrastructure and require storing all gradient
-information.
 Third, we have not explored extracting explanations
  in low-resource settings. That is because
 high-quality MQM annotations for such language
 pairs are not yet available. Nevertheless, further
 research in those settings is needed to access the
 broader validity of our claims.
-Acknowledgements
 This work was partially supported by the P2020
 programs (MAIA, contract 045909), the Portuguese
  Recovery and Resilience Plan (PRR)
@@ -384,7 +377,6 @@ C. de Souza, and André F. T. Martins. 2022. Robust
  Augmentation. In Proceedings of the Seventh
 Conference on Machine Translation , pages 469 478,
 Abu Dhabi. Association for Computational Linguistics.
-
 Chantal Amrhein and Rico Sennrich. 2022. Identifying
  Weaknesses in Machine Translation Metrics
 Through Minimum Bayes Risk Decoding  A Case
@@ -392,15 +384,14 @@ Study for COMET. In Proceedings of the 2nd Conference
  of the Asia-Paciﬁc Chapter of the Association
  for Computational Linguistics and the 12th International
  Joint Conference on Natural Language
-Processing (Volume 1  Long Papers) , pages 1125 1141, Online only. Association for Computational
-Linguistics.
+Processing (Volume 1  Long Papers) , pages 1125 
+1141, Online only. Association for Computational
 Leila Arras, Ahmed Osman, Klaus-Robert Müller, and
 Wojciech Samek. 2019. Evaluating recurrent neural
 network explanations. In Proceedings of the 2019
 ACL Workshop BlackboxNLP  Analyzing and Interpreting
  Neural Networks for NLP , pages 113 126,
 Florence, Italy. Association for Computational Linguistics.
-
 Pepa Atanasova, Jakob Grue Simonsen, Christina Lioma,
  and Isabelle Augenstein. 2020. A diagnostic
 study of explainability techniques for text classiﬁcation.
@@ -412,7 +403,6 @@ Jasmijn Bastings, Sebastian Ebert, Polina Zablotskaia,
 Anders Sandholm, and Katja Filippova. 2021. "will
 you ﬁnd these shortcuts " a protocol for evaluating
 the faithfulness of input salience methods for text
-classiﬁcation.
 Chris Callison-Burch, Miles Osborne, and Philipp
 Koehn. 2006. Re-evaluating the role of Bleu in machine
  translation research. In 11th Conference of
@@ -421,7 +411,6 @@ the European Chapter of the Association for Computational
 Association for Computational Linguistics.
 Tyler A. Chang, Zhuowen Tu, and Benjamin K. Bergen.
 2022. The geometry of multilingual language model
-representations.
 Ethan A. Chi, John Hewitt, and Christopher D. Manning.
  2020. Finding universal grammatical relations
  in multilingual BERT. In Proceedings of the
@@ -433,30 +422,27 @@ Vishrav Chaudhary, Guillaume Wenzek, Francisco
 Guzmán, Edouard Grave, Myle Ott, Luke Zettlemoyer,
  and Veselin Stoyanov. 2020. Unsupervised
 cross-lingual representation learning at scale. InProceedings of the 58th Annual Meeting of the Association
- for Computational Linguistics , pages 8440 8451, Online. Association for Computational Linguistics.
-
+ for Computational Linguistics , pages 8440 
+8451, Online. Association for Computational Linguistics.
 Daniel Deutsch, Rotem Dror, and Dan Roth. 2021. A
 statistical analysis of summarization evaluation metrics
  using resampling methods. Transactions of the
-Association for Computational Linguistics , 9 1132 1146.
+Association for Computational Linguistics , 9 1132 
 Patrick Fernandes, Marcos Treviso, Danish Pruthi, André
  F. T. Martins, and Graham Neubig. 2022. Learning
  to scaffold  Optimizing model explanations for
-teaching.
 Marina Fomicheva, Piyawat Lertvittayakumjorn, Wei
 Zhao, Steffen Eger, and Yang Gao. 2021. The
-Eval NLP shared task on explainable quality estimation 
+Eval4NLP shared task on explainable quality estimation 
  Overview and results. In Proceedings of
 the 2nd Workshop on Evaluation and Comparison of
 NLP Systems , pages 165 178, Punta Cana, Dominican
  Republic. Association for Computational Linguistics.
-
 Marina Fomicheva, Lucia Specia, and Nikolaos Aletras.
 2022. Translation error detection as rationale extraction.
  In Findings of the Association for Computational
  Linguistics  ACL 2022 , pages 4148 4159,
 Dublin, Ireland. Association for Computational Linguistics.
-
 Markus Freitag, Ricardo Rei, Nitika Mathur, Chikiu
  Lo, Craig Stewart, Eleftherios Avramidis, Tom
 Kocmi, George Foster, Alon Lavie, and André F. T.
@@ -465,7 +451,6 @@ Task  Stop Using BLEU   Neural Metrics Are Better
  and More Robust. In Proceedings of the Seventh
 Conference on Machine Translation , pages 46 68,
 Abu Dhabi. Association for Computational Linguistics.
-
 Markus Freitag, Ricardo Rei, Nitika Mathur, Chi-kiu
 Lo, Craig Stewart, George Foster, Alon Lavie, and
 Ondˇrej Bojar. 2021. Results of the WMT21 metrics
@@ -481,7 +466,6 @@ comprehensive study of hallucinations in neural machine
  of the European Chapter of the Association
 for Computational Linguistics , pages 1059 1075,
 Dubrovnik, Croatia. Association for Computational
-Linguistics.
 Sarthak Jain and Byron C. Wallace. 2019. Attention is
 not Explanation. In Proceedings of the 2019 Conference
  of the North American Chapter of the Association
@@ -509,21 +493,19 @@ natural language generation.
 Arle Lommel, Hans Uszkoreit, and Aljoscha Burchardt.
 2014. Multidimensional Quality Metrics (MQM)  
 A Framework for Declaring and Describing Translation
- Quality Metrics. Tradumàtica , pages 0455 463.
+ Quality Metrics. Tradumàtica , pages 0455 
 Nitika Mathur, Timothy Baldwin, and Trevor Cohn.
 2020. Tangled up in BLEU  Reevaluating the evaluation
  of automatic machine translation evaluation
 metrics. In Proceedings of the 58th Annual Meeting
  of the Association for Computational Linguistics ,
 pages 4984 4997, Online. Association for Computational
- Linguistics.
 Kishore Papineni, Salim Roukos, Todd Ward, and WeiJing
  Zhu. 2002. Bleu  a method for automatic evaluation
  of machine translation. In Proceedings of
 the 40th Annual Meeting of the Association for Computational
  Linguistics , pages 311 318, Philadelphia,
 Pennsylvania, USA. Association for Computational
-Linguistics.
 Maja Popovi  c. 2015. chrF  character n-gram F-score
 for automatic MT evaluation. In Proceedings of the
 Tenth Workshop on Statistical Machine Translation ,
@@ -545,7 +527,6 @@ Alon Lavie, Luisa Coheur, and André F. T. Martins.
  for the Metrics Shared Task. In Proceedings
 of the Seventh Conference on Machine Translation ,
 pages 578 585, Abu Dhabi. Association for Computational
- Linguistics.
 Ricardo Rei, Craig Stewart, Ana C Farinha, and Alon
 Lavie. 2020. COMET  A neural framework for MT
 evaluation. In Proceedings of the 2020 Conference
@@ -572,13 +553,11 @@ Ananya B. Sai, Vignesh Nagarajan, Tanay Dixit, Raj
 Dabre, Anoop Kunchukuttan, Pratyush Kumar, and
 Mitesh M. Khapra. 2022. IndicMT Eval  A Dataset
 to Meta-Evaluate Machine Translation metrics for
-Indian Languages.
 Thibault Sellam, Dipanjan Das, and Ankur Parikh.
 2020. BLEURT  Learning robust metrics for text
 generation. In Proceedings of the 58th Annual Meeting
  of the Association for Computational Linguistics ,
 pages 7881 7892, Online. Association for Computational
- Linguistics.
 Avanti Shrikumar, Peyton Greenside, and Anshul Kundaje.
  2017. Learning Important Features Through
 Propagating Activation Differences. In Proceedings
@@ -590,7 +569,6 @@ Aaron Smith, Christian Hardmeier, and Joerg Tiedemann.
 world of reachable high-BLEU translations. In Proceedings
  of the 19th Annual Conference of the European
  Association for Machine Translation , pages
-269 281.
 Mukund Sundararajan, Ankur Taly, and Qiqi Yan. 2017.
 Axiomatic Attribution for Deep Networks. In Proceedings
  of the 34th International Conference on
@@ -602,12 +580,12 @@ HW-TSC 2022 Submission for the Quality Estimation
  Shared Task. In Proceedings of the Seventh
 Conference on Machine Translation , pages 646 652,
 Abu Dhabi. Association for Computational Linguistics.
-
 Marcos Treviso, Nuno M. Guerreiro, Ricardo Rei, and
 André F. T. Martins. 2021. IST-unbabel 2021 submission
  for the explainable quality estimation shared
 task. In Proceedings of the 2nd Workshop on Evaluation
- and Comparison of NLP Systems , pages 133 145, Punta Cana, Dominican Republic. Association
+ and Comparison of NLP Systems , pages 133 
+145, Punta Cana, Dominican Republic. Association
 for Computational Linguistics.
 Yu Wan, Dayiheng Liu, Baosong Yang, Tianchi Bi,
 Haibo Zhang, Boxing Chen, Weihua Luo, Derek F.
@@ -615,7 +593,6 @@ Wong, and Lidia S. Chao. 2021. RoBLEURT submission
  for WMT2021 metrics task. In Proceedings
  of the Sixth Conference on Machine Translation ,
 pages 1053 1058, Online. Association for Computational
- Linguistics.
 Yu Wan, Dayiheng Liu, Baosong Yang, Haibo Zhang,
 Boxing Chen, Derek Wong, and Lidia Chao. 2022.
 UniTE  Uniﬁed translation evaluation. In Proceedings
@@ -654,26 +631,27 @@ during training. Furthermore, Table 5 displays the
 segment-level correlations with WMT 2021 MQM
 data for the News and TED domains.
 Regarding computational infrastructure, a single
-NVIDIA A G GPU with 23GB memory was used.
-The resulting UNITEmodel has 565 581M parameters.
+NVIDIA A10G GPU with 23GB memory was used.
+The resulting UNITEmodel has 565M parameters
+while C OMET has 581M parameters.
 A.1 Output Distribution
 To better understand the output of the models and
 what scores are deemed low, we plotted the output
 distributions for the two models we used in our
 study. The average score for English  German
-data is 0.856 0.870for
+data is 0.856for the COMET model and 0.870for
 theUNITEmodel we trained. From Figure 3 we
 can observe the distribution of scores. This means
-that the 0.6692 1
+that the 0.6692 score from the example in Figure 1
 corresponds to a low quality output (5th percentile).
-A.2 4.2, we have created
+As we have seen in Section 4.2, we have created
  synthetic translation errors for the following
 pathologies  negation errors, hallucinations via insertions,
  named entity errors, and errors in numbers.
-Table 6 8 we show examples
+Table 6 presents a summary of the examples created
+using SMAUG and in Table 8 we show examples
 of each error category.
 B Comparison between C OMET and
-XLM-RAlignments
 From Table 1, it is evident that the alignments between
  the reference and/or source and the translation
  yield effective explanations for COMET . This
@@ -688,8 +666,7 @@ error spans than those obtained from XLM-R alignments.
 phase, COMET models modify the underlying
 XLM-R representations to achieve better alignment
 with translation errors.
-C Examples
-In Tables 9 10, we show examples of
+In Tables 9 and 10, we show examples of
 COMET explanations for Chinese  English and
 English German language pairs, respectively. We
 highlight in gray the corresponding MQM annotation
@@ -715,64 +692,25 @@ embed align[mt, ref]0.671 0.405 0.689 0.345 0.634 0.244 0.664 0.331
 embed align[mt, src  ref]0.666 0.395 0.690 0.347 0.616 0.242 0.657 0.328
 COMETembed align[mt, src]0.590 0.371 0.674 0.314 0.577 0.220 0.614 0.301
 embed align[mt, ref]0.694 0.425 0.696 0.355 0.647 0.275 0.679 0.352
-embed align[mt, src  ref]0.688 0.416 0.697 0.357 0.622 0.279 0.669 0.350 2  AUC and Recall@K of explanations obtained via alignments for C OMET and X LM-Rwithout any further
+embed align[mt, src  ref]0.688 0.416 0.697 0.357 0.622 0.279 0.669 0.350
+Table 2  AUC and Recall@K of explanations obtained via alignments for C OMET and X LM-Rwithout any further
 ﬁne-tuning on human annotations.
 Hyperparameter UNITE C OMET
 Encoder Model XLM-R (large)
-Optimizer AdamW
 No. frozen epochs 0.3
 Learning rate (LR) 1.5e-05
-Encoder LR. 1.0e-06 0.95 16 0.1
 Hidden sizes [3072, 1024]
 Embedding layer Frozen
-FP precision 16
-No. Epochs 1 2 3  Hyperparameters used to train U NITE and
+Table 3  Hyperparameters used to train U NITE and
 COMET checkpoints used in this work. The only difference
  between the two is the number of training epochs
 due to the fact that, for U NITE, the best validation
 checkpoint is the ﬁrst one.Language Pair SIZE
-zh-en 126947
-en-de 121420
-de-en 99183
-en-zh 90805
-ru-en 79280
-en-ru 62749
-en-cs 60937
-ﬁ-en 46145
-en-ﬁ 34335
-tr-en 30186
-et-en 29496
-cs-en 27847
-en-mr 26000
-de-cs 13804
-en-et 13376
-pl-en 11816
-en-pl 10572
-lt-en 10315
-en-ja 9578
-gu-en 9063
-si-en 9000
-ro-en 9000
-ne-en 9000
-en-lt 8959
-ja-en 8939
-en-kk 8219
-en-ta 7890
-ta-en 7577
-en-gu 6924
-kk-en 6789
-de-fr 6691
-en-lv 5810
-en-tr 5171
-km-en 4722
-ps-en 4611
-fr-de 3999 1027155 4  Number of direct assessments per language
+Table 4  Number of direct assessments per language
 pair used to train C OMET (Rei et al., 2022a) and the
 UNITE model used in this work.(a) C OMET
-(b) U NITESRC
-(c) U NITEREF
-(d) U NITESRC REF
-Figure 3  Distribution of scores for all metrics obtained on the MQM data (for all language pairs).BLEU CHR F Y ISI-1 22-comet-daEN DE
+Figure 3  Distribution of scores for all metrics obtained on the MQM data (for all language pairs).BLEU CHR F Y ISI-1 B LEURT UNITE U NITE U NITE C OMET
+SRC REF SRC REF wmt22-comet-daEN DE
 Newsρ0.077 0.092 0.163 0.307 0.274 0.321 0.304 0.297
 τ0.069 0.092 0.144 0.240 0.222 0.248 0.241 0.232TEDρ0.151 0.158 0.236 0.325 0.311 0.335 0.338 0.329
 τ0.113 0.146 0.212 0.283 0.264 0.301 0.298 0.278EN RU
@@ -781,137 +719,79 @@ Newsρ0.153 0.252 0.263 0.359 0.333 0.391 0.382 0.363
 τ0.112 0.189 0.204 0.255 0.232 0.262 0.264 0.268ZH EN
 Newsρ0.215 0.231 0.301 0.428 0.413 0.438 0.426 0.445
 τ0.165 0.188 0.289 0.341 0.331 0.358 0.352 0.371TEDρ0.155 0.181 0.287 0.295 0.244 0.301 0.310 0.307
-τ0.113 0.144 0.216 0.246 0.224 0.265 0.266 0.269 5  Segment-level correlations for WMT 2021 MQM annotations over News and TED domains (Freitag et al.,
+τ0.113 0.144 0.216 0.246 0.224 0.265 0.266 0.269
+Table 5  Segment-level correlations for WMT 2021 MQM annotations over News and TED domains (Freitag et al.,
 2021). The metrics are Pearson ( ρ) and Kendall Tau ( τ). Results in bold indicate which metrics are top-performing
 for that speciﬁc language pair, domain and metric according to Perm-Both hypothesis test (Deutsch et al., 2021),
 using 500 re-sampling runs, and setting p  0.05.Error Type NUMEXAMPLES
-NE 978 669 530 432 2609 6  Number of examples for each category,
+Table 6  Number of examples for each category,
 synthetically-created using SMAUG (Alves et al.,
-2022).
 Language Pair TOKENS / SENT. E RRORS / SPANS
 en-de 528704 / 15310 25712 / 3567
 en-ru 525938 / 15074 17620 / 7172
-zh-en 603258 / 16506 43984 / 10042 7 2021
+zh-en 603258 / 16506 43984 / 10042
+Table 7  Statistics about MQM data from WMT 2021
 Metrics task (Freitag et al., 2021) used in our experiments.Source 
-
 格里沃里表示 分析人士对越南所提出的和平倡议给予认可 
-Translation 
 Grivory said that analysts recognize the peace initiative proposed by Vietnam.
-Reference 
 Grigory said that analysts endorse the peace initiative proposed by Vietnam.
-NE Error 
 Grivory said that analysts recognize the peace initiative proposed by Russia .
-Source 
 英国的这一决定预计将会使西班牙的旅游业大受影响 
-Translation 
 This decision by the United Kingdom is expected to greatly affect Spain s tourism industry.
-Reference 
 This decision by the UK is expected to have a signiﬁcant impact on tourism in Spain.
-NEGError 
 This decision by the United Kingdom is expected to greatly beneﬁt Spain s tourism industry.
-Source 
 由于疫情 人们开始在互联网上花费更多的时间  
-Translation 
 Because of the epidemic, people are starting to spend more time on the Internet."
-Reference 
 For reason of the pandemic, people are starting to spend more time on the Internet.  
-HALLError 
 Because we have a lot offriends around during the epidemic, people are starting to spend more time on the
 mobile devices than on the Internet."
-Source 
-展销区将展至7月29日 
-Translation 
 The exhibition and sales area will be open until July 29.
-Reference 
 The exhibition will last until July 29.
-NUMError 
-The exhibition and sales area will be open until July 2018 8  Synthetically-generated critical errors ( highlighted in gray ) created with SMAUG (Alves et al., 2022) to
+The exhibition and sales area will be open until July 2018
+Table 8  Synthetically-generated critical errors ( highlighted in gray ) created with SMAUG (Alves et al., 2022) to
 assess whether our explanations can be accurately attributed to critical errors.Source 
 And yet, the universe is not a silent movie because the universe isn t silent.
-Translation 
 Und dennoch ist das Universum kein Stummﬁlm, weil das Universum nicht still ist.
-COMET score  0.8595
-COMET explanation 
 _Und _dennoch _ist _das _Univers um _kein _Stu mm ﬁlm ,_weil _das _Univers um _nicht
-_still _ist .
-Source 
 And yet black holes may be heard even if they re not seen, and that s because they bang on space-time like a drum.
-Translation 
 Und dennoch werden Schwarze Löcher vielleicht gehört , auch wenn sie nicht gesehen werden, und das liegt daran,
 dass sie wie eine Trommel auf die Raumzeit schlagen.
-COMET score  0.7150
-COMET explanation 
 _Und _dennoch _werden _Schwarz e_Lö cher _vielleicht _gehört ,_auch _wenn _sie _nicht
 _gesehen _werden ,_und _das _liegt _daran ,_dass _sie _wie _eine _Tro mmel _auf _die
 _Raum zeit schlagen .
-Source 
 Ash O Brien and husband Jarett Kelley say they were grabbing a bite to eat at Dusty Rhodes dog park in San Diego on
 Thursday, with their three-month-old pug in tow.
-Translation 
 Ash O Brien und Ehemann Jarett Kelley sagen, dass sie am Donnerstag im Hundepark Dusty Rhodes in San Diego einen
 Happen zu essen griffen , mit ihrem drei Monate alten Mops im Schlepptau.
-COMET score  0.6835
-COMET explanation 
 _Ash _O  Bri en _und _Ehe mann _Ja rett _Kel ley _sagen ,_dass _sie _am _Donnerstag
 _im _Hunde park _Du sty _Rhod es_in _San _Diego _einen _Happ en _zu _essen _griff
 en_,_mit _ihrem _drei _Monate _alten _M ops _im _Schle ppt au.
-Source 
 It was Einstein s great general theory of relativity.
-Translation 
 Es war Einsteins große allgemeine Forschungen vor Relativitätstheorie.
-COMET score  0.6692
-COMET explanation 
 _Es _war _Einstein s_große _allgemein e_Forschung en_vor _Relativ ität sthe ori e.
-Source 
 There s mask-shaming and then there s full on assault.
-Translation 
 Es gibt Maskenschämen und dann ist es voll bei Angriff.
-COMET score  0.2318
-COMET explanation 
 _Es _gibt _Mask enschä men _und _dann _ist _es _voll _bei _Angriff _.
 Table 9  Saliency map for C OMET explanation scores for a set of en  de examples. Comparing the token-level explanations
  with the MQM annotation ( highlighted in gray ) reveals the source of correspondence between speciﬁc
 token-level translation errors and the resulting scores.Source 
 我想告诉大家 宇宙有着自己的配乐 而宇宙自身正在不停地播放着 因为太空可以想鼓一样振动 
-Translation 
 I want to tell you that the universe has its own iconic soundtrack and the universe itself is constantly playing non-stop
 because space can vibrate like a drum.
-COMET score  0.8634
-COMET explanation 
 _I_want _to _tell _you _that _the _univers e_has _its _own _icon ic_soundtrack _and _the
 _univers e_itself _is _constantly _playing _non -stop _because _space _can _vibra te_like _a
-_drum .
-Source 
 另外,吉克隽逸和刘烨作为运动助理,也围绕运动少年制造了不少爆笑话题 
-Translation 
 In addition, as sports assistants, Ji Kejunyi and Liu Ye have also created a lot of hilarious topics around sports teenagers.
-COMET score  0.8214
-COMET explanation 
 _In _addition ,_as _sports _assistant s,_Ji _Ke ju nyi _and _Li u_Ye _have _also
 _created _a_lot _of _hila rious _topic s_around _sports _teenager s.
-Source 
 一番言论让场上的少年和运动领队们都倒吸一口凉气 
-Translation 
 The remarks made the teenagers and the sports leaders on the ﬁeld gasp a sigh of relief .
-COMET score  0.7793
-COMET explanation 
 _The _re marks _made _the _teenager s_and _the _sports _leaders _on _the _ﬁeld _gas p_a
-_sig h_of _relief _.
-Source 
-强烈的阳光是如此地刺眼 
-Translation 
 The intense sunlight is so harsh 
-COMET score  0.7561
-COMET explanation 
 _The _intense _sun light _is _so _har sh 
-Source 
 如今 我们希望能够给这部关于宇宙的宏伟的视觉作品配上声音 
-Translation 
 Today , we hope to be able to give this magniﬁcent visual work of the universe a sound.
-COMET score  0.7073
-COMET explanation 
 _Today ,_we _hope _to _be _able _to _give _this _magniﬁc ent _visual _work _of _the
-_univers e_a_sound .
 Table 10  Saliency map for C OMET explanation scores for a set of zh  en examples. Comparing the tokenlevel
  explanations with the MQM annotation ( highlighted in gray ) reveals the source of correspondence between
 speciﬁc token-level translation errors and the resulting scores.

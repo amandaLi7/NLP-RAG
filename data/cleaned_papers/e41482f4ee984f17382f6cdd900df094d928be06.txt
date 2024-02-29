@@ -1,4 +1,3 @@
-Under review
 WEBARENA   A R EALISTIC WEBENVIRONMENT FOR
 BUILDING AUTONOMOUS AGENTS
 Shuyan Zhou Frank F. Xu Hao Zhu Xuhui Zhou 
@@ -6,7 +5,6 @@ Robert Lo Abishek Sridhar Xianyi Cheng Tianyue Ou
 Yonatan Bisk Daniel Fried Uri Alon Graham Neubig
 Carnegie Mellon University
 {shuyanzh, fangzhex, gneubig}@cs.cmu.edu
-ABSTRACT
 With advances in generative AI, there is now potential for autonomous agents
 to manage daily tasks via natural language commands. However, current agents
 are primarily created and tested in simplified synthetic environments, leading to
@@ -29,7 +27,6 @@ that current state-of-the-art large language models are far from perfect perform
 in these real-life tasks, and that WebArena can be used to measure such progress.
 Our code, data, environment reproduction resources, and video demonstrations are
 publicly available at https //webarena.dev/ .
-1 I NTRODUCTION
 Autonomous agents that perform everyday tasks via human natural language commands could
 significantly augment human capabilities, improve efficiency, and increase accessibility. Nonetheless,
 to fully leverage the power of autonomous agents, it is crucial to understand their behavior within an
@@ -38,20 +35,16 @@ agents on tasks that human users care about in a fair and consistent manner.
 Current environments for evaluate agents tend to over-simplify real-world situations. As a result, the
 functionality of many environments is a limited version of their real-world counterparts, leading to
 a lack of task diversity (Shi et al., 2017  Anderson et al., 2018  Gordon et al., 2018  Misra et al.,
-2016  Shridhar et al., 2020 2021  Yao et al., 2022a). In addition, these simplifications often lower
+2016  Shridhar et al., 2020  2021  Yao et al., 2022a). In addition, these simplifications often lower
 the complexity of tasks as compared to their execution in the real world (Puig et al., 2018  Shridhar
 et al., 2020  Yao et al., 2022a). Finally, some environments are presented as a static resource (Shi
 et al., 2017  Deng et al., 2023) where agents are confined to accessing only those states that were
 previously cached during data collection, thus limiting the breadth and diversity of exploration.
 Dor evaluation, many environments focus on comparing the textual surface form of the predicted
- Lead contributors.
- Equal contribution.
-1 2307.13854 3  [cs.AI]  25 2023 2023    Create a  NolanFans' repo, listing Nolan's Oscar-winning films in a README file
+1arXiv 2307.13854v3  [cs.AI]  25 Oct 2023Under review
+AgentActionFeedbackTell me how much I spent on food purchase in March 2023    Create a  NolanFans' repo, listing Nolan's Oscar-winning films in a README file
 check_repo check_readme check_answerFunctional SuccessFunctional FailureReddit wordmarkWhenever possible, Reddit s icon and wordmark should appear together. Reddit s wordmark is a reﬁned variation on its classic logo. The rounded letters and shorter  i  reﬂect the brand s friendly, whimsical nature. The dot on the  i  is Orangered (FF4500, PMS 172 C) and oversized, recalling Snoo s eyes.The wordmark should be aligned with the Snoo in the horizontal lockup, and the safe area determines relative placement in both conﬁgurations.REDDIT LOGO
-Version 09-2020 04
 Self-hosted fully functional web applications
-CMS
-Toolbox
 Knowledge resourcesWebArena
 Figure 1 WebArena is a standalone, self-hostable web environment for building autonomous agents.
 WebArena creates websites from four popular categories with functionality and data mimicking
@@ -94,11 +87,9 @@ the best GPT-4 agent performance is somewhat limited, with an end-to-end task su
 current LLMs stems from a lack of crucial capabilities such as active exploration and failure recovery
 to successfully perform complex tasks ( 5.2). These outcomes underscore the necessity for further
 development towards robust and effective agents (LeCun, 2022) in WebArena .
-2Under review
 Search for museums  in Pittsburghwebarena.wikipedia.com
 Search for each art museum on the Mapwebarena.openstreetmap.com
 Record the optimized results to the repowebarena.gitlab.com
- 
 Create an efficient itinerary to visit all of Pittsburgh's art museums with minimal driving distance starting from Schenley Park. Log the order in my  awesome-northeast-us-travel  repository  
 Figure 2  A high-level task that can be fully executed in WebArena . Success requires sophisticated,
 long-term planning and reasoning. To accomplish the goal (top), an agent needs to (1) find Pittsburgh
@@ -117,7 +108,8 @@ and observation space O( 2.3). The transition function T S   A   S is determinis
 defined by the underlying implementation of each website in the environment. Performing a task
 described by a natural language intent ican be formulated as a partially observable Markov decision
 process (POMDP)  at each time step t, an agent issues an action at  A given the partial observation
-ot  O. Consequently, the action results in a new state st 1 1  O. We propose a reward function r(a,s)to measure the success of a task execution, where
+ot  O. Consequently, the action results in a new state st 1  Sand its corresponding observation
+ot 1  O. We propose a reward function r(a,s)to measure the success of a task execution, where
 arepresents the sequence of actions, and sdenotes all intermediate states. This reward function
 assesses if state transitions align with the expectations of the intents. For example, with an intent to
 place an order, it verifies whether an order has been placed. Additionally, it evaluates the accuracy of
@@ -138,7 +130,6 @@ such as institutions or locations (2) a calculator, and (3) a scratchpad for tak
  and knowledge acquisition are critical in web-based tasks, we also incorporated various
 knowledge resources into WebArena . These resources range from general information hubs, such
 as the English Wikipedia, to more specialized knowledge bases, such as the website user manuals.
-3Under review
  li     div        a href "..."  img src "..."  /a        div class           a href "..." Outdoor Patio   /a           div                 span Rating  /span                 div                    span 82% /span                 /div                 a href   #reviews" 12  span Reviews /span  /a  webarena.onestopshop.com
 webarena.onestopshop.comRootWebArea  Patio, Lawn ..    link 'Image'      img 'Image'   link 'Outdoor Patio..    LayoutTable ''       StaticText 'Rating '       generic '82%'       link '12 Reviews'   StaticText  $49.99'   button 'Add to Cart  focusable  True   button 'Wish List  focusable      button 'Compare  focusable   webarena.onestopshop.com
 Figure 3  We design the observation to be the URL and the content of a web page, with options to
@@ -169,7 +160,6 @@ structured information of a web page while being more compact than the DOM repre
 We provide an option to limit the content to the contents within a viewport for all modes. This
 ensures that the observation can be input into a text-based model with limited context length or an
 image-based model with image size or resolution requirements.
-2.4 A CTION SPACE
 Following previous work on navigation and operation in web and embodied environments (Shi et al.,
 2017  Liu et al., 2018), we design a compound action space that emulates the keyboard and mouse
 operations available on web pages. Figure 4 lists all the available actions categorized into three
@@ -185,7 +175,6 @@ transformed into an n-way classification problem, thereby eliminating any disamb
 required from the agent or the underlying implementation. For example, issuing the action click
 1https //gitlab.com/gitlab-org/gitlab
 2https //developer.mozilla.org/en-US/docs/Glossary/Accessibility_tree
-4Under review
 [1582] clicks the button given the observation of [1582] Add to Cart . This flexible element
 selection allows WebArena to support agents designed in various ways ( e.g., accepting input from
 different modalities) without compromising fair comparison metrics such as step count.
@@ -218,10 +207,10 @@ into   create a {{site1}} account identical to my {{site2}} one  , with an insta
 Reddit, site2  GitLab}   and another like   {site1  GitLab, site2  OneStopShopping}  . Notably,
 tasks derived from the same template can have distinct execution traces. The similarity resides
 primarily in the high-level semantics rather than the specific implementation.
-We also provided a prompt for the annotators to use with ChatGPT for inspiration, that contains an
+We also provided a prompt for the annotators to use with ChatGPT3for inspiration, that contains an
 overview of each website and instructs the model to describe potential tasks to be performed on these
 sites. Furthermore, we offered a curated list of examples for annotators to reference.
-Intent Analysis In total, we curated 241 812 instantiated intents. On average, each
+Intent Analysis In total, we curated 241 templates and 812 instantiated intents. On average, each
 template is instantiated to 3.3 examples. The intent distribution is shown in Figure 6.
 Furthermore, we classify the intents into three primary categories with examples shown in Figure 5 
 (1)Information-seeking tasks expect a textual response. Importantly, these tasks in WebArena
@@ -234,9 +223,7 @@ history, checking order details to identify the most recent shampoo purchase.
 using a variety of interactive elements such as search functions and links. The objective is often
 to locate specific information or navigate to a particular section of a site.
 3https //chat.openai.com/
-5Under review
 Action Type Description
-noop Do nothing
 click(elem) Click at an element
 hover(elem) Hover on an element
 type(elem, text) Type to an element
@@ -246,18 +233,12 @@ new_tab Open a new tab
 tab_close Close current tab
 go_back Visit the last URL
 go_forward Undogo_back
-goto(URL) Go to URL
 Figure 4  Action Space of WebArenaCategory Example
-Information
 SeekingWhen was the last time I bought shampoo
 Compare walking and driving time
 from AMC Waterfront to Randyland
-Site
 NavigationCheckout merge requests assigned to me
 Show me the ergonomic chair
-with the best rating
-Content
-&
 ConfigPost to ask  whether I need a car in NYC 
 Delete the reviews from the scammer Yoke
 Figure 5  Example intents from three categories.
@@ -283,7 +264,8 @@ evaluation. The corresponding prompt details are provided in Appendix A.6. The f
 function applies to situations where the format of the answer is diverse. For instance, in responding
 to  Compare the time for walking and driving route from AMC Waterfront to Randyland  , it is
 essential to ensure that driving time and walking time are accurately linked with the correct terms.
-Thefuzzy_match function could also flexibly match the time  2 2 58 minutes ,  2 58  and others.
+Thefuzzy_match function could also flexibly match the time  2h58min  with different forms
+such as  2 hour 58 minutes ,  2 58  and others.
 Evaluating Site Navigation and Content & Config Tasks The tasks in these categories require
 accessing web pages that meet certain conditions or performing operations that modify the underlying
 data storage of the respective websites. To assess these, we establish reward functions rprog(s)
@@ -299,14 +281,14 @@ state sequence s. Then it navigates to the corresponding post page and obtains t
 running the Javascript  document.querySelector( .submission__inner ).outerText  .
 Subsequently, we annotate keywords that need to exist within the located content. For example,
 the evaluation verifies if the post is correctly posted in the  nyc  subreddit by examining the URL of
-6Under review
 Function ID Intent Eval Implementation
 rinfo(a ,ˆa)1Tell me the name of the customer who
 has the most cancellations in the historyexact_match (ˆa,  Samantha Jones )
-2 8015551212must_include (ˆa,  Sean Miller )
+2Find the customer name and
+email with phone number 8015551212must_include (ˆa,  Sean Miller )
 must_include (ˆa,  sean@gmail.com )
 3Compare walking and driving time
-from AMC Waterfront to Randylandfuzzy_match (ˆa,  walking  2h min )
+from AMC Waterfront to Randylandfuzzy_match (ˆa,  walking  2h58min )
 fuzzy_match (ˆa,  driving  21min )
 rprog(s)4Checkout merge requests
 assigned to meurl locate_current_url( s)
@@ -339,7 +321,7 @@ third annotator finalized the annotation. The programs to evaluate the remaining
 contributed by three of the authors who are proficient in JavaScript programming. Difficult tasks
 were often discussed collectively to ensure the correctness of the annotation. The annotation required
 the annotator to undertake the full execution and scrutinize the intermediate states.
-Avg. Time 110 74.68%
+Success Rate info 74.68%
 Success Rate others 81.32%
 Success Rate all 78.24%Human Performance We sample one task from each of the 170 templates
  and ask five computer science graduate students to perform these
@@ -356,7 +338,6 @@ context. In the first setting, we ask the LLM to directly predict the next actio
 observation, the intent and the previously performed action. In the second setting, with the same
 information, the model first performs chain-of-thought reasoning steps in the text before the action
 prediction (CoT, Wei et al. (2022)  Yao et al. (2022b)). Before the examples, we provide a detailed
-7Under review
 overview of the browser environment, the allowed actions, and many rules. To make the model aware
 of the unachievable tasks, the instruction explicitly asks the agent to stop if it believes the task is
 impossible to perform. We refer to this directive as Unachievable hint, or UA hint . This introduction
@@ -365,7 +346,6 @@ We use an accessibility tree with element IDs as the observation space. The agen
 element to interact with by the ID of the element. For instance, the agent can issue click [1582]
 to click the  Add to Cart  button with the ID of 1582. The full prompts can be found in Appendix
 A.7. The detailed configurations of each model can be found in Appendix A.5.
-5 5.1 M AINRESULTS
 CoT UA Hint Model SR SR AC SR UA
     TEXT -BISON -001 5.05 4.00 27.78
     GPT-3.5 6.41 4.90 38.89
@@ -374,7 +354,8 @@ CoT UA Hint Model SR SR AC SR UA
     GPT-3.5 5.10 4.90 8.33
     GPT-3.5 6.16 6.06 8.33
     GPT-4 14.41 13.02 44.44
--   Human 78.24 77.30 100.00 2  The end-to-end task success rate (SR %) on
+-   Human 78.24 77.30 100.00
+Table 2  The end-to-end task success rate (SR %) on
 WebArena with different prompting strategies. CoT 
 the model performs step-by-step reasoning before issuing
  the action. UA hint   ask the model to stop when
@@ -394,17 +375,15 @@ a success rate of 5.05%. These results underline
  the inherent challenges and complexities
 of executing tasks that span long horizons,
 particularly in realistic environments such as
-WebArena .
-5.2 A NALYSIS
 Do models know when to stop  In our error analysis of the execution trajectories, we observe
 a prevalent error pattern of early stopping due to the model s conclusion of unachievability. For
-instance, GPT-4 54.9% of feasible tasks as impossible. This issue primarily
+instance, GPT-4 erroneously identifies 54.9% of feasible tasks as impossible. This issue primarily
 stems from the UA hint in the instruction, while this hint allows models to identify unachievable
 tasks, it also hinders performance on achievable tasks. To address this, we conduct an ablation study
 where we remove this hint. We then break down the success rate for both achievable and unachievable
 tasks. As shown in Table 2, eliminating this instruction led to a performance boost in achievable
-tasks, enhancing the overall task success rate of GPT-4 14.41%. Despite an overall decline in
-identifying unachievable tasks, GPT-4 44.44% of such tasks. It does
+tasks, enhancing the overall task success rate of GPT-4 to 14.41%. Despite an overall decline in
+identifying unachievable tasks, GPT-4 retains the capacity to recognize 44.44% of such tasks. It does
 so by generating reasons of non-achievability , even without explicit instructions. On the other hand,
 GPT-3.5 rarely exhibits this level of reasoning. Instead, it tends to follow problematic patterns such
 as hallucinating incorrect answers, repeating invalid actions, or exceeding the step limits. This result
@@ -412,32 +391,28 @@ suggests that even subtle differences in instruction design can significantly in
 a model in performing interactive tasks in complex environments.
 0.1 0.2 0.3 0.4 0.5 0.6 0.8 1.0
 Success rate (%) within a template0510152025# T emplategpt-3.5-direct
-gpt-3.5-cot
-gpt-4-cot
-Table 3 1successful executions on
+Table 3  Distribution of success
+ rates on templates with
+ 1successful executions on
 GPT models (no UA hint).Can a model maintain consistent performance across similar
 tasks  Tasks that originate from the same template usually follow
 similar reasoning and planning processes, even though their observations
  and executions will differ. We plot a histogram of per-template
-success rates for our models in Table 3. Of the 61 templates, GPT-4 100% task success rate on only four templates,
+success rates for our models in Table 3. Of the 61 templates, GPT-4
+manages to achieve a 100% task success rate on only four templates,
 while GPT-3.5 fails to achieve full task completion for any of the
 templates. In many cases, the models are only able to complete one
 task variation with a template. These observations indicate that even
 when tasks are derived from the same template, they can present
-8Under review
-BenchmarkDynamic
 Interaction Realistic
-Environment Diverse
 Human Tasks Functional
-Correctness 
-Mind Web (Deng et al., 2023)        
+Mind2Web (Deng et al., 2023)        
 Form/QAWoB (Shi et al., 2017)        
 MiniWoB   (Liu et al., 2018)        
 Webshop (Yao et al., 2022a)        
 ALFRED (Shridhar et al., 2020)        
 VirtualHome (Puig et al., 2018)        
 AndroidEnv (Toyama et al., 2021)        
-WebArena        
 Table 4  The comparison between our benchmark and existing benchmarks on grounding natural
 language instructions to concrete executions. Our benchmark is implemented in our fully interactable
 highly-realistic environment. It features diverse tasks humans may encounter in their daily routines.
@@ -448,7 +423,6 @@ its complexity. Therefore, WebArena provide a testbed to evaluate more sophistic
 particular, those that incorporate memory components, enabling the reuse of successful strategies
 from past experiments Zhou et al. (2022a)  Wang et al. (2023). More error analysis with examples
 can be found in Appendix A.8.
-6 R ELATED WORK
 Benchmarks for Controlling Agents through Natural Language Controlling agents via natural
 language in the digital world have been studied in the literature (Branavan et al., 2009  Shi et al., 2017 
 Liu et al., 2018  Toyama et al., 2021  Deng et al., 2023  Li et al., 2020  Xu et al., 2021). However,
@@ -476,7 +450,6 @@ more structured approach to planning while also allowing for decision reconsider
 2023  Kim et al., 2023), observation summarization (Sridhar et al., 2023) to improve execution
 robustness. The complexity of WebArena presents a unique challenge and opportunity for further
 testing and improvement of these methods.
-9 7 C ONCLUSION
 We present WebArena , a highly-realistic, standalone, and reproducible web environment designed
 for the development and testing of autonomous agents. WebArena includes fully functional web
 applications and genuine data from four major categories, providing a realistic platform for agent
@@ -488,7 +461,6 @@ according to the desired objectives. Our experiments show that even GPT-4 only a
 end-to-end task success rate of 14.41%, significantly lagging behind the human performance of
 78.24%. These findings underscore the need for future research to focus on enhancing the robustness
 and efficacy of autonomous agents within WebArena environment.
-ACKNOWLEDGEMENT
 We would like to thank Emmy Liu, Zhiruo Wang, Zhitong Guo for examining our annotations,
 Shunyu Yao for providing the raw Amazon product data in Webshop, Pengfei Liu, Zaid Sheikh
 and Aman Madaan for the helpful discussions. We are also grateful to the Center for AI Safety for
@@ -499,7 +471,6 @@ copyright notation thereon. The views and conclusions contained herein are those
 and should not be interpreted as necessarily representing the official policies or endorsements, either
 expressed or implied, of the Air Force Research Laboratory or the U.S. Government. This project
 was also partially supported by a gift from AWS AI.
-REFERENCES
 Peter Anderson, Qi Wu, Damien Teney, Jake Bruce, Mark Johnson, Niko Sünderhauf, Ian D.
 Reid, Stephen Gould, and Anton van den Hengel. Vision-and-language navigation  Interpreting
  visually-grounded navigation instructions in real environments. In 2018 IEEE Conference
@@ -528,14 +499,14 @@ Daniel Sohn, Simon Tokumine, Dasha Valter, Vijay Vasudevan, Kiran V odrahalli, X
 Pidong Wang, Zirui Wang, Tao Wang, John Wieting, Yuhuai Wu, Kelvin Xu, Yunhan Xu, Linting
 Xue, Pengcheng Yin, Jiahui Yu, Qiao Zhang, Steven Zheng, Ce Zheng, Weikang Zhou, Denny
 Zhou, Slav Petrov, and Yonghui Wu. Palm 2 technical report, 2023.
-10Under review
 Yonatan Bisk, Jan Buys, Karl Pichotta, and Yejin Choi. Benchmarking hierarchical script knowledge.
 InProceedings of the 2019 Conference of the North American Chapter of the Association for
 Computational Linguistics  Human Language Technologies, Volume 1 (Long and Short Papers) ,
 pp. 4077 4085, Minneapolis, Minnesota, 2019. Association for Computational Linguistics. doi 
 10.18653/v1/N19-1412. URL https //aclanthology.org/N19-1412 .
 S.R.K. Branavan, Harr Chen, Luke Zettlemoyer, and Regina Barzilay. Reinforcement learning for
-mapping instructions to actions. In Proceedings of the Joint Conference of the 47 4th International Joint Conference on Natural Language Processing of the
+mapping instructions to actions. In Proceedings of the Joint Conference of the 47th Annual Meeting
+of the ACL and the 4th International Joint Conference on Natural Language Processing of the
 AFNLP , pp. 82 90, Suntec, Singapore, 2009. Association for Computational Linguistics. URL
 https //aclanthology.org/P09-1010 .
 Greg Brockman, Vicki Cheung, Ludwig Pettersson, Jonas Schneider, John Schulman, Jie Tang, and
@@ -543,14 +514,12 @@ Wojciech Zaremba. Openai gym, 2016. URL https //arxiv.org/abs/1606.01540 .
 Mark Chen, Jerry Tworek, Heewoo Jun, Qiming Yuan, Henrique Ponde, Jared Kaplan, Harri Edwards,
 Yura Burda, Nicholas Joseph, Greg Brockman, et al. Evaluating large language models trained
 on code. ArXiv preprint , abs/2107.03374, 2021. URL https //arxiv.org/abs/2107.
-03374 .
 Xiang Deng, Yu Gu, Boyuan Zheng, Shijie Chen, Samuel Stevens, Boshi Wang, Huan Sun, and
-Yu Su. Mind web  Towards a generalist agent for the web, 2023.
+Yu Su. Mind2web  Towards a generalist agent for the web, 2023.
 Linxi Fan, Guanzhi Wang, Yunfan Jiang, Ajay Mandlekar, Yuncong Yang, Haoyi Zhu, Andrew Tang,
 De-An Huang, Yuke Zhu, and Anima Anandkumar. Minedojo  Building open-ended embodied
 agents with internet-scale knowledge. In Thirty-sixth Conference on Neural Information Processing
 Systems Datasets and Benchmarks Track , 2022. URL https //openreview.net/forum 
-id rc o_j I PX .
 Luyu Gao, Aman Madaan, Shuyan Zhou, Uri Alon, Pengfei Liu, Yiming Yang, Jamie Callan, and
 Graham Neubig. Pal  Program-aided language models. In International Conference on Machine
 Learning , pp. 10764 10799. PMLR, 2023.
@@ -566,9 +535,9 @@ synthesis. arXiv preprint arXiv 2307.12856 , 2023.
 Wenlong Huang, Pieter Abbeel, Deepak Pathak, and Igor Mordatch. Language models as zeroshot
  planners  Extracting actionable knowledge for embodied agents. In Kamalika Chaudhuri,
 Stefanie Jegelka, Le Song, Csaba Szepesvári, Gang Niu, and Sivan Sabato (eds.), International
-Conference on Machine Learning, ICML 2022, 17-23 2022, Baltimore, Maryland, USA ,
+Conference on Machine Learning, ICML 2022, 17-23 July 2022, Baltimore, Maryland, USA ,
 volume 162 of Proceedings of Machine Learning Research , pp. 9118 9147. PMLR, 2022. URL
-https //proceedings.mlr.press/v162/huang a.html .
+https //proceedings.mlr.press/v162/huang22a.html .
 Yacine Jernite, Kavya Srinet, Jonathan Gray, and Arthur Szlam. CraftAssist Instruction Parsing 
 Semantic Parsing for a Minecraft Assistant. ArXiv preprint , abs/1905.01978, 2019. URL https 
 //arxiv.org/abs/1905.01978 .
@@ -577,13 +546,13 @@ ArXiv preprint , abs/2303.17491, 2023. URL https //arxiv.org/abs/2303.17491 .
 Eric Kolve, Roozbeh Mottaghi, Winson Han, Eli VanderBilt, Luca Weihs, Alvaro Herrasti, Daniel
 Gordon, Yuke Zhu, Abhinav Gupta, and Ali Farhadi. AI2-THOR  An Interactive 3D Environment
 for Visual AI. arXiv , 2017.
-11Under review
 Heinrich Küttler, Nantas Nardelli, Alexander H. Miller, Roberta Raileanu, Marco Selvatici,
 Edward Grefenstette, and Tim Rocktäschel. The nethack learning environment. In
 Hugo Larochelle, Marc Aurelio Ranzato, Raia Hadsell, Maria-Florina Balcan, and HsuanTien
- Lin (eds.), Advances in Neural Information Processing Systems 33 2020, NeurIPS 2020, December 6-12,
+ Lin (eds.), Advances in Neural Information Processing Systems 33  Annual Conference
+ on Neural Information Processing Systems 2020, NeurIPS 2020, December 6-12,
 2020, virtual , 2020. URL https //proceedings.neurips.cc/paper/2020/hash/
-569 2-Abstract.html .
+569ff987c643b4bedf504efda8f786c2-Abstract.html .
 Tom Kwiatkowski, Jennimaria Palomaki, Olivia Redfield, Michael Collins, Ankur Parikh, Chris
 Alberti, Danielle Epstein, Illia Polosukhin, Jacob Devlin, Kenton Lee, Kristina Toutanova, Llion
 Jones, Matthew Kelcey, Ming-Wei Chang, Andrew M. Dai, Jakob Uszkoreit, Quoc Le, and Slav
@@ -591,9 +560,8 @@ Petrov. Natural questions  A benchmark for question answering research. Transact
 Association for Computational Linguistics , 7 452 466, 2019. doi  10.1162/tacl_a_00276. URL
 https //aclanthology.org/Q19-1026 .
 Yann LeCun. A path towards autonomous machine intelligence version 0.9. 2, 2022-06-27. Open
-Review , 62, 2022.
 Kenton Lee, Mandar Joshi, Iulia Raluca Turc, Hexiang Hu, Fangyu Liu, Julian Martin Eisenschlos,
-Urvashi Khandelwal, Peter Shaw, Ming-Wei Chang, and Kristina Toutanova. Pix struct  Screenshot
+Urvashi Khandelwal, Peter Shaw, Ming-Wei Chang, and Kristina Toutanova. Pix2struct  Screenshot
 parsing as pretraining for visual language understanding. In International Conference on Machine
 Learning , pp. 18893 18912. PMLR, 2023.
 Xinze Li, Yixin Cao, Muhao Chen, and Aixin Sun. Take a break in the middle  Investigating
@@ -611,14 +579,12 @@ Evan Zheran Liu, Kelvin Guu, Panupong Pasupat, Tianlin Shi, and Percy Liang. Rei
 learning on web interfaces using workflow-guided exploration. In 6th International Conference on
 Learning Representations, ICLR 2018, Vancouver, BC, Canada, April 30 - May 3, 2018, Conference
 Track Proceedings . OpenReview.net, 2018. URL https //openreview.net/forum id 
-ryTp f-0- .
 Jieyi Long. Large language model guided tree-of-thought. ArXiv preprint , abs/2305.08291, 2023.
 URLhttps //arxiv.org/abs/2305.08291 .
 Aman Madaan, Shuyan Zhou, Uri Alon, Yiming Yang, and Graham Neubig. Language models of
 code are few-shot commonsense learners. In Proceedings of the 2022 Conference on Empirical
 Methods in Natural Language Processing , pp. 1384 1403, Abu Dhabi, United Arab Emirates,
 2022. Association for Computational Linguistics. URL https //aclanthology.org/
-2022.emnlp-main.90 .
 Dipendra K Misra, Jaeyong Sung, Kevin Lee, and Ashutosh Saxena. Tell me dave  Context-sensitive
 grounding of natural language to manipulation instructions. The International Journal of Robotics
 Research , 35(1-3) 281 300, 2016.
@@ -627,10 +593,9 @@ Hesse, Shantanu Jain, Vineet Kosaraju, William Saunders, et al. Webgpt  Browser-
 question-answering with human feedback. arXiv preprint arXiv 2112.09332 , 2021.
 OpenAI. Chatgpt  Optimizing language models for dialogue. 2022.
 OpenAI. Gpt-4 technical report. arXiv , pp. 2303 08774, 2023.
-12Under review
 Long Ouyang, Jeffrey Wu, Xu Jiang, Diogo Almeida, Carroll Wainwright, Pamela Mishkin, Chong
 Zhang, Sandhini Agarwal, Katarina Slama, Alex Ray, et al. Training language models to follow
-instructions with human feedback. Advances in Neural Information Processing Systems , 35 27730 27744, 2022.
+instructions with human feedback. Advances in Neural Information Processing Systems , 35 
 Xavier Puig, Kevin Ra, Marko Boben, Jiaman Li, Tingwu Wang, Sanja Fidler, and Antonio
 Torralba. Virtualhome  Simulating household activities via programs. In 2018 IEEE Conference
  on Computer Vision and Pattern Recognition, CVPR 2018, Salt Lake City, UT, USA,
@@ -645,41 +610,35 @@ Pranav Rajpurkar, Robin Jia, and Percy Liang. Know what you don t know  Unanswer
 for SQuAD. In Proceedings of the 56th Annual Meeting of the Association for Computational
 Linguistics (Volume 2  Short Papers) , pp. 784 789, Melbourne, Australia, 2018. Association
 for Computational Linguistics. doi  10.18653/v1/P18-2124. URL https //aclanthology.
-org/P18-2124 .
 Peter Shaw, Mandar Joshi, James Cohan, Jonathan Berant, Panupong Pasupat, Hexiang Hu, Urvashi
 Khandelwal, Kenton Lee, and Kristina Toutanova. From pixels to ui actions  Learning to follow
 instructions via graphical user interfaces. arXiv preprint arXiv 2306.00245 , 2023.
 Tianlin Shi, Andrej Karpathy, Linxi Fan, Jonathan Hernandez, and Percy Liang. World of bits 
 An open-domain platform for web-based agents. In Doina Precup and Yee Whye Teh (eds.),
 Proceedings of the 34th International Conference on Machine Learning, ICML 2017, Sydney, NSW,
-Australia, 6-11 2017 , volume 70 of Proceedings of Machine Learning Research , pp. 3135 3144. PMLR, 2017. URL http //proceedings.mlr.press/v70/shi a.html .
+Australia, 6-11 August 2017 , volume 70 of Proceedings of Machine Learning Research , pp. 3135 
+3144. PMLR, 2017. URL http //proceedings.mlr.press/v70/shi17a.html .
 Noah Shinn, Beck Labash, and Ashwin Gopinath. Reflexion  an autonomous agent with dynamic
 memory and self-reflection. ArXiv preprint , abs/2303.11366, 2023. URL https //arxiv.
-org/abs/2303.11366 .
 Mohit Shridhar, Jesse Thomason, Daniel Gordon, Yonatan Bisk, Winson Han, Roozbeh Mottaghi,
 Luke Zettlemoyer, and Dieter Fox. ALFRED  A benchmark for interpreting grounded instructions
 for everyday tasks. In 2020 IEEE/CVF Conference on Computer Vision and Pattern Recognition,
 CVPR 2020, Seattle, WA, USA, June 13-19, 2020 , pp. 10737 10746. IEEE, 2020. doi  10.
 1109/CVPR42600.2020.01075. URL https //doi.org/10.1109/CVPR42600.2020.
-01075 .
 Mohit Shridhar, Xingdi Yuan, Marc-Alexandre Côté, Yonatan Bisk, Adam Trischler, and Matthew J.
 Hausknecht. Alfworld  Aligning text and embodied environments for interactive learning. In
 9th International Conference on Learning Representations, ICLR 2021, Virtual Event, Austria,
 May 3-7, 2021 . OpenReview.net, 2021. URL https //openreview.net/forum id 
-0IOX YcCdTn .
 Abishek Sridhar, Robert Lo, Frank F Xu, Hao Zhu, and Shuyan Zhou. Hierarchical prompting assists
 large language model on web navigation. arXiv preprint arXiv 2305.14257 , 2023.
 Daniel Toyama, Philippe Hamel, Anita Gergely, Gheorghe Comanici, Amelia Glaese, Zafarali Ahmed,
 Tyler Jackson, Shibl Mourad, and Doina Precup. Androidenv  A reinforcement learning platform
 for android. ArXiv preprint , abs/2105.13231, 2021. URL https //arxiv.org/abs/2105.
-13231 .
 Guanzhi Wang, Yuqi Xie, Yunfan Jiang, Ajay Mandlekar, Chaowei Xiao, Yuke Zhu, Linxi Fan, and
 Anima Anandkumar. V oyager  An open-ended embodied agent with large language models. ArXiv
 preprint , abs/2305.16291, 2023. URL https //arxiv.org/abs/2305.16291 .
-13Under review
 Zhiruo Wang, Shuyan Zhou, Daniel Fried, and Graham Neubig. Execution-based evaluation for
 open-domain code generation. ArXiv preprint , abs/2212.10481, 2022. URL https //arxiv.
-org/abs/2212.10481 .
 Jason Wei, Xuezhi Wang, Dale Schuurmans, Maarten Bosma, Fei Xia, Ed Chi, Quoc V Le, Denny
 Zhou, et al. Chain-of-thought prompting elicits reasoning in large language models. Advances in
 Neural Information Processing Systems , 35 24824 24837, 2022.
@@ -688,7 +647,6 @@ Lam. Grounding open-domain instructions to automate web support tasks. In Procee
 2021 Conference of the North American Chapter of the Association for Computational Linguistics 
 Human Language Technologies , pp. 1022 1032, Online, 2021. Association for Computational
 Linguistics. doi  10.18653/v1/2021.naacl-main.80. URL https //aclanthology.org/
-2021.naacl-main.80 .
 Zhilin Yang, Peng Qi, Saizheng Zhang, Yoshua Bengio, William Cohen, Ruslan Salakhutdinov,
 and Christopher D. Manning. HotpotQA  A dataset for diverse, explainable multi-hop question
 answering. In Proceedings of the 2018 Conference on Empirical Methods in Natural Language
@@ -703,7 +661,7 @@ React  Synergizing reasoning and acting in language models. ArXiv preprint , abs
 Shunyu Yao, Dian Yu, Jeffrey Zhao, Izhak Shafran, Thomas L Griffiths, Yuan Cao, and Karthik
 Narasimhan. Tree of thoughts  Deliberate problem solving with large language models. ArXiv
 preprint , abs/2305.10601, 2023. URL https //arxiv.org/abs/2305.10601 .
-Victor Zhong, Caiming Xiong, and Richard Socher. Seq sql  Generating structured queries from
+Victor Zhong, Caiming Xiong, and Richard Socher. Seq2sql  Generating structured queries from
 natural language using reinforcement learning. arxiv 2017. ArXiv preprint , abs/1709.00103, 2017.
 URLhttps //arxiv.org/abs/1709.00103 .
 Shuyan Zhou, Pengcheng Yin, and Graham Neubig. Hierarchical control of situated agents through
@@ -715,10 +673,8 @@ Neubig. Show me more details  Discovering hierarchies of procedures from semi-st
 data. In Proceedings of the 60th Annual Meeting of the Association for Computational Linguistics
 (Volume 1  Long Papers) , pp. 2998 3012, Dublin, Ireland, 2022b. Association for Computational
 Linguistics. doi  10.18653/v1/2022.acl-long.214. URL https //aclanthology.org/
-2022.acl-long.214 .
-14Under review
-A A PPENDIX
-A.1 2.2, we make the best attempt to reproduce the functionality
+A.1 W EBSITE IMPLEMENTATION
+Given the selected websites described in  2.2, we make the best attempt to reproduce the functionality
 of commonly used sites in a reproducible way. To achieve this, we utilized open-source frameworks
 for the development of the websites across various categories and imported data from their real-world
 counterparts. For the E-commerce category, we constructed a shopping website with approximately
@@ -727,7 +683,7 @@ spanning over 300 product categories. This website is developed using Adobe Mage
  e-commerce platform4. Data resources were obtained from data from actual online sites, such
 as that included in the Webshop data dumpYao et al. (2022a). As for the social forum platform, we
 deployed an open-source software Postmill5, the open-sourced counterpart of Reddit6. We sampled
-from the top 50 7. We then manually selected many subreddit for northeast US cities
+from the top 50 subreddits7. We then manually selected many subreddit for northeast US cities
 as well as subreddit for machine learning and deep learning-related topics. This manual selection
 encourages cross-website tasks such as seeking information related to the northeast US on both
 Reddit and the map. In total, we have 95 subreddits, 127390 posts, and 661781 users. For the
@@ -737,13 +693,13 @@ of them are sampled from the set of top 90percentile wrt stars repos using a dis
 distribution weighted proportional to their number of stars  the remaining are sampled from the
 bottom ten percentile set using similar weighted distribution. This is done to ensure fair representation
 of repos of all kinds, from popular projects with many issues and pull requests to small personal
-projects. In total, we have 300 1000 accounts with at least one commit
+projects. In total, we have 300 repositories and more than 1000 accounts with at least one commit
 to a repository. For the content management system, we adapted Adobe Magento s admin portal,
-deploying the sample data provided in the official guide. We employ OpenStreetMap for map service
+deploying the sample data provided in the official guide. We employ OpenStreetMap9for map service
 implementation, confining our focus to the northeast US region due to data storage constraints. We
 implement a calculator and a scratchpad ourselves.
 Lastly, we configure the knowledge resources as individual websites, complemented with search
-functionality for efficient information retrieval. Specifically, we utilize Kiwix to host an offline
+functionality for efficient information retrieval. Specifically, we utilize Kiwix10to host an offline
 version of English Wikipedia with a knowledge cutoff of May 2023. The user manuals for GitLab
 and Adobe Commerce Merchant documentation are scraped from the official websites.
 A.2 E NVIRONMENT DELIVERY AND RESET
@@ -761,26 +717,20 @@ environment to its initial state. With Docker images, the users could stop and d
 running containers for that website and start the container from our original image again to fully
 reset the environment to the initial state. Depending on the website, this process may take from a
 few seconds to one minute. However, not all evaluation cases would require an environment reset, as
-4https //github.com/magento/magento2 5https //postmill.xyz/
+4https //github.com/magento/magento2
+5https //postmill.xyz/
 6https //www.reddit.com/
 7https //redditlist.com/sfw.html
 8https //gitlab.com/gitlab-org/gitlab
 9https //www.openstreetmap.org/
 10https //www.kiwix.org/en/
 11https //www.docker.com/
-15 22.4%Map
-13.4%
-E-commerce
-23.0%
-Reddit13.1%
 Gitlab22.2%Cross Site5.9%
 Figure 6  The intent distribution across different websites. Cross-site intents necessitate interacting
 with multiple websites. Notably, regardless of the website, all user intents require interactions with
-multiple web pages.
 many of the intents are information gathering and are read-only for the website data. Also, combined
 with the inference time cost for the agent LLMs, we argue that this environment reset method, through
 restarting Docker containers from the original images, will have a non-negligible but small impact on
-evaluation time.
 A.3 U SERROLES SIMULATION
 Users of the same website often have disparate experiences due to their distinct roles ,permissions ,
 andinteraction histories . For instance, within an E-commerce CMS, a shop owner might possess
@@ -797,24 +747,23 @@ All users are automatically logged into their accounts using a pre-cached cookie
 knowledge, this is the first publicly available agent evaluation environment to implement such a
 characteristic. Existing literature typically operates under the assumption of universally identical user
 roles Shi et al. (2017)  Liu et al. (2018)  Deng et al. (2023).
-A.4 6.
+A.4 I NTENT DISTRIBUTION
+The distribution of intents across the websites are shown in Figure 6.
 A.5 E XPERIMENT CONFIGURATIONS
-We experiment with GPT-3.5- TURBO -16K-0613 ,GPT-4-0613 , and TEXT -BISON -001 1.0and a top- pparameter of 0.9. The maximum number of state transitions is set to
+We experiment with GPT-3.5- TURBO -16K-0613 ,GPT-4-0613 , and TEXT -BISON -001 with a
+temperature of 1.0and a top- pparameter of 0.9. The maximum number of state transitions is set to
 30. We halt execution if the same action is repeated more than three times on the same observation
 or if the agent generates three consecutive invalid actions. These situations typically indicate a
 high likelihood of execution failure and hence warrant early termination. For TEXT -BISON -001 , we
 additionally allow ten retries until it generates a valid action.
 Primarily, we use a high temperature of 1.0 to encourage the exploration . To aid replicating the
-results, we provide the results of GPT-3.5- TURBO -16K-0613 0.0 5 and
+results, we provide the results of GPT-3.5- TURBO -16K-0613 with temperature 0.0 in Table 5 and
 the execution trajectories in our code repository.
-16Under review
-CoT UA Hint Model SR
-    GPT-3.5 6.28 5  The task success rate (SR %) of GPT-3.5- TURBO -16K-0613 0.0.
+Table 5  The task success rate (SR %) of GPT-3.5- TURBO -16K-0613 with temperature 0.0.
 A.6 P ROMPT FOR FUZZY_MATCH
 Help a teacher to grade the answer of a student given a question. Keep in mind that the student may
 use different phrasing or wording to answer the question. The goal is to evaluate whether the answer
 is semantically equivalent to the reference answer.
-question  {{intent}}
 reference answer  {{reference answer}}
 all the string  N/A  that you see is a special sequence that means  not achievable 
 student answer  {{prediction}}
@@ -822,10 +771,10 @@ Conclude the judgement by correct/incorrect/partially correct.
 Predictions that are judged as  correct  will receive a score of one, while all other predictions will
 receive a score of zero.
 A.7 T HEPROMPTS OF THE BASELINE WEBAGENTS
-The system message of the reasoning agent for both GPT-3.5 and GPT-4 7, and two
-examples are in Figure 8. The system message of the direct agent for GPT-3.5 9 10. UA hint refers to the instruction of   If you believe the task is
+The system message of the reasoning agent for both GPT-3.5 and GPT-4 is in Figure 7, and two
+examples are in Figure 8. The system message of the direct agent for GPT-3.5 is in Figure 9 and
+the two examples are in Figure 10. UA hint refers to the instruction of   If you believe the task is
 impossible to complete, provide the answer as "N/A" in the bracket. . We remove this sentence in our
-ablation studies.
 A.8 A DDITIONAL ERROR ANALYSIS
 Observation Bias Realistic websites frequently present information on similar topics across various
 sections to ensure optimal user accessibility. However, a GPT-4 agent often demonstrates a tendency
@@ -848,13 +797,11 @@ trained to execute instructions given immediate observations ( i.e.,, the dialog
 they may exhibit a lack of explorations. Furthermore, in dialogue scenarios, subtle differences in
 NL expressions often have less impact on the overall conversation. As a result, models may tend to
 overlook minor variations in their observations.
-17Under review
 You are an autonomous intelligent agent tasked with navigating a web browser. You will be given
 web-based tasks. These tasks will be accomplished through the use of specific actions you can issue.
 Here s the information you ll have 
 The user s objective  This is the task you re trying to complete.
 The current web page s accessibility tree  This is a simplified representation of the webpage, providing
-key information.
 The current web page s URL  This is the page you re currently navigating.
 The open tabs  These are the tabs you have open.
 The previous action  This is the action you just performed. It may be helpful to track your progress.
@@ -875,11 +822,9 @@ URL Navigation Actions
  go_back   Navigate to the previously viewed page.
  go_forward    Navigate to the next page (if a previous
  go_back action was performed).
-Completion Action 
  stop [answer]    Issue this action when you believe the task is complete. If the objective is to find
 a text-based answer, provide the answer in the bracket. If you believe the task is impossible to
 complete, provide the answer as "N/A" in the bracket.
-Homepage 
 If you want to visit other websites, check out the homepage at http //homepage.com. It has a list of
 websites you can visit.
 http //homepage.com/password.html lists all the account names and passwords for the websites. You
@@ -892,13 +837,9 @@ To be successful, it is very important to follow the following rules
 is  phrase, followed by action inside        . For example, "In summary, the next action I will
 perform is   click [1234]     .
 5. Issue stop action when you think you have achieved the objective. Don t generate anything after
-stop."""
 Figure 7  The system message of the reasoning agent. This message has a general explanation of
 the task, the available actions, and some notes on avoiding common failures.
-18Under review
-example_user
-OBSERV ATION 
-[1744] link  HP CB A#ABA 640 Inkjet Fax Machine (Renewed) 
+[1744] link  HP CB782A#ABA 640 Inkjet Fax Machine (Renewed) 
 [1749] StaticText  $279.49 
 [1757] button  Add to Cart 
 [1760] button  Add to Wish List 
@@ -906,35 +847,26 @@ OBSERV ATION
 URL  http //onestopmarket.com/office-products/office-electronics.html
 OBJECTIVE  What is the price of HP Inkjet Fax Machine
 PREVIOUS ACTION  None
-example_assistant
 Let s think step-by-step. This page lists the information of HP Inkjet Fax Machine, which is the
 product identified in the objective. Its price is $279.49. I think I have achieved the objective. I
 will issue the stop action with the answer. In summary, the next action I will perform is    stop
-[$279.49]   
-example_user
-OBSERV ATION 
 [164] textbox  Search  focused  True required  False
-[171] button  Go 
 [174] link  Find directions between two points 
 [212] heading  Search Results 
-[216] button  Close 
 URL  http //openstreetmap.org
 OBJECTIVE  Show me the restaurants near ABC
 PREVIOUS ACTION  None
-example_assistant
 Let s think step-by-step. This page has a search box whose ID is [164]. According to the nominatim
 rule of openstreetmap, I can search for the restaurants near a location by  restaurants near . I can
 submit my typing by pressing the Enter afterwards. In summary, the next action I will perform is
    type [164] [restaurants near ABC] [1]    
 Figure 8  The two examples provided as example_user andexample_assistant for the
 reasoning agent. Before issuing the action, the agent first perform reasoning.
-19Under review
 You are an autonomous intelligent agent tasked with navigating a web browser. You will be given
 web-based tasks. These tasks will be accomplished through the use of specific actions you can issue.
 Here s the information you ll have 
 The user s objective  This is the task you re trying to complete.
 The current web page s accessibility tree  This is a simplified representation of the webpage, providing
-key information.
 The current web page s URL  This is the page you re currently navigating.
 The open tabs  These are the tabs you have open.
 The previous action  This is the action you just performed. It may be helpful to track your progress.
@@ -955,11 +887,9 @@ URL Navigation Actions
  go_back   Navigate to the previously viewed page.
  go_forward    Navigate to the next page (if a previous
  go_back action was performed).
-Completion Action 
  stop [answer]    Issue this action when you believe the task is complete. If the objective is to find
 a text-based answer, provide the answer in the bracket. If you believe the task is impossible to
 complete, provide the answer as "N/A" in the bracket.
-Homepage 
 If you want to visit other websites, check out the homepage at http //homepage.com. It has a list of
 websites you can visit.
 http //homepage.com/password.html lists all the account name and password for the websites. You
@@ -969,15 +899,10 @@ To be successful, it is very important to follow the following rules
 1. You should only issue an action that is valid given the current observation
 2. You should only issue one action at a time.
 3. Generate the action in the correct format. Always put the action inside a pair of    . For example,
-   click [1234]    
 4. Issue stop action when you think you have achieved the objective. Don t generate anything after
-stop."""
 Figure 9  The system message of the direct agent. This message has the general explanation of the
 task, the available actions and some notes on avoiding common failures.
-20Under review
-example_user
-OBSERV ATION 
-[1744] link  HP CB A#ABA 640 Inkjet Fax Machine (Renewed) 
+[1744] link  HP CB782A#ABA 640 Inkjet Fax Machine (Renewed) 
 [1749] StaticText  $279.49 
 [1757] button  Add to Cart 
 [1760] button  Add to Wish List 
@@ -985,19 +910,13 @@ OBSERV ATION
 URL  http //onestopmarket.com/office-products/office-electronics.html
 OBJECTIVE  What is the price of HP Inkjet Fax Machine
 PREVIOUS ACTION  None
-example_assistant
    stop [$279.49]    
-example_user
-OBSERV ATION 
 [164] textbox  Search  focused  True required  False
-[171] button  Go 
 [174] link  Find directions between two points 
 [212] heading  Search Results 
-[216] button  Close 
 URL  http //openstreetmap.org
 OBJECTIVE  Show me the restaurants near ABC
 PREVIOUS ACTION  None
-example_assistant
    type [164] [restaurants near ABC] [1]    
 Figure 10  The two examples provided as example_user andexample_assistant for the
 direct agent. The agent directly emits the next action given the observation.
@@ -1007,4 +926,3 @@ Figure 11  Two examples where the GPT-4 agent failed, along with their screensho
 accessibility tree of the relevant sections (grey). On the left, the agent fails to proceed to the  Users 
 section to accomplish the task of  Fork all Facebook repos   on the right, the agent repeats entering
 the same search query even though the observation indicates the input box is filled.
-21

@@ -1,11 +1,10 @@
 The Devil is in the Errors  Leveraging Large Language Models for
 Fine-grained Machine Translation Evaluation
-Patrick Fernandes ,2,3,4 1
-André F. T. Martins3,4,5 2,6
-Ankush Garg Jonathan H. Clark Markus Freitag Orhan Firat1 1Google Carnegie Mellon University Instituto Superior Técnico
-4Instituto de Telecomunicações Unbabel Inspired Cognition
-pfernand@cs.cmu.edu
-Abstract
+Patrick Fernandes ,2,3,4Daniel Deutsch1Mara Finkelstein1Parker Riley1
+André F. T. Martins3,4,5Graham Neubig2,6
+Ankush Garg1Jonathan H. Clark1Markus Freitag1Orhan Firat1
+1Google2Carnegie Mellon University3Instituto Superior Técnico
+4Instituto de Telecomunicações5Unbabel6Inspired Cognition
 Automatic evaluation of machine translation
 (MT) is a critical tool driving the rapid iterative
  development of MT systems. While
@@ -31,7 +30,6 @@ to just prompting for scores (with particularly
  large gains for larger models) while
 providing interpretability through error spans
 that align with human annotations.
-1 Introduction
 Evaluating natural language generation systems has
 always been challenging, and as the output quality
  of these systems has improved, evaluation has
@@ -49,12 +47,12 @@ To keep pace with the constantly improving quality
 Source    Avaliar tradução
 automática é difícil.  Candidate    Evaluating
 automatic translation are easy. 
-Score the following translation from 0 100 
+Score the following translation from 0 to 100 
 Portuguese  {source}   English  {candidate}
 Identify the errors in the translation
 Portuguese  {source}   English  {candidate} Score  25
 Errors   easy  - major/accuracy    are  - minor/ﬂuency
-MQM Score  -5 1(major) - 1 1(minor)    - 6
+MQM Score  -5x1(major) - 1x1(minor)    - 6
 A ᴜᴛᴏMQM Score Prediction Figure 1   Illustration of how AUTOMQM uses
 LLMs to assess the quality of a translation. Rather
 than asking for a single quality score, AUTOMQM
@@ -80,7 +78,7 @@ human evaluation methodologies like Multidimensional
 annotators to identify and label error spans with
 a category and severity. This much richer feedback
 can be used to gain a better understanding of the
-current limitations of the model under evaluationarXiv 2308.07286 1  [cs.CL]  14 2023and improve it.
+current limitations of the model under evaluationarXiv 2308.07286v1  [cs.CL]  14 Aug 2023and improve it.
 In this paper, we ask whether large language
 models (LLMs) in combination with a few human
 annotations can be used to design an automatic
@@ -100,7 +98,6 @@ machine translation evaluation  the focus has predominantly
  a numerical value for quality), without considering
  the use of anyannotated data (either through
 in-context learning or finetuning), and only in highresource
- language pairs.
 We provide a large-scale study of the capabilities
 of LLMs (from the PaLM and PaLM-2 families 
 Chowdhery et al., 2022  Anil et al., 2023) for machine
@@ -134,12 +131,12 @@ showing similar correlations with human judgment
  methods on low-resource language pairs.
 We find that their performance is promising,
 but lags behind state-of-the-art learned metrics.
-
  We find that, with AUTOMQM , PaLM-2 models
  can be prompted to generate rich MQMlike
  annotations, outperforming their score
 prediction counterparts at the segment-level.
- Furthermore, annotations predicted by PaLM2 50% of words
+ Furthermore, annotations predicted by PaLM2
+ models correctly identify over 50% of words
 that are part of major errors, and are comparable
  to the ones produced by state-of-the-art
 supervised word-level evaluators.
@@ -152,7 +149,6 @@ AI Feedback (Fernandes et al., 2023).
 Machine translation evaluation is one of the most
 well-studied evaluation problems in NLP (CallisonBurch
  et al., 2008  Freitag et al., 2022). In this task,
-given
 1. a source sentence in a (source) language
 2. a candidate translation in a (target) language
 an evaluation metric assesses the quality of the
@@ -178,7 +174,6 @@ which leverage collected human judgment data, are
 trained for and evaluated on the same task of score
 prediction (i.e., assigning a single quality score toa candidate translation), and can achieve high correlation
  with human-provided scores (Freitag et al.,
-2022).
 However, framing machine translation evaluation
  as a score prediction task is problematic 
 any scoring or ranking of translations is implicitly
@@ -203,7 +198,6 @@ However, despite its richness, most automatic metrics
  that leverage MQM data only use the final quality
  score produced by the framework and discard
 the error span information and classification.
-3 Related Work
 The success of learned machine translation metrics
  (Sellam et al., 2020  Rei et al., 2022a  Freitag
 et al., 2022  Qin et al., 2022), which finetune neural
@@ -252,13 +246,13 @@ Additionally, WMT Word-Level Quality Estimation
  shared tasks (Fonseca et al., 2019  Zerva
 et al., 2022) leverage MQM data by converting
 span-level annotations of errors (normally of majorseverity)
- to word-level tags and Task 2 19 Quality Estimation shared task evaluation
+ to word-level tags and Task 2 in the
+WMT19 Quality Estimation shared task evaluation
 explicitly evaluated submissions of span-level annotations
  (although most submissions still consisted
 of models that predicted word-level tags which
 were converted to spans). We also compare against
 state-of-the-art word-level quality estimation models.
-
 4 Using LLMs to Predict Quality Scores
 Recent works have shown that large language models
  are versatile, general-purpose models that can
@@ -267,7 +261,6 @@ be used to tackle many problems in NLP, including
 et al., 2023  Liu et al., 2023b). We begin by exploring
  how LLMs can be used for machine translation
 evaluation through score prediction .
-4.1 Prompting
 We start by measuring how far we can push the
 performance of LLMs with just prompting (Liu
 et al., 2023a)  by defining the task of MT evaluation
@@ -287,7 +280,7 @@ the capabilities of different models.1
 Score the following translation from
 {src_lang} to{tgt_lang} with respect
 to the human reference on a continuous
-scale from 0 100 that starts with
+scale from 0 to 100 that starts with
 "No meaning preserved", goes through
 "Some meaning preserved", then "Most
 meaning preserved and few grammar mistakes",
@@ -301,7 +294,6 @@ Equivalent to the GEMBA-SQM prompt in Kocmi and
 Federmann (2023). Parts in purple are only included
 forreference-based evaluation, while parts in orange
 represent slots for outputs and are only included for incontext
- examples.
 In-Context Learning A surprising emergent capability
  of LLMs is their ability to improve on
 prompting-based tasks by including a very small
@@ -320,7 +312,6 @@ examples from a pre-defined  pool  of translation
 quality assessments  uniform sampling andstratified
  sampling , where the example pool is bucketed
 by score ranges and examples are sampled from
-each bucket.
 1While this prompt wasn t the best for system-level , it led
 to the best segment-level performance in GEMBA.4.2 Finetuning
 It has previously been shown that LLMs are capable
@@ -372,7 +363,6 @@ lead to rushed and noisy judgments (Freitag et al.,
  models, these generally aren t considered LLMsBased on the given source and reference, identify the major and minor errors in this
 translation. Note that Major errors refer to actual translation or grammatical errors,
 and Minor errors refer to smaller imperfections, and purely subjective opinions about
-the translation.
 {src_lang} source  " {source} "
 {tgt_lang} human reference  "{reference}"
 {tgt_lang} translation  " {candidate} "
@@ -397,7 +387,6 @@ task at hand (Liu et al., 2023b). Furthermore, this
 chain-of-thought prompting can be used to obtain
 structured rationales from LLMs, and this can lead
 to better performance than with free-text rationales
-(Lu et al., 2023).
 Motivated by these findings, we propose
 AUTO MQM , a prompting technique for translation
  quality assessment that instructs LLMs to identifyerrors
@@ -408,19 +397,19 @@ to produce a score, as the MQM framework provides
  an algorithmic procedure to obtain one from
 identified errors  the total score is the sum of penalties
  for all errors identified, where (roughly) major
-errors get penalized with  5 1
+errors get penalized with  5andminors with 1
 (see Appendix A for a more detailed description of
-the scoring algorithm).3 3 shows the main
+the scoring algorithm).3Figure 3 shows the main
 AUTOMQM prompt used in this paper.
 Importantly, obtaining meaningful AUTOMQM
 results in a zero-shot setting is a substantially more
 challenging task compared to score prediction  we
 found that, without any in-context examples, LLMs
-tend to produce outputs that are either uninforma This
+tend to produce outputs that are either uninforma3This
  is similar to methods that leverage external executors
 to improve the performance of LLMs (Gao et al., 2022)LP #Sys #Seg
-en de 13 1315 14 1875 15 1315LP #Sys #Seg
-en kk 11 998 11 1000 11 998 11 1016 1  The number of systems and segments that
+en ru 15 1315LP #Sys #Seg
+Table 1  The number of systems and segments that
 have MQM scores (left) and DA scores (right) used as
 ground-truth in this work.
 tive or difficult to parse. Thus we only consider the
@@ -432,7 +421,7 @@ set of rejection criteria (Appendix B), which ensures
  that the example set has a balance between
 major and minor errors as well as diversity in the
 categories of errors.
-6 6.1 Experimental Setup
+6.1 Experimental Setup
 Data The metrics in this work are evaluated
 on both high-resource andlow-resource language
 pairs. The three high-resource language pairs come
@@ -459,8 +448,8 @@ are available MQM ratings from the WMT 21 Metrics
  Shared Task (Freitag et al., 2021b) that we can
 use as in-context learning example pools.
 Models We base most of our experiments on the
-following LLMs 
- PaLM   A 540 780 billion
+ PaLM   A 540 billion parameter autoregressive
+ Transformer model trained on 780 billion
 tokens of high-quality text (Chowdhery et al.,
 2022). It showed remarkable performance on
 a wide-range of NLP tasks, including Machine
@@ -488,7 +477,9 @@ we compare to a set of strong baseline evaluation
  metrics, MetricX-XXL and COMET-22,
 which were the two top-performing metrics in the
 WMT 22 Metrics Shared Task. MetricX-XXL and
-COMET-22 5 (Xue et al., 2021) and XLM-R (Conneau
+COMET-22 are both finetuned regression models
+trained on DA data from WMT that are initialized
+with mT5 (Xue et al., 2021) and XLM-R (Conneau
 et al., 2020), respectively.
 For the AUTOMQM experiments, we also compare
  against MATES E, a comparable submission
@@ -514,7 +505,7 @@ first target token s logit vector, as the quality signal.
 MetricX-XXL in the WMT 2022 Shared Task submission
  (Freitag et al., 2022). The regression-based
 model was trained on WMT direct assessment (DA)
-data from the years 2015 2020.
+data from the years 2015 through 2020.
 For generative classification, we bucket the
 scores in the training data into five classes, where
 class boundaries are assigned so that each class
@@ -523,7 +514,7 @@ then map labels to verbal ratings from the following
  set, based on their bucket  [ "very bad" ,"bad" ,
 "ok","good" ,"very good" ]. To evaluate the model,
 predictions are mapped back to integer labels from
-1 5. Any predictions not containing a substring in
+1 to 5. Any predictions not containing a substring in
 the label set are considered invalid and are mapped
 to 0. We experimented with finetuning on both DA
 and MQM 2020 (Freitag et al., 2021a) data, and
@@ -541,10 +532,9 @@ known as metric meta-evaluation. This work reports
  three different agreement scores, as follows.
 The first is system-level accuracy, which calculates
  the percent of system pairs that are ranked the
-same by the metric and ground-truth scores, micro We
+same by the metric and ground-truth scores, micro5We
  consider a span as any maximal consecutive sequence
 of words marked as BAD, assigning every span the major
-severity.
 6We use a small variation of the zero-shot prompt, asking
 models for scores from the same 5 buckets used in finetuning.averaged over a set of language pairs (Kocmi et al.,
 2021). System-level scores are defined as the average
@@ -562,7 +552,7 @@ translations as well as correctly predicting ties, in
 combination with a tie calibration procedure that
 automatically introduces ties into metric scores so
 that the meta-evaluation is fairer. This accuracy
-score, denoted acc , ranges between 0 1, and
+score, denoted acc , ranges between 0 and 1, and
 a random metric would achieve 33% accuracy. We
 report the  group-by-item  variant of the pairwise
 accuracy score from Deutsch et al. (2023) in addition
@@ -583,7 +573,6 @@ errors (either minor or major).
 More formally, consider the set of ground truth
 spans S , where each span consists of a sequence of
 words, i.e., si  (w(a), w(a 1),   ). Let S 
-maj 
 S be the subset containing only the major errors.
 Given a span set S, we define its positional set
 P(S)as the set containing the positions of all the
@@ -592,12 +581,7 @@ spansi  (w(n), w(n 1),   )inSstarts at the nth
 position in the text, its corresponding positional set
 will include the positions {n, n 1, ..., n  len( si) 
 1}. Then for a set of predicted spans ˆS, SP and
-MR are defined as 
 SP(ˆS)   P(ˆS) P(S ) 
- P(ˆS) (1)
-MR( ˆS)   P(ˆS) P(S 
-maj) 
- P(S 
 maj) (2)Intuitively, we care for overall precision (regardless
  of severity) since we want to make sure predicted
  errors tend to be marked by annotators as
@@ -607,7 +591,8 @@ as these have a larger impact on translation quality
 we also report the (3) Matthews Correlation Coefficient
  (MCC), one of the official metrics in the wordlevel
  quality estimation tasks (Zerva et al., 2022).
-6.2 6.2.1 2 summarizes the meta-evaluation results, at
+6.2.1 Score Prediction
+Table 2 summarizes the meta-evaluation results, at
 thesystem andsegment level, for both the zero-shot
 prompting andfinetuning settings.
 Prompting A first observation is almost all zeroshot
@@ -648,20 +633,17 @@ and not instruction-tuning in general, as the GPT models are
 also instruction-tuned and perform well.System-Level Segment-Level
 All (3 LPs) EN-DE ZH-EN EN-RU
 Model Ref  Accuracy ρ acc ρ acc ρ acc 
-Baselines
 MetricX-XXL   85.0% 0.549 61.1% 0.581 54.6% 0.495 60.6%
-COMET-22 83.9% 0.512 60.2% 0.585 54.1% 0.469 57.7%
+COMET-22   83.9% 0.512 60.2% 0.585 54.1% 0.469 57.7%
 COMET-QE   78.1% 0.419 56.3% 0.505 48.8% 0.439 53.4%
-Prompting
-PaLM 540 90.1% 0.247 55.4% 0.255 48.5% 0.180 48.6%
-PaLM-2 88.7% 0.394 56.8% 0.322 49.3% 0.322 52.8%
-PaLM-2 90.1% 0.401 56.3% 0.349 51.1% 0.352 55.3%
-FLAN-PaLM-2 75.9% 0.197 55.6% 0.139 46.1% 0.198 52.0%
-PaLM 540 84.3% 0.239 56.1% 0.270 43.1% 0.300 51.8%
-PaLM-2 85.0% 0.355 57.0% 0.299 48.6% 0.303 53.1%
-PaLM-2 84.3% 0.275 56.1% 0.252 48.3% 0.209 49.8%
-FLAN-PaLM-2 69.7% 0.116 54.6% 0.112 43.8% 0.156 47.8%
-Finetune
+PaLM 540B   90.1% 0.247 55.4% 0.255 48.5% 0.180 48.6%
+PaLM-2 B ISON   88.7% 0.394 56.8% 0.322 49.3% 0.322 52.8%
+PaLM-2 U NICORN   90.1% 0.401 56.3% 0.349 51.1% 0.352 55.3%
+FLAN-PaLM-2 U NICORN   75.9% 0.197 55.6% 0.139 46.1% 0.198 52.0%
+PaLM 540B   84.3% 0.239 56.1% 0.270 43.1% 0.300 51.8%
+PaLM-2 B ISON   85.0% 0.355 57.0% 0.299 48.6% 0.303 53.1%
+PaLM-2 U NICORN   84.3% 0.275 56.1% 0.252 48.3% 0.209 49.8%
+FLAN-PaLM-2 U NICORN   69.7% 0.116 54.6% 0.112 43.8% 0.156 47.8%
 PaLM-2 B ISON (R)   88.0% 0.511 61.0% 0.459 51.5% 0.458 59.5%
 PaLM-2 B ISON (GC)   86.1% 0.400 59.2% 0.444 49.3% 0.365 56.0%
 PaLM-2 U NICORN (R)   87.6% 0.508 61.1% 0.412 52.6% 0.460 60.4%
@@ -671,13 +653,11 @@ PaLM 2 U NICORN (GC)   86.1% 0.407 57.9% 0.402 45.6% 0.411 55.3%
 Table 2   Meta-evaluation results at system and segment-level for the high-resource language pairs.
 Finetuned (R)and(GC) represent the regression andgenerative classification objectives ( 4.2).  and 
 represent reference-based andreference-less metrics, respectively.
-System Segment acc 
 Model Ref  All EN-DE ZH-EN EN-RU
-GEMBA
-GPT-3.5 85.4% 54.9% 49.5% 47.5%
-GPT-4 88.7% 57.8% 52.6% 55.0%
-GPT-3.5 82.5% 56.1% 49.7% 49.3%
-GPT-4 89.1% 56.4% 53.4% 54.8%
+GPT-3.5  85.4% 54.9% 49.5% 47.5%
+GPT-4  88.7% 57.8% 52.6% 55.0%
+GPT-3.5  82.5% 56.1% 49.7% 49.3%
+GPT-4  89.1% 56.4% 53.4% 54.8%
 BISON  88.7% 56.8% 49.3% 52.8%
 UNICORN  90.1% 56.3% 51.1% 55.3%
 BISON  85.0% 57.0% 48.6% 53.1%
@@ -701,11 +681,8 @@ observe an interesting trend  while smaller models
 are not capable of being effective zero-shot evaluators,
  finetuning them leads to competitive performance,
  and only a slight decrease when compared
-Error110100100010000 0510 20 50Gold MQM ( 100)
-PaLM-2 (Unicorn)
-PaLM (540B)
+0510 20 50Gold MQM ( 100)
 FLAN-PaLM-2 (Unicorn)
-60 70 80859095100
 Score# occurrences (en-de)Figure 4  Distribution of scores for various LLM
 reference-based evaluators, on the EN-DE test set. Note
 that the yaxis is in log-scale .
@@ -723,13 +700,13 @@ with uniform orstratified sampling.
 To investigate the cause of this disappointing performance,
  we looked at how particular in-context
 example sets affect the distribution of scores produced
- by LLM-based evaluators. Figure 7 1-shot and 2-shot settings, with differentS M Bison
+ by LLM-based evaluators. Figure 7 shows
+the distribution of scores over the whole test set
+for the 1-shot and 2-shot settings, with differentS M Bison
 Model0.00.10.20.30.40.5Pearson (EN-DE)
-Zero-Shot
 FinetuneFigure 5  Behavior of Pearson as we scale the LLM s
 parameter count. Note that the xaxis is not to-scale
 with regard to parameter count.
-0 1 2 3 4
 # of in-context examples0.100.150.200.250.300.350.40PearsonPaLM-2 (Bison) ref-based
 PaLM-2 (Bison) ref-free
 Figure 6  Mean Pearson and its interquartile range
@@ -745,7 +722,8 @@ LLMs  overfit  to the specific scores provided as
 examples, rather than generalizing to the broader
 evaluation task, which could explain the lackluster
 performance of in-context learning.
-6.3 4 shows the performance of PaLM-2 models
+6.3 Low Resource Languages
+Table 4 shows the performance of PaLM-2 models
  at score prediction forlow-resource translation.
  Overall, we find that similar to high-resource
 LPs, these models are good zero-shot evaluators,
@@ -753,20 +731,23 @@ with system-level accuracies around 90%. However,
  zero-shot LLMs underperform learned metrics,
  even when these metrics also weren t exposed
 to data in these low-resource languages.
-6.3.1 8 shows the mean and interquartile range
+Figure 8 shows the mean and interquartile range
 (IQR) of the performance of PaLM-2 BISON with
 AUTOMQM , as we increase the number of incontext
- examples (again, with 100 110100100010000 0510 20 79.0 94.0 99.0 50 60 70 80859095100
+ examples (again, with 100 example sets per
 Score# occurrences (en-de)
-Error10100100010000 0510 20 50 85.0 95.0 99.0 90.0 60 70 80859095100
+0510 20 50Score  85.0 95.0
 Score# occurrences (en-de)Figure 7  Distribution of scores for PaLM-2 ( BISON )
 models for 1-shot (top) and 2-shot (bottom) setups,
 with various in-context learning sets for each (and their
 scores in the legend)
-System Segment ρ
 Model Ref  All EN-KK EN-GU KK-EN GU-EN
-Baseline
-MetricX-XXL  94.0% 0.666 0.701 0.539 0.409 92.2% 0.605 0.540 0.462 0.339 87.4% 0.609 0.621 0.495 0.384 89.8% 0.567 0.478 0.381 0.313 84.4% 0.536 0.523 0.433 0.334 4  Meta-evaluation results for system-level accuracy
+MetricX-XXL  94.0% 0.666 0.701 0.539 0.409
+BISON  92.2% 0.605 0.540 0.462 0.339
+UNICORN  87.4% 0.609 0.621 0.495 0.384
+BISON  89.8% 0.567 0.478 0.381 0.313
+UNICORN  84.4% 0.536 0.523 0.433 0.334
+Table 4  Meta-evaluation results for system-level accuracy
  and segment-level Pearson on the low-resource languages,
  using PaLM-2 for score prediction . Note that
 the baseline is slightly different from the high-resource
@@ -789,37 +770,33 @@ We also find that the behavior of in-context learning
 reference-less evaluation tasks. Finally, we observe0 1 2 3 4 5 6
 # of in-context examples0.000.050.100.150.200.250.30Pearson (EN-DE)PaLM-2 (Bison)
 PaLM-2 (Bison) ref-free
-0 1 2 3 4 5 6
 # of in-context examples0.000.050.100.150.200.250.300.35Pearson (ZH-EN)PaLM-2 (Bison)
 PaLM-2 (Bison) ref-freeFigure 8   Mean Pearson and its interquartile range (IQR), as we increase the number of in-context examples
 in the A UTOMQM prompt, for EN-DE (left) and ZH-EN (right).
 System-Level Segment-Level
 All (2 LPs) EN-DE ZH-EN
 Model Ref  Accuracy ρ acc ρ acc 
-Baselines
 MetricX-XXL   81.1% 0.549 61.1% 0.581 54.6%
 MATES E   79.9% 0.391 58.8% 0.528 51.5%
 COMET-QE   76.9% 0.419 56.3% 0.505 48.8%
 MATES E-QE   73.4% 0.298 57.9% 0.468 50.1%
 COMET-WL   71.6% 0.418 57.1% 0.406 51.5%
-Score Prediction
-PaLM-2 86.4% 0.394 56.8% 0.322 49.3%
-PaLM-2 86.4% 0.401 56.3% 0.349 51.1%
-PaLM-2 84.0% 0.355 57.0% 0.299 48.6%
-PaLM-2 80.5% 0.275 56.1% 0.252 48.3%
-AutoMQM
-PaLM-2 84.0% 0.369 59.2% 0.355 48.4%
-PaLM-2 87.6% 0.432 59.1% 0.442 51.8%
-PaLM 2 87.6% 0.297 55.2% 0.331 48.0%
-PaLM 2 83.4% 0.368 56.4% 0.429 50.2%
+PaLM-2 B ISON   86.4% 0.394 56.8% 0.322 49.3%
+PaLM-2 U NICORN   86.4% 0.401 56.3% 0.349 51.1%
+PaLM-2 B ISON   84.0% 0.355 57.0% 0.299 48.6%
+PaLM-2 U NICORN   80.5% 0.275 56.1% 0.252 48.3%
+PaLM-2 B ISON   84.0% 0.369 59.2% 0.355 48.4%
+PaLM-2 U NICORN   87.6% 0.432 59.1% 0.442 51.8%
+PaLM 2 B ISON   87.6% 0.297 55.2% 0.331 48.0%
+PaLM 2 U NICORN   83.4% 0.368 56.4% 0.429 50.2%
 Table 5   Meta-evaluation results for PaLM-2 models using AutoMQM and score prediction, at the system
 and segment levels for multiple language pairs.
 that the example sets that perform well for one task
 generally work well for the other, with performance
 on both settings given a fixed in-context set being
 highly correlated, as shown in Figure 9.
-0.0 0.1 0.2 0.3
-Pearson w/o Reference0.000.050.100.150.200.250.300.35 0.941 123456 9  Scatter plot of the Pearson of PaLM-2
+Pearson w/o Reference0.000.050.100.150.200.250.300.35Pearson with ReferenceCorr   0.941
+Figure 9  Scatter plot of the Pearson of PaLM-2
 (BISON ) models, with/without including the reference
 in the prompt, for each in-context learning setting tried.Table 5 shows the meta-evaluation results for
 PaLM-2 BISON and UNICORN prompted with
@@ -843,17 +820,17 @@ necessary for zero- andfew- shot fine-grained evaluation
 with AUTOMQM is much closer to the gold MQM
 distribution, with models outputting a much larger
 set of scores, and in the same ranges as annotators
-do (see Figure 10).
-40 35 30 25 20 15 10 5 0110100100010000Gold MQM
-PaLM-2 (Bison)
-PaLM-2 (Unicorn)
+ 0110100100010000Gold MQM
 Score# occurrences (en-de)
 Figure 10  Distribution of scores for PaLM-2 models
 using A UTOMQM, on WMT22 EN-DE
-EN-DE ZH-EN
 Model R  SP MR MCC SP MR MCC
-Baselines
-COMET-WL  0.267 0.250 0.161 0.364 0.178 0.152 0.095 0.749 0.060 0.252 0.255 0.109 0.175 0.628 0.193 0.238 0.476 0.143 0.119 0.520 0.092 0.224 0.311 0.091 0.150 0.580 0.150 0.229 0.488 0.133 6  Span-level meta-evaluation on WMT22 for
+COMET-WL  0.267 0.250 0.161 0.364 0.178 0.152
+BISON  0.095 0.749 0.060 0.252 0.255 0.109
+UNICORN  0.175 0.628 0.193 0.238 0.476 0.143
+BISON  0.119 0.520 0.092 0.224 0.311 0.091
+UNICORN  0.150 0.580 0.150 0.229 0.488 0.133
+Table 6  Span-level meta-evaluation on WMT22 for
 PaLM-2 models using AutoMQM .SRandMRrepresent
 span precision andmajor recall , respectively.
 Finally, when evaluating the error spans produced
@@ -861,7 +838,8 @@ Finally, when evaluating the error spans produced
  6), we find that PaLM-2 models are able to
 identify most of the major errors. However, it does
 seem to over-predict errors (with errors predicted
-byUNICORN having on average  5 2 words in the ground truth) and have overall
+byUNICORN having on average  5 words per span
+vs 2 words in the ground truth) and have overall
 low span precision. Similarly to overall score correlations,
  scale also seems to be important for the
 quality of spans produced by AUTOMQM , with
@@ -874,8 +852,6 @@ of fine-grained annotations derived from MQM)
 while word-level models are more precise, their
 overall span correlation (MCC) is comparable, and
 they miss considerably more major errors thanLLMs (despite only leveraging a handful of annotations).
-
-7 Conclusion
 In this study, we have systematically investigated
  the capabilities of large language models
 for machine translation evaluation through score
@@ -902,7 +878,6 @@ general-purpose nature of LLMs may enable the
 application of similar prompting techniques (leveraging
  some fine-grained evaluation schemes) to
 other evaluation problems (Wu et al., 2023).
-Acknowledgements
 We would like to thank Ricardo Rei, Marcos
 Treviso and Chryssa Zerva for helping run the
 word-level QE baselines, and George Foster who
@@ -914,8 +889,6 @@ Horizon Europe Research and Innovation Actions
 the Portuguese Recovery and Resilience Plan,
 and the Fundação para a Ciência e Tecnologia
  through contracts SFRH/BD/150706/2020 and
-UIDB/50008/2020.
-References
 Rohan Anil, Andrew M. Dai, Orhan Firat, Melvin
 Johnson, Dmitry Lepikhin, Alexandre Passos,
 Siamak Shakeri, Emanuel Taropa, Paige Bailey,
@@ -958,7 +931,6 @@ Yuhuai Wu, Kelvin Xu, Yunhan Xu, Linting Xue,
 Pengcheng Yin, Jiahui Yu, Qiao Zhang, Steven
 Zheng, Ce Zheng, Weikang Zhou, Denny Zhou,
 Slav Petrov, and Yonghui Wu. 2023. Palm 2
-technical report.
 Tom Brown, Benjamin Mann, Nick Ryder, Melanie
 Subbiah, Jared D Kaplan, Prafulla Dhariwal,
 Arvind Neelakantan, Pranav Shyam, Girish Sastry,
@@ -977,7 +949,6 @@ Monz, Josh Schroeder, and Cameron Shaw
 Fordyce, editors. 2008. Proceedings of the
 Third Workshop on Statistical Machine Translation.
  Association for Computational Linguistics,
-Columbus, Ohio.
 Aakanksha Chowdhery, Sharan Narang, Jacob Devlin,
  Maarten Bosma, Gaurav Mishra, Adam
 Roberts, Paul Barham, Hyung Won Chung,
@@ -1003,7 +974,6 @@ Brennan Saeta, Mark Diaz, Orhan Firat, Michele
 Catasta, Jason Wei, Kathy Meier-Hellstern, Douglas
  Eck, Jeff Dean, Slav Petrov, and Noah
 Fiedel. 2022. Palm  Scaling language modeling
- with pathways.
 Alexis Conneau, Kartikay Khandelwal, Naman
 Goyal, Vishrav Chaudhary, Guillaume Wenzek,
 Francisco Guzmán, Edouard Grave, Myle Ott,
@@ -1029,13 +999,12 @@ on quality estimation. In Proceedings of the
 Fourth Conference on Machine Translation (Volume
  3  Shared Task Papers, Day 2) , pages 1 12,
 Florence, Italy. Association for Computational
-Linguistics.
 Markus Freitag, George Foster, David Grangier,
  Viresh Ratnakar, Qijun Tan, and Wolfgang
 Macherey. 2021a. Experts, errors, and context 
 A large-scale study of human evaluation for machine
  translation. Transactions of the Association
- for Computational Linguistics , 9 1460 1474.
+ for Computational Linguistics , 9 1460 
 Markus Freitag, Ricardo Rei, Nitika Mathur, Chikiu
  Lo, Craig Stewart, Eleftherios Avramidis,
 Tom Kocmi, George Foster, Alon Lavie, and
@@ -1052,13 +1021,12 @@ Lavie, and Ond ˇrej Bojar. 2021b. Results of the
 WMT21 metrics shared task  Evaluating metrics
 with expert-based human evaluations on TED
 and news domain. In Proceedings of the Sixth
-Conference on Machine Translation , pages 733 774, Online. Association for Computational Linguistics.
-
+Conference on Machine Translation , pages 733 
+774, Online. Association for Computational Linguistics.
 Luyu Gao, Aman Madaan, Shuyan Zhou, Uri
 Alon, Pengfei Liu, Yiming Yang, Jamie Callan,
 and Graham Neubig. 2022. Pal  Programaided
  language models. arXiv preprint
-arXiv 2211.10435 .
 Sameer Jain, Vaishakh Keshava, Swarnashree
  Mysore Sathyendra, Patrick Fernandes,
 Pengfei Liu, Graham Neubig, and ChuntingZhou. 2023. Multi-dimensional evaluation of
@@ -1075,7 +1043,6 @@ Michal Novák, Martin Popel, and Maja Popovi  c.
 of the Seventh Conference on Machine Translation
  (WMT) , pages 1 45, Abu Dhabi, United
 Arab Emirates (Hybrid). Association for Computational
- Linguistics.
 Tom Kocmi and Christian Federmann. 2023. Large
 language models are state-of-the-art evaluators
 of translation quality.
@@ -1086,17 +1053,14 @@ not to ship  An extensive evaluation of automatic
 metrics for machine translation. In Proceedings
 of the Sixth Conference on Machine Translation ,
 pages 478 494, Online. Association for Computational
- Linguistics.
 Pengfei Liu, Weizhe Yuan, Jinlan Fu, Zhengbao
 Jiang, Hiroaki Hayashi, and Graham Neubig.
 2023a. Pre-train, prompt, and predict  A systematic
  survey of prompting methods in natural
  language processing. ACM Comput. Surv. ,
-55(9).
 Yang Liu, Dan Iter, Yichong Xu, Shuohang Wang,
 Ruochen Xu, and Chenguang Zhu. 2023b. Geval 
  Nlg evaluation using gpt-4 with better human
- alignment.
 Arle Lommel, Hans Uszkoreit, and Aljoscha Burchardt.
  2014. Multidimensional quality metrics
 (MQM)  A framework for declaring and describing
@@ -1131,19 +1095,18 @@ Translation (WMT) , pages 569 577, Abu Dhabi,
 United Arab Emirates (Hybrid). Association for
 Computational Linguistics.
 Yiwei Qin, Weizhe Yuan, Graham Neubig, and
-Pengfei Liu. 2022. T score  Discriminative finetuning
+Pengfei Liu. 2022. T5score  Discriminative finetuning
  of generative evaluation metrics. ArXiv ,
-abs/2212.05726.
 Colin Raffel, Noam Shazeer, Adam Roberts,
 Katherine Lee, Sharan Narang, Michael Matena,
 Yanqi Zhou, Wei Li, and Peter J. Liu. 2020. Exploring
  the limits of transfer learning with a unified
  text-to-text transformer. J. Mach. Learn.
-Res., 21(1).
 Ricardo Rei, José G. C. de Souza, Duarte Alves,
 Chrysoula Zerva, Ana C Farinha, Taisiya
 Glushkova, Alon Lavie, Luisa Coheur, and André
- F. T. Martins. 2022a. COMET-22 2022 submission for the metrics shared task.
+ F. T. Martins. 2022a. COMET-22  UnbabelIST
+ 2022 submission for the metrics shared task.
 InProceedings of the Seventh Conference on Machine
  Translation (WMT) , pages 578 585, Abu
 Dhabi, United Arab Emirates (Hybrid). Association
@@ -1157,7 +1120,6 @@ Duarte Alves, Luisa Coheur, Alon Lavie, andAndré F. T. Martins. 2022b. CometKiw
  Conference on Machine Translation (WMT) ,
 pages 634 645, Abu Dhabi, United Arab Emirates
  (Hybrid). Association for Computational
-Linguistics.
 Thibault Sellam, Dipanjan Das, and Ankur Parikh.
 2020. BLEURT  Learning robust metrics for text
 generation. In Proceedings of the 58th Annual
@@ -1167,13 +1129,11 @@ Linguistics , pages 7881 7892, Online. Association
 David Vilar, Markus Freitag, Colin Cherry, Jiaming
 Luo, Viresh Ratnakar, and George Foster. 2022.
 Prompting palm for translation  Assessing strategies
- and performance.
 Jason Wei, Maarten Bosma, Vincent Zhao, Kelvin
 Guu, Adams Wei Yu, Brian Lester, Nan Du, Andrew
  M Dai, and Quoc V Le. 2021. Finetuned
 language models are zero-shot learners. In International
  Conference on Learning Representations
- .
 Jason Wei, Xuezhi Wang, Dale Schuurmans,
 Maarten Bosma, brian ichter, Fei Xia, Ed H.
 Chi, Quoc V Le, and Denny Zhou. 2022. Chain
@@ -1189,7 +1149,6 @@ Wenda Xu, Danqing Wang, Liangming Pan, Zhenqiao
  Song, Markus Freitag, William Yang Wang,
 and Lei Li. 2023. Instructscore  Towards explainable
  text generation evaluation with automatic
- feedback.
 Linting Xue, Noah Constant, Adam Roberts, Mihir
 Kale, Rami Al-Rfou, Aditya Siddhant, Aditya
 Barua, and Colin Raffel. 2021. mT5  A massively
@@ -1208,14 +1167,14 @@ quality estimation. In Proceedings of the Seventh
  Conference on Machine Translation (WMT) ,
 pages 69 99, Abu Dhabi, United Arab Emirates
 (Hybrid). Association for Computational Linguistics.
-
 Chrysoula Zerva, Daan van Stigt, Ricardo Rei,
 Ana C Farinha, Pedro Ramos, José G. C. de
 Souza, Taisiya Glushkova, Miguel Vera, Fabio
 Kepler, and André F. T. Martins. 2021. ISTunbabel
  2021 submission for the quality estimation
  shared task. In Proceedings of the Sixth
-Conference on Machine Translation , pages 961 972, Online. Association for Computational Linguistics.A
+Conference on Machine Translation , pages 961 
+972, Online. Association for Computational Linguistics.A
  Multidimensional Quality Metric (MQM)
 The Multidimensional Quality Metrics (MQM) framework is a flexible human-evaluation framework
 developed to evaluate and categorize errors in translations. Annotators are instructed to identify all errors
@@ -1239,7 +1198,6 @@ Accuracy , then Fluency , then Terminology , etc).
 Please pay particular attention to document context when annotating. If a translation might be questionable
 on its own but is fine in the context of the document, it should not be considered erroneous  conversely,
 if a translation might be acceptable in some context, but not within the current document, it should be
-marked as wrong.
 There are two special error categories  Source error andNon-translation . Source errors should be
 annotated separately, highlighting the relevant span in the source segment. They do not count against the
 five-error limit for target errors, which should be handled in the usual way, whether or not they resulted
@@ -1256,8 +1214,7 @@ Table 9 summarizes this weighting scheme, in which segment-level scores can rang
 (e.g. calculating correlation for learned metrics), the scores are negated.
 We use the same weighting to obtain scores from errors identified by A UTOMQM.
 B Sampling in-context learning examples for AutoMQM
-Figure 11 4.
-C Additional Results
+Figure 11 shows the rejection criteria used when sampling example sets as discussed in  4.
 Figures 12, 13, and 14 present additional experimental results.Error Category Description
 Accuracy Addition Translation includes information not present in the source.
 Omission Translation is missing content from the source.
@@ -1283,55 +1240,43 @@ Source error An error in the source.
 Non-translation Impossible to reliably characterize distinct errors.
 Table 8   MQM hierarchy.
 Severity Category Weight
-Major Non-translation 25 5
-Minor Fluency/Punctuation 0.1 1 0 9   MQM error weighting.1def check_icl_set(
+Major Non-translation 25
+Minor Fluency/Punctuation 0.1
+Table 9   MQM error weighting.1def check_icl_set(
 2 examples  pd.DataFrame,
-3 min_errors 3,
 4 majmin_threshold 2,
-5 cat_diversity 2,
-6 min_clen 20,
-7 max_clen 400,
-8) 
 9 # Check if they have the same number of spans as severity/category
 10 if not examples.apply(
-11 12 len(r[ span ])    len(r[ severity ]) and len(r[ span ])    len(r[ category ]),
-13 1 14 ).all() 
-15 16 17 # Check if there are at least min_errors
+12 len(r[ span ])    len(r[ severity ]) and len(r[ span ])    len(r[ category ]),
+17 # Check if there are at least min_errors
 18 if examples[ severity ].apply(lambda svs  len(svs)).sum()   min_errors 
-19 20 21 # Check that there s a balance of major and minor errors.
+21 # Check that there s a balance of major and minor errors.
 22 major_count   examples[ severity ].apply(lambda svs  sum([s   major  for s in svs])).sum()
 23 minor_count   examples[ severity ].apply(lambda svs  sum([s   minor  for s in svs])).sum()
 24 if abs(major_count - minor_count)   majmin_threshold 
-25 26 27 # Check that at least cat_diversity error types are represented.
+27 # Check that at least cat_diversity error types are represented.
 28 categories   examples[ category ].apply(lambda cs  [c.split("/")[0] for c in cs])
 29 represented_error_types   set().union( *categories.tolist())
 30 if len(represented_error_types)   cat_diversity 
-31 32 33 top_clen   examples.apply(
+33 top_clen   examples.apply(
 34 lambda row  max(len(row[s]) for s in ( source ,  reference ,  candidate )
-35 ), axis 1).max()
 36 bot_clen   examples.apply(
 37 lambda row  min(len(row[s]) for s in ( source ,  reference ,  candidate )),
-38 1).min()
-39 40 if top_clen   max_clen or bot_clen   min_clen 
-41 42 43 # All checks passed.
-44 11   Rejection criteria used when sampling in-context learning examples for A UTOMQM.0 1 2 3 4
+40 if top_clen   max_clen or bot_clen   min_clen 
+43 # All checks passed.
+Figure 11   Rejection criteria used when sampling in-context learning examples for A UTOMQM.0 1 2 3 4
 # of in-context examples0.000.050.100.150.200.250.300.350.400.45PearsonPaLM-2 (Bison) ref-based
 PaLM-2 (Bison) ref-free
-0 1 2 3 4
 # of in-context examples0.000.050.100.150.200.250.300.350.400.45PearsonPaLM-2 (Bison) ref-based
 PaLM-2 (Bison) ref-freeFigure 12   Mean Pearson and its interquartile range (IQR), as we increase the number of in-context
 examples in the score prediction prompt, sampled with uniform (left) and stratified (right) sampling, for
-WMT22 EN-DE.
-0 1 2 3 4
 # of in-context examples0.000.050.100.150.200.250.300.35PearsonPaLM-2 (Bison) ref-based
 PaLM-2 (Bison) ref-free
-0 1
 # of in-context examples0.000.050.100.150.200.250.300.35PearsonPaLM-2 (Bison) ref-based
 PaLM-2 (Bison) ref-free
 Figure 13   Mean Pearson and its interquartile range (IQR), as we increase the number of in-context
 examples in the score prediction prompt, sampled with uniform (left) and stratified (right) sampling, for
-WMT22 ZH-EN.
-Error110100100010000 0510 20 50 60 70 80859095100
+0510 20 50 60 70 80859095100
 Score# occurrences (zh-en)
 Figure 14  Distribution of scores for various LLM reference-based evaluators, on the ZH-EN test set. Note that the
 yaxis is in log-scale .

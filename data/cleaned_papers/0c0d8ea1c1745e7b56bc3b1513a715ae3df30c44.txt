@@ -3,7 +3,6 @@ Sireesh Gururaja and Ritam Dutt and Tinglong Liao and Carolyn Rosé
 Language Technologies Institute
 Carnegie Mellon University
 {sgururaj, rdutt, tinglonl, cprose}@cs.cmu.edu
-Abstract
 Recent work has demonstrated the positive impact
  of incorporating linguistic representations
 as additional context and scaffolding on the
@@ -29,8 +28,6 @@ than syntactic ones, extend to relation extraction
 the inclusion of these graphs results in significantly
  higher performance in few-shot transfer,
 both types of graph exhibit roughly equivalent
-utility.
-1 Introduction
 In many specialized domains, such as healthcare or
 finance, one of the principal limitations for the implementation
  of machine learning based NLP methods
@@ -42,7 +39,6 @@ tasks, those gains frequently fail to generalize to
 specialized domains. Robust representations that
 allow models to both take advantage of pretrained
 models and generalize across domains are therefore
-highly desirable.
 Recent works such as Prange et al. (2022) have
 demonstrated the significant potential of usinghuman-annotated linguistic information as scaffolding
  for learning language models. Other works
@@ -84,7 +80,7 @@ domains, our datasets describe the process of combining
  ingredients under certain conditions in a
 sequential fashion to produce a desired product.
 These range from preparing a cooking recipe to
-synthesizing a chemical compound to extractingarXiv 2307.03823 1  [cs.CL]  7 2023materials from ores. As a result, the relations that
+synthesizing a chemical compound to extractingarXiv 2307.03823v1  [cs.CL]  7 Jul 2023materials from ores. As a result, the relations that
 we derive from each dataset share a loose semantic
 correspondence, both to each other and to basic
 semantic relations such as verb arguments and locations.
@@ -117,8 +113,7 @@ degrade the performance of purely text-based models,
  models that incorporate linguistic graphs provide
  gains that are robust to those effects.
 We make our code available with our submission1.
-
-2 2.1 Few-shot Relation Extraction
+2.1 Few-shot Relation Extraction
 The goal of relation extraction (RE) is to detect
 and classify the relation between specified entities
  in a text according to some predefined schema.
@@ -159,7 +154,6 @@ even when the parses employed are not humanannotated.
  In this work, we raise the question of
 the utility of either kind of parse for few-shot RE
 in a cross-domain setting.
-3 Methodology
 We design our methodology to test whether the
 inclusion of AMRs and dependency parses can improve
  the few-shot RE performance across datasets,
@@ -180,10 +174,6 @@ accuracy imposes an upper bound on end-to-end
 relation classification. Secondly, RE presents a
 common way to frame the tasks in each of these
 datasets.... season  with rosemary and  thyme ...Parserseason-01
-thyme and
-rosemary
-R-GCN
-BERTClassiﬁer
 AddFigure 1  Model architecture. Yellow tokens denote
 BERT special tokens. Dotted lines indicate using BERT
 embeddings to seed the graph for the R-GCN.
@@ -204,7 +194,6 @@ dataset. So that our models do not learn shallow
 heuristics to predict relations based on entity type,
 as observed in Rosenman et al. (2020), we exclude
 the entity types from the original datasets.
-3.2 Parsing
 We then annotate each context entity with two linguistic
  representations  AMR (Banarescu et al.,
 2013) and dependency parses. We choose AMR primarily
@@ -226,9 +215,8 @@ context span using the Stanza dependency parser
 (Qi et al., 2020), which produces a dependency
 graph per sentence. We then create a "top" node for
 the graph to link the individual trees for relations
-that span sentences.
 For the AMR parses, we use the SPRING model
-(Bevilacqua et al., 2021) as implemented in AMRLib We
+(Bevilacqua et al., 2021) as implemented in AMRLib2We
  additionally verified that the model did
 not perform significantly differently than the original
  implementation. In contrast to the dependency
@@ -248,7 +236,6 @@ instance by joining the graphs of its constituent
 sentences. We follow the same procedure as with
 dependency parsing, joining all of the sentencelevel
  AMR graphs with a top node.
-3.3 AMR Alignment
 Because AMR nodes are not required to point back
 to the tokens that generated them, extracting tokenlevel
  features to incorporate into our RE model
@@ -261,7 +248,7 @@ aligners. These were implemented in AMRLib
 as the RBWandFAAaligners, respectively. Both
 aligners perform poorly, especially on the scientific
  text in the MSCorpus dataset. Because alignments
- are necessary to producing token-level fea https //github.com/bjascob/amrlibtures
+ are necessary to producing token-level fea2https //github.com/bjascob/amrlibtures
  from an AMR representation, we developed
 heuristics as a second pass of alignment after applying
  the FAA aligner to the original text/AMR
@@ -295,7 +282,7 @@ architecture for relation extraction, based on BERT
 (Devlin et al., 2019). We begin by embedding the
 context for each relation. We then extract the embeddings
  for all tokens that constitute each entity,
-and max-pool them into embeddings e ande2.
+and max-pool them into embeddings e1ande2.
 We concatenate e1,e2, and the embedding for the
 [CLS] token, which we consider a stand-in for the
 context, into one vector. We then pass that vector
@@ -310,14 +297,14 @@ the baseline BERT model s embeddings. For every
 with the max-pool of the embeddings of each of
 its aligned tokens, leaving the embeddings zeroed
 out for unaligned nodes. We then pass the graph
-through a relational graph convolution network (R https //amr.isi.edu/doc/amr-alignment-guidelines.htmlGCN,
+through a relational graph convolution network (R3https //amr.isi.edu/doc/amr-alignment-guidelines.htmlGCN,
  Schlichtkrull et al. (2018)). We choose the
 R-GCN for its ability to model heterogeneous relations
  in graphs. After computing node embeddings,
  we employ a residual connection similar to
 theHier setting shown in figure 3a in Bai et al.
 (2021), where the mean pool of node embeddings
-corresponding to e ande is added back to the
+corresponding to e1ande2is added back to the
 BERT-based embeddings of the aligned entity tokens
  computed earlier. These updated embeddings
 are then passed to the same MLP relation classifier
@@ -327,14 +314,15 @@ capacity that it imposes on our models. Additionally,
  we measure the distribution of path lengths
 between entities in both frameworks in the train
 split of our datasets, and find that the mean path
-of each dataset lies between 3 4. We thus use
+of each dataset lies between 3 and 4. We thus use
 an R-GCN of depth 4 for all experiments in order
  to capture most paths. Because of the residual
 connection architecture, we are restricted to using
 the baseline BERT model s word embedding size
 as the node embedding size as well. Combined
 with the GNN depth of 4, our model adds significantly
- more parameters   203 111M. However, we hypothesize
+ more parameters   203M parameters vs the
+plaintext model s 111M. However, we hypothesize
 that being forced to operate in the same embedding
 space as the baseline will discourage models from
 memorizing the original dataset and overfitting, especially
@@ -342,7 +330,6 @@ memorizing the original dataset and overfitting, especially
 We depict our architecture in figure 1. The baseline
  architecture omits the right-hand fork, using
 only BERT embeddings.
-4 Datasets
 We consider three datasets across two different
 domains for this transfer  cooking and materials
 science procedures. Our cooking datasets are the
@@ -363,9 +350,9 @@ our datasets exhibit a high degree of concentrationin their label distributions,
 being found sometimes as much as 200  less than
 the most frequent classes.
 Dataset Documents # Relations Labels Label Distribution
-RISeC 260 7,591 11 300 15,681 13 230 18,399 11 1  Dataset Statistics. The label distribution column
+MSCorpus 230 18,399 11
+Table 1  Dataset Statistics. The label distribution column
  visualizes sorted frequencies of labels in each
-dataset.
 The RISeC dataset (Jiang et al., 2020) is the
 most explicitly aligned with existing semantic
 frameworks  the authors build upon Propbank
@@ -377,7 +364,6 @@ roles, rather than numbered arguments. Additionally,
  while these relations are inspired by Propbank,
 the authors  definitions of the labels do not always
 correspond to Propbank s, rendering this correspondence
- somewhat loose.
 TheEFGC dataset takes a more domain-specific
 approach, and defines a labeling schema specialized
  for cooking, including coreference relations
@@ -396,22 +382,23 @@ indicating the flow of operations. MSCorpus defines
 is atypical for the other datasets. We thus combine
  some of these labels to bring MSCorpus into
 alignment with the other annotation schemas.
-5 5.1 In-Domain Experiments
+5.1 In-Domain Experiments
 We train both the baseline and graph-aware models
  on each dataset, using the train/dev/test splits
 where provided. If no dev split was provided, we
 randomly split the training dataset 80/20 into new
-train and dev splits. We use bert-base-uncasedas available on the Huggingface Hub as our base
+train and dev splits. We use bert-base-uncasedas available on the Huggingface Hub4as our base
 BERT model, for both the baseline and graphaware
  variants. For our graph-aware variants, we
 use R-GCN as our graph network. We train each
 model with the Adam optimizer (Kingma and Ba,
 2014) to minimize the cross-entropy loss between
 predicted and true labels. We use a learning rate
-of2 10 5 16. Each model
-is trained on 3 30 epochs, using
+of2 10 5and a batch size of 16. Each model
+is trained on 3 random seeds for 30 epochs, using
  early stopping criterion based on the macroaveraged
- F1 5 epochs. We keep the model that performs
+ F1 score on the dev split with a patience
+of 5 epochs. We keep the model that performs
 best on the dev split, and calculate its corresponding
  macro F1 score on the test set. We refer to
 the graph aware models that add dependencies and
@@ -426,7 +413,6 @@ the target domain. We experiment with K
 number of labeled examples for a given class, we
 sample all of the labeled instances without replacement.
  This can result in fewer than K examples for
-a given class.
 For the transfer process, we begin with the models
  trained in the in-domain experiments, and replace
  the MLP classification head with a freshly
@@ -438,7 +424,6 @@ updated in the transfer finetuning.
 We continue to train each model using the same
 settings as in-domain training using a batch size of
 4, sampling each dataset three times with different
-seeds.
 In addition, to control for the effects of the
 source and target dataset interactions and our sampling
  strategies, we train few-shot models in each
@@ -465,15 +450,8 @@ there are enough target domain examples to obviate
 the need for efficiency. In this section, we aim to
 answer a number of questions.
 Dataset Case Mean (std)
-EFGC  AMR 83.9 (0.3)
- Dep 84.6 (1.3)
-Baseline 85.0 (0.8)
 MSCorpus  AMR 87.8 (1.0)
- Dep 88.4 (0.5)
-Baseline 87.5 (0.5)
 RISeC  AMR 82.8 (1.6)
- Dep 81.7 (2.1)
-Baseline 82.7 (1.3)
 Table 2  Results from in-domain experiments. Each
 value represents the mean of runs with three random
 seeds, with standard deviation in parentheses.
@@ -486,7 +464,6 @@ cases, even though they appear to overperform the
 baseline case on RISeC and MSCorpus. Notably,
 however, these models do not overfit more than
 the baseline  performance on the unseen test set
-remains similar.
 We do, however, see differences in performance
 between the baseline and graph-aware cases in the
 few-shot transfer setting. In Figure 2, we visualize
@@ -547,8 +524,8 @@ effect of transfer setting such that in-domain performance
 performance in a few-shot setting  F(1, 679)  
 10356.25, p   .0001. In these cases, the original(a)  AMR vs baseline
  (b)  Dep vs baseline
-Figure 2 1 over baseline from incorporating linguistic graphs in models.
-dataset for in-domain training is between 5 15
+Figure 2  Differences in F1 over baseline from incorporating linguistic graphs in models.
+dataset for in-domain training is between 5 and 15
 times the size of the target training dataset. We also
 find a significant effect of the few-shot setting, such
 that larger numbers of target domain examples are
@@ -559,7 +536,6 @@ Notably, there is a significant interaction between
 transfer setting and few shot setting  F(5, 679)  
 733.83, p   .0001, such that the effect of the fewshot
  setting is restricted to the transfer setting, as
-expected.
 Our hypothesis is primarily related to the importance
  of the representation of the data for efficiently
 enabling transfer between domains. We find a significant
@@ -574,14 +550,15 @@ particular, the effect of case is only significant in
 the transfer setting. There is also a significant interaction
  between few shot setting and case  F(2, 679)
   8.19, p   .0005. A student-t post-hoc analysis
-reveals that the effect is only significant for the 5 10-shot settings. Thus, 1 20 or
+reveals that the effect is only significant for the 5and
+ 10-shot settings. Thus, 1 target example is too
+small to yield a significant effect whereas 20 or
 more is too many such that the representational
 advantage disappears . We also find a significant
 interaction between representation case and target
 dataset, but not with source dataset  F(4, 679)  
 2.61, p   .05, such that the effect of representation
 is significant for RISeC and MSCorpus but not for
-EFGC.
 We present all of our few-shot results in Table
 3. Significance testing was performed on the difference
  in results between the baseline and lingusiticrepresentation cases in the transfer setting. Additionally,
@@ -593,7 +570,6 @@ dataset, with the transfer model that we train on a
 source dataset first. We show both of these cases in
 table 3, with few-shot models trained from scratch
 denoted in the source dataset column as "From
-Scratch" results.
 How important is the choice of the source
 domain on the transfer performance  We see
 several interesting patterns in our 5- and 10-shot
@@ -614,7 +590,7 @@ model. In the cases of transfer between MSCorpus
  and RISeC in either direction, for instance, the
 baseline model in the transfer setting consistently
 underperforms the model trained from scratch by
-up to 7 1 points, and does not close that gap even
+up to 7 F1 points, and does not close that gap even
 in the 50- and 100-shot settings. However, incorporating
  linguistic formalisms proves to be far more
 robust to the choice of source domain  the linguistic
@@ -623,7 +599,8 @@ never worse than the baseline trained on that source
 domain, and still frequently outperform the baseline
  trained from scratch, even when the choice of
 source domain imposes a performance penalty.Fewshot Setting
-Target Source Case 1 5 10 20 50 100 18.6 (2.9) 36.5 (3.2) 48.3 (3.1) 60.2 (2.3) 71.1 (1.1) 76.9 (0.2)
+Target Source Case 1 5 10 20 50 100
+RISeC From Scratch Baseline 18.6 (2.9) 36.5 (3.2) 48.3 (3.1) 60.2 (2.3) 71.1 (1.1) 76.9 (0.2)
  Dep 19.3 (4.5) 40.0 (2.8) 51.5 (3.2) 62.7 (4.5) 71.1 (0.9) 79.5 (1.5)
  AMR 19.8 (7.1) 39.3 (5.2) 52.1 (2.6) 60.9 (4.0) 70.6 (0.7) 78.4 (1.0)
 MSCorpus Baseline 19.7 (5.5) 35.1 (5.4) 45.6 (0.8) 57.7 (0.9) 67.8 (1.3) 76.2 (1.6)
@@ -671,7 +648,6 @@ transferring from EFGC to RISeC, for instance,
 than we see in the reverse direction, and we see
 a similar result (though less consistent) for transfer
  from EFGC to MSCorpus as compared to the
-reverse.
 What is the impact of linguistic structure on
 the performance of few-shot RE in-domain 
 When factoring in the effect of our graph-awaremodels, we see that they help models generalize,
@@ -694,16 +670,18 @@ transfer setting. In the 10-shot transfer in both directions
  between EFGC and MSCorpus, as well
 as the EFCG to RISeC case, transfer models that
 incorporate dependencies and AMRs overperform
-their in-domain counterparts by between 3 7 5 10
+their in-domain counterparts by between 3 and 7Fewshot Setting
+Target Source Case 5 10
 RISeC MSCorpus Baseline -1.37 -2.66
- Dep -0.29 0.04 0.10 -1.92 5.50 5.42 10.53 6.09 8.44 5.87
+EFGC Baseline 5.50 5.42
 MSCorpus RISeC Baseline -3.55 -6.92
- Dep -0.10 -6.24
- AMR -1.40 -3.91
-EFGC Baseline -0.33 0.41 6.06 0.63 8.45 6.82 1.12 -3.23 4.51 -2.34 4.02 -3.23 0.29 0.85 1.14 4.18 1.29 3.46 4 5- and 10-shot cases gained in using a
+EFGC Baseline -0.33 0.41
+EFGC RISeC Baseline 1.12 -3.23
+MSCorpus Baseline 0.29 0.85
+Table 4  Differences from baseline model trained from
+scratch in the 5- and 10-shot cases gained in using a
 different source domain. Linguistic representations are
 more robust to choice of source domain.
-points.
 7 Conclusion and Future Work
 We experiment with using linguistic formalisms
 as additional context for learning robust representations
@@ -716,7 +694,6 @@ that that benefit is robust to whether transfer learning
  helps in the baseline case. This suggests that
 using linguistic formalisms as a scaffold for learning
  in data scarce, specialized domains could be a
-powerful technique.
 Future work could focus on several directions.
 With regards to the use of semantic frameworks,
 more work is needed to understand how best to incorporate
@@ -755,11 +732,10 @@ of this vein of research. More effort understanding
 how to narrow down the choice of datasets before
 studying transfer would go a long way towards
 alleviating this issue.
-Acknowledgments
 This research was sponsored by the Defense Advanced
  Research Projects Agency and the Army
 Research Office and was accomplished under Grant
-Number W NF-20-1-0006. The views and conclusions
+Number W911NF-20-1-0006. The views and conclusions
  contained in this document are those of
 the authors and should not be interpreted as representing
  the official policies, either expressed or implied,
@@ -768,19 +744,19 @@ Agency, the Army Research Office, or the U.S.
 Government. The U.S. Government is authorized
 to reproduce and distribute reprints for Government
 purposes notwithstanding any copyright notation
-herein.
-References
 Xuefeng Bai, Yulong Chen, Linfeng Song, and Yue
 Zhang. 2021. Semantic representation for dialogue
-modeling. In Proceedings of the 59 11th International Joint Conference on Natural
+modeling. In Proceedings of the 59th Annual Meeting
+ of the Association for Computational Linguistics
+and the 11th International Joint Conference on Natural
  Language Processing (Volume 1  Long Papers) ,
 pages 4430 4445, Online. Association for Computational
  Linguistics.Livio Baldini Soares, Nicholas FitzGerald, Jeffrey Ling,
 and Tom Kwiatkowski. 2019. Matching the blanks 
 Distributional similarity for relation learning. In Proceedings
  of the 57th Annual Meeting of the Association
- for Computational Linguistics , pages 2895 2905, Florence, Italy. Association for Computational
-Linguistics.
+ for Computational Linguistics , pages 2895 
+2905, Florence, Italy. Association for Computational
 Laura Banarescu, Claire Bonial, Shu Cai, Madalina
 Georgescu, Kira Griffitt, Ulf Hermjakob, Kevin
 Knight, Philipp Koehn, Martha Palmer, and Nathan
@@ -820,7 +796,6 @@ graph-based parser for the Abstract Meaning Representation.
  of the Association for Computational Linguistics
 (Volume 1  Long Papers) , pages 1426 1436, Baltimore,
  Maryland. Association for Computational
-Linguistics.
 Yiwei Jiang, Klim Zaporojets, Johannes Deleu, Thomas
 Demeester, and Chris Develder. 2020. Recipe instruction
  semantics corpus (RISeC)  Resolving semantic
@@ -831,13 +806,11 @@ and the 10th International Joint Conference on Natural
  Language Processing , pages 821 826, Suzhou,
 China. Association for Computational Linguistics.Diederik P. Kingma and Jimmy Ba. 2014. Adam 
 A method for stochastic optimization. CoRR ,
-abs/1412.6980.
 Paul Kingsbury and Martha Palmer. 2002. From TreeBank
  to PropBank. In Proceedings of the Third International
  Conference on Language Resources and
 Evaluation (LREC 02) , Las Palmas, Canary Islands
 - Spain. European Language Resources Association
-(ELRA).
 Yang Liu, Jinpeng Hu, Xiang Wan, and Tsung-Hui
 Chang. 2022. A simple yet effective relation information
  guided approach for few-shot relation extraction.
@@ -872,21 +845,18 @@ Study on Neural Relation Extraction. In Proceedings
  of the 2020 Conference on Empirical Methods
 in Natural Language Processing (EMNLP) , pages
 3661 3672, Online. Association for Computational
-Linguistics.
 Nima Pourdamghani, Yang Gao, Ulf Hermjakob, and
 Kevin Knight. 2014. Aligning English strings
 with Abstract Meaning Representation graphs. In
 Proceedings of the 2014 Conference on Empirical
 Methods in Natural Language Processing (EMNLP) ,
 pages 425 429, Doha, Qatar. Association for Computational
- Linguistics.
 Jakob Prange, Nathan Schneider, and Lingpeng Kong.
 2022. Linguistic frameworks go toe-to-toe at neurosymbolic
  language modeling. In Proceedings of the
 2022 Conference of the North American Chapter ofthe Association for Computational Linguistics  Human
  Language Technologies , pages 4375 4391, Seattle,
  United States. Association for Computational
-Linguistics.
 Peng Qi, Yuhao Zhang, Yuhui Zhang, Jason Bolton, and
 Christopher D. Manning. 2020. Stanza  A Python
 natural language processing toolkit for many human
@@ -905,7 +875,6 @@ Shachar Rosenman, Alon Jacovi, and Yoav Goldberg.
  of the 2020 Conference on Empirical Methods
 in Natural Language Processing (EMNLP) , pages
 3702 3710, Online. Association for Computational
-Linguistics.
 Devendra Sachan, Yuhao Zhang, Peng Qi, and
 William L. Hamilton. 2021. Do syntax trees help
 pre-trained transformers extract information  In
@@ -932,7 +901,6 @@ AMR-enhanced model for document-level event argument
  for Computational Linguistics  Human
 Language Technologies , pages 5025 5036, Seattle,
 United States. Association for Computational Linguistics.
-
 Yoko Yamakata, Shinsuke Mori, and John Carroll. 2020.
 English recipe flow graph corpus. In Proceedings
 of the Twelfth Language Resources and Evaluation
@@ -963,7 +931,6 @@ relation classification. In Proceedings of the 29th
 International Conference on Computational Linguistics,
  pages 2339 2345, Gyeongju, Republic of Korea.
 International Committee on Computational Linguistics.
-
 Zixuan Zhang and Heng Ji. 2021. Abstract Meaning
 Representation guided graph encoding and decoding
 for joint information extraction. In Proceedings of
@@ -976,7 +943,8 @@ Ahmed S Elsayed, Skatje Myers, and Martha Palmer.
 2021. Fine-grained information extraction from
 biomedical literature based on knowledge-enriched
 abstract meaning representation. In Proc. The Joint
-Conference of the 59 11th
+Conference of the 59th Annual Meeting of the Association
+ for Computational Linguistics and the 11th
 International Joint Conference on Natural Language
 Processing (ACL-IJCNLP 2021) .
 Xinyu Zhao, Shih-Ting Lin, and Greg Durrett. 2021.
@@ -988,5 +956,5 @@ Li Zhenzhen, Yuyang Zhang, Jian-Yun Nie, and Dongsheng
  Li. 2022. Improving few-shot relation classification
  by prototypical representation learning with
 definition text. In Findings of the Association for
-Computational Linguistics  NAACL 2022 , pages 454 464, Seattle, United States. Association for Computational
- Linguistics.
+Computational Linguistics  NAACL 2022 , pages 454 
+464, Seattle, United States. Association for Computational

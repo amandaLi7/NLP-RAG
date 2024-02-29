@@ -1,8 +1,10 @@
 VideoGLUE  Video General Understanding
 Evaluation of Foundation Models
-Liangzhe Yuan1 1 1 1 1,2 1 1
-Hartwig Adam Ming-Hsuan Yang Ting Liu Boqing Gong1 1Google Research Cornell University
-Abstract
+Liangzhe Yuan1   Nitesh Bharadwaj Gundavarapu1 Long Zhao1 Hao Zhou1 
+Yin Cui1Lu Jiang1Xuan Yang1Menglin Jia1,2 Tobias Weyand1
+Luke Friedman1Mikhail Sirotenko1Huisheng Wang1Florian Schroff1
+Hartwig Adam1Ming-Hsuan Yang1Ting Liu1Boqing Gong1
+1Google Research2Cornell University
 We evaluate existing foundation models  video understanding capabilities using a
 carefully designed experiment protocol consisting of three hallmark tasks (action
 recognition, temporal localization, and spatiotemporal localization), eight datasets
@@ -22,7 +24,6 @@ to conduct research on video-focused FMs, and the last confirms that both tasks
 and adaptation methods matter when it comes to the evaluation of FMs. Our code
 is released under https //github.com/tensorflow/models/tree/master/
 official/projects/videoglue .
-1 Introduction
 Foundation models (FMs) are a term coined by Bommasani et al. [ 7], referring to  any model that is
 trained on broad data that can be adapted (e.g., finetuned) to a wide range of downstream tasks.  Some
 representative FMs include but are not limited to BERT [ 13], GPT-3 [ 8], CLIP [ 40], and ALIGN [ 26].
@@ -35,15 +36,8 @@ FMs are considered as  generalists  that learn shareable meta-knowledge across t
  Equal technical contributions.
  Corresponding to lzyuan@google.com .
  Work done as a student researcher at Google.
-Preprint. Under review.arXiv 2307.03166 2  [cs.CV]  1 2023V C(ML)
-V C(M)
-V C(M)
+Preprint. Under review.arXiv 2307.03166v2  [cs.CV]  1 Dec 2023V C(ML)
 V C(A) V C(A) T AL S T AL S T AL
-44.8 39.8 34.8 29.8 76.9 81.7 86.5 91.3 38.1 36.9 35.7 34.564.8 61.6 58.371.2 66.2 61.3 56.4 84.8 87.3 89.982.2 38.7 40.7 42.6 44.640.5 37.3 34.1 30.8
-(19.7-42.3)
-(24.4-38.9)
-(32.3-37.5)
-(77.1-88.6  
 (34.8-43.6) (67.3-88.9) (46.6-68.7) (48.6-63.2) Figure 1  FMs vs. state-of-the-art task-specialized models on video understanding. Unlike natural
 language and image understanding, video tasks are where FMs generally fall behind  specialists .
 VC(A), VC(M), and VC(ML) stand for appearance-focused, motion-focused, and multi-labeled video
@@ -71,7 +65,7 @@ the next paragraph. Second, many existing FMs probably cannot heed motion in vid
 learn primarily from static images [ 40,47,59] or short video clips containing limited motion [ 18,55].
 Third, popular adaptation methods (e.g., finetuning all weights) cannot supplement FMs with all the
 cues needed to recognize motion-rich actions and localize entities temporally and/or spatiotemporally.
-Sections 4.1 4.2 elaborate on this point.
+Sections 4.1 and 4.2 elaborate on this point.
 While our work is not the first to emphasize the evaluation of FMs, it is unique on multiple fronts.
 Unlike Elevater [ 32] s target of evaluating language-augmented FMs, we consider all FMs adaptable
 to video understanding. Unlike Perception Test [ 4] s coverage of a broad spectrum of perception
@@ -91,8 +85,6 @@ videos, localizing actions in time, and understanding a video of more than one a
 video-native FMs can perform well on video tasks under light adaptations to downstream tasks
 (e.g., freezing the FM backbones), while image-native FMs win in full end-to-end finetuning. This
 observation confirms that both tasks and adaptation methods matter when it comes to the evaluation
-of FMs.
-2 Related work
 FMs. One common type of FMs are Large Language Models (LLMs) trained to acquire generic,
 transferable, and diverse representations that can enable sample-efficient learning and knowledge
 transfer across a broad range of downstream tasks. FMs are often trained with simple self-supervised
@@ -102,7 +94,6 @@ characteristic of FMs is their ability to gradually acquire new capabilities as 
 training data size increases, despite being trained on simple learning objectives [ 56]. For example,
 PaLM [ 12,3], a massive LM with 540 billion parameters has started to show new capabilities in tasks
 such as explaining jokes, solving math, and performing common-sense reasoning when scaled to over
-100B parameters.
 In addition to self-supervised transformers, FMs in computer vision also encompass transformers
 specifically trained to align image-text paired data. These FMs use learning objectives include
 contrastive learning (e.g., CLIP [ 40]), denoising masked tokens (e.g., BEiT-3 [ 53]), predicting the
@@ -112,7 +103,6 @@ CoCa [ 59], FLA V A [ 47], MAE [ 22]). For example, MAE combines autoencoder rec
 objective jointly with the denoising objective [ 22] that was extended to video [ 18,48]. In our
 study, we choose six representative FMs (i.e., CoCa [ 59], CLIP [ 40], FLA V A [ 47], VideoMAE [ 48],
 V ATT [ 1], and InternVideo [ 55]) due to their amendability on video understanding and accessibility
-of checkpoints.
 Evaluation of FMs. As the mission of FMs is to enable sample-efficient knowledge transfer, the
 design of downstream tasks is critical to evaluate the capabilities and limitations of these models.
 The evaluation of FMs is pioneered by the NLP researchers. For example, GLUE [ 50] and SuperGLUE
@@ -122,7 +112,7 @@ pretrained FMs, allowing for a comparison to human baselines. ELEV ATER [ 32] in
 concept to vision FMs along with a toolkit for evaluating vision-language tasks, including knowledge
 augmentation, hyperparameter tuning, and three adaptation techniques. In parallel, there have been
 attempts to establish a diagnostic benchmark for perceptual understanding of the world. For instance,
-Perception Test [ 4] crowd-sourced 11 100 users performed scripted activities.
+Perception Test [ 4] crowd-sourced 11K videos in which about 100 users performed scripted activities.
 This benchmark [ 4] comprises videos filmed by only about 100 participants, which may not provide
 the same level of domain coverage and diversity as the other FM evaluation works mentioned earlier.
 Evaluation of video FMs. While some vision-language FMs have incorporated video tasks, their
@@ -133,19 +123,22 @@ introduce new FMs and show their superiority over several dozen video datasets. 
 differences to the prior works. First, our evaluation is video-centric using the tasks that require motion
 understanding or long-term temporal reasoning. Second, instead of promoting new video FMs, our
 work proposes no new models and is solely dedicated to evaluating current and future Video FMs in
-3 1  Foundation models (FMs) studied in this work (MxM stands for Masked {Image, Language,
-or Video }Modeling).
+3Table 1  Foundation models (FMs) studied in this work (MxM stands for Masked {Image, Language,
 Foundation Model Modality Pretraining Data Pretraining Objective
-CoCa Image   Text JFT B   ALIGN Contrastive   Captioning
+CoCa Image   Text JFT3B   ALIGN Contrastive   Captioning
 CLIP Image   Text WebImageText Contrastive
 FLA V A Image   Text PMD Contrastive   MIM   MLM
-VideoMAE Video K400 2  Summary of statistics, video properties, and data sources of each dataset. Tasks involved
+VideoMAE Video K400 MVM
+InternVideo Video UnlabeledHybrid MVM   Contrastive
+V ATT Video   Audio   Text HT100M Contrastive
+Table 2  Summary of statistics, video properties, and data sources of each dataset. Tasks involved
 are spatiotemporal action localization (STAL), temporal action localization (TAL), and video classification
  (VC). Column "Num. videos" contains video examples in train/evaluation splits, respectively.
 Task Dataset Num. videos Avg. length Data source Note
 STALA V A v2.2 210,634/57,371 15 mins Movie spatiotemporal, instance
 A V A-Kinetics 354,201/91,919 10 seconds Web spatiotemporal, instance
-TAL ActivityNet v1.3 10,002/4,926 5-10 400 235,693/19,165 10 seconds Web holistic, appearance
+TAL ActivityNet v1.3 10,002/4,926 5-10 mins Web temporal
+VCKinetics400 235,693/19,165 10 seconds Web holistic, appearance
 Moments-in-Time 791,246/33,898 3 seconds Web holistic, appearance
 Sth-sth v2 168,913/24,777 2-6 seconds Crowd-source holistic, motion
 Diving48 15,027/1,970 5 seconds Web holistic, motion
@@ -174,11 +167,11 @@ complementary to each other. Regarding data sources, K400 videos are from Youtub
 videos from different Web venues, while Charades contains scripted videos. Regarding action labels,
 the datasets differ in granularities and real-life scenarios, a verb defines an action in MiT, K400
 groups actions by verb-subject pairs, and Charades actions are about indoor activities. Regarding
-4the average length, K400 3 10 seconds, each with one action label,
+4the average length, K400 and MiT videos are between 3 and 10 seconds, each with one action label,
 while Charades videos are about 30 seconds, each with multiple actions.
 Fine-grained motion-focused actions. We also include Something-something-v2 (SSv2) [ 20] and
 Diving48 (D48) [ 34] as another two action recognition datasets, whose actions are fine-grained and
-motion-focused. SSv2 174 human hand gestures as action labels, such as putting something
+motion-focused. SSv2 contains 174 human hand gestures as action labels, such as putting something
 into something, turning something upside down, and covering something with something. D48 is all
 about competitive diving. Notably, the foreground objects  motion is a more significant discriminative
 cue than their appearance.
@@ -219,10 +212,10 @@ support the breadth of use cases.
 End-to-end finetuning. End-to-end finetuning is the most common FM evaluation method for videos
 [1,18,48,55], but it requires the deployment of a separate and possibly expensive FM for each
 downstream task. When finetuning all weights in the modified FMs, we limit cross-attention to a
-single transformer layer with 12 768. We vary learning rates and weight decays
+single transformer layer with 12 heads and hidden size 768. We vary learning rates and weight decays
 for each experiment to ensure every FM is configured to its best setup. Figure 2(a) illustrates this
 end-to-end finetuning.
-5 2  We study four adaptation methods to apply a foundation model (FM) to video understanding
+5Figure 2  We study four adaptation methods to apply a foundation model (FM) to video understanding
 downstream tasks  (a) end-to-end finetuning, (b) frozen backbone evaluation, (c) frozen features with
 multi-layer attention pooler (MLAP), and (d) a low-rank adapter.
 Frozen FM. Linear probing and cross-attention based pooling over frozen FM features are routinely
@@ -239,7 +232,6 @@ is applied between a learnable token τand the features FN k 1using multi-head c
 with the features FN k 2. This process is repeated for krounds 
 τN k 1 MLP (MHCA (τ, FN k 1))
 τN k 2 MLP (MHCA (τN k 1, FN k 2))
-...
 τN MLP (MHCA (τN 1, FN))(2)
 where k  4in our experiments, and the final classifier is p LINEAR CLASSIFIER (τN).
 Frozen FM with a low-rank adapter . Finally, we explore a frozen FM beyond the last klayers
@@ -256,12 +248,19 @@ as the default task head due to its computation efficiency and performance.
 The low-rank adaptation allows a single FM for multiple tasks, in contrast to the per-task models
 in end-to-end finetuning. However, it incurs a per-task forward pass at inference time, being less
 efficient than the task-specific heads over frozen features.
-6 3  Evaluating FMs when adapted to video understanding tasks using end-to-end finetuning.
-We report the Top-1 400, MiT, D48 2, MAP on Charades and ANet, and
+6Table 3  Evaluating FMs when adapted to video understanding tasks using end-to-end finetuning.
+We report the Top-1 accuracy on K400, MiT, D48 and SSv2, MAP on Charades and ANet, and
 mAP@IOU0.5 on A V A and A V A-K.
 STAL TAL VC (A) VC (M) VC (ML)
-Method A V A A V A-K ANet K400 48 2 27.7 31.0 82.6 43.6 79.6 66.8 55 .0 55.2 27.1 28 .9 81.0 39 .0 75 .7 46 .6 54 .3 52.8 22.0 25 .6 79.1 38 .3 72 .0 61 .1 48 .6 49.4 23.5 26 .2 78.7 36 .1 75 .5 65 .5 51 .4 51.0 27.2 29 .8 80.1 35 .9 75 .8 67.0 52.2 52.5 27.0 28 .4 77.1 34 .8 77 .6 65 .1 55.7 52.7
-Task-specialized42.3 38.9 37.5 88.6 42.7 88.9 68.7 63.2 2 4 4.1 End-to-end finetuning
+Method A V A A V A-K ANet K400 MiT D48 SSv2 Charades A VG
+CoCa 27.7 31.0   82.6 43.6 79.6 66.8 55 .0 55.2
+CLIP 27.1 28 .9   81.0 39 .0 75 .7 46 .6 54 .3 52.8
+FLA V A 22.0 25 .6   79.1 38 .3 72 .0 61 .1 48 .6 49.4
+VideoMAE 23.5 26 .2   78.7 36 .1 75 .5 65 .5 51 .4 51.0
+InternVideo 27.2 29 .8   80.1 35 .9 75 .8 67.0 52.2 52.5
+V ATT 27.0 28 .4   77.1 34 .8 77 .6 65 .1 55.7 52.7
+Task-specialized42.3 38.9 37.5 88.6 42.7 88.9 68.7 63.2 RAFT RAFT PRN TubeViT UniformerV2 AIM MViT MoViNet
+4.1 End-to-end finetuning
 Table 3 shows the end-to-end finetuning results of six FMs on eight datasets. We split the FMs into
 two groups based on their input modalities at the time of pretraining  CoCa, CLIP, and FLA V A are
 image-native FMs, and VideoMAE, V ATT, and InternVideo are video-native. The datasets span
@@ -284,32 +283,50 @@ CoCa performs the best among image-native FMs on the video tasks. It actually gi
 highest accuracy on all datasets except SSv2, Charades, and ANet probably because CoCa, pretrained
 using image-text pairs, does not capture sufficient motion signals required for understanding SSv2,
 and it cannot handle Charades and ANet s complex, multiple actions per video.
-4.2 Frozen FMs
 End-to-end finetuning is infeasible for some application scenarios due to FMs  rapidly growth in
 size and the consequent demands in computational resources. In the following, we evaluate frozen
 FMs with various adaptation methods. Tables 4, 5, and 6 are the results of adaptation with a single
 cross-attention layer, multiple cross-attention layers, and a low-rank adapter, respectively.
-CLIP generally performs the best among image-native frozen FMs (Tables 4 5), but CoCa catches
+CLIP generally performs the best among image-native frozen FMs (Tables 4 and 5), but CoCa catches
 up thanks to the low-rank adapter (Table 6). It is worth noting that this ranking of image-native
 frozen FMs differs from the ranking of image-native FMs in end-to-end finetuning. It seems that
 CLIP s endpoint features are more amendable to the video tasks than CoCa, but CoCa as a whole
 adapts better to video under both finetuning and the adapter. Hence, it is crucial to consider adaptation
 methods as an organic part of the evaluation of FMs to supply them various paths to demonstrate
-their capabilities.
-Video-native FMs are better than image-native FMs in understanding motion-rich SSv2 48,
+Video-native FMs are better than image-native FMs in understanding motion-rich SSv2 and D48,
 Charades that contain multiple actions per video, and ANet for temporal action localization. This
-7 4  Evaluating FMs when adapted to video understanding using frozen features. Only weights
+7Table 4  Evaluating FMs when adapted to video understanding using frozen features. Only weights
 in the task heads are updated using the downstream tasks  training sets.
 STAL TAL VC (A) VC (M) VC (ML)
-Method A V A A V A-K ANet K400 48 2 23.3 24.7 33.0 73.1 32 .0 34 .1 41 .5 8 .8 31.2 21.1 25.9 32.7 75.2 32.6 44.1 41 .0 11 .2 32.8 18.8 21 .5 32.2 71.3 29 .7 45 .9 40 .6 12 .6 31.7 16.0 19 .9 33.0 65.1 23 .0 59.5 53.9 11 .3 32.6 13.4 15 .7 33.3 69.3 26 .3 55 .6 58.2 13.0 33.1 20.3 22 .2 35.3 75.1 32 .1 49 .7 57 .8 33.3 39.1 5  Evaluating FMs when adapted to video understanding using multi-layer attention pooler
+Method A V A A V A-K ANet K400 MiT D48 SSv2 Charades A VG
+CoCa 23.3 24.7 33.0 73.1 32 .0 34 .1 41 .5 8 .8 31.2
+CLIP 21.1 25.9 32.7 75.2 32.6 44.1 41 .0 11 .2 32.8
+FLA V A 18.8 21 .5 32.2 71.3 29 .7 45 .9 40 .6 12 .6 31.7
+VideoMAE 16.0 19 .9 33.0 65.1 23 .0 59.5 53.9 11 .3 32.6
+InternVideo 13.4 15 .7 33.3 69.3 26 .3 55 .6 58.2 13.0 33.1
+V ATT 20.3 22 .2 35.3 75.1 32 .1 49 .7 57 .8 33.3 39.1
+Table 5  Evaluating FMs when adapted to video understanding using multi-layer attention pooler
 (MLAP), which takes multiple frozen features from an FM as inputs and map them hierarchically
 for the final task prediction. Only the multi-layer attention pooling layers are updated using the
 downstream tasks  training sets.
 STAL TAL VC (A) VC (M) VC (ML)
-Method A V A A V A-K ANet K400 48 2 24.4 27 .0 33 .3 74 .2 37 .2 48 .4 45 .9 19 .6 36.3 27.7 29.6 33.9 77.1 39.0 55.8 50 .1 41 .5 43.3 21.3 23 .2 32 .4 71 .5 34 .5 58 .5 43 .1 38 .2 39.3 19.6 22 .1 33 .4 71 .7 32 .2 69 .6 57 .4 35 .9 40.9 15.9 17 .7 33 .6 73 .7 34 .7 71.9 60.3 40.5 42.2 22.9 24 .1 35.0 75.1 35 .6 60 .1 58 .7 58.2 46.3 6  The low-rank adapter results of FMs for video understanding. We only update the weights
+Method A V A A V A-K ANet K400 MiT D48 SSv2 Charades A VG
+CoCa 24.4 27 .0 33 .3 74 .2 37 .2 48 .4 45 .9 19 .6 36.3
+CLIP 27.7 29.6 33.9 77.1 39.0 55.8 50 .1 41 .5 43.3
+FLA V A 21.3 23 .2 32 .4 71 .5 34 .5 58 .5 43 .1 38 .2 39.3
+VideoMAE 19.6 22 .1 33 .4 71 .7 32 .2 69 .6 57 .4 35 .9 40.9
+InternVideo 15.9 17 .7 33 .6 73 .7 34 .7 71.9 60.3 40.5 42.2
+V ATT 22.9 24 .1 35.0 75.1 35 .6 60 .1 58 .7 58.2 46.3
+Table 6  The low-rank adapter results of FMs for video understanding. We only update the weights
 of the adapter and task head while keeping the original FMs  weights frozen.
 STAL TAL VC (A) VC (M) VC (ML)
-Method A V A A V A-K ANet K400 48 2 26.6 28.7 80.9 41.4 67.1 56 .1 45 .8 49.0 24.5 28 .0 80.2 39 .7 77.2 56.0 44 .2 49.3 17.9 23 .8 74.7 34 .1 68 .4 52 .1 40 .8 44.1 16.6 23 .3 73.6 30 .6 76 .0 61 .4 43 .0 45.9 19.2 25 .5 75.5 31 .3 73 .6 63.9 46.2 47.7 22.3 25 .8 75.0 36 .5 68 .9 63 .5 53.5 49.9
+Method A V A A V A-K ANet K400 MiT D48 SSv2 Charades A VG
+CoCa 26.6 28.7   80.9 41.4 67.1 56 .1 45 .8 49.0
+CLIP 24.5 28 .0   80.2 39 .7 77.2 56.0 44 .2 49.3
+FLA V A 17.9 23 .8   74.7 34 .1 68 .4 52 .1 40 .8 44.1
+VideoMAE 16.6 23 .3   73.6 30 .6 76 .0 61 .4 43 .0 45.9
+InternVideo 19.2 25 .5   75.5 31 .3 73 .6 63.9 46.2 47.7
+V ATT 22.3 25 .8   75.0 36 .5 68 .9 63 .5 53.5 49.9
 observation is about the same as the one under end-to-end finetuning. The image-native FMs is
 mainly superior on appearance-rich video datasets, where high-quality spatial perceptual features are
 the key. We conjecture that the vast image data empowering image-native FMs is more diverse in
@@ -321,7 +338,6 @@ beneficial to have an adaptation method to leverage multiple layers of a frozen 
 the results with four cross-attention layers, whose average score per model (across different columns)
 is higher than that with a single cross-attention layer (Table 4) by 18% to40%. The low-rank adapter
 (Table 6) further improves upon the cross-attention results partially because it explores all layers of a
-frozen FM.
 On average, image-native FMs outperform video-native FMs under end-to-end finetuning and the
 adapter, but it becomes the inverse in the other two adaptation methods. The adapter experiment
 paired with end-to-end finetuning experiment reveal the fact that existing image-based FMs could
@@ -330,7 +346,7 @@ caused by the large-scale higher quality image(-text) pretraining datasets. On t
 feature experiments discussed above present us the inverse picture where video-based FM performs
 better. The seemingly paradox encourages more future research on bridging the gap on video-based
 pretraining with high-quality data and more effective modeling.
-8 3  FMs are equipped with different adaptation methods. Left  For each adaptation method, we
+8Figure 3  FMs are equipped with different adaptation methods. Left  For each adaptation method, we
 plot FMs  averaged scores across all video tasks vs. trainable FLOPs in a log scale. Right  We plot
 the overall VideoGLUE score ( VGS) per FM.
 4.3 VideoGLUE score  An attempt towards ranking FMs  video capabilities
@@ -340,19 +356,14 @@ methods with different numbers of trainable weights lead to incompatible compari
 by this, we propose a scalar measure, called VideoGLUE score ( VGS), to capture an FM s overall
 adaptation performance on our video understanding tasks. While the VideoGLUE score may not be a
 perfect metric, it condenses multiple aspects of comparison into a scalar value, enabling a simplified
-comparison of FMs.
 Taking the adaptation efficiency into account, we propose to use the trainable FLOPs to normalize an
 adapted FM s average score sover all tasks. The trainable FLOPs are better than tunable weights
 because they allow our VGS to reflect both the model architecture s freedom and the input data s
 impact (e.g., sequence length) on downstream tasks. Formally, denoting by Sian FM s average score
 over our video tasks under the i-th adaptation method and by Fithe corresponding trainable FLOPs
 (in billion), we calculate the FM s VGS by
-VGS  NX
 i 1wiSi,where wi AiPN
-j 1 1
-log Fi, (3)
 where N  4is the number of adaptation methods, and wi [0,1]weigh score Siaccording to the
-trainable FLOPs Fi.
 In Figure 3 we plot the averaged score achieved by each FM under each adaptation method, respectively,
  and compare their overall video understanding capabilities using the proposed VGS. The
 changes in FMs  ranking by different adaptation methods (see the left panel in Figure 3) reinforce
@@ -391,7 +402,6 @@ methods on versatile tasks confirms that both tasks and adaptation methods matte
 to the evaluation of FMs, shedding light on the already vibrant area of FM adaptations. Finally, we
 hope our research could inspire research on foundation models development and video understanding
 in general, along with their applications in the real world.
-6 Conclusion
 In this report, we study three image-based and three video-based foundation models and their
 adaptation capability on general video understanding tasks. Experiments are conducted on three
 hallmark video tasks, eight diverse datasets with four distinct adaption methods. Our study shows
@@ -401,7 +411,6 @@ different landscape, revealing the critical role of considering adaption methods
 evaluating FMs. Finally, we propose one single metric VGS to represent the video task adaptation
 efficiency of FMs. We hope our research provides useful resources for evaluating and analyzing
 video foundation models, and address the current gap in foundation model evaluation within the
-video domain.
 10Supplementary Materials
 We detail the datasets (Section A), models (Section B), and training setups (Section C) in the
 supplementary materials to improve this work s reproducibility. Besides, Section D includes more
@@ -409,9 +418,8 @@ experimental studies to strengthen the main text.
 A Video understanding datasets
 A.1 Appearance-focused action recognition
 Video classification is a task of classifying videos into pre-defined labels, with the major focus on
-human actions.
 Kinetics400 [ 28] (K400) is a large-scale, high-quality video dataset widely used as a standard video
-classification benchmark. It contains more than 250 400human daily
+classification benchmark. It contains more than 250k video clips with annotations of 400human daily
 actions. The actions are human focused and cover a broad range of classes including human-human
 interactions and human-object interactions. Although the video clips span 10seconds on average,
 many studies [ 45,52] have pointed out the task could be easily solved on the Kinetics datasets by
@@ -429,7 +437,6 @@ patterns and the causal consequences of an action, just to name a few. However, 
 benchmarks do not evaluate a model s understanding of such commonsense knowledge, complex
 scenes, and situations. In observance of this, some video datasets have been proposed and studied in
 recent years with the focus on motions and common-sensing reasoning that are prosperous in video
-data.
 Something-something v2 [ 20] (SSv2) is a collection of around 200k videos of human performing
 pre-defined, basic actions with everyday objects. There are 174unique labels in total depicting
 atomic hand manipulations, like putting something into something, turning something upside down or
@@ -438,7 +445,7 @@ capability of object motions and scene changes by making the label space atomic-
 background-invariant.
 Diving48 [ 34] (D48) is introduced to evaluate a model s dynamic reasoning capability. The video
 clips in this dataset are obtained by segmenting online videos of major diving competitions. In total,
-there are around 18 48classes. Because of its standardization, the diving
+there are around 18k videos annotated with 48classes. Because of its standardization, the diving
 scenario is purposefully chosen to avoid the scene, object, and person biases.
 A.3 Multi-label daily action classification
 Most of current action classification datasets involve video clips with a clean snapshot of a single
@@ -449,17 +456,13 @@ collected by crowd-sourcing from hundreds of actors recording their videos in th
 out casual everyday activities. Charades brings in more diversity into the video classification task
 due to its close-to-daily-life setting. Its videos are 30seconds long on average and have multi-label
 annotations testing models  understanding of complex daily activities with multiple steps. Charades
-provides 110 157action classes for training and evaluation.
-11Norm Multi-Head
+provides 110k videos with 157action classes for training and evaluation.
 Self-Attention Norm MLP
 K/V K/V K/V QNorm Multi-Head
 Self-Attention Norm MLP
 K/V K/V K/V QNorm Multi-Head
 Self-Attention Norm MLP
-K/V K/V K/V Q
- 
 Layer N Layer N-k 1 Layer N (a) (b)query token
-feature token
 output token Figure 4  (a) Single-layer pooler head and (b) multi-layer attention pooling head for video classification
  and spatiotemporal action localization.
 A.4 Temporal action localization
@@ -470,38 +473,39 @@ is of key importance to solve long-form video understanding tasks. To comprehend
 foundation models  video capabilities, we include the temporal action localization (TAL) task in our
 evaluation. The task of TAL is to predict not only the action labels but also each action instance s
 temporal boundary in untrimmed videos. We adopt ActivityNet v1.3 [ 16] as the dataset for the TAL
-task, which contains 10,002 4,985in validation. The video length
+task, which contains 10,002untrimmed videos in training and 4,985in validation. The video length
 in this dataset is between 5-10minutes. In total, there are 200types of activities annotated.
 A.5 Spatiotemporal action localization
 Spatiotemporal Action Localization (STAL) is a person-centric task that asks a system to localize
 actors and predict their atomic actions [6, 21] in a transitory duration.
-In A V A [ 21],15 1Hz. In the key frames, every
+In A V A [ 21],15minutes long movie clips are densely annotated at 1Hz. In the key frames, every
 person is localized using a bounding box and labels corresponding to actions being performed by the
 actor. The label vocabulary consists of 80different atomic visual actions. There are 430different
-movies in total.
 A V A-Kinetics [ 31] follows the same labeling protocol as A V A, while its data source comes from the
-Kinetics700 [ 28] video pool. The dataset contains over 230 80A V A action
+Kinetics700 [ 28] video pool. The dataset contains over 230k clips annotated with the 80A V A action
 classes for each of the humans in key frames.
-B Model details
-B.1 4, we plot the task heads used in our video classification and spatiotemporal action
+B.1 Task head architectures
+In Figure 4, we plot the task heads used in our video classification and spatiotemporal action
 localization experiments, namely, the simple pooler head and multi-layer attention pooling head. For
 temporal localization, please refer to [57] for the task head s detailed architecture.
 Figure 5 illustrates the encoder adapter layer s architecture. In the the adapter layer, only the
 down-sample layer, up-sample layer, and the scaling factor are tunable.
-12Norm Multi-Head
 Self-Attention Adapter L  
-Norm MLP
-UpFFN S
-DownFFN
 Figure 5  The adapter used in vision transformer. In the adapter layer, only the down-sample layer,
 up-sample layer, and the scaling factor are tunable. Between the down-sample layer and up-sample
 layer, an activation function is applied, which in our case is ReLU.
 Table 7  Early vs. late fusion on image-native FMs. In this experiment, the frozen feature with a
 single-layer pooler head is used.
-K400 2 72.7 61 .4 41 .5 33 .3 70.5 75 .2 38 .1 41 .0 67.9 71 .3 40 .4 40 .6 8  Ablation study on the temporal positional embedding for image-to-video adaption. We
+Method Early Late Early Late
+CoCa 72.7 61 .4 41 .5 33 .3
+CLIP 70.5 75 .2 38 .1 41 .0
+FLA V A 67.9 71 .3 40 .4 40 .6
+Table 8  Ablation study on the temporal positional embedding for image-to-video adaption. We
 choose FLA V A [47] with the frozen feature setting in this experiment.
 Temporal Positional VC (A) VC (M) VC (ML)
-Embedding K400 48 2 71.3 29 .7 41 .6 30 .3 10 .7 71.3 29 .7 45 .9 40 .6 12 .6
+Embedding K400 MiT D48 SSv2 Charades
+  71.3 29 .7 41 .6 30 .3 10 .7
+  71.3 29 .7 45 .9 40 .6 12 .6
 B.2 Image-to-video adaptation
 Adapting image backbones to video tasks requires us to fuse the image embeddings at some point in
 the network and also introduce additional temporal information.
@@ -518,24 +522,32 @@ for D48 [ 34], SSv2 [ 20], and Charades [ 46] while not necessary for K400 [ 28]
 supports our grouping that K400 and MiT are appearance-focused datasets.
 Based on these findings, we use late-fusion for FLA V A [ 47] and CLIP [ 40] and early-fusion for
 CoCa [59]. We add learnable temporal positional embeddings for all the image-native FMs.
-13 9  Experimental configurations for video classification tasks. We let learning rate and weight
+13Table 9  Experimental configurations for video classification tasks. We let learning rate and weight
 decay to be tunable per model to allow some flexibility for task adaptations.
-Config Kinetics400 Sth-sth v2 48 256 256 256 256 256 150 50 50 100 50 8 14 14 8 14 14 8 14 14 8 14 14 8 14 14 0.9 0.9 0.9 0.9 0.9 5% 5% 5% 5% 5%
-data augmentations
+Config Kinetics400 Sth-sth v2 MiT Diving48 Charades
+batch size 256 256 256 256 256
+training epochs 150 50 50 100 50
+ViT sequence length 8 14 14 8 14 14 8 14 14 8 14 14 8 14 14
+optimizer AdamW AdamW AdamW AdamW AdamW
+optimizer momentum 0.9 0.9 0.9 0.9 0.9
+learning rate schedule cosine decay cosine decay cosine decay cosine decay cosine decay
+warmup ratio 5% 5% 5% 5% 5%
 random horizontal flip true false true true false
 aspect ratio (0.5, 2.0) (0.5, 2.0) (0.5, 2.0) (0.5, 2.0) (0.5, 2.0)
 area ratio (0.3, 1.0) (0.3, 1.0) (0.3, 1.0) (0.3, 1.0) (0.3, 1.0)
 RandAug (9, 0.5) (9, 0.5) - - MixUp
- 0.8 0.8 - - CutMix
  1.0 1.0 - - evaluation
-
 multi-clips 4 1 4 4 4
 multi-views 3 3 3 3 3
 segment-based sample false true false false false
 Table 10  Experimental configurations for spatiotemporal action localization.
 Config A V A v2.2 A V A-Kinetics
-batch size 256 256 50 50 8 16 16 8 16 16 0.9 0.9 0.75 0.75 5% 5%
-data augmentations
+training epochs 50 50
+ViT sequence length 8 16 16 8 16 16
+optimizer AdamW AdamW
+optimizer momentum 0.9 0.9
+layer decay 0.75 0.75
+learning rate schedule cosine decay cosine decay
 random horizontal flip true true
 random scale (0.5, 2.0) (0.5, 2.0)
 random color augmentation true true
@@ -546,21 +558,24 @@ the hyperparameters we used on spatiotemporal action localization. In Table 11, 
 hyperparameters we used on temporal action localization task.
 We performed a greedy search on the learning rate and weight decay in all our experiments while
 keeping most other hyperparameters (e.g., data augmentation magnitude, dropout rate, drop path rate,
-etc.) consistent across different models and datasets. Specifically, we start with learning rate 1e-4 1e-5 5 10, respectively, centered around the starting points. After the first round, we pick the best-identified
+etc.) consistent across different models and datasets. Specifically, we start with learning rate 1e-4and
+weight decay 1e-5and uniformly sample learning rates and weight decay factors with a rate of 5and
+10, respectively, centered around the starting points. After the first round, we pick the best-identified
 learning rate and weight decay factor as the new starting point and conduct another round of sampling
 with a rate of 2. We repeat another two to three rounds of hyperparameter search (with a rate of 2)
 until the model s performance converges. This process is a trade-off between computation costs and
 thoroughly examining an FM s performance under each experiment setup. The search ranges for the
 learning rate and weight decay are [ 4e-5,2.5e-3] and [ 1e-6,1e-4], respectively. We found that the
 learning rate is the most crucial factor when adapting an FM to downstream video understanding
-tasks.
-14 11  Experimental configurations for temporal action localization.
-Config ActivityNet v1.3 32 10 15
-per-clip length 16 16 0.9 12  Evaluating large-scale FMs when using (a) frozen feature with a one-layer pooler head,
-and (b) low-rank adapter with frozen features. We report the Top-1 400, MiT, D48,
+14Table 11  Experimental configurations for temporal action localization.
+Config ActivityNet v1.3
+optimizer momentum 0.9
+learning rate schedule cosine decay
+Table 12  Evaluating large-scale FMs when using (a) frozen feature with a one-layer pooler head,
+and (b) low-rank adapter with frozen features. We report the Top-1 accuracy on K400, MiT, D48,
 SSv2 and MAP on Charades.
 VC (A) VC (M) VC (ML)
-Model Method K400 48 2 Charades
+Model Method K400 MiT D48 SSv2 Charades
 InternVideo-L frozen 78.6 33 .7 69 .6 67 .4 20 .9
 InternVideo-L adapter 81.5 40 .3 85 .8 70 .9 54 .2
 VideoMAE-v2-B/DL frozen 86.7 38 .9 61 .4 57 .7 33 .2
@@ -568,36 +583,39 @@ VideoMAE-v2-B/DL adapter 86.0 41 .8 82 .3 66 .6 53 .8
 VideoMAE-v2-g frozen 59.7 20 .7 42 .5 44 .2 12 .7
 VideoMAE-v2-g adapter 80.8 35 .9 85 .3 68 .2 55 .5
 VideoMAE-v2-g/FT frozen 82.1 35 .0 60 .5 56 .1 22 .4
-VideoMAE-v2-g/FT adapter 85.2 42 .5 84 .6 70 .6 58 .6 13  Benchmark FMs adaptation on video understanding tasks under sample-efficient transfer
+VideoMAE-v2-g/FT adapter 85.2 42 .5 84 .6 70 .6 58 .6
+Table 13  Benchmark FMs adaptation on video understanding tasks under sample-efficient transfer
 learning. This table shows Top-1 classification accuracy and the relative accuracy (shown in the
 bracket). Results are achieved by using frozen features with pooler head.
-K400 2 1% 10% 100% 1% 10% 100%
-CoCa 27.1(37.8%) 48 .9(67.0%) 73 .1 5 .6(13.4%) 20 .9(50.4%) 41 .5 36.9(46.2%) 66 .8(83.6%) 79 .0 8 .7(19.3%) 25 .1(55.5%) 45 .3 14.4(20.2%) 35 .8(50.3%) 71 .3 7 .2(17.7%) 14 .3(35.3%) 40 .6 15.5(23.9%) 32 .0(49.2%) 65 .0 13 .7(25.4%) 30 .3(56.2%) 53 .9 20.4(29.5%) 50 .2(72.4%) 69 .3 19 .5(33.6%) 41 .1(70.7%) 58 .2 34.1(45.4%) 63 .7(84.8%) 75 .1 12 .9(22.4%) 37 .6(65.0%) 57 .8
-D More studies
+Method 1% 10% 100% 1% 10% 100%
+CoCa 27.1(37.8%) 48 .9(67.0%) 73 .1 5 .6(13.4%) 20 .9(50.4%) 41 .5
+CLIP 36.9(46.2%) 66 .8(83.6%) 79 .0 8 .7(19.3%) 25 .1(55.5%) 45 .3
+FLA V A 14.4(20.2%) 35 .8(50.3%) 71 .3 7 .2(17.7%) 14 .3(35.3%) 40 .6
+VideoMAE 15.5(23.9%) 32 .0(49.2%) 65 .0 13 .7(25.4%) 30 .3(56.2%) 53 .9
+InternVideo 20.4(29.5%) 50 .2(72.4%) 69 .3 19 .5(33.6%) 41 .1(70.7%) 58 .2
+V ATT 34.1(45.4%) 63 .7(84.8%) 75 .1 12 .9(22.4%) 37 .6(65.0%) 57 .8
 D.1 Large model adaptations
 For the completeness of this report and reader s reference, in Table 12 we report experimental results
 under our settings with large FMs under two adaptation scenarios, namely, the frozen backbone
 with pooler head and the low-rank adapter. VideoMAE-v2-B/DL [ 51] denotes the ViT-B model
-distilled from ViT-g on the Kinetics710 4. VideoMAE-v2-g [ 51] is the model that pretrained
+distilled from ViT-g on the Kinetics710 datasets4. VideoMAE-v2-g [ 51] is the model that pretrained
 on UnlabeledHybrid dataset, while VideoMAE-v2-g/FT [ 51] conducts further finetuning using
 supervised training on Kinetics710.
 D.2 Sample-efficient transfer learning
 A strong FM should be able to adapt to downstream tasks with a few training samples. In this section,
 we test the adaption ability of FMs in a sample-efficient transfer learning setting. Particularly, we
-freeze backbones and train a pooler head to adapt the FMs on K400 2. For either dataset,
+freeze backbones and train a pooler head to adapt the FMs on K400 and SSv2. For either dataset,
 4https //github.com/OpenGVLab/VideoMAEv2/blob/master/docs/MODEL_ZOO.md
-15 1%and10% data from the training set uniformly for training and evaluate on the full
-evaluation dataset.
+15we sample 1%and10% data from the training set uniformly for training and evaluate on the full
 We show our experimental results in Table 13. To better understand the data efficiency, we also
 show the relative Top-1 accuracy for each model (shown in the bracket), which is defined as the ratio
 between accuracy with fewer training examples and the accuracy achieved using all the training data.
 A higher relative Top-1 accuracy means the performance of the model is closer to its  full  capacity
 under the sample-efficient setting. We notice that the best performed model on each dataset in fully
 fine-tuned model also performs best in the few-shot setting. Especially, CLIP [ 40] achieves 46.2%
-and83.6%relative Top-1 400 1%and10% of the training data, respectively.
-On SSv2, InternVideo [ 55] achieves 33.6%and70.6%relative Top-1 1%and
+and83.6%relative Top-1 accuracy on K400 using only 1%and10% of the training data, respectively.
+On SSv2, InternVideo [ 55] achieves 33.6%and70.6%relative Top-1 accuracy with only 1%and
 10% of the training data.
-16References
 [1]Hassan Akbari, Liangzhe Yuan, Rui Qian, Wei-Hong Chuang, Shih-Fu Chang, Yin Cui, and Boqing Gong.
 Vatt  Transformers for multimodal self-supervised learning from raw video, audio and text. Advances in
 Neural Information Processing Systems , 34 24206 24221, 2021.
@@ -638,7 +656,7 @@ Hsiao-Wuen Hon. Unified language model pre-training for natural language underst
 Advances in neural information processing systems , 32, 2019.
 [15] Alexey Dosovitskiy, Lucas Beyer, Alexander Kolesnikov, Dirk Weissenborn, Xiaohua Zhai, Thomas
 Unterthiner, Mostafa Dehghani, Matthias Minderer, Georg Heigold, Sylvain Gelly, et al. An image is worth
-16 16 words  Transformers for image recognition at scale. arXiv preprint arXiv 2010.11929 , 2020.
+16x16 words  Transformers for image recognition at scale. arXiv preprint arXiv 2010.11929 , 2020.
 [16] Bernard Ghanem Fabian Caba Heilbron, Victor Escorcia and Juan Carlos Niebles. Activitynet  A largescale
  video benchmark for human activity understanding. In Proceedings of the IEEE Conference on
 Computer Vision and Pattern Recognition , pages 961 970, 2015.
@@ -671,7 +689,7 @@ neural information processing systems , 28, 2015.
 Zhen Li, and Tom Duerig. Scaling up visual and vision-language representation learning with noisy text
 supervision. In International Conference on Machine Learning , pages 4904 4916. PMLR, 2021.
 [27] Chen Ju, Tengda Han, Kunhao Zheng, Ya Zhang, and Weidi Xie. Prompting visual-language models for
-efficient video understanding. In Computer Vision ECCV 2022 17th European Conference, Tel Aviv,
+efficient video understanding. In Computer Vision ECCV 2022  17th European Conference, Tel Aviv,
 Israel, October 23 27, 2022, Proceedings, Part XXXV , pages 105 124. Springer, 2022.
 [28] Will Kay, Joao Carreira, Karen Simonyan, Brian Zhang, Chloe Hillier, Sudheendra Vijayanarasimhan,
 Fabio Viola, Tim Green, Trevor Back, Paul Natsev, et al. The kinetics human action video dataset. arXiv
@@ -688,15 +706,13 @@ Yong Jae Lee, Houdong Hu, Zicheng Liu, et al. Elevater  A benchmark and toolkit 
 language-augmented visual models. arXiv preprint arXiv 2204.08790 , 2022.
 [33] Kunchang Li, Yali Wang, Yinan He, Yizhuo Li, Yi Wang, Limin Wang, and Yu Qiao. Uniformerv2 
 Spatiotemporal learning by arming image vits with video uniformer. arXiv preprint arXiv 2211.09552 ,
-2022.
 [34] Yingwei Li, Yi Li, and Nuno Vasconcelos. Resound  Towards action recognition without representation
 bias. In Proceedings of the European Conference on Computer Vision (ECCV) , pages 513 528, 2018.
 [35] Ziyi Lin, Shijie Geng, Renrui Zhang, Peng Gao, Gerard de Melo, Xiaogang Wang, Jifeng Dai, Yu Qiao,
-and Hongsheng Li. Frozen clip models are efficient video learners. In Computer Vision ECCV 2022 17th
+and Hongsheng Li. Frozen clip models are efficient video learners. In Computer Vision ECCV 2022  17th
 European Conference, Tel Aviv, Israel, October 23 27, 2022, Proceedings, Part XXXV , pages 388 404.
-Springer, 2022.
 [36] Xiaolong Liu, Song Bai, and Xiang Bai. An empirical study of end-to-end temporal action detection. In
-Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition , pages 20010 20019, 2022.
+Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition , pages 20010 
 [37] Mathew Monfort, Alex Andonian, Bolei Zhou, Kandan Ramakrishnan, Sarah Adel Bargal, Tom Yan, Lisa
 Brown, Quanfu Fan, Dan Gutfruend, Carl V ondrick, et al. Moments in time dataset  one million videos for
 event understanding. IEEE Transactions on Pattern Analysis and Machine Intelligence , pages 1 8, 2019.
@@ -707,7 +723,6 @@ Recognition , pages 2214 2224, 2023.
 [40] Alec Radford, Jong Wook Kim, Chris Hallacy, Aditya Ramesh, Gabriel Goh, Sandhini Agarwal, Girish
 Sastry, Amanda Askell, Pamela Mishkin, Jack Clark, et al. Learning transferable visual models from
 natural language supervision. In International Conference on Machine Learning , pages 8748 8763. PMLR,
-2021.
 18[41] Jathushan Rajasegaran, Georgios Pavlakos, Angjoo Kanazawa, Christoph Feichtenhofer, and Jitendra
 Malik. On the benefits of 3d pose and tracking for human action recognition. In Proceedings of the
 IEEE/CVF Conference on Computer Vision and Pattern Recognition , pages 640 649, 2023.
@@ -717,13 +732,14 @@ pages 8821 8831. PMLR, 2021.
 [43] Shaoqing Ren, Kaiming He, Ross Girshick, and Jian Sun. Faster r-cnn  Towards real-time object detection
 with region proposal networks. Advances in neural information processing systems , 28, 2015.
 [44] Adam Roberts, Hyung Won Chung, Anselm Levskaya, Gaurav Mishra, James Bradbury, Daniel Andor,
-Sharan Narang, Brian Lester, Colin Gaffney, Afroz Mohiuddin, et al. Scaling up models and data with t x
+Sharan Narang, Brian Lester, Colin Gaffney, Afroz Mohiuddin, et al. Scaling up models and data with t5x
 andseqio .arXiv preprint arXiv 2203.17189 , 2022.
 [45] Laura Sevilla-Lara, Shengxin Zha, Zhicheng Yan, Vedanuj Goswami, Matt Feiszli, and Lorenzo Torresani.
 Only time can tell  Discovering temporal data for temporal modeling. In Proceedings of the IEEE/CVF
 Winter Conference on Applications of Computer Vision , pages 535 544, 2021.
 [46] Gunnar A Sigurdsson, Gül Varol, Xiaolong Wang, Ali Farhadi, Ivan Laptev, and Abhinav Gupta. Hollywood
-in homes  Crowdsourcing data collection for activity understanding. In Computer Vision ECCV 2016 14th European Conference, Amsterdam, The Netherlands, October 11 14, 2016, Proceedings, Part I 14 ,
+in homes  Crowdsourcing data collection for activity understanding. In Computer Vision ECCV 2016 
+14th European Conference, Amsterdam, The Netherlands, October 11 14, 2016, Proceedings, Part I 14 ,
 pages 510 526. Springer, 2016.
 [47] Amanpreet Singh, Ronghang Hu, Vedanuj Goswami, Guillaume Couairon, Wojciech Galuba, Marcus
 Rohrbach, and Douwe Kiela. Flava  A foundational language and vision alignment model. In Proceedings
@@ -761,4 +777,3 @@ Vision and Pattern Recognition , pages 10156 10165, 2020.
 models for efficient video action recognition. arXiv preprint arXiv 2302.03024 , 2023.
 [59] Jiahui Yu, Zirui Wang, Vijay Vasudevan, Legg Yeung, Mojtaba Seyedhosseini, and Yonghui Wu. Coca 
 Contrastive captioners are image-text foundation models. arXiv preprint arXiv 2205.01917 , 2022.
-19

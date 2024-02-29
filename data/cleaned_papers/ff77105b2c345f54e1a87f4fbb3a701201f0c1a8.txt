@@ -1,8 +1,7 @@
-arXiv 2302.04197 1  [cs.CL]  8 2023Hierarchical Event Grounding
+arXiv 2302.04197v1  [cs.CL]  8 Feb 2023Hierarchical Event Grounding
 Jiefu Ou, Adithya Pratapa, Rishubh Gupta, Teruko Mitamura
 Language Technologies Institute, Carnegie Mellon Univers ity
 {jiefuo, vpratapa, rishubhg, teruko }@andrew.cmu.edu
-Abstract
 Event grounding aims at linking mention references in text
 corpora to events from a knowledge base (KB). Previous
 work on this task focused primarily on linking to a single KB
@@ -22,7 +21,7 @@ and Wikidata, our experiments demonstrate the effectivene ss
 of the hierarchical loss against retrieve and re-rank basel ines
 (Wu et al. 2020  Pratapa, Gupta, and Mitamura 2022). Furthermore,
  we demonstrate the systems  ability to aid hierar chical
- discovery among unseen events.1 1 Introduction
+ discovery among unseen events.1
 Grounding entity and event references from documents to
 a large-scale knowledge base (KB) is an important component
  in the information extraction stack. While entity link ing
@@ -37,10 +36,10 @@ Text documents often describe events at varying levels of
 spatio-temporal granularity. Figure 1 illustrates this th rough
 three text snippets from English Wikipedia. The mentions
  Falaise Gap ,  Normandy campaign , and  western campaign 
- refer to three separate events from Wikidata.3 2023, Association for the Advancement of Artiﬁc ial
+ refer to three separate events from Wikidata.3These
+Copyright   2023, Association for the Advancement of Artiﬁc ial
 Intelligence (www.aaai.org). All rights reserved.
 1Code is available at https //github.com/JefferyO/Hierar chicalEvent-Grounding
-
 2We interchangeably use the terms, grounding and linking.
 3Mention is a text span that refers to an underlying event.three events (Q602744, Q8641370, Q216184) themselves
 constitute a hierarchical event structure.
@@ -73,7 +72,6 @@ on a multilingual dataset. The dataset is constructed by col lecting
  mentions from Wikipedia and Wikinews articles that
 link to a set of events in Wikidata. Experiments on the collected
  dataset show the effectiveness of explicitly modeli ng
-event hierarchies.
 Finally, we present a method for zero-shot hierarchy discovery
  in Wikidata ( 3.2). We obtain a score for potential
 child-parent relations between two Wikidata events by computing
@@ -88,23 +86,21 @@ requires linking mentions from documents to a set of hierarchically
 that consists of mentions from Wikipedia and WikinewsGangl was promoted to Oberfeldwebel in November 1938. ... He returned to his
 regiment on May 14, 1940, and took part in the western campaign . There he
 served as the commander of a reconnaissance unit of the 25th I nfantry Division
-of the Wehrmacht.
 David Vivian Currie VC was awarded the Victoria Cross for his actions in command
  of a battle group of tanks from The South Alberta Regimen t, artillery, and
 infantry of the Argyll and Sutherland Highlanders of Canada at St. Lambertsur-Dives,
  during the ﬁnal actions to close the Falaise Gap. This was the only
 Victoria Cross awarded to a Canadian soldier during the Normandy campaign
-(from 6 1944 1944)
+(from 6 June 1944 to the end of August 1944)
 David Vivian Currie VC was awarded the Victoria Cross for his actions in command
  of a battle group of tanks from The South Alberta Regimen t, artillery, and
 infantry of the Argyll and Sutherland Highlanders of Canada at St. Lambertsur-Dives,
  during the ﬁnal actions to close the Falaise Gap . This was the only
 Victoria Cross awarded to a Canadian soldier during the Norm andy campaign
-(from 6 1944 1944)Q216184 666414 1861428 714274 714223 696835 Q Western Front
-(World War II)
-Operation Overlord
+(from 6 June 1944 to the end of August 1944)Q216184
+Q8641370Q666414 Q1861428 Q714274
+Q602744Q714223 Q696835 Q696823Western Front
 Falaise pocketpart-of
-part-of
 Figure 1  An illustration of mention linking to hierarchica l event structures in Wikidata. The left column shows three m entions
 (highlighted ) with their contexts, and the right column presents a hierar chy of Q-nodes from Wikidata. Each mention is linked
 to a set of events from a hierarchy path from Wikidata (e.g., m ention  Normandy campaign  is linked to a set of two events,
@@ -116,7 +112,6 @@ organized into hierarchies.
  over competitive retrieve-and-rerank baselines.
   We demonstrate an application of our linking systems for
 zero-shot hierarchical relation extraction.
-2 Related Work
 Event Linking  Nothman et al. (2012) proposed linking
 event references in newswire articles to an archive of ﬁrst r eports
  of the events. Recent work on this task focused on linking
@@ -163,14 +158,14 @@ on hierarchical relations among mentions in a document. In
 contrast, we focus on hierarchical relations among events i n
 a KB. At a high level, this can be viewed as a combination
 of coreference resolution and hierarchy relation extracti on.
-3.1 Task Deﬁnition
 Consider an event knowledge base ( K) that constitutes a set
 of events ( E) and their relations ( R). Each event ( ei E)
 has an id, title, and description. The relation set ( R) includes
 both temporal and hierarchical (parent-child) links betwe en
 events. Given an input mention span mfrom a text docu-ment, the task is to predict an unordered subset of events
 (Em E). This set Emconstitutes events within a hierarchy
- tree, from the leaf to the root of the tree.4 1, the mention  Normandy campaign  is to linked to the set
+ tree, from the leaf to the root of the tree.4In Figure
+1, the mention  Normandy campaign  is to linked to the set
 {Q8641370, Q216184 }, whereas the mention  Falaise Gap 
 is linked to {Q602744, Q8641370, Q216184 }.
 We follow prior work on linking (Logeswaran et al. 2019)
@@ -197,7 +192,6 @@ whereecis the child of epandris the child  parent relation,
 pool of events in K. To this end, we present a methodology
 to utilize our trained event-linking system for hierarchic al
 relation extraction in Wikidata ( 5.3).
-4 Dataset
 To the best of our knowledge, there are no existing datasets
 for the task of hierarchical event linking. Therefore, we ex pand
  the XLEL-WD dataset (Pratapa, Gupta, and Mitamura
@@ -218,18 +212,10 @@ language Wikipedia and identifying hyperlinks to the event associated
  Wikipedia articles (obtained in the previous st ep).
 The anchor text of hyperlinks is taken as mentions and the
 surrounding paragraph of each mention is extracted as context.
-
-4 1, the leaf (or atomic) events for the mentions  Nor mandy
+4In Figure 1, the leaf (or atomic) events for the mentions  Nor mandy
  campaign  and  Falaise Gap  are Operation Overlord and
-Falaise pocket respectively.2016 8613
-Athletics @
-2016 18193712 100m
-@ 2016 100m @
-2016 262198412020 181278
-Athletics @
-2020 39080746 100m
-@ 2020 100m @
-2020 64809577 2  An illustration of hierarchical event structures in
+Falaise pocket respectively.2016 Summer
+Figure 2  An illustration of hierarchical event structures in
 Wikidata. Each node represents an event from Wikidata.
 Solid arrows ( ) and dotted arrows ( ) denote hierarchical
  and temporal relations respectively.
@@ -238,13 +224,12 @@ We further organize the collected pool of events into hierarchical
  trees by exploring property nodes from Wikidata.
 Property nodes act as edges between Q-nodes in Wikidata.
 We utilize two asymmetric and transitive properties, haspart
- (P527) and part-of (P361). Given two events, e and
-e2, if there exist edges such that e has-parte ore partofe1,
- we mark e as the parent event e and add the edge
+ (P527) and part-of (P361). Given two events, e1and
+e2, if there exist edges such that e1has-parte2ore2partofe1,
+ we mark e1as the parent event e2and add the edge
 (e2, part-of,e1) into the hierarchies. The full hierarchies are
 yielded by following such procedure and iterating over the
 full set of candidate events collected in  4.1.
-4.3 Zero-shot Setup
 For zero-shot evaluation, the train and evaluation splits
 should use disjoint hierarchical event trees from Wikidata .
 However, just isolating trees might not be sufﬁcient. As
@@ -258,7 +243,6 @@ events are ﬁrst organized into connected components that
 are grown by the two hierarchical properties  has-part and
 part of and two temporal properties  follows (P155) and
 followed-by (P156). The connected components are then assigned
- to disjoint splits.
 After building the hierarchies among events, the ﬁnal dictionary
  includes only events that are part of a hierarchy
 (event tree) of height  1. However, to conduct realistic evaluations
@@ -268,9 +252,9 @@ events belong to any hierarchy, all the events collected in
 are presented to models as candidates at inference time.Train Dev Test Wikinews
 # mentions 751550 93047 91928 258
 # events 2288 216 273 64
-# trees 262 64 68 51
 # children (avg.) 4.37 2.30 2.81 1.18
-tree depth (avg.) 1.23 1.03 1.06 0.22 1  Dataset statistics on train/dev/test splits from
+tree depth (avg.) 1.23 1.03 1.06 0.22
+Table 1  Dataset statistics on train/dev/test splits from
 Wikipedia and Wikinews evaluation set. # children (avg.)
 refers to the average number of children per non-terminal
 node. Due to its limited scale, there are only 200  mentions
@@ -288,7 +272,8 @@ above to construct a test set based on Wikinews articles with
 hyperlinks to Wikidata.
 4.5 Dataset Statistics
 To this end, we automatically compile a dataset with event
-hierarchies of maximum height  3 2 937 42 languages. The detailed statistics of the
+hierarchies of maximum height  3 that consists of 2K events
+and 937K across 42 languages. The detailed statistics of the
 train-dev-test split as well as the Wikinews evaluation set
 (WN) are presented in Table 1. Other than the events within
 hierarchies, we use the full set of events (including single tons)
@@ -297,8 +282,6 @@ size of our event dictionary to nearly 13k.
 We perform a human evaluation of the parent-child relations
  in the development split of our dataset.5We ﬁnd the
 accuracy to be 96.7%, highlighting the quality of our hierar chical
- event structures.
-5 5.1 Baseline
 We use the standard retrieve and re-rank approach (Wu et al.
 2020) as our baseline,
 Retrieve  We use two multilingual bi-encoders to independently
@@ -324,10 +307,8 @@ using a BCE loss that maximizes the score of gold events
 against other retrieved negatives for every mention. At inference,
  we output all the retrieved candidates with a score
 higher than a threshold ( τc  a hyperparameter) as the set of
-predicted events.
 For both the bi-encoder and cross-encoder, we use XLMRoBERTa
  (Conneau et al. 2020) as the multilingual transformer
- encoder.
 5.2 Encoding Hierarchy
 The baselines described above enable linking mentions to
 multiple KB events. However, they predict a ﬂat set of
@@ -354,27 +335,21 @@ s(ep,ec)   Im(r),Re(ec),Im(ep)
  Im(ep) (Re(ec) Im(r))
  Re(ep) (IM(ec) Im(r)) (2)
 Where is the element-wise product, r Rdis a learnable
- relation embedding.
 Re(e)  WRe e bRe,Im(e)  WIm e bIm (3)
 Re(e)and Im(e)are the biased linear projections of event
 embedding into real and imaginary parts of complex space
 respectively. WRe,W Im Rd dandbRe,bIm Rdare learnable
  weights. During training, a batch of Nhparent-child
 event pairs is independently sampled and the bi-encoder istrained to minimize the in-batch BCE loss 
-Lh 1 1(  
 ecj Cilog(σ(s(epi,ecj)))
-  
 eck/ Cilog(σ(s(epi,eck)))) (4)
 WhereCidenotes the set of children events in the batch that
 are the children of epi. We further explore three strategies
 for incorporating the hierarchy prediction in learning the biencoder 
-
  Pretraining   the bi-encoder is pre-trained with the
 hierarchy-aware loss, followed by training with the mention
- linking loss.
  Joint Learning   in each epoch, the bi-encoder is jointly
 optimized with both the hierarchy-aware and mention
-linking loss.
  Pretraining  Joint Learning   bi-encoder is pretrained
 with the hierarchy-aware loss, followed by joint training
 with the hierarchy-aware and mention linking loss.
@@ -390,8 +365,6 @@ event candidates. We then construct a list of mentions ( Me)
 for each event ein the dictionary. Finally, given a pair of
 events (ei,ej), we compute a score for potential child-parent
 (ei ej) relation as follows,
-h(ei,ej)   Mei Mej 
- Mei (5)
 The scoring function his derived based on the intuition that
 ifejis the parent event of ei, then all the mentions which
 are linked to eishould also be linked to ejby our linker. In
@@ -401,7 +374,6 @@ For each event, we iteratively calculate the child-parent
 score with every other event and rank them in descending
 order of the hscore. With this process, we could obtain a
 ranking of all other events as its candidate parents.
-6 Experiments
 We experiment with the proposed conﬁgurations of
 bi-encoders and corresponding cross-encoders on the
 Wikipedia dataset for both multilingual and crosslingual
@@ -444,23 +416,6 @@ Cross-encoder  Similar to bi-encoder, we also follow previous
 macro F1 , and micro F1 on the performance of crossencoder.
  For a mention mi, denote its gold events set as Ei,
 predicted events set as ˆEi, withNmentions 
-Strict Accuracy   N
-i 11Ei ˆEi
-N(6)
-MaP 1 1 Ei ˆEi 
- ˆEi ,MaR 1 1 Ei ˆEi 
- Ei (7)
-Macro F1 2MaP MaR
-MaP MaR(8)
-MiP  N
-i 1 Ei ˆEi 
- N
-i 1 ˆEi ,MiR  N
-i 1 Ei ˆEi 
- N
-i 1 Ei (9)
-Micro F1 2MiP MiR
-MiP MiR(10)
 We additionally evaluate the strict accuracy of crossencoders
  where we report the top- xreranked candidates as
 predictions with xbeing the number of gold events linked
@@ -506,11 +461,11 @@ NULL event to the prediction.
 Hierarchical Relation Extraction   We apply the proposed
  method to top-4 retrieval results from the bestperforming
  bi-encoder to perform hierarchical relation ex traction.
-
-7 7.1 Bi-encoder
+7 Result and Analysis
 Bi-encoder retrieval results on the dev split for both multi and
- cross-lingual tasks are illustrated in Figure 3 4 respectively. Since the gain in Recall@ kis relatively
-minor when doubling kfrom 8 16 across all conﬁgurations
+ cross-lingual tasks are illustrated in Figure 3 and Figure
+ 4 respectively. Since the gain in Recall@ kis relatively
+minor when doubling kfrom 8 to 16 across all conﬁgurations
  and tasks, the cross-encoder is trained with the top
 8 retrieved candidates, with the consideration of computation
  efﬁciency. It is also shown that all conﬁgurations atta in
@@ -523,19 +478,10 @@ We further report the quantitative results of bi-encoder
 Recall@ min on dev and test set of both tasks in Table 2.
 Among all the hierarchy-integration strategies, hierarch ical1 4 8 1660708090100
 k  # retrieved eventsRecall@k
-baseline
-  pre-train
-  joint
-  pre-train & joint
 Figure 3  Multilingual bi-encoder Recall@ kon the dev set.
 The densely dotted plots ( ) denote the prediction scores
 for the atomic label, an upper bound for model performance.
-1 4 8 165060708090
 k  # retrieved eventsRecall@k
-baseline
-  pre-train
-  joint
-  pre-train & joint
 Figure 4  Crosslingual bi-encoder Recall@ kon the dev set.
 The densely dotted plots ( ) denote the prediction scores
 for the atomic label, an upper bound for model performance.
@@ -552,24 +498,23 @@ challenging than the multilingual task, which is similar to
 the single event linking scenario.
 As described in Section 6.1, we further report bi-encoder
 results under Recall@ K(fraction) in Appendix D.1.
-7.2 Cross-encoder
 Cross-encoder reranking results on both tasks are also show n
 in Table 2. On the multilingual task, all the cross-encodersBi-encoder Cross-encoder
-Methods Recall@ min Strict Acc Strict Acc (Top Min) Macro F1 1
-Multilingual
+Methods Recall@ min Strict Acc Strict Acc (Top Min) Macro F1 Micro F1
 (a) Baseline 65.4 / 54.8 34.4 / 37.6 57.8 / 59.5 56.4 / 62.8 53.0 / 58.3
 (b)   HP 71.3 /58.1 40.4 / 39.2 61.7 / 60.3 60.8 / 62.0 57.5 / 58.7
 (c)   HJL 63.3 / 51.4 43.6 /40.2 63.6 /60.8 62.1 / 60.1 59.2 / 57.5
 (d)   HP   HJL 67.6 / 55.2 38.2 / 39.9 60.4 / 60.6 57.6 / 61.4 54.7 / 57.8
-Crosslingual
 (a) Baseline 53.8 / 32.8 8.5 / 11.9 21.2 / 27.5 22.1 / 28.8 23.6 / 29.2
 (b)   HP 59.7 / 37.0 8.6 / 10.9 18.6 / 25.7 22.3 / 28.0 24.0 / 28.9
 (c)   HJL 51.6 / 33.3 9.7/ 12.0 22.3 / 26.1 21.6 / 28.1 23.4 / 29.4
-(d)   HP   HJL 55.8 / 38.8 9.6 / 13.1 23.0 /28.0 25.7 /34.3 27.3 /33.1 2  Bi-encoder and Cross-encoder performance on multi lingual and crosslingual event linking (dev/test). Strict Acc (Top
+(d)   HP   HJL 55.8 / 38.8 9.6 / 13.1 23.0 /28.0 25.7 /34.3 27.3 /33.1
+Table 2  Bi-encoder and Cross-encoder performance on multi lingual and crosslingual event linking (dev/test). Strict Acc (Top
 Min) refers to the cross-encoder strict accuracy under Top M in, which is directly comparable to the bi-encoder Recall@ min.
-R@1 R@4 R@8 R@16 46.0 / 45.1 69.0 / 72.6 76.6 / 81.3 79.6 / 84.6 52.0 / 37.4 78.3 / 60.5 86.2 / 75.6 90.8 / 83.9 3  Hierarchical relation extraction results (dev/te st)
+Multilingual 46.0 / 45.1 69.0 / 72.6 76.6 / 81.3 79.6 / 84.6
+Crosslingual 52.0 / 37.4 78.3 / 60.5 86.2 / 75.6 90.8 / 83.9
+Table 3  Hierarchical relation extraction results (dev/te st)
 with the top-4 retrieval predictions by the best performing
-bi-encoder.
 that are paired with hierarchy-aware bi-encoders outperfo rm
 the baseline on strict accuracy and attain better or comparable
  performance on macro/micro F1. On the crosslingual
@@ -590,28 +535,27 @@ Recall@ minof associated bi-encoders, we ﬁnd that crossencoders
 set in multilingual tasks while underperforms in other case s.
 For closer inspection into the performance of systems on
 each language, we report the per-language bi- and crossencoder
- results in Table 5 6 in Appendix D.2.
-7.4 3 presents the hierarchical relation extraction resu lts of
+ results in Table 5 and Table 6 in Appendix D.2.
+7.4 Hierarchy Discovery
+Table 3 presents the hierarchical relation extraction resu lts of
 our proposed set-based approach using the retrieved candidates
  by the best performance bi-encoder ((b) in Table 2). On
 both tasks, the proposed method is able to assign high rankings
  to true parents for events within hierarchies, demonstrating
  its capability in aiding humans to discover new hierarchical
  relations on a set of previously-unseen events.Bi-encoder Cross-encoder
-Methods R@ min Strict Acc Macro F1 1
-Multilingual
+Methods R@ min Strict Acc Macro F1 Micro F1
 (a) Baseline 68.6 51.7 67.2 62.0
 (c)   HJL 67.4 55.8 65.3 62.7
-Crosslingual
 (a) Baseline 51.2 15.3 29.8 30.0
-(d)   HP   HJL 53.7 21.1 37.6 35.7 4  Bi-encoder and cross-encoder performance on multilingual
+(d)   HP   HJL 53.7 21.1 37.6 35.7
+Table 4  Bi-encoder and cross-encoder performance on multilingual
  & crosslingual event linking on Wikinews Dataset
-7.5 4, applying our baseline and two of the
+As shown in Table 4, applying our baseline and two of the
 hierarchy-aware linking systems ((c) in multilingual and ( d)
 in crosslingual) on the Wikinews dataset results in a simila r
 performance to that on Wikipedia mentions, which demonstrates
  that our methods could generalize well on the news
-domain.
 8 Conclusion & Future Work
 In this paper, we present the task of hierarchical event
 grounding, for which we compile a multilingual dataset with
@@ -625,7 +569,6 @@ we show promising results for zero-shot hierarchical relation
 directions for future work include adapting encoders to directly
  include hierarchy and further exploring hierarchic al
 relation extraction on standard datasets.
-Acknowledgments
 This material is based on research sponsored by the
 Air Force Research Laboratory under agreement numberFA8750-19-2-0200. The U.S. Government is authorized to
 reproduce and distribute reprints for Governmental purpos es
@@ -634,18 +577,14 @@ and conclusions contained herein are those of the authors
 and should not be interpreted as necessarily representing
 the ofﬁcial policies or endorsements, either expressed or i mplied,
  of the Air Force Research Laboratory or the U.S. Government.
-
-References
 Bordes, A.  Weston, J.  Collobert, R.  and Bengio, Y . 2011.
 Learning Structured Embeddings of Knowledge Bases. In
 Proceedings of the Twenty-Fifth National Conference on
 Artiﬁcial Intelligence , 301 306. Menlo Park, Calif.  AAAI
-Press.
 Botha, J. A.  Shan, Z.  and Gillick, D. 2020. Entity Linking
  in 100 Languages. In Proceedings of the 2020 Conference
  on Empirical Methods in Natural Language Processing
  (EMNLP) , 7833 7845. Online  Association for Computational
- Linguistics.
 Chandu, K. R.  Bisk, Y .  and Black, A. W. 2021. Grounding
   Grounding  in NLP. In Findings of the Association for
 Computational Linguistics  ACL-IJCNLP 2021 , 4283 4305.
@@ -661,7 +600,6 @@ L.  and Stoyanov, V . 2020. Unsupervised Cross-lingual Representation
  Learning at Scale. In Proceedings of the 58th
 Annual Meeting of the Association for Computational Linguistics
  , 8440 8451. Online  Association for Computational
-Linguistics.
 Du, X.  Zhang, Z.  Li, S.  Yu, P.  Wang, H.  Lai, T.  Lin, X. 
 Wang, Z.  Liu, I.  Zhou, B.  Wen, H.  Li, M.  Hannan, D. 
 Lei, J.  Kim, H.  Dror, R.  Wang, H.  Regan, M.  Zeng, Q. 
@@ -689,41 +627,37 @@ Computational Linguistics.
 Ji, H.  and Grishman, R. 2011. Knowledge Base Population 
 Successful Approaches and Challenges. In Proceedings of
 the 49th Annual Meeting of the Association for Computational
- Linguistics  Human Language Technologies , 1148 1158. Portland, Oregon, USA  Association for Computational
- Linguistics.
+ Linguistics  Human Language Technologies , 1148 
+1158. Portland, Oregon, USA  Association for Computational
 Logeswaran, L.  Chang, M.-W.  Lee, K.  Toutanova, K.  Devlin,
  J.  and Lee, H. 2019. Zero-Shot Entity Linking by
 Reading Entity Descriptions. In Proceedings of the 57th Annual
  Meeting of the Association for Computational Linguistics,
  3449 3460. Florence, Italy  Association for Computational
- Linguistics.
 Mitamura, T.  Liu, Z.  and Hovy, E. H. 2017. Events Detection,
  Coreference and Sequencing  What s next  Overview
 of the TAC KBP 2017 Event Track. In Proceedings of the
 2017 Text Analysis Conference, TAC 2017 . Gaithersburg,
-Maryland  NIST.
 Murty, S.  Verga, P.  Vilnis, L.  Radovanovic, I.  and McCal lum,
  A. 2018. Hierarchical Losses and New Resources for
 Fine-grained Entity Typing and Linking. In Proceedings of
 the 56th Annual Meeting of the Association for Computational
  Linguistics (Volume 1  Long Papers) , 97 109. Melbourne,
  Australia  Association for Computational Linguis tics.
-
 Ning, Q.  Wu, H.  and Roth, D. 2018. A Multi-Axis Annotation
  Scheme for Event Temporal Relations. In Proceedings
 of the 56th Annual Meeting of the Association for Computational
  Linguistics (Volume 1  Long Papers) , 1318 1328.
 Melbourne, Australia  Association for Computational Linguistics.
-
 Nothman, J.  Honnibal, M.  Hachey, B.  and Curran, J. R.
 2012. Event Linking  Grounding Event Reference in a News
 Archive. In Proceedings of the 50th Annual Meeting of the
 Association for Computational Linguistics (Volume 2  Shor t
 Papers) , 228 232. Jeju Island, Korea  Association for Computational
- Linguistics.
 Onoe, Y .  Boratko, M.  McCallum, A.  and Durrett, G. 2021.
 Modeling Fine-Grained Entity Types with Box Embeddings.
-InProceedings of the 59 11th International
+InProceedings of the 59th Annual Meeting of the Association
+ for Computational Linguistics and the 11th International
  Joint Conference on Natural Language Processing
 (Volume 1  Long Papers) , 2051 2064. Online  Association
 for Computational Linguistics.
@@ -736,10 +670,11 @@ J.  Wright, J.  Kulick, S.  Ryant, N.  and Ma, X. 2015.
 From Light to Rich ERE  Annotation of Entities, Relations,
 and Events. In Proceedings of the The 3rd Workshop on
 EVENTS  Deﬁnition, Detection, Coreference, and Represen-tation , 89 98. Denver, Colorado  Association for Computational
- Linguistics.
 Trouillon, T.  Welbl, J.  Riedel, S.  Gaussier, E.  and
 Bouchard, G. 2016. Complex Embeddings for Simple Link
-Prediction. In Proceedings of the 33 48 , ICML 16, 2071 2080. JMLR.org.
+Prediction. In Proceedings of the 33rd International Conference
+ on International Conference on Machine Learning Volume
+ 48 , ICML 16, 2071 2080. JMLR.org.
 Vilnis, L.  Li, X.  Murty, S.  and McCallum, A. 2018. Probabilistic
  Embedding of Knowledge Graphs with Box Lattice
 Measures. In Proceedings of the 56th Annual Meeting of
@@ -754,31 +689,17 @@ Wu, L.  Petroni, F.  Josifoski, M.  Riedel, S.  and Zettlemoyer,
 Dense Entity Retrieval. In Proceedings of the 2020 Conference
  on Empirical Methods in Natural Language Processing
  (EMNLP) , 6397 6407. Online  Association for Computational
- Linguistics.
 Yu, X.  Yin, W.  Gupta, N.  and Roth, D. 2021.
 Event Linking  Grounding Event Mentions to Wikipedia.
-arXiv 2112.07888.
 A Computation Resources
 In our experiments, we use a single NVIDIA RTX A6000
-GPU.
-B Randomness
 We choose an arbitrary random seed and conduct all experiments
- with this seed.
-C Hyper Parameters
-C.1 Bi-Encoder
 Baseline The hyper-parameters for baseline bi-encoder
 training are as follows
-learning_rate 1e-05
-num_train_epochs 10
-schedule linear
 warmup_proportion 0.05
 max_context_length 128
-max_cand_length 128
-train_batch_size 64
-eval_batch_size 64
 bert_model xlm-roberta-base
 type_optimization all_encoder_layers
-shuffle
 Wheretrainbatchsize is the batch size of mentionevent
  pairs for optimizing the mention linking loss,
 maxcontext length andmaxcandlength control
@@ -786,16 +707,15 @@ the length of context   mention and event title   description ,
 respectively.Hierarchical Pretraining (HP) In the Hierarchical Pretraining,
  the additional hyper-parameters are as follows
 struct_pretrain_epoch 0
-struct_pretrain_batch_size 192 0 refers to pre-train
+struct_pretrain_batch_size 192
+Wherestructpretrain epoch 0 refers to pre-train
 bi-encoder with hierarchy-aware loss in the ﬁrst epoch, and
 structbatchsize is the batch size of parent-child
 event pairs for hierarchy-aware loss.
 Hierarchical Joint Learning (HJL) In the Hierarchical
 Joint Learning, the additional hyper-parameters are as fol lows
-
-struct_loss_epoch 0
 struct_loss_batch_size 128
-struct_loss_wt 0.01 0 refers to train bi-encoder
+Wherestructlossepoch 0 refers to train bi-encoder
 jointly with mention-linking and hierarchy-aware losses
 starting from the ﬁrst epoch (and for all following epochs).
 Thestructlosswtis the weight on hierarchy-aware
@@ -803,56 +723,30 @@ loss when jointly optimized with mention linking loss (of
 which the weight   1)
 HP   HJL In the Hierarchical Pretraining & Hierarchical
 Joint Learning, the additional hyper-parameters are as fol low
-
 struct_pretrain_epoch 0
-struct_loss_epoch 1
 struct_pretrain_batch_size 192
 struct_loss_batch_size 128
-struct_loss_wt 0.01
 Where the model is pretrained with hierarchical loss only fo r
 the ﬁrst epoch and jointly optimized with the two losses in
 the following epochs.
-C.2 Cross-encoder
 Cross-encoder Training In training cross-encoders, we
 speciﬁed the following hyper-parameters 
-learning_rate 1e-05
-num_train_epochs 5
-schedule linear
 warmup_proportion 0.05
 max_context_length 128
-max_cand_length 128
-train_batch_size 16
-eval_batch_size 16
 bert_model xlm-roberta-base
 type_optimization all_encoder_layers
-add_linear
-top_k 8
-add_all_gold
-warmup_proportion 0.1 8, the cross-encoders are train with the top-8
+warmup_proportion 0.1
+Withtopk 8, the cross-encoders are train with the top-8
 retrieved candidates per mention from the bi-encoders.1 4 8 16707580859095
 k  # retrieved eventsRecall@k
-baseline
-  pre-train
-  joint
-  pre-train & joint
 Figure 5  Multilingual bi-encoder Recall@ k(fraction) on
-the dev set.
-1 4 8 1660708090
 k  # retrieved eventsRecall@k
-baseline
-  pre-train
-  joint
-  pre-train & joint
 Figure 6  Crosslingual bi-encoder Recall@ k(fraction) on
-the dev set.
 Cross-encoder Inference At inference time, we select
 the threshold τcfor emitting prediction from the set
 {0.001,0.01,0.1,0.3,0.5,0.7,0.9}, based on the performance
  on dev set. In terms of measuring the performance,
 we use the product of all three metrics, i.e. Strict Acc  
-Macro F1 1.
-D Additional Results
-D.1 Bi-encoder
 In addition to Recall@ k, which counts the retrieval at kas
 successful if and only if all the gold events are predicted
 within the top- kretrieval, we propose to also evaluate biencoders
@@ -860,20 +754,104 @@ within the top- kretrieval, we propose to also evaluate biencoders
  Recall@ k(fraction)  for a given mention with pgold
 events, of which qare predicted in the top- kretrievals, its
 Recall@k(fraction)  q
-p.
 Figure 5 and ﬁgure 6 depict the bi-encoder retrieval performance
  under Recall@ k(fraction) on the dev split of
 multi- and crosslingual tasks, respectively. Compared wit hthe corresponding performance on Recall@ kin ﬁgure 3 and
 ﬁgure 4, every model attains a higher score under Recall@ k
 (fraction) while the relative performance gap remains simi lar.
-
 D.2 Per-language results
-Table 5 6 display the bi-encoder and cross-encoder
+Table 5 and Table 6 display the bi-encoder and cross-encoder
 performance on each of the languages, on both multi- and
 crosslingual tasks. We report the best-performing bi-enco der
   cross-encoder systems ((c) in multilingual and (d) in
-crosslingual task) by measuring Strict Acc  Macro F1 1.Bi-encoder Cross-encoder
-Languages # mentions Recall@ min Strict Acc Macro F1 1 360 86.9 71.1 80.1 78.1 1776 59.5 38.2 61.2 56.1 612 65.2 51.3 75.8 73.0 136 73.5 77.2 84.4 81.9 1918 48.4 45.5 75.1 69.5 1312 52.5 40.2 61.5 59.0 980 55.2 51.1 75.9 69.6 2051 63.0 54.8 73.6 71.4 575 75.0 60.2 77.1 75.1 2030 44.5 35.7 50.8 50.9 10065 41.2 30.7 55.7 53.2 2956 53.9 46.1 58.0 58.3 6760 48.3 30.3 46.3 45.3 8888 50.6 39.7 56.1 52.1 2841 39.8 43.0 68.3 65.4 1866 64.4 49.7 66.0 64.0 91 81.3 73.6 79.3 77.9 974 59.4 40.9 56.9 56.3 678 57.4 50.4 73.8 70.4 3842 44.6 29.7 47.3 46.2 2768 54.0 46.3 62.3 57.6 897 56.1 59.5 78.2 73.0 190 74.7 63.7 81.5 77.5 30 70.0 73.3 78.3 77.4 16 43.8 62.5 66.6 68.3 895 70.2 62.5 75.5 72.9 608 65.3 56.9 68.7 66.6 4749 44.8 34.3 49.3 49.5 1851 58.8 45.2 69.5 66.0 1329 60.9 45.5 69.4 65.7 13221 48.8 34.8 58.5 56.1 2770 45.2 39.7 68.5 64.5 561 60.8 57.6 72.0 68.4 456 66.7 57.0 67.2 67.0 3757 56.2 40.8 54.7 53.8 3 100.0 66.7 66.7 66.7 1135 71.0 53.6 66.8 65.4 36 83.3 66.7 80.9 76.5 275 87.6 75.3 84.3 82.0 1586 43.2 41.4 66.6 61.1 3551 63.8 53.1 73.5 70.6 533 61.2 41.8 63.9 62.5 5  Bi-encoder and cross-encoder performance on multi lingual event linking (test set performance) across all lan guages in
+crosslingual task) by measuring Strict Acc  Macro F1  
+Micro F1.Bi-encoder Cross-encoder
+Languages # mentions Recall@ min Strict Acc Macro F1 Micro F1
+Afrikaans 360 86.9 71.1 80.1 78.1
+Arabic 1776 59.5 38.2 61.2 56.1
+Belarusian 612 65.2 51.3 75.8 73.0
+Bengali 136 73.5 77.2 84.4 81.9
+Bulgarian 1918 48.4 45.5 75.1 69.5
+Catalan 1312 52.5 40.2 61.5 59.0
+Chinese 980 55.2 51.1 75.9 69.6
+Czech 2051 63.0 54.8 73.6 71.4
+Danish 575 75.0 60.2 77.1 75.1
+Dutch 2030 44.5 35.7 50.8 50.9
+English 10065 41.2 30.7 55.7 53.2
+Finnish 2956 53.9 46.1 58.0 58.3
+French 6760 48.3 30.3 46.3 45.3
+German 8888 50.6 39.7 56.1 52.1
+Greek 2841 39.8 43.0 68.3 65.4
+Hebrew 1866 64.4 49.7 66.0 64.0
+Hindi 91 81.3 73.6 79.3 77.9
+Hungarian 974 59.4 40.9 56.9 56.3
+Indonesian 678 57.4 50.4 73.8 70.4
+Italian 3842 44.6 29.7 47.3 46.2
+Japanese 2768 54.0 46.3 62.3 57.6
+Korean 897 56.1 59.5 78.2 73.0
+Malay 190 74.7 63.7 81.5 77.5
+Malayalam 30 70.0 73.3 78.3 77.4
+Marathi 16 43.8 62.5 66.6 68.3
+Norwegian 895 70.2 62.5 75.5 72.9
+Persian 608 65.3 56.9 68.7 66.6
+Polish 4749 44.8 34.3 49.3 49.5
+Portuguese 1851 58.8 45.2 69.5 66.0
+Romanian 1329 60.9 45.5 69.4 65.7
+Russian 13221 48.8 34.8 58.5 56.1
+Serbian 2770 45.2 39.7 68.5 64.5
+Slovak 561 60.8 57.6 72.0 68.4
+Slovenian 456 66.7 57.0 67.2 67.0
+Spanish 3757 56.2 40.8 54.7 53.8
+Swahili 3 100.0 66.7 66.7 66.7
+Swedish 1135 71.0 53.6 66.8 65.4
+Tamil 36 83.3 66.7 80.9 76.5
+Thai 275 87.6 75.3 84.3 82.0
+Turkish 1586 43.2 41.4 66.6 61.1
+Ukrainian 3551 63.8 53.1 73.5 70.6
+Vietnamese 533 61.2 41.8 63.9 62.5
+Table 5  Bi-encoder and cross-encoder performance on multi lingual event linking (test set performance) across all lan guages in
 the dataset.Bi-encoder Cross-encoder
-Languages # mentions Recall@ min Strict Acc Macro F1 1 360 67.2 34.2 40.6 39.1 1776 24.3 6.2 20.7 19.5 612 36.4 9.5 31.5 30.6 136 5.9 0.7 4.2 5.4 1918 42.3 9.1 32.6 32.2 1312 41.8 11.8 37.5 36.7 980 23.1 7.5 22.9 21.0 2051 39.3 11.4 28.7 28.6 575 48.9 23.8 44.7 40.6 2030 32.7 14.0 33.7 33.2 10065 41.8 18.2 49.5 45.7 2956 33.9 16.2 33.1 32.3 6760 34.8 13.5 33.9 32.9 8888 38.7 13.9 33.5 31.3 2841 36.4 10.2 27.0 26.8 1866 32.1 8.4 20.5 20.6 91 13.2 5.5 8.2 7.4 974 38.5 10.2 22.4 23.3 678 44.0 15.9 41.6 40.8 3842 39.0 12.9 34.5 33.5 2768 21.2 8.3 20.9 19.8 897 31.5 19.1 36.0 31.8 190 44.2 12.6 34.1 33.4 30 16.7 6.7 12.5 13.0 16 12.5 0.0 3.1 4.9 895 44.6 21.7 40.5 38.6 608 35.0 7.6 22.3 21.6 4749 32.6 8.6 27.0 26.4 1851 44.4 17.7 44.2 40.8 1329 45.6 14.2 36.2 34.8 13221 41.9 12.1 36.7 35.3 2770 39.3 8.3 28.9 29.2 561 46.0 10.0 26.8 26.3 456 47.1 14.2 29.9 30.2 3757 43.3 15.3 35.9 35.0 3 0.0 0.0 11.1 15.4 1135 48.3 18.1 35.4 34.6 36 16.7 0.0 14.0 15.4 275 44.4 20.4 42.9 40.0 1586 36.1 10.1 25.9 26.0 3551 53.6 12.2 34.0 33.4 533 41.7 12.8 37.5 33.9 6  Bi-encoder and cross-encoder performance on cross lingual event linking (test set performance) across all lan guages in
-the dataset.
+Languages # mentions Recall@ min Strict Acc Macro F1 Micro F1
+Afrikaans 360 67.2 34.2 40.6 39.1
+Arabic 1776 24.3 6.2 20.7 19.5
+Belarusian 612 36.4 9.5 31.5 30.6
+Bengali 136 5.9 0.7 4.2 5.4
+Bulgarian 1918 42.3 9.1 32.6 32.2
+Catalan 1312 41.8 11.8 37.5 36.7
+Chinese 980 23.1 7.5 22.9 21.0
+Czech 2051 39.3 11.4 28.7 28.6
+Danish 575 48.9 23.8 44.7 40.6
+Dutch 2030 32.7 14.0 33.7 33.2
+English 10065 41.8 18.2 49.5 45.7
+Finnish 2956 33.9 16.2 33.1 32.3
+French 6760 34.8 13.5 33.9 32.9
+German 8888 38.7 13.9 33.5 31.3
+Greek 2841 36.4 10.2 27.0 26.8
+Hebrew 1866 32.1 8.4 20.5 20.6
+Hindi 91 13.2 5.5 8.2 7.4
+Hungarian 974 38.5 10.2 22.4 23.3
+Indonesian 678 44.0 15.9 41.6 40.8
+Italian 3842 39.0 12.9 34.5 33.5
+Japanese 2768 21.2 8.3 20.9 19.8
+Korean 897 31.5 19.1 36.0 31.8
+Malay 190 44.2 12.6 34.1 33.4
+Malayalam 30 16.7 6.7 12.5 13.0
+Marathi 16 12.5 0.0 3.1 4.9
+Norwegian 895 44.6 21.7 40.5 38.6
+Persian 608 35.0 7.6 22.3 21.6
+Polish 4749 32.6 8.6 27.0 26.4
+Portuguese 1851 44.4 17.7 44.2 40.8
+Romanian 1329 45.6 14.2 36.2 34.8
+Russian 13221 41.9 12.1 36.7 35.3
+Serbian 2770 39.3 8.3 28.9 29.2
+Slovak 561 46.0 10.0 26.8 26.3
+Slovenian 456 47.1 14.2 29.9 30.2
+Spanish 3757 43.3 15.3 35.9 35.0
+Swahili 3 0.0 0.0 11.1 15.4
+Swedish 1135 48.3 18.1 35.4 34.6
+Tamil 36 16.7 0.0 14.0 15.4
+Thai 275 44.4 20.4 42.9 40.0
+Turkish 1586 36.1 10.1 25.9 26.0
+Ukrainian 3551 53.6 12.2 34.0 33.4
+Vietnamese 533 41.7 12.8 37.5 33.9
+Table 6  Bi-encoder and cross-encoder performance on cross lingual event linking (test set performance) across all lan guages in

@@ -1,11 +1,11 @@
 Zero-shot Transfer of Article-aware Legal Outcome Classiﬁcation for
 European Court of Human Rights Cases
-Santosh T.Y.S.S1, Oana Ichim2, Matthias Grabmair1 1School of Computation, Information, and Technology 
+Santosh T.Y.S.S1, Oana Ichim2, Matthias Grabmair1
+1School of Computation, Information, and Technology 
 Technical University of Munich, Germany
 2Graduate Institute of International and Development Studies, Geneva, Switzerland
 {santosh.tokala, matthias.grabmair}@tum.de
 oana.ichim@graduateinstitute.ch
-Abstract
 In this paper, we cast Legal Judgment Prediction
  on European Court of Human Rights
 cases into an article-aware classiﬁcation task,
@@ -27,7 +27,6 @@ classiﬁcation. We also ﬁnd that domain adaptation
  methods improve zero-shot transfer performance,
  with article relatedness and encoder
 pre-training inﬂuencing the effect.
-1 Introduction
 Legal Judgment Prediction (LJP) has recently
 gained considerable attention in the mainstream
 NLP community (e.g., Aletras et al. 2016 
@@ -86,7 +85,7 @@ on whether the article has been alleged/deemed to
 have been violated, or not. Our results show that
 the article-aware classiﬁcation model outperforms
 the traditional classiﬁcation setup by a small but
-consistent margin.arXiv 2302.00609 3  [cs.CL]  13 2023Second, we subject the model to a zero-shot
+consistent margin.arXiv 2302.00609v3  [cs.CL]  13 Feb 2023Second, we subject the model to a zero-shot
 transfer task. Models trained on case facts alone
 cannot produce inferences about convention articles
  they did not observe during training. By contrast,
@@ -134,7 +133,7 @@ Our main contributions in this paper are1
 article-aware classiﬁcation task by pairing
 case fact descriptions with candidate articles.
 Assuming a frozen pre-trained encoder network,
- our article-aware prediction model out Our
+ our article-aware prediction model out1Our
  code is available at
 https //github.com/TUMLegalTech/zeroshotLJPperforms straightforward fact classiﬁcation.
  We conduct zero-shot transfer benchmarking
@@ -143,13 +142,11 @@ be a difﬁcult testing task for the generalization
  of COC models. We show that domain
 adaptation using a domain discriminator and
 a Wasserstein distance method improves generalization.
-
  We conduct auxiliary experiments validating
 that article relatedness positively affects transfer
  performance and show an interaction between
  domain adaptation and domain speciﬁc
 encoder pre-training.
-2 Related Work
 Legal Judgement Prediction  LJP/COC as an
 NLP task has been studied using corpora from different
  jurisdictions, such as the ECtHR (Chalkidis
@@ -214,7 +211,6 @@ existing public LexGLUE ECtHR dataset into a
 new benchmark on more challenging unsupervised
 and any domain adaptation settings for COC to emulate
  legal reasoning involving previously unseen
-convention articles.
 DA variants have been benchmarked for various
 NLP tasks, such as Question answering (Yu et al.,
 2018), duplicate question detection (Shah et al.,
@@ -230,7 +226,6 @@ work is the ﬁrst to benchmark domain adaptation
 in COC/LJP. While previous works typically involve
  short text, COC on ECtHR data involves case
 facts and articles, both of which typically are long
-documents.
 Methods proposed for domain adaptation can
 be categorized into four types  (a) Instance-based
 data selection methods (Jiang and Zhai, 2007  Remus,
@@ -254,7 +249,6 @@ data distributions. In this woork, we employ lossbased
  approaches using a domain discriminator
 (Ganin et al., 2016) and Wasserstein distance (Shen
 et al., 2018) to enable domain adaptation for our
-COC models.
 3 Dataset, Tasks & Settings
 We use the LexGLUE ECtHR dataset provided by
 (Chalkidis et al., 2022b), which consists of 11k case
@@ -271,9 +265,10 @@ in the convention and its protocols. In both the
 ECtHR A and B benchmarks, it is assumed that the
 model classiﬁed the target from the fact description
 alone, which we refer to as the fact classiﬁcation
-variant .
 For our article-aware classiﬁcation settings, we
-augment the dataset with the texts of the 10 2. We formulate the article-aware
+augment the dataset with the texts of the 10 articles
+copied from the publicly available ECHR convention
+ document2. We formulate the article-aware
 prediction variant for both tasks  Given both the
 case fact statements and a particular article information,
  the model should classify the binary outcome
@@ -285,12 +280,12 @@ convention_eng.pdfOur zero-shot transfer task then involves determining
  violation/allegation from case facts with
 respect to articles which are not seen during training
  time. We consider a  domain  to be a particular
-convention article (i.e., 10 10 domains). The objective is to train a model on
+convention article (i.e., 10 convention articles form
+10 domains). The objective is to train a model on
 a source domain (seen articles) with the goal of
 performing well at test-time on a target domain
 (unseen articles). Following (Yin et al., 2019  Ramponi
  and Plank, 2020), we propose two settings
-under zero-shot COC 
 Zero-Shot Restrictive / Unsupervised Domain
 Adaptation (UDA)  In this setting, the model is
 given a pair of case facts and the text of training set
@@ -307,7 +302,6 @@ new or modiﬁed written legal sources is typically
 known for a given task and available for domain
 adaptation (e.g., a public administration decision
 support tool receives an update after relevant legislation
- has changed).
 Zero-shot Wild / Any Domain Adaptation
 (ADA) / Out of Distribution Generalization  In
 this setting, the model never sees any article data
@@ -326,7 +320,6 @@ such that both contain articles of various frequencies
  split _1 3, 5, 10, 14, 11
 We evaluate UDA and ADA on split _0as source
 andsplit _1as target, and vice-versa.
-4 Method
 We employ a hierarchical neural model which takes
 the case fact description xalong with the articleaas input and outputs a binary outcome (allegation
  in Task B and violation in Task A) for case
@@ -342,7 +335,6 @@ based on adversarial training  (1) a classiﬁcationbased
  domain discriminator and (2) a Wassersteindistance
  based method which aims to reduce the
 difference between the source and the target domain
- distributions.
 4.1 Article-aware prediction Model
 Given the facts of the case x {x1,x2,...,xm}
 wherexi {xi1,xi2,...,xin}and the article a 
@@ -363,9 +355,6 @@ Our model encodes the facts of the case xsentencewise
 These are aggregated into sentence level representations
  using token attention 
 uit  tanh(Wwzit bw) (1)
-αit exp(uituw) 
-texp(uituw)&fi n 
-t 1αitzit (2)
 whereWw,bwanduware trainable parameters.
 The sentence level representations {f1,...,fn}are
 passed through a GRU encoder to obtain contextaware
@@ -375,34 +364,17 @@ takesaas input and outputs s {s1,s2,...,sk}.
 4.1.2 Interaction Layer
 Interaction between the sentences of the case facts
 and articles is done via dot product attention be-tween the two sequences of sentences as follows 
-eij hT
-isj&h 
-i k 
-j 1exp(eij) k
-l 1exp(eil)sj (3)
-s 
-j m 
-i 1exp(eij) m
-l 1exp(elj)hi (4)
 whereeijrepresents the dot product interaction
 score between the context-aware representations
 of theithsentence of the case facts and the jth
 sentence of the article. h 
-iands 
 jrepresent articleaware
  representations corresponding to the ithsentence
  of the case facts and the fact-aware representation
  corresponding to the jthsentence of the
 article, respectively. Finally, we obtain interactionaware
  sentence representations of the facts h  
-{h 
-1,h 
-2,...,h 
 m}. Similarly for the article, we obtains  {s 
-
-1,s 
-2,...,s 
-k}
 4.1.3 Post-Interaction Encoding Layer
 The article-dependent ﬁnal representation of the
 case facts is obtained in two steps  (i) we compute
@@ -413,10 +385,6 @@ article-dependent fact representation.
 Final representation of article   We ﬁrst combine
 the pre-interaction sentence encodings and factaware
  sentence representations of the article 
-pi  [si,s 
-i,si s 
-i,si s 
-i] (5)
 where denotes element-wise product. This representation
  aims to capture high-order interaction
 between the pre- and post- interaction elements
@@ -437,7 +405,6 @@ the ﬁnal representation of the articles A. This facilitates
  capturing the salient case fact information
 with respect to the speciﬁed article.
 Figure 1  Our article-aware prediction model architecture
-
 4.1.4 Classiﬁcation Layer
 We pass the article-dependent ﬁnal representation
 of the case facts through a nonlinear projection to
@@ -478,9 +445,7 @@ pass, scales the gradients ﬂowing through by  λ,
 making the feature extractor receive the opposite
 gradients from the discriminator. The overall objective
  function reduces to 
-arg min
 θF,θC,θD[Lc(C(F(x,a)),ye)  λLd(D(GRL(F(x,a))),ya)]
-(6)
 whereLc,Ldrepresents the loss function corresponding
  to classiﬁer and domain discriminator,
 respectively, λis the GRL hyperparameter, xis the
@@ -510,18 +475,10 @@ the domain critic neural network satisﬁes the constraint
  of the Lipschitz-1 continuous function, we
 calculate the approximate empirical Wasserstein
 distance by maximizing the following domain critic
-loss 
-L(Xp,Xq)  1
-np 
-xp Xpfw(F(xp)) 1
-nq 
-xq Xqfw(F(xq))
-(7)
 wherefw,Fdenote the Wasserstein domain critic
 and feature extractor, respectively, XpandXqde-Table 1  Fact Classiﬁcation vs Article-aware prediction
 Performance on Task A and Task B. mic. and mac. indicates
  micro-F1 and macro-F1 scores, respectively.
-Task B Task A
 Model mac. mic. mac. mic.
 Fact Classiﬁcation 71.96 77.40 61.21 72.21
 Article-aware pred. 74.14 78.49 67.09 74.77
@@ -546,7 +503,6 @@ constraints, we clip the weights of the domain critic
 within a compact space [ c,c]after each gradient
 update following (Arjovsky et al., 2017).
 5 Experiments & Discussion
-5.1 Baseline
 For the fact classiﬁcation variant , we employ an
 architecture similar to the article-aware prediction
 model but reduced to the case fact based encoding
@@ -562,13 +518,17 @@ We describe the detailed hyperparameters for the
 article-aware prediction model in Appendix Sec. A
 5.2 Does Article-aware Classiﬁcation
 Perform Better than Fact-only
-Classiﬁcation 
-Micro-F1 and macro-F1 10 1. The article-aware model performs betterTable 2 1 0 1 0 1
+Micro-F1 and macro-F1 scores for both tasks A
+and B with regard to the 10 target articles are given
+in Table 1. The article-aware model performs betterTable 2  Task B F1 performance of baseline and domain adaptation models
+Transfer 0 1 Transfer 0 1
 source  split _0target  split _1source  split _1target  split _0
 Setting Model mac. mic. mac. mic. mac. mic. mac. mic.
 Baseline Source only 73.45 75.63 7.32 7.37 70.26 77.10 8.49 9.08
-UDADomain Disc. 73.81 76.95 13.92 14.94 70.63 77.43 22.50 26.27 69.63 74.86 13.17 18.16 66.89 75.21 20.78 30.30
-ADADomain Disc. 73.76 76.13 9.62 10.77 69.71 76.85 9.30 10.45 70.17 74.80 9.14 9.89 67.46 75.25 9.26 10.38
+UDADomain Disc. 73.81 76.95 13.92 14.94 70.63 77.43 22.50 26.27
+Wasserstein 69.63 74.86 13.17 18.16 66.89 75.21 20.78 30.30
+ADADomain Disc. 73.76 76.13 9.62 10.77 69.71 76.85 9.30 10.45
+Wasserstein 70.17 74.80 9.14 9.89 67.46 75.25 9.26 10.38
 than fact-only classiﬁcation across the board. In
 particular, we notice a greater improvement in the
 macro-F1 score, indicating the article-aware classiﬁcation
@@ -594,7 +554,7 @@ We evaluate UDA and ADA on both Task A and
 Task B with the two article splits. A baseline source
 only model is trained without domain adaptation
 using the labelled source data only and tested on
-the target test data directly. Tables 2 3 show
+the target test data directly. Tables 2 and 3 show
 the performance of different models with our two
 splits on task B and A, respectively.
 Baseline vsDomain Adaptation  From both tables,
@@ -657,7 +617,6 @@ this limitation, our zero-shot framework serves as
 a challenging benchmark in the development of legal
  NLP models that learn to interrelate case facts
 and legal source text towards supporting domain
-experts.
 5.4 How does Encoder Pre-Training
 inﬂuence Zero-Shot Transferability 
 We conduct an additional experiment on Task A
@@ -665,10 +624,12 @@ withsplit _1as source and split _0as target, where
 we replace LegalBERT embeddings used in the encoding
  layer with BERT base embeddings (Kenton
 and Toutanova, 2019), and report its performance
-in Table 4. Comparing it to Transfer 0 1 3, we observe that the BERT base model performs
+in Table 4. Comparing it to Transfer 0 1in
+Table 3, we observe that the BERT base model performs
  worse on target data than the LegalBERT
 encoder. In particular, the best performing Wasserstein
- domain adaptation model drops from 26.2 16.36, much more than the Domain Discriminator.
+ domain adaptation model drops from 26.2 to
+16.36, much more than the Domain Discriminator.
 We leave an exploration of this asymmetric effect
 of the pre-training regime across different domain
 adaptation strategies to future work.
@@ -687,7 +648,8 @@ thereby possibly injecting domain-speciﬁc information
 Zero-Shot Transferability 
 To test whether article relatedness between source
 and target domains affect performance, we experiment
- with Article P1-1 (Article 1 1 - The Protection of Property) as the target
+ with Article P1-1 (Article 1 of Additional
+Protocol 1 - The Protection of Property) as the target
  domain. This simulates the realistic scenario
 of our zero shot setting where the convention is
 amended with an additional protocol. We then
@@ -698,9 +660,8 @@ sets of similar size. The related domain consists
 of articles 6 (right to a fair trial) and 8 (right to
 respect for private and family life). The unrelateddomain articles comprise articles 2 (right to life), 3
 (prohibition of torture, and 5 (right to liberty and
-security).
 We report the performance on Task A for target
-P1-1 5. We observe that the related source
+P1-1 in Table 5. We observe that the related source
 domain is able to perform better across the board,
 conﬁrming the intuition that relatedness between
 source and target is an important factor to be considered
@@ -720,7 +681,6 @@ articles than unrelated ones when transferring to
 a target article. This raises a related question of
 how article relatedness could be determined by the
 model itself rather than a priori by an expert.
-6 Conclusion
 We cast case outcome classiﬁcation on ECtHR data
 into an article-aware architecture. This conﬁguration
  is inspired by realistic legal reasoning involving
@@ -742,23 +702,31 @@ of transformer-based encoders and with the relatedness
  of the source and target domains. Overall,
 this zero-shot COC task formulation opens up new
 research opportunities towards legal NLP models
-that are more aligned with expert reasoning.Table 3 1 0 1 0 1
+that are more aligned with expert reasoning.Table 3  Task A F1 performance of baseline and domain adaptation models
+Transfer 0 1 Transfer 0 1
 source  split _0target  split _1source  split _1target  split _0
 Setting Model mac. mic. mac. mic. mac. mic. mac. mic.
 Baseline Source only 63.62 71.98 3.14 3.78 67.79 74.57 5.80 8.02
-UDADomain Disc. 64.65 72.52 9.52 9.87 68.19 75.32 14.47 16.51 60.26 71.46 11.04 18.20 63.56 74.89 15.23 26.20
-ADADomain Disc. 64.89 72.08 7.18 7.78 67.12 74.43 6.45 9.34 61.78 72.36 7.27 7.61 65.71 74.88 6.71 9.71 4 1 Performance in one split using
+UDADomain Disc. 64.65 72.52 9.52 9.87 68.19 75.32 14.47 16.51
+Wasserstein 60.26 71.46 11.04 18.20 63.56 74.89 15.23 26.20
+ADADomain Disc. 64.89 72.08 7.18 7.78 67.12 74.43 6.45 9.34
+Wasserstein 61.78 72.36 7.27 7.61 65.71 74.88 6.71 9.71
+Table 4  Task A F1 Performance in one split using
 BERT base embeddings (as opposed to Legal Bert)
 source  split _1target  split _0
 Setting Model mac. mic. mac. mic.
-UDADom. Disc. 68.01 75.26 13.68 15.21 62.15 74.32 14.12 16.36
-ADADom. Disc. 67.92 75.32 4.77 7.44 66.71 74.95 4.73 7.65 5 1 1-1
+UDADom. Disc. 68.01 75.26 13.68 15.21
+Wasserstein 62.15 74.32 14.12 16.36
+ADADom. Disc. 67.92 75.32 4.77 7.44
+Wasserstein 66.71 74.95 4.73 7.65
+Table 5  Task A F1 target performance on article P1-1
 with related and unrelated source domains
 Source Related Unrelated
 Setting Model mac. mic. mac. mic.
-UDADom. Disc. 54.13 73.71 43.52 65.72 62.35 74.64 34.01 49.62
-ADADom. Disc. 42.79 68.46 37.12 56.16 43.25 69.91 26.87 38.28
-Limitations
+UDADom. Disc. 54.13 73.71 43.52 65.72
+Wasserstein 62.35 74.64 34.01 49.62
+ADADom. Disc. 42.79 68.46 37.12 56.16
+Wasserstein 43.25 69.91 26.87 38.28
 We cast the legal judgment prediction task into
 an article-aware classiﬁcation setting and create a
 zero-shot benchmark on a corpus of ECtHR cases.
@@ -775,7 +743,6 @@ will likely lead to different levels of task difﬁculty,
 absolute performance, and zero shot transferability.
  In particular, many legal areas require multiple
 sources to be applied in conjunction to a set of case
-facts.
 Technically, a major hurdle dealing with corpora
 related to the legal domain is their lengthy nature.
 We resort to hierarchical models, which are inherently
@@ -791,7 +758,6 @@ and ensure the comparability of our domain adaptation
 impact of domain-speciﬁc pre-training. We leave
 an exploration of COC as article-aware classiﬁcation
  with ﬁne-tuned encoders for future work.
-Ethics Statement
 We experiment with a publicly available datasets of
 ECtHR decisions, which has been derived from the
 public court database HUDOC3. These decisions
@@ -817,7 +783,6 @@ strongly committed to research on such models as
 a means to derive insight from legal data for purposes
  of increasing transparency, accountability,
 and explainability of data-driven systems in the
-legal domain.
 We are conscious that, by adapting pre-trained
 encoders, our models inherit any biases they contain.
  Similarly, the ECtHR case collection as historical
@@ -832,20 +797,16 @@ systems leveraging case outcome information and
 intended for practical deployment should naturally
 be scrutinized against applicable equal treatment
 imperatives regarding their performance, behavior,
-and intended use.
 All models of this project were developed and
 trained on Google Colab. We did not track computation
- hours.
-References
 Nikolaos Aletras, Dimitrios Tsarapatsanis, Daniel
 Preo  tiuc-Pietro, and Vasileios Lampos. 2016. Predicting
  judicial decisions of the european court of
 human rights  A natural language processing perspective.
- PeerJ Computer Science , 2 93.
+ PeerJ Computer Science , 2 e93.
 Martin Arjovsky, Soumith Chintala, and Léon Bottou.
 2017. Wasserstein generative adversarial networks.
 InInternational conference on machine learning ,
-pages 214 223. PMLR.
 Isabelle Augenstein, Tim Rocktäschel, Andreas Vlachos,
  and Kalina Bontcheva. 2016. Stance detection
 with bidirectional conditional encoding. In Proceedings
@@ -854,12 +815,11 @@ in Natural Language Processing , pages 876 885.
 Eyal Ben-David, Nadav Oved, and Roi Reichart. 2022.
 Pada  Example-based prompt learning for on-the-ﬂy
 adaptation to unseen domains. Transactions of the
-Association for Computational Linguistics , 10 414 433.
+Association for Computational Linguistics , 10 414 
 John Blitzer, Ryan McDonald, and Fernando Pereira.
 2006. Domain adaptation with structural correspondence
  learning. In Proceedings of the 2006 conference
  on empirical methods in natural language processing
- , pages 120 128.
 Danushka Bollegala, Yutaka Matsuo, and Mitsuru
 Ishizuka. 2011. Relation adaptation  learning to
 extract novel relations with minimum supervision.
@@ -869,7 +829,6 @@ Ilias Chalkidis, Ion Androutsopoulos, and Nikolaos
 Aletras. 2019. Neural legal judgment prediction in
 english. In Proceedings of the 57th Annual Meeting
  of the Association for Computational Linguistics ,
-pages 4317 4323.
 Ilias Chalkidis, Xiang Dai, Manos Fergadiotis, Prodromos
  Malakasiotis, and Desmond Elliott. 2022a.An exploration of hierarchical attention transformers
  for efﬁcient long document classiﬁcation. arXiv
@@ -887,7 +846,6 @@ study on european court of human rights cases. In
 Proceedings of the 2021 Conference of the North
 American Chapter of the Association for Computational
  Linguistics  Human Language Technologies ,
-pages 226 241.
 Ilias Chalkidis, Abhik Jana, Dirk Hartung, Michael
 Bommarito, Ion Androutsopoulos, Daniel Katz, and
 Nikolaos Aletras. 2022b. Lexglue  A benchmark
@@ -901,7 +859,6 @@ Tomada, Sebastian Schwemer, and Anders Søgaard.
  fairness in legal text processing. In Proceedings
  of the 60th Annual Meeting of the Association
 for Computational Linguistics (Volume 1  Long Papers)
- , pages 4389 4406.
 Junyi Chen, Lan Du, Ming Liu, and Xiabing Zhou.
 2022. Mulan  A multiple residual article-wise attention
  network for legal judgment prediction. Transactions
@@ -912,14 +869,12 @@ Jiang, and Diana Inkpen. 2017. Enhanced lstm for
 natural language inference. In Proceedings of the
 55th Annual Meeting of the Association for Computational
  Linguistics (Volume 1  Long Papers) , pages
-1657 1668.
 Xiang Dai, Ilias Chalkidis, Sune Darkner, and
 Desmond Elliott. 2022. Revisiting transformerbased
  models for long document classiﬁcation. In
 Findings of the Association for Computational Linguistics 
  EMNLP 2022 , pages 7212 7230, Abu
 Dhabi, United Arab Emirates. Association for Computational
- Linguistics.
 Hal Daume III and Daniel Marcu. 2006. Domain adaptation
  for statistical classiﬁers. Journal of artiﬁcial
 Intelligence research , 26 101 126.
@@ -929,22 +884,18 @@ by algorithm (September 3, 2021). Strasbourg Observers
  , 19.Yaroslav Ganin and Victor Lempitsky. 2015. Unsupervised
  domain adaptation by backpropagation. In International
  conference on machine learning , pages
-1180 1189. PMLR.
 Yaroslav Ganin, Evgeniya Ustinova, Hana Ajakan,
 Pascal Germain, Hugo Larochelle, François Laviolette,
  Mario Marchand, and Victor Lempitsky.
 2016. Domain-adversarial training of neural networks.
  The journal of machine learning research ,
-17(1) 2096 2030.
 Nils Holzenberger, Andrew Blair-stanek, and Benjamin
  Van Durme. 2020. A dataset for statutory reasoning
  in tax law entailment and question answering.
-InNLLP@KDD .
 Chen Jia, Xiaobo Liang, and Yue Zhang. 2019. Crossdomain
  ner using cross-domain language modeling.
 InProceedings of the 57th Annual Meeting of the
 Association for Computational Linguistics , pages
-2464 2474.
 Jing Jiang and ChengXiang Zhai. 2007. Instance
 weighting for domain adaptation in nlp. In Proceedings
  of the 45th Annual Meeting of the Association
@@ -956,19 +907,16 @@ PloS one , 12(4) e0174698.
 Aaron Russell Kaufman, Peter Kraft, and Maya Sen.
 2019. Improving supreme court forecasting using
  boosted decision trees. Political Analysis ,
-27(3) 381 387.
 Jacob Devlin Ming-Wei Chang Kenton and
 Lee Kristina Toutanova. 2019. Bert  Pre-training
 of deep bidirectional transformers for language
 understanding. In Proceedings of NAACL-HLT ,
-pages 4171 4186.
 Diederik P Kingma and Jimmy Ba. 2015. Adam  a
 method for stochastic optimization 3rd int. In International
  Conference on Learning Representations .
 André Lage-Freitas, Héctor Allende-Cid, Orivaldo Santana,
  and Lívia Oliveira-Lage. 2022. Predicting
 brazilian court decisions. PeerJ Computer Science ,
-8 904.
 Zheng Li, Yu Zhang, Ying Wei, Yuxiang Wu, and
 Qiang Yang. 2017. End-to-end adversarial memory
 network for cross-domain sentiment classiﬁcation.
@@ -977,24 +925,25 @@ InProceedings of the 26th International Joint Conference
 Zhenyu Liu and Huanhuan Chen. 2017. A predictive
 performance comparison of machine learning models
  for judicial cases. In 2017 IEEE Symposium series
- on computational intelligence (SSCI) , pages 1 6. IEEE.Bingfeng Luo, Yansong Feng, Jianbo Xu, Xiang Zhang,
+ on computational intelligence (SSCI) , pages 1 
+6. IEEE.Bingfeng Luo, Yansong Feng, Jianbo Xu, Xiang Zhang,
 and Dongyan Zhao. 2017. Learning to predict
 charges for criminal cases with legal basis. In Proceedings
  of the 2017 Conference on Empirical Methods
- in Natural Language Processing , pages 2727 2736.
+ in Natural Language Processing , pages 2727 
 Vijit Malik, Rishabh Sanjay, Shubham Kumar Nigam,
 Kripabandhu Ghosh, Shouvik Kumar Guha, Arnab
 Bhattacharya, and Ashutosh Modi. 2021. Ildc for
 cjpe  Indian legal documents corpus for court judgment
  prediction and explanation. In Proceedings of
-the 59 11th International
+the 59th Annual Meeting of the Association for Computational
+ Linguistics and the 11th International
 Joint Conference on Natural Language Processing
 (Volume 1  Long Papers) , pages 4046 4062.
 Masha Medvedeva, Ahmet Üstün, Xiao Xu, Michel
 V ols, and Martijn Wieling. 2021. Automatic judgement
  forecasting for pending applications of the european
  court of human rights. In ASAIL/LegalAIIA@
-ICAIL .
 Masha Medvedeva, Michel V ols, and Martijn Wieling.
 2020. Using machine learning to predict decisions
 of the european court of human rights. Artiﬁcial Intelligence
@@ -1015,7 +964,8 @@ Proceedings of the 28th International Conference on
 Computational Linguistics , pages 6838 6855.
 Robert Remus. 2012. Domain adaptation using domain
 similarity-and domain complexity-based instance selection
- for cross-domain sentiment analysis. In 2012 12th international conference on data mining
+ for cross-domain sentiment analysis. In 2012
+IEEE 12th international conference on data mining
 workshops , pages 717 723. IEEE.
 Tim Rocktäschel, Edward Grefenstette, Karl Moritz
 Hermann, Tomáš Ko ˇcisk y, and Phil Blunsom. 2016.
@@ -1049,7 +999,6 @@ Matsumoto. 2017. Adversarial training for crossdomain
  universal dependency parsing. In Proceedings
  of the CoNLL 2017 Shared Task  Multilingual
 Parsing from Raw Text to Universal Dependencies ,
-pages 71 79.
 JURI SAYS. 2020. Prediction system for the european
 court of human rights. In Legal Knowledge and Information
  Systems  JURIX 2020  The Thirty-third
@@ -1060,7 +1009,6 @@ Darsh Shah, Tao Lei, Alessandro Moschitti, Salvatore
 domain adaptation for duplicate question detection.
 InProceedings of the 2018 Conference on Empirical
  Methods in Natural Language Processing , pages
-1056 1063.
 Rafe Athar Shaikh, Tirath Prasad Sahu, and Veena
 Anand. 2020. Predicting outcomes of legal cases
 based on legal factors using classiﬁers. Procedia
@@ -1069,7 +1017,6 @@ Jian Shen, Yanru Qu, Weinan Zhang, and Yong Yu.
 2018. Wasserstein distance guided representation
 learning for domain adaptation. In Proceedings of
 the AAAI Conference on Artiﬁcial Intelligence , volume
- 32.
 Nitish Srivastava, Geoffrey Hinton, Alex Krizhevsky,
 Ilya Sutskever, and Ruslan Salakhutdinov. 2014.
 Dropout  a simple way to prevent neural networks
@@ -1077,8 +1024,9 @@ from overﬁtting. The journal of machine learning
 research , 15(1) 1929 1958.
 Benjamin Strickson and Beatriz De La Iglesia. 2020.
 Legal judgement prediction for uk courts. In Proceedings
- of the 2020 3rd international conference
- on information science and system , pages 204 209.Octavia-Maria   Sulea, Marcos Zampieri, Shervin Malmasi,
+ of the 2020 the 3rd international conference
+ on information science and system , pages 204 
+209.Octavia-Maria   Sulea, Marcos Zampieri, Shervin Malmasi,
  Mihaela Vela, Liviu P Dinu, and Josef van
 Genabith. 2017a. Exploring the use of text classiﬁcation
  in the legal domain.
@@ -1094,7 +1042,7 @@ Copino, Michelle P Neverida, Vanesa O Osiana,
 Elmer C Peramo, Joanna G Syjuco, and Glenn
 Brian A Tan. 2018. Predicting decisions of the
 philippine supreme court using natural language processing
- and machine learning. In 2018 42nd
+ and machine learning. In 2018 IEEE 42nd
 annual computer software and applications conference
  (COMPSAC) , volume 2, pages 130 135. IEEE.
 Tomer V olk, Eyal Ben-David, Ohad Amosy, Gal
@@ -1109,15 +1057,15 @@ participation , pages 89 99. Springer.
 Huazheng Wang, Zhe Gan, Xiaodong Liu, Jingjing Liu,
 Jianfeng Gao, and Hongning Wang. 2019a. Adversarial
  domain adaptation for machine reading comprehension.
- In Proceedings of the 2019 9th International Joint Conference
+ In Proceedings of the 2019 Conference
+ on Empirical Methods in Natural Language
+Processing and the 9th International Joint Conference
  on Natural Language Processing (EMNLPIJCNLP)
- , pages 2510 2520.
 Pengfei Wang, Yu Fan, Shuzi Niu, Ze Yang, Yongfeng
 Zhang, and Jiafeng Guo. 2019b. Hierarchical matching
  network for crime classiﬁcation. In proceedings
 of the 42nd international ACM SIGIR conference on
 research and development in information retrieval ,
-pages 325 334.
 Pengfei Wang, Ze Yang, Shuzi Niu, Yongfeng Zhang,
 Lei Zhang, and ShaoZhang Niu. 2018. Modeling
 dynamic pairwise attention for crime classiﬁcation
@@ -1136,7 +1084,6 @@ Intelligence , pages 4085 4091.Zhen Yang, Wei Chen, Feng Wang, and Bo Xu. 2018.
 Unsupervised domain adaptation for neural machine
 translation. In 2018 24th International Conference
  on Pattern Recognition (ICPR) , pages 338 343.
-IEEE.
 Zichao Yang, Diyi Yang, Chris Dyer, Xiaodong He,
 Alex Smola, and Eduard Hovy. 2016. Hierarchical
 attention networks for document classiﬁcation. In
@@ -1147,13 +1094,13 @@ tagging via adversarial training. In Proceedings of
 the 2018 Conference of the North American Chapter
  of the Association for Computational Linguistics 
 Human Language Technologies, Volume 1 (Long Papers)
- , pages 976 986.
 Wenpeng Yin, Jamaal Hay, and Dan Roth. 2019.
 Benchmarking zero-shot text classiﬁcation 
 Datasets, evaluation and entailment approach.
-InProceedings of the 2019 9th International Joint Conference on Natural
+InProceedings of the 2019 Conference on Empirical
+ Methods in Natural Language Processing and
+the 9th International Joint Conference on Natural
 Language Processing (EMNLP-IJCNLP) , pages
-3914 3923.
 Jianfei Yu, Minghui Qiu, Jing Jiang, Jun Huang,
 Shuangyong Song, Wei Chu, and Haiqing Chen.
 2018. Modelling domain relationships for transfer
@@ -1174,13 +1121,11 @@ Henderson, and Daniel E Ho. 2021. When does pretraining
 law and the casehold dataset of 53,000  legal holdings.
  In Proceedings of the Eighteenth International
 Conference on Artiﬁcial Intelligence and Law , pages
-159 168.
 Haoxi Zhong, Zhipeng Guo, Cunchao Tu, Chaojun
 Xiao, Zhiyuan Liu, and Maosong Sun. 2018. Legal
  judgment prediction via topological learning. In
 Proceedings of the 2018 Conference on Empirical
 Methods in Natural Language Processing , pages
-3540 3549.
 Haoxi Zhong, Yuzhong Wang, Cunchao Tu, Tianyang
 Zhang, Zhiyuan Liu, and Maosong Sun. 2020. Iteratively
  questioning and answering for interpretable legal
@@ -1190,7 +1135,6 @@ pages 1250 1257.Yftah Ziser and Roi Reichart. 2017. Neural structural
 correspondence learning for domain adaptation. In
 Proceedings of the 21st Conference on Computational
  Natural Language Learning (CoNLL 2017) ,
-pages 400 410.
 A Implementation Details
 We employ a maximum sentence length of 256
 and document length (number of sentences) of 50.
@@ -1200,7 +1144,7 @@ The sentence level GRU encoder dimension is 200
  vector dimension is 200. The entailment
 classiﬁer hidden layer also has size 200. Domain
 discriminator and critic have two layered networks
-with hidden layers of size 200 100. The entailment
+with hidden layers of size 200 and 100. The entailment
  classiﬁer is trained with a binary cross entropy
 loss while the domain discriminator is trained with
 cross entropy loss over a one-hot domain vector.
@@ -1209,17 +1153,17 @@ The model is optimized end-to-end using Adam
  et al., 2014) in all layers is 0.1. To handle data
 skewness in the entailment setup, we employ a custom
  batch sampler which ensures every batch contains
- 4 2 2
+ 4 different articles as well as 2 positive and 2
 negative instances per article. Our batch size is 16.
 We employ a learning rate scheduler based on loss
 plateau decay. For adversarial training using GRL,
 following (Ganin and Lempitsky, 2015), we set
-theλin gradient reversal to be λ 2 1 exp( γp) 1
-wherep t
+theλin gradient reversal to be λ 2
 T, where t and T denote current training
 step and total training steps. γis determined using
 a grid search over [0.05, 0.1, 0.15, 0.2]. We employ
-a 10 class domain discriminator (5 5 from target) in the case of UDA and a 5 class
+a 10 class domain discriminator (5 from source and
+5 from target) in the case of UDA and a 5 class
 discriminator in the case of ADA. We reduce the
 mean between instances of a particular article of
 source and target in the case of UDA. In the case

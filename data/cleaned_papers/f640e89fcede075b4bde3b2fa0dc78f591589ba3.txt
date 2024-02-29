@@ -1,9 +1,11 @@
 Improving Factuality of Abstractive Summarization
 via Contrastive Reward Learning
-I-Chun Chern Zhiruo Wang Sanjan Das Bhavuk Sharma1 1 1 2Shanghai Jiao Tong University
+I-Chun Chern1Zhiruo Wang1Sanjan Das1Bhavuk Sharma1
+Pengfei Liu2Graham Neubig1
+1Carnegie Mellon University
+2Shanghai Jiao Tong University
 {ichern, zhiruow, sanjand, bhavuks, gneubig}@cs.cmu.edu
 stefanpengfei@gmail.com
-Abstract
 Modern abstractive summarization models often
  generate summaries that contain hallucinated
  or contradictory information. In this
@@ -21,7 +23,6 @@ directly into providing more factual summaries.
 Code and human evaluation results will be
 publicly available at https //github.com/
 EthanC111/factuality_summarization .
-1 Introduction
 One major challenge in current abstractive summarization
  models is how to generate more factual
  summaries that are consistent with the source
@@ -44,17 +45,11 @@ abstractive summarization models has gained substantial
 rewards using techniques such as reinforcementlearning
  (RL) (Stiennon et al., 2020), minimum
 risk training (MRT) (Shen et al., 2016  Wieting
-Language Model
-     (e.g. BART)
-Source Document
- Candidate Summaries
-Step 1 2 3  Train Model with Contrastive Learning
+Step 1  Generate Candidate Summaries
+Step 2  Rank Candidate Summaries Step 3  Train Model with Contrastive Learning
                Reward Model
 (e.g. Factuality metrics)
      Summarization Model
-Embedding Space
- Candidate Summaries
-Training
 Figure 1  An illustration of our learning framework.
 et al., 2019), and contrastive reward learning (CRL)
 (Liu and Liu, 2021  Liu et al., 2022).
@@ -66,9 +61,11 @@ detecting factual inconsistencies in generated summaries,
 to enforce models to learn from feedback of factuality
  metrics to improve the factuality of abstractive
  summarization models. We aim to investigate
-the following questions in this paper - Q1 2  Can the
+the following questions in this paper - Q1  Can
+contrastive reward learning effectively utilize existing
+ factuality metrics to improve the factuality of
+abstractive summarization models  Q2  Can the
 improvement in factuality be reflected in human
-evaluation studies 
 In this paper, we propose a contrastive reward
 learning framework that enables abstractive summarization
  models to directly learn from feedback
@@ -80,7 +77,7 @@ In contrast to other contrastive learning frameworks
 (Liu et al., 2022), all candidate summaries used for
 contrastive learning are generated from pretrained
 sequence-to-sequence models (Lewis et al., 2020 
-Zhang et al., 2020) using diverse beam search (Vi-arXiv 2307.04507 1  [cs.CL]  10 2023jayakumar et al., 2018). Additionally, our framework
+Zhang et al., 2020) using diverse beam search (Vi-arXiv 2307.04507v1  [cs.CL]  10 Jul 2023jayakumar et al., 2018). Additionally, our framework
  also incorporates the use of quality metrics to
 provide more fine-grained information on the ranking
  (positive / negative) of candidate summaries.
@@ -90,34 +87,18 @@ et al., 2021) and DAE (Goyal and Durrett, 2021).
 Through automatic and human evaluation studies,
 we demonstrate that our framework enables summarization
  models to generate significantly more
-factual summaries.
-2 2.1 Contrastive Learning for Abstractive
-Summarization
+2 Contrastive Learning from Factuality
+2.1 Contrastive Learning for Abstractive
 Abstractive Summarization Given a source document
  D, the summarization model learns a generative
  model gθ, that converts the source document
-Dinto a summary S 
-S gθ(D) (1)
 MLE Loss Given a training sample pair {D, Sr}
 consists of source document Dand reference summary
  Sr(note that Srconsists of Ltokens, Sr 
-{sr
-1,   , sr
-j,   , sr
 L}), the MLE loss Lmleaims to
 maximize the likelihood of reference summary Sr
 given the source document D 
 Lmle  log pgθ(Sr D)  LX
-j 1logpgθ(sr
-j D, sr
- j)
-(2)
-where sr
- j {sr
-0,   , sr
-j 1}andsr
-0is a predefined
- start token.
 Despite its effectiveness in enforcing generated
 summaries to align with the reference summaries,
 the MLE loss is not aware of the quality (evaluated
@@ -128,20 +109,16 @@ Contrastive Loss Given a training sample pair
 {D, Sr}, and that Si, Sjare candidate summaries
 generated from a pre-trained model given D, and
 thatM(Si)  M (Sj) i, j, i   j1, the contrastive
-loss is defined as 
 1Mcould be reference-free (e.g., BARTScore, DAE) or
 reference-based (e.g., ROUGE) metric. If Mis a referencefree
  metric, then M(Si)  M(Si, D)  ifMis a referencebased
  metric, then M(Si)  M(Si, Sr)Lctr X
-iX
 j imax(0 , f(Sj) f(Si)  λij)(3)
 Note that λij  (j i) λis the rank difference
 between two candidates times a constant λ(usually
 set as 1)2and that f(S)is the length-normalized
 estimated log-probability given by 
-f(S)  Pl
 t 1logpgθ(st D, S  t)
- S α(4)
 where αis a constant.
 Intuitively, the contrastive loss penalizes any discoordination
  between the length-normalized estimated
@@ -151,16 +128,15 @@ M(Sj)). The quality metric Mcould be any evaluation
  criteria, including automatic evaluation metrics
  (Lin, 2004  Yuan et al., 2021  Goyal and Durrett,
  2021), or human preferences (Ouyang et al.,
-2022).
 Combined Loss The combined loss used for finetuning
  is described by Equation 5.
-Lcom Lmle γLctr (5)
 whereLmleis the MLE loss given in Equation 2,
 Lctris the contrastive loss given in Equation 3, and
 γis the weight of contrastive loss. Summarization
 models fine-tuned with Lcomis referred as CRLCOM.
-
-2.2 3.
+2.2 Reward from Factuality Metrics
+We use two factuality metrics as quality metrics M
+for use in the contrastive loss described in Equation
 BARTScore (Yuan et al., 2021) s factuality score
 is calculated as the log-likelihood of the summary
 given the source calculated from a reference-free
@@ -170,12 +146,13 @@ the softmax output of the least-factual dependencyarc
  inside the sentences in the summary.
 These two metrics were chosen for relative computational
  efficiency, as they are evaluated many
-times in the training process.3 2The magnitude of contrastive loss can be directly regulated
+times in the training process.3
+2The magnitude of contrastive loss can be directly regulated
  through the weight of contrastive loss γ, so we simply
-setλequal to 1.
 3In contrast, QA-based factuality metrics are computationally
  inefficient (Laban et al., 2022). As a result, they are less
-feasible for use in reward-learning settings.3 3.1 Experimental Setup
+feasible for use in reward-learning settings.3 Experiments
+3.1 Experimental Setup
 Driven by the two research questions presented in
 the introduction, we train two kinds of factualitydriven
  summarization models, namely CRL-COM
@@ -214,7 +191,7 @@ combined loss (with weight of the contrastive loss
 2022) few-shot fine-tuning learning paradigm, we
 sampled 1000 training samples from each dataset
 for few-shot fine-tuning. A constant learning rate
-of10 5 10 4was applied to the fine-tuning
+of10 5and10 4was applied to the fine-tuning
 process for the CNNDM and XSUM datasets, respectively,
  in order to facilitate fast convergence.
 For each dataset, we fine-tuned three models using
@@ -228,7 +205,8 @@ on three metrics  ROUGE (with variants ROUGE1,
  ROUGE-2, ROUGE-L), BARTScore, and DAE.
 Human Evaluation To objectively evaluate the
 factual consistencies of the generated summaries
-from each model, we randomly sampled 100 200 samples from XSUM
+from each model, we randomly sampled 100 samples
+ from CNNDM and 200 samples from XSUM
 for human evaluation. We assess each summary
 from three different perspectives  Factuality (FAC),
 Coherence (COH), and Relevance (REL), with a
@@ -237,8 +215,10 @@ follow similar guidelines as in (Liang et al., 2022
 Fabbri et al., 2021). The evaluation guidelines provided
  to the annotators are listed in Table 1. An
 expert annotator is involved in the human evaluation
- studies.
-3.2 1, we observe that results from automatic
+3.2 Results and Analysis
+Contrastive reward learning can enforce models
+ to learn from feedback of factuality metrics
+Driven by Q1, we observe that results from automatic
  evaluation presented in Table 2 indicate
 that contrastive reward learning enables abstractive
 summarization models to develop in a direction
@@ -261,7 +241,6 @@ lower ROUGE scores tend to be more factually consistent
 with lower BARTScore or DAE scores but higher
 ROUGE scores. This further supports the assertion
 that BARTScore and DAE are effective at capturing
-factual information.
 Learning from factuality metrics did not sacrifice
  coherence and relevance. According to
 human evaluations, the summaries generated by
@@ -276,20 +255,18 @@ the summary includes only important information from the source article.
 Table 1  Guidelines for human evaluation studies
 SystemAutomatic Evaluation Human Evaluation
 R-1 R-2 R-L B D FAC COH REL
-CNNDM
 CRL-COM (R) 45.75 21.87 42.27 -1.43 36.28 0.76 4.00 4.17
 CRL-COM (B) 41.07 18.15 36.63 -0.78 88.92 0.99 4.05 3.96
 CRL-COM (D) 42.20 19.21 38.19 -0.80 89.48 0.99 4.03 4.04
-XSUM
 CRL-COM (R) 47.28 24.14 38.78 -2.42 32.75 0.38 3.52 3.25
 CRL-COM (B) 41.85 19.38 33.46 -1.87 37.48 0.51 3.73 3.50
-CRL-COM (D) 44.38 22.16 36.57 -2.38 40.91 0.50 3.62 3.29 2  Results of each system on CNNDM and XSUM dataset. Note that R stands for ROUGE, B stands for
+CRL-COM (D) 44.38 22.16 36.57 -2.38 40.91 0.50 3.62 3.29
+Table 2  Results of each system on CNNDM and XSUM dataset. Note that R stands for ROUGE, B stands for
 BARTScore, and D stands for DAE.
 by CRL-COM (R). This suggests that BARTScore
 and DAE has comparable abilities to ROUGE in
 terms of measuring coherence and relevance.
-4 4.1 Factuality Metrics for Abstractive
-Summarization
+4.1 Factuality Metrics for Abstractive
 Various factuality metrics assess the factual consistency
  between a summary and its corresponding
  source document. QA-based factuality metrics
@@ -314,11 +291,10 @@ proposed to enable models to learn factuality from
 positive samples (such as reference summaries) and
 negative samples (such as edited reference summaries
  and system generated summaries). For example,
- CLIFF (Cao and Wang, 2021) and CO Sum
+ CLIFF (Cao and Wang, 2021) and CO2Sum
 (Liu et al., 2021). Both of which are similar in
-nature but CO Sum employs more sophisticated
+nature but CO2Sum employs more sophisticated
 methods for negative sample construction.
-5 Conclusion
 In this work, we present a simple contrastive reward
 learning framework that enforces abstractive summarization
  models to learn from feedback of existing
@@ -339,7 +315,6 @@ non-news datasets could be included in future studies.
 comparing the capability of RL-based reward learning
  and contrastive reward learning in improving
 the factuality of abstractive summarization models.
-7 Ethics Statement
 Even though some of the investigated systems may
 achieve a high level of factuality on the CNNDM
 dataset, this does not guarantee that they can be
@@ -347,11 +322,9 @@ used as off-the-shelf factual consistent summarization
  models. Thorough evaluation should be conducted
  before using these models in high-stakes
 settings to ensure their reliability.
-Acknowledgements
 We would like to thank Yixin Liu for helpful discussion
  on BRIO. We would also like to thank Tanya
 Goyal for helpful discussion on DAE.
-References
 Meng Cao, Yue Dong, Jiapeng Wu, and Jackie Chi Kit
 Cheung. 2020. Factual error correction for abstractive
  summarization models. In Proceedings of the
@@ -371,7 +344,6 @@ Chi Kit Cheung, and Jingjing Liu. 2020. Multifact
 Proceedings of the 2020 Conference on Empirical
 Methods in Natural Language Processing (EMNLP) ,
 pages 9320 9331, Online. Association for Computational
- Linguistics.
 Zi-Yi Dou, Pengfei Liu, Hiroaki Hayashi, Zhengbao
 Jiang, and Graham Neubig. 2021. GSum  A general
  framework for guided neural abstractive summarization.
@@ -383,8 +355,8 @@ Computational Linguistics.Esin Durmus, He He, and Mona Diab. 2020. FEQA  A
 question answering evaluation framework for faithfulness
  assessment in abstractive summarization. In
 Proceedings of the 58th Annual Meeting of the Association
- for Computational Linguistics , pages 5055 5070, Online. Association for Computational Linguistics.
-
+ for Computational Linguistics , pages 5055 
+5070, Online. Association for Computational Linguistics.
 Alexander Fabbri, Chien-Sheng Wu, Wenhao Liu, and
 Caiming Xiong. 2022. QAFactEval  Improved QAbased
  factual consistency evaluation for summarization.
@@ -404,14 +376,12 @@ Utama, Ido Dagan, and Iryna Gurevych. 2019. Ranking
  but challenging application for natural language
 inference. In Proceedings of the 57th Annual Meeting
  of the Association for Computational Linguistics ,
-pages 2214 2220.
 Tanya Goyal and Greg Durrett. 2021. Annotating and
 modeling fine-grained factuality in summarization.
 InProceedings of the 2021 Conference of the North
 American Chapter of the Association for Computational
  Linguistics  Human Language Technologies ,
 pages 1449 1462, Online. Association for Computational
- Linguistics.
 Karl Moritz Hermann, Tomas Kocisky, Edward Grefenstette,
  Lasse Espeholt, Will Kay, Mustafa Suleyman,
 and Phil Blunsom. 2015. Teaching machines to read
@@ -423,7 +393,6 @@ consistency of abstractive text summarization. In
 Proceedings of the 2020 Conference on Empirical
 Methods in Natural Language Processing (EMNLP) ,
 pages 9332 9346, Online. Association for Computational
- Linguistics.
 Philippe Laban, Tobias Schnabel, Paul N. Bennett, and
 Marti A. Hearst. 2022. SummaC  Re-visiting NLIbased
  models for inconsistency detection in summarization.
@@ -436,12 +405,10 @@ BART  Denoising sequence-to-sequence pre-training
 for natural language generation, translation, and comprehension.
  In Proceedings of the 58th Annual Meeting
  of the Association for Computational Linguistics ,pages 7871 7880, Online. Association for Computational
- Linguistics.
 Wei Li, Wenhao Wu, Moye Chen, Jiachen Liu, Xinyan
 Xiao, and Hua Wu. 2022. Faithfulness in natural
 language generation  A systematic survey of analysis,
 evaluation and optimization methods. arXiv preprint
-arXiv 2203.05227 .
 Percy Liang, Rishi Bommasani, Tony Lee, Dimitris
 Tsipras, Dilara Soylu, Michihiro Yasunaga, Yian
 Zhang, Deepak Narayanan, Yuhuai Wu, Ananya Kumar,
@@ -452,12 +419,14 @@ Chin-Yew Lin. 2004. ROUGE  A package for automatic
  Branches Out , pages 74 81, Barcelona, Spain.
 Association for Computational Linguistics.
 Wei Liu, Huanqin Wu, Wenjing Mu, Zhen Li, Tao Chen,
-and Dan Nie. 2021. Co sum  Contrastive learning
+and Dan Nie. 2021. Co2sum  Contrastive learning
  for factual-consistent abstractive summarization.
 arXiv preprint arXiv 2112.01147 .
 Yixin Liu and Pengfei Liu. 2021. SimCLS  A simple
  framework for contrastive learning of abstractive
-summarization. In Proceedings of the 59 11th International Joint Conference
+summarization. In Proceedings of the 59th Annual
+Meeting of the Association for Computational Linguistics
+ and the 11th International Joint Conference
 on Natural Language Processing (Volume 2  Short
 Papers) , pages 1065 1072, Online. Association for
 Computational Linguistics.
@@ -467,7 +436,6 @@ summarization. In Proceedings of the 60th Annual
 Meeting of the Association for Computational Linguistics
  (Volume 1  Long Papers) , pages 2890 2903,
 Dublin, Ireland. Association for Computational Linguistics.
-
 Ramesh Nallapati, Bowen Zhou, Caglar Gulcehre, Bing
 Xiang, et al. 2016. Abstractive text summarization
 using sequence-to-sequence rnns and beyond. arXiv
@@ -484,7 +452,6 @@ Long Ouyang, Jeff Wu, Xu Jiang, Diogo Almeida, Carroll
 Sandhini Agarwal, Katarina Slama, Alex Ray, et al.
 2022. Training language models to follow instructions
  with human feedback. arXiv preprint
-arXiv 2203.02155 .
 Thomas Scialom, Paul-Alexis Dray, Sylvain Lamprier,
 Benjamin Piwowarski, Jacopo Staiano, Alex Wang,
 and Patrick Gallinari. 2021. QuestEval  Summarization
@@ -503,13 +470,12 @@ Nisan Stiennon, Long Ouyang, Jeffrey Wu, Daniel
 Ziegler, Ryan Lowe, Chelsea V oss, Alec Radford,
 Dario Amodei, and Paul F Christiano. 2020. Learning
  to summarize with human feedback. Advances
-in Neural Information Processing Systems , 33 3008 3021.
+in Neural Information Processing Systems , 33 3008 
 Ashwin Vijayakumar, Michael Cogswell, Ramprasaath
 Selvaraju, Qing Sun, Stefan Lee, David Crandall,
 and Dhruv Batra. 2018. Diverse beam search for
 improved description of complex scenes. In Proceedings
  of the AAAI Conference on Artificial Intelligence ,
-volume 32.
 Alex Wang, Kyunghyun Cho, and Mike Lewis. 2020.
 Asking and answering questions to evaluate the factual
  consistency of summaries. In Proceedings of the
@@ -520,8 +486,8 @@ John Wieting, Taylor Berg-Kirkpatrick, Kevin Gimpel,
 and Graham Neubig. 2019. Beyond BLEU training
 neural machine translation with semantic similarity.
 InProceedings of the 57th Annual Meeting of the Association
- for Computational Linguistics , pages 4344 4355, Florence, Italy. Association for Computational
-Linguistics.
+ for Computational Linguistics , pages 4344 
+4355, Florence, Italy. Association for Computational
 Weizhe Yuan, Graham Neubig, and Pengfei Liu. 2021.
 Bartscore  Evaluating generated text as text generation.
  Advances in Neural Information Processing
@@ -530,4 +496,3 @@ Jingqing Zhang, Yao Zhao, Mohammad Saleh, and Peter
  Liu. 2020. Pegasus  Pre-training with extracted
 gap-sentences for abstractive summarization. In International
  Conference on Machine Learning , pages
-11328 11339. PMLR.

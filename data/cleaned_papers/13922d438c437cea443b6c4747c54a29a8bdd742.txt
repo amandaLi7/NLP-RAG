@@ -1,15 +1,10 @@
-arXiv 2305.04154 1  [cs.AI]  7 2023Score  A Rule Engine for the Scone
+arXiv 2305.04154v1  [cs.AI]  7 May 2023Score  A Rule Engine for the Scone
 Knowledge Base System
-Jeffrey Chen
-CMU-CS-21-116 2021
 Computer Science Department
 School of Computer Science
 Carnegie Mellon University
-Pittsburgh, PA 15213
-Thesis Committee 
 Scott E. Fahlman, Carnegie Mellon University
 Computer Science Department and Language Technologies Ins titute
-Alessandro Oltramari
 Bosch Research & Technology Center, Pittsburgh
 Submitted in partial fulﬁllment of the requirements
 for the degree of Master of Science.
@@ -42,23 +37,58 @@ like to thank Alessandro Oltramari for agreeing to take the t ime to be on the t
 committee and for making corrections and commenting on area s of improvement for
 this document. Lastly, I would like to thank my sister, my par ents, and my friends
 for always giving me their support when I needed it.viContents
-1 1 1.1 Scone . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 2 1.1.1 Elements . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 2 1.1.2 Multiple Inheritance and Marker Passing . . . . . . . . . . . . . . . . . 3 1.1.3 Roles and Virtual Copy Semantics . . . . . . . . . . . . . . . . . . . . . 4 1.1.4 Multiple Contexts and Episodic Reasoning . . . . . . . . . . . . . . . . 5 1.2 Thesis Structure . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 5 2 7 2.1 Rule-Based Systems . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 7 2.1.1 Soar . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 7 2.1.2 ACT-R . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 8 2.1.3 Other Related Work . . . . . . . . . . . . . . . . . . . . . . . . . . . . 9 3 11 3.1 Production Rule Design . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 11 3.1.1 If-added and if-needed rules . . . . . . . . . . . . . . . . . . . . . . . . 12 3.2 Rule Structure . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 13 3.2.1 If-added rule example . . . . . . . . . . . . . . . . . . . . . . . . . . . 14 3.2.2 If-needed rule example . . . . . . . . . . . . . . . . . . . . . . . . . . . 15 3.3 Recipe-Based Planner . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 16 3.4 Implementation Status . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 17 4 Rule-Checking Engine 19 4.1 Rule-Checking Components . . . . . . . . . . . . . . . . . . . . . . . . . . . . 19 4.1.1 Rule Triggers . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 19 4.1.2 Rule Variable Substitution . . . . . . . . . . . . . . . . . . . . . . . . . 20 4.1.3 Rule-Checking Search Algorithm . . . . . . . . . . . . . . . . . . . . . 22 4.2 End-to-end Example Rule Firing . . . . . . . . . . . . . . . . . . . . . . . . . . 23 4.2.1 If-needed Example . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 2 5 5 27 29 31 1.1 Scone elements visualized . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 2 1.2 Role nodes visualized for the knowledge  Fido is a pet of J ohn.  Here{pet of
-John}is a virtual copy of {pet}that{John}inherits from{person}. . . . . . . . 4 3.1 A diagram of the if-added ﬂying event rule with some of the relevant elements.
+1 Introduction and Background 1
+1.1 Scone . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 2
+1.1.1 Elements . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 2
+1.1.2 Multiple Inheritance and Marker Passing . . . . . . . . . . . . . . . . . 3
+1.1.3 Roles and Virtual Copy Semantics . . . . . . . . . . . . . . . . . . . . . 4
+1.1.4 Multiple Contexts and Episodic Reasoning . . . . . . . . . . . . . . . . 5
+1.2 Thesis Structure . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 5
+2.1 Rule-Based Systems . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 7
+2.1.1 Soar . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 7
+2.1.2 ACT-R . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 8
+2.1.3 Other Related Work . . . . . . . . . . . . . . . . . . . . . . . . . . . . 9
+3 Scone Planning Systems 11
+3.1 Production Rule Design . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 11
+3.1.1 If-added and if-needed rules . . . . . . . . . . . . . . . . . . . . . . . . 12
+3.2 Rule Structure . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 13
+3.2.1 If-added rule example . . . . . . . . . . . . . . . . . . . . . . . . . . . 14
+3.2.2 If-needed rule example . . . . . . . . . . . . . . . . . . . . . . . . . . . 15
+3.3 Recipe-Based Planner . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 16
+3.4 Implementation Status . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 17
+4 Rule-Checking Engine 19
+4.1 Rule-Checking Components . . . . . . . . . . . . . . . . . . . . . . . . . . . . 19
+4.1.1 Rule Triggers . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 19
+4.1.2 Rule Variable Substitution . . . . . . . . . . . . . . . . . . . . . . . . . 20
+4.1.3 Rule-Checking Search Algorithm . . . . . . . . . . . . . . . . . . . . . 22
+4.2 End-to-end Example Rule Firing . . . . . . . . . . . . . . . . . . . . . . . . . . 23
+4.2.1 If-needed Example . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 2 5
+5 Conclusion and Future Work 27
+1.1 Scone elements visualized . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 2
+1.2 Role nodes visualized for the knowledge  Fido is a pet of J ohn.  Here{pet of
+John}is a virtual copy of {pet}that{John}inherits from{person}. . . . . . . . 4
+3.1 A diagram of the if-added ﬂying event rule with some of the relevant elements.
 A and B are drawn with dashed circles to indicate that they are placeholders
 for other elements. Solid lines indicate is-a links, and das hed lines indicate x-y-z
 links (in this case a role has-link). The double lines indica te links that are created
-when the rule action is ﬁred. . . . . . . . . . . . . . . . . . . . . . . . . . . . . 14 3.2 A diagram of the if-needed meeting duration rule. The arr ows from A and B to
+when the rule action is ﬁred. . . . . . . . . . . . . . . . . . . . . . . . . . . . . 14
+3.2 A diagram of the if-needed meeting duration rule. The arr ows from A and B to
 the node labeled f(A,B)indicate that A and B will be used for the computation,
 and the double line from f(A,B)to  duration of C  represents the is-a link that
-will be created and returned. . . . . . . . . . . . . . . . . . . . . . . . . . . . . 16 4.1 A visualization of an is-a type constraint trigger. Y is a bove B in the is-a hierarchy,
+will be created and returned. . . . . . . . . . . . . . . . . . . . . . . . . . . . . 16
+4.1 A visualization of an is-a type constraint trigger. Y is a bove B in the is-a hierarchy,
  and has a trigger attached to it with pointers to rul e R and variable X.
-Trigger activation is performed by matching A with X. . . . . . . . . . . . . . . 21 4.2 A visualization of an x-y-z-predicate trigger. Y is abov e B in the is-a hierarchy,
+Trigger activation is performed by matching A with X. . . . . . . . . . . . . . . 21
+4.2 A visualization of an x-y-z-predicate trigger. Y is abov e B in the is-a hierarchy,
 and has a trigger attached to it with pointers to rule R and var iables X and Z.
-Trigger activation is performed by matching A with X and C wit h Z. . . . . . . . 21 4.3 A visualization of an if-needed rule trigger. Y is above B in the is-a hierarchy,
+Trigger activation is performed by matching A with X and C wit h Z. . . . . . . . 21
+4.3 A visualization of an if-needed rule trigger. Y is above B in the is-a hierarchy,
 and has a trigger attached to it with pointers to rule R and var iable Z. Trigger
 activation is performed by matching C with Z. An is-a link is c reated between
-the resulting computation X and  the B of C  as part of the rule action. . . . . . . 21 4.4 Rule-Checking Algorithm . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 22 4.5 A visualization of two trigger activations for the meeti ng example rule, one for
-each of the x-y-z role predicates. . . . . . . . . . . . . . . . . . . . . . . . . . . 24 1
+the resulting computation X and  the B of C  as part of the rule action. . . . . . . 21
+4.4 Rule-Checking Algorithm . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 22
+4.5 A visualization of two trigger activations for the meeti ng example rule, one for
+each of the x-y-z role predicates. . . . . . . . . . . . . . . . . . . . . . . . . . . 24
 Introduction and Background
 Scone [6, 8] is an open-source knowledge base system (KBS) de signed to store a large collection
  of knowledge, including both general, common-sens e knowledge and domain-speciﬁc
@@ -91,10 +121,8 @@ lower-level inference tasks that are not handled by Scone s other systems. We al
 an overview of, but do not implement, a recipe-based planner that handles more complex and
 higher-level planning based on breaking down a goal into sub goals and considering alternative
 plans. We do this to clarify that the goal of the rule engine is to handle just simple automatic
-1elephant
 (a) A nodeClyde elephantis-a
 (b) An (is-a) linkdislikes
-(c) A relation
 Figure 1.1  Scone elements visualized
 inferences, not all kinds of complex planning as is the case i n some other production systems.
 As an example of what capabilities we want our rule engine to h ave, suppose we are using
@@ -106,7 +134,6 @@ the other inference. Our rule engine allows deﬁning these ru les and performin
 to update the knowledge base automatically.
 Before outlining the details of our contribution, we ﬁrst pr ovide the necessary background
 knowledge for how Scone itself is structured.
-1.1 1.1.1 Elements
 The basic unit of knowledge in Scone is an element , which is represented as a Common Lisp
 data structure. Scone elements are denoted using curly brac es. Elements are divided into three
 categories  nodes ,links , and relations , as shown in Figure 1.1. A node represents a description of
@@ -120,7 +147,6 @@ A speciﬁc kind of node in Scone is the role node . Arole node is attached to a
 called the owner node, and represents some concept that the o wner node may have or possess.
 For example, a person may have a mother and a dish may have ingr edients, so we can have in
 Scone that{mother}is a role node with owner {person}and{ingredient}is a role node with
-owner{dish}.
 Nodes are divided into type nodes andindividual nodes . A type node represents a typical
 member of some set, like {elephant}represents a typical elephant. An individual node represents
 a speciﬁc member of some set, like {Clyde the elephant }represents a speciﬁc elephant named
@@ -169,7 +195,7 @@ can be turned on and off. These markers can be conditionally t urned on and off 
 example, if a set of nodes is marked with some marker m, we can look at all is-a links in parallel
 and request for each one to mark the node attached to the B-wir e withmif the node attached to
 the A-wire is marked with m. This operation takes all nodes marked with mand marks with mall
-3 1.2  Role nodes visualized for the knowledge  Fido is a pet of John.  Here {pet of John}
+Figure 1.2  Role nodes visualized for the knowledge  Fido is a pet of John.  Here {pet of John}
 is a virtual copy of {pet}that{John}inherits from{person}.
 nodes one level above them in the is-a hierarchy. By repeatin g this operation until no new nodes
 are marked with m, we can quickly ﬁnd all nodes above a speciﬁc node in the is-a h ierarchy, and
@@ -180,7 +206,6 @@ Role nodes give rise to special links called has links . When a new role is decl
 a new has link is also created with A-wire connected to the role node and B-w ire connected to
 the owner node. This link signiﬁes that the owner type posses ses some element of the role type.
 Any inferior of the role is called a player or a ﬁller, indicat ing that  the player is a role ﬁller of
-the owner. 
 Scone implements virtual copy semantics to handle complex knowledge about roles in a
 consistent way [6]. When a new inferior of a type with several roles is created, the roles are
 virtually copied through inheritance. This means that the n ew inferior is treated as if it has a
@@ -231,7 +256,6 @@ from an individual to {caterpillar}, and in the after-context, we would cancel t
 new is-a link from the individual to {butterﬂy}. Scone also has an {action}type, which is just a
 special{event}that has an{agent}role representing something that causes the event. An agent
 could be a{person}in an event like throwing a ball.
-1.2 Thesis Structure
 The remainder of the thesis is structured as follows. In Chap ter 2, we discuss related work in
 production systems as they are used in cognitive architectu res. In Chapter 3, we design a structure
 5for production rules that is compatible with Scone, and we al so describe the recipe-based planner
@@ -239,7 +263,7 @@ to provide context for our design goals. Chapter 4 contains a description of rul
 rule search algorithm that are used to check and ﬁre these rul es efﬁciently with the knowledge
 base. Finally, we conclude with future directions for resea rch in Chapter 5. Some concrete code
 and a pointer to the rule engine codebase is provided in the Ap pendix.
-6 2 2.1 Rule-Based Systems
+2.1 Rule-Based Systems
 Production rule systems have been used in existing cognitiv e architectures such as Soar and
 ACT-R. In general, a production system consists of a set of ru les (or productions), which can be
 thought of as if-then statements, and a mechanism for checki ng and ﬁring the rules. Production
@@ -254,7 +278,6 @@ to design and implement, such as how the memory is stored and m atched and what 
 multiple production rules match the memory and can ﬁre. Both Soar and ACT-R use this same
 general structure for their production systems, though the y address design questions such as these
 differently and emphasize somewhat different parts of thei r systems.
-2.1.1 Soar
 Soar was ﬁrst developed by Allen Newell s research group in t he CMU Department of Computer
 Science, and work on Soar has continued primarily under John Laird at the University of Michigan
  and Paul Rosenbloom at the University of Southern Califo rnia [12, 13, 14]. It is designed
@@ -262,7 +285,6 @@ to be a uniﬁed cognitive architecture, a theory that can expl ain how cognitio
 wide range of tasks. Some of its key design objectives includ e being goal-oriented, meaning it
 makes rational decisions in order to reach a deﬁned goal, and requiring use of large amounts of
 knowledge and abstractions, which informs its decisions gi ven what it currently perceives about
-the state.
 Soar distinguishes between two kinds of memory  long-term m emory (LTM) and working
 memory (WM). Long-term memory is further divided into proce dural, semantic, and episodic
 knowledge, though procedural LTM is the main kind of knowled ge used in the rule system.
@@ -285,8 +307,6 @@ some speciﬁcation of preferences, such as preferring one op erator over anothe
 operator a preference score and choosing the operator with t he highest score. After choosing an
 operator, the system applies it to modify the working state i n the application phase. The output
 phase consists simply of sending the operator to an output mo dule like one that controls motor
-output.
-2.1.2 ACT-R
 ACT-R, short for Adaptive Control of Thought-Rational, is d eveloped primarily by John Anderson s
  research group in the CMU Department of Psychology [1, 2]. It is another cognitive
 architecture that aims to model and explain the mental proce sses that are central to human cognition.
@@ -317,14 +337,12 @@ There has also been some research on integrating Scone with A CT-R [15]. In this
 Oltramari and Lebiere add Scone as a knowledge module to ACT- R, creating ACT-RK (where
 the K stands for Knowledge). The uniﬁed ACT-RK has improved k nowledge-based reasoning,
 as was demonstrated when it was applied to the task of semanti cally describing visual input in
-the form of video.
 2.1.3 Other Related Work
 Some rule systems, such as Prolog-based rule engines [4], us e backward chaining instead of forward
  chaining. In Prolog systems, programs are built from fa cts and rules saying that a conclusion
  is true if some premises are true. Execution is driven by a query, such as  - animal(X).
 asking what things are animals. Such a query causes backtrac king among the rules to ﬁnd a
 resolution for the query, in this case outputting everythin g that can be deduced to be an animal
-from the rules.
 In systems with a large amount of knowledge and many rules, na ive rule pattern matching
 is often too slow. One optimization is the Rete algorithm [10 ] that can improve matching performance.
  The Rete algorithm builds a network of nodes conta ining tests for knowledge that
@@ -340,7 +358,6 @@ about data using subject-predicate-object triples. A coll ection of triples form
 about what kinds of relationships between different terms a re allowed. The structure of OWL can
 be exploited by computer programs to verify logical consist ency and to make implicit knowledge
 explicit through deduction.
-910 3
 Scone Planning Systems
 The long-term goal is to have two planning systems integrate d with Scone  one  rule-based 
 planner and one  recipe-based  planner. The goal of the rule -based planner is to use productions
@@ -354,7 +371,6 @@ with the knowledge structure of Scone. We have implemented t his design in Commo
 allowing the user to deﬁne new rules that can be added to the kn owledge base. Implementation of
 the recipe-based planner is beyond the scope of this researc h and left to future work  we describe
 how it should behave to illustrate that the rule-based plann er is not designed to carry out complex
-planning.
 Scone stores a rich representation of a large amount of knowl edge and makes that knowledge
 simple to query for other applications built on top of it. In t hat sense, Scone has much in common
 with the memory modules in Soar and ACT-R. More speciﬁcally, the Scone architecture with its
@@ -424,7 +440,6 @@ the system checks to see if there is suitable knowledge in the knowledge base th
 predicates, and uses it to compute the requested knowledge i f so. After executing the rule action
 that does the computation, the rule engine adds the new knowl edge to the knowledge base, which
 can be reused to avoid further rule ﬁring if the same knowledg e is requested again in the future.
-3.2 Rule Structure
 We now give a detailed outline of how rules are structured in S cone and provide some examples.
 Rules consist of several parts 
  Thevariables of a rule create placeholders where Scone elements can be plu gged into the
@@ -447,14 +462,11 @@ slightly different for if-added and if-needed rules.
 For if-added rules, the action can be arbitrary code that use s the variables deﬁned in
 the rule. The rule will substitute the satisfying elements i nto the variables and execute
 the code, causing either changes in the knowledge base or per forming some action in
-the real world.
 For if-needed rules, the action takes the form (X Y Z), where X is an arbitrary computation,
  Y is an individual role node, and Z is a variable rep resenting the owner of
 the desired value. The action is executed by carrying out com putation X and setting
 it as the desired slot ﬁller  the Y of Z. 
-13A Btravel
 vehicle airplaneﬂying
-event
 Figure 3.1  A diagram of the if-added ﬂying event rule with so me of the relevant elements. A
 and B are drawn with dashed circles to indicate that they are p laceholders for other elements.
 Solid lines indicate is-a links, and dashed lines indicate x -y-z links (in this case a role has-link).
@@ -479,7 +491,6 @@ vehicle}role. The parts of this example rule would be as follows
  There are two variables A and B that represent the travel event and the vehicle, and va riable
 B has the type constraint  B is an airplane .
  There is one x-y-z-predicate  B is the travel vehicle of A  that captures the relationship
-between A and B.
  Theaction adds the link  A is a ﬂying event  to the knowledge base.
 The portion of the knowledge base that would match with this r ule is visualized in Figure
 3.1. Once this if-added rule is deﬁned and put into the system , the rule engine will start listening
@@ -501,14 +512,13 @@ constraint that may be checked whenever new knowledge is add ed. See Section 4.1
 regarding rule triggers.
 3.2.2 If-needed rule example
 Now consider an example if-needed rule  if we want to know the duration of a meeting, and we
-know that the start time and end time of that meeting are t andt2, then we can compute the
-duration as t2 1. The parts of this rule would be as follows 
+know that the start time and end time of that meeting are t1andt2, then we can compute the
+duration as t2 t1. The parts of this rule would be as follows 
  There are three variables A, B, and C that represent the start time, end time, and the
 meeting. Variables A and B should be tagged as proper to indicate that only proper values
 should be substituted for them in the rule.
  There are two x-y-z-predicates  A is the start time of C  and  B is the end time of C. 
  Theaction computes B A using the proper values for A and B and returns it as the answe r
- the duration of C. 
 The parts of the rule are visualized in 3.2. After this if-nee ded rule is deﬁned, the system
 remembers it as a possible way to compute the duration of the m eeting when requested. If the
 duration of some meeting is requested, the system ﬁrst check s to see if a value exists for that
@@ -521,10 +531,7 @@ role node can be created and given a type but not a speciﬁc valu e, for exampl
 start time of a meeting ends in  30 but the exact time is unknow n. This makes the start time of
 that meeting a concrete element that is a subtype of {time ending in  30}, but trying to compute
 the duration of that meeting would fail because there is no pr oper value for the start time of the
-meeting.
-15A BC
 start time end time duration
-f(A,B)  B A
 Figure 3.2  A diagram of the if-needed meeting duration rule . The arrows from A and B to the
 node labeled f(A,B)indicate that A and B will be used for the computation, and the double line
 fromf(A,B)to  duration of C  represents the is-a link that will be creat ed and returned.
@@ -584,8 +591,6 @@ planner compared to the goals of the recipe-based planner.
 Now that we have a framework for adding new rules to the Scone k nowledge base system,
 we need a system for checking and ﬁring these rules. In the nex t section, we describe the rule
 checking engine, which we have fully implemented in the Scon e engine.
-1718 4
-Rule-Checking Engine
 4.1 Rule-Checking Components
 Scone is a very large knowledge base, and the rules can refere nce any subset of elements in the
 knowledge base, so some care must be taken in how rules are che cked to be satisﬁed. Constantly
@@ -598,8 +603,6 @@ and attached to all elements involved in the rule. These trig gers are then chec
 knowledge is added for if-added rules and when a role value is requested for if-needed rules. To
 address the second problem, the rule system carries out a rul e-checking search algorithm that
 leverages Scone s marker-passing operations to search for relevant elements that could satisfy
-the rule.
-4.1.1 Rule Triggers
 If-added rules should only be checked when new knowledge is a dded to the knowledge base,
 and if-needed rules should only be checked when a role value i s requested. Additionally, we
 only want to check the subset of rules that could match with th e new knowledge or requested
@@ -608,12 +611,10 @@ that particular rule. Three types of triggers are created  o ne for adding new i
 adding new role or statement links, and one for accessing a ro le value. Each trigger is placed on
 a Scone element using element properties, which are key-val ue pairs that each element can have.
 The three types of triggers have slightly different forms to deal with the different ways they are
-activated.
  Let R be an if-added rule with a variable X that has an is-a type constraint Y . When this rule
 is deﬁned, a trigger of the form (R X) containing pointers to R and X is created and attached
 to element Y . Conceptually, this trigger represents the fac t that any inferiors of element Y
 could be substituted for variable X in rule R. All inferiors o f Y therefore virtually inherit
-19this rule trigger.
 Suppose a new is-a link or eq link from node A to node B is create d. This link could cause
 any rule attached to a trigger that B virtually inherits to be come satisﬁed. Therefore, we
 perform an upscan on B to check if there are any triggers (R X) o n any superior of B.
@@ -651,22 +652,12 @@ any type constraints on X and that any x-y-z-predicates invo lving X are satis�
 these are false, then the substitution fails and E cannot sat isfy the rule when substituted for X.
 If substitution succeeds, then the rule stores E as the curre nt ﬁller for X. When all variables in a
 rule are successfully substituted, the rule is satisﬁed and the action is ready to ﬁre using all the
-stored elements.
-20Y (R X)
-X
-ABR
 Figure 4.1  A visualization of an is-a type constraint trigg er. Y is above B in the is-a hierarchy,
 and has a trigger attached to it with pointers to rule R and var iable X. Trigger activation is
 performed by matching A with X.
-Y (R X Z)
-X Z
-A B CR
 Figure 4.2  A visualization of an x-y-z-predicate trigger. Y is above B in the is-a hierarchy, and
 has a trigger attached to it with pointers to rule R and variab les X and Z. Trigger activation is
 performed by matching A with X and C with Z.
-Y (R Z)
-X Z
-B CR
 Figure 4.3  A visualization of an if-needed rule trigger. Y i s above B in the is-a hierarchy, and
 has a trigger attached to it with pointers to rule R and variab le Z. Trigger activation is performed
 by matching C with Z. An is-a link is created between the resul ting computation X and  the B of
@@ -674,25 +665,15 @@ C  as part of the rule action.
 21procedure CHECK -RULE (R)
 ifRhas an element substituted for each variable then
 AddRto a queue to be ﬁred
-return T
-end if
 Choose an x-y-z-predicate (X Y Z)ofRwith an element substituted for XorZ
 Allocate a new marker m
 ifXhas an element substituted for it then
 Mark with mall elements Esuch that the predicate (X Y E)is satisﬁed
-end if
 ifZhas an element substituted for it then
 Mark with mall elements Esuch that the predicate (E Y Z)is satisﬁed
-end if
 foreach element Emarked with mdo
 R  substitute Efor the unsubstituted variable XorZinR
 ifany predicates in R are false then
-continue
-end if
-CHECK -RULE (R )
-end for
-return NIL
-end procedure
 Figure 4.4  Rule-Checking Algorithm
 4.1.3 Rule-Checking Search Algorithm
 A rule starts to be checked when at least one element is substi tuted in for a variable in that rule.
@@ -710,7 +691,6 @@ to the next marked element. If there are no more marked elemen ts, the algorithm
 If substitution succeeds, the algorithm recurses to try to ﬁ nd an element for another variable in
 the rule. If the algorithm successfully ﬁnds elements for al l the variables in the rule, it executes
 the action of the rule using the elements it found. The full al gorithm pseudocode can be found in
-Figure 4.4.
 22Note that our constraint that the x-y-z-predicates should f orm a connected graph ensures
 this algorithm s correctness in ﬁnding all possible sets of elements that could satisfy the rule.
 The algorithm essentially repeatedly chooses an arbitrary edge connecting a substituted variable
@@ -736,7 +716,6 @@ can be deﬁned as either an if-added rule or as an if-needed rul e, and choosin
 depends on how immediately we want the result of the rule to be updated in the knowledge base.
 As a reminder, the parts of the rule are as follows 
  There are three variables A, B, and C that represent the start time, end time, and the
-meeting.
  There are two x-y-z-predicates  A is the start time of C  and  B is the end time of C. 
  Theaction adds the link  B A is the duration of C  to the knowledge base.
 Deﬁning this if-added rule adds triggers (R A C) to role {start time}and (R B C) to role {end
@@ -745,17 +724,13 @@ roles cause the triggers to be checked.
 This rule is now deﬁned for an abstract set of elements that wo uld satisfy all the rule preconditions.
  To see how the rule is specialized to ﬁre for speciﬁc individuals, suppose we create a
 new individual{meeting 27}that represents a speciﬁc meeting. Now suppose we ﬁrst add th e
-link  10 30 27  to the knowledg e base. This causes an upscan
+link  10 30 AM is the start time of meeting 27  to the knowledg e base. This causes an upscan
 on{start time}to ﬁnd inherited rule triggers that could be activated. Ther e is in fact a trigger
 (R A C) on{start time}, so the rule engine checks if {10 30 AM}can be substituted for A and
 {meeting 27}can be substituted for C. There are no explicit type constrai nts on either A or C and
 no other violated predicates, so substitution is successfu l and the trigger is activated, as shown in
-Figure 4.5.
-23start time (R A C)
-A C B
-10 30 27Rend time (R B C)
-B C A
-11 30 27 4.5  A visualization of two trigger activations for t he meeting example rule, one for each
+10 30 AM meeting 27Rend time (R B C)
+Figure 4.5  A visualization of two trigger activations for t he meeting example rule, one for each
 of the x-y-z role predicates.
 After this trigger is activated, variables A and C in R are sub stituted, but variable B is not, so
 it is the job of the search algorithm to ﬁnd a suitable element for B. It sees that there is a partially
@@ -765,21 +740,21 @@ rule, since variable B is marked as proper, the algorithm fur ther restricts the
 only proper elements.) At this point, there are in fact no suc h elements that can be marked, so
 the algorithm returns knowing the rule is not satisﬁed. Conc eptually, we currently only know the
 start time of meeting 27 but not the end time, so as expected we cannot yet compute the duration
-of the meeting.
-Suppose we ﬁnd out that  11 30 27  and add this to the
+Suppose we ﬁnd out that  11 30 AM is the end time of meeting 27  and add this to the
 knowledge base. This causes an upscan on {end time}to ﬁnd inherited rule triggers, which ﬁnds
 trigger (R B C) on {end time}. Activating the rule trigger by substituting {11 30 AM}for B
 and{meeting 27}for C (as shown in Figure 4.5) is successful because there are no violated
 predicates, so the search algorithm looks for an element for the unsubstituted variable A.
 The algorithm ﬁnds the partially substituted x-y-z-predic ate  A is the start time of meeting
-27 27  (again only marking proper elements). This time , it marks{10 30 AM}given that
- 10 30 27  is in the knowledge b ase. For each marked element
+27  so it allocates a marker pair and marks all elements E such that  E is the start time of
+meeting 27  (again only marking proper elements). This time , it marks{10 30 AM}given that
+ 10 30 AM is the start time of meeting 27  is in the knowledge b ase. For each marked element
 E, the rule engine tries substituting E for B in R, so it tries s ubstituting{10 30 AM}for B in
 R. This substitution does not violate any type constraints o r x-y-z-predicates, so substitution is
-successful.
 At this point, the rule has elements substituted for all of it s variables. This means the rule is
 satisﬁed for this particular set of individuals, so the rule action is ﬁred.{11 30 AM} { 10 30
-AM}is computed, yielding {1 hour}, and the knowledge  1 27  is added to the knowledge base. This new knowledge could c ause rules with triggers that
+AM}is computed, yielding {1 hour}, and the knowledge  1 hour is the duration of meeting
+27  is added to the knowledge base. This new knowledge could c ause rules with triggers that
 {duration}inherits to ﬁre, if any are currently deﬁned.
 The process of production rule ﬁring illustrates how Scone c an carry out automatic thinking
 when it gains new knowledge. It only checks rules when it need s to, and it only checks the
@@ -801,7 +776,7 @@ meeting. The structure of the rule would be essentially iden tical, but checking
 done differently. Instead of adding two if-added triggers, deﬁning the rule as an if-needed rule
 adds one trigger (R C) to role node {duration}.
 If-needed rules are not checked until a value is explicitly r equested, so adding knowledge
- 10 30 27 11 30 27 
+ 10 30 AM is the start time of meeting 27  and  11 30 AM is the e nd time of meeting 27 
 should not activate any triggers. The absence of any inherit ed triggers on{start time}and{end
 time}ensures this behavior. Once the value for the slot ﬁller {the duration of meeting 27 }
 is requested, an upscan is performed on role node {duration}, which ﬁnds trigger (R C). This
@@ -812,14 +787,12 @@ are partially substituted, so one of them can be arbitrarily chosen, say  A is t
 meeting 27.  Skipping the details of the marker passing and s ubstitution, the algorithm ﬁnds that
 {10 30 AM}can be substituted for A in R. Then, the algorithm looks for an element C that can
 satisfy  C is the end time of meeting 27.  It ﬁnds element {11 30 AM}and substitutes it in for
-C in R.
 Now that all variables have been substituted, the rule actio n  B A is the duration of B  can
 be ﬁred. The computation of this rule action returns the valu e{1 hour}. The rule action adds
-the computed link  1 27  to the knowledge base and returns {1
+the computed link  1 hour is the duration of meeting 27  to the knowledge base and returns {1
 hour}as the requested slot ﬁller. Note that after this rule action executes once, the next time {the
 duration of meeting 27 }is requested, the knowledge already exists in the knowledge base, so
 there is no need to check the rule again.
-2526 5
 Conclusion and Future Work
 In this thesis, we proposed a design for if-added and if-need ed production rules that are compatible
  with the Scone knowledge base system. We also implem ented triggers and methods to
@@ -851,7 +824,7 @@ deﬁning rules using structured language, such as  the start time plus the dura
 equals the end time of that meeting.  The goal would be for thi s declarative form to create three
 rules, one for computing each of the start time, duration, an d end time of a meeting given the
 other two values. There is ongoing research on automaticall y adding knowledge to the Scone
-knowledge base from external sources of unstructured natur al language sentences, and this re search
+knowledge base from external sources of unstructured natur al language sentences, and this re27search
  could eventually be extended to adding production ru les automatically as well.
 Finally, a way to learn production rules automatically may b e a desirable long-term goal,
 though possibly out of scope of the capabilities of Scone. So ar and ACT-R describe methods
@@ -862,25 +835,21 @@ production rules apply. In this case, Soar creates a new subg oal to resolve the
 creates a new  chunk  rule to avoid future impasses in simila r situations. In Scone, the recipebased
  planner would take care of planning through such impas ses, and it could implement a
 similar method of learning new helper production rules.
-28Bibliography
 [1] John R Anderson. Act  A simple theory of complex cognitio n.American psychologist , 51
-(4) 355, 1996.
 [2] John R. (John Robert) Anderson. How can the human mind occur in the physical universe 
 Oxford series on cognitive models and architectures. Oxfor d University Press, Oxford  ,
 2007. ISBN 0195324250.
 [3] Jelmer Borst, Niels Taatgen, and Hedderik Rijn. The prob lem state  A cognitive bottleneck
-in multitasking. Journal of experimental psychology. Learning, memory, and cognition , 36 363 82, 03 2010. doi  10.1037/a0018106.
+in multitasking. Journal of experimental psychology. Learning, memory, and cognition , 36 
+363 82, 03 2010. doi  10.1037/a0018106.
 [4] Ivan Bratko. Prolog programming for artiﬁcial intelligence . Pearson education, 2001.
 [5] Scott Elliott Fahlman. A planning system for robot const ruction tasks. Artiﬁcial Intelligence
  , 5(1) 1 49, 1974. ISSN 0004-3702. doi  https //doi.org/1 0.1016/0004-3702(74)
 90008-3. URL https //www.sciencedirect.com/science/article/pii/
-0004370274900083 .
 [6] Scott E Fahlman. Marker-passing inference in the scone k nowledge-base system. In International
- Conference on Knowledge Science, Engineering and Management , pages 114 126. Springer, 2006.
+ Conference on Knowledge Science, Engineering and Management , pages 114 
 [7] Scott E Fahlman. Eris  Episodic representation and reas oning in scone. Technical report,
-Citeseer, 2014.
 [8] Scott E Fahlman. Tutorial information on scone, 2018. UR Lhttps //fahlmanknowledge-nuggets.quora.com/Tutorial-Information-on
- -Scone .
 [Online  accessed 18-April-2021].
 [9] Kenneth D Forbus, Christopher Riesbeck, Lawrence Birnb aum, Kevin Livingston, Abhishek
  Sharma, and Leo Ureel. Integrating natural language , knowledge representation and
@@ -889,9 +858,7 @@ Conference on Artiﬁcial Intelligence , volume 22, page 1542. Menlo Park, CA  C
 MA  London  AAAI Press  MIT Press  1999, 2007.
 [10] Charles L Forgy. Rete  A fast algorithm for the many patt ern/many object pattern match
 problem. In Readings in Artiﬁcial Intelligence and Databases , pages 547 559. Elsevier,
-1989.
-[11] Ivan Herman. W c semantic web activity, 2013. URL https //www.w3.org/2001/
-sw/.
+[11] Ivan Herman. W3c semantic web activity, 2013. URL https //www.w3.org/2001/
 29[12] John E Laird. The Soar cognitive architecture . MIT press, 2019.
 [13] Jill Fain Lehman, John Laird, Paul Rosenbloom, et al. A g entle introduction to soar, an
 architecture for human cognition  2006 update. University of Michigan , pages 1 37, 2006.
@@ -900,7 +867,7 @@ and Brain Sciences , 15(3) 464 492, 1992.
 [15] Alessandro Oltramari and Christian Lebiere. Pursuing artiﬁcial general intelligence by
 leveraging the knowledge capabilities of act-r. In International Conference on Artiﬁcial
 General Intelligence , pages 199 208. Springer, 2012.
-30 1.
+We have implemented the production rule system in Common Lis p in the main Scone engine1.
 There are two new user-level macros that are used to add new if -added rules and if-needed rules
 to the knowledge base. new-if-added-rule is a macro that takes bindings, x-y-z-preds, and
 any number of body forms as arguments. new-if-needed-rule takes bindings, x-y-z-preds,
@@ -911,7 +878,6 @@ second element is a role or relation. For if-added rules, the action is arbitrar
 remainder of the body forms. For if-needed rules, the action is of the form (X Y Z) where X is a
 computation, Y is an individual role node, and Z is a variable deﬁned in the bindings.
 The example if-added rule described in Section 3.2.1 can be d eﬁned using the macro as
-follows 
 (new-if-added-rule (a (b  superior {airplane}))
 ((b {travel vehicle} a))
 (new-is-a a {flying event}))
@@ -926,17 +892,12 @@ This code creates a new individual trip, a new individual veh icle that is an ai
 {my vehicle}as the{travel vehicle}of the trip. The assertion succeeds, indicating that the rul e
 succesfully ﬁred and added the link  my trip is a ﬂying event  to the knowledge base.
 The example if-needed rule described in Section 3.2.2 can be deﬁned using the macro as
-follows 
 (new-if-needed-rule ((a  proper t) (b  proper t) c)
-((a {start time} c)
 1The code for the production rule engine is currently hosted a thttps //github.com/jchen1352/
-scone/tree/develop
-31(b {end time} c))
 ((scone-subtract b a) {duration} c))
 For simplicity, assume {start time}and{end time}are Scone numbers representing seconds
 since the epoch, and scone-subtract is an appropriately deﬁned Lisp function that can
 subtract two Scone time elements. We can test that the rule ﬁr es correctly with the following
-snippet of code 
 (new-indv {my meeting} {meeting})
 (x-is-the-y-of-z {1609459200} {start time} {my meeting})
 (x-is-the-y-of-z {1609462800} {end time} {my meeting})
@@ -945,4 +906,3 @@ This code creates a new individual meeting and sets its start time and end time.
 is responsible for checking potential if-needed rules, and the assertion succeeds indicating that
 the if-needed rule successfully ﬁred and added the link  360 0 (seconds) is the duration of my
 meeting  to the knowledge base.
-32

@@ -2,7 +2,6 @@ Computationally Assisted Quality Control for Public Health Data Streams
 Ananya Joshi ,Kathryn Mazaitis ,Roni Rosenfeld ,Bryan Wilder
 Carnegie Mellon University
 {aajoshi, kmazaitis, rrosenfeld, bwilder }@andrew.cmu.edu
-Abstract
 Irregularities in public health data streams (like COVID-19
 Cases) hamper data-driven decision-making for public health
 stakeholders. A real-time, computer-generated list of the
@@ -42,23 +41,22 @@ organization that curates public health data streams [18], including
  the Delphi Group at Carnegie Mellon University
 (Delphi). Delphi employs a team of full-time developers,
 statisticians, researchers, and product managers to maintain
-Jan 2022 2022 2022 2022 2022 2022 2022 2022020 0.5 Quantile Forecasted Values
+Jan 2022 Feb 2022 Mar 2022 Apr 2022 May 2022 Jun 2022 Jul 2022 Aug 2022020k40k60k80k0.5 Quantile Forecasted Values
 Actual CountsForecasted COVID Case Counts for Nevada, US
- Box plots from 30 1  Temporal irregularities in actual case counts, shown by
+ Box plots from 30 Forecasters that report to the US CDC COVID CasesFigure 1  Temporal irregularities in actual case counts, shown by
 the large spikes in March and July 2022, when cases were trending
 down, resulted in similar spikes for predicted counts (highlighted in
 red) that were then sent to the US Centers for Disease Control and
-Surveillance.
 an accurate and performant public health data source1. Delphi s
  publicly available API [11] and other data products
 are regularly used by public health authorities in the United
 States (US), along with researchers, forecasters, journalists,
-and other users (totaling visits from over 78 2022). These stakeholders recommended
+and other users (totaling visits from over 78k unique IP addresses
+ in January 2022). These stakeholders recommended
 that Delphi continuously monitor their data streams for irregularities
  so that Delphi s data users have more information
  about data quality issues, the state of the pandemic, and
 changes in regional disease behavior, to directly support datadriven
- decision-making.
 To act on this recommendation, expert human reviewers
 in Delphi would need to regularly monitor at least ten thousand
  data streams for stakeholders (e.g. cases, deaths, and
@@ -77,7 +75,7 @@ because it could prioritize the reviewer s time for irregularity
 detection while retaining the trust and expertise a reviewer
 1Delphi s open source repositories can be found at
 https //github.com/cmu-delphi
-1 2306.16914 2  [cs.AI]  2 2024brings.
+1arXiv 2306.16914v2  [cs.AI]  2 Jan 2024brings.
 Creating this computationally ranked list of outliers in
 public health streams is a difficult task. In addition to the
 practical constraints of operating over the large data volume
@@ -87,7 +85,6 @@ effects , and limited historical data that are prevalent in public
  health streams in order to provide helpful recommendations
  [23, 27, 32]. Further, the outlier detection methods must
 be simple and intuitive for reviewers to understand and trust
-them on this task.
 To address these challenges, we present FlaSH ( Flagging
 Streams in public Health), available open source at
 https //github.com/cmu-delphi/covidcast-indicators/tree/
@@ -106,7 +103,6 @@ use semi-synthetic or simulation evaluations that may not
 truly reflect an expert user s assessment of the method utility.
 In this evaluation, FlaSH matches or outperforms previous
 outlier detection methods, including recent deep learning
-baselines.
 2 Practical Irregularity Detection Goals
 Our goal is to develop a framework that assists reviewers in
 detecting important irregularities in Delphi s data streams on
@@ -142,7 +138,7 @@ To start, the proposed outlier detection method should detect
 that are relevant to Delphi s stakeholders so that the method is
 both context and user-dependent [29]. To identify these outlier
  categories, we conducted an exploratory analysis on data
-streams of COVID Case Counts and Ratios, COVID Deaths,
+streams2of COVID Case Counts and Ratios, COVID Deaths,
 Hospital Visits, Google Symptoms Trends, and Doctors Visits
  at the national, state, territory, and county level resolutions
 from the first available date of the streams until December
@@ -150,7 +146,6 @@ from the first available date of the streams until December
  range of values based on the region s population and the
 measurement quantity, we defined the following categories of
 outliers based on their ability to assist reviewers with identifying
- irregularities 
 Out of Range Values and Global Outliers. These outliers
 are typically due to retrospective updates made by a data
 source in the value of a cumulative quantity. Out of range examples
@@ -162,7 +157,6 @@ reports. Similarly, global outliers usually appear as large positive
 may change over time as rapidly shifting disease dynamics
 undermine static thresholds. Still, both of these outliers are
 relatively easy to identify and very rarely require human review.
-
 Day of Week Outliers. Many public health streams have
 systematic day of week effects [27]. For example, fewer
 COVID cases are reported on weekends partly because fewer
@@ -216,7 +210,8 @@ calculating a test statistic measuring the discrepancy between
 observed values and values predicted by m. We then obtain
 ap-value by comparing the real-time test statistic value to a
 historical distribution of test statistics P. FlaSH instantiates
-this entire method via a sequence of 3 1  Process Data. We want to fit a model msuch that
+this entire method via a sequence of 3 steps 
+S1  Process Data. We want to fit a model msuch that
 points with irregularities appear in the most extreme tails of
 them s predictive distribution. However, training mon out
 of range, global, and day of week outliers both distorts the
@@ -236,16 +231,13 @@ in the types of irregularities per stream. Further, stakeholders
 prioritize interpretability, so the model class must be intuitive.
 3Often, there is a ramp-up period before streams report reliable
 measurements, so we do not start at t 0.
-Jul 2021 2022
 Historical Data StreamsXrs T-1 Ɐ r   R
 Real Time DataXrT Ɐ r   R
-FlaSH Specifications
-FlaSH Testing
-FlaSH Training
 O3. Trendline Outlier
-O2. Day of Week
 FlaSH Output ScoresO1. Global Outlier
-Step 0 1 2 3  Compare Prediction & Actual200 0 01 2  In the FlaSH outlier detection method, data stream inputs
+Step 0  Raw DataStep 1  Process DataStep 2  Obtain Predicted ValuesStep 3  Compare Prediction & Actual200 k COVID Cases0
+01FlaSH Steps in Detail
+Figure 2  In the FlaSH outlier detection method, data stream inputs
  are processed through FlaSH to generate informational outlier
 scores. FlaSH itself has three steps. The raw data (gray) is processed
  [S1] (purple), and model mis used to predict future values
@@ -261,7 +253,6 @@ decision in this step is the choice of the test statistic and construction
 are complicated by short training histories and the resulting
 need to share information across geographic regions.
 We now discuss each step, as displayed in Fig. 2.
-3.1 Process Data
 Trendline outliers cannot be reliably identified if the model
 is trained on data that also includes out of range, global, and
 day of week outliers. However the thresholds for determining
@@ -270,22 +261,20 @@ To address this challenge, first, different COVID regimes, or
 waves, are identified via changepoints. Then, within each
 regime, existing outliers are detected and imputed.
 3.1.1 Identifying Changepoints in Nonstationary
-Streams
 Values that would be outliers when there is no COVID wave
 may not be outliers during a COVID wave. This phenomenon
 of distinct, underlying waves, or regimes, in public health
 streams is why they are known to be statistically nonstationary[7]4.
  To identify these regimes in historical data, FlaSH
 uses the Pelt Changepoint Algorithm [17, 31], parametrized
-with a Gaussian model and a minimum of four weeks be Operationally,
+with a Gaussian model and a minimum of four weeks be4Operationally,
  we consider regimes present in streams that are
 updated daily with at least 60 historical data points. On streams with
 fewer than 60 data points, we provide interquartile range-defined
-outliers.
-3 5. However, individual streams may be
+3tween change points5. However, individual streams may be
 very noisy, and Pelt sometimes overfits to this noise to return
  regimes inconsistent with expert knowledge of disease
-dynamics. Therefore, we take advantage of geographical dependencies by
+dynamics. Therefore, we take advantage of geographical dependencies6by
  searching for changepoints that are jointly applicable
  across a set of nearby regions. Specifically, we run
 the Pelt algorithm on the streams for all counties within a
@@ -300,7 +289,7 @@ there is no changepoint until there is sufficient evidence of
 nonstationarity to trigger retraining as follows. Under the
 null hypothesis, there is no changepoint, and p-values are uniformly
  distributed by definition. If the distribution of the test
-statistic for the hypothesis test H significantly shifts, then
+statistic for the hypothesis test H0significantly shifts, then
 the Kolmogrov-Smirnov test can identify whether the empirical
  p-value distribution since the last retraining deviates
 significantly from the uniform distribution. The user can select
@@ -334,9 +323,7 @@ values across days (e.g. by scaling values on Saturday up and
 scaling Mondays down) to obtain a time series without day of
 5Four weeks is the maximum horizon for many short-term forecasts
  [8], likely because health dynamics change drastically after
-that horizon.
 6Data reporting and health policies are generally consistent at the
-state level [30].
 7https //github.com/cmu-delphi/covidcast-indicators/blob/main/
 delphi utils python/delphi utils/weekday.pyweek effects. Removing such systematic periodicity enables
 downstream predictive models to fit the data-generating process
@@ -378,18 +365,10 @@ the fact that ˆXT  X Tis not surprising.
 To quantify the discrepancy between predicted and observed
  values, let Nrdenote the total population of geographic
  region r. The day of week corrected observed values
-(w(Xr
 t), corrected to be comparable to the predicted values)
 and the predicted values ( ˆXr
-t ˆβ w(Xr
-t 1 7)) are used to
+t 1 t 7)) are used to
 calculate the test statistic kt 
-kt  (P(w(Xr
-t)  D))
-D Bin
-n Nr, p ˆXr
-t
-Nr 
 This test models the counts in a region as a binomial distribution
  D. The probability of infection per person is the
 number of predicted counts divided by the region s population
@@ -400,25 +379,22 @@ observed counts are drawn from a distribution parameterized
 expected given the predictions. Each stream model s typical
  performance discrepancy is specified by a distribution Pr,
 composed of test statistics kr
-30 1, that compares observed
+30 T 1, that compares observed
 values and the predicted values for the out-of-sample historical
- data Xr
-30 1. However, there is often too little history
+30 T 1. However, there is often too little history
 to approximate the null distribution of an individual stream
-effectively, with a minimum of 30 60 days of historical data. Accordingly,
+effectively, with a minimum of 30 points characterizing each
+distribution if there are only 60 days of historical data. Accordingly,
  we define the pooled test statistic distribution P,
-specified byS
-r Rkr
-30 1, where Ris all the counties in
+30 T 1, where Ris all the counties in
 a state if ris a county, else Ris all states and territories
 in a nation, because these streams share geographic context.
 Note that pooling is enabled by the design of our test statistic,
  which is chosen to ensure comparable distributions across
 regions (e.g. via normalizing by the population).
-3.4 FlaSH Output
 The final output of FlaSH is a list of real-time points ranked
 by how extreme their test statistic is via the transformation
- 2 1 , where pis the p-value for the real-time test statistic
+ 2p 1 , where pis the p-value for the real-time test statistic
  in the pooled historical test statistic distribution P. This
 transformation ensures that the most outlying points (from either
  distribution tail) will top the ranked list.
@@ -433,7 +409,6 @@ often requires domain-specific knowledge. However, outlier
 detection method performance on simulated data or data with
 synthetically injected outliers [20] rarely translates to practical
  performance on real-world data in epidemiology generally
-[34].
 One of our key contributions is to address this limitation
 in the outlier detection literature via a rigorous, real-world
 evaluation of outlier detection methods for public health data.
@@ -452,7 +427,7 @@ FlaSH version, survey design, and analysis before data collection
  before any data collection occurred, giving an unbiased
 (prospective) evaluation of FlaSH s performance. Real-time
 COVID Case data streams (3341 streams at county, state,
-Feb 2022 2022 2022 2022010 1 23 3  Example of a Survey Task. Respondents click on the
+Feb 2022 Mar 2022 Apr 2022 May 2022010k20k30kHolidays Investigate UninterestingCOVID Cases  PACOVID Cases1 23Figure 3  Example of a Survey Task. Respondents click on the
 time series plot to mark points as unevaluated, uninteresting, or warrants
  investigation. They also rank points that warrant investigation,
 and these rankings appear on the plot in yellow. Respondents could
@@ -496,7 +471,8 @@ detail to test for respondent internal consistency. They were
 also asked how likely they would have flagged each point for
 human review had it not been identified by an algorithm ( unlikely ,
   somewhat unlikely ,  neither ,  somewhat likely , or
-8https //github.com/Ananya-Joshi/IJCAI23 5 likely ). This allows us to measure the value added by the
+8https //github.com/Ananya-Joshi/IJCAI23 Supplemental
+5 likely ). This allows us to measure the value added by the
 algorithm over what would have been obvious to a human.
 We evaluate the algorithm s performances in a realistic
 setting of only 60 days of history for training (12/21/20211/31/2022).
@@ -516,20 +492,21 @@ are the most valuable potential contributions of computationally
 Survey Quality. The total number of survey participants
 (n 13) is a significant increase over previous work (e.g. n 3
 in [34]). We tested for internal consistency in respondents
-that answered both sets of survey questions (Q1-5 610)
+that answered both sets of survey questions (Q1-5 and Q610)
  by measuring response centrality between the Copeland
 aggregate per paired question (e.g. Q1 & Q6, Q2 & Q7)
-and the raw ranks per person. High centrality values (0.83 0.13) suggest that respondents generally were consistent
+and the raw ranks per person. High centrality values (0.83
+ 0.13) suggest that respondents generally were consistent
 in their pairwise preferences between the two sets. Still, the
 average number of points that warranted inspection per person
- varied from  2 6, supporting that the threshold
+ varied from  2to 6, supporting that the threshold
 for identifying points of interest varies greatly by individual
 and reinforcing the importance of sampling a wider range of
 experts than historical standards suggest.
 5 Results and Analysis
 We compare the trendline outlier scores from FlaSH to outlier
 scores from the following off-the-shelf outlier detection algorithm
- baselines implemented in TODS that span recent deep
+ baselines implemented in TODS9that span recent deep
 learning methods, classical machine learning, and statistical
 approaches  DeepLog [10], Telemanom (Telem.) [13], Variational
  Autoencoder (V AE) [2], Local Outlier Factor (LOF)
@@ -547,15 +524,16 @@ is designed for this task.
 Additionally, for an ablation study, we compare results
 from the TODS AR model implementation, which has the
 same model class Mas FlaSH, to a mixed implementation
-9 7 day windows where applicable
+9Each algorithm had a setting 7 day windows where applicable
 to account for day of week effects .(Mixed), where the processing step [S1] is the same as FlaSH,
 and the prediction comparison step [S3] is from TODS.
 FlaSH is computationally scalable. We find that FlaSH
 easily scales to a large number of data streams, while many
 deep learning methods become infeasible. Performance
 statistics (Table 5) were reported from experiments using a
-2.6 6-Core Intel Core i7 machine. Each algorithm was
-trained on the full 3341 JHU CSSE COVID-19 60 days of history. This setup mimics the setting that
+2.6 GHz 6-Core Intel Core i7 machine. Each algorithm was
+trained on the full 3341 JHU CSSE COVID-19 case streams
+with 60 days of history. This setup mimics the setting that
 we expect algorithms to scale to in deployment. A few algorithms
  (mainly deep learning algorithms) did not finish training
  within one day (DNF). Training time can only increase
@@ -567,7 +545,7 @@ FlaSH performs well on outlier detection metrics. Although
  many of the existing outlier detection methods have
 infeasibly long training times for daily deployment, we compare
  the performance of all algorithms using the labeled data
-from the survey. Table 5 95% CI of various traditional
+from the survey. Table 5 shows the 95% CI of various traditional
  binary and ranking outlier detection metrics across all
 participants for Q1-5 per algorithm.
 In the binary analysis, points identified by the majority of
@@ -605,19 +583,21 @@ build a null model of the data. Still, because the TODS outlier
 (3/16), FIPS 36081 (6/24) and FIPS 72043 (5/21).
 6Model Class AR DeepLog Telem. VAE LOF LODA IF KNN
 Implementation TODS Mixed   FlaSH TODS
-Training (s) 10.1 0.3 169 0.8 8 0.271 0.1 7 0.08 0.78 0.020.71 0.040.8 0.03 0.8 0.04 0.6 0.040.76 0.040.69 0.010.68 0.040.79 0.040.74 0.03
-Bal.Acc. 0.68 0.020.59 0.060.73 0.05 0.72 0.050.42 0.030.67 0.070.55 0.030.54 0.050.7 0.070.62 0.05 1 0.54 0.050.43 0.090.64 0.08 0.63 0.070.19 0.070.53 0.120.33 0.080.34 0.090.56 0.110.42 0.09 0.79 0.020.73 0.060.75 0.06 0.82 0.05 0.42 0.070.68 0.060.62 0.040.44 0.070.66 0.080.65 0.07 0.66 0.391 0 0.62 0.39 0.63 0.360.83 0.240.66 0.370.66 0.390.71 0.390.67 0.390.66 0.39 0.84 0.10.89 0.080.84 0.1 0.84 0.10.84 0.10.89 0.070.88 0.080.93 0.06 0.91 0.110.88 0.08
-Corr. 0.2 0.630.42 0.450.37 0.57 0.43 0.54 0.13 0.710.18 0.640.21 0.670.24 0.690.17 0.680.22 0.66
+Training (s) 10.1 0.3 169 0.8 DNF DNF DNF 8 0.271 0.1 DNF 7 0.08 BinaryAccuracy 0.78 0.020.71 0.040.8 0.03  0.8 0.04 0.6 0.040.76 0.040.69 0.010.68 0.040.79 0.040.74 0.03
+Bal.Acc. 0.68 0.020.59 0.060.73 0.05 0.72 0.050.42 0.030.67 0.070.55 0.030.54 0.050.7 0.070.62 0.05
+F1 0.54 0.050.43 0.090.64 0.08 0.63 0.070.19 0.070.53 0.120.33 0.080.34 0.090.56 0.110.42 0.09
+ROCAUC 0.79 0.020.73 0.060.75 0.06 0.82 0.05 0.42 0.070.68 0.060.62 0.040.44 0.070.66 0.080.65 0.07RankingDistance 0.66 0.391 0 0.62 0.39 0.63 0.360.83 0.240.66 0.370.66 0.390.71 0.390.67 0.390.66 0.39
+RBO 0.84 0.10.89 0.080.84 0.1 0.84 0.10.84 0.10.89 0.070.88 0.080.93 0.06 0.91 0.110.88 0.08
+Corr. 0.2 0.630.42 0.450.37 0.57 0.43 0.54  0.13 0.710.18 0.640.21 0.670.24 0.690.17 0.680.22 0.66
 Assistive Rank*8.00 63.66 11.33 0.7 2.33 0.741.33 3832.00 5724.00 4070.67 5147.33 395.33 5
 *Mean rank of points somewhat unlikely or unlikely to be caught by human
  Mixed model with FlaSH data processing [S1] and TODS comparison of predicted and observed values [S3].
-Table 5 60 Days Historical Data.  marks the best algorithm in each row.
+Table 5  Summary of Algorithm Comparison with 60 Days Historical Data.  marks the best algorithm in each row.
 and observed values to rank points, the mixed approach performs
  poorly on streams with small case counts, as reflected
 in the results. Compared to the TODS implementation with
 the same model class M, FlaSH s processing [S1] and comparison
  [S3] steps together provide clear performance benefits.
-
 FlaSH can complement human judgment. We find that
 FlaSH identifies useful points that were unlikely to have been
 inspected without computational assistance (via an algorithm
@@ -662,7 +642,6 @@ method evaluations should consider expert-generated ground
 truth tasks that cover classification, because classification can
 be more straightforward for humans, and ranking, because
 thresholds for classification may vary.
-7 Related Works
 There are numerous outlier and anomaly detection methods
 [4], but recent advancements in the field focus on deep learning
  applications [25]. In our experiments, we find deep learning
@@ -679,7 +658,6 @@ streams before Delphi receives them do not have publiclyavailable
  methods, but the continued presence of irregularities
  in those streams that impacts Delphi stakeholders underscores
  the importance of FlaSH.
-78 Conclusion
 This paper presents FlaSH, a practical framework for computationally
  assisted quality control in public health data
 streams. FlaSH creates a list of the most important outlying
@@ -696,36 +674,31 @@ would not have been discovered without algorithmic assistance.
 detection systems require careful, user-informed design and
 sustained effort. These efforts will have considerable benefits
 for Delphi s stakeholders and, ultimately, for public health
-data users.
-Ethical Statement
 This research was conducted in accordance with the principles
  embodied in the Declaration of Helsinki and in accordance
  with local statutory requirements. All participants
 consented to the study and could exit the study at any time.
 Approval was granted from Carnegie Mellon Univeristy IRB
 number STUDY2022 00000240.
-Acknowledgements
 We want to thank the whole Delphi team and members of the
 Carnegie Mellon community for their input to and support
 of this project. This work was supported by the Centers for
 Disease Control and Prevention of the U.S. Department of
 Health and Human Services (HHS) as part of a cooperative
 agreement funded solely by CDC/HHS under federal award
-identification number U IP001121,  Delphi Influenza Forecasting
+identification number U01IP001121,  Delphi Influenza Forecasting
  Center of Excellence . The contents are those of the
 authors and do not necessarily represent the official views
 of, nor an endorsement by, CDC/HHS or the U.S. Government.
  This material is based upon work supported by the
 National Science Foundation Graduate Research Fellowship
-under Grant No. DGE1745016 2140739. Any opinion,
+under Grant No. DGE1745016 and DGE2140739. Any opinion,
  findings, and conclusions or recommendations expressed
 in this material are those of the authors and do not necessarily
 reflect the views of the National Science Foundation.
-References
 [1] A GARWAL , P., A LURU , P., AND PRAKASH , B. A.
 Real-time anomaly detection in epidemic data streams.
 InEpidemiology meets Data Mining and Knowledge
-discovery (2022).
 [2] A N, J., AND CHO, S. Variational autoencoder
 based anomaly detection using reconstruction probability.Special
  lecture on IE 2 , 1 (2015), 1 18.[3] A NGIULLI , F., AND PIZZUTI , C. Fast outlier detection
@@ -740,7 +713,6 @@ AND LOZANO , J. A. A review on outlier/anomaly detection
 SANDER , J. Lof  identifying density-based local outliers.
  In Proceedings of the 2000 ACM SIGMOD international
  conference on Management of data (2000),
-pp. 93 104.
 [6] CDC, U. Covid-19 by county. https 
 //www.cdc.gov/coronavirus/2019-ncov/your-health/
 covid-by-county.html, publisher Centers for Disease
@@ -748,7 +720,6 @@ Control and Prevention, Aug 2022.
 [7] C HIMMULA , V., K UMAR , R., AND ZHANG , L. Time
 series forecasting of covid-19 transmission in canada
 using lstm networks. Chaos, Solitons & Fractals 135
-(2020), 109864.
 [8] C RAMER , E. Y., H UANG , Y., W ANG , Y., R AY, E. L.,
 CORNELL , M., B RACHER , J., B RENNEN , A., R IVADENEIRA
  , A. J. C., G ERDING , A., H OUSE , K.,
@@ -760,7 +731,6 @@ S., Z HANG , D., ET AL . The johns hopkins university
  center for systems science and engineering covid19
  dashboard  data collection process, challenges faced,
 and lessons learned. The Lancet Infectious Diseases
-(2022).
 [10] D U, M., L I, F., Z HENG , G., AND SRIKUMAR , V.
 Deeplog  Anomaly detection and diagnosis from system
  logs through deep learning. In Proceedings of the
@@ -773,7 +743,6 @@ com/cmu-delphi/delphi-epidata (2015).
 [12] G UPTA , M., G AO, J., A GGARWAL , C. C., AND HAN,
 J. Outlier detection for temporal data  A survey. IEEE
 Transactions on Knowledge and data Engineering 26 , 9
-(2013), 2250 2267.
 [13] H UNDMAN , K., C ONSTANTINOU , V., L APORTE , C.,
 COLWELL , I., AND SODERSTROM , T. Detecting spacecraft
  anomalies using lstms and nonparametric dynamic
@@ -784,16 +753,14 @@ S., G REAVES , F., W ARD, T., E GGO , R. M., ET AL .
 Real-time monitoring of covid-19 dynamics using automated
  trend fitting and anomaly detection. Philosophical
  Transactions of the Royal Society B 376 , 1829
-(2021), 20200266.
 [15] J OSHI , A., M AZAITIS , K., R OSENFELD , R., AND
 WILDER , B. Osf pre-data collection registration  Towards
  detecting points of interest from public health
-data streams. https //osf.io/2 5, 2023.
+data streams. https //osf.io/2v8f5, 2023.
 [16] K ARADAYI , Y., A YDIN , M. N., AND  OˇGRENC  I, A. S.
 Unsupervised anomaly detection in multivariate spatiotemporal
  data using deep learning  early detection of
 covid-19 outbreak in italy. Ieee Access 8 (2020),
-164155 164177.
 [17] K ILLICK , R., F EARNHEAD , P., AND ECKLEY , I. A.
 Optimal detection of changepoints with a linear computational
  cost. Journal of the American Statistical Association
@@ -803,7 +770,6 @@ GUTIERREZ , B., X U, B., L EE, G., H AWKINS , J. B.,
 RIVERS , C., P IGOTT , D. M., K ATZ, R., ET AL . Data
 curation during a pandemic and lessons learned from
 covid-19. Nature Computational Science 1 , 1 (2021),
-9 10.
 [19] K REPS , S. E., AND KRINER , D. L. Model uncertainty,
 political contestation, and public trust in science  Evidence
  from the covid-19 pandemic. Science advances
@@ -815,17 +781,20 @@ on neural information processing systems datasets and
 benchmarks track (2021).
 [21] L ESLIE , D., M AZUMDER , A., P EPPIN , A., W OLTERS ,
 M. K., AND HAGERTY , A. Does  ai  stand for augmenting
- inequality in the era of covid-19 372 (2021).
+ inequality in the era of covid-19 healthcare 
 [22] L IU, F. T., T ING, K. M., AND ZHOU , Z.-H. Isolation
 forest. In 2008 eighth ieee international conference on
 data mining (2008), IEEE, pp. 413 422.
 [23] M CDONALD , D. J., B IEN, J., G REEN , A., H U, A. J.,
 DEFRIES , N., H YUN , S., O LIVEIRA , N. L., S HARP NACK
  , J., T ANG , J., T IBSHIRANI , R., ET AL . Can
-auxiliary indicators improve covid-19 118 , 51 (2021), e2111453118.
+auxiliary indicators improve covid-19 forecasting and
+hotspot prediction  Proceedings of the National
+Academy of Sciences 118 , 51 (2021), e2111453118.
 [24] P ALEYES , A., U RMA , R.-G., AND LAWRENCE , N. D.
 Challenges in deploying machine learning  a survey of
-case studies. ACM Computing Surveys 55 , 6 (2022), 1 29.[25] P ANG , G., S HEN, C., C AO, L., AND HENGEL , A.
+case studies. ACM Computing Surveys 55 , 6 (2022), 1 
+29.[25] P ANG , G., S HEN, C., C AO, L., AND HENGEL , A.
 V. D. Deep learning for anomaly detection  A review.
 ACM computing surveys (CSUR) 54 , 2 (2021), 1 38.
 [26] P EVN  Y, T. Loda  Lightweight on-line detector of
@@ -835,18 +804,17 @@ A., T ANG , J., A GRAWAL , S., A LSAEED , W.,
 ARNOLD , T., B ASU, A., B IEN, J., ET AL . An open
 repository of real-time covid-19 indicators. Proceedings
 of the National Academy of Sciences 118 , 51 (2021),
-e2111452118.
 [28] S  AEZ, C., R OMERO , N., C ONEJERO , J. A., AND
-GARC IA-G OMEZ , J. M. Potential limitations in covid19 2019 dataset. Journal of the American
+GARC IA-G OMEZ , J. M. Potential limitations in covid19
+ machine learning due to data source variability  A
+case study in the ncov2019 dataset. Journal of the American
  Medical Informatics Association 28 , 2 (2021),
-360 364.
 [29] S EJR, J. H., AND SCHNEIDER -KAMP, A. Explainable
 outlier detection  What, for whom and why  Machine
 Learning with Applications 6 (2021), 100172.
 [30] S IMON , S. Inconsistent reporting practices hampered
 our ability to analyze covid-19 data. here are three common
  problems we identified. The COVID Tracking
-Project (Apr 2021).
 [31] T RUONG , C., O UDRE , L., AND VAYATIS , N. Selective
 review of offline change point detection methods. Signal
 Processing 167 (2020), 107299.
@@ -871,4 +839,3 @@ Computational Social Systems 8 , 4 (2021), 1016 1029.
 [37] Z HU, D., Y E, X., AND MANSON , S. Revealing the
 spatial shifting pattern of covid-19 pandemic in the
 united states. Scientific reports 11 , 1 (2021), 1 9.
-9

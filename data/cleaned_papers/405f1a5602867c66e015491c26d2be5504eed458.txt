@@ -4,7 +4,6 @@ Manuel Mager  Rajat Bhatnagar Graham Neubig
 Ngoc Thang Vu Katharina Kann 
  AWS AI Labs Carnegie Mellon University
  University of Colorado Boulder University of Stuttgart
-Abstract
 Neural models have drastically advanced state
 of the art for machine translation (MT) between
  high-resource languages. Traditionally,
@@ -22,7 +21,8 @@ for these languages. Finally, we discuss the
 recent advances and findings and open questions,
  product of an increased interest of the
 NLP community in these languages.
-1 7 7000 different languages (Pereltsvaig,
+More than 7 billion people on Earth communicate
+in nearly 7000 different languages (Pereltsvaig,
 2020). Of these, approximately 900 languages
 are native of the American continent (Campbell,
 2000). Most of these indigenous languages of the
@@ -39,7 +39,6 @@ for translations is even written in the constitutions
 of several countries like Mexico, Peru, Paraguay,
 Venezuela, and Bolivia (Zajícová, 2017) to allow
 native speakers to have equal language rights regarding
- law.
 This is why developing MT is crucial  it helps
 humanity overcome language barriers while simultaneously
  allowing people to continue using
@@ -70,7 +69,6 @@ the recent AmericasNLP 2021 shared task (Mager
 et al., 2021) on 10 indigenous languages to Spanish,
  and the WMT (Conference on Machine Translation)
  shared task for Inuktitut English (Barrault
-et al., 2020).
 In this work we aim to provide a comprehensive
 introduction to the challenges that involve creating
  MT systems for ILA, and the current status
@@ -83,21 +81,19 @@ NMT and the implications for endangered languages
  of the Americas( 3). This is followed by
 a discussion of available data ( 4). Afterwards,
 we introduce the important concepts for LRL and
-endangered languages ( 5)  then we introduce thearXiv 2306.06804 1  [cs.CL]  11 2023main strategies aimed at improving NMT with
+endangered languages ( 5)  then we introduce thearXiv 2306.06804v1  [cs.CL]  11 Jun 2023main strategies aimed at improving NMT with
 limited training data ( 6)  and finally we give an
 overview of the work done for ILA on MT ( 7).
 In doing so, we provide insights into the following
  questions  Which systems define the state of
 the art on low-resource NMT applied to the ILA 
 What is the route that ahead to improve the translations
- of the ILA 
 2 Background and Definitions
 Formally, the task of MT consists of converting
 textXin a source language Lxinto text Yin a
 target language Lythat conveys the same meaning.1Translating
  text X LxintoY Lycan be
 described as a function (Neubig, 2017) 
-Y MT(X). (1)
 XandYcan be of variable length, such as
 phrases, sentences, or even documents.
 If other languages are used during the translation
@@ -114,8 +110,6 @@ learning paradigm, a parallel corpus Cparallel
 over possible translations. Given Cparallel , the
 training objective of an NMT model is generally
 to maximize the log-likelihood Lwith respect to
-θ 
-Lθ X
 (Xi,Yi) Cparallellogp(Yi Xi θ).(2)
 Within this overall framework, there are a number
  of design decisions one has to make, such as
@@ -130,7 +124,6 @@ argmax ˆYp(ˆY X θ) (3)
  to map the meaning of text exactly into another language
 (Nida, 1945  Sechrest et al., 1972  Baker, 2018).Most NMT systems factorize the probability of
 ˆY  ˆy1, ...,ˆyTin a left-to-right fashion 
-p(ˆY)  TY
 t 1p(ˆyt ˆy t, X, θ ) (4)
 Thus, the probability of token ˆytat time step tis
 computed using the previously generated tokens
@@ -165,11 +158,10 @@ recently, a visual representation of rendered text
 (Salesky et al., 2021). No clear advantage has been
 discovered for using morphological segmentations
 over BPEs when testing them on LRLs (Saleva and
-Lignos, 2021).
 Input representations can be pretrained. The
 two most common options are  i) word embeddings,
  where each type is represented by a
-vector, e.g., Word Vec (Mikolov et al., 2013),
+vector, e.g., Word2Vec (Mikolov et al., 2013),
 Glove (Pennington et al., 2014), or Fasttext (Bojanowski
  et al., 2017)) embeddings, and ii) contextualized
  word representations, where entire sentences
@@ -190,7 +182,6 @@ against Morfessor (Smit et al., 2014). Also (Ortega
  et al., 2020a) improves the SOTA (state-ofthe-art)
  for Quechua Spanish MT using a morphological
  guided BPE algorithm.
-2.2 Architectures
 NMT models typically are sequence-to-sequence
 models. They encode a variable-length sequence
 into a vector or matrix representation, which they
@@ -218,7 +209,6 @@ to overfitting (Rolnick et al., 2017). Recent studies,
  however, show empirically that this does not
 necessarily happen if the network is tuned correctly
  (Olson et al., 2018).
-2.3 Evaluation
 Accurately judging translation quality is difficult
 and, thus, often still done manually  bilingual
 speakers assign scores according to provided criteria
@@ -241,10 +231,8 @@ metric was used over BLEU, as it fits better to the
 rich morphology of many ILA.
 To have a concrete example, lets have the following
  Wixarika phrase with an English translation 
-
 yu-huta-me ne-p -we- iwa
 an-two-ns 1sg s-asi-2pl o-brother
-I have two brothers
 As discussed in (Mager et al., 2018c) it is difficult
  to translate back from Spanish (or other Fusional
  language) the morpheme p as it has not
@@ -252,7 +240,6 @@ equivalent in these languages. So if we would ignore
  these morpheme at all, BLEU would penalize
  the entire word nep we iwa . In contrast, chrF
 would give credit to the translation, even if the p 
-is missing.
 One shortcoming of these evaluation metrics is
 that the evaluation is very dependent on the surface
  forms and not on the ultimate goal of semantic
@@ -263,7 +250,6 @@ et al., 2020d), but these methods are limited to languages
  for which such models are available. This
 is not possible for the ILA, as the amount of monolingual
  data is not enough to train a reliable pretrained
- language model3.
 3 Challenges and open questions
 In an overview of the datasets and recent studies
 of MT for the ILA, we found the following main
@@ -276,10 +262,9 @@ monolingual dataset to train a BERT like model (Zevallos
 et al., 2022)Extreme low-resource parallel datasets Even
 with the recent advances, the resources available
 to train MT systems are extremely scarce, having
- training set between 4 20k sentences (see
+ training set between 4k and 20k sentences (see
  4), with notable exceptions for Inuktitut, Guarani
 and Quechua (Joanis et al., 2020  Ortega et al.,
-2020a).
 Lack of monolingual data Most of these languages
  are mostly used in spoken form. In recent
  years, with the advancement and democratization
@@ -317,7 +302,6 @@ bilingualism among their communities is strong
 (Çetino  glu, 2017)). The final result of this phenomenon
  is the inclusion of code-switching on a
 common base (Mager et al., 2019) in their language.
-
 Lack of orthographic normalization The usage
  of ILA faces the problem of having a unifiedorthographic standard. This is not always possible,
  as the suggestions of linguists and official entities
@@ -358,7 +342,6 @@ size with 1,450,094 sentences. Previous versions
 of this corpus are (Martin et al., 2003). This data
 set was used for the WMT 2020 Shared Task on
 Unsupervised, and Low Resourced MT (Barrault
-et al., 2020).
 For wide-spoken languages like Guarani, it is
 even possible to collect a web crawled dataset,
 including news articles and social media parallel
@@ -380,7 +363,6 @@ Table 1  Parallel dataset collections that contain one or more indigenous langua
 Language Paried-language ISO Family Sentences Domain Authors
 Asháninka Spanish cni Arawak 3883 (Ortega et al., 2020b)
 Bribri Spanish bzd Chibchan 5923 (Feldman and CotoSolano,
- 2020)
 Guarani Spanish gn Tupi-Guarani News,
 Blogs(Abdelali et al., 2006)
 Guarani Spanish gn Tupi-Guarani 14,531 News,
@@ -390,11 +372,7 @@ Guarani Spanish gn Tupi-Guarani 14,792 News, Social
 Guarani Spanish gn Tupi-Guarani 30855 8 Domains (Chiruzzo et al., 2022)
 Nahuatl Spanish nah Uto-Aztecan 16145 Diverse
 Books(Gutierrez-Vasques
-et al., 2016)
 Otomí Spanish oto Oto-Manguean 4889 Diverse
-Bookshttps //
-tsunkua.elotl.
-mx
 Rarámuri Spanish tar Uto-Aztecan 14721 Dictionary
 Examples(Mager et al., 2022)
 Shipibo-Konibo Spanish shp Panoan 14592 Educational,
@@ -403,7 +381,6 @@ Wixarika Spanish hch Uto-Aztecan 8966 Literature (Mager et al., 2018a)
 Cherokee English chr Uto-Aztecan OPUS (Zhang et al., 2020c)
 Inuktitut English iku Eskimo Aleut 1,450,094 Legislative (Joanis et al., 2020)
 Ayuuk Spanish mir Mixe Zoque 7553 Diverse (Zacarías Márquez and
-Meza Ruiz, 2021)
 Mazatec Spanish Many Oto-Manguean 9799 Diverse (Tonja et al., 2023)
 Mixtec Spanish Many Oto-Manguean 13235 Diverse (Tonja et al., 2023)
 Table 2  Parallel datasets that have been released focusing on one indigenous language
@@ -428,7 +405,6 @@ et al., 2020) for African languages, and AmericasNLP
 AmericasNLI dataset is an important effort to have
 a common evaluation benchmark for the 10 indigenous
  languages of the Americas for the MT
-and NLI tasks.
 Given the constitutional rights of indigenous
 languages in many countries of the Americas, it is
 possible to access this data. Vázquez et al. (2021)
@@ -455,7 +431,6 @@ speech or text (Himmelmann, 2008). However, it
 is costly and requires specialists. In this process,
 involving the community members that are bilingual
  speakers is important (Bird, 2020).
-5 Low-resource MT
 For the purpose of this paper we define LRLs
 as languages for which standard techniques are
 unable to create well performing systems, which
@@ -465,7 +440,6 @@ the amount of available resources differs widely
 across language pairs  some have less than 10k
 parallel sentences, while other have more than
 500k, with some exceptions in the orders of several
- million.
 Emulating a low-resource scenario by downsampling
  available data for high-resource languages
  is common and helps understanding a
@@ -477,11 +451,10 @@ many languages exhibit particular linguistic phenomena
  results, especially since most large datasets
 are from the Indo-European language family, to
 which only 6.16% of the world s languages belong
-(Lewis, 2009).
 Importantly, there is no strong correlation between
  the number of resources available per language
  and the number of speakers  Javanese with
-95 44 million
+95 million speakers and Kannada with 44 million
 are considered LRLs, while French, with only 64
 million native speakers, is among the most widely
 studied languages. Improving models to handle
@@ -511,7 +484,6 @@ inter-generational transmission.5MT for endangered
 these languages are commonly spoken by small
 communities, or indigenous people, researchers
 should aim for a direct involvement of those communities
- (Bird, 2020).
 What is polysynthesis  A polysynthetic language
  is defined by the following linguistic features 
  the verb in a polysynthetic language must
@@ -541,53 +513,15 @@ improve LRL MT. For a more detailed understanding
 www.ethnologue.com/about/language-status
 6Agglutination refers to a concatenation of morphemes,
 with minimal changes to the surface form.DAT A
-No parallel data
- Low amount of
 parallel dataCollect new data
-Parallel data
-to 3th language
-Only monolingual
-data
-Additional
-Annotated data
 *Monolingual*Parallel data in
 other languages*Pre-trained
-models
-*  Any data
-(Monolingual,
 Multilingual, etc)*Annotators
-Noisy Parallel
-Data
-Speechrecordings
-Zero-shot
-Multi-task Data
-Augmentation
-Back
-T ranslationSentence
 ModificationMultilingual
 T ransfer L earningElicitation
-Annotating
-commonly
-used speech
-or text
-Noisy parallel
-documents
-to parallel
 sentencesPivotingUnsupervised
-MT
 Figure 1  What to do when we have low o no data to train our machine translation models  This diagram shows
 basic scenarios, solutions, and common requirements for each method, with the section describing the method.
-L L2
-Ln...
-L L2
-Ln...
-L1
-Ln...L1
-Ln...θ
-θ
-θ1) One to many
-2) Many to one
-3) Many to many
 Figure 2  An overview of different multilingual setups.
 2022  Wang et al., 2021  Ranathunga et al., 2021).
 6.1 Multilingual Supervised Training
@@ -612,8 +546,7 @@ to introduce a multilingual NMT model, trained
 on translating from a large number of languages
 to English as well as in the opposite direction.
 The authors show that these models improve over
-DL D'L L1 2
-D'L DL L2 3  Backtranslation
+TrainFigure 3  Backtranslation
 single-language pair models for LRLs.
 6.2 Multi-task Training
 Multi-task training (Caruana, 1997) aims to improve
@@ -625,7 +558,6 @@ explored in multilingual NMT ( 6.1). This can be
 done with a special flag in the input that specifies
 the current task. It is also possible to share only the
 encoder and have two separate decoders for each
-task.
 Multilingual Modeling In order to handle multilinguality
  it is also possible to adapt modify the
 NMT models. The main proposals to do so has
@@ -680,7 +612,6 @@ is to train the entire transformer model as a denoising
 also possible to pretrain a transformer in a multitask,
  text-to-text fashion, where one of the tasks is
 MT (T5  Raffel et al., 2020) (multilingual version
-(Xue et al., 2021)).
 Unsupervised MT UMT covers approaches that
 donotrequire any parallel text, relying only on
 monolingual data. This differs from zero-shot
@@ -750,7 +681,6 @@ The quality of MT systems of ILA has been a
 constant debate. However, Ebrahimi et al. (2021)
 shows that the quality of MT for these languages
 is enough to improve other tasks like natural language
- inference (NLI).
 Inuktitut Enlgish ST The WMT 2020 news
 translation task included Inuktitut English translation
  (Barrault et al., 2020). The participating
@@ -761,9 +691,10 @@ scenario. Participating teams in this competition
 2020  Scherrer et al., 2020  Roest et al., 2020  Lo,
 2020  Knowles et al., 2020  Zhang et al., 2020e 
 Krubi  nski et al., 2020).
-AmericasNLP 2021 2023 2021, the
+AmericasNLP 2021 and 2023 ST In 2021, the
 AmericasNLP community organized a workshop
-on Machine Translation for 10 2021 (Mager et al.,
+on Machine Translation for 10 indigenous languages
+ of the Americas in 2021 (Mager et al.,
 2021) and 2023 (Ebrahimi et al., 2023) with an
 additional indigenous language (Chatino). The
 AmericasNLP shared task winner was (Vázquez
@@ -782,7 +713,6 @@ AmericasNLP 2022 Competition is a competition
 Kotiria Portuguese, Wa ikhana Portuguese, and
 7Up to this moment, no official desciption papers for the
 2023 are published.Quechua Spanish (Ebrahim et al., 2023)8.
-8 Ethical aspects
 When working with ILAs are also interacting with
 communities and nations that speak these languages.
  In most cases, these speakers have been
@@ -813,7 +743,6 @@ distribution of data and research . The product
 of the research should be available for use by the
 community, so they can take advantage of the generated
  materials, like papers, books, or data.
-9 Conclusion
 Machine translation for ILA has gained interest in
 the NLP community over the last few years. Here,
 we provide an exhaustive overview of the basic
@@ -821,8 +750,6 @@ MT concepts and the particular challenges for MT
 for ILA (in the context of low-resource scenarios
 and its relation to endangered languages). We additionally
  survey the current advances of MT for
-these languages.
-Limitations
 This paper s aim is to give an introduction to researchers,
  students, of interested community indigenous
  community members to the topic of Machine
@@ -834,7 +761,6 @@ nor a more technical survey of low-resource machine
  translation. We would point the reader to
 more specific surveys on these aspects (Haddow
 et al., 2022  Mager et al., 2018b).
-Ethical statement
 We could not find any specific Ethical issue for
 this paper or potential danger. Nevertheless, we
 want to point to the reader that working with indigenous
@@ -843,7 +769,6 @@ set of ethical questions that are important to handle.
  For a deeper understanding of the matter, we
 suggest specialized literature to the reader (Mager
 et al., 2023  Bird, 2020  Schwartz, 2022).
-References
 Ahmed Abdelali, James Cowie, Steve Helmreich,
 Wanying Jin, Maria Pilar Milagros, Bill Ogden,
 Mansouri Rad, and Ron Zacharski. 2006. Guarani 
@@ -861,11 +786,10 @@ Massively multilingual neural machine translation.
 InProceedings of the 2019 Conference of the North
 American Chapter of the Association for Computational
  Linguistics  Human Language Technologies,
-Volume 1 (Long and Short Papers) , pages 3874 3884.
+Volume 1 (Long and Short Papers) , pages 3874 
 Benyamin Ahmadnia and Bonnie J Dorr. 2019. Augmenting
  neural machine translation through roundtrip
  training approach. Open Computer Science ,
-9(1) 268 278.
 Antonios Anastasopoulos and David Chiang. 2018.
 Tied multitask learning for neural speech translation.
 InProceedings of the 2018 Conference of the North
@@ -873,14 +797,12 @@ American Chapter of the Association for Computational
  Linguistics  Human Language Technologies,
 Volume 1 (Long Papers) , pages 82 91, New Orleans,
 Louisiana. Association for Computational Linguistics.
-
 Stephen R Anderson and Stephen Anderson. 2012.
 Languages  A very short introduction , volume 320.
 Oxford University Press.Naveen Arivazhagan, Ankur Bapna, Orhan Firat,
 Roee Aharoni, Melvin Johnson, and Wolfgang
 Macherey. 2019a. The missing ingredient in zeroshot
  neural machine translation. arXiv preprint
-arXiv 1903.07091 .
 Naveen Arivazhagan, Ankur Bapna, Orhan Firat,
 Dmitry Lepikhin, Melvin Johnson, Maxim Krikun,
 Mia Xu Chen, Yuan Cao, George Foster, Colin
@@ -895,13 +817,11 @@ Mikel Artetxe and Holger Schwenk. 2019. Massively
  multilingual sentence embeddings for zeroshot
  cross-lingual transfer and beyond. Transactions
  of the Association for Computational Linguistics,
- 7 597 610.
 Duygu Ataman and Marcello Federico. 2018. Compositional
  representation of morphologically-rich input
 for neural machine translation. In Proceedings of
 the 56th Annual Meeting of the Association for Computational
  Linguistics (Volume 2  Short Papers) ,
-pages 305 311.
 Duygu Ataman, Matteo Negri, Marco Turchi, and Marcello
  Federico. 2017. Linguistically motivated vocabulary
  reduction for neural machine translation
@@ -923,18 +843,15 @@ Zampieri. 2020. Findings of the 2020 conference on
 machine translation (WMT20). In Proceedings of
 the Fifth Conference on Machine Translation , pages
 1 55, Online. Association for Computational Linguistics.
-
 Andrew R Barron. 1993. Universal approximation
 bounds for superpositions of a sigmoidal function.
  IEEE Transactions on Information theory ,
-39(3) 930 945.
 Christos Baziotis, Barry Haddow, and Alexandra
 Birch. 2020. Language model prior for lowresource
  neural machine translation. arXiv preprint
 arXiv 2004.14928 .Yonatan Belinkov and Yonatan Bisk. 2018. Synthetic
 and natural noise both break neural machine translation.
  In International Conference on Learning Representations
- .
 Steven Bird. 2020. Decolonising speech and language
  technology. In Proceedings of the 28th International
  Conference on Computational Linguistics ,
@@ -969,7 +886,6 @@ Eric Sigler, Mateusz Litwin, Scott Gray, Benjamin
 Chess, Jack Clark, Christopher Berner, Sam McCandlish,
  Alec Radford, Ilya Sutskever, and Dario
 Amodei. 2020. Language models are few-shot
-learners.
 Gina Bustamante, Arturo Oncevay, and Roberto
 Zariquiey. 2020. No data to crawl  monolingual
 corpus creation from PDF files of truly low-resource
@@ -990,8 +906,8 @@ the Fourth Conference on Machine Translation (Volume
 arXiv preprint arXiv 2006.14799 .
 Özlem Çetino  glu. 2017. A code-switching corpus of
 Turkish-German conversations. In Proceedings of
-the 11th Linguistic Annotation Workshop , pages 34 40, Valencia, Spain. Association for Computational
-Linguistics.
+the 11th Linguistic Annotation Workshop , pages 34 
+40, Valencia, Spain. Association for Computational
 Bharathi Raja Chakravarthi, Ruba Priyadharshini,
 Shubhanker Banerjee, Richard Saldanha, John P.
 McCrae, Anand Kumar M, Parameswari Krishnamurthy,
@@ -1003,7 +919,7 @@ Languages , pages 119 125, Kyiv. Association for
 Computational Linguistics.
 Eirini Chatzikoumi. 2020. How to evaluate machine
 translation  A review of automated and human metrics.
- Natural Language Engineering , 26(2) 137 161.
+ Natural Language Engineering , 26(2) 137 
 Guanhua Chen, Shuming Ma, Yun Chen, Li Dong,
 Dongdong Zhang, Jia Pan, Wenping Wang, and Furu
 Wei. 2021. Zero-shot cross-lingual transfer of neural
@@ -1012,7 +928,6 @@ encoders. In Proceedings of the 2021 Conference on
 Empirical Methods in Natural Language Processing,
  pages 15 26, Online and Punta Cana, Dominican
  Republic. Association for Computational Linguistics.
-
 Yong Cheng. 2019. Joint training for pivot-based neural
  machine translation. In Joint Training for Neural
 Machine Translation , pages 41 54. Springer.
@@ -1020,18 +935,17 @@ Yong Cheng, Lu Jiang, and Wolfgang Macherey. 2019.
 Robust neural machine translation with doubly adversarial
  inputs. In Proceedings of the 57th Annual
 Meeting of the Association for Computational Linguistics
- , pages 4324 4333.
 Yong Cheng, Lu Jiang, Wolfgang Macherey, and Jacob
  Eisenstein. 2020. AdvAug  Robust adversarial
  augmentation for neural machine translation. In
 Proceedings of the 58th Annual Meeting of the Association
- for Computational Linguistics , pages 5961 5970, Online. Association for Computational Linguistics.
-
+ for Computational Linguistics , pages 5961 
+5970, Online. Association for Computational Linguistics.
 Yong Cheng, Zhaopeng Tu, Fandong Meng, Junjie
 Zhai, and Yang Liu. 2018. Towards robust neural
 machine translation. In Proceedings of the 56th Annual
  Meeting of the Association for Computational
-Linguistics (Volume 1  Long Papers) , pages 1756 1766.
+Linguistics (Volume 1  Long Papers) , pages 1756 
 Luis Chiruzzo, Pedro Amarilla, Adolfo Ríos, and Gustavo
  Giménez Lugo. 2020. Development of a
 Guarani - Spanish parallel corpus. In Proceedings of
@@ -1049,7 +963,7 @@ Schwenk, and Yoshua Bengio. 2014. Learning
 phrase representations using rnn encoder decoder
 for statistical machine translation. In Proceedings of
 the 2014 Conference on Empirical Methods in Natural
- Language Processing (EMNLP) , pages 1724 1734.
+ Language Processing (EMNLP) , pages 1724 
 Trevor Cohn and Mirella Lapata. 2007. Machine translation
  by triangulation  Making effective use of
 multi-parallel corpora. In Proceedings of the 45th
@@ -1058,7 +972,6 @@ Linguistics , pages 728 735.
 Alexis Conneau and Guillaume Lample. 2019. Crosslingual
  language model pretraining. In Advances
 in Neural Information Processing Systems , pages
-7057 7067.
 Alexis Conneau, Guillaume Lample, Marc Aurelio
 Ranzato, Ludovic Denoyer, and Hervé Jégou. 2017.
 Word translation without parallel data. arXiv
@@ -1073,13 +986,12 @@ deep bidirectional transformers for language understanding.
 the North American Chapter of the Association for
 Computational Linguistics  Human Language Technologies,
  Volume 1 (Long and Short Papers) , pages
-4171 4186.
 Xiangyu Duan, Baijun Ji, Hao Jia, Min Tan, Min
 Zhang, Boxing Chen, Weihua Luo, and Yue Zhang.
 2020. Bilingual dictionary based neural machine
 translation without using parallel sentences. In Proceedings
  of the 58th Annual Meeting of the Association
- for Computational Linguistics , pages 1570 1579.
+ for Computational Linguistics , pages 1570 
 Abteen Ebrahim, Manuel Mager, Pavel Oncevay Arturo
  Danni Liu Koneru Sai Ugan Enes Yavuz
 Wiemerslage, Adam Denisov, Zhaolin Li, Jan
@@ -1093,7 +1005,6 @@ Rolando Coto-Solano, Hilaria Cruz, Sofía FloresSolórzano,
  John E. Ortega, Alexis Palmer, Rodolfo Joel
 Zevallos Salazar, Kristine, Thang Vu Stenzel, andKatharina Kann. 2023. Findings of the second americasnlp
  competition on speech-to-text translation.
-preprint .
 Abteen Ebrahimi, Manuel Mager, Arturo Oncevay,
  Vishrav Chaudhary, Luis Chiruzzo, Angela
 Fan, John Ortega, Ricardo Ramos, Annette Rios,
@@ -1142,12 +1053,12 @@ Sergey Edunov, Myle Ott, Michael Auli, and David
 Grangier. 2018. Understanding back-translation at
 scale. In Proceedings of the 2018 Conference on
 Empirical Methods in Natural Language Processing,
- pages 489 500.
 Marzieh Fadaee, Arianna Bisazza, and Christof Monz.
 2017. Data augmentation for low-resource neural
 machine translation. In Proceedings of the 55th Annual
  Meeting of the Association for Computational
-Linguistics (Volume 2  Short Papers) , pages 567 573.Isaac Feldman and Rolando Coto-Solano. 2020. Neural
+Linguistics (Volume 2  Short Papers) , pages 567 
+573.Isaac Feldman and Rolando Coto-Solano. 2020. Neural
  machine translation models with back-translation
 for the extremely low-resource indigenous language
 Bribri. In Proceedings of the 28th International
@@ -1158,19 +1069,17 @@ Manuel Fernández-Delgado, Eva Cernadas, Senén
 Barro, and Dinani Amorim. 2014. Do we need hundreds
  of classifiers to solve real world classification
 problems  The journal of machine learning research
- , 15(1) 3133 3181.
 Alexander Fraser. 2020. Findings of the WMT 2020
 shared tasks in unsupervised MT and very low resource
  supervised MT. In Proceedings of the Fifth
-Conference on Machine Translation , pages 765 771, Online. Association for Computational Linguistics.
-
+Conference on Machine Translation , pages 765 
+771, Online. Association for Computational Linguistics.
 Ana-Paula Galarreta, Andrés Melgar, and Arturo Oncevay.
  2017. Corpus creation and initial SMT experiments
  between Spanish and Shipibo-konibo. In
 Proceedings of the International Conference Recent
 Advances in Natural Language Processing, RANLP
 2017 , pages 238 244, Varna, Bulgaria. INCOMA
-Ltd.
 Candace Kaleimamoowahinekapu Galla. 2016. Indigenous
  language revitalization, promotion, and education 
  Function of digital technology. Computer Assisted
@@ -1178,7 +1087,6 @@ Candace Kaleimamoowahinekapu Galla. 2016. Indigenous
 Xavier Garcia, Pierre Foret, Thibault Sellam, and
 Ankur P Parikh. 2020. A multilingual view of
 unsupervised machine translation. arXiv preprint
-arXiv 2002.02955 .
 Mozhdeh Gheini, Xiang Ren, and Jonathan May. 2021.
 Cross-attention is all you need  Adapting pretrained
 Transformers for machine translation. In Proceedings
@@ -1209,13 +1117,12 @@ Mikko Kurimo. 2014. Morfessor flatcat  An hmmbased
  method for unsupervised and semi-supervised
 learning of morphology. In Proceedings of COLING
 2014, the 25th International Conference on Computational
- Linguistics  Technical Papers , pages 1177 1185.
+ Linguistics  Technical Papers , pages 1177 
 Jiatao Gu, Yong Wang, Kyunghyun Cho, and Victor
  OK Li. 2019. Improved zero-shot neural machine
  translation via ignoring spurious correlations.
 InProceedings of the 57th Annual Meeting of the
 Association for Computational Linguistics , pages
-1258 1268.
 Caglar Gulcehre, Orhan Firat, Kelvin Xu, Kyunghyun
 Cho, Loic Barrault, Huei-Chi Lin, Fethi Bougares,
 Holger Schwenk, and Yoshua Bengio. 2015. On using
@@ -1234,7 +1141,6 @@ Miceli Barone, Jind ˇrich Helcl, and Alexandra Birch.
 Computational Linguistics , pages 1 67.
 Lifeng Han. 2016. Machine translation evaluation resources
  and methods  A survey. arXiv preprint
-arXiv 1605.04515 .
 François Hernandez and Vincent Nguyen. 2020. The
 ubiqus English-Inuktitut system for WMT20. In
 Proceedings of the Fifth Conference on Machine
@@ -1243,7 +1149,6 @@ Computational Linguistics.
 Nikolaus P Himmelmann. 2008. Language documentation 
  What is it and what is it good for  In Essentials
  of language documentation , pages 1 30. De
-Gruyter Mouton.
 Vu Cong Duy Hoang, Philipp Koehn, Gholamreza
 Haffari, and Trevor Cohn. 2018. Iterative backtranslation
  for neural machine translation. In Proceedings
@@ -1251,7 +1156,6 @@ Haffari, and Trevor Cohn. 2018. Iterative backtranslation
 Translation and Generation , pages 18 24.
 Sepp Hochreiter and Jürgen Schmidhuber. 1997.
 Long short-term memory. Neural computation ,
-9(8) 1735 1780.
 J Edward Hu, Huda Khayrallah, Ryan Culkin, Patrick
 Xia, Tongfei Chen, Matt Post, and Benjamin
 Van Durme. 2019. Improved lexically constraineddecoding for translation and monolingual rewriting.
@@ -1266,10 +1170,11 @@ Americas , pages 102 114. Springer.
 Sébastien Jean, Kyunghyun Cho, Roland Memisevic,
 and Yoshua Bengio. 2015. On using very large
 target vocabulary for neural machine translation.
-InProceedings of the 53 7th International Joint Conference on Natural Language
+InProceedings of the 53rd Annual Meeting of the
+Association for Computational Linguistics and the
+7th International Joint Conference on Natural Language
  Processing (Volume 1  Long Papers) , pages
 1 10, Beijing, China. Association for Computational
- Linguistics.
 Eric Joanis, Rebecca Knowles, Roland Kuhn, Samuel
 Larkin, Patrick Littell, Chi-kiu Lo, Darlene Stewart,
 and Jeffrey Micher. 2020. The Nunavut Hansard
@@ -1309,7 +1214,6 @@ Rebecca Knowles, Darlene Stewart, Samuel Larkin,
 and Patrick Littell. 2020. NRC systems for the 2020
 Inuktitut-English news translation task. In Proceedings
  of the Fifth Conference on Machine Translation ,pages 156 170, Online. Association for Computational
- Linguistics.
 Rebecca Knowles, Darlene Stewart, Samuel Larkin,
 and Patrick Littell. 2021. NRC-CNRC machine
 translation systems for the 2021 AmericasNLP
@@ -1327,7 +1231,6 @@ Tom Kocmi. 2020. CUNI submission for the Inuktitut
  language in WMT news 2020. In Proceedings
  of the Fifth Conference on Machine Translation ,
 pages 171 174, Online. Association for Computational
- Linguistics.
 Michael Krauss. 1992. The world s languages in crisis.
 Language , 68(1) 4 10.
 Mateusz Krubi  nski, Marcin Chochowski, Bartłomiej
@@ -1337,12 +1240,10 @@ Samsung R&D institute Poland submission to
 WMT20 news translation task. In Proceedings of
 the Fifth Conference on Machine Translation , pages
 181 190, Online. Association for Computational
-Linguistics.
 Surafel M Lakew, Quintino F Lotito, Matteo Negri,
 Marco Turchi, and Marcello Federico. 2018. Improving
  zero-shot translation of low-resource languages.
  In Proceedings of the 14h IWSLT , pages
-113 119.
 Guillaume Lample, Alexis Conneau, Ludovic Denoyer,
 and Marc Aurelio Ranzato. 2017. Unsupervised
 machine translation using monolingual corpora only.
@@ -1381,7 +1282,6 @@ leveraging alignment information. In Proceedings
  of the 2020 Conference on Empirical Methods
 in Natural Language Processing (EMNLP) , pages
 2649 2663, Online. Association for Computational
-Linguistics.
 Wang Ling, Isabel Trancoso, Chris Dyer, and Alan W
 Black. 2015. Character-based neural machine translation.
  arXiv preprint arXiv 1511.04586 .
@@ -1408,7 +1308,6 @@ Zoey Liu, Crystal Richardson, Richard Hatcher Jr, and
 Emily Prud hommeaux. 2022. Not always about
 you  Prioritizing community needs when developing
  endangered language technology. arXiv preprint
-arXiv 2204.05541 .
 Chi-kiu Lo. 2020. Extended study on using pretrained
 language models and YiSi-1 for machine translation
  evaluation. In Proceedings of the Fifth Conference
@@ -1420,7 +1319,6 @@ journal des traducteurs/Meta  Translators  Journal ,
 50(2) 597 608.Bruce T Lowerre. 1976. The harpy speech recognition
 system. Technical report, CARNEGIE-MELLON
 UNIV PITTSBURGH PA DEPT OF COMPUTER
-SCIENCE.
 Yichao Lu, Phillip Keung, Faisal Ladhak, Vikas Bhardwaj,
  Shaonan Zhang, and Jason Sun. 2018. A neural
  interlingua for multilingual machine translation.
@@ -1429,11 +1327,11 @@ Translation  Research Papers , pages 84 92.
 Thang Luong, Ilya Sutskever, Quoc Le, Oriol Vinyals,
 and Wojciech Zaremba. 2015. Addressing the rare
 word problem in neural machine translation. In Proceedings
- of the 53 7th International
+ of the 53rd Annual Meeting of the Association
+ for Computational Linguistics and the 7th International
  Joint Conference on Natural Language
 Processing (Volume 1  Long Papers) , pages 11 19,
 Beijing, China. Association for Computational Linguistics.
-
 Manuel Mager, Diónico Carrillo, and Ivan Meza.
 2018a. Probabilistic finite-state morphological segmenter
  for wixarika (huichol) language. Journal of
@@ -1449,7 +1347,6 @@ Short Papers) , pages 2005 2011, Minneapolis, Minnesota.
 Manuel Mager, Özlem Çetino  glu, and Katharina
 Kann. 2020. Tackling the low-resource challenge
  for canonical segmentation. arXiv preprint
-arXiv 2010.02804 .
 Manuel Mager, Ximena Gutierrez-Vasques, Gerardo
 Sierra, and Ivan Meza-Ruiz. 2018b. Challenges of
 language technologies for the indigenous languages
@@ -1461,7 +1358,6 @@ Manuel Mager, Elisabeth Mager, Katharina Kann,
 and Ngoc Thang Vu. 2023. Ethical considerations
 for machine translation of indigenous languages 
 Giving a voice to the speakers. arXiv preprint
-arXiv 2305.19474 .
 Manuel Mager, Elisabeth Mager, Alfonso MedinaUrrea,
  Ivan Vladimir Meza Ruiz, and Katharina
 Kann. 2018c. Lost in translation  Analysis of information
@@ -1473,7 +1369,6 @@ New Mexico, USA. Association for Computational
 Linguistics.Manuel Mager and Ivan Meza. 2021. Retos en construcción
  de traductores automáticos para lenguas
 indígenas de México. Digital Scholarship in the Humanities
- , 36.
 Manuel Mager, Arturo Oncevay, Abteen Ebrahimi,
 John Ortega, Annette Rios, Angela Fan, Ximena
  Gutierrez-Vasques, Luis Chiruzzo, Gustavo
@@ -1514,7 +1409,6 @@ beyond-Volume 3 , pages 115 118. Association for
 Computational Linguistics.
 Thomas Mayer and Michael Cysouw. 2014. Creating
  a massively parallel bible corpus. Oceania ,
-135(273) 40.
 Arya D. McCarthy, Rachel Wicks, Dylan Lewis,
 Aaron Mueller, Winston Wu, Oliver Adams, Garrett
  Nicolai, Matt Post, and David Yarowsky. 2020.
@@ -1533,7 +1427,6 @@ Machine Translation , pages 99 107.
 Tomas Mikolov, Kai Chen, Greg Corrado, and Jeffrey
  Dean. 2013. Efficient estimation of word
 representations in vector space. arXiv preprint
-arXiv 1301.3781 .
 Marianne Mithun. 1986. On the nature of noun incorporation.
  Language , 62(1) 32 37.
 Oscar Moreno. 2021. The REPU CS  Spanish 
@@ -1542,7 +1435,6 @@ shared task on open machine translation. In Proceedings
  of the First Workshop on Natural Language
 Processing for Indigenous Languages of the Americas,
  pages 241 247, Online. Association for Computational
- Linguistics.
 El Moatez Billah Nagoudi, Wei-Rui Chen, Muhammad
  Abdul-Mageed, and Hasan Cavusoglu. 2021.
 IndT5  A text-to-text transformer for 10 indigenous
@@ -1599,7 +1491,6 @@ Toan Q Nguyen and David Chiang. 2017. Transfer
 for neural machine translation. In Proceedings of
 the Eighth International Joint Conference on Natural
  Language Processing (Volume 2  Short Papers) ,
-pages 296 301.
 Eugene Nida. 1945. Linguistics and ethnology in
 translation-problems. Word , 1(2) 194 208.
 Jan Niehues and Eunah Cho. 2017. Exploiting linguistic
@@ -1607,14 +1498,12 @@ Jan Niehues and Eunah Cho. 2017. Exploiting linguistic
 multi-task learning. In Proceedings of the Second
 Conference on Machine Translation , pages 80 89,
 Copenhagen, Denmark. Association for Computational
- Linguistics.
 Jan Niehues, Eunah Cho, Thanh-Le Ha, and Alex
 Waibel. 2016. Pre-translation for neural machine
 translation. In Proceedings of COLING 2016, the
 26th International Conference on Computational
 Linguistics  Technical Papers , pages 1828 1836,
 Osaka, Japan. The COLING 2016 Organizing Committee.
-
 Farhad Nooralahzadeh, Giannis Bekoulis, Johannes
 Bjerva, and Isabelle Augenstein. 2020. Zero-shot
 cross-lingual transfer with meta learning. arXiv
@@ -1625,7 +1514,6 @@ Chao-Hong Liu. 2020. Findings of the LoResMT
  In Proceedings of the 3rd Workshop on
 Technologies for MT of Low Resource Languages ,
 pages 33 37, Suzhou, China. Association for Computational
- Linguistics.
 Matthew Olson, Abraham Wyner, and Richard Berk.
 2018. Modern neural networks generalize on small
 data sets. In Advances in Neural Information Processing
@@ -1640,7 +1528,6 @@ Whitenack, Kathleen Siminyu, Laura Martinus,
 Jamiil Toure Ali, Jade Abbott, Vukosi Marivate,
 Salomon Kabongo, et al. 2020. Masakhane 
 machine translation for africa. arXiv preprint
-arXiv 2003.11529 .
 John E Ortega, Richard Castro Mamani, and
 Kyunghyun Cho. 2020a. Neural machine translation
 with a polysynthetic low resource language. Machine
@@ -1664,7 +1551,6 @@ Kishore Papineni, Salim Roukos, Todd Ward, and WeiJing
 40th Annual Meeting of the Association for Computational
  Linguistics , pages 311 318, Philadelphia,
 Pennsylvania, USA. Association for Computational
-Linguistics.
 Shantipriya Parida, Subhadarshi Panda, Amulya Dash,
 Esau Villatoro-Tello, A. Seza Do  gruöz, Rosa M.
 Ortega-Mendoza, Amadeo Hernández, Yashvardhan
@@ -1695,7 +1581,7 @@ Gideon Maillette de Buy Wenniger, and Andy Way.
 2019. Combining pbsmt and nmt back-translated
 data for efficient nmt. In Proceedings of the International
  Conference on Recent Advances in Natural
-Language Processing (RANLP 2019) , pages 922 931.
+Language Processing (RANLP 2019) , pages 922 
 Maja Popovi  c. 2017. chrf    words helping character
 n-grams. In Proceedings of the second conference
 on machine translation , pages 612 618.
@@ -1705,19 +1591,21 @@ Nima Pourdamghani and Kevin Knight. 2019. Neighbors
 Translation , 33(3) 239 258.
 Ofir Press and Lior Wolf. 2017. Using the output embedding
  to improve language models. In Proceedings
- of the 15 2, Short Papers , pages 157 163.
+ of the 15th Conference of the European Chapter
+ of the Association for Computational Linguistics 
+Volume 2, Short Papers , pages 157 163.
 Colin Raffel, Noam Shazeer, Adam Roberts, Katherine
 Lee, Sharan Narang, Michael Matena, Yanqi Zhou,
 Wei Li, and Peter J Liu. 2020. Exploring the limits
 of transfer learning with a unified text-to-text transformer.
  Journal of Machine Learning Research ,
-21 1 67.
 Alessandro Raganato, Raúl Vázquez, Mathias Creutz,
 and Jörg Tiedemann. 2021. An empirical investigation
  of word alignment supervision for zero-shot
 multilingual neural machine translation. In Proceedings
  of the 2021 Conference on Empirical Methods
- in Natural Language Processing , pages 8449 8456, Online and Punta Cana, Dominican Republic.
+ in Natural Language Processing , pages 8449 
+8456, Online and Punta Cana, Dominican Republic.
 Association for Computational Linguistics.
 Surangika Ranathunga, En-Shiun Annie Lee, Marjana
  Prifti Skenduli, Ravi Shekhar, Mehreen Alam,
@@ -1730,7 +1618,6 @@ Shuai Ma. 2020. A retrieve-and-rewrite initialization
 InProceedings of the 58th Annual Meeting of the
 Association for Computational Linguistics , pages
 3498 3504, Online. Association for Computational
-Linguistics.
 Parker Riley, Isaac Caswell, Markus Freitag, and David
 Grangier. 2020. Translationese as a language in
  multilingual  NMT. In Proceedings of the 58th Annual
@@ -1749,14 +1636,12 @@ Shavit. 2017. Deep learning is robust to massive label
 Carlos Barron Romero, Jesús Manuel Mager Hois, and
 Fernando Reyes Avilés. 2016. Richard feynman, los
 alfabetos y los lenguajes. Relingüística aplicada ,
-(19) 2.
 Mónica Jasso Rosales, Manuel Mager, and Ivan
 Vladimir Meza Ruız. Towards a twitter corpus of
 the indigenous languages of the americas.
 Devendra Singh Sachan and Graham Neubig. 2018.
 Parameter sharing methods for multilingual selfattentional
  translation models. arXiv preprint
-arXiv 1809.00252 .
 Elizabeth Salesky, David Etter, and Matt Post. 2021.
 Robust open-vocabulary translation from visual text
 representations. arXiv preprint arXiv 2104.08211 .
@@ -1771,25 +1656,22 @@ Motoki Sano, Jun Suzuki, and Shun Kiyono. 2019. Effective
  adversarial regularization for neural machine
 translation. In Proceedings of the 57th Annual Meeting
  of the Association for Computational Linguistics,
- pages 204 210.
 Yves Scherrer, Stig-Arne Grönroos, and Sami Virpioja.
  2020. The University of Helsinki and aalto
 university submissions to the WMT 2020 news and
 low-resource translation tasks. In Proceedings of
 the Fifth Conference on Machine Translation , pages
 1129 1138, Online. Association for Computational
-Linguistics.
 Lane Schwartz. 2022. Primum non nocere  Before
 working with indigenous data, the acl must confront
 ongoing colonialism. In Proceedings of the 60th Annual
  Meeting of the Association for Computational
-Linguistics (Volume 2  Short Papers) , pages 724 731.
+Linguistics (Volume 2  Short Papers) , pages 724 
 Lane Schwartz, Francis Tyers, Lori Levin, Christo
 Kirov, Patrick Littell, Chi-kiu Lo, Emily
 Prud hommeaux, Hyunji Hayley Park, Kenneth
  Steimel, Rebecca Knowles, et al. 2020. Neural
 polysynthetic language modelling. arXiv preprint
-arXiv 2005.05477 .
 Lee Sechrest, Todd L Fay, and SM Hafeez Zaidi. 1972.
 Problems of translation in cross-cultural research.
 Journal of cross-cultural psychology , 3(1) 41 56.Rico Sennrich, Barry Haddow, and Alexandra Birch.
@@ -1798,24 +1680,21 @@ Journal of cross-cultural psychology , 3(1) 41 56.Rico Sennrich, Barry Haddow, a
 54th Annual Meeting of the Association for Computational
  Linguistics (Volume 1  Long Papers) , pages
 86 96, Berlin, Germany. Association for Computational
- Linguistics.
 Rico Sennrich, Barry Haddow, and Alexandra Birch.
 2016b. Improving neural machine translation models
  with monolingual data. In Proceedings of the
 54th Annual Meeting of the Association for Computational
  Linguistics (Volume 1  Long Papers) , pages
-86 96.
 Rico Sennrich, Barry Haddow, and Alexandra Birch.
 2016c. Neural machine translation of rare words
 with subword units. In Proceedings of the 54th Annual
  Meeting of the Association for Computational
-Linguistics (Volume 1  Long Papers) , pages 1715 1725, Berlin, Germany. Association for Computational
- Linguistics.
+Linguistics (Volume 1  Long Papers) , pages 1715 
+1725, Berlin, Germany. Association for Computational
 Joan Serra, Didac Suris, Marius Miron, and Alexandros
  Karatzoglou. 2018. Overcoming catastrophic
 forgetting with hard attention to the task. In International
  Conference on Machine Learning , pages
-4548 4557. PMLR.
 Aditya Siddhant, Ankur Bapna, Yuan Cao, Orhan Firat,
  Mia Chen, Sneha Kudugunta, Naveen Arivazhagan,
  and Yonghui Wu. 2020. Leveraging monolingual
@@ -1831,12 +1710,10 @@ Mexican languages  Development and interface.
 InProceedings of the 12th Language Resources
 and Evaluation Conference , pages 2947 2952,
 Marseille, France. European Language Resources
-Association.
 Gary F Simons and M Paul Lewis. 2013. The world s
 languages in crisis. Responses to language endangerment 
  In honor of Mickey Noonan. New directions
  in language documentation and language revitalization
- , 3 20.
 Peter Smit, Sami Virpioja, Stig-Arne Grönroos, Mikko
 Kurimo, et al. 2014. Morfessor 2.0  Toolkit for statistical
  morphological segmentation. In The 14th
@@ -1847,7 +1724,8 @@ Anders Søgaard, Sebastian Ruder, and Ivan Vuli  c.
 2018. On the limitations of unsupervised bilingual
 dictionary induction. In Proceedings of the 56th Annual
  Meeting of the Association for Computational
-Linguistics (Volume 1  Long Papers) , pages 778 788.Haiyue Song, Raj Dabre, Zhuoyuan Mao, Fei Cheng,
+Linguistics (Volume 1  Long Papers) , pages 778 
+788.Haiyue Song, Raj Dabre, Zhuoyuan Mao, Fei Cheng,
 Sadao Kurohashi, and Eiichiro Sumita. 2020. Pretraining
  via leveraging assisting languages and data
 selection for neural machine translation. arXiv
@@ -1856,7 +1734,6 @@ Kaitao Song, Xu Tan, Tao Qin, Jianfeng Lu, and TieYan
  Liu. 2019. Mass  Masked sequence to sequence
  pre-training for language generation. In International
  Conference on Machine Learning , pages
-5926 5936.
 Xabier Soto, Dimitar Shterionov, Alberto Poncelas,
 and Andy Way. 2020. Selecting backtranslated data
 from multiple sources for improved neural machine
@@ -1873,7 +1750,6 @@ Alexander Fraser. 2019. The lmu munich unsupervised
  machine translation system for wmt19. In
 Proceedings of the Fourth Conference on Machine
 Translation (Volume 2  Shared Task Papers, Day 1) ,
-pages 393 399.
 Haipeng Sun, Rui Wang, Kehai Chen, Masao Utiyama,
 Eiichiro Sumita, and Tiejun Zhao. 2020. Robust unsupervised
  neural machine translation with adversarial
@@ -1881,12 +1757,10 @@ Eiichiro Sumita, and Tiejun Zhao. 2020. Robust unsupervised
 Xu Tan, Yichong Leng, Jiale Chen, Yi Ren, Tao
 Qin, and Tie-Yan Liu. 2019. A study of multilingual
  neural machine translation. arXiv preprint
-arXiv 1912.11625 .
 Sarah G Thomason. 2015. Endangered languages .
 Cambridge University Press.
 Jörg Tiedemann. 2016. Opus parallel corpora for everyone.
  Baltic Journal of Modern Computing , page
-384.
 Jörg Tiedemann. 2018. Emerging language spaces
 learned from massively multilingual corpora. arXiv
 preprint arXiv 1802.00273 .
@@ -1896,12 +1770,12 @@ Kolesnikova, Noé Castro-Sánchez, Grigori Sidorov,
 and Alexander Gelbukh. 2023. Parallel corpus
 for indigenous language translation  Spanishmazatec
  and spanish-mixtec. arXiv preprint
-arXiv 2305.17404 .
 Antonio Toral, Sheila Castilho, Ke Hu, and Andy
 Way. 2018. Attaining the unattainable  reassessing
  claims of human parity in neural machine translation.
  In Proceedings of the Third Conference on
-Machine Translation  Research Papers , pages 113 123.Hai-Long Trieu, Duc-Vu Tran, Ashwin Ittoo, and LeMinh
+Machine Translation  Research Papers , pages 113 
+123.Hai-Long Trieu, Duc-Vu Tran, Ashwin Ittoo, and LeMinh
  Nguyen. 2019. Leveraging additional resources
  for improving statistical machine translation
 on asian low-resource languages. ACM Trans. Asian
@@ -1912,7 +1786,6 @@ machine translation. In Human Language Technologies
  2007  The Conference of the North American
 Chapter of the Association for Computational Linguistics 
  Proceedings of the Main Conference , pages
-484 491.
 Clara Vania and Adam Lopez. 2017. From characters
 to words to in between  Do we capture morphology 
  In Proceedings of the 55th Annual Meeting of
@@ -1928,12 +1801,13 @@ Raúl Vázquez, Yves Scherrer, Sami Virpioja, and Jörg
 Tiedemann. 2021. The Helsinki submission to the
 AmericasNLP shared task. In Proceedings of the
 First Workshop on Natural Language Processing for
-Indigenous Languages of the Americas , pages 255 264, Online. Association for Computational Linguistics.
-
+Indigenous Languages of the Americas , pages 255 
+264, Online. Association for Computational Linguistics.
 Ivan Vuli  c, Goran Glavaš, Roi Reichart, and Anna Korhonen.
  2019. Do we really need fully unsupervised
  cross-lingual embeddings  In Proceedings of
-the 2019 9th International
+the 2019 Conference on Empirical Methods in Natural
+ Language Processing and the 9th International
 Joint Conference on Natural Language Processing
 (EMNLP-IJCNLP) , pages 4407 4418, Hong Kong,
 China. Association for Computational Linguistics.
@@ -1943,7 +1817,8 @@ arXiv preprint arXiv 2004.04070 .
 Liang Wang, Wei Zhao, Ruoyu Jia, Sujian Li, and
 Jingming Liu. 2019a. Denoising based sequenceto-sequence
  pre-training for text generation. In Proceedings
- of the 2019 9th International
+ of the 2019 Conference on Empirical Methods
+ in Natural Language Processing and the 9th International
  Joint Conference on Natural Language
 Processing (EMNLP-IJCNLP) , pages 3994 4006.
 Qiang Wang, Bei Li, Tong Xiao, Jingbo Zhu,
@@ -1958,7 +1833,6 @@ machine translation. In Proceedings of the Thirtieth
 International Joint Conference on Artificial Intelligence,
  IJCAI-21 , pages 4636 4643. International
 Joint Conferences on Artificial Intelligence Organization.
- Survey Track.
 Xinyi Wang, Hieu Pham, Philip Arthur, and Graham
  Neubig. 2019c. Multilingual neural machine
 translation with soft decoupled encoding. In International
@@ -1978,7 +1852,6 @@ and Graham Neubig. 2019. Beyond bleu  Training
  neural machine translation with semantic similarity.
  In Proceedings of the 57th Annual Meeting
  of the Association for Computational Linguistics,
- pages 4344 4355.
 Hua Wu and Haifeng Wang. 2007. Pivot language approach
  for phrase-based statistical machine translation.
  Machine Translation , 21(3) 165 181.
@@ -1993,7 +1866,6 @@ Haoran Xu, Benjamin Van Durme, and Kenton Murray.
  Methods in Natural Language Processing ,
 pages 6663 6675, Online and Punta Cana, Dominican
  Republic. Association for Computational Linguistics.
-
 Linting Xue, Noah Constant, Adam Roberts, Mihir
  Kale, Rami Al-Rfou, Aditya Siddhant, Aditya
 Barua, and Colin Raffel. 2021. mt5  A massively
@@ -2001,7 +1873,6 @@ multilingual pre-trained text-to-text transformer. In
 Proceedings of the 2021 Conference of the North
 American Chapter of the Association for Computational
  Linguistics  Human Language Technologies ,
-pages 483 498.
 Delfino Zacarías Márquez and Ivan Vladimir
 Meza Ruiz. 2021. Ayuuk-Spanish neural machine
  translator. In Proceedings of the First
@@ -2016,7 +1887,7 @@ Haffari. 2018. Adaptive knowledge sharing in
 multi-task learning  Improving low-resource neural
 machine translation. In Proceedings of the 56th Annual
  Meeting of the Association for Computational
-Linguistics (Volume 2  Short Papers) , pages 656 661.
+Linguistics (Volume 2  Short Papers) , pages 656 
 Rodolfo Zevallos, John Ortega, William Chen, Richard
 Castro, Núria Bel, Cesar Toshio, Renzo Venturas,
 Aradiel, and Hilario Nelsi Melgarejo. 2022. Introducing
@@ -2025,7 +1896,6 @@ BERT model for Southern Quechua. In Proceedings
  of the Third Workshop on Deep Learning for
 Low-Resource Natural Language Processing , pages
 1 13, Hybrid. Association for Computational Linguistics.
-
 Biao Zhang, Philip Williams, Ivan Titov, and Rico
 Sennrich. 2020a. Improving massively multilingual
 neural machine translation and zero-shot translation.
@@ -2036,7 +1906,6 @@ neural machine translation and zero-shot translation.
 InProceedings of the 58th Annual Meeting of the
 Association for Computational Linguistics , pages
 1628 1639, Online. Association for Computational
-Linguistics.
 Shiyue Zhang, Ben Frey, and Mohit Bansal. 2022.
 How can nlp help revitalize endangered languages 
 a case study and roadmap for the cherokee language.
@@ -2047,11 +1916,12 @@ Shiyue Zhang, Benjamin Frey, and Mohit Bansal.
  of the 2020 Conference on Empirical Methods
  in Natural Language Processing (EMNLP) ,
 pages 577 595, Online. Association for Computational
- Linguistics.
 Shiyue Zhang, Benjamin Frey, and Mohit Bansal.
 2021. ChrEnTranslate  Cherokee-English machine
 translation demo with quality estimation and corrective
- feedback. In Proceedings of the 59 11th International Joint Conference
+ feedback. In Proceedings of the 59th Annual
+Meeting of the Association for Computational Linguistics
+ and the 11th International Joint Conference
 on Natural Language Processing  System Demonstrations
  , pages 272 279, Online. Association for
 Computational Linguistics.
@@ -2070,7 +1940,6 @@ Zhuosheng Zhang, Yafang Huang, and Hai Zhao. 2019.
 Open vocabulary learning for neural chinese pinyin
 ime. In Proceedings of the 57th Annual Meeting
 of the Association for Computational Linguistics ,
-pages 1584 1594.
 Francis Zheng, Machel Reid, Edison Marrese-Taylor,
 and Yutaka Matsuo. 2021. Low-resource machine
 translation using cross-lingual language model pretraining.
@@ -2081,7 +1950,6 @@ Natural Language Processing for Indigenous Languages
 Hao Zheng, Yong Cheng, and Yang Liu. 2017.
 Maximum expected likelihood estimation for zeroresource
  neural machine translation. In IJCAI ,
-pages 4251 4257.
 Shuyan Zhou, Xiangkai Zeng, Yingqi Zhou, Antonios
 Anastasopoulos, and Graham Neubig. 2019. Improving
  robustness of neural machine translation
@@ -2089,7 +1957,6 @@ with multi-task learning. In Proceedings of the
 Fourth Conference on Machine Translation (Volume
 2  Shared Task Papers, Day 1) , pages 565 571, Florence,
  Italy. Association for Computational Linguistics.
-
 Changfeng Zhu, Heng Yu, Shanbo Cheng, and Weihua
 Luo. 2020a. Language-aware interlingua for multilingual
  neural machine translation. In Proceedings
@@ -2100,7 +1967,6 @@ Jinhua Zhu, Fei Gao, Lijun Wu, Yingce Xia, Tao
 Qin, Wengang Zhou, Xueqi Cheng, and Tie-Yan
 Liu. 2019. Soft contextual data augmentation
 for neural machine translation. arXiv preprint
-arXiv 1905.10523 .
 Jinhua Zhu, Yingce Xia, Lijun Wu, Di He, Tao Qin,
 Wengang Zhou, Houqiang Li, and Tie-Yan Liu.
 2020b. Incorporating bert into neural machine translation.
@@ -2112,7 +1978,6 @@ arXiv 1604.02201 .A Appendix
 In this appendix we expand the information regarding
  current work on MT for LRL.
 A.1 Expanded LR work on Multilingual
-supervised training
 Arivazhagan et al. (2019a) introduce a representational
  invariance training objective across languages
  that achieves comparable results with pivoting
@@ -2120,7 +1985,8 @@ Arivazhagan et al. (2019a) introduce a representational
 models have encouraged experiments with models
 trained on a massive amount of language pairs, resulting
  in large multilingual models  Aharoni et al.
-(2019) train a single model on 102 58 languages
+(2019) train a single model on 102 languages to
+and from English in contrast to the 58 languages
 used by Neubig and Hu (2018).
 The negative aspect of this approach is the size
 of the network. Arivazhagan et al. (2019b) perform
@@ -2136,7 +2002,6 @@ Schwenk, 2019). mRASP (Lin et al., 2020) use
 for pretraining of the multilingual model and add
 a randomly aligned substitution loss that aims to
 bring words and phrases closer in the cross-lingual
-space.
 Zhang et al. (2020a) explores the main problems
 that arise for such models  multilingual NMT usually
  underperforms bilingual models (Arivazhagan
@@ -2162,7 +2027,6 @@ Oversampling of data is used by Johnson et al.
  (2019). Wang et al. (2020) proposes a differentiable
  data selection method that automatically
 learns to weight training data, optimizing translation
- on all languages.
 Multilingual modeling Sharing all parameters
 except for the attention mechanism shows improvements
  compared with sharing everything in
@@ -2187,7 +2051,6 @@ collaboration by dynamic sharing of blocks conditioned
  into the self-attention mechanism. The first
 encodes the unique characteristics of each language,
  while the second captures common semantics
- across languages.
 One problem in multilingual NMT systems is
 the translation into the wrong language. To address
  this problem, Zhang et al. (2020b) add
@@ -2197,7 +2060,6 @@ encoder and the decoder to induce a languagespecific
  translation. Raganato et al. (2021) explore
 to weight the target language label with jointly
 training one cross attention head with word alignments.
-
 Other modifications of NMT model architectures
  to improve their performance on lowresource
  languages include  deep RNNs (MiceliBarone
@@ -2226,12 +2088,10 @@ tagging and MT together improves performance
 the most. For agglutinative languages, morphological
  auxiliary tasks can be beneficial  Pan et al.
 (2020) uses stemming with fully shared parameters.
-
 As an alternative to linguistically informed auxiliary
  tasks Srinivasan et al. (2019) uses multiple
 BPE vocabulary sizes to generate different segmentations.
  Each segmentation is treated as an individual
- task.
 A.3 Data augmentation
 Back-translation Caswell et al. (2019) shows
 that adding a special tag to the synthetic data improves
@@ -2276,7 +2136,6 @@ modeling objective   instead. The authors finetune
 BERT with a conditional masked language modeling
  objective that tries to avoid the prediction of
 words that do not correspond to the original sentence
- meaning.
 Another way to augmented MT data is by paraphrasing.
  If a good paraphrase system exists, this
 can increase the number of training instances (Hu
@@ -2299,12 +2158,10 @@ noise is realized by inserting, deleting, or replacing
  words, BPE tokens, or characters to expand
 the training set in an adversarial fashion (Belinkov
 and Bisk, 2018  Ebrahimi et al., 2018     Cheng
-et al., 2019, 2020).
 Pivoting While it is simple to implement and
 effective, pivot-based approaches suffer from error
  propagation. To overcome that for NMT, jointtraining Zheng et al. (2017)  Cheng (2019) and
 round-trip training (Ahmadnia and Dorr, 2019)
-have been proposed.
 Pivoting with NMT systems has been used
 for translating Japanese, Indonesian, and Malay
 into Vietnamese (Trieu et al., 2019), translation
@@ -2329,7 +2186,7 @@ all tracks is transfer learning, achieving surprisingly
 shared task on open MT (Mager et al., 2021), 10
 indigenous language languages were paired with
 Spanish, resulting in an extreme low-resource setting
- (4 125k paired sentences), with challenges
+ (4k to 125k paired sentences), with challenges
 out as domain, dialectical, and orthographic mismatches
  between splits and datasets. The best
 systems shows that data cleaning and collection
@@ -2348,7 +2205,6 @@ the optimal selection and combination of methods
 mismatch, linguistic closeness of languages). This
 implies that data analysis and linguistic knowledge
  are needed to improve a final system s performance.
-
 A.5 Transfer learning
 This helps low-resource tasks as a lower amount
 of data can be used for training. One applicationof transfer learning to MT is the usage of a pretrained
@@ -2425,7 +2281,6 @@ fine-tuining it with one single language pair, to improve
 to handle this problem is reducing the number of
 parameter to be updated. Gheini et al. (2021) propose
  to only update the cross attention parameters.
-A.6 Unsupervised MT
 The addition of other components such as masked
 LMs and denoising auto-encoding has also been
 tried (Stojanovski et al., 2019). Unsupervised
@@ -2464,7 +2319,6 @@ UMT systems. The main idea consists of generalizing
  UMT by using a multi-way back-translation
 objective. Recently, pretrained multilingual transformer
  networks are used to improve UMT even
-further (cf.  6.4).
 B Ethical Considerations
 Ethical concerns when working on MT for endangered
  languages include a lack of community involvement

@@ -1,7 +1,7 @@
 Exploration on HuBERT with Multiple Resolutions
-Jiatong Shi1, Yun Tang2, Hirofumi Inaguma2, Hongyu Gong2, Juan Pino2, Shinji Watanabe1 1Language Technologies Institute, Carnegie Mellon University Meta AI
+Jiatong Shi1, Yun Tang2, Hirofumi Inaguma2, Hongyu Gong2, Juan Pino2, Shinji Watanabe1
+1Language Technologies Institute, Carnegie Mellon University2Meta AI
 {jiatongs, swatanab }@cs.cmu.edu
-Abstract
 Hidden-unit BERT (HuBERT) is a widely-used self-supervised
 learning (SSL) model in speech processing. However, we argue
 that its fixed 20ms resolution for hidden representations would
@@ -18,7 +18,6 @@ demonstrate that HuBERT with multiple resolutions outperforms
 diverse information from speech signals.
 Index Terms   speech self-supervised learning, multi-resolution
 HuBERT, Hidden-unit BERT.
-1. Introduction
 In recent years, self-supervised learning (SSL) models for
 speech processing have demonstrated impressive performance
 on a range of tasks [1]. These models can leverage unlabeled
@@ -89,31 +88,30 @@ data and fewer parameters.
 LetS R1 Lbe a speech signal with length L. The HuBERT
 model Hconsists of two modules  a conv. feature extractor
 and an N-layer transformer encoder. The conv. block first convertsSinto
- a sequence of vectors X0  [x0 1, ..., x0
-T] RT D,
+ a sequence of vectors X0  [x0
 where Tis the number of frames and Dis the dimension of each
-frame. The resulting feature sequence X is then passed to the
-transformer encoder, which produces a sequence of feature rep It s
+frame. The resulting feature sequence X0is then passed to the
+transformer encoder, which produces a sequence of feature rep1It s
  worth noting that this choice of resolution is derived from an
 ASR conversion involving downsampling, which is specific to that particular
- task.arXiv 2306.01084 2  [cs.SD]  22 2023 1 1_base64 "SJ pfPHjmpDnUQ ZcoW/1R XTXE " AAAB nicbVBNS NAEJ Ur q/qh LBbBU lKQb VvPRY dZCG pmu mXbjZhdyKU J/gxYMiXv F vw btsctPXBwOO GWbmBYkUBl ylsbG t xR S v B dH eOTjolTzXibxTLW YAaLoXibRQoeTfRnEaB I/B HbuPz xbUSsHnCacD iIyVCwSha b Ablilt FyDrxMtJBXK BuWv/jBmacQVMkmN Xlugn GNQom azUTw PKJvQEe ZqmjEjZ tTp RC sMSRhrWwrJQv kdHImGkU M I tisenPxP6 XYnjtZ IlKXLFlovCVBKMyfxvMhSaM RTSyjTwt K JhqytCmU IheKsvr NOrerVqzd UqjlsdRhDM h vw Aoa IQWtIHBCJ hFd c bw HsrXg DOn AfO w/BkY s /latexit 
-HuBERTHuBERTFusionDownstreamModelH2 1_base64 "o oRonGwcNoBP OJg qhPQN/4 0 " AAAB icbVBNS NAEJ Ur q/qh LBbBU lKQb VvPRYwX AG pmu X m C kQooX/BiwdFvPqHvPlvTNoctPXBwOO GWbmBZEUFl ylsbe/s hX SweHR cn dOzjg jw ibhTI vYBaLoXmbRQoeS ynKpA m wu8/87hM VoT EecR xWdaDEWjGImNYe rBccavuEmSTeDmpQI WsPw GIUsVlwjk TavudG CfUoGCSL qD PKIshmd H KNVXc sny gW SpURGYcmLY kqf eSKiydq CtFNRnNp LxP/8/oxjm/9 8 8 K Ox r oKTz zDHzifP/f jYE  /latexit 
-H3 1_base64 "7740bN fxfI /KsB Magnc ZB E " AAAB nicbVDLSgNBEOyNrxhfUY eBoPgKezGgHoLeMkxonlAsoTZSScZMju zMwKYcknePGgiFe/yJt/4yTZgyYWNBRV XR BbHg rjut Pb Nza snvFvb Dw PiscnLR limGTRSJSnYBqFFxi AjsBMrpGEgsB M uZ  wmV pF NNMY/ZCOJB yRo VHur q x JbdBcg TJSggyNfvGrN hYEqI TFCtu bGz lynAmcFboJRpjyiZ hF LJQ R  ni Bm sMqADCNlSxqyUH PpDTUehoGtjOkZqxXvbn n dNzPDGT mME OSLRcNE FMROZ/kwFXyIyYWkKZ vZWwsZUUWZsOgUbgrf jppVcpetXx Xy VKlkceTiDc gED hBnVoQBMYjOAZXuHNEc L8 58LFtzTjZzCn/gfP AxJmNbg   /latexit 
-ParallelHuBERT-MR
-HuBERTSpeechSignalsH1 1_base64 "SJ pfPHjmpDnUQ ZcoW/1R XTXE " AAAB nicbVBNS NAEJ Ur q/qh LBbBU lKQb VvPRY dZCG pmu mXbjZhdyKU J/gxYMiXv F vw btsctPXBwOO GWbmBYkUBl ylsbG t xR S v B dH eOTjolTzXibxTLW YAaLoXibRQoeTfRnEaB I/B HbuPz xbUSsHnCacD iIyVCwSha b Ablilt FyDrxMtJBXK BuWv/jBmacQVMkmN Xlugn GNQom azUTw PKJvQEe ZqmjEjZ tTp RC sMSRhrWwrJQv kdHImGkU M I tisenPxP6 XYnjtZ IlKXLFlovCVBKMyfxvMhSaM RTSyjTwt K JhqytCmU IheKsvr NOrerVqzd UqjlsdRhDM h vw Aoa IQWtIHBCJ hFd c bw HsrXg DOn AfO w/BkY s /latexit 
-FusionHuBERTHuBERTFusionDownstreamModelH2 1_base64 "o oRonGwcNoBP OJg qhPQN/4 0 " AAAB icbVBNS NAEJ Ur q/qh LBbBU lKQb VvPRYwX AG pmu X m C kQooX/BiwdFvPqHvPlvTNoctPXBwOO GWbmBZEUFl ylsbe/s hX SweHR cn dOzjg jw ibhTI vYBaLoXmbRQoeS ynKpA m wu8/87hM VoT EecR xWdaDEWjGImNYe rBccavuEmSTeDmpQI WsPw GIUsVlwjk TavudG CfUoGCSL qD PKIshmd H KNVXc sny gW SpURGYcmLY kqf eSKiydq CtFNRnNp LxP/8/oxjm/9 8 8 K Ox r oKTz zDHzifP/f jYE  /latexit 
-H3 1_base64 "7740bN fxfI /KsB Magnc ZB E " AAAB nicbVDLSgNBEOyNrxhfUY eBoPgKezGgHoLeMkxonlAsoTZSScZMju zMwKYcknePGgiFe/yJt/4yTZgyYWNBRV XR BbHg rjut Pb Nza snvFvb Dw PiscnLR limGTRSJSnYBqFFxi AjsBMrpGEgsB M uZ  wmV pF NNMY/ZCOJB yRo VHur q x JbdBcg TJSggyNfvGrN hYEqI TFCtu bGz lynAmcFboJRpjyiZ hF LJQ R  ni Bm sMqADCNlSxqyUH PpDTUehoGtjOkZqxXvbn n dNzPDGT mME OSLRcNE FMROZ/kwFXyIyYWkKZ vZWwsZUUWZsOgUbgrf jppVcpetXx Xy VKlkceTiDc gED hBnVoQBMYjOAZXuHNEc L8 58LFtzTjZzCn/gfP AxJmNbg   /latexit 
+ task.arXiv 2306.01084v2  [cs.SD]  22 Jun 2023HuBERTSpeechSignalsH1
+ latexit sha1_base64 "SJ5pfPHjmpDnUQ6ZcoW/1R7XTXE " AAAB6nicbVBNS8NAEJ3Ur1q/qh69LBbBU0lKQb0VvPRY0dZCG8pmu2mXbjZhdyKU0J/gxYMiXv1F3vw3btsctPXBwOO9GWbmBYkUBl332ylsbG5t7xR3S3v7B4dH5eOTjolTzXibxTLW3YAaLoXibRQoeTfRnEaB5I/B5HbuPz5xbUSsHnCacD iIyVCwSha6b458Ablilt1FyDrxMtJBXK0BuWv/jBmacQVMkmN6Xlugn5GNQom azUTw1PKJvQEe9ZqmjEjZ8tTp2RC6sMSRhrWwrJQv09kdHImGkU2M6I4tisenPxP6 XYnjtZ0IlKXLFlovCVBKMyfxvMhSaM5RTSyjTwt5K2JhqytCmU7IheKsvr5NOrerVqzd39UqjlsdRhDM4h0vw4Aoa0IQWtIHBCJ7hFd4c6bw4787HsrXg5DOn8AfO5w/BkY1s /latexit 
+HuBERTHuBERTFusionDownstreamModelH2
+ latexit sha1_base64 "o7oRonGwcNoBP8OJg5qhPQN/4w0 " AAAB63icbVBNS8NAEJ3Ur1q/qh69LBbBU0lKQb0VvPRYwX5AG8pmu22X7m7C7kQooX/BiwdFvPqHvPlvTNoctPXBwOO9GWbmBZEUFl332ylsbe/s7hX3SweHR8cn5dOzjg1jw3ibhTI0vYBaLoXmbRQoeS8ynKpA8m4wu8/87hM3VoT6EecR9xWdaDEWjGImNYe10rBccavuEmSTeDmpQI7WsPw1GIUsVlwjk9TavudG6CfUoGCSL0qD2PKIshmd8H5KNVXc sny1gW5SpURGYcmLY1kqf6eSKiydq6CtFNRnNp1LxP/8/oxjm/9ROgoRq7ZatE4lgRDkj1ORsJwhnKeEsqMSG8lbEoNZZjGk4Xgrb 8STq1qlev3j3UK41aHkcRLuASrsGDG2hAE1rQBgZTeIZXeHOU8 K8Ox r1oKTz5zDHzifP/f jYE  /latexit 
+H3 latexit sha1_base64 "7740bN0fxfI /KsB8Magnc8ZB7E " AAAB6nicbVDLSgNBEOyNrxhfUY9eBoPgKezGgHoLeMkxonlAsoTZSScZMju7zMwKYcknePGgiFe/yJt/4yTZgyYWNBRV3XR3BbHg2rjut5Pb2Nza3snvFvb2Dw6PiscnLR0limGTRSJSnYBqFFxi03AjsBMrpGEgsB1M7uZ  wmV5pF8NNMY/ZCOJB9yRo2VHur9q36x5JbdBcg68TJSggyNfvGrN4hYEqI0TFCtu54bGz lynAmcFboJRpjyiZ0hF1LJQ1R  ni1Bm5sMqADCNlSxqyUH9PpDTUehoGtjOkZqxXvbn4n9dNzPDGT7mME4OSLRcNE0FMROZ/kwFXyIyYWkKZ4vZWwsZUUWZsOgUbgrf68jppVcpetXx7Xy3VKlkceTiDc7gED66hBnVoQBMYjOAZXuHNEc6L8 58LFtzTjZzCn/gfP4AxJmNbg   /latexit 
+HuBERTSpeechSignalsH1
+ latexit sha1_base64 "SJ5pfPHjmpDnUQ6ZcoW/1R7XTXE " AAAB6nicbVBNS8NAEJ3Ur1q/qh69LBbBU0lKQb0VvPRY0dZCG8pmu2mXbjZhdyKU0J/gxYMiXv1F3vw3btsctPXBwOO9GWbmBYkUBl332ylsbG5t7xR3S3v7B4dH5eOTjolTzXibxTLW3YAaLoXibRQoeTfRnEaB5I/B5HbuPz5xbUSsHnCacD iIyVCwSha6b458Ablilt1FyDrxMtJBXK0BuWv/jBmacQVMkmN6Xlugn5GNQom azUTw1PKJvQEe9ZqmjEjZ8tTp2RC6sMSRhrWwrJQv09kdHImGkU2M6I4tisenPxP6 XYnjtZ0IlKXLFlovCVBKMyfxvMhSaM5RTSyjTwt5K2JhqytCmU7IheKsvr5NOrerVqzd39UqjlsdRhDM4h0vw4Aoa0IQWtIHBCJ7hFd4c6bw4787HsrXg5DOn8AfO5w/BkY1s /latexit 
+FusionHuBERTHuBERTFusionDownstreamModelH2
+ latexit sha1_base64 "o7oRonGwcNoBP8OJg5qhPQN/4w0 " AAAB63icbVBNS8NAEJ3Ur1q/qh69LBbBU0lKQb0VvPRYwX5AG8pmu22X7m7C7kQooX/BiwdFvPqHvPlvTNoctPXBwOO9GWbmBZEUFl332ylsbe/s7hX3SweHR8cn5dOzjg1jw3ibhTI0vYBaLoXmbRQoeS8ynKpA8m4wu8/87hM3VoT6EecR9xWdaDEWjGImNYe10rBccavuEmSTeDmpQI7WsPw1GIUsVlwjk9TavudG6CfUoGCSL0qD2PKIshmd8H5KNVXc sny1gW5SpURGYcmLY1kqf6eSKiydq6CtFNRnNp1LxP/8/oxjm/9ROgoRq7ZatE4lgRDkj1ORsJwhnKeEsqMSG8lbEoNZZjGk4Xgrb 8STq1qlev3j3UK41aHkcRLuASrsGDG2hAE1rQBgZTeIZXeHOU8 K8Ox r1oKTz5zDHzifP/f jYE  /latexit 
+ latexit sha1_base64 "7740bN0fxfI /KsB8Magnc8ZB7E " AAAB6nicbVDLSgNBEOyNrxhfUY9eBoPgKezGgHoLeMkxonlAsoTZSScZMju7zMwKYcknePGgiFe/yJt/4yTZgyYWNBRV3XR3BbHg2rjut5Pb2Nza3snvFvb2Dw6PiscnLR0limGTRSJSnYBqFFxi03AjsBMrpGEgsB1M7uZ  wmV5pF8NNMY/ZCOJB9yRo2VHur9q36x5JbdBcg68TJSggyNfvGrN4hYEqI0TFCtu54bGz lynAmcFboJRpjyiZ0hF1LJQ1R  ni1Bm5sMqADCNlSxqyUH9PpDTUehoGtjOkZqxXvbn4n9dNzPDGT7mME4OSLRcNE0FMROZ/kwFXyIyYWkKZ4vZWwsZUUWZsOgUbgrf68jppVcpetXx7Xy3VKlkceTiDc7gED66hBnVoQBMYjOAZXuHNEc6L8 58LFtzTjZzCn/gfP4AxJmNbg   /latexit 
 HierarchicalHuBERT-MRFigure 1  HuBERT-MR-P and HuBERT-MR-H. In HuBERTMR-P
  (shown in the upper figure), three HuBERT models are
 fused in parallel. In contrast, HuBERT-MR-H (shown in the
 lower figure) fuses HuBERT models hierarchically, with features
  of low resolutions being fused earlier. Details about the
 framework design and Fusion modules can be found in Section
- 2.1 2.2, respectively.
-resentations Xi  [xi
-1, ..., xi
+ 2.1 and Section 2.2, respectively.
 T] RT Dat the i-th transformer
-layer. Each frame xi
 tcorresponds to a fixed time interval R,
 where R T L.2We refer to Ras the resolution of features.
 By controlling the stride of the conv. feature extractor, we
@@ -131,33 +129,23 @@ encoders to process input signals at different resolutions. Therefore,
  we use three HuBERT models ( H1,H2, andH3) with resolutions
  R1,R2, andR3, respectively, to obtain layerwise features
  from the layer before the top encoder layer to the last encoder
- layer  (X0 1, ..., XN
-1),(X0 2, ..., XN
-2), and (X0 3, ..., XN
-3).
 These feature tensors have shapes Xi
-1 1 D,Xi
-2 2 D, andXi
-3 3 D, respectively. Noted that T1, T2, T3
+3 RT3 D, respectively. Noted that T1, T2, T3
 are different. The illustration of HuBERT-MR-P is shown in
 Figure 1. We define multi-resolution features XMR-P as follows 
-XMR-P NX
-i 0(w1,i UP1(Xi
-1) w2,i UP2(Xi
-2) w3,i UP3(Xi
-3)),
-(1)
 where w1,i [0,1],w2,i [0,1], andw3,i [0,1]are learnable
  weights that sum up to one (i.e.,PN
-i 0(w1,i w2,i 
-w3,i)   1 ). The functions UP1,UP2, andUP upsample the
+w3,i)   1 ). The functions UP1,UP2, andUP3upsample the
 representations to the greatest common divisor of R1,R2, and
 2In practical situations, it is necessary to incorporate rounding procedures
  that take into account edge cases.Table 1  Configurations of the pre-trained HuBERT with multiresolutions.
  The convolution (Conv.) module is represented in
 [(kernel-size, stride)* layer-number].
 ID Res.(ms) Param. Conv. Module
-A 20 94.7 (10,5)*1   (3,2)*4   (2,2)*2 40 95.2 (10,5)*1   (3,2)*4   (2,2)*3 100 97.3 (10,5)*2   (3,2)*4   (2,2)*2 3, denoted as R1,2,3, to ensure matching feature lengths. Finally,
+A 20 94.7 (10,5)*1   (3,2)*4   (2,2)*2
+B 40 95.2 (10,5)*1   (3,2)*4   (2,2)*3
+C 100 97.3 (10,5)*2   (3,2)*4   (2,2)*2
+R3, denoted as R1,2,3, to ensure matching feature lengths. Finally,
  we can use XMR-P RTMR Dfor various downstream
 tasks, where TMR L//R 1,2,3. TheUPfunctions can be any
 upsampling functions, including simple methods such as repeating
@@ -171,35 +159,23 @@ methods [18, 21, 22], we do not perform additional feature encoding
 already pre-trained. Instead, as shown in Figure 1, we adopt
 the decoder architecture inspired by U-net and fuse the HuBERT
  representations from low to high resolution. Assuming
-R1 2 3, we first fuse the outputs from H andH2, and
-then we further fuse H for additional downstream models.
+R1  R 2  R 3, we first fuse the outputs from H1andH2, and
+then we further fuse H3for additional downstream models.
 The fusion module combines the representations from two
 different resolutions into a single stream. Specifically, we use a
 conv. module and a de-conv. module for each feature, respectively.
  Note that additional conv. modules improve the stability
 of the fusion as observed in our experiments. Given input featuresXN
-
-1 1 2 2 D, we first apply conv.
+2 RT2 D, we first apply conv.
 modules with residual connections and then employ transposed
 conv. modules to align their resolutions. The resulting feature
-X1 2
-MR-H is defined as 
-X1 2
 MR-H DeConv 1(Conv 1(XN
 1))   DeConv 2(Conv 2(XN
-2)).
-(2)
 Then, we further apply a conv. module to XN
-3and use transposed
  conv. modules to compute X1 3
-MR-H RTMR Das 
-X1 3
-MR-H DeConv 1,2(X1 2
 MR-H)  DeConv 3(Conv 3(XN
-3)).(3)
 We can then use the feature X1 3
 MR-H for downstream tasks.
-3. Experiments
 3.1. Pre-trained HuBERT
 To evaluate the effectiveness of HuBERT models with different
  resolutions, we trained three HuBERT models by modifying
@@ -218,12 +194,16 @@ SUPERB benchmark   In our experiments, we evaluate
 HuBERT-MR on the SUPERB benchmark [3 5]. According toTable 2  HuBERT-MR-P on SUPERB benchmark. Detailed tasks and evaluation metrics are discussed in Sec. 3.2. Proposed HuBERTMR-P
  is introduced in Sec. 2.1.
 Model Res.(ms) PR(  ) ASR(  ) ER(  ) IC(  ) SID(  ) SD(  ) SV(  ) SE(  ) ST(  )
-HuBERT 20 5.41 6.42 64.92 98.34 81.42 5.88 5.11 2.58 15.53 2 20 5.74 6.43 63.43 92.35 75.18 6.08 6.02 2.55 14.81
-HuBERT-MR-P (100,40,20) 4.83 5.48 63.76 98.51 83.23 5.75 5.10 2.55 16.18 3  The summation of layer weights of HuBERT with different
+HuBERT 20 5.41 6.42 64.92 98.34 81.42 5.88 5.11 2.58 15.53
+wav2vec2 20 5.74 6.43 63.43 92.35 75.18 6.08 6.02 2.55 14.81
+HuBERT-MR-P (100,40,20) 4.83 5.48 63.76 98.51 83.23 5.75 5.10 2.55 16.18
+Table 3  The summation of layer weights of HuBERT with different
  resolutions in the HuBERT-MR-P model, which was evaluated
  in the SUPERB benchmark as shown in Table 2.
 HuBERT ASR SV ST Avg. Tasks
-100 0.21 0.16 0.21 0.18 40 0.33 0.28 0.37 0.32 20 0.46 0.56 0.42 0.50
+100ms 0.21 0.16 0.21 0.18
+40ms 0.33 0.28 0.37 0.32
+20ms 0.46 0.56 0.42 0.50
 the SUPERB benchmark policy, we do not to include additional
 trainable parameters except for the layerwise weights. Therefore,
  we mainly focused on HuBERT-MR-P for the SUPERB
@@ -236,24 +216,25 @@ recognition (ASR), intent classification (IC), and speech translation
 speaker verification (SV), and speaker diarization (SD)), and
 frontend processing (speech enhancement (SE)). To better
 understand the results, we also show the performances on
-wav vec2-base for comparison [2, 29].
+wav2vec2-base for comparison [2, 29].
 ASR Fine-tuning   We evaluate the ASR fine-tuning task on
 the Librispeech 100-hour train set with dev-clean and test-clean
 for development and testing, respectively. The training utilizes
- fairseq toolkit [30]. For all models, we train 100 1M to form mini-batches.
-The training uses an AdamW optimizer with 8 2e-5. We compared HuBERT-MRP
+ fairseq toolkit [30]. For all models, we train 100k steps
+with a maximum token number of 1M to form mini-batches.
+The training uses an AdamW optimizer with 8k warmup steps
+and a learning rate of 2e-5. We compared HuBERT-MRP
  and HuBERT-MR-H with base HuBERT models, as well
-as wav vec2 models and HuBERT-large. Instead of repeating,
+as wav2vec2 models and HuBERT-large. Instead of repeating,
  we use transposed convolution for the UPfunction of
 HuBERT-MR-P. For simplification, we use a linear projection
 for CTC loss computation as the downstream module needed
-for HuBERT-MR.
 We present not only the Viterbi decoding results but also
 the results after language model rescoring. For decoding, we
-used Flashlight for wav letter decoding [31] and applied a beam
-size of 500 100 2 for language model rescoring. The language model
+used Flashlight for wav2letter decoding [31] and applied a beam
+size of 500 with a beam threshold of 100 and a language model
+weight of 2 for language model rescoring. The language model
 used was trained on the 4-gram language model training corpus
-of Librispeech [28].
 Evaluation metrics We generally follow the evaluation metrics
  for SUPERB tasks. We use phone error rate (PER) for PR 
 word error rate (WER) for ASR  accuracy for ER, IC, and SID 
@@ -289,25 +270,22 @@ in Table 3. Among the tasks, SE has the lowest weight for
  from multiple resolutions provide additional benefits and
 can significantly contribute to various types of tasks.
 The experimental results of ASR fine-tuning are presented
-in Tables 4 5. Table 4 compares the performance of
+in Tables 4 and 5. Table 4 compares the performance of
 HuBERT-MR with the original HuBERT models. The following
  observations can be found 
   Both HuBERT-MR-P and HuBERT-MR-H outperform the
 base HuBERT model trained with resolutions of 100ms,
-40ms, and 20ms.
   Although the HuBERT model trained with resolutions of
-100 40 20ms, their features appear to be complementary
+100ms and 40ms does not achieve similar performance to the
+one trained with 20ms, their features appear to be complementary
  to each other, resulting in improved performance for
 all HuBERT-MR models. We observe that the 100ms-based
 HuBERT model does not perform well in the task, likely due
 to the feature sequence being too short for effective CTCbased
- training.
 In Table 5, we compare the performance of HuBERT-MR-H to
-that of the HuBERT-large and wav vec2 models. Our findings
-are as follows 
+that of the HuBERT-large and wav2vec2 models. Our findings
   HuBERT-MR-H outperforms both the base versions of HuBERT
- and wav vec2, highlighting the superior performance
-of this method.
+ and wav2vec2, highlighting the superior performance
   Although HuBERT-MR-H is a significant improvement over
 the base HuBERT model, there is still some performance gap
 when compared to HuBERT-large. This difference could beTable 5  Fine-tuning results on Librispeech-100h (comparison with other models). Results with language model rescoring are in
@@ -315,20 +293,19 @@ brackets. * indicates the large model setting. The unlabeled column shows the nu
  is discussed in Sec 2.2. Noted that the HuBERT base model with 20ms is our baseline.
 Model Res.(ms) Unlabeled(h) Param.(M) MACs(G) FLOPs(T) WER( )
 HuBERT 20 960 94.7 1669 3.34 7.73(3.81)
-wav vec2 20 960 95.0 1669 3.34 6.54(4.33)
-wav vec2* 20 60 317.4 4326 8.66 5.90(3.45)
-HuBERT* 20 60 316.6 4324 8.66 5.40(2.82)
+wav2vec2 20 960 95.0 1669 3.34 6.54(4.33)
+wav2vec2* 20 60K 317.4 4326 8.66 5.90(3.45)
+HuBERT* 20 60K 316.6 4324 8.66 5.40(2.82)
 HuBERT-MR-H (100,40,20) 960 298.4 3454 6.91 6.11(3.31)
-(a) 20ms
- (b) 40ms
- (c) 100 2  Speech re-synthesis using features from HuBERT base models at different resolutions. The high-resolution features capture
+Figure 2  Speech re-synthesis using features from HuBERT base models at different resolutions. The high-resolution features capture
 better envelope information in the time domain (shown in the blue box), while the low-resolution features provide more detailed
 information in the frequency domain (shown in the green box). See Sec. 3.4 for experimental details and discussion.
-due to the limited training data (960 60K Librilight [32]) and fewer pre-training iterations
+due to the limited training data (960 Librispeech training sets
+versus 60K Librilight [32]) and fewer pre-training iterations
 (all three base HuBERT models use two iterations, while
 HuBERT-large uses three iterations).
   HuBERT-MR-H has a similar parameter size to both
-HuBERT-large and wav vec2-large after combining three
+HuBERT-large and wav2vec2-large after combining three
 HuBERT models. However, it requires less computational
 overhead compared to other large models. This reduction is
 mainly due to the O(T2)complexity of the transformer layers
@@ -359,7 +336,7 @@ HuBERT with 100ms resolution exhibits excellent speech resynthesis
  quality. This suggests that the feature still contains
 3https //github.com/kan-bayashi/ParallelWaveGAN .
 4Synthesized audio examples can be found in the
-https //www.dropbox.com/s/61ap iegii il/
+https //www.dropbox.com/s/61ap65iegii93il/
 audio-samples-resynthesis.zip .the necessary information in the speech.
   As shown in Figure 2, high-resolution HuBERT features
 capture better envelope information in each frame of the
@@ -370,7 +347,6 @@ time domain, while low-resolution features have more detailed
  information in the frequency domain. This property
 is similar to Short-time Fourier transformation with different
 window sizes and shifts, to some extent.
-4. Conclusion
 In this study, we revisit the use of HuBERT with multiple resolutions,
  recognizing that the original 20ms resolution may not
 be optimal for various downstream tasks. To address this, we
@@ -392,19 +368,17 @@ results demonstrate that the features do differ across resolutions,
 while all retain the essential information for intelligibility. We
 believe this work offers valuable insights into the potential benefits
  of considering multi-resolution SSL in the field.
-5. Acknowledgement
 This work was supported by a Meta AI SRA grant. J. Shi and
 S. Watanabe are funded in part of the Delta project, supported
 by the NSF (award OCI 2005572), and the State of Illinois.6. References
 [1] A. Mohamed et al. ,  Self-supervised speech representation
 learning  A review,  IEEE Journal of Selected Topics in Signal
-Processing , 2022.
 [2] W.-N. Hsu et al. ,  HuBERT  Self-supervised speech representation
  learning by masked prediction of hidden units,  IEEE/ACM
 Transactions on Audio, Speech, and Language Processing ,
 vol. 29, pp. 3451 3460, 2021.
 [3] S.-w. Yang et al. ,  SUPERB  Speech Processing Universal PERformance
- Benchmark,  in Proc. Interspeech , 2021, pp. 1194 1198.
+ Benchmark,  in Proc. Interspeech , 2021, pp. 1194 
 [4] H.-S. Tsai et al. ,  SUPERB-SG  Enhanced speech processing
 universal performance benchmark for semantic and generative
 capabilities,  in Proc. ACL , 2022, pp. 8479 8492.
@@ -418,7 +392,7 @@ ASRU , 2021, pp. 228 235.
 Features for Low Resource Speech Recognition and Translation, 
  in Proc. Interspeech , 2022, pp. 3533 3537.
 [8] S. H. Mallidi and H. Hermansky,  Novel neural network based
-fusion for multistream asr,  in Proc. ICASSP , 2016, pp. 5680 5684.
+fusion for multistream asr,  in Proc. ICASSP , 2016, pp. 5680 
 [9] S. H. R. Mallidi et al. ,  A practical and efficient multistream
 framework for noise robust speech recognition,  Ph.D. dissertation,
  Johns Hopkins University, 2018.
@@ -438,49 +412,43 @@ IEEE/ACM Transactions on Audio, Speech, and Language Processing
 [15] A. Andrusenko, R. Nasretdinov, and A. Romanenko,  Uconvconformer 
  High reduction of input sequence length for endto-end
  speech recognition,  arXiv preprint arXiv 2208.07657 ,
-2022.
 [16] S. Kim et al. ,  Squeezeformer  An efficient transformer for automatic
  speech recognition,  in Proc. NeurIPS .
 [17] W. Yao et al. ,  Multi-stream convolutional neural network
 with frequency selection for robust speaker verification,  arXiv
 preprint arXiv 2012.11159 , 2020.
 [18] Z. Gao, M.-W. Mak, and W. Lin,  Unet-densenet for robust farfield
- speaker verification,  Proc. Interspeech 2022 , pp. 3714 3718, 2022.
+ speaker verification,  Proc. Interspeech 2022 , pp. 3714 
 [19] M. Burchi and V . Vielzeuf,  Efficient conformer  Progressive
  downsampling and grouped attention for automatic speech
 recognition,  in Proc. ASRU , 2021, pp. 8 15.
 [20] Y . Zhang et al. ,  Research on speech enhancement algorithm
 based on sa-unet,  in 2019 4th International Conference on Mechanical,
  Control and Computer Engineering (ICMCCE) , 2019,
-pp. 818 8183.
 [21] T. Zhao et al. ,  Unet  -based multi-channel speech dereverberation
  and distant speech recognition,  in 2021 12th International
 Symposium on Chinese Spoken Language Processing (ISCSLP) ,
 2021, pp. 1 5.[22] R. Li et al. ,  Unet-tts  Improving unseen speaker and style transfer
- in one-shot voice cloning,  in Proc. ICASSP , 2022, pp. 8327 8331.
+ in one-shot voice cloning,  in Proc. ICASSP , 2022, pp. 8327 
 [23] X. Xiang, X. Zhang, and H. Chen,  A nested u-net with selfattention
  and dense connectivity for monaural speech enhancement, 
  IEEE Signal Processing Letters , vol. 29, pp. 105 109,
-2021.
 [24] Y . Xian et al. ,  A multi-scale feature recalibration network for
 end-to-end single channel speech enhancement,  IEEE Journal
-of Selected Topics in Signal Processing , vol. 15, no. 1, pp. 143 155, 2020.
+of Selected Topics in Signal Processing , vol. 15, no. 1, pp. 143 
 [25] G. Liu et al. ,  Cp-GAN  Context pyramid generative adversarial
  network for speech enhancement,  in Proc. ICASSP , 2020,
-pp. 6624 6628.
 [26] X. Xiang, X. Zhang, and H. Chen,  A convolutional network
  with multi-scale and attention mechanisms for end-to-end
 single-channel speech enhancement,  IEEE Signal Processing
 Letters , vol. 28, pp. 1455 1459, 2021.
 [27] J. Shi et al. ,  Bridging speech and textual pre-trained models
  with unsupervised ASR,  arXiv preprint arXiv 2211.03025 ,
-2022.
 [28] V . Panayotov et al. ,  Librispeech  An asr corpus based on public
 domain audio books,  in Proc. ICASSP , 2015, pp. 5206 5210.
-[29] A. Baevski et al. ,  Wav vec 2.0  A framework for selfsupervised
+[29] A. Baevski et al. ,  Wav2vec 2.0  A framework for selfsupervised
  learning of speech representations,  Advances in neural
  information processing systems , vol. 33, pp. 12 449 12 460,
-2020.
 [30] M. Ott et al. ,  Fairseq  A fast, extensible toolkit for sequence
 modeling,  NAACL HLT 2019 , p. 48, 2019.
 [31] J. D. Kahn et al. ,  Flashlight  Enabling innovation in tools for

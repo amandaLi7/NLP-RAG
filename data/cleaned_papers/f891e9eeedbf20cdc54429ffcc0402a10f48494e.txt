@@ -4,7 +4,6 @@ Himanshu Thakur Atishay Jain Praneetha Vaddamanu
 Paul Pu Liang Louis-Philippe Morency
 Carnegie Mellon University
 {hthakur,atishayj,pvaddama,pliang,morency}@andrew.cmu.edu
-Abstract
 Caution  this paper contains potentially offensive
  or upsetting model outputs.
 Societal biases present in pre-trained large language
@@ -32,7 +31,6 @@ practical. Through extensive experimentation,
 we show that our debiasing technique performs
 better than competitive state-of-the-art baselines
 with minimal loss in language modeling ability.
-1 Introduction
 Recently, there has been a surge of interest in pretrained
  large language models (LLM) in natural language
  processing (NLP). It has been shown that the
@@ -49,7 +47,6 @@ job recommendation engines (Zhao et al., 2019
  and mitigating bias without requiring significant
 re-training or compute resources is crucial to the
 widespread adoption of LLMs in downstream applications.
-
 Previous work (Nadeem et al., 2021), (Nangia
 et al., 2020a), (Cer et al., 2018) has attempted to
 quantify bias, and others such as Ravfogel et al.
@@ -83,21 +80,13 @@ samples from a dataset and can benefit existing
 state-of-the-art debiasing methods. When used
 for debiasing a model, these few samples serve
 as exemplars and induce large reductions in
-gender bias.arXiv 2306.04597 1  [cs.CL]  7 2023Gender Bias in BERT Predictions
-Most-biased
+gender bias.arXiv 2306.04597v1  [cs.CL]  7 Jun 2023Gender Bias in BERT Predictions
 data samples____  is very good at cooking but not great at work.
-0.42 0.39he
-she____  is very good at cooking but not great at work.____  is a great player but is not a caring parent. 0.39 0.04 he____  is a great player but is not a caring parent.0.68 0.17she
-he
+she____  is very good at cooking but not great at work.____  is a great player but is not a caring parent. 0.39 he
+0.04 he____  is a great player but is not a caring parent.0.68
 Biased Pre-trained Model[MASK] is very good.. .
-she
 either he or she[MASK]  is a great...
-he
-theyProposed
-data
-interventions
 Debiased Pre-trained ModelFew Shot
-Fine-T uning
 Reduced Gender Bias in BERT PredictionsFigure 1  Our method can be summarized as a combination
  of bias discovery and mitigation. First, we use a
 pre-trained LLM to find the most gender-biased samples.
@@ -106,7 +95,6 @@ these modified training samples to fine-tune the model.
 Experiments show that our method is very effective at reducing
  gender bias, outperforming three state-of-the-art
 baselines and being comparable to two other baselines.
-2 Related Work
 In recent years, there has been growing concern
 about the bias/stereotypical discriminatory behavior
  by NLP models, particularly concerning gender.
@@ -165,7 +153,6 @@ applies a contrastive learning objective and alignment
 strategy is similar in spirit to the data intervention
 techniques we propose, however our analysis does
 not require training auxiliary models and uses significantly
- lesser data.
 Data-based methods include the "Equalization"
 technique proposed by Bolukbasi et al. (2016),
 which aims to equalize the representation of genderspecific
@@ -183,13 +170,10 @@ to effectively reduce gender bias by taking inspiration
  from different techniques such as uncertainty
 sampling and name-based counterfactual data substitution
  (Maudslay et al., 2019).Gender-Word
-PairsMean
-Confidence
-Difference
-Mean Std. Dev.
-he, she 0.317 0.288
 Will, May 0.316 0.225
-boy, girl 0.219 0.218 1 3 3Probing Bias in Large Language Models
+boy, girl 0.219 0.218
+Table 1  Confidence difference for the Top 3 genderword
+3Probing Bias in Large Language Models
 Pre-trained LLMs are biased towards different genders,
  as seen in a simple mask-fill experiment using
  BERT. (Here, and in the rest of the paper, we
@@ -206,9 +190,6 @@ sum of differences in the model s prediction confidence
  for each gender-word pair (such as confidence
  of predicting he  she, man  woman, etc.).
 Formally, we define total confidence difference as
- PN
-i 0(f(x(i)
-female) f(x(i)
 male)) where f(x)represent
  the confidence of model s prediction, Nis
 the total number of tokens in the dataset and xis
@@ -224,20 +205,15 @@ to the fixed word list used to represent the sensitive
 attributes (here, gender). In Table 2, we show the
 number of words covered by the word list used for
 both WikiText-2 and StereoSet datasets.
-4 Data Interventions
 In order to reduce gender bias in pre-trained models,
 we carefully select diverse and hard-biased examples
- and then replace gender words with more neu https //github.com/joelparkerhenderson/
-
+ and then replace gender words with more neu1https //github.com/joelparkerhenderson/
 inclusive-languageDataset SamplesAffected Words
-(mean)
-WikiText-210 191 50 627 100 1028 10 55 50 227 100 463 2  Number of words (mean ) covered by the word
+Table 2  Number of words (mean ) covered by the word
 list vs dataset and number of sequences sampled from
-each dataset
 tral or equality-focused phrases. This is achieved by
 using a wordlist to find gender terms in sentences
 and then segregating words as name and non-name
-words.
 We call our initial approach naive-masking as
 it does not require a word list for mapping gender
 words to gender-neutral words. Instead, it replaces
@@ -259,16 +235,10 @@ words with phrases that reflect the equality of gender.
 but also preserves the original meaning of the sentence
  in most cases. In our approach, we chose the
 phrases and order of gender words at random with
-equal probability.
 Intervention Input word Converted word
 naive-maskinghe person
-she person
-boy person
 neutral-maskinghe they
-her their
-schoolgirl schoolkid
 random-phrase-maskinghe he or she
-she she and he
 boy either girl or boy
 Table 3  Example conversions for three methods. In
 Random Phrase Masking, the phrase is being chosen and
@@ -279,8 +249,10 @@ choose two datasets  the WikiText-2 (Merity et al.,
 its sources from Wikipedia articles, and the StereoSet
  dataset (Nadeem et al., 2021), which has explicit/more
  gender bias as it has been designed to
-evaluate gender bias. WikiText-22 600 2 3(dev)
-has 2123 800 samples which are not unrelated. Naturally,
+evaluate gender bias. WikiText-22has 600 train articles
+ and roughly 2M tokens while StereoSet3(dev)
+has 2123 samples out of which we only consider
+800 samples which are not unrelated. Naturally,
 our data intervention method should work better on
 a dataset with training examples with gender bias
 while being devoid of meaningful gender associations
@@ -288,7 +260,6 @@ while being devoid of meaningful gender associations
 gender of the person is important. By testing our
 method on both datasets, we can understand the
 sensitivity of our approach to the quality of training
-samples used.
 5 Bias Evaluation Metrics
 We focus on evaluating the bias of a model while
 also measuring its language modeling capability.
@@ -351,10 +322,12 @@ conditioned on the remaining text, significantly reducing
 on various types of interventions as discussed in
 Table 7. The model is trained for 30 epochs, with a
 learning rate of 0.001 and AdamW optimizer. We
-ran all of our experiments on NVIDIA Tesla T4 48 hours. For
+ran all of our experiments on NVIDIA Tesla T4
+GPU on Google Colab for roughly 48 hours. For
 all experiments, we report the numbers as the mean
 and standard deviations (6) of 3 different runs. Our
-experiment code can be found here.4 7 4 shows the StereoSet and Crow-S scores for
+experiment code can be found here.4
+Table 4 shows the StereoSet and Crow-S scores for
 our baselines and our best-performing interventions
 on the WikiText-2 Dataset. In the StereoSet benchmark,
  we observe that random-phrase-masking
@@ -383,19 +356,21 @@ Output of De-biased Model Figure 2  Qualitative analysis of our approach on fill
 modify stereotypical sentences. In the this example, we prompted a pre-trained bert-base-uncased model and the
 same pre-trained model debiased using random-phrase-masking with stereotypical sentences and found that the
 our method is successfully able to reduced biased substitutions.
-StereoSet Scrores
 Type MethodSS ( )LMS ( )ICAT (  )Crow-S
-Scores (  )
-None 60.279 84.172 70.300 57.250 60.022 83.466 70.892 56.107 60.529 83.811 70.171 55.977 59.221 84.166 71.308 53.817 58.205 83.391 70.966 55.727
+None 60.279 84.172 70.300 57.250
+CDA 60.022 83.466 70.892 56.107
+Dropout 60.529 83.811 70.171 55.977
+SentenceDebias 59.221 84.166 71.308 53.817Baselines
+INLP 58.205 83.391 70.966 55.727
 random-phrase-masking (10) 59.442 80.312 70.406 54.580
 random-phrase-masking 58.037 78.676 69.949 54.457
 neutral-masking (10) 60.341 83.956 72.548 55.535Ours
-neutral-masking 60.814 83.587 72.213 56.490 4  StereoSet and Crow-S benchmark results on
+neutral-masking 60.814 83.587 72.213 56.490
+Table 4  StereoSet and Crow-S benchmark results on
 WikiText-2 dataset. A lower SS and Crow-S score means
 lesser gender bias while higher ICAT and LMS denote
 better language modelling ability. The number in the
 parentheses denotes number of training samples and ones
-without it use 100.
 very low LMS scores. We attribute this performance
  degradation to the blunt substitution
 of phrases that our method uses, which might
@@ -422,7 +397,10 @@ model training, we hope that our work benefits further
  research in the domain of human-in-the-loop
 bias mitigation techniques by making the creation
 of bias mitigation datasets feasible.
-9 1.Gender dependency  Our approach does not
+Our proposed method has the following main limitations
+ which we believe are important directions
+for future work to address 
+1.Gender dependency  Our approach does not
 account for sentences that only make sense for
 a single gender. For example, sentences like
 "She needs to see a gynecologist" would not
@@ -433,7 +411,6 @@ algorithms as it is difficult to distinguish these.
 all gender-based words as the language con-tinues to evolve. We believe that future works
 could employ better approaches that can automatically
  mine gender words relevant to a
-dataset.
 3.Blunt substitution  The phrase substitution
 method is an improvement over direct word
 substitution, but there are still plenty of instances
@@ -461,13 +438,10 @@ data interventions. Moreover, recent research
 has shown that fine-tuning-based debiasing approaches
  do not damage a model s internal representations
  to a critical extent (Meade et al.,
-2022).
 Overall, these limitations suggest that our approach
  may not be suitable for use in contexts where
 gender-specific or non-binary language is prevalent,
 and the underlying wordlist should be frequently
-updated.
-10 Ethics Statement
 This study was conducted in accordance with ethical
 principles and guidelines. The study was designed
 to provide beneficial knowledge and not harm any
@@ -481,12 +455,11 @@ of our methodologies and the results of our analysis.
  that our approach may have limitations.
 We take responsibility for any ethical concerns that
 may arise as a result of our research.
-Acknowledgments
 This material is based upon work partially supported
  by the National Science Foundation (Awards
 #1722822 and #1750439) and National Institutes of
-Health (Awards #R MH125740, #R MH096951,
-and #U MH116925). PPL is partially supported
+Health (Awards #R01MH125740, #R01MH096951,
+and #U01MH116925). PPL is partially supported
 by a Facebook PhD Fellowship and a Carnegie Mellon
  University s Center for Machine Learning and
 Health Fellowship. Any opinions, findings, conclusions,
@@ -501,18 +474,18 @@ to the anonymous reviewers for their insightful suggestions,
  of our colleagues, Atishay Jain and Praneetha
 Vaddamanu, who played a significant role in the
 development of this research.
-References
 Solon Barocas, Kate Crawford, Aaron Shapiro, and
 Hanna Wallach. 2017. The problem with bias  Allocative
  versus representational harms in machine learning.
-In th Annual conference of the special interest group
+In9th Annual conference of the special interest group
 for computing, information and society .
 Tolga Bolukbasi, Kai-Wei Chang, James Y . Zou,
 Venkatesh Saligrama, and Adam Tauman Kalai. 2016.
 Man is to computer programmer as woman is to homemaker 
  debiasing word embeddings. In Advances in
-Neural Information Processing Systems 29 2016, December 5-10, 2016, Barcelona, Spain ,
-pages 4349 4357.
+Neural Information Processing Systems 29  Annual
+Conference on Neural Information Processing Systems
+ 2016, December 5-10, 2016, Barcelona, Spain ,
 Daniel Cer, Yinfei Yang, Sheng-yi Kong, Nan Hua,
 Nicole Limtiaco, Rhomni St. John, Noah Constant,
 Mario Guajardo-Cespedes, Steve Yuan, Chris Tar,
@@ -521,7 +494,6 @@ sentence encoder for English. In Proceedings of the
 2018 Conference on Empirical Methods in Natural
 Language Processing  System Demonstrations , pages
 169 174, Brussels, Belgium. Association for Computational
- Linguistics.
 Sunipa Dev, Tao Li, Jeff M Phillips, and Vivek Srikumar.
 2021. OSCaR  Orthogonal subspace correction and
 rectification of biases in word embeddings. In Proceedings
@@ -531,7 +503,6 @@ Association for Computational Linguistics.
 Jacqueline He, Mengzhou Xia, Christiane Fellbaum,
 and Danqi Chen. 2022. Mabel  Attenuating gender
 bias using textual entailment data. ArXiv preprint ,
-abs/2210.14975.
 Sophie Jentzsch and Cigdem Turan. 2022. Gender bias
 in BERT - measuring and analysing biases through
 sentiment rating in a realistic downstream classification
@@ -545,7 +516,8 @@ Shtedritski, and Yuki M. Asano. 2021. Bias out-ofthe-box
  An empirical analysis of intersectional occupational
  biases in popular generative language models.
 InAdvances in Neural Information Processing Systems
- 34 2021, NeurIPS 2021, December
+ 34  Annual Conference on Neural Information
+Processing Systems 2021, NeurIPS 2021, December
 6-14, 2021, virtual , pages 2611 2624.
 Keita Kurita, Nidhi Vyas, Ayush Pareek, Alan W Black,
 and Yulia Tsvetkov. 2019. Measuring bias in contextualized
@@ -567,7 +539,7 @@ Paul Pu Liang, Chiyu Wu, Louis-Philippe Morency, and
 Ruslan Salakhutdinov. 2021. Towards understanding
 and mitigating social biases in language models. In
 Proceedings of the 38th International Conference on
-Machine Learning, ICML 2021, 18-24 2021, Virtual
+Machine Learning, ICML 2021, 18-24 July 2021, Virtual
  Event , volume 139 of Proceedings of Machine
 Learning Research , pages 6565 6576. PMLR.
 Kaiji Lu, Piotr Mardziel, Fangjing Wu, Preetam Amancharla,
@@ -576,7 +548,9 @@ neural natural language processing.
 Rowan Hall Maudslay, Hila Gonen, Ryan Cotterell, and
 Simone Teufel. 2019. It s all in the name  Mitigating
 gender bias with name-based counterfactual data substitution.
- In Proceedings of the 2019 9th International Joint Conference on Natural
+ In Proceedings of the 2019 Conference on
+Empirical Methods in Natural Language Processing
+and the 9th International Joint Conference on Natural
  Language Processing (EMNLP-IJCNLP) , pages
 5267 5275, Hong Kong, China. Association for Computational
  Linguistics.Nicholas Meade, Elinor Poole-Dayan, and Siva Reddy.
@@ -591,10 +565,11 @@ Richard Socher. 2017. Pointer sentinel mixture models.
  In 5th International Conference on Learning
 Representations, ICLR 2017, Toulon, France, April
 24-26, 2017, Conference Track Proceedings . OpenReview.net.
-
 Moin Nadeem, Anna Bethke, and Siva Reddy. 2021.
 StereoSet  Measuring stereotypical bias in pretrained
-language models. In Proceedings of the 59 11th International Joint Conference
+language models. In Proceedings of the 59th Annual
+Meeting of the Association for Computational Linguistics
+ and the 11th International Joint Conference
 on Natural Language Processing (Volume 1  Long
 Papers) , pages 5356 5371, Online. Association for
 Computational Linguistics.
@@ -618,18 +593,16 @@ Twiton, and Yoav Goldberg. 2020. Null it out  Guarding
  In Proceedings of the 58th Annual Meeting of
 the Association for Computational Linguistics , pages
 7237 7256, Online. Association for Computational
-Linguistics.
 Timo Schick, Sahana Udupa, and Hinrich Schütze. 2021.
 Self-diagnosis and self-debiasing  A proposal for reducing
  corpus-based bias in NLP. Transactions of the
-Association for Computational Linguistics , 9 1408 1424.
+Association for Computational Linguistics , 9 1408 
 Aarohi Srivastava, Abhinav Rastogi, Abhishek Rao,
 Abu Awal Md Shoeb, Abubakar Abid, Adam Fisch,
 Adam R Brown, Adam Santoro, Aditya Gupta,
 Adrià Garriga-Alonso, et al. 2022. Beyond the
 imitation game  Quantifying and extrapolating the
 capabilities of language models. arXiv preprint
-arXiv 2206.04615 .
 Kellie Webster, Xuezhi Wang, Ian Tenney, Alex Beutel,
 Emily Pitler, Ellie Pavlick, Jilin Chen, Ed Chi, and
 Slav Petrov. 2020. Measuring and reducing gendered
@@ -649,7 +622,6 @@ Victor Zimmermann and Maja Hoffmann. 2022. Absinth
  In Proceedings of the 18th Conference on Natural
  Language Processing (KONVENS 2022) , pages
 121 128, Potsdam, Germany. KONVENS 2022 Organizers.
-
 Ran Zmigrod, Sabrina J. Mielke, Hanna Wallach, and
 Ryan Cotterell. 2019. Counterfactual data augmentation
  for mitigating gender stereotypes in languages
@@ -657,7 +629,6 @@ with rich morphology. In Proceedings of the 57th
 Annual Meeting of the Association for Computational
 Linguistics , pages 1651 1661, Florence, Italy. Association
  for Computational Linguistics.
-A Appendix
 A.1 Dataset Bias Analysis
 To gauge the feasibility of using a wordlist based
 intervention approach, we first analyze our datasets
@@ -669,14 +640,12 @@ frequently occurring words in our dataset. This suggests
  that we can definitely detect gender words in
 our corpus and apply our interventions.
 Figure 3  Frequency of gender words on the StereoSet
-dataset.
-Figure 4 10 most frequent gender words on the
-StereoSet dataset.
+Figure 4  Top 10 most frequent gender words on the
 A.2 Sensitivity to Choice of Dataset
 To understand the effectiveness of our proposed
 data-interventions, we study apply our methods to
 two datasets under varying number of training samples
- (10, 50 100) and selection strategies (most
+ (10, 50 and 100) and selection strategies (most
 biased first and random) as per Table 6. Our methods
  obtain better results on StereoSet (dev) dataset.
 One reason this could happen is due to the fact that
@@ -686,19 +655,17 @@ less likely for a sentence like "She needs a gynaecologist"
 perform blunt substitutions, this sentence might become
  incorrect due to our method - "Either he or
 she needs a gynaecologist".
-A.3 10 50 100
-Number of training samples StereoSet Gender SSsample_method
-most-biased
-random
+A.3 Sensitivity to Number of Training Samples
+and Sampling Strategy
+Number of training samples585960StereoSet Gender SSsample_method
 Figure 5  StereoSet Gender SS scores on StereoSet (dev)
 dataset with varying number of training samples. Compared
  to random selection of samples, selecting mostbiased
  samples help achieve lower SS scores.
 As per Figure 5, When we vary the number of training
  samples, we observe that the difference in performance
- is not huge when we transition from 10 100 samples, thus suggesting that our methodSentencesMean
-Confidence
-Difference
+ is not huge when we transition from 10
+to 100 samples, thus suggesting that our methodSentencesMean
 She rushed to see what he wanted and said she loved him.
 She punched him in the face and told him to go away.6.85
 Jessica is a new mommy.
@@ -706,10 +673,8 @@ Jessica finds being a mother does not come easy to her.
 She will no longer work so she can stay home and take care of her child.6.34
 The little girl missed her mommy.
 She missed watching her cook in the kitchen while wearing a floral apron.
-She was never home because she worked long hours in the oil field.4.70 5  Sentences from StereoSet with maximum difference in confidence of prediction between opposite gender
-words.
-DatasetSampling
-MethodNumber of
+She was never home because she worked long hours in the oil field.4.70
+Table 5  Sentences from StereoSet with maximum difference in confidence of prediction between opposite gender
 SamplesCrow-S Pair Score StereoSet ScoresPerplexity
 Total Stereotype Score Anti-stereotype Scoe SS (gender) LMS (gender) ICAT (gender)
 StereoSetmost-biased 10 54.481 (2.583) 50.408 (5.295) 60.991 (3.854) 58.736 (1.215) 80.858 (2.988) 66.708 (2.584) 50.449 (54.983)
@@ -724,10 +689,9 @@ most-biased 50 54.276 (1.513) 53.394 (3.847) 55.834 (2.652) 59.238 (1.068) 83.34
 random 50 54.2 (2.383) 51.783 (5.272) 57.93 (2.969) 59.611 (1.155) 83.456 (1.9) 67.386 (0.74) 116.872 (100.401)
 most-biased 100 55.473 (1.42) 54.827 (4.255) 56.637 (4.329) 59.426 (1.719) 83.442 (3.185) 67.629 (1.178) 220.957 (207.243)
 random 100 54.457 (1.444) 51.363 (4.283) 59.223 (4.451) 59.545 (0.387) 81.953 (1.442) 66.3 (0.597) 326.017 (181.822)
-Table 6  StereoSet and Crow-S scores for random-phrase-masking method on two datasets, 3 2
+Table 6  StereoSet and Crow-S scores for random-phrase-masking method on two datasets, 3 sample sizes and 2
 selection methods. We report mean (standard deviation) across 3 different runs. Selecting most-biased samples and
 using the StereoSet dataset for fine-tuning gives best results.
-Name Word
 Mask MethodNon-Name Word
 Mask MethodCrow-S Pairs StereoSetPerplexity
 Total Stereotype Score Anti-Stereotype Score SS LMS ICAT
@@ -746,9 +710,8 @@ Table 7  StereoSet Gender SS scores on StereoSet (dev) dataset on 100 samples ac
 All numbers are reported as mean and standard deviation across 3 runs.is capable of few-shot fine-tuning. Moreover, sampling
  the most biased data points helps our methods
 achieve better performance consistently, as shown
-in Figure 5 6. Table   shows some top
+in Figure 5 and Table 6. Table   shows some top
 three most gender biased entries found in the StereoSet
- dataset.
 A.4 Ablations of interventions
 We study the effects of choosing different ways
 of replacement for name and non-name words. In
@@ -762,10 +725,8 @@ renders any effect on the debiasing. In Table 7,
 we see that it does not perform any better than
 random-phrase-masking . Then, we also try fixing
 the phrases from random-phrase-masking , thus
-making it fixed-phrase-masking . We obtain 4 1. both [1] and [2]
-2. [1] and [2]
-3. [1] or [2]
-4. either [1] or [2]
+making it fixed-phrase-masking . We obtain 4
+variants of this method corresponding to the following
 Here, [1] and [2] are substituted with opposite
  gender words. As we observe in Table
 7,fixed-phrase-masking-3 obtains the lowest

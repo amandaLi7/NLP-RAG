@@ -1,15 +1,9 @@
 Published as a conference paper at ICLR 2023
 COMPUTATIONAL LANGUAGE ACQUISITION WITH
-THEORY OF MIND
-Andy Liu
-Harvey Mudd College
-Claremont, CA, USA
 {ajliu}@g.hmc.eduHao Zhu, Emmy Liu, Yonatan Bisk, Graham Neubig
 Language Technologies Institute
 Carnegie Mellon University
-Pittsburgh, PA, USA
 {zhuhao, mengyan3, ybisk, gneubig }@cs.}cmu.edu
-ABSTRACT
 Unlike current state-of-the-art language models, young children actively acquire
 language through interactions with their surrounding environment and caretakers.
 One mechanism that has been argued to be critical to language learning is the ability
@@ -27,7 +21,6 @@ setting. We also ﬁnd some evidence that increasing task difﬁculty in the tra
 process results in more ﬂuent and precise utterances in evaluation. This suggests
 the potential utility of further incorporating ToM, as well as other insights from
 child language acquisition, into computational models of language acquisition1.
-1 I NTRODUCTION
 Human languages are fundamentally shaped by social-communicative goals in the grounded world.
 Modern theories from developmental psychology often attribute humans  unique ability to quickly
 acquire and adapt language to their ability to ascribe mental states to other agents (Tomasello, 2005),
@@ -49,7 +42,8 @@ the listener has in the selection. This setting provides an attractive test-bed 
 of various reward signals or model designs on the speaker s learned language  previous studies of
 pragmatics in language acquisition, such as Andreas & Klein (2016), have used similar settings.
 1Code and data can be found at https //github.com/neulab/ToM-Language-Acquisition .
-1 2303.01502 1  [cs.CL]  2 2023 2023 1. Three people play frisbee
+1arXiv 2303.01502v1  [cs.CL]  2 Mar 2023Published as a conference paper at ICLR 2023
+Candidate Utterance SamplingToM Listener Reranking Output Utterance1. Three people play frisbee
 2. Frisbee front of trees
 3.  Yellow shirt man throw frisbee
 1.  Yellow shirt man throw frisbee
@@ -89,13 +83,14 @@ Following Lazaridou et al. (2016)  Lowe et al. (2019)  Zhu et al. (2022), we con
  games with real world images, where a speaker and a listener collaborate on identifying a
 target image x Camong distractors randomly sampled from a set of candidates C. The identity
 of the target is known only to the speaker. The speaker generates an English-language utterance u
-2 2023
+2Published as a conference paper at ICLR 2023
 that describes the target image, which is then passed to the listener. The listener will either select an
 image ˆx, in the case where they understand the utterance with a high enough probability or refuse
 to act, in the case where they do not. The listener can also determine whether or not to provide
 feedback (linguistic input in the form of the ground-truth caption of the target image) to the speaker.
 Speaker training is motivated by a reward function that seeks to model the communicative goal of
-directing the listener to the correct referent. The speaker gets a positive reward of 1 1if the listener chooses the wrong target image. Additionally,
+directing the listener to the correct referent. The speaker gets a positive reward of 1if the listener
+chooses the target image and a penalty of  1if the listener chooses the wrong target image. Additionally,
  a smaller penalty wnoop is applied to the speaker if the listener chooses to not choose an
 image  this is done to penalize the speaker for generating unclear utterances.
 2.1 A GENT FORMULATION
@@ -106,20 +101,16 @@ The listener is deﬁned on Σ andIN, which is a set of Ncandidate images sample
 an utterance Σ and an observation space  IN, the listener will either return the index of its
 predicted image or noop , if it cannot predict an image. It may also return the ground-truth caption
 from its vocabulary. We deﬁne it with the model g  Σ  IN ([0,1,...N 1] noop ) Σ .
-2.2 S PEAKER DESIGN
 The speaker that we use is a captioning model composed of a pretrained ResNet (He et al., 2016)
 model and an LSTM-based utterance generation model. After generating an embedding vector
 of the target image using the ResNet model, the speaker autoregressively generates an utterance
-u {ui}M
 i 1using the LSTM network 
 P(ui u1,u2,...,ui 1,x)
- exp(wT
 uiLSTM (wu1,wu2,...,wui 1,h0 ResNet (x))),(1)
 wherewui Rdwis the word embedding of ui. The speaker generates a sequence of tokens to
 either the maximum length, which is set to 20 in our experiments, or an end-of-sequence token. In
 our experiments, we use a vocabulary size of 200to limit the size of the action space and to more
 realistically mimic the vocabulary of a language learner.
-2.3 L ISTENER DESIGN
 Given a set of candidate images Ij(j 1,2...n   1) , wherenis the number of distractors, and
 an utterance u, the listener computes embeddings for each image, L(Ij), for the utterance, L(u). It
 then takes the dot product of each L(Ij)withL(u), and the softmax of the dot products to compute
@@ -128,27 +119,21 @@ The listener also has a rule-based component to control when to give linguistic 
 the ground-truth caption C(x). We introduce two thresholds, θ1andθ2. After the listener computes
 the most likely target image, t  arg maxP(Ij u), and the probability given to this choice, Pmax 
 maxP(Ij u), it returns its choice ˆxand inputflistener according to the following logic 
-(ˆx,flistener )   
- 
- (noop,0)Pmax θ1
-(t,C(x))θ1 P max θ2
-(t,0)Pmax θ2(2)
 This control strategy mimics a caregiver who only gives feedback when they understand what the
 language learner is referring to, but wants to direct it to generate higher-quality utterances. When
 the listener s conﬁdence is very low, it will neither select a target image nor provide linguistic input,
 as the speaker utterance is too low-quality. Meanwhile, when the listener s conﬁdence is very high,
 it will stop giving linguistic input, as further improvement is deemed unnecessary.
-3 2023
+3Published as a conference paper at ICLR 2023
 We use an LSTM-based model to learn embeddings of speaker utterances combined with a ResNet
 model to derive image features. Because we want our listener to at least model a competent user of
 the language that the speaker is trying to acquire, some pretraining is required before initializing a
 listener in a new environment. The controller values θ1,θ2and the ResNet parameters are set after
 preliminary experimentation on the dataset. The listener s language network parameters are then
 trained with mini-batch stochastic gradient descent to optimize the network values
-θlistener   arg max
-θEC U(I)N1 1logPlistener (i U 
-i,C θ) (3)
-3 3.1 C OMMUNICATIVE GOALS
+i 1logPlistener (i U 
+3 S PEAKER TRAINING PROCESS
+3.1 C OMMUNICATIVE GOALS
 We model communicative goals and learning from linguistic input as two separate learning objectives
  for our speaker network, which we combine with an adjustable coefﬁcient λ. The communicative
  goal rewardOCGis simply the average reward (deﬁned in  2) over each game in the training
@@ -172,21 +157,16 @@ assign to image-utterance pairs. It uses a similar architecture to the actual li
 own learned sentence embeddings from an LSTM network with pretrained image embeddings using
 ResNet. In other words, our ToM listener seeks to learn the sentence embedding model θToM that
 will maximize the probabilities assigned to the listener s choice given an utterance.
-θToM   arg max
-θPToM(ui ˆx) exp(θT
 ToM(ui) ResNet (ˆx)) (6)
 We introduce ToM into the speaker model by having our speaker sample candidate utterances and
 rerank them with the help of the ToM listener. Our ToM speaker ﬁrst samples Ncandidate utterances
-U {u(i)}N
 i 1from its distribution. Next, we generate a speaker and a listener score for each 
-Pspeaker (u)  
 iP(ui u1,u2,...ui 1,x) (7)
 PToM(x u) exp(LSTMT(u)Resnet (x)) (8)
-4 2023
+4Published as a conference paper at ICLR 2023
 Here, the probability P(ui u1,u2,...ui 1,x)is computed according to 1. We then combine these
 scores using a listener weight hyperparameter wlto get the overall score assigned to each utterance.
 Finally, we select the best utterance, ub, as the argmax of this score 
-ub  arg max
 U(PToM(x uj)wl pspeaker (uj)) (9)
 In our experiments, we train models with three different settings of wl. We train models with wl  0
 to isolate the effects of the ToM listener from the effects of the new model architecture. We train
@@ -206,12 +186,11 @@ outputs over time. To train the ToM listener, we introduce a third training obje
 OLIandOCG, the ToM objective OToM, deﬁned as the cross-entropy loss between the distribution
 of the ToM listener and that of the true listener. Thus, we are training it to give higher probabilities
 to the listener s choice ˆxbased on the speaker s utterances. Formally,
-OToM  { logPToM(ˆx u)Pmax θ1 0 Pmax θ1(10)
+OToM  { logPToM(ˆx u)Pmax θ1
 Note that this requires a choice to be made by the listener, so we mask out the case where the actual
 listener does not choose an image by setting it to zero. This is done using the same parameter θ1
 and listener conﬁdence Pmaxthat were used to control linguistic input in 2. We add this to the joint
 learning objective previously deﬁned in 5 to compute our combined objective for the ToM speaker
-system as a whole 
 Ojoint λOCG  (1 λ)OLI OToM (11)
 However, an untrained listener can introduce signiﬁcant noise to the utterance generation process.
 To counteract this, we anneal the inﬂuence of the listener, by linearly increasing wlfrom 0 to the
@@ -230,7 +209,7 @@ we computed a similarity rank between images based on visual and semantic simila
 selecting a  target  image in the training process, we sampled images with high similarities to the
 target image to use as distractors during training.
 We experiment with three options for calculating image/caption similarity 
-5 2023
+5Published as a conference paper at ICLR 2023
 Original Image Random Distractor Image Similarity Caption Similarity Hybrid Similarity
 a little girl holding a
 kitten next to a blue
@@ -238,9 +217,7 @@ fence. two sheep standing
 next to each other in
 the snow. a little dog sitting on
 a wooden bench. a woman hugs a
-gray cat to her
 chest. a kitten that is sitting
-down by a door.
 Figure 2  An example image-caption pair, and distractors ranked as similar by various metrics.
 Caption and Hybrid similarities are computed with TF-IDF - weighted RoBERTa embeddings.
  Visual Cosine Similarity. We compute the most visually similar images based on the cosine
@@ -260,7 +237,8 @@ and caption similarity. We hoped that using hybrid methods ( wc  0.5) would capt
 with both visual and semantic similarities.
 We also train models on randomly selected, or  easy , distractors to create a baseline to study the
 effects of distractor difﬁculty. Examples of a selection of the distractor settings are shown in Fig. 2.
-6 6.1 E XPERIMENTAL SETUP
+6 E XPERIMENTAL SETUP AND RESULTS
+6.1 E XPERIMENTAL SETUP
 We focus on two main results  A speaker s ability to use language to correctly discriminate between
 the target and distractor images, as well as the quality of the language speakers use to do so.
 To evaluate the former, we primarily consider average accuracy, or how often the listener selects the
@@ -268,10 +246,8 @@ correct referent. We evaluate the quality of our speakers  learned languages usi
 length, F1 score for salient parts of speech, and caption quality scores. We use a ﬂuency score that
 measures the grammatical quality of output utterances (Kann et al., 2018). This is deﬁned as the
 average gain in log probability when moving from a unigram model to a pretrained language model.
-ﬂuency  1
  u (ln(pM(u)) ln(pU(u))) (12)
 We train a unigram model, pU, and ﬁne-tune GPT-2 large (Radford et al., 2019), pM, on our training
-set.
 In addition to ﬂuency and accuracy, we consider two additional performance metrics. To better
 evaluate the overall caption quality of the system, we compute BLEU score (Papineni et al., 2002)
 using the implementation found in Bird et al. (2009). Additionally, to evaluate the accuracy of the
@@ -279,11 +255,10 @@ learned listener model, we compute ToM Accuracy, deﬁned as how often the candi
 the ToM listener believes has the highest probability of being chosen is the actual listener s choice.
 We also consider part-of-speech statistics to evaluate utterance quality. Parts of speech for words in
 speaker utterances and ground-truth captions are tagged with spaCy (Honnibal et al., 2020). We use
-6 2023
+6Published as a conference paper at ICLR 2023
 Target Distractor Distractor
 a group of men on a field playing
 baseball. a person on some skis. a white building
-with a clock on the
 front and side of it.
 Base Speaker  A baseball player holding a holding umbrella.
 Speaker Trained on Hard Distractors  A baseball player holding a bat on a field.
@@ -296,13 +271,21 @@ Model Performance POS F1
 ToM Weight Distractors Acc BLEU Fluency ToM ADJ ADP NOUN VERB
 Baseline (No ToM) Easy 0.81 0.20 1.50 N/A 0.16 0.52 0.41 0.38
 Baseline (No ToM) Hard 0.81 0.24 1.87 N/A 0.24 0.58 0.46 0.45
-Gold Standard N/A 0.92 1.00 2.52 N/A 1.00 1.00 1.00 1.00 0.83 0.26 1.99 0.81 0.22 0.64 0.49 0.47 0.85 0.26 2.25 0.88 0.22 0.65 0.52 0.49 0.88 0.27 2.23 0.89 0.22 0.66 0.52 0.50 0.87 0.28 2.26 0.93 0.23 0.65 0.50 0.49 0.85 0.25 1.73 0.85 0.21 0.57 0.48 0.49 0.88 0.26 2.09 0.91 0.21 0.64 0.50 0.52 0.88 0.27 2.07 0.91 0.22 0.65 0.51 0.50 0.89 0.29 1.91 0.94 0.17 0.65 0.52 0.49 1 scores between speaker utterances and ground-truth captions over each part of
+Gold Standard N/A 0.92 1.00 2.52 N/A 1.00 1.00 1.00 1.00
+Zero Hard 0.83 0.26 1.99 0.81 0.22 0.64 0.49 0.47
+Normal Hard 0.85 0.26 2.25 0.88 0.22 0.65 0.52 0.49
+High Hard 0.88 0.27 2.23 0.89 0.22 0.66 0.52 0.50
+High RSA Hard 0.87 0.28 2.26 0.93 0.23 0.65 0.50 0.49
+Zero Easy 0.85 0.25 1.73 0.85 0.21 0.57 0.48 0.49
+Normal Easy 0.88 0.26 2.09 0.91 0.21 0.64 0.50 0.52
+High Easy 0.88 0.27 2.07 0.91 0.22 0.65 0.51 0.50
+High RSA Easy 0.89 0.29 1.91 0.94 0.17 0.65 0.52 0.49
+this to compute F1 scores between speaker utterances and ground-truth captions over each part of
 speech. This allows us to evaluate how effectively our speakers identify referents within the target
 image that a human captioner would consider salient. Higher F1 scores over a part of speech would
 suggest that a speaker is more capable of identifying concepts that fall under that part of speech.
 Images and captions are drawn from the MS COCO dataset introduced in Lin et al. (2014). The
 train-val-test split given by the MS COCO 2017 dataset is extended to our experimental setup.
-6.2 E FFECTS OF TOM
 We train models equipped with ToM listeners with normal weight (i.e. equally weighting the speaker
 and the listener scores when reranking output utterances) and with high weight (where the listener
 weight is set arbitrarily to 1000 and the speaker essentially optimizes for P(x ui)). In order to isolate
@@ -317,9 +300,16 @@ utterances solely by ToM listener score. Such  high-weight ToM  speaker models a
 gains of 3.0% and 4.6% on easy and hard distractors, respectively. This suggests that the inclusion
 of a sufﬁciently inﬂuential ToM reranker during the speaker training process improves speaker performance,
  although the relative gains appear to be much higher when training on easy distractors.
-7 2023 2  Performance and language features of speakers trained on various distractors. We only
+7Published as a conference paper at ICLR 2023
+Table 2  Performance and language features of speakers trained on various distractors. We only
 show the most performant variants of Caption and Hybrid similarity, with the others shown in A.1.
-Model Performance POS F1 0.81 1.50 0.16 0.52 0.41 0.38 8.97 0.92 2.52 1.00 1.00 1.00 1.00 10.79 0.80 2.09 0.19 0.61 0.45 0.49 10.33 0.86 2.01 0.19 0.62 0.49 0.48 10.04 0.85 2.19 0.20 0.62 0.49 0.47 10.18
+Model Performance POS F1 Average
+Distractors Acc Fluency ADJ ADP NOUN VERB Length
+Base 0.81 1.50 0.16 0.52 0.41 0.38 8.97
+Gold Standard 0.92 2.52 1.00 1.00 1.00 1.00 10.79
+Image 0.80 2.09 0.19 0.61 0.45 0.49 10.33
+Caption 0.86 2.01 0.19 0.62 0.49 0.48 10.04
+Hybrid 0.85 2.19 0.20 0.62 0.49 0.47 10.18
 However, we ﬁnd that speaker models that rerank utterances using a combined speaker-ToM score
 generally fail to outperform models that do not use their ToM listener in training.
 We also ﬁnd that the usage of a highly-weighted ToM listener leads to signiﬁcant ﬂuency gains when
@@ -341,7 +331,8 @@ through the high ToM accuracies reported, especially in the most performant mode
 high listener weight. These qualitative and quantitative results provide computational evidence that
 ToM can play an important role in simulated language acquisition, similarly to how it has been
 hypothesized to play a critical role in human language acquisition.
-6.3 2, we generally ﬁnd signiﬁcant improvements in language quality in models
+6.3 E FFECTS OF DISTRACTOR DIFFICULTY
+As shown in Table 2, we generally ﬁnd signiﬁcant improvements in language quality in models
 trained on more difﬁcult distractors. The largest gains are those seen in the ﬂuency score, where
 difﬁcult distractors achieve gains ranging between 25% to 46%. We also ﬁnd that models trained
 on more difﬁcult distractors use more similar vocabulary to the ground-truth captions, as measured
@@ -358,15 +349,14 @@ We ﬁnd smaller differences between the language of models trained with various
  Speaker models trained with visually similar distractors achieve the highest ﬂuency, at
 2.094, and form the longest utterances. They also have more precise verb selection, as measured
 by F1. Speakers trained on distractors that were selected with hybrid or caption similarity, achieved
-high noun F1 0.49 0.41for the base speaker model, indicating that semantically
+high noun F1 scores of 0.49compared to 0.41for the base speaker model, indicating that semantically
  similar distractors in training may be better for identifying salient nouns. We ﬁnd that training
 on more difﬁcult distractors does not consistently improve model performance when evaluating on
 easier distractors. This suggests some disconnect between a language s ﬂuency and its suitability to
-8 2023
+8Published as a conference paper at ICLR 2023
 the image referential game environment. However, speakers that train on more semantically similar
  distractors still achieve up to 5percent higher accuracy than the base speaker, indicating some
 beneﬁts to performance from training on certain harder distractors.
-7 R ELATED WORK
 Parallels in Human Language Acquisition. The concept of learning language through repeated
 exposure to referents is a popular model within the psychology community. Smith & Yu (2008)
 found that infants resolve the uncertainty of determining which referent in a scene a word refers to by
@@ -414,20 +404,17 @@ in more complex environments by varying the listener architecture or by consider
 settings, such as object referential games. We encourage the machine learning and psychological
 modelling communities to consider the further incorporation of ToM into computational models of
 language acquisition, which could help develop more pragmatically-aware models.
-9 2023
-REFERENCES
+9Published as a conference paper at ICLR 2023
 Jacob Andreas and Dan Klein. Reasoning about pragmatics with neural listeners and speakers.
-Proceedings of the 2016 Conference on Empirical Methods in Natural Language Processing , 1 1173 1182, 2016.
+Proceedings of the 2016 Conference on Empirical Methods in Natural Language Processing , 1 
 Nolan Bard, Jakob N Foerster, Sarath Chandar, Neil Burch, Marc Lanctot, H Francis Song, Emilio
 Parisotto, Vincent Dumoulin, Subhodeep Moitra, Edward Hughes, et al. The hanabi challenge  A
 new frontier for ai research. Artiﬁcial Intelligence , 280 103216, 2020.
 Elika Bergelson and Richard Aslin. Semantic speciﬁcity in one-year-olds  word comprehension.
  Language Learning and Development , 13 1 21, 06 2017a. doi  10.1080/15475441.2017.
-1324308.
 Elika Bergelson and Richard N. Aslin. Nature and origins of the lexicon in 6-mo-olds. Proceedings
  of the National Academy of Sciences , 114(49) 12916 12921, 2017b. doi  10.
 1073/pnas.1712966114. URL https //www.pnas.org/doi/abs/10.1073/pnas.
-1712966114 .
 Steven Bird, Ewan Klein, and Edward Loper. Natural Language Processing with Python  Analyzing
 Text with the Natural Language Toolkit . O Reilly, Beijing, 2009. ISBN 978-0-596-51649-9. doi 
 http //my.safaribooksonline.com/9780596516499. URL http //www.nltk.org/book .
@@ -436,10 +423,9 @@ communication through negotiation. arXiv preprint arXiv 1804.03980 , 2018.
 Rahma Chaabouni, Florian Strub, Florent Altch  e, Eugene Tarassov, Corentin Tallec, Elnaz Davoodi,
 Kory Wallace Mathewson, Olivier Tieleman, Angeliki Lazaridou, and Bilal Piot. Emergent communication
  at scale. In International Conference on Learning Representations , 2022. URL
-https //openreview.net/forum id AUGBfDIV rL .
+https //openreview.net/forum id AUGBfDIV9rL .
 Kaiming He, Xiangyu Zhang, Shaoqing Ren, and Jian Sun. Deep residual learning for image recognition.
  In Proceedings of the IEEE conference on computer vision and pattern recognition , pp.
-770 778, 2016.
 Matthew Honnibal, Ines Montani, Soﬁe Van Landeghem, and Adriane Boyd. spacy  Industrialstrength
  natural language processing in python. 2020. doi  10.5281/zenodo.1212303.
 Katharina Kann, Sascha Rothe, and Katja Filippova. Sentence-level ﬂuency evaluation  References
@@ -457,11 +443,11 @@ Doll ar, and C Lawrence Zitnick. Microsoft coco  Common objects in context. In E
 conference on computer vision , pp. 740 755. Springer, 2014.
 Yinhan Liu, Myle Ott, Naman Goyal, Jingfei Du, Mandar Joshi, Danqi Chen, Omer Levy, Mike
 Lewis, Luke Zettlemoyer, and Veselin Stoyanov. Ro {bert}a  A robustly optimized {bert}pretraining
- approach, 2020. URL https //openreview.net/forum id SyxS T tvS .
+ approach, 2020. URL https //openreview.net/forum id SyxS0T4tvS .
 Ryan Lowe, Abhinav Gupta, Jakob Foerster, Douwe Kiela, and Joelle Pineau. On the interaction
 between supervision and self-play in emergent communication. In International Conference on
 Learning Representations , 2019.
-10 2023
+10Published as a conference paper at ICLR 2023
 Will Monroe, Robert X.D. Hawkins, Noah D. Goodman, and Christopher Potts. Colors in context 
 A pragmatic neural model for grounded language understanding. Transactions of the Association
 for Computational Linguistics , 5 325 338, 2017. doi  10.1162/tacl a00064. URL https 
@@ -470,7 +456,7 @@ Jesse Mu and Noah Goodman. Emergent communication of generalizations. In M. Ranz
  A. Beygelzimer, Y . Dauphin, P.S. Liang, and J. Wortman Vaughan (eds.), Advances
 in Neural Information Processing Systems , volume 34, pp. 17994 18007. Curran Associates,
  Inc., 2021. URL https //proceedings.neurips.cc/paper/2021/file/
-9597353 256-Paper.pdf .
+9597353e41e6957b5e7aa79214fcb256-Paper.pdf .
 Aida Nematzadeh, Kaylee Burns, Erin Grant, Alison Gopnik, and Tom Grifﬁths. Evaluating
 theory of mind in question answering. In Proceedings of the 2018 Conference on Empirical
  Methods in Natural Language Processing , pp. 2392 2400, Brussels, Belgium, OctoberNovember
@@ -480,11 +466,10 @@ Kishore Papineni, Salim Roukos, Todd Ward, and Wei-Jing Zhu. Bleu  A method for 
 evaluation of machine translation. In Proceedings of the 40th Annual Meeting on Association
 for Computational Linguistics , ACL  02, pp. 311 318, USA, 2002. Association for Computational
  Linguistics. doi  10.3115/1073083.1073135. URL https //doi.org/10.3115/
-1073083.1073135 .
 David Premack and Guy Woodruff. Does the chimpanzee have a theory of mind  Behavioral and
 brain sciences , 1(4) 515 526, 1978.
 Neil Rabinowitz, Frank Perbet, Francis Song, Chiyuan Zhang, SM Ali Eslami, and Matthew
-Botvinick. Machine theory of mind. In International conference on machine learning , pp. 4218 4227. PMLR, 2018.
+Botvinick. Machine theory of mind. In International conference on machine learning , pp. 4218 
 Alec Radford, Jeffrey Wu, Rewon Child, David Luan, Dario Amodei, Ilya Sutskever, et al. Language
 models are unsupervised multitask learners. OpenAI blog , 1(8) 9, 2019.
 Alec Radford, Jong Wook Kim, Chris Hallacy, Aditya Ramesh, Gabriel Goh, Sandhini Agarwal,
@@ -494,7 +479,6 @@ https //arxiv.org/abs/2103.00020 .
 Nils Reimers and Iryna Gurevych. Sentence-bert  Sentence embeddings using siamese bertnetworks.
  In Proceedings of the 2019 Conference on Empirical Methods in Natural Language
 Processing . Association for Computational Linguistics, 11 2019. URL https //arxiv.
-org/abs/1908.10084 .
 John Schulman, Filip Wolski, Prafulla Dhariwal, Alec Radford, and Oleg Klimov. Proximal policy
 optimization algorithms, 2017. URL https //arxiv.org/abs/1707.06347 .
 Linda Smith and Chen Yu. Infants rapidly learn word-referent mappings via cross-situational
@@ -509,14 +493,12 @@ Ramakrishna Vedantam, Samy Bengio, Kevin Murphy, Devi Parikh, and Gal Chechik. C
 Chen Yu and Dana H. Ballard. A uniﬁed model of early word learning  Integrating statistical and
 social cues. Neurocomputing , 70(13) 2149 2165, 2007. ISSN 0925-2312. doi  https //doi.org/
 10.1016/j.neucom.2006.01.034. URL https //www.sciencedirect.com/science/
-article/pii/S X . Selected papers from the 3rd International Conference
+article/pii/S092523120600508X . Selected papers from the 3rd International Conference
  on Development and Learning (ICDL 2004) Time series prediction competition  the CATS
-benchmark.
-11 2023
+11Published as a conference paper at ICLR 2023
 Chen Yu and Linda B. Smith. Embodied attention and word learning by toddlers. Cognition
  , 125(2) 244 262, 2012. ISSN 0010-0277. doi  https //doi.org/10.1016/j.cognition.
 2012.06.016. URL https //www.sciencedirect.com/science/article/pii/
-S0010027712001369 .
 Mert Yuksekgonul, Federico Bianchi, Pratyusha Kalluri, Dan Jurafsky, and James Zou. When and
 why vision-language models behave like bags-of-words, and what to do about it , 2022. URL
 https //arxiv.org/abs/2210.01936 .
@@ -524,10 +506,21 @@ Hao Zhu, Graham Neubig, and Yonatan Bisk. Few-shot language coordination by mode
 of mind. In International Conference on Machine Learning , pp. 12901 12911. PMLR, 2021.
 Hao Zhu, Yonatan Bisk, and Graham Neubig. Simulated language learning through communicative
 goals and linguistic input. Proceedings of the Annual Meeting of the Cognitive Science Society ,
-44 1351 1358, 2022.
-A A PPENDIX
-A.1 2, we select the caption and hybrid distractors involved in the training of the most performant
+A.1 F ULL EFFECTS OF DISTRACTOR DIFFICULTY
+In Table 2, we select the caption and hybrid distractors involved in the training of the most performant
  models to be reported. Here, as promised, we report the results of experiments over a fuller
 range of distractor variants.
 Table 3  Performance and language features of speakers trained on all distractor variants.
-Model Performance POS F1 0.81 1.50 0.16 0.52 0.41 0.38 8.97 0.92 2.52 1.00 1.00 1.00 1.00 10.79 0.80 2.09 0.19 0.61 0.45 0.49 10.33 0.83 1.87 0.18 0.57 0.46 0.43 9.56 0.83 1.93 0.20 0.60 0.48 0.47 10.06 0.86 2.01 0.19 0.62 0.49 0.48 10.04 0.83 2.05 0.21 0.63 0.46 0.45 10.30 0.81 1.87 0.24 0.58 0.46 0.45 9.78 0.83 1.94 0.20 0.61 0.48 0.47 10.09 0.84 2.09 0.20 0.65 0.48 0.46 10.29 0.85 2.19 0.20 0.62 0.49 0.47 10.18 12
+Model Performance POS F1 Average
+Distractors Acc Fluency ADJ ADP NOUN VERB Length
+Base 0.81 1.50 0.16 0.52 0.41 0.38 8.97
+Gold Standard 0.92 2.52 1.00 1.00 1.00 1.00 10.79
+Image 0.80 2.09 0.19 0.61 0.45 0.49 10.33
+Caption CLIP 0.83 1.87 0.18 0.57 0.46 0.43 9.56
+Caption RoBERTa 0.83 1.93 0.20 0.60 0.48 0.47 10.06
+Caption RoBERTa TFIDF 0.86 2.01 0.19 0.62 0.49 0.48 10.04
+Caption TFIDF 0.83 2.05 0.21 0.63 0.46 0.45 10.30
+Hybrid CLIP 0.81 1.87 0.24 0.58 0.46 0.45 9.78
+Hybrid RoBERTa 0.83 1.94 0.20 0.61 0.48 0.47 10.09
+Hybrid RoBERTa TFIDF 0.84 2.09 0.20 0.65 0.48 0.46 10.29
+Hybrid TFIDF 0.85 2.19 0.20 0.62 0.49 0.47 10.18

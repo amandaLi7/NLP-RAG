@@ -1,4 +1,5 @@
-Proceedings of the The 12th Joint Conference on Lexical and Computational Semantics (*SEM 2023) , pages 207 216 13-14, 2023 2023 Association for Computational Linguistics
+Proceedings of the The 12th Joint Conference on Lexical and Computational Semantics (*SEM 2023) , pages 207 216
+July 13-14, 2023  2023 Association for Computational Linguistics
 LEX PLAIN   Improving Model Explanations via Lexicon Supervision
 Orevaoghene Ahia Hila Gonen Vidhisha Balachandran 
 Yulia Tsvetkov Noah A. Smith  
@@ -6,7 +7,6 @@ Yulia Tsvetkov Noah A. Smith
  Language Technologies Institute, Carnegie Mellon University
  Allen Institute for Artificial Intelligence
 oahia@cs.washington.edu
-Abstract
 Model explanations that shed light on the
 model s predictions are becoming a desired additional
  output of NLP models, alongside their
@@ -25,8 +25,6 @@ and toxicity detection. Our analyses show that
 our method also demotes spurious correlations
 (i.e., with respect to African American English
 dialect) on toxicity detection, improving fairness.
-
-1 Introduction
 Extensive recent work has sought to advance NLP
 models so that they offer explanations for their
 predictions (Rajani et al., 2019  Lundberg and Lee,
@@ -78,14 +76,15 @@ We believe these results are encouraging, as they
 suggest that type-level (lexicon) supervision is a
 viable alternative to methods that require costly annotation
  of explanations (Zaidan and Eisner, 2008 
-Huang et al., 2021).1 2 Background  S ELFEXPLAIN
+Huang et al., 2021).1
+2 Background  S ELFEXPLAIN
 Our goal is to improve model explanations in supervised
  text classification tasks. By supervising
 explanations, we incorporate inductive biases into
 models, making them robust to spurious artifacts.
 Our base model is SELFEXPLAIN (Rajagopal et al.,
 1Code available at https //github.com/orevaahia/
-supex a), a framework that explains a text classifier s
+supex2072021a), a framework that explains a text classifier s
 predictions with phrase attribution. We describe
 SELFEXPLAIN (omitting the global interpretable
 layer, as we focus on local explanations) and in Section
@@ -98,10 +97,6 @@ to yield a probability distribution over outputs  the
 loss is the negative log probability, summed over
 training instances i 
 ℓ  softmax(affine(ReLU( us))) (1)
-Ltask   
-ilogℓ[y 
-i] (2)
-y 
 iis the correct label for instance i. Parameters of
 the affine layer are suppressed here for simplicity.
 A set of phrases is extracted from the data with
@@ -112,7 +107,6 @@ of tokens in phrase j. The output distribution withoutphrase
  (Shrikumar et al., 2017  Montavon et al.,
 2017) between usanduj.
 sj  softmax(affine(ReLU( us) ReLU( uj)))
-(3)
 Vector sjis a probability distribution over labels,
 with phrase jabsent  the closer sjis to ℓ(Eq. 1),
 the less important phrase jis. A secondary log loss
@@ -125,9 +119,6 @@ loss   Ltask α1LLIL (4)
 The relevance of each phrase jcan be defined as
 the change in probability of the correct label when
 jis included vs. excluded 
-rj  [ℓ]y 
-i [sj]y 
-i(5)
 where higher rjsignify more relevant phrases to the
 prediction, and as such serve as better explanations.
 3 Supervising Explanations
@@ -148,7 +139,6 @@ prefer phrases that contain words in our lexicon as
 explanations. Table 1 lists examples in the datasets,
 showing the advantage of our method with more intuitive
  explanations that better reflect the predicted
-label.
 Our proposed method, named LEX PLAIN , assumes
  that good explanations within the input
 are crucial for predictions, thus we encourage the
@@ -164,7 +154,6 @@ This objective is used for only lexicon phrases.
 LEX PLAIN interpolates the third loss, weighted
 by hyperparameter α2, with the other two 
 loss   Ltask α1LLIL α2LLEX PLAIN (7)
-4 Experimental Setup
 Datasets We experiment on three datasets and
 evaluate explanations based on alignment with
 model predictions and plausibility with humans.
@@ -173,13 +162,12 @@ We focus on sentiment analysis and toxicity detection,
 high-quality lexicons are available. Toxicity detection
  also allows us to analyze the efficacy of our
 method in demoting spurious racial correlations, as
-detailed in  6.
 For sentiment analysis, we use the SST-2 dataset
 (Socher et al., 2013), where the task is to predict
 the sentiment of movie reviews. For toxicity detection
  we use DWMW17 (Davidson et al., 2017)
 andFDCL18 (Founta et al., 2018)  both Twitter
-datasets annotated for toxicity and dialect  African Input SELFEXPLAIN LEX PLAIN
+datasets annotated for toxicity and dialect  African208Input SELFEXPLAIN LEX PLAIN
 she is the biggest idiot on the planet. on this planet the biggest idiot
 Haha , says the little bitch who let someone take his phone . a real man
 would n t have let that happen . a little bitch would.someone take his
@@ -190,8 +178,8 @@ He draw ( for   big bad love   ) is a solid performance by arliss howard. big ba
 A lackluster , unessential sequel to the classic disney adaptation of j.m.
 barrie  s peter panthe classic dis ney
 adaptationthe classic disney adaptation
-Table 1 17, FDCL18 2 (2 examples each).
-Predicted labels are toxic for DWMW17 18. First and second SST2 examples are positive and negative,
+Table 1  Explanations from SELFEXPLAIN andLEX PLAIN for DWMW17, FDCL18 and SST2 (2 examples each).
+Predicted labels are toxic for DWMW17 and FDCL18. First and second SST2 examples are positive and negative,
 respectively. Explanations of LEX PLAIN align better with the model prediction and contain more task-related terms.
 American English (AAE) and White American English.
  The AAE annotations are obtained from a demographically
@@ -207,7 +195,6 @@ from the pretraining of the XLNet encoder and
 finetune the model for 5 epochs. In LEX PLAIN
 we do not use the GIL, since initial experiments
 showed no difference between adding and removing
- the GIL.
 ForLEX PLAIN , we perform hyperparameter
 tuning for α1  {0.01,0.05,0.1}andα2 
 {0.8,1.5.2.0}on the development set. We report
@@ -216,7 +203,6 @@ We extract phrases from sentences, by parsing
 each sentence with a constituency parser (Kitaev
 and Klein, 2018) and extracting all non-terminals
 with a token length of up to 5 words in the parse
-tree.
 5 Evaluating Explanations
 The goal of LEX PLAIN is to train models to produce
  plausible explanations that align with their
@@ -245,7 +231,10 @@ in each dataset. Clearly, LEX PLAIN puts more lexicon
  entries higher in the rank, this is especially noticeable
  in the highest ranked explanations (rank 1).
 Dataset Model MRR(Full lexicon) MRR(50% lexicon)
-FDCL Baseline 0.29 0.31 0.33 0.35 0.32 0.20 0.35 0.24 0.23 0.18 0.25 0.22 2  Mean reciprocal rank (MRR) of lexicon phrases
+FDCL18Baseline 0.29 0.31
+DWMW17Baseline 0.32 0.20
+SST2Baseline 0.23 0.18
+Table 2  Mean reciprocal rank (MRR) of lexicon phrases
 across the full ranking of explanations on the test set.
 Do explanations sufficiently reflect model predictions 
  Sufficiency measures how indicative
@@ -262,20 +251,26 @@ are more reflective of the model predictions. We
 train the sufficiency models with the top ranking
 explanations of each sentence as input.
 Following Jain et al. (2020), we measure this
-with a BERT classifier trained with top ranked phrases as input and predicted label as output.
+with a BERT classifier trained with top ranked209phrases as input and predicted label as output.
 Higher accuracy indicates more sufficient explanations.
  Table 3 shows that LEX PLAIN explanations
 have higher predictive performance and are more
 sufficient on average compared to the baseline.
-Dataset Model Top 1 2
-SST-2 64.99 68.90 68.00 70.00 82.25 87.37 83.79 87.79 88.16 89.00 85.12 91.10 3  Test set accuracy of sufficiency models trained
+Dataset Model Top 1 Top 2
+SST-2Baseline 64.99 68.90
+LEX PLAIN 68.00 70.00
+FDCL18Baseline 82.25 87.37
+LEX PLAIN 83.79 87.79
+DWMW17Baseline 88.16 89.00
+LEX PLAIN 85.12 91.10
+Table 3  Test set accuracy of sufficiency models trained
 on the top-1 and top-2 explanation as input.
 Do humans prefer LEX PLAIN explanations 
 To evaluate how plausible our model s explanations
  are (Singh et al., 2019  Jin et al., 2020) we
 ask annotators to select their preferred explanations,
 comparing explanations from both the baseline and
-LEX PLAIN . We provide 3 50 samples
+LEX PLAIN . We provide 3 annotators with 50 samples
  from the test set of each of our three datasets
 (9 annotators in total). All annotators are computer
 science graduate students and were already familiar
@@ -292,16 +287,8 @@ task. In Figure 1, we present the results of the
 human judgments. The differences between LEXPLAIN
  and the baseline are striking with LEXPLAIN
  being preferred about 3-4  more often than
-the baseline.
-DMW FDCL SST2 010203040 46%
-16%26%24%42%
-36%
-24%34%
-28%
+Dataset010203040 Percentage46%
 6%8%10%Non-satisfactory
-Both satisfactory
-LEXplain preferred
-Baseline preferred
 Figure 1  Results of human evaluation of explanation
 preference. LEX PLAIN is preferred by annotators 3-4  
 more often than the baseline.6 Downstream Performance Analysis
@@ -320,7 +307,15 @@ LEX PLAIN are competitive with the baseline, also
 showing that additionally supervising explanations
 does not hurt the results of the classification task.
 Dataset Dialect Model Accuracy FPR FNR
-FDCL All dialectsBaseline 93.94 3.94 10.05 94.10 4.24 9.03 93.60 12.43 4.21 93.60 13.87 3.36 96.06 10.98 2.48 96.30 5.99 3.24 98.00 21.69 1.10 97.95 12.05 1.59 4  Toxicity accuracy, FPR, FNR on the test sets.
+FDCL18All dialectsBaseline 93.94 3.94 10.05
+LEX PLAIN 94.10 4.24 9.03
+AAEBaseline 93.60 12.43 4.21
+LEX PLAIN 93.60 13.87 3.36
+DWMW17All dialectsBaseline 96.06 10.98 2.48
+LEX PLAIN 96.30 5.99 3.24
+AAEBaseline 98.00 21.69 1.10
+LEX PLAIN 97.95 12.05 1.59
+Table 4  Toxicity accuracy, FPR, FNR on the test sets.
 Demoting Spurious Correlations with Race
 Neural classifiers have been shown to rely on spurious
  artifacts in the training data (Kumar et al.,
@@ -338,26 +333,24 @@ American English (AAE) and White American English.
 as more non-toxic instances are falsely labelled
 toxic because of reliance on dialectal features. In
 Table 4 we report the FPR (false positive rate) and
-FNR on DWMW17 18. We get a much
+FNR on DWMW17 and FDCL18. We get a much
 lower FPR on the full DWMW17, and more significant
  reduction on AAE samples. On the FDCL18
 data, we see a slightly higher FPR than the baseline.
 Lexicon Generalization We inspect the generalization
  abilities of LEX PLAIN   does it generalize
-and promote task related terms in explanations but not present in the lexicon  We randomly select
+and promote task related terms in explanations but210not present in the lexicon  We randomly select
 50% of lexicon words and use them only to supervise
  while training. We compute MRR with respect
 to the other half not used for supervision on the
 same test set. If the phrases are ranked higher on
 average, even without being seen during training, it
 indicates that LEX PLAIN generalizes over lexicon
-phrases.
 Table 2 shows the MRR of lexicon entries (not
 used as supervision). We show that our method generalizes
  consistently across all tasks  even lexicon
 entries absent during supervision are ranked higher
 with LEX PLAIN when compared to the baseline.
-7 Related Work
 Different works have approached interpreting models
  trained for various downstream tasks using
 post hoc (Simonyan et al., 2014  Jin et al., 2020 
@@ -379,7 +372,6 @@ Eisner (2008)  Huang et al. (2021) use human rationales
 expensive annotation to elicit good explanations.
 We instead aim to supervise rationales using task
 lexicons, and show it yields improved explanations.
-8 Conclusion
 We propose LEX PLAIN , a method to improve
 model explanations by directly supervising them
 using task lexicons as the source of supervision.
@@ -421,7 +413,6 @@ its success only with one model (XLNet). Future
 work should explore adaptations of other language
 models, and extensions to language generation, to
 facilitate model interpretability in new settings.
-Ethics Statement
 Our work aims at developing interpretable models
 that do not overfit to artifacts in the training data.
 However, there is no guarantee that we fully mitigate
@@ -444,7 +435,7 @@ dataset curation that would enable a more reliable
 fairness evaluation.Acknowledgments
 This research is supported in part by by the National
  Science Foundation (NSF) under grants
-IIS2203097 2125201. This research is supported
+IIS2203097 and IIS2125201. This research is supported
  in part by the Office of the Director of National
  Intelligence (ODNI), Intelligence Advanced
 Research Projects Activity (IARPA), via the HIATUS
@@ -461,22 +452,18 @@ David Alvarez Melis and Tommi Jaakkola. 2018. Towards
  robust interpretability with self-explaining neural
  networks. In Advances in Neural Information
 Processing Systems , volume 31. Curran Associates,
-Inc.
 Su Lin Blodgett, Lisa Green, and Brendan O Connor.
 2016. Demographic dialectal variation in social
 media  A case study of African-American English.
 InProceedings of the 2016 Conference on Empirical
  Methods in Natural Language Processing , pages
 1119 1130, Austin, Texas. Association for Computational
- Linguistics.
 Oana-Maria Camburu, Tim Rocktäschel, Thomas
 Lukasiewicz, and Phil Blunsom. 2018. e-snli  Natural
  language inference with natural language explanations.
- In NeurIPS .
 Thomas Davidson, Dana Warmsley, Michael W. Macy,
 and Ingmar Weber. 2017. Automated hate speech
 detection and the problem of offensive language. In
-ICWSM .
 Misha Denil, Alban Demiraj, and Nando de Freitas.
 2014. Extraction of salient sentences from labelled
 documents. ArXiv , abs/1412.6815.
@@ -494,7 +481,6 @@ the North American Chapter of the Association for
 Computational Linguistics  Human Language Technologies,
  Volume 2 (Short Papers) , pages 107 112,
 New Orleans, Louisiana. Association for Computational
- Linguistics.
 Xiaochuang Han and Yulia Tsvetkov. 2021. Influence
 tuning  Demoting spurious correlations via instance
 attribution and instance-driven updates. In Findings
@@ -516,7 +502,6 @@ ACM SIGKDD international conference on Knowledge
 Quzhe Huang, Shengqi Zhu, Yansong Feng, and
 Dongyan Zhao. 2021. Exploring distantly-labeled
 rationales in neural network models. ArXiv ,
-abs/2106.01809.
 Clayton J. Hutto and Eric Gilbert. 2014. Vader  A parsimonious
  rule-based model for sentiment analysis
 of social media text. In ICWSM .
@@ -526,7 +511,6 @@ for text classification. In Proceedings of the 2018
 EMNLP Workshop BlackboxNLP  Analyzing and Interpreting
  Neural Networks for NLP , pages 56 65,
 Brussels, Belgium. Association for Computational
-Linguistics.
 Sarthak Jain, Sarah Wiegreffe, Yuval Pinter, and Byron
 Wallace. 2020. Learning to faithfully rationalize by
 construction. pages 4459 4473.
@@ -543,7 +527,8 @@ for Computational Linguistics.
 Sachin Kumar, Shuly Wintner, Noah A. Smith, and Yulia
  Tsvetkov. 2019. Topics to avoid  Demoting latent
 confounds in text classification. In Proceedings of
-the 2019 9th International
+the 2019 Conference on Empirical Methods in Natural
+ Language Processing and the 9th International
 Joint Conference on Natural Language Processing
 (EMNLP-IJCNLP) , pages 4153 4163, Hong Kong,
 China. Association for Computational Linguistics.
@@ -555,7 +540,6 @@ approach to interpreting model predictions. In Proceedings
  of the 31st International Conference on Neural
  Information Processing Systems , NIPS 17, page
 4768 4777, Red Hook, NY , USA. Curran Associates
-Inc.
 Siwen Luo, Hamish Ivison, Soyeon Caren Han, and
 Josiah Poon. 2021. Local interpretations for explainable
  natural language processing  A survey. ArXiv ,
@@ -574,7 +558,6 @@ Grégoire Montavon, Sebastian Lapuschkin, Alexander
 Binder, Wojciech Samek, and Klaus-Robert Müller.
 2017. Explaining nonlinear classification decisions
 with deep taylor decomposition. Pattern Recognition ,
-65 211 222.
 Dheeraj Rajagopal, Vidhisha Balachandran, Eduard H.
 Hovy, and Yulia Tsvetkov. 2021a. Selfexplain  A
 self-explaining architecture for neural text classifiers.
@@ -617,11 +600,9 @@ Visualising image classification models and saliency
 maps. CoRR , abs/1312.6034.Chandan Singh, W. James Murdoch, and Bin Yu. 2019.
 Hierarchical interpretations for neural network predictions.
  In International Conference on Learning
-Representations .
 Daniel Smilkov, Nikhil Thorat, Been Kim, Fernanda B.
 Viégas, and Martin Wattenberg. 2017. Smoothgrad 
  removing noise by adding noise. CoRR ,
-abs/1706.03825.
 Richard Socher, Alex Perelygin, Jean Wu, Jason
 Chuang, Christopher D. Manning, Andrew Ng, and
 Christopher Potts. 2013. Recursive deep models for
@@ -642,18 +623,15 @@ abusive words   a feature-based approach. In Proceedings
 Linguistics  Human Language Technologies, Volume
 1 (Long Papers) , pages 1046 1056, New Orleans,
 Louisiana. Association for Computational Linguistics.
-
 Mengzhou Xia, Anjalie Field, and Yulia Tsvetkov. 2020.
 Demoting racial bias in hate speech detection. In
 Proceedings of the Eighth International Workshop
 on Natural Language Processing for Social Media ,
 pages 7 14, Online. Association for Computational
-Linguistics.
 Zhilin Yang, Zihang Dai, Yiming Yang, Jaime G. Carbonell,
  Ruslan Salakhutdinov, and Quoc V . Le. 2019.
 Xlnet  Generalized autoregressive pretraining for language
  understanding. In Neural Information Processing
- Systems .
 Mo Yu, Shiyu Chang, Yang Zhang, and Tommi S
 Jaakkola. 2019. Rethinking cooperative rationalization 
  Introspective extraction and complement control.
@@ -668,22 +646,23 @@ from the pretraining of the XLNet encoder and
 finetune the model for 5 epochs. In LEX PLAIN
 we do not use the GIL, since initial experiments
 showed no difference between adding and removing
- the GIL.
 ForLEX PLAIN , we perform hyperparameter
 tuning for α1  {0.01,0.05,0.1}andα2 
 {0.8,1.5.2.0}on the development set. We report
 results on the best configuration on the test sets.
-Toxicity Dataset DWMW17 25,000 tweets that have been annotated for
+Toxicity Dataset DWMW17 is a Twitter dataset
+with 25,000 tweets that have been annotated for
 hate speech, offensive, or none alongside dialect labels 
  African American English (AAE) and White
 American English. We merge the hatespeech and
 offensive examples and regard all of them as toxic.
-FDCL18 100,000
+FDCL18 is also a Twitter dataset with 100,000
 tweets annotated for hate, abuse, spam, and none.
 We select all instances, except for the ones labeled
 as spam. Again, we merge the hate and abuse examples
  and regard all of them as toxic. For all datasets
-we use the provided splits to train/dev./test.2 2,470
+we use the provided splits to train/dev./test.2
+Task Lexicons Our sentiment lexicon of 2,470
 words is derived by combining two existing lexicons 
  Hutto and Gilbert (2014) and Hu and Liu
 (2004). For toxicity detection, we use the lexicon
@@ -695,22 +674,24 @@ extracting the most salient words present in the
 non-toxic instances did not yield improved explanations.
  We opt to only supervise toxic instances
 in the training data.
-B Human Evaluation
 We ask annotators to select preferred explanations
 between the baseline and LEX PLAIN . They are
 presented with the model input, the original label
 and the predicted label and also All annotators are
 familiar with the tasks and are computer science
-graduate students.
 Instructions given to human evaluators The
-task here is sentiment analysis. The labels are 0 2Train/dev./test  FDCL18 54120/10145/11825,
-DWMW17 17849/3001/3501, SST2 66976/872/1821.for negative instances and 1 for positive instances.
+task here is sentiment analysis. The labels are 0
+2Train/dev./test  FDCL18  54120/10145/11825,
+DWMW17  17849/3001/3501, SST2  66976/872/1821.for negative instances and 1 for positive instances.
 Please enter XorYin the last column for the algorithm
  that provides the best explanation for the
 predicted label. If the explanations are the same for
 both algorithms, please enter XY. If the explanations
  for both algorithms are not satisfactory, please
 enter NXY . If explanations are not same, but both
-are satisfactory, please enter SXY .2151 2 3 4 5 6 7 8 9 10 1 2 3 4 5 6 7 8 9 10 1 2 3 4 5 6 7 8 9 10 2  Number of lexicon entries in each rank across
+are satisfactory, please enter SXY .2151 2 3 4 5 6 7 8 9 10
+Rank02004006008001000120014001600Number lexicon phrasesLEXplain
+Rank020040060080010001200Number lexicon phrasesLEXplain
+Rank0100200300400500600700800Number lexicon phrasesLEXplain
+baselineFigure 2  Number of lexicon entries in each rank across
 all sentences in each test set in the order of [FDCL18,
-DWMW17 2].216

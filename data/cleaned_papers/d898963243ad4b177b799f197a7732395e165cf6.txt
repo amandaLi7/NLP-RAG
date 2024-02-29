@@ -1,27 +1,16 @@
 Evaluating Picture Description Speech for Dementia Detection
 using Image-text Alignment
-Youxiang Zhu
 University of Massachusetts Boston
-Boston, MA, USA
 Youxiang.Zhu001@umb.eduNana Lin
 University of Massachusetts Boston
-Boston, MA, USA
 Nana.Lin002@umb.eduXiaohui Liang
 University of Massachusetts Boston
-Boston, MA, USA
 Xiaohui.Liang@umb.edu
-John A. Batsis
 University of North Carolina
-Chapel Hill, NC, USA
 John.Batsis@unc.eduRobert M. Roth
 Geisel School of Medicine at
-Dartmouth
-Lebanon, NH, USA
 Robert.M.Roth@hitchcock.orgBrian MacWhinney
 Carnegie Mellon University
-Pittsburgh, PA, USA
-macw@andrew.cmu.edu
-ABSTRACT
 Using picture description speech for dementia detection has been
 studied for 30 years. Despite the long history, previous models focus
 on identifying the differences in speech patterns between healthy
@@ -44,12 +33,10 @@ image-text alignment models, achieve state-of-the-art performance
 with the best detection accuracy at 83.44%, which is higher than the
 text-only baseline model at 79.91%. Lastly, we visualize the sample
 and picture results to explain the advantages of our models.
-CCS CONCEPTS
  Computing methodologies  Natural language processing .
-KEYWORDS
 Image-text matching, Multimodal Model, Few-shot, Dementia Detection
-
-1 6 million older adults in the United States [ 1]. The speechbased
+Dementia is a common and irreversible disease that affects more
+than 6 million older adults in the United States [ 1]. The speechbased
  analysis enables the detection of dementia in the early stage
 at a lower cost and lower effort compared to other alternative detection
  methods. Researchers have explored speech-based dementia
@@ -59,7 +46,6 @@ spontaneous speech. The audio samples and the human-transcribed
 Classiﬁcation ModelOrignal samplesHC or ADProcessed samplesPicture
 Orignal samplesProcessed samplesImage-Text AlignmentPictureHuman
 Dementia Detection ModelOriginal text samples
-HC or ADPicture
 Image-Text AlignmentPictureProcessed text samples  Human knowledgePre-trained knowledgeFigure 1  Human knowledge vs. Pre-trained knowledge
 text samples are used to infer participants  cognitive health status,
  either Healthy Control (HC) or Alzheimer s Disease (AD). A
@@ -86,7 +72,7 @@ areas. The lack of the picture as an input to the model prevents
 the model from accessing the full and original knowledge of the
 picture. While deep learning models rapidly advance beyond human
 capability, we envision that dementia detection models using the
-original picture as an input can understand the picture descriptionarXiv 2308.07933 1  [cs.CL]  11 2023Youxiang Zhu et al.
+original picture as an input can understand the picture descriptionarXiv 2308.07933v1  [cs.CL]  11 Aug 2023Youxiang Zhu et al.
 task deeply and, as a result, outperform previous models that do
 not use the picture as a direct input.
 The image-text alignment models are advanced recently [ 25,31,
@@ -105,7 +91,6 @@ the picture using image-text alignment and have two observations
 HC participants speak less quantity but more quality samples, and
 in the description processes, HC participants focus on two more
 areas of the picture than AD, i.e., the faucet area and the area outside
-of the window.
 Second, we propose three advanced models, i) using the picture
 relevance to filter sentences of samples, ii) using the dementiasensitive
  sub-image to filter sentences of samples, and iii) using the
@@ -120,7 +105,6 @@ alignment models to improve the accuracy from baseline 79.91% to
 (80.63% picture relevance, 83.44% sub-image relevance, and 82.49%
 focused area). We further show our models achieve higher or equal
 accuracy than existing works.
-2 RELATED WORK
 Speech and text learning for dementia detection. Researchers
 exploited various speech tasks such as grocery shopping dialog [ 16],
 speech and writing [ 15], telephone interview [ 6,21] and voice assistants
@@ -195,7 +179,8 @@ images and texts, quantity and quality of samples, and focused areas
 of the picture, and preliminary results of our approaches.Evaluating Picture Description Speech for Dementia Detection using Image-text Alignment
 Relevance sentence num/sample word num/sample
 HC𝑐𝐻𝐶 19.66 16.52 144.28
-AD𝑐𝐴𝐷 14.57 17.70 158.35 1  Preliminary results. Relevance scores are scaled by
+AD𝑐𝐴𝐷 14.57 17.70 158.35
+Table 1  Preliminary results. Relevance scores are scaled by
 the total number of sentences in all samples.
 3.1 Problem formation
 A picture description dataset for dementia detection 𝑆𝑥,𝑦 
@@ -236,7 +221,6 @@ picture, respectively. We apply the image-to-texts match method
 to calculate the relevance score 𝑐𝑖,𝑗between the original cookie
 theft picture and a sentence 𝑥𝑖,𝑗of a sample 𝑥𝑖. The relevance
 score between a sample 𝑥𝑖and the picture is then calculated as
-𝑐𝑖 Í
 𝑥𝑖,𝑗 𝑥𝑖𝑐𝑖,𝑗. For all HC samples, we calculate the mean value
 𝑐𝐻𝐶of all relevance scores {𝑐𝑖 𝑥𝑖 𝑆𝑥,𝐻𝐶}. For all AD samples, we
 calculate the mean value 𝑐𝐴𝐷of all relevance scores {𝑐𝑖 𝑥𝑖 𝑆𝑥,𝐴𝐷}
@@ -268,11 +252,8 @@ Our preliminary results have shown both the image-to-texts and
 text-to-images match methods can reveal the different relevance of
 HC and AD samples to the picture, which may be further used to
 enhance dementia detection accuracy.
-4 METHOD
 We first propose a baseline text-only dementia detection model and
 then develop three advanced models using the relevance between
-images and texts.
-4.1 Baseline model
 Given a picture description dataset 𝑆𝑥,𝑦, a baseline dementia detection
  model can be implemented in the following steps  i) for each
 sample𝑥𝑖, we use a pre-trained language model (e.g., BERT [ 9]) to
@@ -283,7 +264,6 @@ develop a classification model, e.g., SVM. The baseline model will
 be used as a baseline for performance comparison and used as a
 component of the advanced models where our text-to-images and
 image-to-texts match methods will process the samples to improve
-the performance.
 4.2 Picture relevance model
 The picture description samples from HC and AD may have raw
 and noisy segments that positively or negatively impact dementia
@@ -320,7 +300,6 @@ we derive  𝑆𝑥,𝑠 { 𝑥𝑖 𝛿(𝑘𝑡,𝑘𝑏)(𝑥𝑖,𝑔𝑠)fo
 sentences of all samples to the sub-image 𝑔𝑠. Then, we extract the
 embedding 𝑒𝑖,𝑠for each processed sample  𝑥𝑖(with label𝑦𝑖), and
 calculate the pair-wise cosine similarity as
-𝑑𝑠   
 𝑦𝑖 𝑦𝑖 𝑐𝑜𝑠(𝑒𝑖,𝑠,𝑒𝑖 ,𝑠)   
 𝑦𝑖 𝑦𝑖 𝑐𝑜𝑠(𝑒𝑖,𝑠,𝑒𝑖 ,𝑠)
 We aim to maximize 𝑑𝑠by maximizing the cosine similarity of
@@ -352,22 +331,17 @@ match method. In other words, we organize the sentences in 𝑥𝑖into
 sentences and obtain their embedding. Finally, we concatenate the
 embedding of all the topics and used the concatenated embedding
 to develop the baseline dementia detection model.
-5 EXPERIMENTS
 We introduce the experimental data, implementation details, evaluation
  protocol, and evaluation results of our models.
-5.1 Data
 ADReSS [ 29] is a cookie theft picture description dataset in English.
 It was processed based on the Pitt Corpus dataset [ 4] with the
 balanced label, age, and gender. All samples are human-transcribed
 description texts. Each sample has a label, either HC or AD. ADReSS
-has 108 48 samples for testing.Evaluating Picture Description Speech for Dementia Detection using Image-text Alignment
-0 20 40 60
-k-shot0.50.60.70.80.91.0 75.81%
-10-shots79.06%
-40-shots79.59%
-50-shots79.91%
-60-shots
-Figure 3 5.2 1, CLIP and scikit-learn3
+has 108 samples for training and 48 samples for testing.Evaluating Picture Description Speech for Dementia Detection using Image-text Alignment
+k-shot0.50.60.70.80.91.0Accuracy75.81%
+Figure 3  The accuracy result of baseline model
+5.2 Implementation detail
+We used publicly available codes of BERT1, CLIP2and scikit-learn3
 to implement our dementia detection models. We use the default
 hyperparameters for the baseline model. We run all the experiments
 with a single V100 GPU.
@@ -380,7 +354,6 @@ the2-way𝑘-shot setting for our binary classification task. For each
 round, we randomly select 𝑘samples of each class for training
 and randomly select another 15 different samples of each class
 for testing. We repeat this process for 600 rounds and report the
-average performance.
 We consider other evaluation protocols, e.g., cross-validation
 or fixed training testing split have disadvantages  cross-validation
 may overestimate the performance [ 34], and fixed training testing
@@ -390,13 +363,16 @@ testing. The different results on one sample can lead to around
 2%accuracy difference. Thus, such evaluation produces unstable
 results. Our proposed evaluation protocol achieves 79.67% accuracy
  in a 54-shots setting, while in the original ADReSS evaluation
-protocol, the number of training samples for each class is 54 83.33%. We consider the original
+protocol, the number of training samples for each class is 54 and
+the accuracy on the testing set is 83.33%. We consider the original
 ADReSS evaluation protocol overestimates the performance, and
 our proposed evaluation protocol provides a more representative
-result.
-5.4 1-60 3. We observe that the accuracy increases rapidly
+5.4 Results of baseline model
+We report the 1-60 shots results of the baseline model on ADReSS
+dataset in Figure 3. We observe that the accuracy increases rapidly
 1https //huggingface.co/bert-base-uncased
-2https //huggingface.co/openai/clip-vit-base-patch32 3https //scikit-learn.org/from 1-10 shots (60.82% to 75.81%), the accuracy increases slowly
+2https //huggingface.co/openai/clip-vit-base-patch32
+3https //scikit-learn.org/from 1-10 shots (60.82% to 75.81%), the accuracy increases slowly
 from 10-40 shots (75.81% to 79.06%), and the accuracy saturates after
 40-shots. The accuracy of 40-shots, 50-shots, 55-shots and 60-shots
 are 79.06%, 79.58%, 80.23%, and 79.91%, respectively. The results
@@ -408,7 +384,7 @@ We evaluate our picture relevance model with parameters 𝑘𝑡
 accuracy results are shown in Figure 4a where the position (0,0)is
 the result of the baseline model using all the sentences. We observe
 that  i) The best accuracy is achieved with (𝑘𝑡,𝑘𝑏) (6,9)(80.63%)
-statistical significant with t-test p 0.008 0.01 compared to the
+statistical significant with t-test p 0.008   0.01 compared to the
 baseline model. ii) Using only bottom- 𝑘𝑏sentences but not using
 top-𝑘𝑡sentences resulted in the best accuracy of 76.78%, worse
 than the baseline 79.91%, which implies the highly picture-relevant
@@ -430,7 +406,6 @@ dialog acts are irrelevant to the picture, but could still be effective
  in dementia detection. By looking at the samples, we found
 that AD participants spoke more picture-irrelevant sentences than
 HC participants, and our advanced model took advantage of these
-sentences.
 5.6 Results of sub-image relevance model
 Similarly, we evaluate the model with parameters 𝑘𝑡 [0,10]and
 𝑘𝑏 [0,10]using 60-shots evaluation protocol. For each case, we
@@ -451,18 +426,18 @@ located on the left part of the picture, as shown in Figure 5a. In
 addition, other results close to the best accuracy use (4,2),(4,4),Youxiang Zhu et al.
 0 1 2 3 4 5 6 7 8 9 10
 Bottom-k0 1 2 3 4 5 6 7 8 9 10T op-k
-79.91 64.39 67.06 69.57 73.23 75.07 76.78 76.51 75.75 74.84 74.7069.18 69.25 69.40 73.28 75.37 75.63 78.44 78.33 78.27 78.37 79.1471.19 71.39 74.76 72.97 74.73 74.84 75.28 75.76 76.21 76.71 76.8973.97 75.28 77.73 75.39 77.19 77.35 78.39 78.48 77.77 75.68 75.6176.37 76.63 78.55 77.38 77.61 78.77 79.07 77.89 78.48 77.43 78.6677.89 78.18 79.26 79.13 79.61 80.21 79.31 79.27 78.11 78.24 78.6677.12 78.46 79.31 79.07 78.58 79.29 79.85 78.53 80.62 80.63 80.3078.39 77.85 78.66 78.13 78.62 80.02 78.28 78.47 80.22 80.57 79.1576.32 76.00 75.99 76.03 77.38 77.90 77.10 77.43 78.91 78.22 77.6077.76 77.57 77.32 77.26 77.24 77.43 78.42 77.72 77.13 77.59 78.2376.54 77.41 78.87 77.89 78.50 78.25 78.12 78.82 78.43 77.94 79.28 6668707274767880
+79.91 64.39 67.06 69.57 73.23 75.07 76.78 76.51 75.75 74.84 74.7069.18 69.25 69.40 73.28 75.37 75.63 78.44 78.33 78.27 78.37 79.1471.19 71.39 74.76 72.97 74.73 74.84 75.28 75.76 76.21 76.71 76.8973.97 75.28 77.73 75.39 77.19 77.35 78.39 78.48 77.77 75.68 75.6176.37 76.63 78.55 77.38 77.61 78.77 79.07 77.89 78.48 77.43 78.6677.89 78.18 79.26 79.13 79.61 80.21 79.31 79.27 78.11 78.24 78.6677.12 78.46 79.31 79.07 78.58 79.29 79.85 78.53 80.62 80.63 80.3078.39 77.85 78.66 78.13 78.62 80.02 78.28 78.47 80.22 80.57 79.1576.32 76.00 75.99 76.03 77.38 77.90 77.10 77.43 78.91 78.22 77.6077.76 77.57 77.32 77.26 77.24 77.43 78.42 77.72 77.13 77.59 78.2376.54 77.41 78.87 77.89 78.50 78.25 78.12 78.82 78.43 77.94 79.28
 (a) Picture relevance model
 0 1 2 3 4 5 6 7 8 9 10
 Bottom-k0 1 2 3 4 5 6 7 8 9 10T op-k
-79.91 65.89 73.33 78.14 75.77 76.81 78.78 80.09 79.53 78.80 78.4269.33 76.28 75.23 75.71 78.64 78.82 79.52 80.41 80.14 81.24 78.8776.24 76.08 79.16 79.81 81.07 80.81 80.58 82.52 78.02 80.74 78.7878.06 77.87 78.93 77.58 81.19 82.29 79.93 77.84 78.74 77.53 79.7878.61 82.46 81.89 81.03 83.12 78.82 81.38 80.78 78.34 79.78 80.3777.18 77.81 79.80 83.44 79.61 81.21 79.93 79.67 79.04 80.21 79.1076.96 77.92 80.18 80.44 78.48 79.85 79.55 78.53 79.79 80.33 79.6875.83 77.02 78.66 79.78 79.46 80.22 79.61 79.44 78.23 79.53 80.3478.63 77.82 79.59 80.54 79.59 78.97 79.43 78.80 79.62 79.47 80.2678.01 78.14 80.78 80.96 79.68 78.09 79.66 79.59 79.99 78.58 80.0978.21 80.21 80.70 79.64 80.36 80.63 80.75 81.32 80.33 80.66 78.96 666870727476788082 (b) Sub-image relevance model
-Figure 4 60-shots evaluation
+79.91 65.89 73.33 78.14 75.77 76.81 78.78 80.09 79.53 78.80 78.4269.33 76.28 75.23 75.71 78.64 78.82 79.52 80.41 80.14 81.24 78.8776.24 76.08 79.16 79.81 81.07 80.81 80.58 82.52 78.02 80.74 78.7878.06 77.87 78.93 77.58 81.19 82.29 79.93 77.84 78.74 77.53 79.7878.61 82.46 81.89 81.03 83.12 78.82 81.38 80.78 78.34 79.78 80.3777.18 77.81 79.80 83.44 79.61 81.21 79.93 79.67 79.04 80.21 79.1076.96 77.92 80.18 80.44 78.48 79.85 79.55 78.53 79.79 80.33 79.6875.83 77.02 78.66 79.78 79.46 80.22 79.61 79.44 78.23 79.53 80.3478.63 77.82 79.59 80.54 79.59 78.97 79.43 78.80 79.62 79.47 80.2678.01 78.14 80.78 80.96 79.68 78.09 79.66 79.59 79.99 78.58 80.0978.21 80.21 80.70 79.64 80.36 80.63 80.75 81.32 80.33 80.66 78.96
+666870727476788082 (b) Sub-image relevance model
+Figure 4  Results of 60-shots evaluation
 ID Processed samples of the picture relevance model.
 Red  top-5 sentences. Blue  bottom-5 sentences.Processed samples of the sub-image relevance
 model. Red  top-5 sentences. Blue  bottom-3 sentences.Processed
  samples of focused area model. Red  focused
  area 1. Blue  focused area 3.
-S207
 (HC)just tell me all of the action. little girl with her finger
 to her lips. the boy on the stool. stool tipping over.
 getting cookies out of the cookie jar. uh mother
@@ -478,8 +453,6 @@ to her lips. the boy on the stool. stool tipping over.
 getting cookies out of the cookie jar. uh mother
 washing dishes. water running. sink overflowing.
 xxx those curtains are blowing or not. that s about
-it. okay good.
-S162
 (AD)in the picture. I see uh two kids up at the cookie
 jar, one on a stool the other standing on the floor.
 cupboard door is opened. mother s washing the
@@ -515,9 +488,11 @@ uh kid falling off the stool. the girl laughing at him.
 cookies in the cookie jar with the lid off. he has a
 cookie in his hand. and that s it. okay good.
 Table 2  Sample visualization
-Top-k-bottom-k 1 5 10 20 30 40 50 60 60.8212.10 72.988.71 75.817.63 77.787.14 78.826.92 79.066.32 79.596.47 79.917.05
+Top-k-bottom-k 1 5 10 20 30 40 50 60
+Baseline 60.8212.10 72.988.71 75.817.63 77.787.14 78.826.92 79.066.32 79.596.47 79.917.05
 (6, 9)-picture 60.7610.99 72.468.36 75.397.49 77.897.33 79.386.71 79.387.18 80.386.80 80.636.56
-(5, 3)-sub-image 63.0812.66 75.078.46 78.866.86 81.376.51 81.646.38 82.226.06 82.986.26 83.446.36 3  Comparison between baseline model, picture relevance model, and sub-image relevance model
+(5, 3)-sub-image 63.0812.66 75.078.46 78.866.86 81.376.51 81.646.38 82.226.06 82.986.26 83.446.36
+Table 3  Comparison between baseline model, picture relevance model, and sub-image relevance model
 (4,6),(4,7), use this same sub-image, which reveals that the left
 part of the picture is the most dementia-sensitive.
 Sample visualization. Table 2 shows the processed samples. As
@@ -526,8 +501,9 @@ sentences "and that s it" and "okay good" no longer appear in the
 bottom-𝑘𝑏sentences  instead, the sentences relevant to the right
 part of the picture are considered as the bottom- 𝑘𝑏sentences, e.g.,Evaluating Picture Description Speech for Dementia Detection using Image-text Alignment
 (a) Sub-image of(5,3)
- (b) Top-5 5 60-shots accuracy Areas 60-shots accuracy
-Baseline 79.917.05
+ (b) Top-5 focused areas
+Figure 5  Picture visualization
+Areas 60-shots accuracy Areas 60-shots accuracy
 (1, 2) 80.836.62 (1, 2, 3) 82.245.93
 (1, 3) 82.496.34 (1, 2, 4) 74.287.53
 (1, 4) 76.337.13 (1, 2, 5) 77.236.97
@@ -537,9 +513,10 @@ Baseline 79.917.05
 (2, 5) 76.806.96 (2, 3, 4) 80.156.59
 (3, 4) 79.636.76 (2, 3, 5) 79.336.58
 (3, 5) 77.557.21 (2, 4, 5) 76.567.30
-(4, 5) 77.787.12 (3, 4, 5) 77.526.92 4  Results of the focused area model using different
+(4, 5) 77.787.12 (3, 4, 5) 77.526.92
+Table 4  Results of the focused area model using different
 topics. We report the mean accuracy and the standard deviation.
- (1, 2) means focused areas 1 2.
+ (1, 2) means focused areas 1 and 2.
 "the water is running overflowing the sink" and "water running".
 Note that, our model takes both top- 𝑘𝑡and bottom- 𝑘𝑏sentences as
 inputs, and using the sub-image relevance may improve the quality
@@ -549,11 +526,10 @@ We evaluate the focused area model using top-5 focused areas.
 (Picture visualization ) In Figure 5b, we visualize the top-5 focused
 areas that have the highest relevance scores. The 1st-rank focused
 area corresponds to the bottom right area, including the flowing
-water, sink, and counter. The 2 1st area
+water, sink, and counter. The 2nd focused area covers the 1st area
 and additionally includes the woman, dish, and window. The 3rd
 focused area includes the boy and the cookie jar. The 4th focused
 area is the entire picture. The 5th focused area is the floor area with
-the flowing water.
 The accuracy and standard deviation of the focused area model
 are shown in Table 4 (refer to Table 7 in Appendix for full results).
 We observe that i) when the number of samples used for training
@@ -564,28 +540,17 @@ number of samples is large (  20), the focused area model (e.g., (1,2),
 (1,3), (1,2,3)) outperforms the baseline model, which confirms that
 the area-based structure of sentences enhances the dementia detection.
  iii) The focused areas should avoid overlapping. For example,ID IU Focused areas Frequencies
-S1 3,4 5.09%
-S2 4 4.41%
-S3 2,4 0.47%
-S4 2,4 3.65%
-P1 1,2,3,4,5 1.29%
-P2 2, 4 0.00%
-O1 3,4 8.42%
-O2 3,4 5.69%
-O3 4 5.16%
-O4 1,2,4 6.12%
-O5 2,4 1.25%
-O6 1,2,4 0.00%
-O7 1,2,4,5 5.44%
-O8 3,4 0.61%
-O9 2,4 3.04%
-O10 3,4 0.39%
-O11 2,4 6.12%
-O12 2,4 1.33%
-O13 1,2,4 0.36%
-O14 1,2,4,5 3.01%
-O15 1,2,4 0.47%
-O16 1,2,4 0.36%
+P1 kitchen 1,2,3,4,5 1.29%
+P2 exterior 2, 4 0.00%
+O6 dishcloth 1,2,4 0.00%
+O7 water 1,2,4,5 5.44%
+O8 cupboard 3,4 0.61%
+O10 cabinet 3,4 0.39%
+O12 curtains 2,4 1.33%
+O13 faucet 1,2,4 0.36%
+O14 floor 1,2,4,5 3.01%
+O15 counter 1,2,4 0.47%
+O16 apron 1,2,4 0.36%
 Table 5  Information units (IU) and focused areas 1-5. S  Subject 
  P  Place  O  Object.
 using focused areas (1,2) is supposed to achieve higher accuracy
@@ -595,13 +560,13 @@ according to the overlapped focused areas is not effective. iv) Using
 focused area 4 results in worse performance than the baseline. For
 example, (1, 4)  76.33%, (4, 5)  77.78%, (1, 2, 4)  74.28%, (1, 3, 4)  75.94%,
 and (1, 4, 5)  73.86%. We consider the worse performance is due to
-the entire picture as focused area 4 4 does not
+the entire picture as focused area 4  this focused area 4 does not
 help organize the sentences in a meaningful way.
 We investigate the matching of the focused areas with information
  units of subjects, places, and objects defined in [ 39], as shown
 in Table 5. Focused area 4 covers the whole picture, which includes
 all information units. Then, we checked the focused areas (1,2,3,5)
-and found that 20 22 information units are covered by at least
+and found that 20 of all 22 information units are covered by at least
 one of the focused areas (1,2,3,5). This confirms the consistency
 between human-defined information units and identified focused
 areas. In addition, the two information units not covered by the
@@ -612,11 +577,8 @@ the information units, from high word frequency to low, are cookie
 (5.16%), and girl ( 4.41%). The five top-ranked units are covered
 by focused areas (1,2,3,5), and thus lower-ranked units "girl" and
 "stool" in the bottom left area are not covered by the focused areasYouxiang Zhu et al.
-Model Best accuracy
 BERT-based classifier [18] 82.1%
 Fine-tuned BERT-based classifier (Transfer learning) [2] 83.3%
-ERNIE p [40] 89.6%
-GPT-D [25] 85%
 Picture relevance (1,6) 89.58%
 Sub-image relevance (10,9) 87.50%
 Focused area (2, 3, 4) 83.33%
@@ -631,7 +593,6 @@ extracted from text samples, their high frequencies mean that they
 were frequently used in participants  description  for the focused
 areas, their high relevance means some objects inside of the areas
 have been described by participants, while other objects inside may
-not be described.
 Sample visualization. We show the processed samples of the
 focused area model in Table 2. In this table, we found that sentences
 in the HC sample are accurately categorized according to focused
@@ -642,7 +603,6 @@ is categorized as focused area 3. Both are supposed to be categorized
 into focused area 1. We conclude that AD participants may produce
 more difficult sentences to categorize than HC.
 5.8 Comparison using original evaluation
-protocol
 Compared to the other existing studies, our methods consider integrating
  information from the cookie theft picture into the model
 automatically, while most of the other works focus on the information
@@ -671,7 +631,6 @@ sentences of samples using their relevance to the picture, subimage,
  and focused areas. Alternatively, the relevance scores from
 the image-text alignment models can be incorporated as parameters
  into the dementia detection models to maximally preserve the
-knowledge.
 Sentence-level relevance. The CLIP model has a maximum
 input length with a limit of 77 tokens. This restriction allows our
 model to explore only sentence-level relevance. We envision our
@@ -688,7 +647,6 @@ an important role in dementia detection because AD participants
 may not recall the words to describe the objects. Future work can
 collect both gaze and text data in the description process to enable
 the analysis from this aspect.
-7 CONCLUSION
 In this paper, we explore the picture description dataset for dementia
  detection by applying an image-text alignment technique.
 Our models take the cookie theft picture as an input and evaluate
@@ -709,12 +667,9 @@ information units and the generated focused areas. Future works
 include incorporating image-text relevance as parameters of the
 model instead of filtering and categorizing the samples. Another
 future work is to develop end-to-end training using the picture as
-input.
-ACKNOWLEDGMENTS
 This research is funded by the US National Institutes of Health
-National Institute on Aging, under grant No. R AG067416. We
+National Institute on Aging, under grant No. R01AG067416. We
 thank Professor David Kotz for the feedback about this work.
-REFERENCES
 [1]Alzheimer s Association. 2022. 2022 Alzheimer s disease facts and figures.
 Alzheimer s & dementia 18, 4 (2022), 700 789.Evaluating Picture Description Speech for Dementia Detection using Image-text Alignment
 [2] Aparna Balagopalan, Benjamin Eyre, Frank Rudzicz, and Jekaterina Novikova.
@@ -727,11 +682,9 @@ Learning for Healthcare Conference . PMLR, 813 841.
 [4]James T Becker, François Boiler, Oscar L Lopez, Judith Saxton, and Karen L
 McGonigle. 1994. The natural history of Alzheimer s disease  description of
 study cohort and accuracy of diagnosis. Archives of neurology 51, 6 (1994),
-585 594.
 [5] Flavio Bertini, Davide Allevi, Gianluca Lutero, Danilo Montesi, and Laura Calzà.
 2021. Automatic speech classifier for mild cognitive impairment and early
 dementia. ACM Transactions on Computing for Healthcare (HEALTH) 3, 1 (2021),
-1 11.
 [6]Jason Brandt, Miriam Spencer, and Marshal F. Folstein. 1988. The telephone
 interview for cognitive status. Neuropsychiatry Neuropsychology and Behavioral
 Neurology 1 (1988), 111 117.
@@ -763,11 +716,9 @@ https //doi.org/10.18653/v1/2022.bionlp-1.4
 in Conversational Cognitive Health Screening Interviews. In Proceedings of
 the Twelfth Language Resources and Evaluation Conference . European Language
 Resources Association, Marseille, France, 1167 1177. https //aclanthology.org/
-2020.lrec-1.147
 [14] Ross Girshick, Jeff Donahue, Trevor Darrell, and Jitendra Malik. 2014. Rich
 feature hierarchies for accurate object detection and semantic segmentation. In
 Proceedings of the IEEE conference on computer vision and pattern recognition .
-580 587.
 [15] Dimitris Gkoumas, Bo Wang, Adam Tsakalidis, Maria Wolters, Arkaitz Zubiaga,
 Matthew Purver, and Maria Liakata. 2021. A Longitudinal Multi-modal Dataset
 for Dementia Monitoring and Diagnosis. arXiv preprint arXiv 2109.01537 (2021).
@@ -775,11 +726,9 @@ for Dementia Monitoring and Diagnosis. arXiv preprint arXiv 2109.01537 (2021).
 Kwok, Jean Woo, Ka Ho Wong, and Helen Meng. 2022. The Hong Kong Grocery
 Shopping Dialog Task (HK-GSDT)  A Quick Screening Test for Neurocognitive
 Disorders. International Journal of Environmental Research and Public Health 19,
-20 (2022), 13302.
 [17] Yunhui Guo, Noel C Codella, Leonid Karlinsky, James V Codella, John R Smith,
 Kate Saenko, Tajana Rosing, and Rogerio Feris. 2020. A broader study of crossdomain
  few-shot learning. In European conference on computer vision . Springer,
-124 141.
 [18] Yue Guo, Changye Li, Carol Roan, Serguei Pakhomov, and Trevor Cohen. 2021.
 Crossing the  Cookie Theft  corpus chasm  applying what BERT learns from
 outside data to the ADReSS challenge dementia detection task. Frontiers in
@@ -822,7 +771,6 @@ speech  The adress challenge. arXiv preprint arXiv 2004.06833 (2020).
 [30] Bahman Mirheidari, DJ Blackburn, Kirsty Harkness, Traci Walker, Annalena
 Venneri, Markus Reuber, and Heidi Christensen. 2017. An avatar-based system
 for identifying individuals likely to develop dementia. In Interspeech 2017 . ISCA,
-3147 3151.
 [31] Alec Radford, Jong Wook Kim, Chris Hallacy, Aditya Ramesh, Gabriel Goh, Sandhini
  Agarwal, Girish Sastry, Amanda Askell, Pamela Mishkin, Jack Clark, et al .
 2021. Learning transferable visual models from natural language supervision. In
@@ -834,7 +782,7 @@ American Chapter of the Association for Computational Linguistics  Human Languag
  Technologies . Association for Computational Linguistics, Online, 982 997.
 https //doi.org/10.18653/v1/2021.naacl-main.77
 [33] Jan Švec, Filip Polák, Aleš Bartoš, Michaela Zapletalová, and Martin Víta. 2022.
-Evaluation of Wav Vec Speech Recognition for Speakers with Cognitive Disorders.
+Evaluation of Wav2Vec Speech Recognition for Speakers with Cognitive Disorders.
  In International Conference on Text, Speech, and Dialogue . Springer, 501 512.
 [34] Ioannis Tsamardinos, Amin Rakhshani, and Vincenzo Lagani. 2015. Performanceestimation
  properties of cross-validation-based protocols with simultaneous
@@ -843,7 +791,6 @@ Tools 24, 05 (2015), 1540023.
 [35] J. R. R. Uijlings, K. E. A. van de Sande, T. Gevers, and A. W. M. Smeulders.
 2013. Selective Search for Object Recognition. International Journal of Computer
 Vision 104, 2 (2013), 154 171. https //ivi.fnwi.uva.nl/isis/publications/2013/
-UijlingsIJCV2013
 [36] Tianzi Wang, Jiajun Deng, Mengzhe Geng, Zi Ye, Shoukang Hu, Yi Wang, Mingyu
 Cui, Zengrui Jin, Xunying Liu, and Helen Meng. 2022. Conformer Based Elderly
 Speech Recognition System for Alzheimer s Disease Detection. arXiv preprint
@@ -858,10 +805,8 @@ Conference on Artificial Intelligence , Vol. 34. 12313 12320.
 Alzheimer s disease. In Proceedings of the 54th Annual Meeting of the Association
 for Computational Linguistics (Volume 1  Long Papers) . Association for Computational
  Linguistics, Berlin, Germany, 2337 2346. https //doi.org/10.18653/v1/P161221
-
 [40] Jiahong Yuan, Xingyu Cai, Yuchen Bian, Zheng Ye, and Kenneth Church. 2021.
 Pauses for detection of Alzheimer s disease. Frontiers in Computer Science 2
-(2021), 624488.
 [41] Haotian Zhang, Pengchuan Zhang, Xiaowei Hu, Yen-Chun Chen, Liunian Harold
 Li, Xiyang Dai, Lijuan Wang, Lu Yuan, Jenq-Neng Hwang, and Jianfeng Gao.
 2022. Glipv2  Unifying localization and vision-language understanding. arXiv
@@ -875,7 +820,8 @@ in computer science (2021), 22.
 [44] Youxiang Zhu, Xiaohui Liang, John A Batsis, and Robert M Roth. 2022. Domainaware
  Intermediate Pretraining for Dementia Detection with Limited Data. Proc.
 Interspeech 2022 (2022), 2183 2187.A APPENDIXEvaluating Picture Description Speech for Dementia Detection using Image-text Alignment
-Topic 1 5 10 20 30 40 50 60 60.8212.10 72.988.71 75.817.63 77.787.14 78.826.92 79.066.32 79.596.47 79.917.05
+Topic 1 5 10 20 30 40 50 60
+Baseline 60.8212.10 72.988.71 75.817.63 77.787.14 78.826.92 79.066.32 79.596.47 79.917.05
 (1, 2) 56.879.72 67.3410.19 71.519.48 76.727.57 78.616.70 79.946.75 81.156.33 80.836.62
 (1, 3) 58.7410.98 67.879.79 72.939.02 77.487.19 80.466.43 81.386.57 82.456.35 82.496.34
 (1, 4) 57.7310.92 65.1610.34 69.169.06 73.487.56 74.827.36 75.537.25 75.737.03 76.337.13
@@ -895,5 +841,6 @@ Topic 1 5 10 20 30 40 50 60 60.8212.10 72.988.71 75.817.63 77.787.14 78.826.92 7
 (2, 3, 4) 57.039.86 64.2610.24 69.629.16 75.497.55 77.527.31 78.816.92 79.706.42 80.156.59
 (2, 3, 5) 57.479.64 65.7510.30 70.379.07 74.987.62 77.077.04 77.426.80 78.566.31 79.336.58
 (2, 4, 5) 55.589.58 62.699.83 67.569.47 72.437.89 74.367.69 75.237.27 76.186.95 76.567.30
-(3, 4, 5) 56.769.86 64.6410.70 69.979.17 74.387.63 76.426.85 76.987.34 78.167.04 77.526.92 7  Results of the focused area model of different shots. We report the mean accuracy and the standard deviation. (1, 2)
-means using focused areas 1 2.
+(3, 4, 5) 56.769.86 64.6410.70 69.979.17 74.387.63 76.426.85 76.987.34 78.167.04 77.526.92
+Table 7  Results of the focused area model of different shots. We report the mean accuracy and the standard deviation. (1, 2)
+means using focused areas 1 and 2.

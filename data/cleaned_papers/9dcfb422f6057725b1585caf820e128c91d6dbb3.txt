@@ -1,7 +1,6 @@
 IMPROVING MASSIVELY MULTILINGUAL ASR WITH AUXILIARY CTC OBJECTIVES
 William Chen, Brian Yan, Jiatong Shi, Yifan Peng, Soumi Maiti, Shinji Watanabe
 Language Technologies Institute, Carnegie Mellon University, USA
-ABSTRACT
 Multilingual Automatic Speech Recognition (ASR) models have
 extended the usability of speech technologies to a wide variety of
 languages. With how many languages these models have to handle,
@@ -21,7 +20,6 @@ prior work on FLEURS by a relative 28.4% CER. Trained models
 and reproducible recipes are available at https //github.com/
 espnet/espnet/tree/master/egs2/fleurs/asr1 .
 Index Terms  multilingual ASR, low-resource ASR, CTC
-1. INTRODUCTION
 Recent advancements in multilingual speech processing have shown
 great promise towards building speech systems for all, expanding
 language coverage beyond the high-resources [1 16]. In particular,
@@ -66,8 +64,6 @@ encoder and decoder layers focus on ASR, is beneﬁcial compared
 to standard self-conditioning. Together with self-supervised models
 and Conformer architectures, our state-of-the-art (SOTA) systems
 obtained 10.1 CER on FLEURS, a relative 28.4% reduction over
-prior work.
-2. BACKGROUND
 In this section, we discuss the CTC studies that we build upon to create
  our fully LID-conditioned model. These studies propose different
 multi-task training methods [23, 24] and condition the encoder on
@@ -81,12 +77,7 @@ vocabularyV. CTC [33] optimizes a model to predict the monotonic
 alignment between XandY. It models the conditional probability of
 Pctc(Y X)as a series of latent sequences at each input frame. This
 latent sequence is obtained by introducing a blank token  intoY,
-such thatZctc  (zctc
 t V {  } t  1,...,T ).
-PCTC(Y X)  
-ZCTC F 1(Y)T 
-t 1PCTC(zCTC
-t X,   z1 1) (1)
 WhereF 1is the function of all latent sequences ZctcgivenY. CTC
 operates with the assumption that only the observation Xis required
 to determine the latent state zctc
@@ -95,9 +86,8 @@ CTC/Attention encoder ﬁrst converts input Xinto the hidden vector
 hin Equation (2). The hidden vector is then used to obtain the framewise
  CTC posterior (Equation 3) and token-wise attention posterior
 distributions of X(Equation 4).
-h ENC(X) (2)
 PCTC(Z X)  CTC(h) (3)
-PAttn(yl X,y 1 1)  DEC(h,y1 1) (4)arXiv 2302.12829 2  [cs.CL]  27 2023Combining Equations (1, 3, 4) obtains the logarithmic linear combination
+PAttn(yl X,y 1 l 1)  DEC(h,y1 l 1) (4)arXiv 2302.12829v2  [cs.CL]  27 Feb 2023Combining Equations (1, 3, 4) obtains the logarithmic linear combination
  of these posterior distributions over all frames and decoded
 tokens used to optimize the encoder-decoder network 
 L  (1 λ) logPAttn(Y X) λlogPCTC(Y X) (5)
@@ -110,7 +100,6 @@ encoder networks by using the CTC loss of intermediate layers as
 part of a multi-task objective. The intermediate posterior distribution
 can be obtained in a manner similar to Equation (3), with the hidden
 vector hintof an intermediate encoder layer.
-Pint
 CTC(Zint X)  CTCint(hint) (6)
 The log-likelihood of Equation (6) can then be used as the objective
 function of the intermediate layer. Self-conditioned CTC (SC-CTC)
@@ -125,7 +114,6 @@ Equation (7) is recursively applied for each intermediate layer,
 until the output of the ﬁnal layer is passed into Equation (8). This
 allows the CTC posterior distribution of the entire encoder network
 to be conditioned on the intermediate predictions Zint.
-3. PROPOSED METHOD
 In this section, we propose an auxiliary CTC objective such that
 early encoder layers can focus on language identiﬁcation, and the
 transcription predictions of later layers can be conditioned on the
@@ -143,18 +131,15 @@ layers to only classify the spoken language and propagate their predictions
  to future layers via self-conditioning. We ﬁrst introduce the
 latent variable Ito Equation (1), where Irepresents the intermediate
 LID predictions, such that Equation (1) is modiﬁed as follows 
-PCTC(Y X)   
 I IPCTC(Y I,X)PCTC(I X) (9)
 The formulation of Equation (9) can be realized by modifying the
-intermediate CTC network (Equations 7 8) to predict the LID
+intermediate CTC network (Equations 7 and 8) to predict the LID
 instead of transcriptions as follows 
 h ENCﬁn(NRM(hlid)  LIN(Zlid))) (10)Table 1 . Comparison of different labels in the multi-task framework
 (Sec. 3.1). In LID tok, all tokens are replaced with LIDs, while LID utt
 only retains a single LID label.
-Task Label
 ASR [EN US] ALL YOU NEED
 LID tok [EN US] [EN US] [EN US] [EN US]
-LID utt [EN US]
 Fig. 1 . Proposed hierarchical architecture. The LID predictions of
 the intermediate layer are used to train the next layer.
 PCTC(Z X,Zlid)  CTC(h) (11)
@@ -168,7 +153,6 @@ utterance-level LID is a single label from the set of all possible languagesiutt
  In other words, only a single LID token is used as
 the ground truth. Alternatively, we can deﬁne a S-length token-level
 LID sequence corresponding to each S-length label sequence as follows Itok {itok
-
 s B s  1,...,S}. LID tokthus explicitly aligns
 the language with each spoken word. This approach, inspired by
 code-switching [34], forces the model to predict both the frame-level
@@ -196,28 +180,19 @@ The encoder output his therefore both self-conditioned and LIDconditioned.
  Equation 12 can be summed with the loss of all SC-CTC
 layers, which is then averaged to produce the objective function used
 to train the intermediate layers 
-Lhier 1
-K(Llid K 
-k 2Linter
-k) (16)
 WhereLinteris the negative log-likelihood of Equation (6), the posterior
  CTC distribution of an intermediate layer. The overall CTC loss
 can then be obtained in Equation (17) with a weighted sum of the
 hierarchical loss (Equation 16) with the CTC loss of the full encoder
 network, where wis the weight of the intermediate losses.
-LCTC  (1 w)LCTC
-enc wLhier(17)
 Substituting Equation (17) into Equation (5) yields the complete loss
 function used to train our encoder-decoder network with both LID
 conditioning and SC-CTC 
 L  (1 λ)Latt λ((1 w)LCTC
-enc wLhier) (18)
 Speciﬁcally, our model jointly optimizes the encoder with the LIDconditioned
  intermediate loss, the CTC loss, and the encoder-decoder
 attention loss. The decoder is conditioned on the prepended LID
 token and optimized with the attention loss (Figure 1).
-4. EXPERIMENTS
-4.1. Datasets
 As discussed in Sec. 1, the experiments were conducted on FLEURS
 [21], a 102-language ASR dataset. Each utterance is a news snippet
 read by a speaker and contains only one language. Each language in
@@ -234,17 +209,20 @@ All experiments were conducted through ESPnet2 [41]. We use an
 encoder-decoder setup trained on the hybrid CTC/Attention [23]
 multi-task objective, with a CTC weight of λ  0.3. We experiment
 with both Transformer [42] and Conformer [43] architectures as
-the encoder. The encoder has either 18 12 2 . Comparing the effectiveness of SSL features, reporting CER,
+the encoder. The encoder has either 18 Transformer layers or 12Table 2 . Comparing the effectiveness of SSL features, reporting CER,
 MER, LID % accuracy on FLEURS. XLS-R signiﬁcantly outperforms
 WavLM in multilingual ASR.
 ID Model SSL Features Test
-CER( ) MER( ) LID( )
-Transformer
-A1 CTC/Attention WavLM 14.6 41.8 95.09 2  SC-CTC WavLM 14.4 40.8 94.47 1 CTC/Attention XLS-R 13.9 39.7 95.73 2  SC-CTC XLS-R 13.7 38.8 95.39
-Conformer layers. Each encoder layer has 8 2048
-hidden units. The 6-layer Transformer decoder also has 8 2048 hidden units each. We average 3 checkpoints with
+A1 CTC/Attention WavLM 14.6 41.8 95.09
+A2  SC-CTC WavLM 14.4 40.8 94.47
+B1 CTC/Attention XLS-R 13.9 39.7 95.73
+B2  SC-CTC XLS-R 13.7 38.8 95.39
+Conformer layers. Each encoder layer has 8 attention heads and 2048
+hidden units. The 6-layer Transformer decoder also has 8 attention
+heads and 2048 hidden units each. We average 3 checkpoints with
 the highest validation accuracy. We perform joint CTC/Attention
-decoding with a language model, using a beam size of 10 0.3. Model parameters totaled to around 102 million.
+decoding with a language model, using a beam size of 10 and CTC
+weight of 0.3. Model parameters totaled to around 102 million.
 4.2.1. Baseline Models
 CTC/Attention  A hybrid CTC/Attention model trained multilingually
  without any intermediate CTC objectives.
@@ -266,42 +244,48 @@ the LID prediction task into a hierarchical setup (Sec. 3.2). The ﬁrst
 intermediate layer (layer 3) uses the LID as the CTC objective, while
 deeper intermediate layers (6,9,12,15) use the ASR text. We report
 results for both LID uttand LID tokas the ﬁrst objective.
-5. RESULTS
 We report both Character Error Rate (CER) and Mixed Error Rate
 (MER), along with the language identiﬁcation accuracy (LID). MER
 is calculated using the CER for languages not delimited by white
 space, and Word Error Rate (WER) for all other languages. Table 2
 shows our early experiments with different pre-trained SSL models.
 While self-conditioning improved the results of both models ( A1
-vs.A2,B vs.B2), XLS-R consistently outperformed WavLM
+vs.A2,B1vs.B2), XLS-R consistently outperformed WavLM
 and achieved SOTA performance. This result was apparent in early
 development, so we did not continue experimentation with WavLM.
-Table 3 1) prior
+Table 3 presents our main results in four partitions  1) prior
 work, 2) Transformer baselines, 3) Transformers with the proposed
 methods, and 4) extended studies with Conformers. Our baseline ( B1)
-improves upon previous works ( Z andZ2) by using XLS-R SSL
+improves upon previous works ( Z1andZ2) by using XLS-R SSL
 features [19] with a CTC/Attention architecture. Conditioning on both
-LID and transcriptions further improves ASR performance ( B vs
+LID and transcriptions further improves ASR performance ( B1vs
 B2). Moreover, explicitly conditioning on the LID is more beneﬁcial
-than self-conditioning ( B vs.C1,C2). Speciﬁcally, LID tokis more
-effective than LID utt(C v.s.C2)  the former even outperforms SCCTC
- by 3.0 MER absolute ( B vs.C2). The addition of hierarchicalTable 3 . Character error rate (CER), mixed error rate (MER), and
+than self-conditioning ( B2vs.C1,C2). Speciﬁcally, LID tokis more
+effective than LID utt(C1v.s.C2)  the former even outperforms SCCTC
+ by 3.0 MER absolute ( B2vs.C2). The addition of hierarchicalTable 3 . Character error rate (CER), mixed error rate (MER), and
 language identiﬁcation % accuracy (LID) on FLEURS.
-ID Model Test
 CER( ) MER( ) LID ( )
-Prior Work
-Z1 w v-bert-51 [21] 14.1 - Z2
+Z1 w2v-bert-51 [21] 14.1 - Z2
  mSLAM-101 [21] 14.6 - Transformer
-
-B1 CTC/Attention 13.9 39.7 95.73 2  SC-CTC 13.7 38.8 95.39 1 13.6 37.2 95.62 2 13.4 35.8 95.86 3 13.3 36.1 95.43 4 13.3 36.0 95.31 1  SC-CTC 10.4 32.9 95.41 2 10.1 31.5 94.92 4 . Languages with largest differences in Character Error Rate
-(CER) ( ) between HierLID uttConformer and w v-bert  Georgian
+B1 CTC/Attention 13.9 39.7 95.73
+B2  SC-CTC 13.7 38.8 95.39
+C1  LID utt 13.6 37.2 95.62
+C2  LID tok 13.4 35.8 95.86
+C3  HierLID utt 13.3 36.1 95.43
+C4  HierLID tok 13.3 36.0 95.31
+D1  SC-CTC 10.4 32.9 95.41
+D2  HierLID utt 10.1 31.5 94.92
+Table 4 . Languages with largest differences in Character Error Rate
+(CER) ( ) between HierLID uttConformer and w2v-bert  Georgian
 (Ka), Cantonese (Yue), Hebrew (He), Swedish (Sv), and Umbundu
-(Umb).
 ID Model Ka Yue He Oc Sv Umb
-Z1 w v-bert-51 [21] 30.7 37.0 37.2 11.7 7.6 13.1 2 mSLAM-101 [21] 31.0 39.8 42.5 12.7 7.8 14.0 1 SC-CTC 8.0 15.4 18.1 14.4 11.7 23.7 2 8.1 15.3 17.0 17.6 15.7 22.4
-conditioning, however, shrinks this gap ( C vsC4). The combination
+Z1 w2v-bert-51 [21] 30.7 37.0 37.2 11.7 7.6 13.1
+Z2 mSLAM-101 [21] 31.0 39.8 42.5 12.7 7.8 14.0
+D1 SC-CTC 8.0 15.4 18.1 14.4 11.7 23.7
+D2 HierLID utt 8.1 15.3 17.0 17.6 15.7 22.4
+conditioning, however, shrinks this gap ( C3vsC4). The combination
 of both LID uttand SC-CTC improves over solely LID utt-conditioning
-by a large degree ( C vs.C3), suggesting that some amount of tokenlevel
+by a large degree ( C1vs.C3), suggesting that some amount of tokenlevel
  conditioning is necessary to take advantage of the technique.
 We further push ASR performance by applying these methods to
 the Conformer. All Conformer models outperform their Transformer
@@ -313,40 +297,46 @@ stability and the similar performance of the proposed methods in
 our Transformer trials, we prefer evaluating HierLID utt(D2) when
 training Conformer models. The combination of HierLID uttand the
 Conformer yields our best result ( D2), which outperforms the CER of
-previous work in equivalent settings by a wide margin  4.0 1.
-5.1. Analysis
+previous work in equivalent settings by a wide margin  4.0 absolute1.
 To better understand effectiveness of our technique, we conducted an
 analysis of our results by language. Table 4 compares the best/worst
-performing languages by HierLID uttConformer ( D2) relative to w vbert
+performing languages by HierLID uttConformer ( D2) relative to w2vbert
  ( Z1), which can vary as much as 22.7 CER. These large discrepancies
  are likely derived from differences in SSL pre-training.
-Compared to w v-bert (600M parameters), XLS-R (300M parameters)
+Compared to w2v-bert (600M parameters), XLS-R (300M parameters)
  was pretrained on an additional 6.6K hours of data (436K total)
 that extended its language coverage by 77. We suspect that the larger
-parameter size and smaller pool of languages allowed w v-bert to
+parameter size and smaller pool of languages allowed w2v-bert to
 learn better representations in the languages that it covered, which
 carried over to ASR. Similarly, Table 5 compares the languages with
-the largest change in LID accuracy between our two Conformer mod One
+the largest change in LID accuracy between our two Conformer mod1One
  concurrent work [45] further improves CER by 1.4, albeit with
 additional training data [17, 18, 46, 47], while another [48] was evaluated
 zero-shot on a subset of languages.Table 5 . Languages with largest differences in LID accuracy (  )
 between HierLID uttand SC-CTC Conformer  Zulu (Zu), Hindi (Hi),
 Bosnian (Bs), Occitan (Oc), Swedish (Sw), and Umbundu (Umb).
 ID Model Zu Hi Bs Oc Sv Umb
-D1 SC-CTC 66.8 80.4 32.1 48.1 95.3 91.7 2 83.6 91.4 42.9 35.4 75.9 60.0 6 . Average Conformer CER (  ) compared to prior work for
-each language group.
+D1 SC-CTC 66.8 80.4 32.1 48.1 95.3 91.7
+D2 HierLID utt 83.6 91.4 42.9 35.4 75.9 60.0
+Table 6 . Average Conformer CER (  ) compared to prior work for
 ID Model WE EE CMN SSA SA SEA CJK
-Z1 w v-bert-51 [21] 10.7 9.9 14.5 15.6 17.4 14.7 25.0 2 mSLAM-101 [21] 10.6 10.0 14.8 16.4 19.2 14.9 24.6 1 SC-CTC 9.0 7.5 9.1 12.6 16.3 14.6 17.9 2 9.3 7.5 9.2 12.0 15.5 13.5 18.3 7 . Average Conformer LID % accuracy (  ) compared to prior
+Z1 w2v-bert-51 [21] 10.7 9.9 14.5 15.6 17.4 14.7 25.0
+Z2 mSLAM-101 [21] 10.6 10.0 14.8 16.4 19.2 14.9 24.6
+D1 SC-CTC 9.0 7.5 9.1 12.6 16.3 14.6 17.9
+D2 HierLID utt 9.3 7.5 9.2 12.0 15.5 13.5 18.3
+Table 7 . Average Conformer LID % accuracy (  ) compared to prior
 work for each language group.
 ID Model WE EE CMN SSA SA SEA CJK
-Z1 w v-bert-51 [21] 85.3 78.4 72.9 59.1 52.0 65.7 89.7 2 mSLAM-101 [21] 84.6 81.3 75.9 62.2 51.7 73.4 87.8 1 SC-CTC 94.1 95.1 98.9 96.6 89.6 94.1 99.3 2 92.5 94.2 97.7 96.4 90.5 95.4 98.9
+Z1 w2v-bert-51 [21] 85.3 78.4 72.9 59.1 52.0 65.7 89.7
+Z2 mSLAM-101 [21] 84.6 81.3 75.9 62.2 51.7 73.4 87.8
+D1 SC-CTC 94.1 95.1 98.9 96.6 89.6 94.1 99.3
+D2 HierLID utt 92.5 94.2 97.7 96.4 90.5 95.4 98.9
 els. We found that degradations in LID accuracy were often caused
 by confusion with a related language. However, this was generally
 accompanied by improvements in the other language, such as with
 the case of Serbian and Bosnian. In extreme cases, misclassiﬁcations
 considerably affected CER, such as for Swedish and Occitan (Tables
-4 5), which were frequently misidentiﬁed as Norwegian and
-French respectively.
+4 and 5), which were frequently misidentiﬁed as Norwegian and
 We also performed a region-level analysis. Table 6 shows the
 CERs for each group in FLEURS  Western Europe (WE), Eastern
 Europe (EE), Central-Asian, Middle-East and North-Africa (CMN),
@@ -356,12 +346,11 @@ and East Asia (CJK). Both Conformer models improve across-theboard
 in the CJK and CMN language groups. The HierLID utttechnique
 is particularly effective on the SSA, SA, and SEA language groups
 compared to SC-CTC, with a small performance cost in WE, CMN,
-and CJK ( D vs.D2). Table 7 makes a similar comparison using
+and CJK ( D1vs.D2). Table 7 makes a similar comparison using
 LID accuracy across language groups. Both Conformer models again
 out-perform previous work across all language groups, but the LID
 accuracy of HierLID uttdegrades in all but two language groups when
-compared to SC-CTC ( D vs.D2).
-6. CONCLUSION
+compared to SC-CTC ( D1vs.D2).
 Improving multilingual ASR can help extend speech technologies to
 new languages. However, these models face the challenge of handling
 the typological diversity of so many languages. To help handle this,
@@ -374,8 +363,6 @@ work. In the future, we hope to extend our approach to an even larger
 set of languages [4] and data [11], so that these trained models can
 also in downstream tools, such as with speech alignment and data
 cleaning, that can further help extend speech technologies to more
-languages.
-7. ACKNOWLEDGEMENTS
 This work used the Bridges2 system [49], supported by NSF award
 number ACI-1445606, at the Pittsburgh Supercomputing Center.8. REFERENCES
 [1] S. Watanabe, T. Hori, and J. R. Hershey,  Language independent end-to-end
@@ -385,9 +372,8 @@ ASRU , 2017, pp. 265 271.
 pre-training for speech and text,  arXiv preprint arXiv 2202.01374 , 2022.
 [3] Y . Lu, M. Huang, X. Qu, et al. ,  Language adaptive cross-lingual speech representation
  learning with sparse sharing sub-networks,  in Proc. ICASSP , 2022,
-pp. 6882 6886.
-[4] X. Li, F. Metze, D. R. Mortensen, et al. ,  ASR K  Speech Recognition for
-Around 2000 Languages without Audio,  in Proc. Interspeech , 2022, pp. 4885 4889.
+[4] X. Li, F. Metze, D. R. Mortensen, et al. ,  ASR2K  Speech Recognition for
+Around 2000 Languages without Audio,  in Proc. Interspeech , 2022, pp. 4885 
 [5] P. Ogayo, G. Neubig, and A. W Black,  Building African V oices,  in Proc. Interspeech
  , 2022, pp. 1263 1267.
 [6] C. Zhang, B. Li, T. Sainath, et al. ,  Streaming end-to-end multilingual speech
@@ -399,7 +385,7 @@ solution,  in Proc. ICASSP , 2022, pp. 6397 6401.
 [9] O. Adams, M. Wiesner, S. Watanabe, et al. ,  Massively multilingual adversarial
 speech recognition,  in Proc. NAACL-HLT , 2019, pp. 96 108.
 [10] V . Pratap, A. Sriram, P. Tomasello, et al. ,  Massively Multilingual ASR  50 Languages,
- 1 Model, 1 Billion Parameters,  in Proc. Interspeech , 2020, pp. 4751 4755.
+ 1 Model, 1 Billion Parameters,  in Proc. Interspeech , 2020, pp. 4751 
 [11] W. Hou, Y . Dong, B. Zhuang, et al. ,  Large-Scale End-to-End Multilingual
 Speech Recognition and Language Identiﬁcation with Multi-Task Learning,  in
 Proc. Interspeech , 2020, pp. 1037 1041.
@@ -407,7 +393,6 @@ Proc. Interspeech , 2020, pp. 1037 1041.
 allophone system,  in Proc. ICASSP , 2020, pp. 8249 8253.
 [13] A. Conneau, A. Baevski, R. Collobert, et al. ,  Unsupervised Cross-Lingual
 Representation Learning for Speech Recognition,  in Proc. Interspeech , 2021,
-pp. 2426 2430.
 [14] B. Li, R. Pang, T. N. Sainath, et al. ,  Scaling end-to-end models for large-scale
 multilingual asr,  in Proc. ASRU , 2021, pp. 1011 1018.
 [15] B. Yan, S. Dalmia, D. R. Mortensen, et al. ,  Differentiable allophone graphs for
@@ -424,7 +409,7 @@ Resources and Evaluation Conference , Marseille, France  European Language
 Resources Association, May 2020.
 [19] A. Babu, C. Wang, A. Tjandra, et al. ,  XLS-R  Self-supervised cross-lingual
 speech representation learning at scale,  arXiv preprint arXiv 2111.09296 , 2021.
-[20] Y .-A. Chung, Y . Zhang, W. Han, et al. ,  W v-bert  Combining contrastive learning
+[20] Y .-A. Chung, Y . Zhang, W. Han, et al. ,  W2v-bert  Combining contrastive learning
  and masked language modeling for self-supervised speech pre-training,  in
 Proc. ASRU , 2021, pp. 244 250.
 [21] A. Conneau, M. Ma, S. Khanuja, et al. ,  Fleurs  Few-shot learning evaluation of
@@ -436,7 +421,7 @@ vol. 11, no. 8, pp. 1240 1253, 2017.
 [24] J. Lee and S. Watanabe,  Intermediate loss regularization for ctc-based speech
 recognition,  in Proc. ICASSP 2021 , 2021, pp. 6224 6228.
 [25] A. Tjandra, C. Liu, F. Zhang, et al. ,  Deja-vu  Double feature presentation and
-iterated loss in deep transformer networks,  in Proc. ICASSP , 2020, pp. 6899 6903.
+iterated loss in deep transformer networks,  in Proc. ICASSP , 2020, pp. 6899 
 [26] R. Sanabria and F. Metze,  Hierarchical multitask learning with ctc,  in Proc.
 SLT, 2018, pp. 485 490.
 [27] J. Nozaki and T. Komatsu,  Relaxing the conditional independence assumption
@@ -446,7 +431,6 @@ of CTC-based ASR by conditioning on intermediate predictions,  in Proc. Interspe
 for attention-based speech recognition with shared decoder,  arXiv preprint
 arXiv 2207.04177 , 2022.[29] Y . Higuchi, K. Karube, T. Ogawa, et al. ,  Hierarchical conditional end-to-end
 asr with ctc and multi-granular subword units,  in Proc. ICASSP 2022 , 2022,
-pp. 7797 7801.
 [30] Y . Higuchi, N. Chen, Y . Fujita, et al. ,  A comparative study on non-autoregressive
 modelings for speech-to-text generation,  in Proc. ASRU , 2021, pp. 47 54.
 [31] Y . Yang, Y . Li, and B. Du,  Improving ctc-based asr models with gated interlayer
@@ -466,7 +450,7 @@ translation,  arXiv preprint arXiv 2210.05200 , 2022.
  for full stack speech processing,  IEEE Journal of Selected Topics in
 Signal Processing , pp. 1 14, 2022.
 [38] D. S. Park, W. Chan, Y . Zhang, et al. ,  Specaugment  A simple data augmentation
- method for automatic speech recognition,  Proc. Interspeech , pp. 2613 2617, 2019.
+ method for automatic speech recognition,  Proc. Interspeech , pp. 2613 
 [39] T. Ko, V . Peddinti, D. Povey, et al. ,  Audio augmentation for speech recognition, 
 Proc. Interspeech , 2015.
 [40] T. Kudo and J. Richardson,  Sentencepiece  A simple and language independent
@@ -475,7 +459,7 @@ subword tokenizer and detokenizer for neural text processing,  in Proc. EMNLP
 [41] S. Watanabe, T. Hori, S. Karita, et al. ,  ESPnet  End-to-end speech processing
 toolkit,  in Proc. Interspeech , 2018, pp. 2207 2211.
 [42] A. Vaswani, N. Shazeer, N. Parmar, et al. ,  Attention is all you need,  in Advances
- in Neural Information Processing Systems (NeurIPS) , 2017, pp. 5998 6008.
+ in Neural Information Processing Systems (NeurIPS) , 2017, pp. 5998 
 [43] A. Gulati, J. Qin, C.-C. Chiu, et al. ,  Conformer  Convolution-augmented Transformer
  for Speech Recognition,  in Proc. Interspeech , 2020, pp. 5036 5040.
 [44] P. Guo, F. Boyer, X. Chang, et al. ,  Recent developments on espnet toolkit
@@ -489,8 +473,6 @@ speech corpus for representation learning, semi-supervised learning and interpre
 [47] V . Pratap, Q. Xu, A. Sriram, et al. ,  MLS  A Large-Scale Multilingual Dataset
 for Speech Research,  in Proc. Interspeech , 2020, pp. 2757 2761.
 [48] A. Radford, J. W. Kim, T. Xu, et al. ,  Robust speech recognition via large-scale
-weak supervision, 
 [49] N. A. Nystrom, M. J. Levine, R. Z. Roskies, et al. ,  Bridges  A uniquely ﬂexible
  hpc resource for new communities and data analytics,  in Proc. of the 2015
 XSEDE Conference  Scientiﬁc Advancements Enabled by Enhanced Cyberinfrastructure
- , 2015, pp. 1 8.

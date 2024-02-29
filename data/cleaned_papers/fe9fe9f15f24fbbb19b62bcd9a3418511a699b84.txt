@@ -1,6 +1,8 @@
 Policy Representation via Diﬀusion Probability
-Model for Reinforcement Learning1 1, ,Zhixiong Huang2, ,Fenghao Lei2,Yucun Zhong3,Yiming Yang4,
-Cong Fang1,Shiting Wen5,Binbin Zhou6,Zhouchen Lin1 1School of Artiﬁcial Intelligence, Peking University, Beijing, China
+Model for Reinforcement Learning1
+Long Yang1, ,Zhixiong Huang2, ,Fenghao Lei2,Yucun Zhong3,Yiming Yang4,
+Cong Fang1,Shiting Wen5,Binbin Zhou6,Zhouchen Lin1
+1School of Artiﬁcial Intelligence, Peking University, Beijing, China
 2College of Computer Science and Technology, Zhejiang University, China
 3MOE Frontiers Science Center for Brain and Brain-Machine Integration & College of
 Computer Science, Zhejiang University, China.
@@ -11,8 +13,6 @@ Computer Science, Zhejiang University, China.
 {zx.huang,lfh,yucunzhong }@zju.edu.cn ,{wensht}@nit.zju.edu.cn
 yangyiming2019@ia.ac.cn ,bbzhou@hzcu.edu.cn
 Code  https //github.com/BellmanTimeHut/DIPO
-May 23, 2023
-Abstract
 Popular reinforcement learning (RL) algorithms tend to produce a unimodal policy
 distribution, which weakens the expressiveness of complicated policy and decays the ability
 of exploration. The diﬀusion probability model is powerful to learn complicated multimodal
@@ -28,26 +28,51 @@ knowledge, DIPO is the ﬁrst algorithm to solve model-free online RL problems w
 diﬀusion model. Finally, extensive empirical results show the eﬀectiveness and superiority
 of DIPO on the standard continuous control Mujoco benchmark.
 1* L.Yang and Z.Huang share equal contributions.
-1 2305.13122 1  [cs.LG]  22 2023 1 3 1.1 Our Main Work . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 3 1.2 Paper Organization . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 4 2 5 3 5 3.1 Policy Representation for Reinforcement Learning . . . . . . . . . . . . . . . . 5 3.2 Diﬀusion Model is Powerful to Policy Representation . . . . . . . . . . . . . . . 6 4 Diﬀusion Policy 7 4.1 Stochastic Dynamics of Diﬀusion Policy . . . . . . . . . . . . . . . . . . . . . . 7 4.2 Exponential Integrator Discretization for Diﬀusion Policy . . . . . . . . . . . . 8 4.3 Convergence Analysis of Diﬀusion Policy . . . . . . . . . . . . . . . . . . . . . . 9 5 DIPO  Implementation of Diﬀusion Policy for Model-Free Online RL 10 5.1 Training Loss of DIPO . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 10 5.2 Playing Action of DIPO . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 11 5.3 Policy Improvement of DIPO . . . . . . . . . . . . . . . . . . . . . . . . . . . . 11 6 12 6.1 Diﬀusion Models for Reinforcement Learning . . . . . . . . . . . . . . . . . . . 12 6.2 Generative Models for Policy Learning . . . . . . . . . . . . . . . . . . . . . . . 12 7 13 7.1 Comparative Evaluation and Illustration . . . . . . . . . . . . . . . . . . . . . . 13 7.2 State-Visiting Visualization . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 14 7.3 Ablation Study . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 15 8 16 25 26
+1arXiv 2305.13122v1  [cs.LG]  22 May 2023Contents
+1.1 Our Main Work . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 3
+1.2 Paper Organization . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 4
+2 Reinforcement Learning 5
+3 Motivation  A View from Policy Representation 5
+3.1 Policy Representation for Reinforcement Learning . . . . . . . . . . . . . . . . 5
+3.2 Diﬀusion Model is Powerful to Policy Representation . . . . . . . . . . . . . . . 6
+4.1 Stochastic Dynamics of Diﬀusion Policy . . . . . . . . . . . . . . . . . . . . . . 7
+4.2 Exponential Integrator Discretization for Diﬀusion Policy . . . . . . . . . . . . 8
+4.3 Convergence Analysis of Diﬀusion Policy . . . . . . . . . . . . . . . . . . . . . . 9
+5 DIPO  Implementation of Diﬀusion Policy for Model-Free Online RL 10
+5.1 Training Loss of DIPO . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 10
+5.2 Playing Action of DIPO . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 11
+5.3 Policy Improvement of DIPO . . . . . . . . . . . . . . . . . . . . . . . . . . . . 11
+6.1 Diﬀusion Models for Reinforcement Learning . . . . . . . . . . . . . . . . . . . 12
+6.2 Generative Models for Policy Learning . . . . . . . . . . . . . . . . . . . . . . . 12
+7.1 Comparative Evaluation and Illustration . . . . . . . . . . . . . . . . . . . . . . 13
+7.2 State-Visiting Visualization . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 14
+7.3 Ablation Study . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 15
+A Review on Notations 25
+B Auxiliary Results 26
 B.1 Diﬀusion Probability Model (DPM). . . . . . . . . . . . . . . . . . . . . . . . . 26
 B.2 Transition Probability for Ornstein-Uhlenbeck Process . . . . . . . . . . . . . . 26
 B.3 Exponential Integrator Discretization . . . . . . . . . . . . . . . . . . . . . . . . 27
 B.4 Fokker Planck Equation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 27
 B.5 Donsker-Varadhan Representation for KL-divergence . . . . . . . . . . . . . . . 28
-B.6 Some Basic Results for Diﬀusion Policy . . . . . . . . . . . . . . . . . . . . . . 28 30
+B.6 Some Basic Results for Diﬀusion Policy . . . . . . . . . . . . . . . . . . . . . . 28
+C Implementation Details of DIPO 30
 C.1 DIPO  Model-Free Learning with Diﬀusion Policy . . . . . . . . . . . . . . . . . 31
 C.2 Loss Function of DIPO . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 31
-C.3 Playing Actions of DIPO . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 33 2D Time Derivative of KL Divergence Between Difuﬀusion Policy and True
-Reverse Process 35
-D.1 0 . . . . . . . . . . . . 35
-D.2 0 . . . . . . . . . . . . . . . . . . . . . 35
-D.3 0 . . . . . . . . . . . . . . . . . . . . . . 42
-D.4 Proof for Result at Arbitrary Reverse Time k. . . . . . . . . . . . . . . . . . . 44 4.3 45 48
+C.3 Playing Actions of DIPO . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 33
+2D Time Derivative of KL Divergence Between Difuﬀusion Policy and True
+D.1 Time Derivative of KL Divergence at Reverse Time k  0 . . . . . . . . . . . . 35
+D.2 Auxiliary Results For Reverse Time k  0 . . . . . . . . . . . . . . . . . . . . . 35
+D.3 Proof for Result at Reverse Time k  0 . . . . . . . . . . . . . . . . . . . . . . 42
+D.4 Proof for Result at Arbitrary Reverse Time k. . . . . . . . . . . . . . . . . . . 44
+E Proof of Theorem 4.3 45
+F Additional Details 48
 F.1 Proof of Lemma F.1 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 48
-F.2 Proof of Lemma D.7 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 49 50
+F.2 Proof of Lemma D.7 . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 49
+G Details and Discussions for multimodal Experiments 50
 G.1 Multimodal Environment . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 50
 G.2 Plots Details of Visualization . . . . . . . . . . . . . . . . . . . . . . . . . . . . 51
-G.3 Results Report . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 53 55
+G.3 Results Report . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 53
+H Additional Experiments 55
 H.1 Hyper-parameters for MuJoCo . . . . . . . . . . . . . . . . . . . . . . . . . . . 55
 H.2 Additional Tricks for Implementation of DIPO . . . . . . . . . . . . . . . . . . 56
 H.3 Details and Additional Reports for State-Visiting . . . . . . . . . . . . . . . . . 57
@@ -63,18 +88,16 @@ applications to RL tasks, previous works are all empirical or only consider oﬄ
 This raises some fundamental questions  How to character diﬀusion policy  How to show the
 expressiveness of diﬀusion policy  How to design a diﬀusion policy for online model-free RL 
 Those are the focuses of this paper.
- a0 0 1  π1(  s)  at  πt(  s)  aT  πT(  s) N(0,I)  a0 π(  s)input
-ouput       
+ a0  aT a1  π1(  s)  at  πt(  s)  aT  πT(  s) N(0,I)  a0 π(  s)input
     a0  π0(  s)    πT(  s) aT t  πT t(  s)  aT 1  πT 1(  s)  aT  πT(  s)
-   d at  1 2g(t) atdt g(t)dwtForward SDE  a π(  s) N (0,I)
-d at 1 2 2(T t) [ at  2 logpT t( at)] dt g(T t)d wt
+2g(t) atdt g(t)dwtForward SDE  a π(  s) N (0,I)
+2g2(T t) [ at  2 logpT t( at)] dt g(T t)d wt
 Reverse SDE N(0,I) π(  s)
 Figure 1  Diﬀusion Policy  Policy Representation via Stochastic Process. For a given state s,
 the forward stochastic process { at s}maps the input  a0  a π(  s) to be a noise  then we
 recover the input by the stochastic process { at s}that reverses the reversed SDE if we know
 the score function  logpt( ), wherept( ) is the probability distribution of the forward process,
 i.e.,pt( )    πt(  s).
-1.1 Our Main Work
 In this paper, we mainly consider diﬀusion policy from the next three aspects.
 Charactering Diﬀusion Policy as Stochastic Process. We formulate diﬀusion policy
 as a stochastic process that involves two processes induced by stochastic diﬀerential equations
@@ -90,7 +113,6 @@ Figure 2  Standard Training Framework for Model-free Online RL.
 π π π diﬀusion policy
 D  {st,at}at η aQπ(st,at) at
 Figure 3  Framework of DIPO  Implementation for Model-free Online RL with DIﬀusion
-POlicy.
 generate actions according to numerical SDE solvers.
 Convergence Analysis of Diﬀusion Policy. Under mild conditions, Theorem 4.3
 presents a theoretical convergence guarantee for diﬀusion policy. The result shows that if the
@@ -108,12 +130,12 @@ Figure 2 can not be naively replaced by diﬀusion policy. To apply diﬀusion p
 online RL task, we propose the DIPO algorithm, see Figure 3. The proposed DIPO considers
 a novel way for policy improvement, we call it action gradient that updates each at D
 along the gradient ﬁeld (over the action space) of state-action value 
-at at η aQπ(st,at),
 where for a given state s,Qπ(s,a) measures the reward performance over the action space A.
 Thus, DIPO improves the policy according to the actions toward to better reward performance.
 To the best of our knowledge, this paper ﬁrst presents the idea of action gradient, which
 provides an eﬃcient way to make it possible to design a diﬀusion policy for online RL.
-1.2 2 presents the background of reinforcement learning. Section 3 presents our motivation
+1.2 Paper Organization
+Section 2 presents the background of reinforcement learning. Section 3 presents our motivation
 from the view of policy representation. Section 4 presents the theory of diﬀusion policy. Section
 5 presents the practical implementation of diﬀusion policy for model-free online reinforcement
 learning. Section 7 presents the experiment results.
@@ -125,14 +147,10 @@ the reward that the agent observes when the state transition from stos after pla
 γ (0,1) is the discounted factor, and d0( ) is the initial state distribution. A policy πis a
 probability distribution deﬁned on S A , andπ(a s) denotes the probability of playing a
 in state s. Let{st,at,st 1,r(st 1 st,at)}t 0 πbe the trajectory sampled by the policy π,
-where s0 0( ),at π(  st),st 1 P(  st,at). The goal of RL is to ﬁnd a policy πsuch that
-π    arg max πEπ[  
-t 0γtr(st 1 st,at)]
-.
+where s0 d0( ),at π(  st),st 1 P(  st,at). The goal of RL is to ﬁnd a policy πsuch that
 3 Motivation  A View from Policy Representation
 In this section, we clarify our motivation from the view of policy representation  diﬀusion
 model is powerful to policy representation, which leads to suﬃcient exploration and better
-reward performance.
 3.1 Policy Representation for Reinforcement Learning
 Value function and parametric function based are the main two approaches to represent policies,
 while diﬀusion policy expresses a policy via a stochastic process (shown in Figure 1) that is
@@ -141,14 +159,9 @@ Additionally, we will provide an empirical veriﬁcation with a numerical experi
 3.1.1 Policy Representation via Value Function
 A typical way to represent policy is ϵ-greedy policy [Sutton and Barto, 1998] or energy-based
 policy [Sallans and Hinton, 2004, Peters et al., 2010],
-π(a s)  {
 arg maxa  AQπ(s,a ) w.p. 1 ϵ 
 randomly play a A w.p.ϵ orπ(a s)  exp{Qπ(s,a)}
-Zπ(s), (1)
-where
-Qπ(s,a)   Eπ[  
 t 0γtr(st 1 st,at) s0 s,a0 a]
-,
 the normalization term Zπ(s)   
 Rpexp{Qπ(s,a)}da, and  w.p.  is short for  with probability .
  The representation (1) illustrates a connection between policy and value function,
@@ -161,10 +174,6 @@ parametric function (e.g., neural networks), denoted as πθ, whereθis the para
 gradient theorem [Sutton et al., 1999, Silver et al., 2014] plays a center role to learn θ, which
 is fundamental in modern RL (e.g., TRPO [Schulman et al., 2015], DDPG [Lillicrap et al.,
 2016], PPO [Schulman et al., 2017b], IMPALA [Espeholt et al., 2018], et al).
-56 4 2 0 2 4 6 6 4 2 0246 0.10.10.10.1 0.20.20.20.2 0.2 0.3 0.30.3 0.3 0.3 0.50.50.50.5 0.5 0.60.6 0.60.6 0.70.70.70.7 0.80.8 0.80.8 0.90.90.90.9 1.01.0 1.01.0 1.21.2 1.21.2 1.31.31.31.3 1.41.41.41.4 1.51.5 1.51.5 1.61.61.61.6 1.71.7 1.71.7 1.91.91.91.9 2.02.0 2.02.0 2.12.12.12.1 6 4 2 0 2 4 6 6 4 2 0246 0.10.10.10.1 0.20.20.20.2 0.2 0.3 0.30.3 0.3 0.3 0.50.50.50.5 0.5 0.60.6 0.60.6 0.70.70.70.7 0.80.8 0.80.8 0.90.90.90.9 1.01.0 1.01.0 1.21.2 1.21.2 1.31.31.31.3 1.41.41.41.4 1.51.5 1.51.5 1.61.61.61.6 1.71.7 1.71.7 1.91.91.91.9 2.02.0 2.02.0 2.12.12.12.1 6 4 2 0 2 4 6 6 4 2 0246 0.10.10.10.1 0.20.20.20.2 0.2 0.3 0.30.3 0.3 0.3 0.50.50.50.5 0.5 0.60.6 0.60.6 0.70.70.70.7 0.80.8 0.80.8 0.90.90.90.9 1.01.0 1.01.0 1.21.2 1.21.2 1.31.31.31.3 1.41.41.41.4 1.51.5 1.51.5 1.61.61.61.6 1.71.7 1.71.7 1.91.91.91.9 2.02.0 2.02.0 2.12.12.12.1 6 4 2 0 2 4 6 6 4 2 0246 0.10.10.10.1 0.20.20.20.2 0.2 0.3 0.30.3 0.3 0.3 0.50.50.50.5 0.5 0.60.6 0.60.6 0.70.70.70.7 0.80.8 0.80.8 0.90.90.90.9 1.01.0 1.01.0 1.21.2 1.21.2 1.31.31.31.3 1.41.41.41.4 1.51.5 1.51.5 1.61.61.61.6 1.71.7 1.71.7 1.91.91.91.9 2.02.0 2.02.0 2.12.12.12.1 6 4 2 0246 6 4 2 0246 400 300 200 100 0(a) Diﬀusion Policy
-x6 4 2 0246 6 4 2 0246 400 300 200 100 0 (b) SAC
-x6 4 2 0246 6 4 2 0246 300 200 100 0 (c) TD3 6 4 2 0246 6 4 2 0246 0.49 0.48 0.47 0.46 0.45
- (d) PPO
 Figure 5  Policy representation comparison of diﬀerent policies on multimodal environment.
 3.1.3 Policy Representation via Stochastic Process
 It is diﬀerent from both value-based and parametric policy representation  the diﬀusion policy
@@ -177,9 +186,6 @@ actions via diﬀusion model. The above methods are all to solve oﬄine RL prob
 best of our knowledge, our proposed method is the ﬁrst diﬀusion approach to online model-free
 reinforcement learning.
 3.2 Diﬀusion Model is Powerful to Policy Representation
-A3 2
-Aπ(  s)
-Aunimodal multimodal
 Figure 4  Unimodal Distribution
 vs Multimodal Distribution.This section presents the diﬀusion model is powerful to
 represent a complex policy distribution. by two following
@@ -192,7 +198,7 @@ region of its mean center with a higher probability, i.e., the
 red regionAin Figure 4. The unimodal policy weakens the
 expressiveness of complicated policy and decays the agent s
 ability to explore the environment. While for a multimodal
-policy, it plays actions among the diﬀerent regions  A1 2 3. Compared to the unimodal
+policy, it plays actions among the diﬀerent regions  A1 A2 A3. Compared to the unimodal
 policy, the multimodal policy is powerful to explore the unknown world, making the agent
 6understand the environment eﬃciently and make a more reasonable decision.
 We compare the ability of policy representation among SAC, TD3 [Fujimoto et al., 2018],
@@ -208,7 +214,6 @@ multimodality. From the distribution of action direction and length, we also kno
 policy keeps a more gradual and steady action size than the SAC, TD3, and PPO to ﬁt the
 multimodal distribution. For more details about 2D/3D plots, environment, comparisons, and
 discussions, please refer to Appendix G.
-4 Diﬀusion Policy
 In this section, we present the details of diﬀusion policy from the following three aspects  its
 stochastic dynamic equation (shown in Figure 1), discretization implementation, and ﬁnite-time
 analysis of its performance for the policy representation.
@@ -216,71 +221,47 @@ analysis of its performance for the policy representation.
 Recall Figure 1, we know diﬀusion policy contains two processes  forward process and reverse
 process. We present its dynamic in this section.
 Forward Process. To simplify the expression, we only consider g(t)   
-2, which is
 parallel to the general setting in Figure 1. For any given state s, the forward process produces
-a sequence{( at s)}t 0 0 π(  s), and it follows the Ornstein-Uhlenbeck
+a sequence{( at s)}t 0 Tthat starting with  a0 π(  s), and it follows the Ornstein-Uhlenbeck
 process (also known as Ornstein-Uhlenbeck SDE),
-d at   atdt  
-2dwt. (2)
 Let at  πt(  s) be the evolution distribution along the Ornstein-Uhlenbeck ﬂow (2). According
-to Proposition B.1 (see Appendix B.2), we know the conditional distribution of  at  a is
-Gaussian,
- at  a0 N(
-e t a0,(
-1 2t)
-I)
-. (3)
+to Proposition B.1 (see Appendix B.2), we know the conditional distribution of  at  a0is
 That implies the forward process (2) transforms policy π(  s) to the Gaussian noise N(0,I).
 Reverse Process. For any given state s, if we reverse the stochastic process {( at s)}t 0 T,
 then we obtain a process that transforms noise into the policy π(  s). Concretely, we model the
 policy as the process {( at s)}t 0 Taccording to the next Ornstein-Uhlenbeck process (running
-forward in time),
 d at  ( at  2 logpT t( at)) dt  
-2dwt, (4)
 wherept( ) is the probability density function of  πt(  s). Furthermore, according to [Anderson,
-1982], with an initial action  a0  πT(  s), the reverse process { at}t 0 7 1  Diﬀusion Policy with Exponential Integrator Discretization to Approximateπ(  s)
-
+1982], with an initial action  a0  πT(  s), the reverse process { at}t 0 Tshares the same
+7Algorithm 1  Diﬀusion Policy with Exponential Integrator Discretization to Approximateπ(  s)
 1 input  state s, horizonT, reverse length K, step-sizeh T
-K, score estimators
-ˆS( ,s,T t) 
 2 initialization  a random action ˆa0 N(0,I) 
-3 0,1,   ,K 1 4  a random zk N(0,I), settk hk 
-5  ˆatk 1  ehˆatk (
-eh 1)(
+3 fork  0,1,   ,K 1do
+4  a random zk N(0,I), settk hk 
 ˆatk  2ˆS(ˆatk,s,T tk))
-  
-e h 1 6 output  ˆatK 
 distribution as the time-reversed version of the forward process { aT t}t 0 T. That also implies
-for allt  0,1,   ,T,
  πt(  s)    πT t(  s),if a0  πT(  s). (5)
 Score Matching. The score function  logpT t( ) deﬁned in (4) is not explicit, we
 consider an estimator ˆS( ,s,T t) to approximate the score function at a given state s. We
 consider the next problem,
 ˆS( ,s,T t)    arg min
-ˆs( ) FEa  πt(  s)[  ˆs(a,s,t)  logpT t(a)  2 2]
-(6)
-(5)  arg min
-ˆs( ) FEa  πt(  s)[  ˆs(a,s,t)  log  πt(a s)  2 2]
-, (7)
+ˆs( ) FEa  πt(  s)[  ˆs(a,s,t)  logpT t(a)  2
+ˆs( ) FEa  πt(  s)[  ˆs(a,s,t)  log  πt(a s)  2
 whereFis the collection of function approximators (e.g., neural networks). We will provide
 the detailed implementations with a parametric function approximation later  please refer to
 Section 5 or Appendix C.2.
 4.2 Exponential Integrator Discretization for Diﬀusion Policy
 In this section, we consider the implementation of the reverse process (4) with exponential
 integrator discretization [Zhang, 2022, Lee et al., 2023]. Let h 0 be the step-size, assume
-reverse length K T
 h N, andtk  hk,k  0,1,   ,K. Then we give a partition on the
-interval [0,T] as follows, 0 0 1 1     tK T. Furthermore, we take
+interval [0,T] as follows, 0   t0 t1     tk tk 1     tK T. Furthermore, we take
 the discretization to the reverse process (4) according to the following equation,
 dˆat (ˆat  2ˆS(ˆatk,s,T tk))
-dt  
 2dwt, t [tk,tk 1], (8)
 where it runs initially from ˆa0 N(0,I). By Itˆ o integration to the two sizes of (8) on the k-th
 interval [tk,tk 1], we obtain the exact solution of the SDE (8), for each k  0,1,2,   ,K 1,
-ˆatk 1 ehˆatk (
 eh 1)(ˆatk  2ˆS(ˆatk,s,T tk))
-  
-e h 1zk,zk N(0,I). (9)
+e2h 1zk,zk N(0,I). (9)
 For the derivation from the SDE (8) to the iteraion (9), please refer to Appendix B.3, and we
 have shown the implementation in Algorithm 1.
 84.3 Convergence Analysis of Diﬀusion Policy
@@ -288,19 +269,12 @@ In this section, we present the convergence analysis of diﬀusion policy, we ne
 notations and assumptions before we further analyze. Let ρ(x) andµ(x) be two smooth
 probability density functions on the space Rp, the Kullback Leibler (KL) divergence and
 relative Fisher information (FI) from µ(x) toρ(x) are deﬁned as follows,
-KL(ρ µ)   
-Rpρ(x) logρ(x)
-µ(x)dx,FI(ρ µ)   
-Rpρ(x)     log(ρ(x)
-µ(x))    2 2dx.
 Assumption 4.1 (Lipschitz Score Estimator and Policy) .The score estimator is Ls-Lipschitz
 over action space A, and the policy π(  s)isLp-Lipschitz over action space A, i.e., for any a,
 a  A, the following holds,
  ˆS(a,s,t) ˆS(a ,s,t)  Ls a a  ,  logπ(a s)  logπ(a  s)  Lp a a  .
 Assumption 4.2 (Policy with ν-LSI Setting) .The policyπ(  s)satisﬁesν-Log-Sobolev inequality
  (LSI) that deﬁned as follows, there exists constant ν  0, for any probability distribution
-µ(x)such that
-KL(µ π) 1 2νFI(µ π).
 Assumption 4.1 is a standard setting for Langevin-based algorithms (e.g., [Wibisono and
 Yang, 2022, Vempala and Wibisono, 2019]), and we extend it with RL notations. Assumption
 4.2 presents the policy distribution class that we are concerned, which contains many complex
@@ -311,30 +285,14 @@ and{ πt(  s)}t 0 Tbe the distributions along the ﬂow (2) and (4) correspondin
 { πt(  s)}t 0 Tstarts at  π0(  s)  π(  s)and{ πt(  s)}t 0 Tstarts at  π0(  s)    πT(  s). Let
 ˆπk(  s)be the distribution of the iteration (9) at the k-th timetk hk, i.e., ˆatk ˆπk(  s)
 denotes the diﬀusion policy (see Algorithm 1) at the time tk hk. Let{ˆπk(  s)}k 0 Kbe
-starting at ˆπ0(  s)  N(0,I), under Assumption 4.1 4.2, let the reverse length K 
-T max{
-τ 1 0,T 1 0,12Ls,ν}
-, where constants τ0and T will be special later. Then the KLdivergence
+starting at ˆπ0(  s)  N(0,I), under Assumption 4.1 and 4.2, let the reverse length K 
+, where constants τ0and T0will be special later. Then the KLdivergence
  between diﬀusion policy ˆπK(  s)and input policy π(  s)is upper-bounded as follows,
-KL(
-ˆπK(  s) π(  s))
- e 9 4νhKKL(
-N(0,I) π(  s))
-    
 convergence of forward process (2) (
-64 5/ν)
-h
-    
-errors from discretization (9) 20 3ϵscore,
-whereϵscore  sup
-(k,t) [K] [tk,tk 1]{
-logEa  πt(  s)[
-exp   ˆS(a,s,T hk)  log  πt(a s)   2 2]}
-      
+errors from discretization (9) 20
+exp   ˆS(a,s,T hk)  log  πt(a s)   2
 errors from score matching (7).
 Theorem 4.3 illustrates that the errors involve the following three terms. The ﬁrst error
-involves KL(
-N(0,I) π(  s))
 that represents how close the distribution of the input policy π
 is to the standard Gaussian noise, which is bounded by the exponential convergence rate of
 Ornstein-Uhlenbeck ﬂow (2) [Bakry et al., 2014, Wibisono and Jog, 2018, Chen et al., 2023c].
@@ -346,15 +304,13 @@ close the score estimator ˆSis to the score function  logpT t( ) deﬁned in (4
 for the practical implementation, the error from score matching could be suﬃciently small if
 we ﬁnd a good score estimator ˆS.
 Furthermore, for any ϵ   0, if we ﬁnd a good score estimator that makes the score
-matching error satisfy ϵscore 1 20ϵ, the step-size h O(
-ϵ ν
-pLs)
+matching error satisfy ϵscore 1
+20ϵ, the step-size h O(
 , and reverse length K 
-9 4νhlog KL(N(0,I) π(  s))
+4νhlog3KL(N(0,I) π(  s))
 ϵ, then Theorem 4.3 implies the output of diﬀusion policy ( ˆπK(  s) makes
 a suﬃcient close to the input policy π(  s) with the measurement by KL(ˆ πK(  s) π(  s)) ϵ.
 5 DIPO  Implementation of Diﬀusion Policy for Model-Free
-Online RL
 In this section, we present the details of DIPO, which is an implementation of DIﬀusion
 POlicy for model-free reinforcement learning. According to Theorem 4.3, diﬀusion policy
 only ﬁts the current policy πthat generates the training data (denoted as D), but it does
@@ -369,50 +325,33 @@ It is intractable to directly apply the formulation (7) to estimate the score fu
  logpt( )   log  πt(  s) is unknown, which is sourced from the initial distribution  a0 π(  s)
 is unknown. According to denoising score matching [Vincent, 2011, Hyv  arinen, 2005], a
 practical way is to solve the next optimization problem (10). For any given s S,
-min
-φL(φ)   min
-ˆsφ F T
-0ω(t)E a0 π(  s)E at  a0[  ˆsφ( at,s,t)  logϕt( at  a0)  2 2]
-dt, (10)
+0ω(t)E a0 π(  s)E at  a0[  ˆsφ( at,s,t)  logϕt( at  a0)  2
 whereω(t)   [0,T] R is a positive weighting function  ϕt( at  a0)  N(
-e t a0,(
-1 2t)
-I)
 denotes the transition kernel of the forward process (3)  E at  a0[ ] denotes the expectation
 with respect to ϕt( at  a0)  andφis the parameter needed to be learned. Then, according to
 Theorem C.1 (see Appendix C.2), we rewrite the objective (10) as follows,
 L(φ)  Ek U({1,2,   ,K}),z N(0,I),(s,a) D[
  z ϵφ(  αka  1  αkz,s,k)
- 2 2]
-, (11)
 whereU( ) denotes uniform distribution,
 ϵφ( , ,k)    1  αkˆsφ( , ,T tk),
 and αkwill be special. The objective (11) provides a way to learn φfrom samples  see line
-14-16 2.
-10 2  (DIPO) Model-Free Reinforcement Learning with DIﬀusion POlicy
+14-16 in Algorithm 2.
+10Algorithm 2  (DIPO) Model-Free Reinforcement Learning with DIﬀusion POlicy
 1 initializeφ, critic network Qψ {αi}K
-i 0   αk  k
-i 1αi  step-sizeη 
-2 3 0 0( ) 
+3  datasetD     initialize s0 d0( ) 
 4  #update experience
-5 0,1,   ,Tdo
 6  playatfollows (12)  st 1 P(  st,at) D D { st,at,st 1,r(st 1 st,at)} 
 7  #update value function
-8 9  sample ( st,at,st 1,r(st 1 st,at)) D i.i.d  take gradient descent on ℓQ(ψ) (14) 
-10  #action gradient
-11 0,1,   ,Tdo
+9  sample ( st,at,st 1,r(st 1 st,at)) D i.i.d  take gradient descent on ℓQ(ψ) (14) 
+11  fort  0,1,   ,Tdo
 12  replace each action at Dfollows at at η aQψ(st,a) a at 
-13  #update policy
-14 15  sample ( s,a) fromDi.i.d, sample index k U({1,   ,K}),z N(0,I) 
-16  take gradient decent on the loss ℓd(φ)   z ϵφ(  αka  1  αkz,s,k) 2 2 17 until the policy performs well in the environment.
+15  sample ( s,a) fromDi.i.d, sample index k U({1,   ,K}),z N(0,I) 
+16  take gradient decent on the loss ℓd(φ)   z ϵφ(  αka  1  αkz,s,k) 2
+17 until the policy performs well in the environment.
 5.2 Playing Action of DIPO
 Replacing the score estimator ˆS(deﬁned in Algorithm 1) according to ˆϵφ, after some algebras
 (see Appendix C.3), we rewrite diﬀusion policy (i.e., Algorithm 1) as follows,
-ˆak 1 1 αk(
 ˆak 1 αk 1  αkϵφ(ˆak,s,k))
-  
-1 αk
-αkzk, (12)
 wherek  0,1,   ,K 1 runs forward in time, the noise zk N(0,I). The agent plays the
 last (output) action ˆaK.
 5.3 Policy Improvement of DIPO
@@ -428,16 +367,13 @@ a a η aJπ(a)  a ηEs d0( )[ aQπ(s,a)], (13)
 whereη 0 is step-size, and we call  aJπ(a) asaction gradient . To implement (13) from
 samples, we need a neural network Qψto estimate Qπ. Recall{st,at,st 1,r(st 1 st,at)}t 0 
 π, we train the parameter ψby minimizing the following Bellman residual error,
-ℓQ(ψ)  (
 r(st 1 st,at)  γQψ(st 1,at 1) Qψ(st,at))2. (14)
 11Finally, we consider each pair ( st,at) D, and replace the action at Das follows,
 at at η aQψ(st,a) a at. (15)
-6 Related Work
 Due to the diﬀusion model being a fast-growing ﬁeld, this section only presents the work that
 relates to reinforcement learning, a recent work [Yang et al., 2022] provides a comprehensive
 survey on the diﬀusion model. In this section, ﬁrst, we review recent advances in diﬀusion
 models with reinforcement learning. Then, we review the generative models for reinforcement
-learning.
 6.1 Diﬀusion Models for Reinforcement Learning
 The diﬀusion model with RL ﬁrst appears in [Janner et al., 2022], where it proposes the
 diﬀuser that plans by iteratively reﬁning trajectories, which is an essential oﬄine RL method.
@@ -455,7 +391,6 @@ oﬄine trajectory dataset, where EDGI learns a world model and planning in it a
 generative modeling problem follows the diﬀuser [Janner et al., 2022]. DALL-E-Bot [Kapelyukh
 et al., 2022] explores the web-scale image diﬀusion models for robotics. AdaptDiﬀuser [Liang
 et al., 2023] is an evolutionary planning algorithm with diﬀusion, which is adapted to unseen
-tasks.
 The above methods are all to solve oﬄine RL problems, to the best of our knowledge, the
 proposed DIPO is the ﬁrst diﬀusion approach to solve online model-free RL problems. The
 action gradient plays a critical way to implement DIPO, which never appears in existing RL
@@ -473,7 +408,7 @@ auto-encoding variational Bayes (VAE) [Kingma and Welling, 2013] and VQ-VAE [Van
 Den Oord et al., 2017] model behavioral priors. Mandlekar et al. [2020] design the low-level
 12policy that is conditioned on latent from the CVAE. Pertsch et al. [2021] joint the representation
 of skill embedding and skill prior via a deep latent variable model. Mees et al. [2022], RoseteBeas
- et al. [2023] consider seq seq CVAE [Lynch et al., 2020, Wang et al., 2022] to model of
+ et al. [2023] consider seq2seq CVAE [Lynch et al., 2020, Wang et al., 2022] to model of
 conditioning the action decoder on the latent plan allows the policy to use the entirety of its
 capacity for learning unimodal behavior.
 GAN for Imitation Learning. GAIL [Ho and Ermon, 2016] considers the Generative
@@ -500,7 +435,6 @@ Energy-based models [LeCun et al., 2006] are also modeled as conditional policie
 et al., 2022] or applied to inverse RL [Liu et al., 2021]. Autoregressive model [Vaswani et al.,
 2017, Brown et al., 2020] represents the policy as the distribution of action, where it considers
 the distribution of the whole trajectory [Reed et al., 2022, Shaﬁullah et al., 2022].
-7 Experiments
 In this section, we aim to cover the following three issues  How does DIPO compare to
 the widely used RL algorithms (SAC, PPO, and TD3) on the standard continuous control
 benchmark  How to show and illustrate the empirical results  How does the diﬀusion model
@@ -511,44 +445,47 @@ We provide an evaluation on MuJoCo tasks [Todorov et al., 2012]. Figure 6 shows 
 curves for SAC, PPO, TD3, and DIPO on MuJoCo tasks. To demonstrate the robustness
 of the proposed DIPO, we train DIPO with the same hyperparameters for all those 5 tasks,
 where we provide the hyperparameters in Table 3, see Appendix H.1. For each algorithm,
-we plot the average return of 5 5 same seeds as the transparent shaded region. We evaluate all the methods
+we plot the average return of 5 independent trials as the solid curve and plot the standard
+deviation across 5 same seeds as the transparent shaded region. We evaluate all the methods
 with 106iterations. Results show that the proposed DIPO achieves the best score across all
-those 5 tasks, and DIPO learns much faster than SAC, PPO, and TD3 on the tasks of Ant-3 13/uni00000013/uni00000011/uni00000013 /uni00000013/uni00000011/uni00000015 /uni00000013/uni00000011/uni00000017 /uni00000013/uni00000011/uni00000019 /uni00000013/uni00000011/uni b /uni00000014/uni00000011/uni00000013/uni00000013/uni00000014/uni00000013/uni00000013/uni00000013/uni00000015/uni00000013/uni00000013/uni00000013/uni00000016/uni00000013/uni00000013/uni00000013/uni00000017/uni00000013/uni00000013/uni00000013/uni00000018/uni00000013/uni00000013/uni00000013/uni00000019/uni00000013/uni00000013/uni00000013 /uni00000033/uni00000033/uni00000032
+those 5 tasks, and DIPO learns much faster than SAC, PPO, and TD3 on the tasks of Ant-3v
+13/uni00000013/uni00000011/uni00000013 /uni00000013/uni00000011/uni00000015 /uni00000013/uni00000011/uni00000017 /uni00000013/uni00000011/uni00000019 /uni00000013/uni00000011/uni0000001b /uni00000014/uni00000011/uni00000013/uni00000013/uni00000014/uni00000013/uni00000013/uni00000013/uni00000015/uni00000013/uni00000013/uni00000013/uni00000016/uni00000013/uni00000013/uni00000013/uni00000017/uni00000013/uni00000013/uni00000013/uni00000018/uni00000013/uni00000013/uni00000013/uni00000019/uni00000013/uni00000013/uni00000013 /uni00000033/uni00000033/uni00000032
 /uni00000036/uni00000024/uni00000026
 /uni00000037/uni00000027/uni00000016
-/uni00000027/uni c/uni00000033/uni00000032(a) Ant-v3
-/uni00000013/uni00000011/uni00000013 /uni00000013/uni00000011/uni00000015 /uni00000013/uni00000011/uni00000017 /uni00000013/uni00000011/uni00000019 /uni00000013/uni00000011/uni b /uni00000014/uni00000011/uni00000013/uni00000013/uni00000015/uni00000013/uni00000013/uni00000013/uni00000017/uni00000013/uni00000013/uni00000013/uni00000019/uni00000013/uni00000013/uni00000013/uni b/uni00000013/uni00000013/uni00000013/uni00000014/uni00000013/uni00000013/uni00000013/uni00000013/uni00000014/uni00000015/uni00000013/uni00000013/uni00000013
+/uni00000027/uni0000002c/uni00000033/uni00000032(a) Ant-v3
+/uni00000013/uni00000011/uni00000013 /uni00000013/uni00000011/uni00000015 /uni00000013/uni00000011/uni00000017 /uni00000013/uni00000011/uni00000019 /uni00000013/uni00000011/uni0000001b /uni00000014/uni00000011/uni00000013/uni00000013/uni00000015/uni00000013/uni00000013/uni00000013/uni00000017/uni00000013/uni00000013/uni00000013/uni00000019/uni00000013/uni00000013/uni00000013/uni0000001b/uni00000013/uni00000013/uni00000013/uni00000014/uni00000013/uni00000013/uni00000013/uni00000013/uni00000014/uni00000015/uni00000013/uni00000013/uni00000013
 /uni00000033/uni00000033/uni00000032
 /uni00000036/uni00000024/uni00000026
 /uni00000037/uni00000027/uni00000016
-/uni00000027/uni c/uni00000033/uni00000032 (b) HalfCheetah-v3
-/uni00000013/uni00000011/uni00000013 /uni00000013/uni00000011/uni00000015 /uni00000013/uni00000011/uni00000017 /uni00000013/uni00000011/uni00000019 /uni00000013/uni00000011/uni b /uni00000014/uni00000011/uni00000013/uni00000013/uni00000018/uni00000013/uni00000013/uni00000014/uni00000013/uni00000013/uni00000013/uni00000014/uni00000018/uni00000013/uni00000013/uni00000015/uni00000013/uni00000013/uni00000013/uni00000015/uni00000018/uni00000013/uni00000013/uni00000016/uni00000013/uni00000013/uni00000013/uni00000016/uni00000018/uni00000013/uni00000013
+/uni00000027/uni0000002c/uni00000033/uni00000032 (b) HalfCheetah-v3
+/uni00000013/uni00000011/uni00000013 /uni00000013/uni00000011/uni00000015 /uni00000013/uni00000011/uni00000017 /uni00000013/uni00000011/uni00000019 /uni00000013/uni00000011/uni0000001b /uni00000014/uni00000011/uni00000013/uni00000013/uni00000018/uni00000013/uni00000013/uni00000014/uni00000013/uni00000013/uni00000013/uni00000014/uni00000018/uni00000013/uni00000013/uni00000015/uni00000013/uni00000013/uni00000013/uni00000015/uni00000018/uni00000013/uni00000013/uni00000016/uni00000013/uni00000013/uni00000013/uni00000016/uni00000018/uni00000013/uni00000013
 /uni00000033/uni00000033/uni00000032
 /uni00000036/uni00000024/uni00000026
 /uni00000037/uni00000027/uni00000016
-/uni00000027/uni c/uni00000033/uni00000032 (c) Hopper-v3
-/uni00000013/uni00000011/uni00000013 /uni00000013/uni00000011/uni00000015 /uni00000013/uni00000011/uni00000017 /uni00000013/uni00000011/uni00000019 /uni00000013/uni00000011/uni b /uni00000014/uni00000011/uni00000013/uni00000013/uni00000014/uni00000013/uni00000013/uni00000013/uni00000015/uni00000013/uni00000013/uni00000013/uni00000016/uni00000013/uni00000013/uni00000013/uni00000017/uni00000013/uni00000013/uni00000013/uni00000018/uni00000013/uni00000013/uni00000013/uni00000033/uni00000033/uni00000032
+/uni00000027/uni0000002c/uni00000033/uni00000032 (c) Hopper-v3
+/uni00000013/uni00000011/uni00000013 /uni00000013/uni00000011/uni00000015 /uni00000013/uni00000011/uni00000017 /uni00000013/uni00000011/uni00000019 /uni00000013/uni00000011/uni0000001b /uni00000014/uni00000011/uni00000013/uni00000013/uni00000014/uni00000013/uni00000013/uni00000013/uni00000015/uni00000013/uni00000013/uni00000013/uni00000016/uni00000013/uni00000013/uni00000013/uni00000017/uni00000013/uni00000013/uni00000013/uni00000018/uni00000013/uni00000013/uni00000013/uni00000033/uni00000033/uni00000032
 /uni00000036/uni00000024/uni00000026
 /uni00000037/uni00000027/uni00000016
-/uni00000027/uni c/uni00000033/uni00000032 (d) Humanoid-v3
-/uni00000013/uni00000011/uni00000013 /uni00000013/uni00000011/uni00000015 /uni00000013/uni00000011/uni00000017 /uni00000013/uni00000011/uni00000019 /uni00000013/uni00000011/uni b /uni00000014/uni00000011/uni00000013/uni00000013/uni00000014/uni00000013/uni00000013/uni00000013/uni00000015/uni00000013/uni00000013/uni00000013/uni00000016/uni00000013/uni00000013/uni00000013/uni00000017/uni00000013/uni00000013/uni00000013/uni00000018/uni00000013/uni00000013/uni00000013 /uni00000033/uni00000033/uni00000032
+/uni00000027/uni0000002c/uni00000033/uni00000032 (d) Humanoid-v3
+/uni00000013/uni00000011/uni00000013 /uni00000013/uni00000011/uni00000015 /uni00000013/uni00000011/uni00000017 /uni00000013/uni00000011/uni00000019 /uni00000013/uni00000011/uni0000001b /uni00000014/uni00000011/uni00000013/uni00000013/uni00000014/uni00000013/uni00000013/uni00000013/uni00000015/uni00000013/uni00000013/uni00000013/uni00000016/uni00000013/uni00000013/uni00000013/uni00000017/uni00000013/uni00000013/uni00000013/uni00000018/uni00000013/uni00000013/uni00000013 /uni00000033/uni00000033/uni00000032
 /uni00000036/uni00000024/uni00000026
 /uni00000037/uni00000027/uni00000016
-/uni00000027/uni c/uni00000033/uni00000032 (e) Walker d-v3 6  Average performances on MuJoCo Gym environments with  std shaded, where the
+/uni00000027/uni0000002c/uni00000033/uni00000032 (e) Walker2d-v3
+Figure 6  Average performances on MuJoCo Gym environments with  std shaded, where the
 horizontal axis of coordinate denotes the iterations (  106), the plots smoothed with a window
-of 10.
-Ant-v3 3 7  State-visiting visualization by each algorithm on the Ant-v3 task, where states get
+Ant-v3 DIPO SAC TD3 PPO
+Figure 7  State-visiting visualization by each algorithm on the Ant-v3 task, where states get
 dimension reduction by t-SNE. The points with diﬀerent colors represent the states visited
 by the policy with the style. The distance between points represents the diﬀerence between
-states.
-HalfCheetah-v3 8  State-visiting visualization for comparison between DIPO and SAC on HalfCheetahv3.
-
-and Walker d-3v. Although the asymptotic reward performance of DIPO is similar to baseline
+HalfCheetah-v3 DIPO SAC
+Figure 8  State-visiting visualization for comparison between DIPO and SAC on HalfCheetahv3.
+and Walker2d-3v. Although the asymptotic reward performance of DIPO is similar to baseline
 algorithms on other 3 tasks, the proposed DIPO achieves better performance at the initial
-iterations, we will try to illustrate some insights for such empirical results of HalfCheetah-v3 8, for more discussions, see Appendix H.
+iterations, we will try to illustrate some insights for such empirical results of HalfCheetah-v3
+in Figure 8, for more discussions, see Appendix H.
 7.2 State-Visiting Visualization
 From Figure 6, we also know that DIPO achieves the best initial reward performance among
-all the 5 tasks, a more intuitive illustration has been shown in Figure 7 8, where we only
+all the 5 tasks, a more intuitive illustration has been shown in Figure 7 and 8, where we only
 consider Ant-v3 and HalfCheetah-v3  for more discussions and observations, see Appendix
 H.3. We show the state-visiting region to compare both the exploration and ﬁnal reward
 performance, where we use the same t-SNE [Van der Maaten and Hinton, 2008] to transfer
@@ -556,35 +493,39 @@ the high-dimensional states visited by all the methods for 2D visualization. Res
 7 show that the DIPO explores a wider range of state-visiting, covering TD3, SAC, and PPO.
 Furthermore, from Figure 7, we also know DIPO achieves a more dense state-visiting at the
 ﬁnal period, which is a reasonable result since after suﬃcient training, the agent identiﬁes and
-14 3 PPO
-algorithm reward
-(a) Ant-v3 3 PPO
-algorithm reward (b) HalfCheetah-v3 3 PPO
-algorithm reward
- (c) Hopper-v3 3 PPO
-algorithm reward
- (d) Humanoid-v3 3 PPO
-algorithm reward
- (e) Walker d-v3 9  Reward Performance Comparison to VAE and MLP with DIPO, SAC, PPO and
-TD3.
-/uni00000013/uni00000011/uni00000013 /uni00000013/uni00000011/uni00000015 /uni00000013/uni00000011/uni00000017 /uni00000013/uni00000011/uni00000019 /uni00000013/uni00000011/uni b /uni00000014/uni00000011/uni00000013/uni00000014/uni00000013/uni00000013/uni00000013/uni00000015/uni00000013/uni00000013/uni00000013/uni00000016/uni00000013/uni00000013/uni00000013/uni00000017/uni00000013/uni00000013/uni00000013/uni00000018/uni00000013/uni00000013/uni00000013/uni00000019/uni00000013/uni00000013/uni00000013 /uni e/uni00000020/uni00000015/uni00000013
-/uni e/uni00000020/uni00000018/uni00000013
-/uni e/uni00000020/uni00000014/uni00000013/uni00000013
-(a) Ant-v3
-/uni00000013/uni00000011/uni00000013 /uni00000013/uni00000011/uni00000015 /uni00000013/uni00000011/uni00000017 /uni00000013/uni00000011/uni00000019 /uni00000013/uni00000011/uni b /uni00000014/uni00000011/uni00000013/uni00000015/uni00000013/uni00000013/uni00000013/uni00000017/uni00000013/uni00000013/uni00000013/uni00000019/uni00000013/uni00000013/uni00000013/uni b/uni00000013/uni00000013/uni00000013/uni00000014/uni00000013/uni00000013/uni00000013/uni00000013/uni e/uni00000020/uni00000015/uni00000013
-/uni e/uni00000020/uni00000018/uni00000013
-/uni e/uni00000020/uni00000014/uni00000013/uni00000013 (b) HalfCheetah-v3
-/uni00000013/uni00000011/uni00000013 /uni00000013/uni00000011/uni00000015 /uni00000013/uni00000011/uni00000017 /uni00000013/uni00000011/uni00000019 /uni00000013/uni00000011/uni b /uni00000014/uni00000011/uni00000013/uni00000018/uni00000013/uni00000013/uni00000014/uni00000013/uni00000013/uni00000013/uni00000014/uni00000018/uni00000013/uni00000013/uni00000015/uni00000013/uni00000013/uni00000013/uni00000015/uni00000018/uni00000013/uni00000013/uni00000016/uni00000013/uni00000013/uni00000013/uni00000016/uni00000018/uni00000013/uni00000013
-/uni e/uni00000020/uni00000015/uni00000013
-/uni e/uni00000020/uni00000018/uni00000013
-/uni e/uni00000020/uni00000014/uni00000013/uni00000013 (c) Hopper-v3
-/uni00000013/uni00000011/uni00000013 /uni00000013/uni00000011/uni00000015 /uni00000013/uni00000011/uni00000017 /uni00000013/uni00000011/uni00000019 /uni00000013/uni00000011/uni b /uni00000014/uni00000011/uni00000013/uni00000014/uni00000013/uni00000013/uni00000013/uni00000015/uni00000013/uni00000013/uni00000013/uni00000016/uni00000013/uni00000013/uni00000013/uni00000017/uni00000013/uni00000013/uni00000013/uni00000018/uni00000013/uni00000013/uni00000013/uni e/uni00000020/uni00000015/uni00000013
-/uni e/uni00000020/uni00000018/uni00000013
-/uni e/uni00000020/uni00000014/uni00000013/uni00000013 (d) Humanoid-v3
-/uni00000013/uni00000011/uni00000013 /uni00000013/uni00000011/uni00000015 /uni00000013/uni00000011/uni00000017 /uni00000013/uni00000011/uni00000019 /uni00000013/uni00000011/uni b /uni00000014/uni00000011/uni00000013/uni00000014/uni00000013/uni00000013/uni00000013/uni00000015/uni00000013/uni00000013/uni00000013/uni00000016/uni00000013/uni00000013/uni00000013/uni00000017/uni00000013/uni00000013/uni00000013/uni00000018/uni00000013/uni00000013/uni00000013 /uni e/uni00000020/uni00000015/uni00000013
-/uni e/uni00000020/uni00000018/uni00000013
-/uni e/uni00000020/uni00000014/uni00000013/uni00000013 (e) Walker d-v3 10  Learning curves with diﬀerent reverse lengths K  20,50,100.
-Reverse length Ant-v3 HalfCheetah-v3 Hopper-v3 Humanoid-v3 Walker d-v3 100 5622.30 487.09 10472.31 654.96 3123.14 636.23 4878.41 822.03 4409.18 469.06 50 4877.41 1010.35 9198.20 1738.25 3214.83 491.15 4513.39 1075.94 4199.34 1062.31 20 5288.77 970.35 9343.69 986.82 2511.63 837.03 4294.79 1583.484467.20 368.13 1  Average return over ﬁnal 6 5 iterations with diﬀerent reverse lengths K  20,50,100,
+14DIPO VAE MLP SAC TD3 PPO
+algorithm0100020003000400050006000reward
+DIPO VAE MLP SAC TD3 PPO
+algorithm20004000600080001000012000reward (b) HalfCheetah-v3
+DIPO VAE MLP SAC TD3 PPO
+algorithm05001000150020002500300035004000reward
+DIPO VAE MLP SAC TD3 PPO
+algorithm0100020003000400050006000reward
+DIPO VAE MLP SAC TD3 PPO
+algorithm010002000300040005000reward
+Figure 9  Reward Performance Comparison to VAE and MLP with DIPO, SAC, PPO and
+/uni00000013/uni00000011/uni00000013 /uni00000013/uni00000011/uni00000015 /uni00000013/uni00000011/uni00000017 /uni00000013/uni00000011/uni00000019 /uni00000013/uni00000011/uni0000001b /uni00000014/uni00000011/uni00000013/uni00000014/uni00000013/uni00000013/uni00000013/uni00000015/uni00000013/uni00000013/uni00000013/uni00000016/uni00000013/uni00000013/uni00000013/uni00000017/uni00000013/uni00000013/uni00000013/uni00000018/uni00000013/uni00000013/uni00000013/uni00000019/uni00000013/uni00000013/uni00000013 /uni0000002e/uni00000020/uni00000015/uni00000013
+/uni0000002e/uni00000020/uni00000018/uni00000013
+/uni0000002e/uni00000020/uni00000014/uni00000013/uni00000013
+/uni00000013/uni00000011/uni00000013 /uni00000013/uni00000011/uni00000015 /uni00000013/uni00000011/uni00000017 /uni00000013/uni00000011/uni00000019 /uni00000013/uni00000011/uni0000001b /uni00000014/uni00000011/uni00000013/uni00000015/uni00000013/uni00000013/uni00000013/uni00000017/uni00000013/uni00000013/uni00000013/uni00000019/uni00000013/uni00000013/uni00000013/uni0000001b/uni00000013/uni00000013/uni00000013/uni00000014/uni00000013/uni00000013/uni00000013/uni00000013/uni0000002e/uni00000020/uni00000015/uni00000013
+/uni0000002e/uni00000020/uni00000018/uni00000013
+/uni0000002e/uni00000020/uni00000014/uni00000013/uni00000013 (b) HalfCheetah-v3
+/uni00000013/uni00000011/uni00000013 /uni00000013/uni00000011/uni00000015 /uni00000013/uni00000011/uni00000017 /uni00000013/uni00000011/uni00000019 /uni00000013/uni00000011/uni0000001b /uni00000014/uni00000011/uni00000013/uni00000018/uni00000013/uni00000013/uni00000014/uni00000013/uni00000013/uni00000013/uni00000014/uni00000018/uni00000013/uni00000013/uni00000015/uni00000013/uni00000013/uni00000013/uni00000015/uni00000018/uni00000013/uni00000013/uni00000016/uni00000013/uni00000013/uni00000013/uni00000016/uni00000018/uni00000013/uni00000013
+/uni0000002e/uni00000020/uni00000015/uni00000013
+/uni0000002e/uni00000020/uni00000018/uni00000013
+/uni0000002e/uni00000020/uni00000014/uni00000013/uni00000013 (c) Hopper-v3
+/uni00000013/uni00000011/uni00000013 /uni00000013/uni00000011/uni00000015 /uni00000013/uni00000011/uni00000017 /uni00000013/uni00000011/uni00000019 /uni00000013/uni00000011/uni0000001b /uni00000014/uni00000011/uni00000013/uni00000014/uni00000013/uni00000013/uni00000013/uni00000015/uni00000013/uni00000013/uni00000013/uni00000016/uni00000013/uni00000013/uni00000013/uni00000017/uni00000013/uni00000013/uni00000013/uni00000018/uni00000013/uni00000013/uni00000013/uni0000002e/uni00000020/uni00000015/uni00000013
+/uni0000002e/uni00000020/uni00000018/uni00000013
+/uni0000002e/uni00000020/uni00000014/uni00000013/uni00000013 (d) Humanoid-v3
+/uni00000013/uni00000011/uni00000013 /uni00000013/uni00000011/uni00000015 /uni00000013/uni00000011/uni00000017 /uni00000013/uni00000011/uni00000019 /uni00000013/uni00000011/uni0000001b /uni00000014/uni00000011/uni00000013/uni00000014/uni00000013/uni00000013/uni00000013/uni00000015/uni00000013/uni00000013/uni00000013/uni00000016/uni00000013/uni00000013/uni00000013/uni00000017/uni00000013/uni00000013/uni00000013/uni00000018/uni00000013/uni00000013/uni00000013 /uni0000002e/uni00000020/uni00000015/uni00000013
+/uni0000002e/uni00000020/uni00000018/uni00000013
+/uni0000002e/uni00000020/uni00000014/uni00000013/uni00000013 (e) Walker2d-v3
+Figure 10  Learning curves with diﬀerent reverse lengths K  20,50,100.
+Reverse length Ant-v3 HalfCheetah-v3 Hopper-v3 Humanoid-v3 Walker2d-v3
+K  100 5622.30 487.09 10472.31 654.96 3123.14 636.23 4878.41 822.03 4409.18 469.06
+K  50 4877.41 1010.35 9198.20 1738.25 3214.83 491.15 4513.39 1075.94 4199.34 1062.31
+K  20 5288.77 970.35 9343.69 986.82 2511.63 837.03 4294.79 1583.484467.20 368.13
+Table 1  Average return over ﬁnal 6E5 iterations with diﬀerent reverse lengths K  20,50,100,
 and maximum value is bolded for each task.
 avoids the  bad  states, and plays actions transfer to  good  states. On the contrary, PPO
 shows an aimless exploration in the Ant-v3 task, which partially explains why PPO is not so
@@ -599,7 +540,6 @@ the  good  region at the beginning although SAC performs a relatively worse init
 performance than DIPO. Thus, the result of Figure 8 partially explains why DIPO performs
 better than SAC at the initial iterations but performs with same performance with SAC at
 the ﬁnal for the HalfCheetah-v3 task.
-7.3 Ablation Study
 In this section, we consider the ablation study to compare the diﬀusion model with VAE and
 MLP for policy learning, and show a trade-oﬀ on the reverse length Kfor reverse inference.
 157.3.1 Comparison to VAE and MLP
@@ -613,20 +553,19 @@ learning a distribution. This implies the diﬀusion model is an expressive and 
 model a distribution, which is also consistent with the ﬁeld of the generative model.
 7.3.2 Comparison with Diﬀerent Reverse Lengths
 Reverse length Kis an important parameter for the diﬀusion model, which not only aﬀects the
-reward performance but also aﬀects the training time, we show the results in Figure 10 1. The results show that the reverse time K  100 returns a better reward performance
+reward performance but also aﬀects the training time, we show the results in Figure 10 and
+Table 1. The results show that the reverse time K  100 returns a better reward performance
 than other cases (except Hopper-v3 task). Longer reverse length consumes more reverse time
 for inference, we hope to use less time for reverse time for action inference. However, a short
-reverse length K  20 decays the reward performance among (except Walker d-v3 task),
+reverse length K  20 decays the reward performance among (except Walker2d-v3 task),
 which implies a trade-oﬀ between reward performance and reverse length K. In practice, we
 setK  100 throughout this paper.
-8 Conlusion
 We have formally built a theoretical foundation of diﬀusion policy, which shows a policy
 representation via the diﬀusion probability model and which is a new way to represent a
 policy via a stochastic process. Then, we have shown a convergence analysis for diﬀusion
 policy, which provides a theory to understand diﬀusion policy. Furthermore, we have proposed
 an implementation for model-free online RL with a diﬀusion policy, named DIPO. Finally,
 extensive empirical results show the eﬀectiveness of DIPO among the Mujoco tasks.
-References
 Anurag Ajay, Aviral Kumar, Pulkit Agrawal, Sergey Levine, and Oﬁr Nachum. Opal  Oﬄine
 primitive discovery for accelerating oﬄine reinforcement learning. In International Conference
 on Learning Representations (ICLR) , 2021. (Cited on page 12.)
@@ -634,17 +573,16 @@ Anurag Ajay, Yilun Du, Abhi Gupta, Joshua Tenenbaum, Tommi Jaakkola, and Pulkit 
 Is conditional generative modeling all you need for decision-making  In International
 Conference on Learning Representations (ICLR) , 2023. (Cited on pages 3, 6, and 12.)
 Brian DO Anderson. Reverse-time diﬀusion equation models. Stochastic Processes and their
-Applications , 12(3) 313 326, 1982. (Cited on pages 7 26.)
+Applications , 12(3) 313 326, 1982. (Cited on pages 7 and 26.)
 Brenna D Argall, Sonia Chernova, Manuela Veloso, and Brett Browning. A survey of robot
 learning from demonstration. Robotics and autonomous systems , 57(5) 469 483, 2009. (Cited
-on page 12.)
 Dominique Bakry, Ivan Gentil, Michel Ledoux, et al. Analysis and geometry of Markov
 diﬀusion operators , volume 103. Springer, 2014. (Cited on page 9.)
 16Emmanuel Bengio, Moksh Jain, Maksym Korablyov, Doina Precup, and Yoshua Bengio. Flow
 network based generative models for non-iterative diverse candidate generation. Advances in
-Neural Information Processing Systems (NeurIPS) , 34 27381 27394, 2021a. (Cited on pages 12 13.)
+Neural Information Processing Systems (NeurIPS) , 34 27381 27394, 2021a. (Cited on pages 12
 Yoshua Bengio, Salem Lahlou, Tristan Deleu, Edward J Hu, Mo Tiwari, and Emmanuel Bengio.
-Gﬂownet foundations. arXiv preprint arXiv 2111.09266 , 2021b. (Cited on pages 12 13.)
+Gﬂownet foundations. arXiv preprint arXiv 2111.09266 , 2021b. (Cited on pages 12 and 13.)
 Johann Brehmer, Joey Bose, Pim De Haan, and Taco Cohen. Edgi  Equivariant diﬀusion for
 planning with embodied agents. In Workshop on Reincarnating Reinforcement Learning at
 ICLR , 2023. (Cited on page 12.)
@@ -660,19 +598,21 @@ Sichun Xu, Tianhe Yu, and Brianna Zitkovich. Rt-1  Robotics transformer for real
 control at scale. In arXiv preprint arXiv 2212.06817 , 2022. (Cited on page 13.)
 Tom Brown, Benjamin Mann, Nick Ryder, Melanie Subbiah, Jared D Kaplan, Prafulla Dhariwal,
 Arvind Neelakantan, Pranav Shyam, Girish Sastry, Amanda Askell, et al. Language models
-are few-shot learners. Advances in neural information processing systems (NeurIPS) , 33 1877 1901, 2020. (Cited on page 13.)
+are few-shot learners. Advances in neural information processing systems (NeurIPS) , 33 
+1877 1901, 2020. (Cited on page 13.)
 Hongrui Chen, Holden Lee, and Jianfeng Lu. Improved analysis of score-based generative
 modeling  User-friendly bounds under minimal smoothness assumptions. arXiv preprint
 arXiv 2211.01916 , 2022. (Cited on page 29.)
 Huayu Chen, Cheng Lu, Chengyang Ying, Hang Su, and Jun Zhu. Oﬄine reinforcement
 learning via high-ﬁdelity generative behavior modeling. In International Conference on
-Learning Representations (ICLR) , 2023a. (Cited on pages 6 12.)
+Learning Representations (ICLR) , 2023a. (Cited on pages 6 and 12.)
 Jinyin Chen, Shulong Hu, Haibin Zheng, Changyou Xing, and Guomin Zhang. Gail-pt  An
 intelligent penetration testing framework with generative adversarial imitation learning.
 Computers & Security , 126 103055, 2023b. (Cited on page 13.)
 Lili Chen, Kevin Lu, Aravind Rajeswaran, Kimin Lee, Aditya Grover, Misha Laskin, Pieter
 Abbeel, Aravind Srinivas, and Igor Mordatch. Decision transformer  Reinforcement learning
-via sequence modeling. Advances in neural information processing systems(NeurIPS) , 34 15084 15097, 2021. (Cited on page 13.)
+via sequence modeling. Advances in neural information processing systems(NeurIPS) , 34 
+15084 15097, 2021. (Cited on page 13.)
 Sitan Chen, Sinho Chewi, Jerry Li, Yuanzhi Li, Adil Salim, and Anru R Zhang. Sampling is
 as easy as learning the score  theory for diﬀusion models with minimal data assumptions.
 InInternational Conference on Learning Representations (ICLR) , 2023c. (Cited on page 9.)
@@ -697,7 +637,6 @@ machine learning (ICML) , pages 1407 1416. PMLR, 2018. (Cited on page 5.)
 Pete Florence, Corey Lynch, Andy Zeng, Oscar A Ramirez, Ayzaan Wahid, Laura Downs,
 Adrian Wong, Johnny Lee, Igor Mordatch, and Jonathan Tompson. Implicit behavioral
 cloning. In Conference on Robot Learning (CORL) , pages 158 168. PMLR, 2022. (Cited on
-page 13.)
 Adriaan Dani  el Fokker. Die mittlere energie rotierender elektrischer dipole im strahlungsfeld.
 Annalen der Physik , 348(5) 810 820, 1914. (Cited on page 27.)
 Justin Fu, Katie Luo, and Sergey Levine. Learning robust rewards with adverserial inverse
@@ -708,14 +647,13 @@ in actor-critic methods. In International conference on machine learning (ICML) 
 1587 1596. PMLR, 2018. (Cited on page 7.)
 Ian Goodfellow, Jean Pouget-Abadie, Mehdi Mirza, Bing Xu, David Warde-Farley, Sherjil Ozair,
 Aaron Courville, and Yoshua Bengio. Generative adversarial networks. Communications of
-the ACM , 63(11) 139 144, 2020. (Cited on pages 12 13.)
+the ACM , 63(11) 139 144, 2020. (Cited on pages 12 and 13.)
 Tuomas Haarnoja, Haoran Tang, Pieter Abbeel, and Sergey Levine. Reinforcement learning
 with deep energy-based policies. In International conference on machine learning (ICML) ,
 pages 1352 1361. PMLR, 2017. (Cited on pages 5, 7, and 50.)
 Tuomas Haarnoja, Vitchyr Pong, Aurick Zhou, Murtaza Dalal, Pieter Abbeel, and Sergey
 Levine. Composable deep reinforcement learning for robotic manipulation. In 2018 IEEE
 international conference on robotics and automation (ICRA) , pages 6244 6251. IEEE, 2018a.
-(Cited on page 5.)
 Tuomas Haarnoja, Aurick Zhou, Pieter Abbeel, and Sergey Levine. Soft actor-critic  Oﬀ-policy
 maximum entropy deep reinforcement learning with a stochastic actor. In International
 conference on machine learning (ICML) , pages 1861 1870. PMLR, 2018b. (Cited on page 5.)
@@ -727,25 +665,22 @@ Jonathan Ho and Stefano Ermon. Generative adversarial imitation learning. Advanc
 neural information processing systems (NeurIPS) , 29, 2016. (Cited on page 13.)
 Jonathan Ho, Ajay Jain, and Pieter Abbeel. Denoising diﬀusion probabilistic models. Advances
 in Neural Information Processing Systems (NeurIPS) , 33 6840 6851, 2020. (Cited on pages 3,
-26, 33, and 34.)
 Aapo Hyv  arinen. Estimation of non-normalized statistical models by score matching. Journal
 of Machine Learning Research (JMLR) , 6(4), 2005. (Cited on page 10.)
 Michael Janner, Yilun Du, Joshua Tenenbaum, and Sergey Levine. Planning with diﬀusion for
 ﬂexible behavior synthesis. In International Conference on Machine Learning (ICML) , 2022.
-(Cited on pages 6 12.)
+(Cited on pages 6 and 12.)
 Ivan Kapelyukh, Vitalis Vosylius, and Edward Johns. Dall-e-bot  Introducing web-scale
 diﬀusion models to robotics. In CoRL 2022 Workshop on Pre-training Robot Learning , 2022.
-(Cited on page 12.)
 Changyeon Kim, Jongjin Park, Jinwoo Shin, Honglak Lee, Pieter Abbeel, and Kimin Lee.
 Preference transformer  Modeling human preferences using transformers for rl. In The
 Eleventh International Conference on Learning Representations (ICLR) , 2023. (Cited on
-page 13.)
 Dongjun Kim, Seungjae Shin, Kyungwoo Song, Wanmo Kang, and Il-Chul Moon. Soft
 truncation  A universal training technique of score-based diﬀusion model for high precision
 score estimation. In Proceedings of the 39th International Conference on Machine Learning
 (ICML) , volume 162, pages 11201 11228, 2022. (Cited on page 26.)
 Diederik P Kingma and Max Welling. Auto-encoding variational bayes. arXiv preprint
-arXiv 1312.6114 , 2013. (Cited on pages 12 13.)
+arXiv 1312.6114 , 2013. (Cited on pages 12 and 13.)
 Andrei Kolmogoroﬀ.  Uber die analytischen methoden in der wahrscheinlichkeitsrechnung.
 Mathematische Annalen , 104 415 458, 1931. (Cited on page 27.)
 Sachin G Konan, Esmaeil Seraj, and Matthew Gombolay. Contrastive decision transformers.
@@ -757,7 +692,6 @@ general data distributions. In International Conference on Algorithmic Learning 
 (ALT) , pages 946 985. PMLR, 2023. (Cited on page 8.)
 Sergey Levine, Aviral Kumar, George Tucker, and Justin Fu. Oﬄine reinforcement learning 
 Tutorial, review, and perspectives on open problems. arXiv preprint arXiv 2005.01643 , 2020.
-(Cited on page 12.)
 19Wenhao Li, Baoxiang Wang, Shanchao Yang, and Hongyuan Zha. Diverse policy optimization
  for structured action space. In Proceedings of the 22th International Conference on
 Autonomous Agents and MultiAgent Systems (AAMAS) , 2023a. (Cited on page 13.)
@@ -770,7 +704,6 @@ Zhixuan Liang, Yao Mu, Mingyu Ding, Fei Ni, Masayoshi Tomizuka, and Ping Luo. Ad
 Timothy P Lillicrap, Jonathan J Hunt, Alexander Pritzel, Nicolas Heess, Tom Erez, Yuval
 Tassa, David Silver, and Daan Wierstra. Continuous control with deep reinforcement
 learning. In International Conference on Learning Representations (ICLR) , 2016. (Cited on
-page 5.)
 Minghuan Liu, Tairan He, Minkai Xu, and Weinan Zhang. Energy-based imitation learning.
 InProceedings of the 20th International Conference on Autonomous Agents and MultiAgent
 Systems (AAMAS) , pages 809 817, 2021. (Cited on page 13.)
@@ -779,7 +712,7 @@ Weiyu Liu, Tucker Hermans, Sonia Chernova, and Chris Paxton. Structdiﬀusion  O
 and Robotics at CoRL , 2022. (Cited on page 12.)
 Corey Lynch, Mohi Khansari, Ted Xiao, Vikash Kumar, Jonathan Tompson, Sergey Levine,
 and Pierre Sermanet. Learning latent plans from play. In Conference on robot learning
-(CORL) , pages 1113 1132. PMLR, 2020. (Cited on pages 12 13.)
+(CORL) , pages 1113 1132. PMLR, 2020. (Cited on pages 12 and 13.)
 Yi-An Ma, Yuansi Chen, Chi Jin, Nicolas Flammarion, and Michael I Jordan. Sampling can
 be faster than optimization. Proceedings of the National Academy of Sciences , 116(42) 
 20881 20885, 2019. (Cited on page 9.)
@@ -799,7 +732,6 @@ arXiv 1908.08681 , 2019. (Cited on page 56.)
 20Volodymyr Mnih, Koray Kavukcuoglu, David Silver, Andrei A Rusu, Joel Veness, Marc G
 Bellemare, Alex Graves, Martin Riedmiller, Andreas K Fidjeland, Georg Ostrovski, et al.
 Human-level control through deep reinforcement learning. nature , 518(7540) 529 533, 2015.
-(Cited on page 5.)
 Takayuki Osa, Joni Pajarinen, Gerhard Neumann, J Andrew Bagnell, Pieter Abbeel, Jan
 Peters, et al. An algorithmic perspective on imitation learning. Foundations and Trends  
 in Robotics , 7(1-2) 1 179, 2018. (Cited on page 12.)
@@ -811,12 +743,12 @@ Sergio Valcarcel Macua, Shan Zheng Tan, Ida Momennejad, Katja Hofmann, et al. Im
 Representations (ICLR) , 2023. (Cited on page 12.)
 Karl Pertsch, Youngwoon Lee, and Joseph Lim. Accelerating reinforcement learning with
 learned skill priors. In Conference on robot learning (CORL) , pages 188 204, 2021. (Cited on
-page 13.)
 Jan Peters, Katharina Mulling, and Yasemin Altun. Relative entropy policy search. In
 Proceedings of the AAAI Conference on Artiﬁcial Intelligence , volume 24, pages 1607 1612,
 2010. (Cited on page 5.)
 VM Planck.  Uber einen satz der statistischen dynamik und seine erweiterung in der quantentheorie.
- Sitzungsberichte der Preussischen Akademie der Wissenschaften zu Berlin , 24 324 341, 1917. (Cited on page 27.)
+ Sitzungsberichte der Preussischen Akademie der Wissenschaften zu Berlin , 24 
+324 341, 1917. (Cited on page 27.)
 Dean A Pomerleau. Alvinn  An autonomous land vehicle in a neural network. Advances in
 neural information processing systems (NeurIPS) , 1, 1988. (Cited on page 12.)
 Rafael Rafailov, Victor Kolev, Kyle Beltran Hatch, John D Martin, Mariano Phielipp, Jiajun
@@ -832,7 +764,6 @@ learning using score-based diﬀusion policies. arXiv preprint arXiv 2304.02532 
 on pages 3, 6, and 12.)
 Danilo Rezende and Shakir Mohamed. Variational inference with normalizing ﬂows. In
 International conference on machine learning (ICML) , pages 1530 1538, 2015. (Cited on
-pages 12 13.)
 Hannes Risken and Hannes Risken. Fokker-planck equation . Springer, 1996. (Cited on page 27.)
 21Erick Rosete-Beas, Oier Mees, Gabriel Kalweit, Joschka Boedecker, and Wolfram Burgard.
 Latent plans for task-agnostic oﬄine reinforcement learning. In Conference on Robot Learning
@@ -842,7 +773,7 @@ volume 37. University of Cambridge, Department of Engineering, 1994. (Cited on p
 Brian Sallans and Geoﬀrey E Hinton. Reinforcement learning with factored states and actions.
 The Journal of Machine Learning Research (JMLR) , 5 1063 1088, 2004. (Cited on page 5.)
 Simo S  arkk  a and Arno Solin. Applied stochastic diﬀerential equations , volume 10. Cambridge
-University Press, 2019. (Cited on pages 26 27.)
+University Press, 2019. (Cited on pages 26 and 27.)
 John Schulman, Sergey Levine, Pieter Abbeel, Michael Jordan, and Philipp Moritz. Trust
 region policy optimization. In International conference on machine learningn (ICML) , pages
 1889 1897. PMLR, 2015. (Cited on page 5.)
@@ -861,15 +792,14 @@ Parrot  Data-driven behavioral priors for reinforcement learning. In Internation
 on Learning Representations (ICLR) , 2020. (Cited on page 13.)
 Jascha Sohl-Dickstein, Eric Weiss, Niru Maheswaranathan, and Surya Ganguli. Deep unsupervised
  learning using nonequilibrium thermodynamics. In International Conference on
-Machine Learning (ICML) , pages 2256 2265. PMLR, 2015. (Cited on pages 3 26.)
+Machine Learning (ICML) , pages 2256 2265. PMLR, 2015. (Cited on pages 3 and 26.)
 Yang Song, Jascha Sohl-Dickstein, Diederik P Kingma, Abhishek Kumar, Stefano Ermon, and
 Ben Poole. Score-based generative modeling through stochastic diﬀerential equations. In
 International Conference on Learning Representations (ICLR) , 2021. (Cited on pages 3, 26,
-and 34.)
 Richard S Sutton. Learning to predict by the methods of temporal diﬀerences. Machine
 learning , 3 9 44, 1988. (Cited on page 13.)
 Richard S Sutton and Andrew G Barto. Reinforcement learning  An introduction . MIT press,
-1998. (Cited on pages 5 13.)
+1998. (Cited on pages 5 and 13.)
 Richard S Sutton and Andrew G Barto. Reinforcement learning  An introduction . MIT press,
 2018. (Cited on page 5.)
 22Richard S Sutton, David McAllester, Satinder Singh, and Yishay Mansour. Policy gradient
@@ -887,10 +817,10 @@ international conference on robotics and automation (ICRA) , 2023. (Cited on pag
 Aaron Van Den Oord, Oriol Vinyals, et al. Neural discrete representation learning. Advances
 in neural information processing systems (NeurIPS) , 30, 2017. (Cited on page 12.)
 Laurens Van der Maaten and Geoﬀrey Hinton. Visualizing data using t-sne. Journal of
-machine learning research (JMLR) , 9(11), 2008. (Cited on pages 14 57.)
+machine learning research (JMLR) , 9(11), 2008. (Cited on pages 14 and 57.)
 Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N Gomez,
  Lukasz Kaiser, and Illia Polosukhin. Attention is all you need. Advances in neural information
-processing systems (NeurIPS) , 30, 2017. (Cited on pages 13 56.)
+processing systems (NeurIPS) , 30, 2017. (Cited on pages 13 and 56.)
 Santosh Vempala and Andre Wibisono. Rapid convergence of the unadjusted langevin algorithm 
 Isoperimetry suﬃces. In Advances in neural information processing systems (NeurIPS) ,
 volume 32, 2019. (Cited on pages 9, 25, and 29.)
@@ -901,10 +831,9 @@ Lirui Wang, Xiangyun Meng, Yu Xiang, and Dieter Fox. Hierarchical policies for c
 2022. (Cited on page 13.)
 Yunke Wang, Chang Xu, Bo Du, and Honglak Lee. Learning to weight imperfect demonstrations.
 InInternational Conference on Machine Learning (ICML) , pages 10961 10970. PMLR, 2021.
-(Cited on page 13.)
 Zhendong Wang, Jonathan J Hunt, and Mingyuan Zhou. Diﬀusion policies as an expressive
 policy class for oﬄine reinforcement learning. In International Conference on Learning
-Representations (ICLR) , 2023. (Cited on pages 6 12.)
+Representations (ICLR) , 2023. (Cited on pages 6 and 12.)
 Christopher John Cornish Hellaby Watkins. Learning from delayed rewards . PhD thesis, King s
 College, Cambridge, 1989. (Cited on page 5.)
 Andre Wibisono and Varun Jog. Convexity of mutual information along the ornstein-uhlenbeck
@@ -927,48 +856,18 @@ Conference on Machine Learning (ICML) , pages 27042 27059. PMLR, 2022. (Cited on
 This section reviews some notations and integration by parts formula, using the notations
 consistent with [Vempala and Wibisono, 2019].
 Given a smooth function f Rn R, itsgradient  f Rn Rnis the vector of partial
-derivatives 
- f(x)  ( f(x)
- x1,..., f(x)
- xn) 
-.
-TheHessian  2 2f(x)  ( 2f(x)
- xixj)
-1 i,j n.
+TheHessian  2f Rn Rn nis the matrix of second partial derivatives 
 TheLaplacian  f Rn Ris the trace of its Hessian 
- f(x)   Tr(
- 2f(x))
- n 
-i 1 2f(x)
- x2
-i.
 Given a smooth vector ﬁeld p  (p1,...,pn) Rn Rn, itsdivergence isdiv p Rn R 
-(div p)(x)  n 
-i 1 pi(x)
- xi. (16)
 When the variable of a function is clear and without causing ambiguity, we also denote the
 above notation as follows,
 div (p(x))    ( div p)(x)  n 
-i 1 pi(x)
- xi. (17)
 In particular, the divergence of the gradient is the Laplacian 
-(div  f)(x)  n 
-i 1 2f(x)
- x2
-i   f(x). (18)
 Letρ(x) andµ(x) be two smooth probability density functions on the space Rp, the Kullback Leibler
  (KL) divergence and relative Fisher information (FI) from µ(x) toρ(x) are
-deﬁned as follows,
-KL(ρ µ)   
-Rpρ(x) logρ(x)
-µ(x)dx,FI(ρ µ)   
-Rpρ(x)     logρ(x)
-µ(x)    2 2dx. (19)
 Before we further analyze, we need the integration by parts formula. For any function
 f Rp Rand vector ﬁeld v Rp Rpwith suﬃciently fast decay at inﬁnity, we have the
 following integration by parts formula 
- 
-Rp v(x), f(x) dx   
 Rpf(x)(div v)(x)dx. (20)
 25B Auxiliary Results
 B.1 Diﬀusion Probability Model (DPM).
@@ -978,190 +877,103 @@ For a given (but unknown) p-dimensional data distribution q(x0), DPM [Sohl-Dicks
 parametric model to approximate the distribution q(x0). To simplify the presentation in this
 section, we only focus on the continuous-time diﬀusion [Song et al., 2021]. The mechanism of
 DPM contains two processes, forward process and reverse process   we present them as follows.
-Forward Process . The forward process produces a sequence {xt}t 0 0 q( ) into a Gaussian noise, which follows the next stochastic diﬀerential equation
-(SDE),
+Forward Process . The forward process produces a sequence {xt}t 0 Tthat perturbs the
+initial x0 q( ) into a Gaussian noise, which follows the next stochastic diﬀerential equation
 dxt f(xt,t)dt g(t)dwt, (21)
 where f( , ) is the drift term, g( ) is the diﬀusion term, and wtis the standard Wiener process.
 Reverse Process. According to Anderson [1982], Haussmann and Pardoux [1986], there
 exists a corresponding reverse SDE that exactly coincides with the solution of the forward
-SDE (21) 
-dxt [
 f(xt,t) g2(t) logpt(xt)]
-d t g(t)d wt, (22)
 where d  tis the backward time diﬀerential, d  wtis a standard Wiener process ﬂowing backward
 in time, and pt(xt)is the marginal probability distribution of the random variable xtat timet.
 Once the score function  logpt(xt) is known for each time t, we can derive the reverse
 diﬀusion process from SDE (22) and simulate it to sample from q(x0) [Song et al., 2021].
 B.2 Transition Probability for Ornstein-Uhlenbeck Process
 Proposition B.1. Consider the next SDEs,
-dxt  1 2β(t)xtdt g(t)dwt,
 whereβ( )andg( )are real-valued functions. Then, for a given x0, the conditional distribution
-ofxt x is a Gaussian distribution, i.e.,
-xt x0 N (xt µt,Σt),
-where
-µt  exp{
- 1 2 0β(s)ds}
-x0,
-Σt  exp{
-  t
-0β(s)ds}( t
-0exp{ τ
-0β(s)ds}
-g2(τ)dτ)
-I.
+ofxt x0is a Gaussian distribution, i.e.,
 Proof. See [Kim et al., 2022, A.1] or [S  arkk  a and Solin, 2019, Chapter 6.1].  
 26B.3 Exponential Integrator Discretization
 The next Proposition B.2 provides a fundamental way for us to derivate the exponential
 integrator discretization (9).
 Proposition B.2. For a given state s, we consider the following continuous time process, for
-t [tk,tk 1],
-dxt (
-xt  2ˆS(xtk,s,T tk))
-dt  
-2dwt. (23)
 Then with Itˆ o integration [Chung and Williams, 1990],
-xt xtk (
-et tk 1)(
 xtk  2ˆS(xtk,s,T tk))
-  
-2 t
-tket  tkdwt ,
 wheret [tk,tk 1], andtk hk.
 Proof. See [S  arkk  a and Solin, 2019, Chapter 6.1].  
 Recall SDE (8), according to Proposition B.2, we know the next SDE
-dˆat (
 ˆat  2ˆS(ˆatk,s,T tk))
-dt  
 2dwt, t [tk,tk 1] (24)
 formulates the exponential integrator discretization as follows,
-ˆatk 1 ˆatk (
-etk 1 1)(
 ˆatk  2ˆS(ˆatk,s,T tk))
-  
-2 1
-tket  tkdwt  (25)
- (
-eh 1)(
 ˆatk  2ˆS(ˆatk,s,T tk))
-  
-e h 1z, (26)
 where last equation holds due to Wiener process is a stationary process with independent
 increments, i.e., the following holds,
- 
-2 1 2 1 0 2 0 1z,
-where z N(0,I).
 Then, we rewrite (26) as follows,
-ˆatk 1 ehˆatk (
-eh 1)(
 ˆatk  2ˆS(ˆatk,s,T tk))
-  
-e h 1z,
 which concludes the iteration deﬁned in (9).
 B.4 Fokker Planck Equation
 The Fokker Planck equation is named after Adriaan Fokker and Max Planck, who described
-it in 1914 1917 [Fokker, 1914, Planck, 1917]. It is also known as the Kolmogorov forward
+it in 1914 and 1917 [Fokker, 1914, Planck, 1917]. It is also known as the Kolmogorov forward
 equation, after Andrey Kolmogorov, who independently discovered it in 1931 [Kolmogoroﬀ,
 1931]. For more history and background about Fokker Planck equation, please refer to
 [Risken and Risken, 1996] or https //en.wikipedia.org/wiki/Fokker%E2%80%93Planck_
 equation#cite_note-1 .
 27For an Itˆ o process driven by the standard Wiener process wtand described by the stochastic
-diﬀerential equation
 dxt µ(xt,t)dt Σ(xt,t)dwt, (27)
 where xtandµ(xt,t) areN-dimensional random vectors, Σ(xt,t) is ann mmatrix and wt
 is anm-dimensional standard Wiener process, the probability density p(x,t) forxtsatisﬁes
 the Fokker Planck equation
- p(x,t)
- t  N 
-i 1 
  xi[µi(x,t)p(x,t)]  N 
-i 1 1 2
  xi xj[Dij(x,t)p(x,t)], (28)
-with drift vector µ  (µ1,...,µN) and diﬀusion tensor D(x,t)  1 2ΣΣ , i.e.
-Dij(x,t)  1 2 1σik(x,t)σjk(x,t),
+with drift vector µ  (µ1,...,µN) and diﬀusion tensor D(x,t)  1
 andσijdenotes the ( i,j)-th element of the matrix Σ.
 B.5 Donsker-Varadhan Representation for KL-divergence
 Proposition B.3 ([Donsker and Varadhan, 1983]) .Letρ,µbe two probability distributions
 on the measure space (X,F), whereX Rp. Then
-KL(ρ µ)   sup
-f X R{ 
-Rpρ(x)f(x)dx log 
-Rpµ(x) exp(f(x))dx}
-.
 The Donsker-Varadhan representation for KL-divergence implies for any f( ),
-KL(ρ µ)  
-Rpρ(x)f(x)dx log 
 Rpµ(x) exp(f(x))dx, (29)
 which is useful later.
 B.6 Some Basic Results for Diﬀusion Policy
 Proposition B.4. Letπ(  s)satisfyν-Log-Sobolev inequality (LSI) (see Assumption 4.2), the
 initial random action  a0 π(  s), and  atevolves according to the following Ornstein-Uhlenbeck
-process,
-d at   atdt  
-2dwt. (30)
 Let at  πt(  s)be the evolution along the Ornstein-Uhlenbeck ﬂow (30), then  πt(  s)isνt-LSI,
-where
-νt ν
-ν  (1 ν)e 2t.
 Proof. See [Wibisono and Yang, 2022, Lemma 6].  
 28Proposition B.5. Under Assumption 4.1, then  log  πt(  s)isLpet-Lipschitz on the time
-interval [0,T0], where the policy  πt(  s)is the evolution along the ﬂow (4), and the time T is
-deﬁned as follows,
-T0 0{
-t  1 2t e t
-Lp}
-.
+interval [0,T0], where the policy  πt(  s)is the evolution along the ﬂow (4), and the time T0is
 Proof. [Chen et al., 2022, Lemma 13].  
-The positive scalar T is well-deﬁned, i.e., T always exists. In fact, let 1 2 0,
+The positive scalar T0is well-deﬁned, i.e., T0always exists. In fact, let 1  e 2t e t
 then the following holds,
-e t  
-1 4 1
-Lp,
-then
-T0  log(
-1 4( 
-1 4 1
-Lp))
-.
 Proposition B.6. ([Vempala and Wibisono, 2019, Lemma 10]) Letρ(x)be a probability
 distribution function on Rp, and letf(x)   logρ(x)be aL-smooth, i.e., there exists a
 positive constant Lsuch that LI  2f(x) LIfor all x Rp. Furthermore, let ρ(x)
 satisfy the LSI condition with constant ν   0, i.e., for any probability distribution µ(x),
-KL(µ ρ) 1 2νFI(µ ρ).Then for any distribution µ(x), the following equation holds,
-Ex µ( )[
-  logρ(x) 2 2]
-  
-Rpµ(x)  logρ(x) 2 2 4 2
-νKL(µ ρ)   2pL.
+2νFI(µ ρ).Then for any distribution µ(x), the following equation holds,
 29C Implementation Details of DIPO
 In this section, we provide all the details of our implementation for DIPO.
 Algorithm 3  (DIPO)  Model-Free Learning with Diﬀusion Policy
 1 Initialize parameter φ, critic networks Qψ, target networks Qψ , lengthK 
-2 Initialize{βi}K
 i 1 αi   1 βi, αk   k
-i 1αi, σk   1  αk 1 1  αkβk 
 3 Initializeψ  ψ,φ  φ 
-4 5  #update experience with diffusion policy
-6 0 0( ) 
-7 0,1,   ,Tdo
+5  #update experience with diffusion policy
+6  datasetDenv    initial state s0 d0( ) 
 8  initial ˆaK N(0,I) 
-9  fork K,   ,1 10  zk N(0,I), ifk 1 0 11  ˆak 1 1 αk(
+10  zk N(0,I), ifk 1  else zk  0 
 ˆak βk 1  αkϵφ(ˆak,s,k))
- σkzk 
-12 13  at ˆa0 1 P(  st,at) Denv D env {st,at,st 1,r(st 1 st,at)} 
-14 15  #update value function
+13  at ˆa0 st 1 P(  st,at) Denv D env {st,at,st 1,r(st 1 st,at)} 
+15  #update value function
 16  foreach mini-batch data do
 17  sample mini-batch DfromDenvwith sizeN,D {sj,aj,sj 1,r(sj 1 sj,aj)}N
-j 1 18  take gradient descent as follows
-ψ ψ ηψ ψ1 1(
-r(sj 1 sj,aj)  γQψ (sj 1,aj 1) Qψ(sj,aj))2 19 20  #improve experience through action
-21 0,1,   ,Tdo
+18  take gradient descent as follows
+r(sj 1 sj,aj)  γQψ (sj 1,aj 1) Qψ(sj,aj))2
+20  #improve experience through action
+21  fort  0,1,   ,Tdo
 22  replace the action at D envas follows
-at at ηa aQψ(st,a)  
-a at 
-23 24  #update diffusion policy
-25 26  sample a pair ( s,a) D envuniformly k Uniform({1,   ,K}) z N(0,I) 
+24  #update diffusion policy
+26  sample a pair ( s,a) D envuniformly k Uniform({1,   ,K}) z N(0,I) 
 27  take gradient descent as follows
-φ φ ηφ φ  z ϵφ(  αka  1  αkz,s,k)  2 2 28 29  soft updateψ  ρψ   (1 ρ)ψ 
+φ φ ηφ φ  z ϵφ(  αka  1  αkz,s,k)  2
+29  soft updateψ  ρψ   (1 ρ)ψ 
 30  soft updateφ  ρφ   (1 ρ)φ 
 31 until the policy performs well in the real environment.
 30C.1 DIPO  Model-Free Learning with Diﬀusion Policy
@@ -1172,164 +984,89 @@ In this section, we provide the details of #update diffusion policy presented in
 updating the diﬀusion from samples. First, the next Theorem C.1 shows an equivalent version
 of the loss deﬁned in (10), then we present the learning details from samples.
 C.2.1 Conditional Sampling Version of Score Matching
-Theorem C.1. For give a partition on the interval [0,T],0 0 1 1 
-    tK T, letα0 2T,αk  e2( tk 1 tk),and αk 1 0αk . Settingω(t)according
+Theorem C.1. For give a partition on the interval [0,T],0  t0 t1     tk tk 1 
+    tK T, letα0  e 2T,αk  e2( tk 1 tk),and αk 1  k
+k  0αk . Settingω(t)according
 to the next (36), then the objective (10) follows the next expectation version,
 L(φ)  Ek U([K]),zk N(0,I), a0 π(  s)[
-zk ϵφ(  αk a0 1  αkzk,s,k)]
-, (31)
+zk ϵφ(  αk a0  1  αkzk,s,k)]
 where [K]   {1,2,   ,K},U( )denotes uniform distribution, the parametic funciton
 ϵφ( , , )  A S  [K] Rp
 shares the parameter φaccording to 
 ϵφ( , ,k)    1  αkˆsφ( , ,T tk).
 Proof. According to (3), and Proposition B.1, we know ϕt( at  a0)  N(
-e t a0,(
-1 2t)
-I)
-,
-then
- logϕt( at  a0)    at e t a0 1 2 1 2e t, (32)
-where zt N(0,I),
-Letσt  
-1 2t, according to (3), we know
- at  e t a0 ( 
-1 2t)
+ logϕt( at  a0)    at e t a0
+1 e 2t, according to (3), we know
 zt  e t a0 σtzt, (33)
-where zt N(0,I).
 Recall (10), we obtain
-L(φ)   T
 0ω(t)E a0 π(  s)E at  a0[
- ˆsφ( at,s,t)  logϕt( at  a0) 2 2]
-dt
-(32)  T
-0ω(t)
-σ2 0 π(  s)E at  a0[
- σtˆsφ( at,s,t)  zt 2 2]
-dt (34)
-t T t  T
-0ω(T t)
-σ2 0 π(  s)E aT t  a0[
- σT tˆsφ( aT t,s,T t)  zT t 2 2]
-dt. (35)
+ ˆsφ( at,s,t)  logϕt( at  a0) 2
+tE a0 π(  s)E at  a0[
+ σtˆsφ( at,s,t)  zt 2
+T tE a0 π(  s)E aT t  a0[
+ σT tˆsφ( aT t,s,T t)  zT t 2
 Furthermore, we deﬁne an indicator function It (t) as follows,
-It (t)   {1,ift  t 
-0,ift   t.
 31Let the weighting function be deﬁned as follows, for any t [0,T],
-ω(t)  1 1(
-1 2(T t))
-IT tk(t), (36)
 where we give a partition on the interval [0 ,T] as follows,
-0 0 1 1     tK T.
+0  t0 t1     tk tk 1     tK T.
 Then, we rewrite (34) as follows,
-L(φ)  1 1 0 π(  s)E aT tk  a0[
- σT tkˆsφ( aT tk,s,T tk)  zT tk 2 2]
-. (37)
+k 1E a0 π(  s)E aT tk  a0[
+ σT tkˆsφ( aT tk,s,T tk)  zT tk 2
 We consider the next term contained in (37)
 ˆsφ( aT tk,s,T tk)(33) ˆsφ(
 e (T tk) a0 σT tkzT tk,s,T tk)
- ˆsφ(
-e (T tk) a0 1 2(T tk)zT tk,s,T tk)
-,
+1 e 2(T tk)zT tk,s,T tk)
 where zT tk N(0,I), then obtain
-E aT tk  a0[
- ˆsφ( aT tk,s,T tk)  zT tk 2 2]
- EzT tk N(0,I)[
-σT tkˆsφ(
-e (T tk) a0 1 2(T tk)zT tk,s,T tk)]
-.
+ ˆsφ( aT tk,s,T tk)  zT tk 2
+1 e 2(T tk)zT tk,s,T tk)]
 Now, we rewrite (37) as the next expectation version,
 L(φ)  Ek U([K]),ztk N(0,I), a0 π(  s)[
-σT tkˆsφ(
-e (T tk) a0 1 2(T tk)zT tk,s,T tk)]
-(38)
-Fork  0,1,   ,K, andα0 2Tand
+1 e 2(T tk)zT tk,s,T tk)]
+Fork  0,1,   ,K, andα0  e 2Tand
 αk  e2( tk 1 tk). (39)
-Then we obtain
- αk k 1 0αk   e 2(T tk).
 With those notations, we rewrite (38) as follows,
-L(φ)  Ek U([K]),zk N(0,I), a0 π(  s)[ 1  αkˆsφ(  αk a0 1  αkzk,s,T tk)
- zk]
-.(40)
+L(φ)  Ek U([K]),zk N(0,I), a0 π(  s)[ 1  αkˆsφ(  αk a0  1  αkzk,s,T tk)
 Finally, we deﬁne a function ϵφ( , , )  S A  [K] Rp, and
-ϵφ(  αk a0 1  αkzk,s,k)
-    1  αkˆsφ(  αk a0 1  αkzk,s,T tk)
-, (41)
+ϵφ(  αk a0  1  αkzk,s,k)
+    1  αkˆsφ(  αk a0  1  αkzk,s,T tk)
 i,e. we estimate the score function via an estimator ϵφas follows,
-ˆsφ(  αk a0 1  αkzk,s,T tk)
-  ϵφ(  αk a0 1  αkzk,s,k)
- 1  αk. (42)
+ˆsφ(  αk a0  1  αkzk,s,T tk)
+  ϵφ(  αk a0  1  αkzk,s,k)
 Then we rewrite (40) as follows,
 L(φ)  Ek U([K]),zk N(0,I), a0 π(  s)[
-zk ϵφ(  αk a0 1  αkzk,s,k)]
-.
+zk ϵφ(  αk a0  1  αkzk,s,k)]
 This concludes the proof.  
-32 4  Diﬀusion Policy (A Backward Version [Ho et al., 2020])
+32Algorithm 4  Diﬀusion Policy (A Backward Version [Ho et al., 2020])
 1 input state s  parameterφ  reverse length K 
-2 initialize{βi}K
 i 1 αi   1 βi, αk   k
-i 1αi, σk   1  αk 1 1  αkβk 
 3 initial ˆaK N(0,I) 
-4 fork K,   ,1 5 zk N(0,I), ifk 1 0 6  ˆak 1 1 αk(
+5 zk N(0,I), ifk 1  else zk  0 
 ˆak βk 1  αkϵφ(ˆak,s,k))
- σkzk 
-7 8 return ˆa0
 C.2.2 Learning from Samples
 According to the expectation version of loss (31), we know, for each pair ( s,a) sampled from
 experience memory, let k Uniform ({1,   ,K}) and z N(0,I), the following empirical loss
 ℓd(φ)   z ϵφ(  αka  1  αkz,s,k)
- 2 2
 is a unbiased estimator of L(φ) deﬁned in (31).
 Finally, we learn the parameter φby minimizing the empirical loss ℓd(φ) according to
 gradient decent method 
-φ φ ηφ φ  z ϵφ(  αka  1  αkz,s,k)  2 2,
-whereϵφis the step-size. For the implementation, see lines 25-28 3.
+φ φ ηφ φ  z ϵφ(  αka  1  αkz,s,k)  2
+whereϵφis the step-size. For the implementation, see lines 25-28 in Algorithm 3.
 C.3 Playing Actions of DIPO
 In this section, we present all the details of #update experience with diffusion policy
 presented in Algorithm 3.
 Letβk  1 αk, then according to Taylar formualtion, we know
- αk  1 1 2βk o(βk). (43)
 Recall the exponential integrator discretization (25), we know
-ˆatk 1 ˆatk (
-etk 1 1)
 (ˆatk  2ˆsφ(ˆatk,s,T tk))   
-2 1
-tket  tkdwt ,
-which implies
-ˆatk 1 ˆatk (
-etk 1 1)
 (ˆatk  2ˆsφ(ˆatk,s,T tk))   
-e2(tk 1 tk) 1ztk
-(39) ˆatk (1 αk 1)
 (ˆatk  2ˆsφ(ˆatk,s,T tk))   
-1 αk
-αkztk
 (42) 1 αkˆatk 2(1 αk 1)1 1  αkϵφ(ˆatk,s,k)   
-1 αk
-αkztk
  1 αkˆatk βk αk 1 1  αkϵφ(ˆatk,s,k)   
-1 αk
-αkztk, (44)
 33where ztk N(0,I), Eq.(44) holds since we use the fact (43), which implies
-2(1 αk 1)
-  2(1  αk αk)
- βk αk o(βk αk)
-.
 To simplify the expression, we rewrite (44) as follows,
 ˆak 1 1 αkˆak βk αk 1 1  αkϵφ(ˆak,s,k)   
-1 αk
-αkzk (45)
- 1 αk(
 ˆak βk 1  αkϵφ(ˆak,s,k))
-  
-1 αk
-αkzk (46)
- 1 αk(
 ˆak 1 αk 1  αkϵφ(ˆak,s,k))
-  
-1 αk
-αkzk, (47)
 wherek  0,1,   ,K 1 runs forward in time, zk N(0,I). The agent plays the last action
-ˆaK.
 Since we consider the SDE of the reverse process (4) that runs forward in time, while most
 diﬀusion probability model literature (e.g., [Ho et al., 2020, Song et al., 2021]) consider the
 backward version for sampling. To coordinate the relationship between the two versions, we
@@ -1339,77 +1076,42 @@ also present the backward version in Algorithm 4, which is essentially identical
  and True Reverse Process
 In this section, we provide the time derivative of KL divergence between diﬀusion policy
 (Algorithm 1) and true reverse process (deﬁned in (4)).
-D.1 0
+D.1 Time Derivative of KL Divergence at Reverse Time k  0
 In this section, we consider the case k  0 of diﬀusion policy (see Algorithm 1 or the iteration
 (9)). Ifk  0, then for 0 t h, the SDE (8) is reduced as follows,
-dˆat (
-ˆat  2ˆS(ˆa0,s,T))
-dt  
-2dwt, t [0,h], (48)
 where wtis the standard Wiener process starting at w0 0.
 Let the action ˆat ˆπt(  s) follows the process (48). The next Proposition D.1 considers
 the distribution diﬀerence between the diﬀusion policy ˆπt(  s) and the true distribution of
 backward process (4)   πt(  s) on the time interval t [0,h].
-Proposition D.1. Under Assumption 4.1 4.2, let  πt(  s)be the distribution at time t
+Proposition D.1. Under Assumption 4.1 and 4.2, let  πt(  s)be the distribution at time t
 with the process (4), and let ˆπt(  s)be the distribution at time twith the process (48). Let
-τ0   sup{
-t tet  
-5ν
-96LsLp}
-,τ   min{
-τ0,1 12Ls}
-, (49)
-ϵscore   sup
-(k,t) [K] [tk,tk 1]{
-logEa  πt(  s)[
-exp   ˆS(a,s,T hk)  log  πt(a s)   2 2]}
-,(50)
+exp   ˆS(a,s,T hk)  log  πt(a s)   2
 and0 t h τ, then the following equation holds,
-d
-dtKL(
-ˆπt(  s)  πt(  s))
-  ν
-4KL (ˆπt(  s)  πt(  s))  5 4νϵscore  12 5νt. (51)
+4KL (ˆπt(  s)  πt(  s))  5
 Before we show the details of the proof, we need to deﬁne some notations, which is useful
-later. Let
 ˆπt(ˆa s)   p(ˆat ˆa s,t) (52)
 denote the distribution of the action ˆat ˆabe played at time talong the process (48), where
 t [0,h]. For each t 0, letρ0,t(ˆa0,ˆat s) denote the joint distribution of ( ˆa0,ˆat) conditional
 on the state s, which can be written in terms of the conditionals and marginals as follows,
 ρ0 t(ˆa0 ˆat,s)  ρ0,t(ˆa0,ˆat s)
 p(ˆat ˆa s,t) ρ0,t(ˆa0,ˆat s)
-ˆπt(ˆat s).
-D.2 0
+D.2 Auxiliary Results For Reverse Time k  0
 Lemma D.2. Letˆπt(ˆa s)be the distribution at time talong interpolation SDE (48), where
 ˆπt(ˆa s)is short for p(ˆat ˆa s,t), which is the distribution of the action ˆat ˆabe played at
 timetalongs the process (48) among the time t [0,h]. Then its derivation with respect to
-time satisﬁes
- 
  tˆπt(ˆa s)   ˆπt(ˆa s)div (
 ˆa  2Eˆa0 ρ0 t(  ˆa,s)[ˆS(ˆa0,s,T)  ˆat ˆa])
-   ˆπt(ˆa s). (53)
 35Before we show the details of the proof, we need to clear the divergence term div. In this
 section, all the notation is deﬁned according to (17), and its value is at the point ˆa.
 For example, in Eq.(53), the divergence term divis deﬁned as follows,
-div (
 ˆa  2Eˆa0 ρ0 t(  ˆa,s)[ˆS(ˆa0,s,T)  ˆat ˆa])
-  (div p)(ˆa),
 p(a)  a  2Eˆa0 ρ0 t(  a,s)[ˆS(ˆa0,s,T)  ˆat a]
-. (54)
 For example, in Eq.(58), the divergence term divis deﬁned as follows,
-div (
-p(ˆa ˆa0,s,t)(
-ˆa  2ˆS(ˆa0,s,T)))
-  (div p)(ˆa),
-p(a)  p(a ˆa0,s,t)(
-a  2ˆS(ˆa0,s,T))
-. (55)
 Similar deﬁnitions are parallel in Eq.(63), from Eq.(66) to Eq.(69).
 Proof. First, for a given state s, conditioning on the initial action ˆa0, we introduce a notation
 p(  ˆa0,s,t)  Rp [0,1], (56)
-and each
 p(ˆa ˆa0,s,t)   p(ˆat ˆa ˆa0,s,t)
-that denotes the conditional probability distribution starting from ˆa to the action ˆat ˆaat
+that denotes the conditional probability distribution starting from ˆa0to the action ˆat ˆaat
 timetunder the state s. Besides, we also know,
 ˆπt(  s)  Eˆa0 N(0,I)[p(  ˆa0,s,t)]   
 Rpρ0(ˆa0)p(  ˆa0,s,t)dˆa0, (57)
@@ -1418,677 +1120,179 @@ For eacht 0, letρ0,t(ˆa0,ˆat s) denote the joint distribution of ( ˆa0,ˆat)
 state s, which can be written in terms of the conditionals and marginals as follows,
 ρ0,t(ˆa0,ˆat s)  p(ˆa0 s)ρt 0(ˆat ˆa0,s)  p(ˆat s)ρ0 t(ˆa0 ˆat,s).
 Then we obtain the Fokker Planck equation for the distribution p(  ˆa0,s,t) as follows,
- 
  tp(ˆa ˆa0,s,t)   div (
-p(ˆa ˆa0,s,t)(
-ˆa  2ˆS(ˆa0,s,T)))
    p(ˆa ˆa0,s,t), (58)
 where the divterm is deﬁned according to (16) and (17) if p(a)  p(a ˆa0,s,t)(
-a  2ˆS(ˆa0,s,T))
-.
 Furthermore, according to (57), we know
- 
- tˆπt(ˆa s)   
- t 
 Rpρ0(ˆa0)p(ˆa ˆa0,s,t)dˆa0  
-Rpρ0(ˆa0) 
  tp(ˆa ˆa0,s,t)dˆa0 (59)
-  
-Rpρ0(ˆa0)(
- div (
-p(ˆa ˆa0,s,t)(
-ˆa  2ˆS(ˆa0,s,T)))
-   p(ˆa ˆa0,s,t))
-dˆa0(60)
   ˆπt(ˆa s)div ˆa 2div (
 ˆπt(ˆa s)Eˆa0 ρ0 t(  ˆa,s)[ˆS(ˆa0,s,T)  ˆat ˆa])
-   ˆπt(ˆa s)
-(61)
-  ˆπt(ˆa s)div (
 ˆa  2Eˆa0 ρ0 t(  ˆa,s)[ˆS(ˆa0,s,T)  ˆat ˆa])
-   ˆπt(ˆa s), (62)
 36where Eq.(61) holds since  with the deﬁnition of ˆ πt(ˆa s)   p(ˆa s,t), we obtain
- 
-Rpρ0(ˆa0)(
- div (
-p(ˆa ˆa0,s,t)ˆa))
 dˆa0  ˆπt(ˆa s)div ˆa  (63)
-recall
 ˆπt(ˆa s)   p(ˆat ˆa s,t), (64)
-we know
 ρ0(ˆa0)p(ˆa ˆa0,s,t)  p(ˆa,ˆa0 s,t), Bayes  theorem
 p(ˆa,ˆa0 s,t)  p(ˆa s,t)p(ˆa0 ˆat ˆa,s,t)   ˆπt(ˆa s)p(ˆa0 ˆat ˆa,s,t), (65)
-then we obtain
-  
-Rpρ0(ˆa0)div (
 p(ˆa ˆa0,s,t)ˆS(ˆa0,s,T))
-dˆa0 (66)
-   
-Rpdiv (
 p(ˆa,ˆa0 s,t)ˆS(ˆa0,s,T))
-dˆa0 (67)
-   
-Rpdiv (
 ˆπt(ˆa s)p(ˆa0 ˆat ˆa,s,t)ˆS(ˆa0,s,T))
-dˆa0 see Eq.(65)
-  div (
-ˆπt(ˆa s) 
 Rpp(ˆa0 ˆat ˆa,s,t)ˆS(ˆa0,s,T)dˆa0)
-(68)
-  div (
 ˆπt(ˆa s)Eˆa0 ρ0 t(  ˆa,s)[ˆS(ˆa0,s,T)  ˆat ˆa])
-, (69)
 where the last equation holds since
- 
 Rpp(ˆa0 ˆat ˆa,s,t)ˆS(ˆa0,s,T)dˆa0 Eˆa0 ρ0 t(  ˆa,s)[
-ˆS(ˆa0,s,T) ˆat ˆa]
-. (70)
 Finally, consider (60) with (63) and (69), we conclude the Lemma D.2.  
 We consider the time derivative of KL-divergence between the distribution ˆπt(  s) and
  πt(  s), and decompose it as follows.
 Lemma D.3. The time derivative of KL-divergence between the distribution ˆπt(  s)and πt(  s)
 can be decomposed as follows,
-d
-dtKL(
-ˆπt(  s)  πt(  s))
-  
-Rp ˆπt(a s)
- tlogˆπt(a s)
- πt(a s)da  
-Rpˆπt(a s)
- πt(a s)  πt(a s)
- tda. (71)
 Proof. We consider the time derivative of KL-divergence between the distribution ˆπt(  s) and
  πt(  s), and we know
-d
-dtKL(
-ˆπt(  s)  πt(  s))
- d
-dt 
 Rpˆπt(a s) logˆπt(a s)
- πt(a s)da
-  
-Rp ˆπt(a s)
- tlogˆπt(a s)
- πt(a s)da  
-Rp πt(a s) 
- t(ˆπt(a s)
- πt(a s))
-da
-  
-Rp ˆπt(a s)
- tlogˆπt(a s)
- πt(a s)da  
-Rp(HHHHH ˆπt(a s)
- t ˆπt(a s)
- πt(a s)  πt(a s)
- t)
-da
-  
-Rp ˆπt(a s)
- tlogˆπt(a s)
- πt(a s)da  
-Rpˆπt(a s)
- πt(a s)  πt(a s)
- tda, (72)
 37where the last equation holds since 
-Rp ˆπt(a s)
- tda d
-dt 
-Rpˆπt(a s)da
-    
- 1 0.
 That concludes the proof.  
 The relative entropy and relative Fisher information FI(
-ˆπt(  s)  πt(  s))
-can be rewritten
-as follows.
 Lemma D.4. The relative entropy and relative Fisher information FI(
-ˆπt(  s)  πt(  s))
-can be
 rewritten as the following identity,
-FI(
-ˆπt(  s)  πt(  s))
-  
-Rp( 
  ˆπt(a s), logˆπt(a s)
- πt(a s) 
-  
- ˆπt(a s)
- πt(a s),  πt(a s) )
-da.
 Proof. We consider the following identity, 
-Rp( 
- ˆπt(a s)
- πt(a s),  πt(a s) 
-  
  ˆπt(a s), logˆπt(a s)
- πt(a s) )
-da
-  
 Rp(  πt(a s) ˆπt(a s) ˆπt(a s)  πt(a s)
  πt(a s), log  πt(a s) 
- ˆπt(a s) 
  log ˆπt(a s), logˆπt(a s)
- πt(a s) )
-da
-  
-Rpˆπt(a s) 
- logˆπt(a s)
  πt(a s), log  πt(a s) 
-da  
-Rpˆπt(a s) 
  log ˆπt(a s), logˆπt(a s)
- πt(a s) 
-da
-   
-Rpˆπt(a s) 
- logˆπt(a s)
  πt(a s), logˆπt(a s)
- πt(a s) 
-da
-   
 Rpˆπt(a s)     logˆπt(a s)
- πt(a s)    2 2da   FI(
-ˆπt(  s)  πt(  s))
-,
 which concludes the proof.  
 Lemma D.4 implies the following identity, which is useful later, 
-Rp(
-  
- ˆπt(a s)
- πt(a s),  πt(a s) 
-  
  ˆπt(a s), logˆπt(a s)
- πt(a s) )
-da
-  
-Rp( 
- ˆπt(a s)
- πt(a s),  πt(a s) 
-  
  ˆπt(a s), logˆπt(a s)
- πt(a s) 
- 2 
- ˆπt(a s)
- πt(a s),  πt(a s) )
-da
-  FI(
-ˆπt(  s)  πt(  s))
- 2 
-Rpˆπt(a s) 
- logˆπt(a s)
  πt(a s), log  πt(a s) 
-da. (73)
 Lemma D.5. The time derivative of KL-divergence between the distribution ˆπt(  s)and πt(  s)
 can be further decomposed as follows,
-d
-dtKL(
-ˆπt(  s)  πt(  s))
-  FI(
-ˆπt(  s)  πt(  s))
-(74)
-  2 
-Rp 
-Rpρ0,t(ˆa0,a s) 
- logˆπt(a s)
  πt(a s),ˆS(ˆa0,s,T)  log  πt(a s) 
-dadˆa0.(75)
 38Proof. According to Lemma D.3, we need to consider the two terms in (72) correspondingly.
 First term in (72) .Recall Lemma D.2, we know
- 
  tˆπt(a s)   ˆπt(a s)div (
 a  2Eˆa0 ρ0 t(  a,s)[ˆS(ˆa0,s,T)  ˆat a])
-   ˆπt(a s)
-(18) div (
- (
 a  2Eˆa0 ρ0 t(  a,s)[ˆS(ˆa0,s,T)  ˆat a])
-ˆπt(a s)   ˆπt(a s))
-.
 To short the expression, we deﬁne a notation gt( , )  S A  Rpas follows,
 gt(s,a)   a  2Eˆa0 ρ0 t(  a,s)[ˆS(ˆa0,s,T)  ˆat a]
-,
 then we rewrite the distribution at time talong interpolation SDE (48) as follows,
- 
- tˆπt(a s)  div (
  gt(s,a)ˆπt(a s)   ˆπt(a s))
-.
 We consider the ﬁrst term in (72), according to integration by parts formula (20), we know
- 
-Rp ˆπt(a s)
- tlogˆπt(a s)
- πt(a s)da  
-Rpdiv (
  gt(s,a)ˆπt(a s)   ˆπt(a s))
-logˆπt(a s)
- πt(a s)da
-(20)  
-Rp 
 gt(s,a)ˆπt(a s)  ˆπt(a s), logˆπt(a s)
- πt(a s) 
-da
-  
-Rpˆπt(a s) 
-gt(s,a), logˆπt(a s)
- πt(a s) 
-da
-  
-Rp 
  ˆπt(a s), logˆπt(a s)
- πt(a s) 
-da. (76)
 Second term in (72) .According to the Kolmogorov backward equation, we know
-  πt(a s)
  t  div ( πt(a s)a)   πt(a s)   div (
- πt(a s)a   πt(a s))
-, (77)
-then we obtain
- 
-Rpˆπt(a s)
- πt(a s)  πt(a s)
- tda   
-Rpˆπt(a s)
- πt(a s)div (
- πt(a s)a   πt(a s))
-da
-(20)  
-Rp 
- ˆπt(a s)
  πt(a s), πt(a s)a   πt(a s) 
-da
-  
-Rp πt(a s) 
- ˆπt(a s)
- πt(a s),a 
-da  
-Rp 
- ˆπt(a s)
- πt(a s),  πt(a s) 
-da.
-(78)
 Time derivative of KL-divergence .We consider the next identity,
- 
-Rp(
-ˆπt(a s) 
-gt(s,a), logˆπt(a s)
- πt(a s) 
-  πt(a s) 
- ˆπt(a s)
- πt(a s),a )
-da
-39  
-Rp(
-ˆπt(a s) 
-gt(s,a), logˆπt(a s)
- πt(a s) 
- ˆπt(a s) πt(a s)
-ˆπt(a s) 
- ˆπt(a s)
- πt(a s),a )
-da
- 2 
-Rpˆπt(a s) 
 Eˆa0 ρ0 t(  a,s)[ˆS(ˆa0,s,T)  ˆat a]
-, logˆπt(a s)
- πt(a s) 
-da,
 then according to (72), and with the results (76), (78), we obtain
-d
-dtKL(
-ˆπt(  s)  πt(  s))
-  FI(
-ˆπt(  s)  πt(  s))
-(79)
-  2 
-Rpˆπt(a s) 
- logˆπt(a s)
  πt(a s),Eˆa0 ρ0 t(  a,s)[ˆS(ˆa0,s,T)  ˆat a]
-  log  πt(a s) 
-da.
 Furthermore, we consider
- 
-Rpˆπt(a s) 
- logˆπt(a s)
  πt(a s),Eˆa0 ρ0 t(  a,s)[ˆS(ˆa0,s,T)  ˆat a]
-  log  πt(a s) 
-da
-  
-Rp 
-Rpρ0,t(ˆa0,a s) 
- logˆπt(a s)
  πt(a s),ˆS(ˆa0,s,T)  log  πt(a s) 
-dadˆa0, (80)
 where Eq.(80) holds due to ρ0,t(ˆa0,ˆat s) denotes the joint distribution of ( ˆa0,ˆat) conditional
 on the state s, which can be written in terms of the conditionals and marginals as follows,
 ρ0 t(ˆa0 ˆat,s)  ρ0,t(ˆa0,ˆat s)
 pt(ˆat s) ρ0,t(ˆa0,ˆat s)
-ˆπt(ˆat s)  (81)
 and in Eq.(80), we denote ˆat a.
 Finally, combining (79) and (80), we obtain the following equation,
-d
-dtKL(
-ˆπt(  s)  πt(  s))
-  FI(
-ˆπt(  s)  πt(  s))
-(82)
-  2 
-Rp 
-Rpρ0,t(ˆa0,a s) 
- logˆπt(a s)
  πt(a s),ˆS(ˆa0,s,T)  log  πt(a s) 
-dadˆa0,(83)
 which concludes the proof.  
 Lemma D.6. The time derivative of KL-divergence between the distribution ˆπt(  s)and πt(  s)
 is bounded as follows,
-d
-dtKL(
-ˆπt(  s)  πt(  s))
-  3 4FI(
-ˆπt(  s)  πt(  s))
-  4 
-Rp 
-Rpρ0,t(ˆa0,a s)   ˆS(ˆa0,s,T)  log  πt(a s)   2 2dadˆa0.(84)
+Rpρ0,t(ˆa0,a s)   ˆS(ˆa0,s,T)  log  πt(a s)   2
 Proof. First, we consider
- 
-Rp 
-Rpρ0,t(ˆa0,a s) 
- logˆπt(a s)
  πt(a s),ˆS(ˆa0,s,T)  log  πt(a s) 
-dadˆa0 40  
-Rp 
-Rpρ0,t(ˆa0,a s)(
-2   ˆS(ˆa0,s,T)  log  πt(a s)   2 2 1 8     logˆπt(a s)
- πt(a s)    2 2)
-dadˆa0(85)
- 2 
-Rp 
-Rpρ0,t(ˆa0,a s)   ˆS(ˆa0,s,T)  log  πt(a s)   2 2dadˆa0 1 8FI(
-ˆπt(  s)  πt(  s))
-, (86)
-where Eq.(85) holds since we consider  a,b  2 2 1 8 2.
+2   ˆS(ˆa0,s,T)  log  πt(a s)   2
+Rpρ0,t(ˆa0,a s)   ˆS(ˆa0,s,T)  log  πt(a s)   2
+where Eq.(85) holds since we consider  a,b  2 a 2 1
 Then, according to Lemma D.5, we obtain
-d
-dtKL(
-ˆπt(  s)  πt(  s))
-  FI(
-ˆπt(  s)  πt(  s))
-  2 
-Rp 
-Rpρ0,t(ˆa0,a s) 
- logˆπt(a s)
  πt(a s),ˆS(ˆa0,s,T)  log  πt(a s) 
-dadˆa0 3 4FI(
-ˆπt(  s)  πt(  s))
-  4 
-Rp 
-Rpρ0,t(ˆa0,a s)   ˆS(ˆa0,s,T)  log  πt(a s)   2 2dadˆa0,(87)
+Rpρ0,t(ˆa0,a s)   ˆS(ˆa0,s,T)  log  πt(a s)   2
 which concludes the proof.  
 Before we provide further analysis to show the boundedness of (87)., we need to consider
 SDE (8). Let h 0 be the step-size, assume K T
 h N, andtk  hk,k  0,1,   ,K. SDE
 (8) considers as follows, for t [hk,h (k  1)],
-dˆat (
 ˆat  2ˆS(ˆatk,s,T tk))
-dt  
-2dwt, (88)
 Recall the SDE (88), in this section, we only consider k  0, and we obtain the following
-SDE,
-dˆat (
-ˆat  2ˆS(ˆa0,s,T))
-dt  
-2dwt, (89)
 where wtis the standard Wiener process starting at w0 0, andtis from 0 to h.
 Integration with (89), we obtain
-ˆat ˆa0  (et 1)(
-ˆa0 2ˆS(ˆa0,s,T))
-  
-2 0etdwt, (90)
-which implies
-ˆat  etˆa0 2(et 1)ˆS(ˆa0,s,T)   
-et 1z,z N(0,I). (91)
-Lemma D.7. Under Assumption 4.1, for all 0 1 12Ls, then the following holds,
- 
-Rp 
-Rpρ0,t(ˆa0,a s)   ˆS(ˆa0,s,T)  log  πt(a s)   2 2dadˆa0 36pt(1  t)L2 144 2
-s 
-Rpˆπt(a s)(   ˆS(a,s,T)  log  πt(a s)   2 2     log  πt(a s)   2 2)
-da,
+ˆat  etˆa0  2(et 1)ˆS(ˆa0,s,T)   
+Lemma D.7. Under Assumption 4.1, for all 0 t 1
+12Ls, then the following holds,
+Rpρ0,t(ˆa0,a s)   ˆS(ˆa0,s,T)  log  πt(a s)   2
+Rpˆπt(a s)(   ˆS(a,s,T)  log  πt(a s)   2
+2     log  πt(a s)   2
 where ˆatupdated according to (91).
 Proof. See Section F.2.  
-41D.3 0
+41D.3 Proof for Result at Reverse Time k  0
 Proof. According to the deﬁnition of diﬀusion policy, we know  πt(  s)   πT t(  s). Then
 according to Proposition B.4, we know   πt(  s) isνT t-LSI, where
-νT t ν
-ν  (1 ν)e 2(T t).
 Since we consider the time-step 0  t T, then
-νT t ν
 ν  (1 ν)e 2(T t) 1, t [0,T]. (92)
 According to Proposition B.5, we know under Assumption 4.1,  log  πt(  s) isLpet-Lipschitz
 on the time interval [0 ,T0], where
-T0 0{
-t  1 2t et
-Lp}
-.
 Then according to Proposition B.6, we obtain
- 
-Rpˆπt(a s)    log  πt(a s)   2 2 4 2
-pe t
+Rpˆπt(a s)    log  πt(a s)   2
 νT tKL (ˆπt(  s)  πt(  s))   2pLpet. (93)
 Furthermore, according to Donsker-Varadhan representation (see Section B.5), let
-f(a)   βt   ˆS(a,s,T)  log  πt(a s)   2 2,
+f(a)   βt   ˆS(a,s,T)  log  πt(a s)   2
 the positive constant βtwill be special later, see Eq.(98). With the result (29), we know
-KL(
-ˆπt(  s)  πt(  s))
-  
 Rpˆπt(a s)f(a)da log 
 Rp πt(a s) exp(f(a))da,
-which implies
- 
-Rpˆπt(a s)   ˆS(a,s,T)  log  πt(a s)   2 2 1
-βtKL(
-ˆπt(  s)  πt(  s))
- 1
-βtlog 
-Rp πt(a s) exp(   ˆS(a,s,T)  log  πt(a s)   2 2)
-da
- 1
-βtKL(
-ˆπt(  s)  πt(  s))
- 1
-βtlogEa  πt(  s)[
-exp   ˆS(a,s,T)  log  πt(a s)   2 2]
-. (94)
+Rpˆπt(a s)   ˆS(a,s,T)  log  πt(a s)   2
+Rp πt(a s) exp(   ˆS(a,s,T)  log  πt(a s)   2
+exp   ˆS(a,s,T)  log  πt(a s)   2
 Finally, according to Lemma D.6-D.7, Eq.(93)-(94), we obtain
-d
-dtKL(
-ˆπt(  s)  πt(  s))
-(87)
-   3 4FI(
-ˆπt(  s)  πt(  s))
-  4 
-Rp 
-Rpρ0,t(ˆa0,a s)   ˆS(ˆa0,s,T)  log  πt(a s)   2 2dadˆa0
-LemmaD.7 3 4FI(
-ˆπt(  s)  πt(  s))
-  576 2
-s 
-Rpˆπt(a s)    log  πt(a s)   2 2 42 576 2
-s 
-Rpˆπt(a s)   ˆS(a,s,T)  log  πt(a s)   2 2 3 4FI(
-ˆπt(  s)  πt(  s))
-  576 2
-s(
-4 2
-pe t
+Rpρ0,t(ˆa0,a s)   ˆS(ˆa0,s,T)  log  πt(a s)   2
+Rpˆπt(a s)    log  πt(a s)   2
+Rpˆπt(a s)   ˆS(a,s,T)  log  πt(a s)   2
 νT tKL (ˆπt(  s)  πt(  s))   2pLpet)
- due to Eq.(93)
- 576 2
-s
-βt(
-KL(
-ˆπt(  s)  πt(  s))
-  logEa  πt(  s)[
-exp   ˆS(a,s,T)  log  πt(a s)   2 2])
- due to Eq.(94)
-  3 4FI(
-ˆπt(  s)  πt(  s))
-  576 2
-s(
-4 2
-pe t
-νT t 1
-βt)
+exp   ˆS(a,s,T)  log  πt(a s)   2
 KL (ˆπt(  s)  πt(  s))
- 576 2
-s
-βtlogEa  πt(  s)[
-exp   ˆS(a,s,T)  log  πt(a s)   2 2]
-  1152 2
-sLpet
- (
-576 2
-s(
-4 2
-pe t
-νT t 1
-βt)
- 3 2ν)
-KL (ˆπt(  s)  πt(  s))  576 2
-s
-βtϵscore  1152 2 4.2
- (
-576 2
-s(
-4 1
-βt)
- 3 2ν)
-KL (ˆπt(  s)  πt(  s))  576 2
-s
-βtϵscore  1152 2 2
-pe t
-νT t  ct
-(98)  ν
-4KL (ˆπt(  s)  πt(  s))  576 2
-s
-βtϵscore  1152 2
-sLpet(95)
-(99)
-   ν
-4KL (ˆπt(  s)  πt(  s))  5 4νϵscore  1152 2
-sLpet(96)
-where
-ϵscore  sup
+exp   ˆS(a,s,T)  log  πt(a s)   2
+KL (ˆπt(  s)  πt(  s))  576t2L2
+ due to Assumption 4.2
+KL (ˆπt(  s)  πt(  s))  576t2L2
+4KL (ˆπt(  s)  πt(  s))  576t2L2
+4KL (ˆπt(  s)  πt(  s))  5
 (k,t) [K] [kh,(k 1)h]{
-logEa  πt(  s)[
-exp   ˆS(a,s,T hk)  log  πt(a s)   2 2]}
-  (97)
-Eq.(95) holds since we set βtas follows, we set 576 2
-s(
-4 1
-βt)
- 5ν
-4,i.e,
-1
-βt 5ν
-2304 4ct  (98)
+exp   ˆS(a,s,T hk)  log  πt(a s)   2
+Eq.(95) holds since we set βtas follows, we set 576 t2L2
 where Eq.(96) holds since
-576 2
-s
-βt  576 2
-s(5ν
-2304 4ct)
- 5ν
-4. (99)
 Now, we consider the time-step tkeeps the constant βtpositive, it is suﬃcient to consider
 the next condition due to the property (92),
-5ν
-2304 4 2
-pe t, (100)
-which implies tet  
-5ν
-96LsLp.
 43Formally, we deﬁne a notation
-τ0   sup{
-t tet  
-5ν
-96LsLp}
-, (101)
-τ   min{
-τ0,T0,1 12Ls}
-. (102)
 Then with result of Eq.(100), if 0  t h τ, we rewrite Eq.(96) as follows,
-d
-dtKL(
-ˆπt(  s)  πt(  s))
-  ν
-4KL (ˆπt(  s)  πt(  s))  5 4νϵscore  12 5νt
-  ν
-4KL (ˆπt(  s)  πt(  s))   12 5νt
- 5 4ν sup
-(k,t) [K] [tk,tk 1]{
-logEa  πt(  s)[
-exp   ˆS(a,s,T hk)  log  πt(a s)   2 2]}
-,(103)
+4KL (ˆπt(  s)  πt(  s))  5
+4KL (ˆπt(  s)  πt(  s))   12pLs 
+exp   ˆS(a,s,T hk)  log  πt(a s)   2
 which concludes the proof.  
-Remark D.8. The result of Proposition B.5 4.1, thus the result
+Remark D.8. The result of Proposition B.5 only depends on Assumption 4.1, thus the result
 (93) does not depend on additional assumption of the uniform L-smooth of log  πton the time
 interval [0,T], e.g., Wibisono and Yang [2022]. Instead of the uniform L-smooth of log  πt, we
 consider the Lpet-Lipschitz on the time interval [0,T0], which is one of the diﬀerence between
 our proof and [Wibisono and Yang, 2022]. Although we obtain a similar convergence rate from
 the view of Langevin-based algorithms, we need a weak condition.
 D.4 Proof for Result at Arbitrary Reverse Time k
-Proposition D.9. Under Assumption 4.1 4.2. Let  πk(  s)be the distribution at the time
+Proposition D.9. Under Assumption 4.1 and 4.2. Let  πk(  s)be the distribution at the time
 t hkalong the process (4) that starts from  π0(  s)   πT(  s), then  πk(  s)   πT hk(  s).
 Letˆπk(  s)be the distribution of the iteration (9) at the k-the timetk hk, starting from
 ˆπ0(  s)  N(0,I). Let 0 h τ, then for all k  0,1,   ,K 1,
-KL(
 ˆπk 1(  s)  πk 1(  s))
- e 1 4νhKL(
-ˆπk(  s)  πk(  s))
- 5 4νϵscoreh  12 5νh2,
 whereτis deﬁned in (102).
 Proof. Recall Proposition D.1, we know for any 0  t h τ, the following holds
-d
-dtKL(
-ˆπt(  s)  πt(  s))
-  ν
-4KL (ˆπt(  s)  πt(  s))  5 4νϵscore  12 5νh, (104)
+4KL (ˆπt(  s)  πt(  s))  5
 where comparing to (51), we use the condition t h.
 We rewrite (104) as follows,
-d
-dt(
-e1 4νtKL(
-ˆπt(  s)  πt(  s)))
- e1 4νt(5 4νϵscore  12 5νh)
-.
 Then, on the interval [0 ,h], we obtain
- h
-0d
-dt(
-e1 4νtKL(
-ˆπt(  s)  πt(  s)))
-dt  h
-0 1 4νt(5 4νϵscore  12 5νh)
-dt,
-44 1 4νhKL(
-ˆπh(  s)  πh(  s))
- KL(
-ˆπ0(  s)  π0(  s))
- 4
-ν(
-e1 4νh 1)(5 4νϵscore  12 5νh)
-.
 Furthermore, we obtain
-KL(
-ˆπh(  s)  πh(  s))
- e 1 4νhKL(
-ˆπ0(  s)  π0(  s))
- 4
-ν(
-1 1 4νh)(5 4νϵscore  12 5νh)
- e 1 4νhKL(
-ˆπ0(  s)  π0(  s))
- 5 4νϵscoreh  12 5νh2, (105)
 where last equation holds since we use 1  e x x, ifx 0.
 Recall  πk(  s) is the distribution at the time t hkalong the process (4) that starts from
  π0(  s)    πT(  s), then  πk(  s)    πT hk(  s).
@@ -2096,335 +1300,147 @@ Recall ˆπk(  s) is the distribution of the iteration (9) at the k-the timetk h
 from ˆπ0(  s)  N(0,I).
 According to (105), we rename the  π0(  s) with  πk(  s), πh(  s) with  πk 1(  s),ˆπ0(  s) with
 ˆπk(  s) and ˆπh(  s) with ˆπk 1(  s), then we obtain
-KL(
 ˆπk 1(  s)  πk 1(  s))
- e 1 4νhKL(
-ˆπk(  s)  πk(  s))
- 5 4νϵscoreh  12 5νh2,
 which concludes the result.  
-E Proof of Theorem 4.3 4.3 (Finite-time Analysis of Diﬀusion Policy). For a given state s, let{ πt(  s)}t 0 T
+E Proof of Theorem 4.3
+Theorem 4.3 (Finite-time Analysis of Diﬀusion Policy). For a given state s, let{ πt(  s)}t 0 T
 and{ πt(  s)}t 0 Tbe the distributions along the Ornstein-Uhlenbeck ﬂow (2) and (4) correspondingly,
  where { πt(  s)}t 0 Tstarts at  π0(  s)  π(  s)and{ πt(  s)}t 0 Tstarts at  π0(  s)  
  πT(  s). Let ˆπk(  s)be the distribution of the exponential integrator discretization iteration (9)
 at thek-the timetk hk, i.e., ˆatk ˆπk(  s)denotes the distribution of the diﬀusion policy
 (see Algorithms 1) at the time tk hk. Let{ˆπk(  s)}k 0 Kbe starting at ˆπ0(  s)  N(0,I),
-under Assumption 4.1 4.2, let the reverse length Ksatisfy
-K T max{1
-τ0,1 0,12Ls,ν}
-,
-where
-τ0 0{
-t tet  
-5ν
-96LsLp}
-,T0 0{
-t  1 2t et
-Lp}
-.
+under Assumption 4.1 and 4.2, let the reverse length Ksatisfy
 Then the KL-divergence between the diﬀusion policy ˆaK ˆπK(  s)and input policy π(  s)is
 upper-bounded as follows,
-KL(
-ˆπK(  s) π(  s))
- e 9 4νhKKL(
-N(0,I) π(  s))
-    
-convergence of forward process  64 5
-ν T
-K    
+convergence of forward process  64pLs 
 errors from discretization
- 20 3sup
-(k,t) [K] [tk,tk 1]{
-logEa  πt(  s)[
-exp   ˆS(a,s,T hk)  log  πt(a s)   2 2]}
-      
+exp   ˆS(a,s,T hk)  log  πt(a s)   2
 errors from score matching.
 45Proof. Recall  πk(  s)    πT hk(  s), then we know
  πK(  s)    πT hK(  s)    π0(  s)  π(  s), (106)
 then according to Proposition D.9, we know
-KL(
 ˆπK(  s) π(  s))(106)  KL(
-ˆπK(  s)  πK(  s))
- e 1 4νKKL(
-ˆπ0(  s)  π0(  s))
- K 1 0 1 4νhj(5 4νϵscoreh  12 5νh2)
- e 1 4νKKL(
-ˆπ0(  s)  π0(  s))
- 1 1 1 4νh(5 4νϵscoreh  12 5νh2)
- e 1 4νKKL(
-ˆπ0(  s)  π0(  s))
- 16 3νh(5 4νϵscoreh  12 5νh2)
-(107)
- e 1 4νKKL(
-ˆπ0(  s)  π0(  s))
- 20 3ϵscore  64 5
-νpLsh, (108)
 where Eq.(107) holds since we consider the
-1 3 4x,if 0 1 4, (109)
 and we set the step-size hsatisﬁes the next condition 
-hν 1,i.e.,h 1
-ν.
 Letξ( ) be standard Gaussian distribution on Rp, i.e.,ξ( ) N (0,I), then we obtain the
 following result  for a given state s,
-d
 dtKL (ξ( )  πt(  s))  d
-dt 
-Rpξ(a) logξ(a)
- πt(a s)da
-   
-Rpξ(a)
- πt(a s)  πt(a s)
- tda
-   
-Rpξ(a)
- πt(a s)(
-div (
- πt(a s) log πt(a s)
-ξ(a)))
-da
  Fokker Planck Equation
-  
-Rp 
- ξ(a)
  πt(a s), πt(a s) log πt(a s)
-ξ(a) 
 da Integration by Parts
-  
-Rp ξ(a)
- πt(a s) logξ(a)
  πt(a s), πt(a s) log πt(a s)
-ξ(a) 
-da
-  
-Rpξ(a) 
- logξ(a)
  πt(a s), log πt(a s)
-ξ(a) 
-da
-   
-Rpξ(a)     logξ(a)
- πt(a s)    2 2  Ea ξ( )[     logξ(a)
- πt(a s)    2 2]
+2  Ea ξ( )[     logξ(a)
 46  FI (ξ( )  πt(  s))
-  2νtKL (ξ( )  πt(  s)) Assumption 4.2 and Proposition B.4 2ν
+  2νtKL (ξ( )  πt(  s)) Assumption 4.2 and Proposition B.4
 ν  (1 ν)e 2tKL (ξ( )  πt(  s))
   2νKL (ξ( )  πt(  s)), (110)
-where the last equation holds since e t 1 0.
-Eq.(110) implies
-d
+where the last equation holds since e t 1 witht 0.
 dtlog KL (ξ( )  πt(  s))  2ν,
 integrating both sides of above equation on the interval [0 ,T], we obtain
 KL (ξ( )  πT(  s)) e 2νTKL (ξ( )  π0(  s)). (111)
 According to deﬁnition of diﬀusion policy, since  ˆa0 N(0,I), and  π0(  s)(5)   πT(  s), then we
-know
-KL(
-ˆπ0(  s)  π0(  s))
-  KL(
-ξ( )  πT(  s))
-, (112)
-which implies
-KL(
 ˆπ0(  s)  π0(  s))(112)  KL(
-ξ( )  πT(  s))(111)
  e 2νTKL (ξ( )  π0(  s)). (113)
 Combining (108) and (113), we obtain
-KL(
-ˆπK(  s) π(  s))
- e 1 4νhK TKL (ξ( )  π0(  s))  20 3ϵscore  64 5
-νpLsh
-(106)  e 9 4νhKKL(
-N(0,I) π(  s))
- 20 3ϵscore  64 5
-νpLsh. (114)
+4νhK TKL (ξ( )  π0(  s))  20
 Recall the following conditions (101), (102), and (109) on the step-size h,
-h min{
-τ0,T0,1 12Ls,1
-ν}
-,
 which implies the reverse length Ksatisfy the following condition
-K T
-h T max{1
-τ0,1 0,12Ls,ν}
-.
 Finally, recall the deﬁnition of ϵ(97), we rewrite (114) as follows
-KL(
-ˆπK(  s) π(  s))
- e 9 4νhKKL(
-N(0,I) π(  s))
-  64 5
-ν T
-K
- 20 3sup
-(k,t) [K] [tk,tk 1]{
-logEa  πt(  s)[
-exp   ˆS(a,s,T hk)  log  πt(a s)   2 2]}
-,
+exp   ˆS(a,s,T hk)  log  πt(a s)   2
 which concludes the proof.  
 47F Additional Details
 F.1 Proof of Lemma F.1
-Lemma F.1. Under Assumption 4.1, for all 0 t  T, ift 1 12Ls, then for any given state
-s
-   ˆS(
-ˆat,s,t )
- ˆS(
-ˆa0,s,t )    3Lst ˆa0 6Lst   ˆS(
-ˆat,s,t )     3Ls 
-t z ,
-and
-   ˆS(
-ˆat,s,t )
- ˆS(
-ˆa0,s,t )   2 2 36 2 2 ˆa0 2 2 72 2 2   ˆS(
-ˆat,s,t )   2 2 36 2 2 2,(115)
+Lemma F.1. Under Assumption 4.1, for all 0 t  T, ift 1
+12Ls, then for any given state
+ˆa0,s,t )    3Lst ˆa0   6Lst   ˆS(
 where ˆatupdated according to (91).
 Proof. (of Lemma F.1). First, we consider
-   ˆS(
-ˆat,s,t )
- ˆS(
 ˆa0,s,t )    Ls ˆat ˆa0 
-    (et 1)ˆa0 2(et 1)ˆS(ˆa0,s,t )   
-et 1 2Lst ˆa0 2 2 4Lst   ˆS(ˆa0,s,t )     2Ls 
-t z , (116)
+    (et 1)ˆa0  2(et 1)ˆS(ˆa0,s,t )   
+2  4Lst   ˆS(ˆa0,s,t )     2Ls 
 where the last equation holds due to et 1 2t.
-Furthermore, we consider the case with t 1 12Ls, then we obtain the boundedness of the
-term
-   ˆS(
-ˆa0,s,t )       ˆS(
+Furthermore, we consider the case with t 1
+12Ls, then we obtain the boundedness of the
 ˆat,s,t )    Ls ˆat ˆa0 
-    ˆS(
-ˆat,s,t )     2Lst ˆa0 4Lst   ˆS(ˆa0,s,t )     2Ls 
-t z 
-    ˆS(
-ˆat,s,t )     2Lst ˆa0 1 3   ˆS(ˆa0,s,t )     2Ls 
-t z ,
-which implies
-   ˆS(
-ˆa0,s,t )    3 2   ˆS(
-ˆat,s,t )     3Lst ˆa0 2 2 3Ls 
-t z . (117)
-Taking Eq.(117) into Eq.(116), and with t 1 12Ls, we obtain
-   ˆS(
-ˆat,s,t )
- ˆS(
-ˆa0,s,t )    3Lst ˆa0 6Lst   ˆS(
-ˆat,s,t )     3Ls 
-t z .
-Finally, we know
-   ˆS(
-ˆat,s,t )
- ˆS(
-ˆa0,s,t )   2 2 36 2 2 ˆa0 2 2 72 2 2   ˆS(
-ˆat,s,t )   2 2 36 2 2 2,(118)
+ˆat,s,t )     2Lst ˆa0   4Lst   ˆS(ˆa0,s,t )     2Ls 
+ˆat,s,t )     2Lst ˆa0  1
+3   ˆS(ˆa0,s,t )     2Ls 
+ˆat,s,t )     3Lst ˆa0 2
+Taking Eq.(117) into Eq.(116), and with t 1
+ˆa0,s,t )    3Lst ˆa0   6Lst   ˆS(
 which concludes the proof of Lemma F.1.  
 48F.2 Proof of Lemma D.7
 Proof. (Lemma D.7) Recall the update rule of ˆat(91),
-ˆat  etˆa0 2(et 1)ˆS(ˆa0,s,T)   
-et 1z,z N(0,I).
+ˆat  etˆa0  2(et 1)ˆS(ˆa0,s,T)   
 To simplify the expression, in this section, we introduce the following notation
 z ρz( ),whereρz( )  N(0,I). (119)
 According to the deﬁnition of ρ0,t(ˆa0,ˆat s) (81), we denote ˆat a, then we know,
- 
-Rp 
-Rpρ0,t(ˆa0,a s)   ˆS(ˆa0,s,T)  log  πt(a s)   2 2dadˆa0 2 
-Rp 
-Rpρ0,t(ˆa0,a s)(   ˆS(ˆa0,s,T) ˆS(ˆat,s,T)   2 2    ˆS(ˆat,s,T)  log  πt(a s)   2 2)
-dadˆa0 2 
-Rp 
-Rpρ0,t(ˆa0,a s)(   ˆS(ˆa0,s,T) ˆS(a,s,T)   2 2    ˆS(a,s,T)  log  πt(a s)   2 2)
-dadˆa0
+Rpρ0,t(ˆa0,a s)   ˆS(ˆa0,s,T)  log  πt(a s)   2
+Rpρ0,t(ˆa0,a s)(   ˆS(ˆa0,s,T) ˆS(ˆat,s,T)   2
+2    ˆS(ˆat,s,T)  log  πt(a s)   2
+Rpρ0,t(ˆa0,a s)(   ˆS(ˆa0,s,T) ˆS(a,s,T)   2
+2    ˆS(a,s,T)  log  πt(a s)   2
 Recall Lemma F.1, we know
- 
-Rp 
-Rpρ0,t(ˆa0,a s)   ˆS(ˆa0,s,T) ˆS(a,s,T)   2 2dadˆa0
-(115)
-  
-Rp 
-Rp 
+Rpρ0,t(ˆa0,a s)   ˆS(ˆa0,s,T) ˆS(a,s,T)   2
 Rpρ0,t(ˆa0,a s)ρz(z)(
-36 2 2 ˆa0 2 2 72 2 2   ˆS(a,s,T)   2 2 36 2 2 2)
-dadˆa dz
-  
-Rp 
-Rp 
 Rpρ0,t(ˆa0,a s)ρz(z)(
-36 2 2 ˆa0 2 2 72 2 2   ˆS(a,s,T)   2 2)
-dadˆa dz
-  36 2
-st 
-Rp 
-Rp 
-Rpρ0,t(ˆa0,a s)ρz(z) z 2 2dadˆa dz
- 36 2 2 
-Rpˆπ0(ˆa0 s) ˆa0 2 2dˆa0 72 2 2 
-Rpˆπt(a s)   ˆS(a,s,T)   2 2 36 2
-spt (120)
- 36 2 2 72 2 2 
-Rpˆπt(a s)   ˆS(a,s,T)   2 2 36 2
-spt (121)
- 36pt(1  t)L2 144 2
-s 
-Rpˆπt(a s)(   ˆS(a,s,T)  log  πt(a s)   2 2     log  πt(a s)   2 2)
-da,
-(122)
+Rpρ0,t(ˆa0,a s)ρz(z) z 2
+Rpˆπt(a s)   ˆS(a,s,T)   2
+Rpˆπt(a s)   ˆS(a,s,T)   2
+Rpˆπt(a s)(   ˆS(a,s,T)  log  πt(a s)   2
+2     log  πt(a s)   2
 where the ﬁrst term in Eq.(120) holds since 
- 
-Rp 
 Rpρ0,t(ˆa0,a s)ρz(z)dadz  ˆπ0(ˆa0 s) 
 the second term in Eq.(120) holds since 
- 
-Rp 
-Rp 
-Rpρ0,t(ˆa0,a s)ρz(z)dˆa dz  ˆπt(a s) 
-49the third term in Eq.(120) holds since  z N(0,I), then z 2 2 χ2(p)-distribution with p
+Rpρ0,t(ˆa0,a s)ρz(z)dˆa0dz  ˆπt(a s) 
+49the third term in Eq.(120) holds since  z N(0,I), then z 2
+2 χ2(p)-distribution with p
 degrees of freedom, then
- 
-Rp 
-Rp 
-Rpρ0,t(ˆa0,a s)ρz(z) z 2 2dadˆa dz p  (123)
-Eq.(121) holds with the same analysis of (123), since ˆa0 N(0,I), then ˆa0 2 2 χ2(p), which
-implies 
-Rpˆπ0(ˆa0 s) ˆa0 2 2dˆa0 p 
-Eq.(122) holds since we use the fact    α β  2 2 2 α 2 2 2 β 2 2.  
+Rpρ0,t(ˆa0,a s)ρz(z) z 2
+Eq.(121) holds with the same analysis of (123), since ˆa0 N(0,I), then ˆa0 2
+Eq.(122) holds since we use the fact    α β  2
 G Details and Discussions for multimodal Experiments
-In this section, we present all the implementation details and the plots of both 2 3D
+In this section, we present all the implementation details and the plots of both 2D and 3D
 Visualization. Then we provide additional discussions for empirical results of the task of the
 multimodal environment in Section 3.2.
 G.1 Multimodal Environment
 In this section, we clarify the task and reward of the multimodal environment.
-G.1.1 Task
 We design a simple  multi-goal  environment according to the Didactic Example [Haarnoja
-et al., 2017], in which the agent is a 2 7 7 plane, and the agent tries to
+et al., 2017], in which the agent is a 2D point mass on the 7  7 plane, and the agent tries to
 reach one of four points (0 ,5), (0, 5), (5,0) and ( 5,0) symmetrically placed goals.
-G.1.2 Reward
 The reward is deﬁned according to the following three parts 
-R r1 2 3,
-where
- r1 2 2 2  min{ (x,y) target 2 2},target denotes one of the target points (0 ,5), (0, 5),
-(5,0), and ( 5,0) 
+2if agent plays the action a 
+ r2  min{ (x,y) target 2
+2},target denotes one of the target points (0 ,5), (0, 5),
  if the agent reaches one of the targets among {(0,5),(0, 5),(5,0),( 5,0)}, then it
-receives a reward r3 10.
+receives a reward r3  10.
 Since the goal positions are symmetrically distributed at the four points (0 ,5), (0, 5), (5,0)
 and ( 5,0), a reasonable policy should be able to take actions uniformly to those four goal
 positions with the same probability, which characters the capacity of exploration of a policy
 to understand the environment. Furthermore, we know that the shape of the reward curve
 should be symmetrical with four equal peaks.
-506 4 2 0 2 4 6 6 4 2 0246 0.10.10.10.1 0.20.20.20.2 0.2 0.3 0.30.3 0.3 0.3 0.50.50.50.5 0.5 0.60.6 0.60.6 0.70.70.70.7 0.80.8 0.80.8 0.90.90.90.9 1.01.0 1.01.0 1.21.2 1.21.2 1.31.31.31.3 1.41.41.41.4 1.51.5 1.51.5 1.61.61.61.6 1.71.7 1.71.7 1.91.91.91.9 2.02.0 2.02.0 2.12.12.12.1 6 4 2 0 2 4 6 6 4 2 0246 0.10.10.10.1 0.20.20.20.2 0.2 0.3 0.30.3 0.3 0.3 0.50.50.50.5 0.5 0.60.6 0.60.6 0.70.70.70.7 0.80.8 0.80.8 0.90.90.90.9 1.01.0 1.01.0 1.21.2 1.21.2 1.31.31.31.3 1.41.41.41.4 1.51.5 1.51.5 1.61.61.61.6 1.71.7 1.71.7 1.91.91.91.9 2.02.0 2.02.0 2.12.12.12.1 6 4 2 0 2 4 6 6 4 2 0246 0.10.10.10.1 0.20.20.20.2 0.2 0.3 0.30.3 0.3 0.3 0.50.50.50.5 0.5 0.60.6 0.60.6 0.70.70.70.7 0.80.8 0.80.8 0.90.90.90.9 1.01.0 1.01.0 1.21.2 1.21.2 1.31.31.31.3 1.41.41.41.4 1.51.5 1.51.5 1.61.61.61.6 1.71.7 1.71.7 1.91.91.91.9 2.02.0 2.02.0 2.12.12.12.1 6 4 2 0 2 4 6 6 4 2 0246 0.10.10.10.1 0.20.20.20.2 0.2 0.3 0.30.3 0.3 0.3 0.50.50.50.5 0.5 0.60.6 0.60.6 0.70.70.70.7 0.80.8 0.80.8 0.90.90.90.9 1.01.0 1.01.0 1.21.2 1.21.2 1.31.31.31.3 1.41.41.41.4 1.51.5 1.51.5 1.61.61.61.6 1.71.7 1.71.7 1.91.91.91.9 2.02.0 2.02.0 2.12.12.12.1 6 4 2 0 2 4 6 6 4 2 0246 0.10.10.10.1 0.20.20.20.2 0.2 0.3 0.30.3 0.3 0.3 0.50.50.50.5 0.5 0.60.6 0.60.6 0.70.70.70.7 0.80.8 0.80.8 0.90.90.90.9 1.01.0 1.01.0 1.21.2 1.21.2 1.31.31.31.3 1.41.41.41.4 1.51.5 1.51.5 1.61.61.61.6 1.71.7 1.71.7 1.91.91.91.9 2.02.0 2.02.0 2.12.12.12.1 6 4 2 0246 6 4 2 0246 0.08 0.06 0.04 0.02 0.000.020.04(a) 1 3 6 4 2 0246 6 4 2 0246 60 50 40 30 20 10 0 (b) 2 3 6 4 2 0246 6 4 2 0246 120 100 80 60 40 20
- (c) 3 3 6 4 2 0246 6 4 2 0246 250 200 150 100 50 0 (d) 4 3 6 4 2 0246 6 4 2 0246 300 200 100 0 (e) 5 3 6 4 2 0 2 4 6 6 4 2 0246 0.10.10.10.1 0.20.20.20.2 0.2 0.3 0.30.3 0.3 0.3 0.50.50.50.5 0.5 0.60.6 0.60.6 0.70.70.70.7 0.80.8 0.80.8 0.90.90.90.9 1.01.0 1.01.0 1.21.2 1.21.2 1.31.31.31.3 1.41.41.41.4 1.51.5 1.51.5 1.61.61.61.6 1.71.7 1.71.7 1.91.91.91.9 2.02.0 2.02.0 2.12.12.12.1 6 4 2 0 2 4 6 6 4 2 0246 0.10.10.10.1 0.20.20.20.2 0.2 0.3 0.30.3 0.3 0.3 0.50.50.50.5 0.5 0.60.6 0.60.6 0.70.70.70.7 0.80.8 0.80.8 0.90.90.90.9 1.01.0 1.01.0 1.21.2 1.21.2 1.31.31.31.3 1.41.41.41.4 1.51.5 1.51.5 1.61.61.61.6 1.71.7 1.71.7 1.91.91.91.9 2.02.0 2.02.0 2.12.12.12.1 6 4 2 0 2 4 6 6 4 2 0246 0.10.10.10.1 0.20.20.20.2 0.2 0.3 0.30.3 0.3 0.3 0.50.50.50.5 0.5 0.60.6 0.60.6 0.70.70.70.7 0.80.8 0.80.8 0.90.90.90.9 1.01.0 1.01.0 1.21.2 1.21.2 1.31.31.31.3 1.41.41.41.4 1.51.5 1.51.5 1.61.61.61.6 1.71.7 1.71.7 1.91.91.91.9 2.02.0 2.02.0 2.12.12.12.1 6 4 2 0 2 4 6 6 4 2 0246 0.10.10.10.1 0.20.20.20.2 0.2 0.3 0.30.3 0.3 0.3 0.50.50.50.5 0.5 0.60.6 0.60.6 0.70.70.70.7 0.80.8 0.80.8 0.90.90.90.9 1.01.0 1.01.0 1.21.2 1.21.2 1.31.31.31.3 1.41.41.41.4 1.51.5 1.51.5 1.61.61.61.6 1.71.7 1.71.7 1.91.91.91.9 2.02.0 2.02.0 2.12.12.12.1 6 4 2 0 2 4 6 6 4 2 0246 0.10.10.10.1 0.20.20.20.2 0.2 0.3 0.30.3 0.3 0.3 0.50.50.50.5 0.5 0.60.6 0.60.6 0.70.70.70.7 0.80.8 0.80.8 0.90.90.90.9 1.01.0 1.01.0 1.21.2 1.21.2 1.31.31.31.3 1.41.41.41.4 1.51.5 1.51.5 1.61.61.61.6 1.71.7 1.71.7 1.91.91.91.9 2.02.0 2.02.0 2.12.12.12.1 6 4 2 0246 6 4 2 0246 400 300 200 100 0
-(f) 6 3 6 4 2 0246 6 4 2 0246 400 300 200 100 0 (g) 7 3 6 4 2 0246 6 4 2 0246 400 300 200 100 0 (h) 8 3 6 4 2 0246 6 4 2 0246 400 300 200 100 0 (i) 9 3 6 4 2 0246 6 4 2 0246 400 300 200 100 0 (j) 10 3 11  Policy representation comparison of diﬀusion policy with diﬀerent iterations.
-G.2 2 3D visualization for the multi-goal task. At
+0.000.020.04(a) 1E3 iterations
+0246Value Function 300
+0 (j) 10E3 iterations
+Figure 11  Policy representation comparison of diﬀusion policy with diﬀerent iterations.
+G.2 Plots Details of Visualization
+This section presents all the details of the 2D and 3D visualization for the multi-goal task. At
 the end of this section, we present the shape of the reward curve.
-G.2.1 2 2D visualization, the red arrowheads denote actions learned by the corresponding RL
-algorithms, where each action starts at one of the totals of 7 7 49 points (corresponding to
+G.2.1 2D Visualization
+For the 2D visualization, the red arrowheads denote actions learned by the corresponding RL
+algorithms, where each action starts at one of the totals of 7  7   49 points (corresponding to
 all the states) with horizontal and vertical coordinates ranges among { 3, 2, 1,0,1,2,3} 
 { 3, 2, 1,0,1,2,3}. The length of the red arrowheads denotes the length of the action
 vector, and the direction of the red arrowheads denotes the direction of actions. This is to say 
 for each ﬁgure, we plot all the actions starting from the same coordinate points.
-516 4 2 0 2 4 6 6 4 2 0246 0.10.10.10.1 0.20.20.20.2 0.2 0.3 0.30.3 0.3 0.3 0.50.50.50.5 0.5 0.60.6 0.60.6 0.70.70.70.7 0.80.8 0.80.8 0.90.90.90.9 1.01.0 1.01.0 1.21.2 1.21.2 1.31.31.31.3 1.41.41.41.4 1.51.5 1.51.5 1.61.61.61.6 1.71.7 1.71.7 1.91.91.91.9 2.02.0 2.02.0 2.12.12.12.1 6 4 2 0 2 4 6 6 4 2 0246 0.10.10.10.1 0.20.20.20.2 0.2 0.3 0.30.3 0.3 0.3 0.50.50.50.5 0.5 0.60.6 0.60.6 0.70.70.70.7 0.80.8 0.80.8 0.90.90.90.9 1.01.0 1.01.0 1.21.2 1.21.2 1.31.31.31.3 1.41.41.41.4 1.51.5 1.51.5 1.61.61.61.6 1.71.7 1.71.7 1.91.91.91.9 2.02.0 2.02.0 2.12.12.12.1 6 4 2 0 2 4 6 6 4 2 0246 0.10.10.10.1 0.20.20.20.2 0.2 0.3 0.30.3 0.3 0.3 0.50.50.50.5 0.5 0.60.6 0.60.6 0.70.70.70.7 0.80.8 0.80.8 0.90.90.90.9 1.01.0 1.01.0 1.21.2 1.21.2 1.31.31.31.3 1.41.41.41.4 1.51.5 1.51.5 1.61.61.61.6 1.71.7 1.71.7 1.91.91.91.9 2.02.0 2.02.0 2.12.12.12.1 6 4 2 0 2 4 6 6 4 2 0246 0.10.10.10.1 0.20.20.20.2 0.2 0.3 0.30.3 0.3 0.3 0.50.50.50.5 0.5 0.60.6 0.60.6 0.70.70.70.7 0.80.8 0.80.8 0.90.90.90.9 1.01.0 1.01.0 1.21.2 1.21.2 1.31.31.31.3 1.41.41.41.4 1.51.5 1.51.5 1.61.61.61.6 1.71.7 1.71.7 1.91.91.91.9 2.02.0 2.02.0 2.12.12.12.1 6 4 2 0 2 4 6 6 4 2 0246 0.10.10.10.1 0.20.20.20.2 0.2 0.3 0.30.3 0.3 0.3 0.50.50.50.5 0.5 0.60.6 0.60.6 0.70.70.70.7 0.80.8 0.80.8 0.90.90.90.9 1.01.0 1.01.0 1.21.2 1.21.2 1.31.31.31.3 1.41.41.41.4 1.51.5 1.51.5 1.61.61.61.6 1.71.7 1.71.7 1.91.91.91.9 2.02.0 2.02.0 2.12.12.12.1 6 4 2 0246 6 4 2 0246 0.8 0.6 0.4 0.2 0.0(a) 1 3 6 4 2 0246 6 4 2 0246 140 120 100 80 60
- (b) 2 3 6 4 2 0246 6 4 2 0246 275 250 225 200 175 150 125 100
- (c) 3 3 6 4 2 0246 6 4 2 0246 350 300 250 200 150 100
- (d) 4 3 6 4 2 0246 6 4 2 0246 400 300 200 100 0 (e) 5 3 6 4 2 0 2 4 6 6 4 2 0246 0.10.10.10.1 0.20.20.20.2 0.2 0.3 0.30.3 0.3 0.3 0.50.50.50.5 0.5 0.60.6 0.60.6 0.70.70.70.7 0.80.8 0.80.8 0.90.90.90.9 1.01.0 1.01.0 1.21.2 1.21.2 1.31.31.31.3 1.41.41.41.4 1.51.5 1.51.5 1.61.61.61.6 1.71.7 1.71.7 1.91.91.91.9 2.02.0 2.02.0 2.12.12.12.1 6 4 2 0 2 4 6 6 4 2 0246 0.10.10.10.1 0.20.20.20.2 0.2 0.3 0.30.3 0.3 0.3 0.50.50.50.5 0.5 0.60.6 0.60.6 0.70.70.70.7 0.80.8 0.80.8 0.90.90.90.9 1.01.0 1.01.0 1.21.2 1.21.2 1.31.31.31.3 1.41.41.41.4 1.51.5 1.51.5 1.61.61.61.6 1.71.7 1.71.7 1.91.91.91.9 2.02.0 2.02.0 2.12.12.12.1 6 4 2 0 2 4 6 6 4 2 0246 0.10.10.10.1 0.20.20.20.2 0.2 0.3 0.30.3 0.3 0.3 0.50.50.50.5 0.5 0.60.6 0.60.6 0.70.70.70.7 0.80.8 0.80.8 0.90.90.90.9 1.01.0 1.01.0 1.21.2 1.21.2 1.31.31.31.3 1.41.41.41.4 1.51.5 1.51.5 1.61.61.61.6 1.71.7 1.71.7 1.91.91.91.9 2.02.0 2.02.0 2.12.12.12.1 6 4 2 0 2 4 6 6 4 2 0246 0.10.10.10.1 0.20.20.20.2 0.2 0.3 0.30.3 0.3 0.3 0.50.50.50.5 0.5 0.60.6 0.60.6 0.70.70.70.7 0.80.8 0.80.8 0.90.90.90.9 1.01.0 1.01.0 1.21.2 1.21.2 1.31.31.31.3 1.41.41.41.4 1.51.5 1.51.5 1.61.61.61.6 1.71.7 1.71.7 1.91.91.91.9 2.02.0 2.02.0 2.12.12.12.1 6 4 2 0 2 4 6 6 4 2 0246 0.10.10.10.1 0.20.20.20.2 0.2 0.3 0.30.3 0.3 0.3 0.50.50.50.5 0.5 0.60.6 0.60.6 0.70.70.70.7 0.80.8 0.80.8 0.90.90.90.9 1.01.0 1.01.0 1.21.2 1.21.2 1.31.31.31.3 1.41.41.41.4 1.51.5 1.51.5 1.61.61.61.6 1.71.7 1.71.7 1.91.91.91.9 2.02.0 2.02.0 2.12.12.12.1 6 4 2 0246 6 4 2 0246 500 400 300 200 100 0
-(f) 6 3 6 4 2 0246 6 4 2 0246 400 300 200 100 0 (g) 7 3 6 4 2 0246 6 4 2 0246 400 300 200 100 0 (h) 8 3 6 4 2 0246 6 4 2 0246 400 300 200 100 0 (i) 9 3 6 4 2 0246 6 4 2 0246 400 300 200 100 0 (j) 10 3 12  Policy representation comparison of SAC with diﬀerent iterations.
-G.2.2 3 3D visualization, we provide a decomposition of the the region [  7,7] [ 7,7] into
-100 100 10000 points, each point ( x,y) [ 7,7] [ 7,7] denotes a state. For each state
+0.0(a) 1E3 iterations
+0246Value Function400
+0 (j) 10E3 iterations
+Figure 12  Policy representation comparison of SAC with diﬀerent iterations.
+G.2.2 3D Visualization
+For the 3D visualization, we provide a decomposition of the the region [  7,7] [ 7,7] into
+100 100   10000 points, each point ( x,y) [ 7,7] [ 7,7] denotes a state. For each state
 (x,y), a corresponding action is learned by its corresponding RL algorithms, denoted as a.
 Then according to the critic neural network, we obtain the state-action value function Qvalue
 of the corresponding point (( x,y),a). The 3D visualization shows the state-action Q(for PPO,
@@ -2435,30 +1451,23 @@ presents the distribution of actions toward those four equal peaks. A good algor
 take actions with a uniform distribution toward those four points (0 ,5), (0, 5), (5,0), and
 ( 5,0) on the 2D visualization. The 3D visualization presents the learned shape according to
 the algorithm during the learning process. A good algorithm should ﬁt the symmetrical reward
-526 4 2 0 2 4 6 6 4 2 0246 0.10.10.10.1 0.20.20.20.2 0.2 0.3 0.30.3 0.3 0.3 0.50.50.50.5 0.5 0.60.6 0.60.6 0.70.70.70.7 0.80.8 0.80.8 0.90.90.90.9 1.01.0 1.01.0 1.21.2 1.21.2 1.31.31.31.3 1.41.41.41.4 1.51.5 1.51.5 1.61.61.61.6 1.71.7 1.71.7 1.91.91.91.9 2.02.0 2.02.0 2.12.12.12.1 6 4 2 0 2 4 6 6 4 2 0246 0.10.10.10.1 0.20.20.20.2 0.2 0.3 0.30.3 0.3 0.3 0.50.50.50.5 0.5 0.60.6 0.60.6 0.70.70.70.7 0.80.8 0.80.8 0.90.90.90.9 1.01.0 1.01.0 1.21.2 1.21.2 1.31.31.31.3 1.41.41.41.4 1.51.5 1.51.5 1.61.61.61.6 1.71.7 1.71.7 1.91.91.91.9 2.02.0 2.02.0 2.12.12.12.1 6 4 2 0 2 4 6 6 4 2 0246 0.10.10.10.1 0.20.20.20.2 0.2 0.3 0.30.3 0.3 0.3 0.50.50.50.5 0.5 0.60.6 0.60.6 0.70.70.70.7 0.80.8 0.80.8 0.90.90.90.9 1.01.0 1.01.0 1.21.2 1.21.2 1.31.31.31.3 1.41.41.41.4 1.51.5 1.51.5 1.61.61.61.6 1.71.7 1.71.7 1.91.91.91.9 2.02.0 2.02.0 2.12.12.12.1 6 4 2 0 2 4 6 6 4 2 0246 0.10.10.10.1 0.20.20.20.2 0.2 0.3 0.30.3 0.3 0.3 0.50.50.50.5 0.5 0.60.6 0.60.6 0.70.70.70.7 0.80.8 0.80.8 0.90.90.90.9 1.01.0 1.01.0 1.21.2 1.21.2 1.31.31.31.3 1.41.41.41.4 1.51.5 1.51.5 1.61.61.61.6 1.71.7 1.71.7 1.91.91.91.9 2.02.0 2.02.0 2.12.12.12.1 6 4 2 0 2 4 6 6 4 2 0246 0.10.10.10.1 0.20.20.20.2 0.2 0.3 0.30.3 0.3 0.3 0.50.50.50.5 0.5 0.60.6 0.60.6 0.70.70.70.7 0.80.8 0.80.8 0.90.90.90.9 1.01.0 1.01.0 1.21.2 1.21.2 1.31.31.31.3 1.41.41.41.4 1.51.5 1.51.5 1.61.61.61.6 1.71.7 1.71.7 1.91.91.91.9 2.02.0 2.02.0 2.12.12.12.1 6 4 2 0246 6 4 2 0246 1.0 0.8 0.6 0.4 0.2
-(a) 1 3 6 4 2 0246 6 4 2 0246 150 100 50 0 (b) 2 3 6 4 2 0246 6 4 2 0246 250 200 150 100 50 0 (c) 3 3 6 4 2 0246 6 4 2 0246 300 200 100 0 (d) 4 3 6 4 2 0246 6 4 2 0246 300 200 100 0 (e) 5 3 6 4 2 0 2 4 6 6 4 2 0246 0.10.10.10.1 0.20.20.20.2 0.2 0.3 0.30.3 0.3 0.3 0.50.50.50.5 0.5 0.60.6 0.60.6 0.70.70.70.7 0.80.8 0.80.8 0.90.90.90.9 1.01.0 1.01.0 1.21.2 1.21.2 1.31.31.31.3 1.41.41.41.4 1.51.5 1.51.5 1.61.61.61.6 1.71.7 1.71.7 1.91.91.91.9 2.02.0 2.02.0 2.12.12.12.1 6 4 2 0 2 4 6 6 4 2 0246 0.10.10.10.1 0.20.20.20.2 0.2 0.3 0.30.3 0.3 0.3 0.50.50.50.5 0.5 0.60.6 0.60.6 0.70.70.70.7 0.80.8 0.80.8 0.90.90.90.9 1.01.0 1.01.0 1.21.2 1.21.2 1.31.31.31.3 1.41.41.41.4 1.51.5 1.51.5 1.61.61.61.6 1.71.7 1.71.7 1.91.91.91.9 2.02.0 2.02.0 2.12.12.12.1 6 4 2 0 2 4 6 6 4 2 0246 0.10.10.10.1 0.20.20.20.2 0.2 0.3 0.30.3 0.3 0.3 0.50.50.50.5 0.5 0.60.6 0.60.6 0.70.70.70.7 0.80.8 0.80.8 0.90.90.90.9 1.01.0 1.01.0 1.21.2 1.21.2 1.31.31.31.3 1.41.41.41.4 1.51.5 1.51.5 1.61.61.61.6 1.71.7 1.71.7 1.91.91.91.9 2.02.0 2.02.0 2.12.12.12.1 6 4 2 0 2 4 6 6 4 2 0246 0.10.10.10.1 0.20.20.20.2 0.2 0.3 0.30.3 0.3 0.3 0.50.50.50.5 0.5 0.60.6 0.60.6 0.70.70.70.7 0.80.8 0.80.8 0.90.90.90.9 1.01.0 1.01.0 1.21.2 1.21.2 1.31.31.31.3 1.41.41.41.4 1.51.5 1.51.5 1.61.61.61.6 1.71.7 1.71.7 1.91.91.91.9 2.02.0 2.02.0 2.12.12.12.1 6 4 2 0 2 4 6 6 4 2 0246 0.10.10.10.1 0.20.20.20.2 0.2 0.3 0.30.3 0.3 0.3 0.50.50.50.5 0.5 0.60.6 0.60.6 0.70.70.70.7 0.80.8 0.80.8 0.90.90.90.9 1.01.0 1.01.0 1.21.2 1.21.2 1.31.31.31.3 1.41.41.41.4 1.51.5 1.51.5 1.61.61.61.6 1.71.7 1.71.7 1.91.91.91.9 2.02.0 2.02.0 2.12.12.12.1 6 4 2 0246 6 4 2 0246 400 300 200 100 0
-(f) 6 3 6 4 2 0246 6 4 2 0246 400 300 200 100 0 (g) 7 3 6 4 2 0246 6 4 2 0246 300 200 100 0 (h) 8 3 6 4 2 0246 6 4 2 0246 300 200 100 0 (i) 9 3 6 4 2 0246 6 4 2 0246 300 200 100 0 (j) 10 3 13 3 with diﬀerent iterations.
+0246Value Function150
+0246Value Function300
+0 (j) 10E3 iterations
+Figure 13  Policy representation comparison of TD3 with diﬀerent iterations.
 shape with four equal peaks. A multimodal policy distribution is eﬃcient for exploration,
-which may lead an agent to learn a good policy and perform better. Thus, both 2 3D visualizations character the algorithm s capacity to represent the multimodal policy
-distribution.
-G.3 11 (for diﬀusion policy), 12 (for SAC), 13 (for TD3)
-and 14 (for PPO), where we train the policy with a total 10000 iterations, and show the 2 3 1000 iteration.
+which may lead an agent to learn a good policy and perform better. Thus, both 2D and
+3D visualizations character the algorithm s capacity to represent the multimodal policy
+We have shown all the results in Figure 11 (for diﬀusion policy), 12 (for SAC), 13 (for TD3)
+and 14 (for PPO), where we train the policy with a total 10000 iterations, and show the 2D
+and 3D visualization every 1000 iteration.
 Figure 11 shows that the diﬀusion policy accurately captures a multimodal distribution
 landscape of reward, while from Figure 12, 13, and 14, we know that both SAC, TD3, and
-PPO are not well suited to capture such multimodality. Comparing Figure 11 12 13, we know that although SAC and TD3 share a similar best reward performance, where
-both diﬀusion policy and SAC and TD3 20, diﬀusion policy
+PPO are not well suited to capture such multimodality. Comparing Figure 11 to Figure 12
+and 13, we know that although SAC and TD3 share a similar best reward performance, where
+both diﬀusion policy and SAC and TD3 keep the highest reward around  20, diﬀusion policy
 matches the real environment and performance shape.
-536 4 2 0 2 4 6 6 4 2 0246 0.10.10.10.1 0.20.20.20.2 0.2 0.3 0.30.3 0.3 0.3 0.50.50.50.5 0.5 0.60.6 0.60.6 0.70.70.70.7 0.80.8 0.80.8 0.90.90.90.9 1.01.0 1.01.0 1.21.2 1.21.2 1.31.31.31.3 1.41.41.41.4 1.51.5 1.51.5 1.61.61.61.6 1.71.7 1.71.7 1.91.91.91.9 2.02.0 2.02.0 2.12.12.12.1 6 4 2 0 2 4 6 6 4 2 0246 0.10.10.10.1 0.20.20.20.2 0.2 0.3 0.30.3 0.3 0.3 0.50.50.50.5 0.5 0.60.6 0.60.6 0.70.70.70.7 0.80.8 0.80.8 0.90.90.90.9 1.01.0 1.01.0 1.21.2 1.21.2 1.31.31.31.3 1.41.41.41.4 1.51.5 1.51.5 1.61.61.61.6 1.71.7 1.71.7 1.91.91.91.9 2.02.0 2.02.0 2.12.12.12.1 6 4 2 0 2 4 6 6 4 2 0246 0.10.10.10.1 0.20.20.20.2 0.2 0.3 0.30.3 0.3 0.3 0.50.50.50.5 0.5 0.60.6 0.60.6 0.70.70.70.7 0.80.8 0.80.8 0.90.90.90.9 1.01.0 1.01.0 1.21.2 1.21.2 1.31.31.31.3 1.41.41.41.4 1.51.5 1.51.5 1.61.61.61.6 1.71.7 1.71.7 1.91.91.91.9 2.02.0 2.02.0 2.12.12.12.1 6 4 2 0 2 4 6 6 4 2 0246 0.10.10.10.1 0.20.20.20.2 0.2 0.3 0.30.3 0.3 0.3 0.50.50.50.5 0.5 0.60.6 0.60.6 0.70.70.70.7 0.80.8 0.80.8 0.90.90.90.9 1.01.0 1.01.0 1.21.2 1.21.2 1.31.31.31.3 1.41.41.41.4 1.51.5 1.51.5 1.61.61.61.6 1.71.7 1.71.7 1.91.91.91.9 2.02.0 2.02.0 2.12.12.12.1 6 4 2 0 2 4 6 6 4 2 0246 0.10.10.10.1 0.20.20.20.2 0.2 0.3 0.30.3 0.3 0.3 0.50.50.50.5 0.5 0.60.6 0.60.6 0.70.70.70.7 0.80.8 0.80.8 0.90.90.90.9 1.01.0 1.01.0 1.21.2 1.21.2 1.31.31.31.3 1.41.41.41.4 1.51.5 1.51.5 1.61.61.61.6 1.71.7 1.71.7 1.91.91.91.9 2.02.0 2.02.0 2.12.12.12.1 6 4 2 0246 6 4 2 0246 0.0245 0.0240 0.0235 0.0230 0.0225
-(a) 1 3 6 4 2 0246 6 4 2 0246 0.90 0.88 0.86 0.84 0.82
- (b) 2 3 6 4 2 0246 6 4 2 0246 1.42 1.40 1.38 1.36 1.34 1.32 1.30
- (c) 3 3 6 4 2 0246 6 4 2 0246 0.62 0.61 0.60 0.59 0.58 0.57
- (d) 4 3 6 4 2 0246 6 4 2 0246 1.30 1.28 1.26 1.24 1.22 1.20
- (e) 5 3 6 4 2 0 2 4 6 6 4 2 0246 0.10.10.10.1 0.20.20.20.2 0.2 0.3 0.30.3 0.3 0.3 0.50.50.50.5 0.5 0.60.6 0.60.6 0.70.70.70.7 0.80.8 0.80.8 0.90.90.90.9 1.01.0 1.01.0 1.21.2 1.21.2 1.31.31.31.3 1.41.41.41.4 1.51.5 1.51.5 1.61.61.61.6 1.71.7 1.71.7 1.91.91.91.9 2.02.0 2.02.0 2.12.12.12.1 6 4 2 0 2 4 6 6 4 2 0246 0.10.10.10.1 0.20.20.20.2 0.2 0.3 0.30.3 0.3 0.3 0.50.50.50.5 0.5 0.60.6 0.60.6 0.70.70.70.7 0.80.8 0.80.8 0.90.90.90.9 1.01.0 1.01.0 1.21.2 1.21.2 1.31.31.31.3 1.41.41.41.4 1.51.5 1.51.5 1.61.61.61.6 1.71.7 1.71.7 1.91.91.91.9 2.02.0 2.02.0 2.12.12.12.1 6 4 2 0 2 4 6 6 4 2 0246 0.10.10.10.1 0.20.20.20.2 0.2 0.3 0.30.3 0.3 0.3 0.50.50.50.5 0.5 0.60.6 0.60.6 0.70.70.70.7 0.80.8 0.80.8 0.90.90.90.9 1.01.0 1.01.0 1.21.2 1.21.2 1.31.31.31.3 1.41.41.41.4 1.51.5 1.51.5 1.61.61.61.6 1.71.7 1.71.7 1.91.91.91.9 2.02.0 2.02.0 2.12.12.12.1 6 4 2 0 2 4 6 6 4 2 0246 0.10.10.10.1 0.20.20.20.2 0.2 0.3 0.30.3 0.3 0.3 0.50.50.50.5 0.5 0.60.6 0.60.6 0.70.70.70.7 0.80.8 0.80.8 0.90.90.90.9 1.01.0 1.01.0 1.21.2 1.21.2 1.31.31.31.3 1.41.41.41.4 1.51.5 1.51.5 1.61.61.61.6 1.71.7 1.71.7 1.91.91.91.9 2.02.0 2.02.0 2.12.12.12.1 6 4 2 0 2 4 6 6 4 2 0246 0.10.10.10.1 0.20.20.20.2 0.2 0.3 0.30.3 0.3 0.3 0.50.50.50.5 0.5 0.60.6 0.60.6 0.70.70.70.7 0.80.8 0.80.8 0.90.90.90.9 1.01.0 1.01.0 1.21.2 1.21.2 1.31.31.31.3 1.41.41.41.4 1.51.5 1.51.5 1.61.61.61.6 1.71.7 1.71.7 1.91.91.91.9 2.02.0 2.02.0 2.12.12.12.1 6 4 2 0246 6 4 2 0246 0.57 0.56 0.55 0.54 0.53
-(f) 6 3 6 4 2 0246 6 4 2 0246 0.61 0.60 0.59 0.58 0.57 0.56
- (g) 7 3 6 4 2 0246 6 4 2 0246 0.405 0.400 0.395 0.390 0.385 0.380 0.375
- (h) 8 3 6 4 2 0246 6 4 2 0246 0.51 0.50 0.49 0.48 0.47
- (i) 9 3 6 4 2 0246 6 4 2 0246 0.52 0.51 0.50 0.49 0.48
- (j) 10 3 14  Policy representation comparison of PPO with diﬀerent iterations.
+Figure 14  Policy representation comparison of PPO with diﬀerent iterations.
 From Figure 14, we also ﬁnd PPO always runs around at the initial value, and it does not
 improve the reward performance, which implies PPO fails to ﬁt multimodality. It does not
 learn any information about multimodality.
@@ -2473,15 +1482,21 @@ of all the algorithms  additional tricks for implementation of DIPO  details and
 reports for state-visiting  and ablation study on MLP and VAE.
 The Python code for our implementation of DIPO is provided along with this submission
 in the supplementary material. SAC  https //github.com/toshikwa/soft-actor-critic.
-pytorch PPO  https //github.com/ikostrikov/pytorch-a c-ppo-acktr-gail TD3  https 
+pytorch PPO  https //github.com/ikostrikov/pytorch-a2c-ppo-acktr-gail TD3  https 
 //github.com/sfujim/TD3 , which were oﬃcial code library.
 H.1 Hyper-parameters for MuJoCo
 Common Hyper-parameters 
 Hyperparameter DIPO SAC TD3 PPO
 No. of hidden layers 2 2 2 2
-No. of hidden nodes 256 256 256 256 256 256 256 256
+No. of hidden nodes 256 256 256 256
+Activation mish relu relu tanh
+Batch size 256 256 256 256
 Discount for reward γ 0.99 0.99 0.99 0.99
-Target smoothing coeﬃcient τ0.005 0.005 0.005 0.005 3 10 43 10 43 10 47 10 4 3 10 43 10 43 10 47 10 4 2 N/A N/A 0.5 1 1061 1061 1061 106
+Target smoothing coeﬃcient τ0.005 0.005 0.005 0.005
+Learning rate for actor 3  10 43 10 43 10 47 10 4
+Learning rate for critic 3  10 43 10 43 10 47 10 4
+Actor Critic grad norm 2 N/A N/A 0.5
+Memeroy size 1  1061 1061 1061 106
 Entropy coeﬃcient N/A 0.2 N/A 0.01
 Value loss coeﬃcient N/A N/A N/A 0.5
 Exploration noise N/A N/A N(0,0.1) N/A
@@ -2490,54 +1505,44 @@ Noise clip N/A N/A 0.5 N/A
 Use gae N/A N/A N/A True
 Table 2  Hyper-parameters for algorithms.
 Additional Hyper-parameters of DIPO 
-Hyperparameter Hopper-v3 Walker d-v3 Ant-v3 HalfCheetah-v3 Humanoid-v3 0.03 0.03 0.03 0.03 0.03 1 2 0.8 2 2 0.3 0.08 0.1 0.08 0.1 20 20 20 40 20
+Hyperparameter Hopper-v3 Walker2d-v3 Ant-v3 HalfCheetah-v3 Humanoid-v3
+Learning rate for action 0.03 0.03 0.03 0.03 0.03
+Actor Critic grad norm 1 2 0.8 2 2
+Action grad norm ratio 0.3 0.08 0.1 0.08 0.1
+Action gradient steps 20 20 20 40 20
 Diﬀusion inference timesteps 100 100 100 100 100
 Diﬀusion beta schedule cosine cosine cosine cosine cosine
-Update actor target every 1 1 1 2 1 3  Hyper-parameters of DIPO.
-55 3 15  State-visiting distribution of Humanoid-v3, where states get dimension reduction
+Update actor target every 1 1 1 2 1
+Table 3  Hyper-parameters of DIPO.
+55DIPO SAC TD3 PPOFigure 15  State-visiting distribution of Humanoid-v3, where states get dimension reduction
 by t-SNE. The points with diﬀerent colors represent the states visited by the policy with the
 style. The distance between points represents the diﬀerence between states.
-H.2 3.
+H.2 Additional Tricks for Implementation of DIPO
+We have provided the additional details for the Algorithm 3.
 H.2.1 Double Q-learning for Estimating Q-Value
 We consider the double Q-learning [Hasselt, 2010] to update the Qvalue. We consider the two
 critic networks Qψ1,Qψ2, two target networks Qψ 
-1,Qψ 
 2. Let Bellman residual be as follows,
 LQ(ψ)  E(st,at,st 1,at 1)[    (
-r(st 1 st,at)  γmin
-i 1,2Qψ 
-i(st 1,at 1))
- Qψ(st,at)    2]
-.
 Then, we update ψias follows, for i {1,2}
-ψi ψi η LQ(ψi).
 Furthermore, we consider the following soft update rule for ψ 
-ias follows,
-ψ 
-i ρψ 
-i  (1 ρ)ψi.
 Finally, for the action gradient step, we consider the following update rule  replacing each
 action at D envas follows
-at at ηa a(
-min
 i 1,2{Qψi(st,a)})    
-a at.
 H.2.2 Critic and Diﬀusion Model
 We use a four-layer feedforward neural network of 256 hidden nodes, with activation function
 Mish [Misra, 2019] between each layer, to design the two critic networks Qψ1,Qψ2two target
-networksQψ 
-1,Qψ 
 2, and the noise term ϵφ. We consider gradient normalization for critic and
 ϵφto stabilize the training process.
 For each reverse time k [K], we consider the sinusoidal positional encoding [Vaswani
 et al., 2017] to encode each k [K] into a 32-dimensional vector.
-56 3 16  State-visiting distribution of Walker d-v3, where states get dimension reduction
+56DIPO SAC TD3 PPOFigure 16  State-visiting distribution of Walker2d-v3, where states get dimension reduction
 by t-SNE. The points with diﬀerent colors represent the states visited by the policy with the
 style. The distance between points represents the diﬀerence between states.
-Ant-v3 3 17  State-visiting visualization by each algorithm on the Ant-v3 task, where states get
+Ant-v3 DIPO SAC TD3 PPO
+Figure 17  State-visiting visualization by each algorithm on the Ant-v3 task, where states get
 dimension reduction by t-SNE. The points with diﬀerent colors represent the states visited
 by the policy with the style. The distance between points represents the diﬀerence between
-states.
 H.3 Details and Additional Reports for State-Visiting
 In this section, we provide more details for Section 7.1, including the implementation details
 (see Appendix H.3.1), more comparisons and more insights for the empirical results. We
@@ -2545,8 +1550,8 @@ provide the main discussions cover the following three observations
  poor exploration results in poor initial reward performance 
  good ﬁnal reward performance along with dense state-visiting 
  a counterexample  PPO violates the above two observations.
-H.3.1 2D State-Visiting
-We save the parameters for each algorithm during the training for each 1 5 iteration. Then
+H.3.1 Implementation Details for 2D State-Visiting
+We save the parameters for each algorithm during the training for each 1E5 iteration. Then
 we run the model with an episode with ten random seeds to compare fairly  those ten random
 seeds are the same among diﬀerent algorithms. Thus, we collect a state set with ten episodes
 for each algorithm. Finally, we convert high-dimensional state data into two-dimensional state
@@ -2554,28 +1559,28 @@ data by t-SNE [Van der Maaten and Hinton, 2008], and we show the visualization a
 the open implementation https //scikit-learn.org/stable/auto_examples/manifold/
 plot_t_sne_perplexity.html where we set the parameters as follows,
 perpexity   50,early exaggeration   12,random state   33.
-We have shown all the results in Figure 15 (for Humanoid)  Figure 16 (for Walker d) 
+We have shown all the results in Figure 15 (for Humanoid)  Figure 16 (for Walker2d) 
 Figure 17 (for Ant)  Figure 18 (for HalfCheetah)  and Figure 19 (for Hopper), where we polt
 the result after each E5 iterations.
-57 3 18  The state-visiting visualization by each algorithm on the HalfCheetah-v3 task,
+57DIPO SAC TD3 PPOFigure 18  The state-visiting visualization by each algorithm on the HalfCheetah-v3 task,
 where states get dimension reduction by t-SNE. The points with diﬀerent colors represent
 the states visited by the policy with the style. The distance between points represents the
 diﬀerence between states.
-DIPO SAC TD3 19  State-visiting distribution of Hopper-v3, where states get dimension reduction by
+Figure 19  State-visiting distribution of Hopper-v3, where states get dimension reduction by
 t-SNE. The points with diﬀerent colors represent the states visited by the policy with the
 style. The distance between points represents the diﬀerence between states.
-H.3.2 1 6, we know TD3 and PPO reach a worse initial reward performance than DIPO
+H.3.2 Observation 1  Poor Exploration Result in Poor Initial Reward Performance
+From Figure 6, we know TD3 and PPO reach a worse initial reward performance than DIPO
 and SAC for the Hopper task, which coincides with the results appear in Figure 19. At the
 initial interaction, TD3 and PPO explore within a very sparse state-visiting region, which
-decays the reward performance. Such an empirical result also appears in the Walker d task
+decays the reward performance. Such an empirical result also appears in the Walker2d task
 for PPO (see Figure 16), Humanoid task for TD3 and SAC (see Figure 15), where a spare
 state-visiting is always accompanied by a worse initial reward performance. Those empirical
 results once again conﬁrm a common sense  poor exploration results in poor initial reward
-performance.
 Conversely, from Figure 6, we know DIPO and SAC obtain a better initial reward performance
  for the Hopper task, and Figure 19 shows that DIPO and SAC explore a wider range
 of state-visiting that covers than TD3 and PPO. That implies that a wide state visit leads to
-better initial reward performance. Such an empirical result also appears in the Walker d task
+better initial reward performance. Such an empirical result also appears in the Walker2d task
 for DIPO, SAC, and TD3 (see Figure 16), Humanoid task for DIPO (see Figure 15), where
 the agent runs with a wider range state-visiting, which is helpful to the agent obtains a better
 initial reward performance.
@@ -2583,45 +1588,45 @@ In summary, poor exploration could make the agent make a poor decision and cause
 poor initial reward performance. While if the agent explores a wider range of regions to visit
 more states, which is helpful for the agent to understand the environment and could lead to
 better initial reward performance.
-58/uni00000013/uni00000011/uni00000013 /uni00000013/uni00000011/uni00000015 /uni00000013/uni00000011/uni00000017 /uni00000013/uni00000011/uni00000019 /uni00000013/uni00000011/uni b /uni00000014/uni00000011/uni00000013/uni00000013/uni00000014/uni00000013/uni00000013/uni00000013/uni00000015/uni00000013/uni00000013/uni00000013/uni00000016/uni00000013/uni00000013/uni00000013/uni00000017/uni00000013/uni00000013/uni00000013/uni00000018/uni00000013/uni00000013/uni00000013/uni00000019/uni00000013/uni00000013/uni00000013 /uni00000033/uni00000033/uni00000032
+58/uni00000013/uni00000011/uni00000013 /uni00000013/uni00000011/uni00000015 /uni00000013/uni00000011/uni00000017 /uni00000013/uni00000011/uni00000019 /uni00000013/uni00000011/uni0000001b /uni00000014/uni00000011/uni00000013/uni00000013/uni00000014/uni00000013/uni00000013/uni00000013/uni00000015/uni00000013/uni00000013/uni00000013/uni00000016/uni00000013/uni00000013/uni00000013/uni00000017/uni00000013/uni00000013/uni00000013/uni00000018/uni00000013/uni00000013/uni00000013/uni00000019/uni00000013/uni00000013/uni00000013 /uni00000033/uni00000033/uni00000032
 /uni00000036/uni00000024/uni00000026
 /uni00000037/uni00000027/uni00000016
-/uni00000030/uni f/uni00000033
+/uni00000030/uni0000002f/uni00000033
 /uni00000039/uni00000024/uni00000028
-/uni00000027/uni c/uni00000033/uni00000032(a) Ant-v3
-/uni00000013/uni00000011/uni00000013 /uni00000013/uni00000011/uni00000015 /uni00000013/uni00000011/uni00000017 /uni00000013/uni00000011/uni00000019 /uni00000013/uni00000011/uni b /uni00000014/uni00000011/uni00000013/uni00000013/uni00000015/uni00000013/uni00000013/uni00000013/uni00000017/uni00000013/uni00000013/uni00000013/uni00000019/uni00000013/uni00000013/uni00000013/uni b/uni00000013/uni00000013/uni00000013/uni00000014/uni00000013/uni00000013/uni00000013/uni00000013/uni00000014/uni00000015/uni00000013/uni00000013/uni00000013
+/uni00000027/uni0000002c/uni00000033/uni00000032(a) Ant-v3
+/uni00000013/uni00000011/uni00000013 /uni00000013/uni00000011/uni00000015 /uni00000013/uni00000011/uni00000017 /uni00000013/uni00000011/uni00000019 /uni00000013/uni00000011/uni0000001b /uni00000014/uni00000011/uni00000013/uni00000013/uni00000015/uni00000013/uni00000013/uni00000013/uni00000017/uni00000013/uni00000013/uni00000013/uni00000019/uni00000013/uni00000013/uni00000013/uni0000001b/uni00000013/uni00000013/uni00000013/uni00000014/uni00000013/uni00000013/uni00000013/uni00000013/uni00000014/uni00000015/uni00000013/uni00000013/uni00000013
 /uni00000033/uni00000033/uni00000032
 /uni00000036/uni00000024/uni00000026
 /uni00000037/uni00000027/uni00000016
-/uni00000030/uni f/uni00000033
+/uni00000030/uni0000002f/uni00000033
 /uni00000039/uni00000024/uni00000028
-/uni00000027/uni c/uni00000033/uni00000032 (b) HalfCheetah-v3
-/uni00000013/uni00000011/uni00000013 /uni00000013/uni00000011/uni00000015 /uni00000013/uni00000011/uni00000017 /uni00000013/uni00000011/uni00000019 /uni00000013/uni00000011/uni b /uni00000014/uni00000011/uni00000013/uni00000013/uni00000018/uni00000013/uni00000013/uni00000014/uni00000013/uni00000013/uni00000013/uni00000014/uni00000018/uni00000013/uni00000013/uni00000015/uni00000013/uni00000013/uni00000013/uni00000015/uni00000018/uni00000013/uni00000013/uni00000016/uni00000013/uni00000013/uni00000013/uni00000016/uni00000018/uni00000013/uni00000013
+/uni00000027/uni0000002c/uni00000033/uni00000032 (b) HalfCheetah-v3
+/uni00000013/uni00000011/uni00000013 /uni00000013/uni00000011/uni00000015 /uni00000013/uni00000011/uni00000017 /uni00000013/uni00000011/uni00000019 /uni00000013/uni00000011/uni0000001b /uni00000014/uni00000011/uni00000013/uni00000013/uni00000018/uni00000013/uni00000013/uni00000014/uni00000013/uni00000013/uni00000013/uni00000014/uni00000018/uni00000013/uni00000013/uni00000015/uni00000013/uni00000013/uni00000013/uni00000015/uni00000018/uni00000013/uni00000013/uni00000016/uni00000013/uni00000013/uni00000013/uni00000016/uni00000018/uni00000013/uni00000013
 /uni00000033/uni00000033/uni00000032
 /uni00000036/uni00000024/uni00000026
 /uni00000037/uni00000027/uni00000016
-/uni00000030/uni f/uni00000033
+/uni00000030/uni0000002f/uni00000033
 /uni00000039/uni00000024/uni00000028
-/uni00000027/uni c/uni00000033/uni00000032
-(c) Hopper-v3
-/uni00000013/uni00000011/uni00000013 /uni00000013/uni00000011/uni00000015 /uni00000013/uni00000011/uni00000017 /uni00000013/uni00000011/uni00000019 /uni00000013/uni00000011/uni b /uni00000014/uni00000011/uni00000013/uni00000013/uni00000014/uni00000013/uni00000013/uni00000013/uni00000015/uni00000013/uni00000013/uni00000013/uni00000016/uni00000013/uni00000013/uni00000013/uni00000017/uni00000013/uni00000013/uni00000013/uni00000018/uni00000013/uni00000013/uni00000013/uni00000033/uni00000033/uni00000032
+/uni00000027/uni0000002c/uni00000033/uni00000032
+/uni00000013/uni00000011/uni00000013 /uni00000013/uni00000011/uni00000015 /uni00000013/uni00000011/uni00000017 /uni00000013/uni00000011/uni00000019 /uni00000013/uni00000011/uni0000001b /uni00000014/uni00000011/uni00000013/uni00000013/uni00000014/uni00000013/uni00000013/uni00000013/uni00000015/uni00000013/uni00000013/uni00000013/uni00000016/uni00000013/uni00000013/uni00000013/uni00000017/uni00000013/uni00000013/uni00000013/uni00000018/uni00000013/uni00000013/uni00000013/uni00000033/uni00000033/uni00000032
 /uni00000036/uni00000024/uni00000026
 /uni00000037/uni00000027/uni00000016
-/uni00000030/uni f/uni00000033
+/uni00000030/uni0000002f/uni00000033
 /uni00000039/uni00000024/uni00000028
-/uni00000027/uni c/uni00000033/uni00000032 (d) Humanoid-v3
-/uni00000013/uni00000011/uni00000013 /uni00000013/uni00000011/uni00000015 /uni00000013/uni00000011/uni00000017 /uni00000013/uni00000011/uni00000019 /uni00000013/uni00000011/uni b /uni00000014/uni00000011/uni00000013/uni00000013/uni00000014/uni00000013/uni00000013/uni00000013/uni00000015/uni00000013/uni00000013/uni00000013/uni00000016/uni00000013/uni00000013/uni00000013/uni00000017/uni00000013/uni00000013/uni00000013/uni00000018/uni00000013/uni00000013/uni00000013
+/uni00000027/uni0000002c/uni00000033/uni00000032 (d) Humanoid-v3
+/uni00000013/uni00000011/uni00000013 /uni00000013/uni00000011/uni00000015 /uni00000013/uni00000011/uni00000017 /uni00000013/uni00000011/uni00000019 /uni00000013/uni00000011/uni0000001b /uni00000014/uni00000011/uni00000013/uni00000013/uni00000014/uni00000013/uni00000013/uni00000013/uni00000015/uni00000013/uni00000013/uni00000013/uni00000016/uni00000013/uni00000013/uni00000013/uni00000017/uni00000013/uni00000013/uni00000013/uni00000018/uni00000013/uni00000013/uni00000013
 /uni00000033/uni00000033/uni00000032
 /uni00000036/uni00000024/uni00000026
 /uni00000037/uni00000027/uni00000016
-/uni00000030/uni f/uni00000033
+/uni00000030/uni0000002f/uni00000033
 /uni00000039/uni00000024/uni00000028
-/uni00000027/uni c/uni00000033/uni00000032 (e) Walker d-v3 20  Average performances on MuJoCo Gym environments with  std shaded, where
+/uni00000027/uni0000002c/uni00000033/uni00000032 (e) Walker2d-v3
+Figure 20  Average performances on MuJoCo Gym environments with  std shaded, where
 the horizontal axis of coordinate denotes the iterations (  106), the plots smoothed with a
-window of 10.
-H.3.3 2 19, we know DIPO, SAC, and TD3 achieve a more dense state-visiting for the
-Hopper task at the ﬁnal iterations. Such an empirical result also appears in the Walker d
-and Humanoid tasks for DIPO, SAC, and TD3 (see Figure 15 16). This is a reasonable
+H.3.3 Observation 2  Good Final Reward Performance along with Dense StateVisiting
+From Figure 19, we know DIPO, SAC, and TD3 achieve a more dense state-visiting for the
+Hopper task at the ﬁnal iterations. Such an empirical result also appears in the Walker2d
+and Humanoid tasks for DIPO, SAC, and TD3 (see Figure 15 and 16). This is a reasonable
 result since after suﬃcient training, the agent identiﬁes and avoids the  bad  states, and plays
 actions to transfer to  good  states. Besides, this observation is also consistent with the result
 that appears in Figure 6, the better algorithm (e.g., the proposed DIPO) usually visits a more
@@ -2630,9 +1635,10 @@ exploration among the Ant-v3 task (see Figure 7) and HalfCheetah (see Figure 8),
 provides a partial explanation for why PPO is not so good in the Ant-v3 and HalfCheetah
 task. This is a natural result for RL since a better algorithm should keep a better exploration
 at the beginning and a more suﬃcient exploitation at the ﬁnal iterations.
-H.3.4 3 5 tasks (see Figure 15 19), we also ﬁnd PPO violates the common sense of
+H.3.4 Observation 3  PPO Violates above Two Observations
+From all of those 5 tasks (see Figure 15 to 19), we also ﬁnd PPO violates the common sense of
 RL, where PPO usual with a narrow state-visiting at the beginning and wide state-visiting at
-the ﬁnal iteration. For example, from Figure 6 19, we know PPO achieves an asymptotic
+the ﬁnal iteration. For example, from Figure 6 and 19, we know PPO achieves an asymptotic
 reward performance as DIPO for the Hopper-v3, while the state-visiting distribution of PPO is
 fundamentally diﬀerent from DIPO. DIPO shows a wide state-visiting region gradually turns
 into a narrow state-visiting region, while PPO shows a narrow state-visiting region gradually
@@ -2644,17 +1650,17 @@ A fundamental question is why must we consider the diﬀusion model to learn a p
 distribution. In fact, Both VAE and MLP are widely used to learn distribution in machine
 learning, can we replace the diﬀusion model with VAE and MLP in DIPO  In this section, we
 further analyze the empirical reward performance among DIPO, MLP, and VAE.
-We show the answer in Figure 9 20, where the VAE (or MLP) is the result we
+We show the answer in Figure 9 and Figure 20, where the VAE (or MLP) is the result we
 replace the diﬀusion policy of DIPO (see Figure 3) with VAE (or MLP), i.e., we consider VAE
 (or MLP) action gradient (15) for the tasks.
 Results of Figure 20 show that the diﬀusion model achieves the best reward performance
 among all 5 tasks. This implies the diﬀusion model is an expressive and ﬂexible family to
 model a distribution, which is also consistent with the ﬁeld of the generative model.
-Additionally, from the results of Figure 20 5 tasks, which implies the action gradient is a very promising way to improve
+Additionally, from the results of Figure 20 we know MLP with action gradient also performs
+well among all 5 tasks, which implies the action gradient is a very promising way to improve
 reward performance. For example, Humanoid-v3 is the most challenging task among Mujoco
 tasks, MLP achieves a ﬁnal reward performance near the PPO, SAC, DIPO, and TD3. We
 all know that these algorithms (PPO, SAC, DIPO, and TD3) are meticulously constructed
 mathematically, while MLP with action gradient is a simple model, but it achieves so good
 reward performance, which is a direction worth further in-depth research to search simple but
 eﬃcient RL algorithm.
-60
