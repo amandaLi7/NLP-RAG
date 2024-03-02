@@ -2,6 +2,7 @@
 - Data: 
   - worked with semantic scholar api to get faculty jsons
   - download papers by faculty
+  - convert json to natural language dataset
 - Setting up of the pipeline: 
   - Embedding + Vector DB: getting the data, embedding, creating the vector data base
   - Retriever: document retrieval, re-ranker based on the query 
