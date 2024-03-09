@@ -79,7 +79,7 @@ def create_db(docs):
     embedding_model = HuggingFaceEmbeddings(
         model_name=EMBEDDING_MODEL_NAME,
         multi_process=True,
-        # model_kwargs={"device": "cuda"},
+        model_kwargs={"device": "cuda"},
         encode_kwargs={"normalize_embeddings": True},  #  True for cosine similarity
     )
 
