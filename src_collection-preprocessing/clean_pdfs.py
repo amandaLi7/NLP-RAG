@@ -1,21 +1,4 @@
-# author listing at the top of papers is an issue; sometimes people use
-# unicode characters or there's other improper formatting. CHECK THIS
-
-# eg:
-# Sriram Yenamandra 1Arun Ramachandran 1Karmesh Yadav 1,2Austin Wang1
-# Mukul Khanna1Theophile Gervet2,3Tsung Yen Yang2Vidhi Jain3
-# Alexander William Clegg2John Turner2Zsolt Kira1Manolis Savva4
-# Angel Chang4Devendra Singh Chaplot2Dhruv Batra1,2Roozbeh Mottaghi2
-# Yonatan Bisk2,3Chris Paxton2
-# 1Georgia Tech2FAIR, Meta AI3Carnegie Mellon4Simon Fraser
-
-# papers written with double columns have a lot of new lines and words
-# that are hyphenated because theyre cut off by new lines. CHECK THIS
-
-# consider checking if a number is bounded on both sides by alpha characters,
-# if so then separate with spaces
-
-import os, re
+import os, re, string
 from typing import List
 import time
 
@@ -55,33 +38,44 @@ def dehyphenate(lines: List[str], line_no: int) -> List[str]:
 
 # Remove non-alphanumeric characters
 def remove_nonalphanumeric(text: str) -> str:
-    cleaned_text = re.sub(r'[^\w\s\d.,*@%#$&/~"\'\[\]\(\)\{\}-]', ' ', text)
+    pattern = re.compile(r'[^a-zA-Z0-9\s' + re.escape(string.punctuation) + ']+')
+    cleaned_text = pattern.sub(' ', text)
     return cleaned_text
 
 
-# Fix numeric characters bounded by alpha characters
-def replace_bounded_numbers(text):
-    corrected_text = re.sub(r'(?<=[a-zA-Z])\d+(?=[a-zA-Z])', ' ', text)
-    return corrected_text
-
-
-# Fix strings bounded by numeric characters
-def replace_bounded_strings(text):
-    corrected_text = re.sub(r'(?<=\d)[a-zA-Z\s]+(?=\d)', ' ', text)
-    return corrected_text
-
-
+# Short lines are typically a result of faulty table or equation parsing
 def remove_short_lines(text: str) -> str:
     lines = [line for line in text.split("\n") if len(line) > 20]
     return "\n".join(lines)
+
+
+def remove_newlines(text: str) -> str:
+    # Remove newlines at the ends of lines only so that text is one long string
+    lines = [line.strip() for line in text.split("\n")]
+    return " ".join(lines)
+
+
+def pseudo_chunk(text: str, chunk_size: int) -> List[str]:
+    # For each chunk, find the period ('.') closest the end of chunksize from start index
+    chunks = []
+    i = 0
+    while i < len(text):
+        chunk = text[i : i + chunk_size]
+        # Index of closest end of sentence
+        last_period = chunk.rfind(".")
+        if last_period == -1:
+            last_period = chunk_size
+        chunks.append(chunk[:last_period + 1].strip() + ' ')
+        i += last_period + 1
+    return '\n'.join(chunks)
 
 
 def process_text(text: str) -> str:
     text = remove_hyphens(text)
     text = remove_nonalphanumeric(text)
     text = remove_short_lines(text)
-    # text = replace_bounded_numbers(text)
-    # text = replace_bounded_strings(text)
+    text = remove_newlines(text)
+    # text = pseudo_chunk(text, 256)
     return text
 
 
