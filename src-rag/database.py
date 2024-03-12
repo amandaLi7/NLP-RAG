@@ -71,7 +71,7 @@ def split_documents(
 Create a knowledge vector database from the list of documents'''
 def create_db(docs):
     docs_processed = split_documents(
-        chunk_size = 512,
+        chunk_size = 450,
         chunk_overlap = 50,
         knowledge_base = docs,
         tokenizer_name=EMBEDDING_MODEL_NAME,
@@ -79,7 +79,7 @@ def create_db(docs):
     embedding_model = HuggingFaceEmbeddings(
         model_name=EMBEDDING_MODEL_NAME,
         multi_process=True,
-        model_kwargs={"device": "cuda"},
+        # model_kwargs={"device": "cuda"},
         encode_kwargs={"normalize_embeddings": True},  #  True for cosine similarity
     )
 
