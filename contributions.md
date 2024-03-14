@@ -1,16 +1,26 @@
 ## Vashisth (vashistt)
 - Data: 
-  - worked with semantic scholar api to get faculty jsons
+  - worked with semantic scholar api to get faculty JSONs
   - download papers by faculty
-  - convert json to natural language dataset
-- Setting up of the pipeline: 
+  - Data Cleaning for JSONs: automatically convert the JSONs into a set of paper and author related questions 
+  - Function to generate Question Answer pairs from the chunks automatically using LLama2
+- Setting up of the retriever, reranker, and Reader LLM pipeline: 
   - Embedding + Vector DB: getting the data, embedding, creating the vector data base
-  - Retriever: document retrieval, re-ranker based on the query 
+    - Experimented with different similarity criterion
+  - Retriever: document retrieval, re-ranker based on the query (integrating colbert re-ranker in the pipeline)
   - Reader LLM: processing the context and the question in the reader LLM
-- Experimenting with Models:
-  - Gemini 2B 
-  - Flan T5 (small/base/large)
-- Benchmarking performance per document type
+- Experimenting with Models and prompts:
+  - Set up the pipeline with all these models so we can do experiments over them and running them with and without GPU
+    - Gemini 2B 
+    - Flan T5 (small/base/large)
+    - Llama2 7B (LLama CCP quantized version)
+    - Mistral 7B
+  - Experimented with temperature, top-p; verbosity, and prompts for each model
+- Evaluation
+  - Wrote the pipeline to do get metrics over different kinds of document categories
+- Report:
+  - Corresponding report sections on JSONs, Model Selection, Embedding, Retrieiver and Reranking
+  - LaTex tables and part of the analysis
 
 
 ## Amanda (xal)
@@ -32,14 +42,17 @@
 ## Emily (epguo)
 - Data:
   - Parsing and processing academic paper PDFs, parsing 'other' PDFs
-  - Extensive processing of schedule of classes PDFs
+  - Extensive processing of schedule of classes PDFs into natural language
   - Prepending metadata to academic paper chunks
   - Hand annotation and question generation of all PDF files
 - Experimentation:
   - Experimenting with various prompting methods for Llama, Mistral
   - Adjusting PDF text as necessary based on
+- Evaluation:
+  - Adjusted metrics pipeline to accommodate all model outputs
+  - Generated metrics for all experiments after they were finalized
 - Report and Deliverables:
   - Generated outputs for both Llama models on full test set and outputs for Llama and Mistral in no-context setting
-  - IAA section of report
+  - Inter-annotator analysis and corresponding section of report
   - PDF (academic paper and schedule of classes) sections in Data Cleaning and Processing
 
