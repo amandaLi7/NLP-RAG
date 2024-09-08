@@ -1,6 +1,6 @@
 # NLP-RAG (11-711 Assignment 2: End-to-end NLP System Building)
 
-You can find the details of the assignment in our report here 
+You can find the details of the assignment in our report [here](https://github.com/amandaLi7/NLP-RAG/blob/main/ANLP_Assignment_2_Report.pdf) 
 ## Assignment Overview
 
 This project involves developing a Retrieval Augmented Generation (RAG) system for answering questions about the Language Technology Institute (LTI) and Carnegie Mellon University (CMU).
